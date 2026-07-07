@@ -1,0 +1,19 @@
+parser_id:    "demo_db4"
+name:         "Demo DB4"
+organization: "Demo"
+format:       "db4"
+description:  "演示用 DB4 格式解析器"
+
+period:
+  from: null
+  to:   null
+
+projects: []
+
+topics:
+  - name: "obstacle_list"
+    description: "感知障碍物列表"
+  - name: "laneline_list"
+    description: "视觉感知车道线"
+  - name: "odometry"
+    description: "里程计定位"

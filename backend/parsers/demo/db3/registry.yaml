@@ -1,0 +1,20 @@
+parser_id:    "demo_db3"
+name:         "Demo DB3"
+organization: "Demo"
+format:       "db3"
+description:  "演示用 DB3 格式解析器，包含感知、定位基础数据"
+
+# period / projects 均为空，表示不限期间和项目（通用）
+period:
+  from: null
+  to:   null
+
+projects: []
+
+topics:
+  - name: "obstacle_list"
+    description: "感知障碍物列表（car/truck/pedestrian/cyclist）"
+  - name: "laneline_list"
+    description: "视觉感知车道线"
+  - name: "odometry"
+    description: "里程计定位（位置、姿态、速度）"

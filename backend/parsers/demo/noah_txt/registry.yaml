@@ -1,0 +1,17 @@
+parser_id:    "demo_noah_txt"
+name:         "Demo Noah TXT"
+organization: "Demo"
+format:       "noah_txt"
+description:  "演示用 Noah 文本格式解析器"
+
+period:
+  from: null
+  to:   null
+
+projects: []
+
+topics:
+  - name: "obstacle_list"
+    description: "感知障碍物列表"
+  - name: "odometry"
+    description: "里程计定位"
