@@ -1,0 +1,58 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+enum BufferStateProto {
+  BUFFER_AVAILABLE = 0;
+  BUFFER_PROCESS = 1;
+  BUFFER_DONE = 2;
+  BUFFER_REPROCESS = 3;
+  BUFFER_USER = 4;
+  BUFFER_INVALID = 5;
+}
+
+message TvProto {
+  optional int64 tv_sec = 1;
+  optional int64 tv_usec = 2;
+}
+
+message ImageInfoProto {
+  optional uint32 sensor_id = 1 [(matrix_data_type) = UINT16];
+  optional uint32 pipeline_id = 2;
+  optional uint32 frame_id = 3;
+  optional uint64 time_stamp = 4;
+  optional TvProto tv = 5;
+  optional int32 buf_index = 6;
+  optional int32 img_format = 7;
+  repeated int32 fd = 8;
+  repeated uint32 size = 9;
+  optional uint32 planeCount = 10;
+  optional uint32 dynamic_flag = 11;
+  optional uint32 water_mark_line = 12;
+  optional uint32 data_type = 13;
+  optional BufferStateProto state = 14;
+  optional uint64 desc = 15;
+}
+
+message AddressInfoProto {
+  optional uint32 width = 1 [(matrix_data_type) = UINT16];
+  optional uint32 height = 2 [(matrix_data_type) = UINT16];
+  optional uint32 stride_size = 3 [(matrix_data_type) = UINT16];
+  repeated uint64 addrs = 4;  // 虚拟地址
+  repeated uint64 paddr = 5;  // 物理地址
+}
+
+message VioPymBufferV2Proto {
+  optional LiteHeader header = 1;
+  optional uint32 camera_id = 2;
+  optional ImageInfoProto pym_img_info = 3;
+  optional AddressInfoProto src_out = 4;
+  optional AddressInfoProto us_roi = 5;
+  repeated AddressInfoProto ds_roi = 6;
+  repeated AddressInfoProto gs = 7;
+  repeated AddressInfoProto bl = 8;
+}

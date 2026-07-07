@@ -1,0 +1,645 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/hmi/proto/lc/city_noa/city_hu_dynamic_context.proto";
+import "onboard/hmi/proto/zone/zone_city_noa_info.proto";
+
+enum NOA_QUIT_NOTICE {
+  NOA_QUIT_NOTICE_NONE = 0;
+  NOA_QUIT_NOTICE_GENERAL_REASON = 1;       // 驾驶员原因退出
+  NOA_QUIT_NOTICE_ACTIVELY_QUIT = 2;        // 系统主动退出
+  NOA_QUIT_NOTICE_TO_DESTINATION = 3;       // 到达目的地退出
+  NOA_QUIT_NOTICE_TOLL_GATE_ = 4;           // 收费站降级
+  NOA_QUIT_NOTICE_GENERAL_DEGRADATION = 5;  // 通用降级
+}
+
+enum ACC_FUNCTION_INDICATOR {
+  ACC_FUNCTION_INDICATOR_NONE = 0x0;
+  ACC_FUNCTION_INDICATOR_AVAILABLE = 0x1;
+  ACC_FUNCTION_INDICATOR_ACTIVE = 0x2;
+  ACC_FUNCTION_INDICATOR_HOLD = 0x3;
+  ACC_FUNCTION_INDICATOR_UNAVAILABLE = 0x4;
+  ACC_FUNCTION_INDICATOR_QUIT = 0x5;
+  ACC_FUNCTION_INDICATOR_ERROR_QUIT = 0x6;
+}
+
+enum ACC_FUNCTION_STATUS {
+  ACC_FUNCTION_STATUS_NONE = 0x0;
+  ACC_FUNCTION_STATUS_ACTIVE = 0x1;  // 包含override
+  ACC_FUNCTION_STATUS_HOLD = 0x2;    // ACC暂停
+  ACC_FUNCTION_STATUS_ACTIVELY_QUIT = 0x3;
+  ACC_FUNCTION_STATUS_PASSIVELY_QUIT = 0x4;
+  ACC_FUNCTION_STATUS_ERROR_QUIT = 0x5;
+}
+
+enum LKA_LKAPLUS_FUNCTION_INDICATOR {
+  LKA_LKAPLUS_FUNCTION_INDICATOR_NONE = 0;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_ACTIVE = 1;  // LKA
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PAUSE = 2;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_ACTIVELY_QUIT = 3;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PASSIVELY_QUIT = 4;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_ERROR_QUIT = 5;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_AVAILABLE = 6;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_UNAVAILABLE = 7;
+
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_ACTIVE = 0x10;  // LKA PLUS
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_PAUSE = 0x11;   // reserved
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_ACTIVELY_QUIT = 0x12;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_PASSIVELY_QUIT = 0x13;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_ERROR_QUIT = 0x14;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_AVAILABLE = 0x15;
+  LKA_LKAPLUS_FUNCTION_INDICATOR_LKA_PLUS_UNAVAILABLE = 0x16;  // reserved
+}
+
+enum LKA_LKAPLUS_FUNCTION_STATUS {
+  LKA_LKAPLUS_FUNCTION_STATUS_NONE = 0x0;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_ACTIVE = 0x1;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PAUSE = 0x2;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_ACTIVELY_QUIT = 0x3;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PASSIVELY_QUIT = 0x4;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_ERROR_QUIT = 0x5;
+
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PLUS_ACTIVE = 0x10;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PLUS_ACTIVELY_QUIT = 0x12;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PLUS_PASSIVELY_QUIT = 0x13;
+  LKA_LKAPLUS_FUNCTION_STATUS_LKA_PLUS_ERROR_QUIT = 0x14;
+}
+
+enum ACC_FUNCTION_UNAVAILABLE_REASON {
+  ACC_FUNCTION_UNAVAILABLE_REASON_NONE = 0x0;
+  ACC_FUNCTION_UNAVAILABLE_REASON_GENERAL = 0x1;
+  ACC_FUNCTION_UNAVAILABLE_REASON_ACU_RELATED = 0x2;  // RESERVED
+  ACC_FUNCTION_UNAVAILABLE_REASON_DRIVER_BUCKLE_UNFASTEN = 0x3;
+  ACC_FUNCTION_UNAVAILABLE_REASON_PASSENGER_BUCKLE_UNFASTEN = 0x4;
+  ACC_FUNCTION_UNAVAILABLE_REASON_RML_BUCKLE_UNFASTEN = 0x5;
+  ACC_FUNCTION_UNAVAILABLE_REASON_RMR_BUCKLE_UNFASTEN = 0x6;
+  ACC_FUNCTION_UNAVAILABLE_REASON_RRL_BUCKLE_UNFASTEN = 0x7;
+  ACC_FUNCTION_UNAVAILABLE_REASON_RRR_BUCKLE_UNFASTEN = 0x8;
+  ACC_FUNCTION_UNAVAILABLE_REASON_RMM_BUCKLE_UNFASTEN =
+      0x9;  // 二排中间,适用于5座版本
+  ACC_FUNCTION_UNAVAILABLE_REASON_RRM_BUCKLE_UNFASTEN =
+      0xA;  // reserved 三排中间
+  ACC_FUNCTION_UNAVAILABLE_REASON_SET_SW_CLOSED = 0xB;
+  ACC_FUNCTION_UNAVAILABLE_REASON_MRR_FAILSAFE = 0xC;  // 前毫米波雷达failsafe
+  ACC_FUNCTION_UNAVAILABLE_REASON_120CAMERA_FAILSAFE =
+      0xD;  // 前120摄像头failsafe
+}
+
+enum LKA_LKAPLUS_UNAVAILABLE_REASON {
+  LKA_LKAPLUS_UNAVAILABLE_REASON_NONE = 0x0;
+  LKA_LKAPLUS_UNAVAILABLE_REASON_GENERAL = 0x1;
+  LKA_LKAPLUS_UNAVAILABLE_REASON_AFTER_PUNISHMENT = 0x2;
+  LKA_LKAPLUS_UNAVAILABLE_REASON_SET_SW_CLOSED = 0x3;  // for lka
+  LKA_LKAPLUS_UNAVAILABLE_REASON_MRR_FAILSAFE = 0x4;
+  LKA_LKAPLUS_UNAVAILABLE_REASON_FRONT120CAMERA_FAILSAFE = 0x5;
+}
+
+enum NOA_FUNCTION_INDICATOR {
+  NOA_FUNCTION_INDICATOR_NONE = 0;
+  NOA_FUNCTION_INDICATOR_ACTIVE = 1;
+  NOA_FUNCTION_INDICATOR_ACTIVELY_QUIT = 2;
+  NOA_FUNCTION_INDICATOR_PASSIVELY_QUIT = 3;
+  NOA_FUNCTION_INDICATOR_ERROR_QUIT = 4;
+  NOA_FUNCTION_INDICATOR_AVAILABLE = 5;
+  NOA_FUNCTION_INDICATOR_UNAVAILABLE = 6;
+  NOA_FUNCTION_INDICATOR_PAUSE = 7;
+}
+
+enum NOA_FUNCTION_STATUS {
+  NOA_FUNCTION_STATUS_NONE = 0x0;
+  NOA_FUNCTION_STATUS_ACTIVE = 0x1;
+  NOA_FUNCTION_STATUS_ACTIVELY_QUIT = 0x2;
+  NOA_FUNCTION_STATUS_PASSIVELY_QUIT = 0x3;
+  NOA_FUNCTION_STATUS_ERROR_QUIT = 0x4;
+  NOA_FUNCTION_STATUS_PUNISHMENT = 0x5;  // reserved, not used by HU
+  NOA_FUNCTION_STATUS_AVAILABLE = 0x6;
+  NOA_FUNCTION_STATUS_UNAVAILABLE = 0x7;
+  NOA_FUNCTION_STATUS_PAUSE = 0x8;
+}
+
+enum NOA_UNAVAILABLEREASON {
+  NOA_UNAVAILABLEREASON_NO_WARNING = 0x0;
+  NOA_UNAVAILABLEREASON_GENERAL_REASON = 0x1;
+  NOA_UNAVAILABLEREASON_DRIVER_BUCKLE_UNFASTEN = 0x2;
+  NOA_UNAVAILABLEREASON_PASSENGER_BUCKLE_UNFASTEN = 0x3;
+  NOA_UNAVAILABLEREASON_RML_BUCKLE_UNFASTEN = 0x4;
+  NOA_UNAVAILABLEREASON_RMR_BUCKLE_UNFASTEN = 0x5;
+  NOA_UNAVAILABLEREASON_RRL_BUCKLE_UNFASTEN = 0x6;
+  NOA_UNAVAILABLEREASON_RRR_BUCKLE_UNFASTEN = 0x7;
+  NOA_UNAVAILABLEREASON_RMM_BUCKLE_UNFASTEN = 0x8;  // reserved
+  NOA_UNAVAILABLEREASON_RRM_BUCKLE_UNFASTEN = 0x9;  // reserved
+  NOA_UNAVAILABLEREASON_AFTER_PUNISHMENT = 0xA;
+  NOA_UNAVAILABLEREASON_NAVI_NOT_SET = 0xB;
+  NOA_UNAVAILABLEREASON_SET_SW_CLOSED = 0xC;  // NOA大开关关闭  新增加CAN信号
+}
+
+enum LANE_CHANGE_BLOCK_REASON {
+  LANE_CHANGE_BLOCK_REASON_NONE = 0x0;
+  LANE_CHANGE_BLOCK_REASON_LEFT_SOLID_LINE = 0x1;
+  LANE_CHANGE_BLOCK_REASON_RIGHT_SOLID_LINE = 0x2;
+  LANE_CHANGE_BLOCK_REASON_LEFT_VEHICLE =
+      0x3;  // 包含（机动车、自行车、摩托车）
+  LANE_CHANGE_BLOCK_REASON_RIGHT_VEHICLE = 0x4;
+  LANE_CHANGE_BLOCK_REASON_LEFT_BARRIER = 0x5;   // 左侧静态障碍物
+  LANE_CHANGE_BLOCK_REASON_RIGHT_BARRIER = 0x6;  // 右侧静态障碍物
+  LANE_CHANGE_BLOCK_REASON_LEFT_CURVATURE_ISSUE = 0x7;
+  LANE_CHANGE_BLOCK_REASON_RIGHT_CURVATURE_ISSUE = 0x8;
+  LANE_CHANGE_BLOCK_REASON_NO_LEFT_TARGET_LANE = 0x9;
+  LANE_CHANGE_BLOCK_REASON_NO_RIGHT_TARGET_LANE = 0xA;
+  LANE_CHANGE_BLOCK_REASON_LEFT_GENERAL_REASON = 0xB;
+  LANE_CHANGE_BLOCK_REASON_RIGHT_GENERAL_REASON = 0xC;
+  LANE_CHANGE_BLOCK_REASON_LEFT_PEDESTRIAN = 0xD;   // 左侧行人
+  LANE_CHANGE_BLOCK_REASON_RIGHT_PEDESTRIAN = 0xE;  // 右侧行人
+  LANE_CHANGE_BLOCK_REASON_LEFT_SPEED_TOO_HIGH =
+      0xF;  // 车速过高（用于LKA手动变道）
+  LANE_CHANGE_BLOCK_REASON_RIGHT_SPEED_TOO_HIGH =
+      0x10;  // 车速过高（用于LKA手动变道）
+}
+
+enum LANE_CHANGE_REASON {
+  LANE_CHANGE_REASON_NONE = 0x0;
+  LANE_CHANGE_REASON_LEFT_FOR_OVERTAKE = 0x1;
+  LANE_CHANGE_REASON_RIGHT_FOR_OVERTAKE = 0x2;
+  LANE_CHANGE_REASON_LEFT_FOR_AVOID_VEHICLE = 0x3;  // 向左绕行  静态死车
+  LANE_CHANGE_REASON_RIGHT_FOR_AVOID_VEHICLE = 0x4;  // 向右绕行  静态死车
+  LANE_CHANGE_REASON_LEFT_FOR_NAVI = 0x5;
+  LANE_CHANGE_REASON_RIGHT_FOR_NAVI = 0x6;
+  LANE_CHANGE_REASON_LEFT_FOR_GENERAL = 0x7;   // 驾驶员打灯变道
+  LANE_CHANGE_REASON_RIGHT_FOR_GENERAL = 0x8;  // 驾驶员打灯变道
+  LANE_CHANGE_REASON_LEFT_FOR_AVOID_STATIC_OBSTACLE =
+      0x9;  // 向左绕行  静态UU目标
+  LANE_CHANGE_REASON_RIGHT_FOR_AVOID_STATIC_OBSTACLE =
+      0xA;  // 向右绕行  静态UU目标
+  LANE_CHANGE_REASON_LEFT_FOR_AVOID_ROADWORK = 0xB;   // 向左绕行  RESERVED
+  LANE_CHANGE_REASON_RIGHT_FOR_AVOID_ROADWORK = 0xC;  // 向右绕行  RESERVED
+  LANE_CHANGE_REASON_LEFT_FOR_AVOID_GENERAL =
+      0xD;  // 向左绕行  VRU类型  RESERVED
+  LANE_CHANGE_REASON_RIGHT_FOR_AVOID_GENERAL =
+      0xE;  // 向右绕行  VRU类型  RESERVED
+  LANE_CHANGE_REASON_LEFT_FOR_TO_RAMP = 0xF;  // 向左变道进入匝道 （高速场景）
+  LANE_CHANGE_REASON_RIGHT_FOR_TO_RAMP = 0x10;  // 向右变道进入匝道（高速场景）
+  LANE_CHANGE_REASON_LEFT_FOR_TO_MAINROAD =
+      0x11;  // 向左变道进入主路（高速场景）
+  LANE_CHANGE_REASON_RIGHT_FOR_TO_MAINROAD =
+      0x12;  // 向右变道进入主路（高速场景）
+  LANE_CHANGE_REASON_CENTER_CHANGE_FOR_LEFT = 0x17;  // 居中变道向左（高速场景）
+  LANE_CHANGE_REASON_CENTER_CHANGE_FOR_RIGHT =
+      0x18;  // 居中变道向右（高速场景）
+  LANE_CHANGE_REASON_LEFT_FOR_AVOID_ROADWORK_PRO = 0x1F;
+  LANE_CHANGE_REASON_RIGHT_FOR_AVOID_ROADWORK_PRO = 0x20;
+  LANE_CHANGE_REASON_MULTI_LEFT_FOR_AVOID_ROADWORK_PRO = 0x24;
+  LANE_CHANGE_REASON_MULTI_RIGHT_FOR_AVOID_ROADWORK_PRO = 0x25;
+}
+
+enum LANE_CHANGE_ST {
+  LANE_CHANGE_ST_NONE = 0x0;
+  LANE_CHANGE_ST_UNAVAILABLE =
+      0x1;  // 驾驶员打灯变道&&不满足进入变道等待条件（如非ODD前）
+  LANE_CHANGE_ST_PREPARE = 0x2;  // 变道动机,即将。。。 不包含打灯变道
+  LANE_CHANGE_ST_WAITING = 0x3;   // 变道等待
+  LANE_CHANGE_ST_CHANGING = 0x4;  // 变道中
+  LANE_CHANGE_ST_FINISHED = 0x5;  // finished
+  LANE_CHANGE_ST_CANCEL_TIMEOUT = 0x6;  // 变道等待超时，车辆未有变道动作
+  LANE_CHANGE_ST_ACTIVELY_CANCEL_RETURN =
+      0x7;  // 变道过程中驾驶员取消变道且返航
+  LANE_CHANGE_ST_ACTIVELY_CANCEL_CONTINUE = 0x8;  // reserved
+  LANE_CHANGE_ST_QUIT_RETURN = 0x9;  // 变道过程中非驾驶员操作取消变道且返航
+  LANE_CHANGE_ST_QUIT_CONTINUE = 0xA;  // reserved
+  LANE_CHANGE_ST_RECOMMAND = 0xB;      //  推荐变道
+}
+
+enum LANE_CHANGE_UNAVAILABLE_REASON {
+  LANE_CHANGE_UNAVAILABLE_REASON_NONE = 0x0;
+  LANE_CHANGE_UNAVAILABLE_REASON_GENERAL_REASON = 0x1;
+  LANE_CHANGE_UNAVAILABLE_REASON_SPEED_TOO_LOW = 0x2;   // reserved，not used
+  LANE_CHANGE_UNAVAILABLE_REASON_SPEED_TOO_HIGH = 0x3;  // 用于LKA手动变道
+  LANE_CHANGE_UNAVAILABLE_REASON_SET_SW_CLOSED = 0x4;   // 手动变道开关
+  LANE_CHANGE_UNAVAILABLE_REASON_SHORT_PRESS = 0x5;     // 短拨转向灯拨杆
+  LANE_CHANGE_UNAVAILABLE_REASON_NOA_TO_BE_ABORT = 0x6;  // 辅助驾驶即将退出
+  LANE_CHANGE_UNAVAILABLE_REASON_SIDE_CAMERA_BLOCKED =
+      0x7;  // Side camera dirty or blocked
+}
+
+enum RECOMMEND_LANE_CHANGING {
+  RECOMMEND_LANE_CHANGING_NONE = 0x0;
+  RECOMMEND_LANE_CHANGING_LEFT_OVERTAKING = 0x1;
+  RECOMMEND_LANE_CHANGING_RIGHT_OVERTAKING = 0x2;
+  RECOMMEND_LANE_CHANGING_LEFT_GENERAL = 0x3;   // RESERVED
+  RECOMMEND_LANE_CHANGING_RIGHT_GENERAL = 0x4;  // RESERVED
+}
+
+enum TSR_SPEED_LIMIT_TYPE {
+  NO_SPEED_LIMIT = 0x0;
+  TSR_TYPE = 0x1;
+  ELECTRONIC_TSR = 0x2;
+  MAP_SPEED_LIMIT = 0x3;
+  DEFAULT_ROAD_SPEED_LIMIT = 0x4;
+  RESERVED = 0x5;
+}
+
+enum NOA_TURNING_AND_AVOID_MODE {
+  NOA_TURNING_AND_AVOID_MODE_NONE = 0x0;
+  NOA_TURNING_AND_AVOID_MODE_AUTO = 0x1;
+  NOA_TURNING_AND_AVOID_MODE_DRIVER_CONFIRM = 0x2;
+}
+
+enum TAKE_OVER_REQUEST_WARNING_REASON {
+  TAKE_OVER_REQUEST_WARNING_REASON_NONE = 0x0;
+  TAKE_OVER_REQUEST_WARNING_REASON_LANE_LINE_INDISTINCT =
+      0x1;  // 车道线不清晰提醒  reserved
+  TAKE_OVER_REQUEST_WARNING_REASON_IMPOSSIBLE_PASS_THROUGH_level1 =
+      0x2;  // 无法通行请求接管
+  TAKE_OVER_REQUEST_WARNING_REASON_IMPOSSIBLE_PASS_THROUGH_level2 =
+      0x3;  // 无法通行请求接管
+  TAKE_OVER_REQUEST_WARNING_REASON_IMPOSSIBLE_REACH_TARGET_LANE =
+      0x4;  // 未驶入规定车道
+  TAKE_OVER_REQUEST_WARNING_REASON_MISS_RAMP = 0x5;
+  TAKE_OVER_REQUEST_WARNING_REASON_TRUN_AT_INTERSECTION_AHEAD = 0x6;
+  TAKE_OVER_REQUEST_WARNING_REASON_TRAFFIC_JAM = 0x7;
+  TAKE_OVER_REQUEST_WARNING_REASON_MANUAL_RAMP_LC = 0x10;
+  TAKE_OVER_REQUEST_WARNING_REASON_TOLL_STATION_VEHICLE = 0x11;
+  TAKE_OVER_REQUEST_WARNING_REASON_TOLL_STATION_EXIT = 0x12;
+}
+
+enum SR_TIPS_REMIND {
+  SR_TIPS_REMIND_NONE = 0x0;
+  SR_TIPS_REMIND_FRONT_VEHICLE_DEPARTUER = 0x1;
+}
+
+enum NOA_ACTIVE_VOICE_BROADCAST {
+  NOA_ACTIVE_VOICE_BROADCAST_BROADCAST = 0x0;
+  NOA_ACTIVE_VOICE_BROADCAST_NO_BROADCAST = 0x1;
+  NOA_ACTIVE_VOICE_BROADCAST_BROADCAST_LEFT = 0x2;
+  NOA_ACTIVE_VOICE_BROADCAST_BROADCAST_RIGHT = 0x3;
+}
+
+message ADASInfo {
+  optional ACC_FUNCTION_INDICATOR acc_function_indicator = 1;
+  optional ACC_FUNCTION_STATUS acc_function_status = 2;
+  optional ACC_FUNCTION_UNAVAILABLE_REASON acc_function_unavailable_reason = 3;
+  optional bool acc_drive_off_remind = 5;
+  optional LKA_LKAPLUS_FUNCTION_INDICATOR lka_lkaplus_function_indicator = 7;
+  optional LKA_LKAPLUS_FUNCTION_STATUS lka_lkaplus_function_status = 8;
+  optional LKA_LKAPLUS_UNAVAILABLE_REASON lka_lkaplus_unavailable_reason = 9;
+  optional SR_TIPS_REMIND sr_tips_remind = 10;
+}
+
+message NOAInfo {
+  optional NOA_FUNCTION_INDICATOR noa_function_indicator = 1;
+  optional NOA_FUNCTION_STATUS noa_function_status = 2;
+  optional NOA_UNAVAILABLEREASON noa_unavailablereason = 3;
+  optional NOA_QUIT_NOTICE noa_quit_notice = 4;
+  optional double noa_distance_left = 6;
+  optional NOA_TURNING_AND_AVOID_MODE noa_turning_and_avoid_mode = 8;
+  optional NOA_ACTIVE_VOICE_BROADCAST noa_active_voice_broadcast = 9;
+}
+
+message AlcInfo {
+  optional LANE_CHANGE_BLOCK_REASON lane_change_block_reason = 1;
+  optional LANE_CHANGE_REASON lane_change_reason = 2;
+  optional LANE_CHANGE_ST lane_change_st = 3;
+  optional LANE_CHANGE_UNAVAILABLE_REASON lane_change_unavailable_reason = 4;
+  optional int32 lane_change_takeover_request_warning =
+      5;  // 驾驶员控制变道提醒
+  optional RECOMMEND_LANE_CHANGING recommend_lane_changing =
+      6;  // 推荐变道，只用于效率变道
+}
+
+message ActvieSafetyHuInfo {
+  optional bool safety_fcw_wrnng_active = 1
+      [default = false];  // true: active, false: inactive
+  optional bool safety_fcw_error_status = 2
+      [default = false];  // true: error, false: no error
+  optional bool safety_aeb_function_enable = 3
+      [default = false];  // true:enable,  false: disable
+  optional bool safety_aes_function_enable = 4
+      [default = false];  // true:enable,  false: disable
+  optional bool safety_bsd_function_enable = 5
+      [default = false];  // true:enable, false: disable
+  optional bool safety_bsd_error_status = 6
+      [default = false];  // true: error, false: no error
+  optional bool safety_dow_function_enable = 7
+      [default = false];  // true:enable, false: disable
+  optional bool safety_dow_error_status = 8
+      [default = false];  // true: error, false: no error
+  optional bool safety_elk_function_feedback = 9
+      [default = false];  // true: enable, false: disable
+  optional bool safety_elk_error_status = 10
+      [default = false];  // true: error, false: no error
+  optional int32 safety_fcw_function_feedback =
+      11;  // 0 disable, 1 early, 2 normal, 3 late
+  optional int32 safety_aeb_function_status =
+      12;  // 0 off, 1 init, 2 inhibit, 3 stand by, 4 override, 5 active, 6 eba,
+           // 7 error
+  optional int32 safety_aes_function_status = 13;
+  optional int32 safety_aes_function_direction = 14;
+  optional int32 safety_bsd_left_warning_level =
+      15;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_bsd_right_warning_level =
+      16;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_ld_function_feedback =
+      17;  // 0 disable, 1 ldw enable, 2 ldp enable
+  optional int32 safety_ld_function_line_type = 18;
+  optional int32 safety_ld_error_status =
+      19;  // 0 no error, 1 ldw error, 2 ldp error, 3 both error
+  optional int32 safety_ldw_warning_direction = 20;  // 0 none, 1 left, 2 right
+  optional int32 safety_ldP_warning_direction = 21;  // 0 none, 1 left, 2 right
+  optional int32 safety_ldp_function_status =
+      22;  // 0 standby, 1 left active, 2 right active, 3 fail
+  optional int32 safety_dow_rl_door_warning_level =
+      23;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_dow_rr_door_warning_level =
+      24;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_dow_fl_door_warning_level =
+      25;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_dow_fr_door_warning_level =
+      26;  // 0 no warning, 1 first level, 2 second level
+  optional int32 safety_elk_function_control_type =
+      27;  // 0 default, 1 L_Bound, 3 L_OC_Car, 5 LF_Car, 7 L_OT_Car
+  optional int32 safety_elk_function_warning_type = 28;
+  optional int32 safety_elk_function_status =
+      29;  // 0 off, 1 standby, 2 active, 3 finish, 4 fail
+  optional uint32 safety_fcta_left_warning = 30;
+  optional uint32 safety_fcta_right_warning = 31;
+  optional uint32 safety_rcta_left_warning = 32;
+  optional uint32 safety_rcta_right_warning = 33;
+  optional uint32 safety_rctb_left_warning = 34;
+  optional uint32 safety_rctb_right_warning = 35;
+  optional bool safety_rcw_wrnng = 36;
+  optional uint32 ls_aeb_object_type = 37;
+  optional uint32 ls_aeb_warning = 38;
+  optional uint32 ls_aeb_active = 39;
+  optional uint32 safety_fctb_left_warning = 40;
+  optional uint32 safety_fctb_right_warning = 41;
+  optional uint32 safety_mai_active = 42;
+  optional uint32 asafety_func_direction = 43;
+}
+
+enum HANDS_OFF_WARNING {
+  HANDS_OFF_WARNING_NONE = 0;
+  HANDS_OFF_WARNING_LEVEL_1 = 1;
+  HANDS_OFF_WARNING_LEVEL_2 = 2;
+  HANDS_OFF_WARNING_LEVEL_3 = 3;
+  HANDS_OFF_WARNING_LEVEL_4 = 4;
+  HANDS_OFF_WARNING_LEVEL_8 = 8;
+}
+enum ROAD_WORKS_WARNING {
+  ROAD_WORKS_WARNING_NONE = 0x0;
+  ROAD_WORKS_WARNING_LEVEL_1 = 0x1;
+  ROAD_WORKS_WARNING_LEVEL_2 = 0x2;
+  ROAD_WORKS_WARNING_LEVEL_3 = 0x3;
+}
+enum NOA_ROADWORKS_WARNING_HD {
+  ROADWORKS_WARNING_HD_NONE = 0x0;
+  NOA_ROADWORKS_WARNING_HD_LEFT_SIDE_LANE_ROADWORKS_WARNING = 0x1;
+  NOA_ROADWORKS_WARNING_HD_MIDDLE_LANE_ROADWORKS_WARNING = 0x2;
+  NOA_ROADWORKS_WARNING_HD_RIGHT_SIDE_LANE_ROADWORKS_WARNING = 0x3;
+  ROADWORKS_WARNING_HD_GENERAL_ROADWORKS_WARNING = 0x4;
+  ROADWORKS_WARNING_HD_NOA_CONSTRUCTION_DECELERATION_WARNING = 0x5;
+}
+enum DRV_OVERRIDE_WARNING {
+  DRV_OVERRIDE_WARNING_NONE = 0x0;
+  DRV_OVERRIDE_WARNING_LEVEL_1 = 0x1;
+  DRV_OVERRIDE_WARNING_LEVEL_2 = 0x2;
+  DRV_OVERRIDE_WARNING_LEVEL_3 = 0x3;
+}
+
+enum CUT_IN_ALERT {
+  CUT_IN_ALERT_NONE = 0x0;
+  CUT_IN_ALERT_LEFT_CUT_IN_ALERT = 0x1;
+  CUT_IN_ALERT_RIGHT_CUT_IN_ALERT = 0x2;
+}
+
+enum NUDGE_SIDE_VEHICLE_REMIND {
+  NUDGE_SIDE_VEHICLE_REMIND_NONE = 0x0;
+  NUDGE_SIDE_VEHICLE_REMIND_TO_LEFT = 0x1;
+  NUDGE_SIDE_VEHICLE_REMIND_TO_RIGHT = 0x2;
+}
+
+enum CREWS_BUCKLE_UNFASTEN_WARNING {
+  CREWS_BUCKLE_UNFASTEN_WARNING_NONE = 0x0;
+  CREWS_BUCKLE_UNFASTEN_WARNING_LEVEL_1 = 0x1;  // 0～30S
+  CREWS_BUCKLE_UNFASTEN_WARNING_LEVEL_2 = 0x2;  // 大于30S
+}
+
+enum SAFETY_BELT_BUCKLE_UNFASTEN {
+  SAFETY_BELT_BUCKLE_UNFASTEN_NONE = 0x0;
+  SAFETY_BELT_BUCKLE_UNFASTEN_DRIVER = 0x1;
+  SAFETY_BELT_BUCKLE_UNFASTEN_PASSENGER = 0x2;
+  SAFETY_BELT_BUCKLE_UNFASTEN_RML = 0x3;
+  SAFETY_BELT_BUCKLE_UNFASTEN_RMR = 0x4;
+  SAFETY_BELT_BUCKLE_UNFASTEN_RRL = 0x5;
+  SAFETY_BELT_BUCKLE_UNFASTEN_RRR = 0x6;
+  SAFETY_BELT_BUCKLE_UNFASTEN_RMM = 0x7;  // 第二排中间，适用于5座版本车型
+  SAFETY_BELT_BUCKLE_UNFASTEN_RRM = 0x8;  // reserved
+}
+
+enum CURVATURE_WARNING {
+  CURVATURE_WARNING_NONE = 0x0;
+  CURVATURE_WARNING_LEVEL_1 = 0x1;
+  CURVATURE_WARNING_LEVEL_2 = 0x2;
+  CURVATURE_WARNING_LEVEL_3 = 0x3;
+}
+
+enum PEDESTRIAN_WARNING {
+  PEDESTRIAN_WARNING_NONE = 0x0;
+  PEDESTRIAN_WARNING_WARNING = 0x1;
+}
+
+enum DRIVER_UNOCCUPIED_WARNING {
+  DRIVER_UNOCCUPIED_WARNING_NONE = 0x0;
+  DRIVER_UNOCCUPIED_WARNING_LEVEL_1 = 0x1;
+  DRIVER_UNOCCUPIED_WARNING_LEVEL_2 = 0x2;
+}
+enum DRIVER_LYING_WARNING {
+  DRIVER_LYING_WARNING_NONE = 0x0;
+  DRIVER_LYING_WARNING_LEVEL_1 = 0x1;
+  DRIVER_LYING_WARNING_LEVEL_2 = 0x2;
+}
+
+message SpecialWarn {
+  optional HANDS_OFF_WARNING hands_off_warning = 1;
+  optional ROAD_WORKS_WARNING road_works_warning = 2;
+  optional DRV_OVERRIDE_WARNING drv_override_warning = 3;
+  optional CUT_IN_ALERT cut_in_alert = 4;
+  optional NUDGE_SIDE_VEHICLE_REMIND nudge_side_vehicle_remind = 5;
+  optional TAKE_OVER_REQUEST_WARNING_REASON take_over_request_warning_reason =
+      15;
+  optional NOA_ROADWORKS_WARNING_HD roadworks_warning_hd = 7;
+  optional SAFETY_BELT_BUCKLE_UNFASTEN safety_belt_buckle_unfasten_remind = 8;
+  optional CURVATURE_WARNING curvature_warning = 9;
+  optional CREWS_BUCKLE_UNFASTEN_WARNING crews_buckle_unfasten_warning_level =
+      10;
+  optional PEDESTRIAN_WARNING pedestrian_warning = 11;
+  optional DRIVER_UNOCCUPIED_WARNING driver_unoccupied_warning = 12;
+  optional DRIVER_LYING_WARNING driver_lying_warning_level = 13;
+  optional bool yield_pedestrain = 16;  // 礼让行人
+  optional bool yield_vehicle = 17;     // 礼让车辆
+  optional uint32 drv_buckle_unfasten_remind_time = 18;
+}
+
+enum FSD1_HANDSODDWRNNG {
+  FSD1_HANDSODDWRNNG_NONE = 0x0;
+  FSD1_HANDSODDWRNNG_NONE_LEVEL_1 = 0x1;
+  FSD1_HANDSODDWRNNG_NONE_LEVEL_2 = 0x2;
+  FSD1_HANDSODDWRNNG_NONE_LEVEL_3 = 0x3;
+  FSD1_HANDSODDWRNNG_NONE_LEVEL_4 = 0x4;
+  FSD1_HANDSODDWRNNG_NONE_LEVEL_8 = 0x8;
+}
+
+enum FSD1_CUTINALERT {
+  FSD1_CUTINALERT_NONE = 0x0;
+  FSD1_CUTINALERT_LEFT_CUT_IN_ALERT = 0x1;
+  FSD1_CUTINALERT_RIGHT_CUT_IN_ALERT = 0x2;
+  FSD1_CUTINALERT_BOTH_SIDE_CUT_IN_ALERT = 0x3;
+}
+
+enum EGO_LANE_AVOID_REASON {
+  EGO_LANE_AVOID_REASON_NONE = 0x0;
+  EGO_LANE_AVOID_REASON_LEFT_VEHICLE = 0x1;
+  EGO_LANE_AVOID_REASON_RIGHT_VEHICLE = 0x2;
+  EGO_LANE_AVOID_REASON_LEFT_STATIC_OBSTACLE = 0x3;   // uu目标
+  EGO_LANE_AVOID_REASON_RIGHT_STATIC_OBSTACLE = 0x4;  // uu目标
+  EGO_LANE_AVOID_REASON_LEFT_ROADWORK = 0x5;          // reserved
+  EGO_LANE_AVOID_REASON_RIGHT_ROADWORK = 0x6;         // reserved
+  EGO_LANE_AVOID_REASON_LEFT_GENERAL_REASON = 0x7;    // vru类型
+  EGO_LANE_AVOID_REASON_RIGHT_GENERAL_REASON = 0x8;   // vru类型
+}
+
+enum EGO_LANE_AVOID_ST {
+  EGO_LANE_AVOID_ST_NONE = 0x0;
+  EGO_LANE_AVOID_ST_RECOMANDATION = 0x1;  // 自车道避让推荐
+  EGO_LANE_AVOID_ST_PREPARE = 0x2;        // 自车道避让即将
+  EGO_LANE_AVOID_ST_WAITING = 0x3;        // 自车道避让等待
+  EGO_LANE_AVOID_ST_AVOIDING = 0x4;       // 自车道避让中
+  EGO_LANE_AVOID_ST_FINISHED = 0x5;       // 自车道避让完成
+  EGO_LANE_AVOID_ST_CANCEL = 0x6;         // 自车道避让取消
+}
+
+enum EGO_LANE_AVOID_WAIT_REASON {
+  EGO_LANE_AVOID_WAIT_REASON_NONE = 0x0;
+  EGO_LANE_AVOID_WAIT_REASON_LEFT_SOLID_LINE = 0x1;
+  EGO_LANE_AVOID_WAIT_REASON_RIGHT_SOLID_LINE = 0x2;
+  EGO_LANE_AVOID_WAIT_REASON_LEFT_VEHICLE = 0x3;
+  EGO_LANE_AVOID_WAIT_REASON_RIGHT_VEHICLE = 0x4;
+  EGO_LANE_AVOID_WAIT_REASON_LEFT_BARRIER = 0x5;
+  EGO_LANE_AVOID_WAIT_REASON_RIGHT_BARRIER = 0x6;
+  EGO_LANE_AVOID_WAIT_REASON_LEFT_GENERAL_REASON = 0x7;
+  EGO_LANE_AVOID_WAIT_REASON_RIGHT_GENERAL_REASON = 0x8;
+}
+
+message EgoLaneAvoidSituation {
+  optional EGO_LANE_AVOID_REASON ego_lane_avoid_reason = 1;
+  optional EGO_LANE_AVOID_ST ego_lane_avoid_st = 2;
+  optional EGO_LANE_AVOID_WAIT_REASON ego_lane_avoid_wait_reason = 3;
+};
+
+enum NOA_TURNING_STATE {
+  NOA_TURNING_STATE_NONE = 0x0;
+  NOA_TURNING_STATE_RECOMMOND = 0x1;
+  NOA_TURNING_STATE_PREPARE = 0x2;
+  NOA_TURNING_STATE_PASSING = 0x3;
+  NOA_TURNING_STATE_WAITING = 0x4;
+  NOA_TURNING_STATE_FINISH = 0x5;
+  NOA_TURNING_STATE_CANCEL = 0x6;
+}
+
+enum NAVI_ROUTE_TURNING_ROAD_TYPE {
+  NAVI_ROUTE_TURNING_ROAD_TYPE_NONE = 0x0;
+  NAVI_ROUTE_TURNING_ROAD_TYPE_CROSSROAD = 0x1;
+  NAVI_ROUTE_TURNING_ROAD_TYPE_T_JUNCTION = 0x2;
+  NAVI_ROUTE_TURNING_ROAD_TYPE_ROUNDABOUT_IN = 0x3;
+  NAVI_ROUTE_TURNING_ROAD_TYPE_ROUNDABOUT_OUT = 0x4;
+}
+
+enum NAVI_ROUTE_TURNING_TYPE {
+  NAVI_ROUTE_TURNING_TYPE_NONE = 0x0;
+  NAVI_ROUTE_TURNING_TYPE_LEFT_TURN = 0x1;
+  NAVI_ROUTE_TURNING_TYPE_RIGHT_TURN = 0x2;
+  NAVI_ROUTE_TURNING_TYPE_LEFT_U_TURN = 0x3;
+  NAVI_ROUTE_TURNING_TYPE_RIGHT_U_TURN = 0x4;
+  NAVI_ROUTE_TURNING_TYPE_LEFT_T_TURN = 0x5;  // Y字路口-即将驶入左侧路口
+  NAVI_ROUTE_TURNING_TYPE_RIGHT_T_TURN = 0x6;  // Y字路口-即将驶入右侧路口
+  NAVI_ROUTE_TURNING_TYPE_STRAIGHT = 0x7;  // 直行
+}
+
+enum NAVI_ROUTE_LANE_STATUS {
+  NAVI_ROUTE_LANE_STATUS_NONE = 0x0;
+  NAVI_ROUTE_LANE_STATUS_FORBID_RED_LIGHT = 0x1;  // 红灯禁止通行 对应到waiting
+  NAVI_ROUTE_LANE_STATUS_FORBID_UNKNOWN_LIGHT = 0x2;  // 红绿灯状态未知
+  NAVI_ROUTE_LANE_STATUS_FORBID_GENERAL = 0x3;        // reserved
+  NAVI_ROUTE_LANE_STATUS_PASS_THROUGH_GREEN_LIGHT =
+      0x11;  // 红变绿通行，对应到passing
+  NAVI_ROUTE_LANE_STATUS_PASS_THROUGH_GENERAL = 0x13;  // 通过通用
+}
+
+enum EGO_DRIVE_INTO_WAITING_AREA {
+  EGO_DRIVE_INTO_WAITING_AREA_NONE = 0x0;
+  EGO_DRIVE_INTO_WAITING_AREA_LEFT = 0x1;
+  EGO_DRIVE_INTO_WAITING_AREA_RIGHT = 0x2;
+  EGO_DRIVE_INTO_WAITING_AREA_STRAIGHT = 0x3;
+}
+
+message JunctionSituation {
+  optional NAVI_ROUTE_LANE_STATUS navi_route_lane_status = 1;
+  optional NOA_TURNING_STATE navi_route_junction_turning_state = 2;
+  optional NAVI_ROUTE_TURNING_ROAD_TYPE navi_route_turning_road_type = 3;
+  optional NAVI_ROUTE_TURNING_TYPE navi_route_turning_type = 4;
+  optional EGO_DRIVE_INTO_WAITING_AREA ego_drive_into_waiting_area = 5;
+  optional float ego_distance_to_junction = 6;
+}
+enum BASIC_INFO_CONSTANTS {
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_NONE = 0x0;
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_CRUISE_INACTIVE = 0x1;
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_SET_TO_SPED_LIMIT = 0x2;
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_NO_SPED_LIMIT_INFO = 0x3;
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_UP_TO_UPPER_LIMIT = 0x4;
+  SET_CRUISE_SPED_TO_LIMIT_NOTICE_REACH_LOWER_LIMIT = 0x5;
+};
+
+enum SEVERE_WEATHER_REMINDER {
+  SEVERE_WEATHER_REMINDER_NONE = 0x0;
+  SEVERE_WEATHER_REMINDER_ACTIVATION = 0x1;
+  SEVERE_WEATHER_REMINDER_SPEED = 0x2;
+  SEVERE_WEATHER_REMINDER_SPEED_DIS = 0x3;
+};
+
+message BasicInfo {
+  optional BASIC_INFO_CONSTANTS set_cruise_sped_to_limit_notice = 1;
+  optional SEVERE_WEATHER_REMINDER severe_weather_reminder = 2;
+};
+
+enum EhpV2ResetMode {
+  EHP_V2_RESET_MODE_NONE = 0x0;
+  EHP_V2_RESET_MODE_RESET = 0x1;
+  EHP_V2_RESET_MODE_RESERVE_1 = 0x2;
+  EHP_V2_RESET_MODE_RESERVE_2 = 0x3;
+};
+
+message CityNoaInfo {
+  optional LiteHeader header = 1;
+  optional ADASInfo adas_info = 4;
+  optional NOAInfo noa_info = 5;
+  optional AlcInfo alc_info = 6;
+  optional SpecialWarn special_warn = 7;
+  optional JunctionSituation junctionsituation = 8;
+
+  optional ActvieSafetyHuInfo active_safety_hu_info = 11;
+
+  optional int64 cruising_speed_limit = 12;
+  optional int64 tsr_road_speed_limit = 13;
+  optional TSR_SPEED_LIMIT_TYPE tsr_road_speed_limit_type = 14;
+  optional FSD1_HANDSODDWRNNG msg_fsd1_handsoff_wrnng = 15;
+  optional ROAD_WORKS_WARNING msg_fsd1_road_works_wrnng = 16;
+  optional FSD1_CUTINALERT msg_fsd1_cut_in_alert = 17;
+
+  optional EgoLaneAvoidSituation egolaneavoidsituation = 20;  // 自车道绕行
+  optional BasicInfo basic_info = 21;
+  optional EhpV2ResetMode ehp_v2_reset_mode = 22;
+
+  optional CityHuDynamicContext city_hu_dynamic_context_debug_info = 23;
+
+  optional Qzone.ZoneCityNoaInfo zone_city_noa_info = 30;
+}

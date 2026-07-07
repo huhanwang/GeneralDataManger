@@ -1,0 +1,32 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/system_state.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/q_state_manager_info.proto";
+
+enum QStateManagerEventType {
+  QSM_EVENT_TYPE_NONE = 0;
+  QSM_EVENT_TYPE_SHUTDOWN = 1;
+  QSM_EVENT_TYPE_PARAMS_CHANGED = 2;
+  QSM_EVENT_TYPE_POWER_UP = 3;
+}
+
+message QStateManagerCommandProto {
+  message ModuleInfo {
+    optional string module_name = 1;
+    optional string full_node_name = 2;
+    optional SystemModuleState.State state = 3;
+  }
+  message CameraInfo {
+    optional CameraId camera_id = 1;
+    optional SensorState.State state = 2;
+  }
+  optional LiteHeader header = 1;
+  repeated ModuleInfo fg_modules = 2;
+  repeated QStateManagerEventType events = 3;
+  repeated CameraInfo fg_cameras = 4;
+  repeated QSmNetInfo fg_nets = 5;
+}

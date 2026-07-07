@@ -1,0 +1,41 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+// NextID: 19
+enum VisionLaneType {
+  WHITE_SOLID_LINE = 0;
+  WHITE_DASHED_LINE = 1;
+  YELLOW_SOLID_LINE = 2;
+  YELLOW_DASHED_LINE = 3;
+  WHITE_LEFT_DASHED_RIGHT_SOLID_LINE = 4;
+  WHITE_RIGHT_DASHED_LEFT_SOLID_LINE = 5;
+  YELLOW_DOUBLE_SOLID_LINE = 6;
+  CURB = 7;
+  STOP_LINE = 8;
+  CURB_BARRIER = 9;
+  SPEED_BUMP = 10;
+  CURB_MOVABLE = 11;
+  WHITE_DOUBLE_SOLID_LINE = 12;
+  WHITE_DOUBLE_DASHED_LINE = 13;
+  YELLOW_DOUBLE_DASHED_LINE = 14;
+  CURB_HORIZONTAL = 15;
+  _TRIPLE_LINE = 16;
+  _QUADRUPLE_LINE = 17;
+
+  // it include straight wait line and left turn wait line, it equals to
+  // WATIING_AREA_LINE in model_training
+  LEFT_TURN_WAIT_LINE = 18;
+}

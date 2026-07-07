@@ -1,0 +1,65 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.agents;
+option go_package = "qcraft-proto.ai/offboard/simulation/agents/open_agent/proto/controllers";
+import "offboard/simulation/agents/open_agent/proto/agent_common.proto";
+import "onboard/maps/proto/lane_path.proto";
+import "onboard/proto/sim_trajectory.proto";
+
+message ControllerProto {
+  oneof type {
+    bool default_controller = 1;
+    FollowWaypointsControllerProto follow_waypoints_controller = 2;
+    FollowLanePathControllerProto follow_lanepath_controller = 3;
+    FollowAgentControllerProto follow_agent_controller = 4;
+    FixedWaypointsControllerProto fixed_waypoints_controller = 5;
+    SpeedPathControllerProto speed_path_controller = 6;
+  }
+}
+
+message FixedWaypointsControllerProto {
+  optional string name = 1;
+  optional DrownWaypointRouteProto waypoint_route = 2;
+}
+
+message FollowWaypointsControllerProto {
+  optional string name = 1;
+  optional DrownWaypointRouteProto waypoint_route = 2;
+  optional SpeedStateProto speed_state = 3;
+  optional double stopping_range = 4 [default = 20.0];
+}
+
+message FollowLanePathControllerProto {
+  optional string name = 1;
+  optional double lateral_offset = 2 [default = 0.0];
+  optional string target_agent_id = 3;
+  optional double longit_distance = 4;
+  optional double max_accel = 5 [default = 3.0];
+  optional double min_accel = 6 [default = -5.0];
+  optional mapping.LanePathProto lane_path_route = 7;
+  optional SpeedStateProto speed_state = 8;
+  optional double expected_time = 9 [default = 10.0];
+  optional double relative_vel_body = 10;
+  optional double stopping_range = 11 [default = 20.0];
+}
+
+message FollowAgentControllerProto {
+  optional string target_agent_id = 1;
+  optional double distance = 2 [default = 10.0];
+}
+
+message SpeedPathControllerProto {
+  optional SpeedModeConfigProto speed_mode_config = 1;
+  optional PathModeConfigProto path_mode_config = 2;
+}

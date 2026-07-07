@@ -1,0 +1,220 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/control/proto/controller_msg.proto";
+import "onboard/math/geometry/proto/aabox3d.proto";
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+enum VehicleModel {
+  VEHICLE_UNKNOWN = 0;
+  VEHICLE_LINCOLN_MKZ = 1;
+  VEHICLE_LINCOLN_MKZ_AS_PACMOD = 2;
+  VEHICLE_AION_LX = 3;
+  VEHICLE_JINLV_MINIBUS = 4;
+  VEHICLE_PIXLOOP = 5;
+  VEHICLE_SKYWELL = 6;
+  VEHICLE_HIGER = 7;
+  VEHICLE_ZHONGTONG = 8;
+  VEHICLE_BYD = 9;
+  VEHICLE_ZHONGXING = 10;
+  VEHICLE_TEST_BENCH = 11;
+  VEHICLE_MARVELX = 12;
+  VEHICLE_POLERSTAR = 13;
+  VEHICLE_POLERSTAR_2 = 14;
+  VEHICLE_DONGFENG = 15;
+  VEHICLE_ZHONGTONG55 = 16;
+  VEHICLE_SHUNFENG = 17;
+  VEHICLE_MARVELR = 18;
+  VEHICLE_ZHONGTONG6 = 19;
+  VEHICLE_MARVELR_NEW = 20;
+  VEHICLE_SNOAHVEHICLE_SUV = 21;
+  VEHICLE_HIGER65_LONGZHOU_ONE = 22;
+  VEHICLE_HAVAL_SUV = 23;
+  VEHICLE_HYUNDAI_CAR = 24;
+  VEHICLE_BYD_LONGZHOU_LONG = 25;
+  VEHICLE_SF5_SUV = 26;
+  VEHICLE_FOTON_LONGZHOU_LONG = 27;
+  VEHICLE_AION_LX_PLUS_SUV = 28;
+  VEHICLE_HYPER_GT_CAR = 29;
+  VEHICLE_FUKANG_CAR = 30;
+  VEHICLE_ZEV_LONGZHOU_ONE = 31;
+  VEHICLE_JETOUR_SUV = 32;
+  VEHICLE_HIGER85_LONGZHOU_LONG = 33;
+  VEHICLE_JINLV85_LONGZHOU_LONG = 34;
+  VEHICLE_SERES_SF5_SUV = 35;
+  VEHICLE_HYPER_AH8_SUV = 36;
+  VEHICLE_LIXIANG_SUV = 37;
+  VEHICLE_LIXIANGL8_SUV = 38;
+  VEHICLE_LIXIANGL9_SUV = 39;
+  VEHICLE_LIXIANGL6_SUV = 40;
+  VEHICLE_KIAEV6_CAR = 41;
+  VEHICLE_LIXIANGW01_MPV = 42;
+  VEHICLE_LIXIANGW02_MPV = 43;
+  VEHICLE_LIXIANGW03_MPV = 44;
+  VEHICLE_LIXIANGW04_MPV = 45;
+  VEHICLE_LIXIANGW05_MPV = 46;
+  VEHICLE_DONGFENG_EPI_SUV = 47;
+  VEHICLE_EXCEED03_CAR = 48;
+  VEHICLE_JINLVSPIRIT_LONGZHOU = 49;
+  VEHICLE_FOTON_LONGZHOU_ONE = 50;
+  VEHICLE_HYUNDAI_EV5_SUV = 51;
+  VEHICLE_EXEED_CDM_SUV = 52;
+  VEHICLE_ZONE_S_SUV = 53;
+  VEHICLE_ZONE_P_CAR = 54;
+  VEHICLE_REMOTE_COCKPIT = 55;
+  VEHICLE_GAC_AY5_SUV = 56;
+}
+
+enum LidarPointsIgnoranceBoxUsage {
+  ENABLE_ALL_FILTERS = 0;
+  FILTER_OCCLUDED_POINTS = 1;
+  FILTER_INSIDE_POINTS = 2;
+}
+
+message LidarPointsIgnoranceBoxWithUsage {
+  optional AABox3dProto ignorance_box = 1;
+  optional LidarPointsIgnoranceBoxUsage lidar_points_ignorance_boxes_usage = 2;
+}
+
+message VehicleCommonProto {
+  enum ControllerType {
+    TOB_TSPKMPC_CONTROLLER = 2;
+    reserved 1, 3;
+    reserved "TS_PKMPC_CONTROLLER", "POLE_PLACEMENT_CONTROLLER";
+  };
+  message ControlParams {
+    optional double max_steer_angle = 1;                      // radian.
+    optional double min_steer_angle_rate = 2;                 // radian/s.
+    optional double max_steer_angle_rate = 10 [default = 0];  // radian/s.
+    optional double steer_ratio = 3;
+    optional WheelDriveMode wheel_drive_mode = 4 [default = FRONT_WHEEL_DRIVE];
+    optional int32 max_pose_miss_num = 5 [default = 25];
+    optional int32 max_chassis_miss_num = 6 [default = 20];
+    optional int32 max_planning_miss_num = 7 [default = 20];
+    optional double chassis_period = 8 [default = 0.01];
+    optional double positioning_period = 9 [default = 0.01];
+
+    // params to be overwritted in installation.
+    optional double steering_delay_step = 101 [default = 3.0];
+    optional double brake_deadzone = 103;
+    optional double throttle_deadzone = 104;
+    optional double max_acceleration = 105;
+    optional double max_deceleration = 106;
+    optional ControlCalibrationTable calibration_table = 108;
+
+    // The bias DBW adds (i.e. actual EPS steering = control command + bias).
+    // Note that the chassis-reported angle may not be the actual steering
+    // angle. If DBC implementation is correct, chassis will report back the
+    // control command correctly (upon stationarity), but zero control command
+    // may not be executed by EPS as going straight. On some vehicles this bias
+    // is quite significant (~45 degrees).
+    // (+): shift steering command to right;
+    // (-): shift steering command to left.
+    optional double steering_angle_bias = 110 [default = 0.0];  // radian.
+    optional bool enable_gain_scheduler = 113;
+    optional double control_period = 115 [default = 0.01];
+    repeated ControllerType active_controllers = 116;
+    optional TsPkmpcControllerConf ts_pkmpc_controller_conf = 118;
+    optional double max_acceleration_cmd = 120;
+    optional double max_deceleration_cmd = 121;
+    optional double max_lateral_acceleration =
+        123;  // limit aggressive steering
+    optional FullStopProto full_stop_condition = 124;
+    optional double accel_ref_cutoff_freq = 126 [default = 0.1];
+    optional double accel_cmd_cutoff_freq = 127 [default = 0.2];
+    optional double heading_bias = 128 [default = 0.0];  // rad.
+    // Acceleration limit when vehicle is starting to move for the comfort.
+    // speed mode config
+    optional bool enable_speed_mode_manager = 132 [default = false];
+    optional double acc2dec_timer = 133 [default = 0.1];
+    optional double dec2acc_timer = 134 [default = 0.1];
+    optional double acc_lowerbound = 135 [default = -0.4];
+    optional double dec_upperbound = 136 [default = 0.0];
+    optional double acc_mode_threshold = 137 [default = 1.0];
+    optional double dec_mode_threshold = 138 [default = -1.0];
+    optional double hysteresis_zone = 139 [default = 0.2];
+    optional double polynomial1 = 140 [default = 0.0];
+    optional double polynomial2 = 141 [default = -0.00035206];
+    optional double polynomial3 = 142 [default = 0.00791965];
+    optional double polynomial4 = 143 [default = -0.05575237];
+    optional double polynomial5 = 144 [default = 0.08084782];
+    optional double polynomial6 = 145 [default = -0.13828713];
+    optional ClosedLoopAccConfProto closed_loop_acc_conf = 146;
+    optional StandStillProto standstill_condition = 147;
+    optional ControlCalibrationTableV2 calibration_table_v2 = 148;
+    optional bool enable_calibration_v2 = 149 [default = false];
+
+    optional BiasEstimationConf bias_estimation_conf = 151;
+    // The steering delay time when vehicle turing.
+    optional double steer_delay_time = 152 [default = 0.4];
+    optional SteerDeadZoneAdaptorConf steer_deadzone_adaptor_conf = 153;
+    optional MracConfProto mrac_conf = 154;
+
+    optional LatControllerType active_lat_controller = 155;
+    optional LonControllerType active_lon_controller = 156;
+    optional LatTsPkmpcControllerConf lat_ts_pkmpc_controller_conf = 157;
+    optional LonTsPkmpcControllerConf lon_ts_pkmpc_controller_conf = 158;
+    optional PiecewiseLinearFunctionDoubleProto steering_gain_wrt_speed = 159;
+    optional VehDynamicModelConf veh_dynamic_model_conf = 160;
+    // Acceleration interface type
+    optional AccelerationInterface acceleration_interface = 161
+        [deprecated = true];
+    optional PiecewiseLinearFunctionDoubleProto v_pole_plf = 162;
+    optional LatAccGainConf lat_acc_gain_conf = 163;
+    optional PiecewiseLinearFunctionDoubleProto kappa_delay_gain_wrt_speed =
+        164;
+    optional ThrottleInterface throttle_interface = 165;
+    optional BrakeInterface brake_interface = 166;
+    optional SteerInterface steer_interface = 167;
+    optional ControllerSteerTorqueProto steer_torque_conf = 168;
+    optional JerkCalculationConf jerk_calculation_conf = 169;
+    optional bool enable_yaw_consider_slip = 170 [default = false];
+    optional bool enable_dynamic_prediction_pose = 171 [default = false];
+    optional PiecewiseLinearFunctionDoubleProto parking_speed_wrt_distance =
+        172;
+    optional PiecewiseLinearFunctionDoubleProto
+        parking_speed_wrt_distance_reverse = 173;
+    optional bool enable_gear_shift_no_neutral = 174 [default = true];
+    optional double steering_delay_aes = 175 [default = 0.1];  // seconds.
+    optional double max_driving_torque = 176;                  // Nms.
+    optional double max_braking_force = 177;                   // Ns.
+    reserved 107, 109, 129, 130;
+  }
+  // The length from vehicle's front bumper to rear axle. It is a positive
+  // number.
+  optional double front_edge_to_center = 1;  // Meters.
+  // The length from vehicle's rear bumper to rear axle. It is a positive
+  // number.
+  optional double back_edge_to_center = 2;  // Meters.
+  // The length from the left edge to the center point along the rear axle. It
+  // is a positive number.
+  optional double left_edge_to_center = 3;  // Meters.
+  // The length from the right edge to the center point along the rear axle. It
+  // is a positive number.
+  optional double right_edge_to_center = 4;  // Meters.
+  optional double length = 5;
+  optional double width = 6;
+  optional double height = 7;
+  optional double min_turn_radius = 8;
+  optional double wheel_base = 9;
+  optional ControlParams control_params = 10;
+  repeated AABox3dProto lidar_points_ignorance_boxes = 11;
+  optional LidarPointsIgnoranceBoxUsage lidar_points_ignorance_boxes_usage = 12;
+  repeated LidarPointsIgnoranceBoxWithUsage
+      lidar_points_ignorance_boxes_with_usage = 15;
+  // The left mirror is represented by an axis aligned box whose length
+  // direction is perpendicular with vehicle's heading direction. The left
+  // (right) side mirror's length points to the left (right) side of the
+  // vehicle.
+  //          vehicle heading
+  //                ^
+  //          +-----------+
+  //      +---|           |---+
+  //  L <-|   |  AV BODY  |   |-> R
+  //      +---|           |---+
+  //          |           |
+  //          |           |
+  optional AABox3dProto left_mirror = 13;
+  optional AABox3dProto right_mirror = 14;
+}

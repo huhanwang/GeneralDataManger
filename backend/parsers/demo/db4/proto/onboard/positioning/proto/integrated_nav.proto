@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah.integrated_nav;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message EskfFilterStateProto {
+  repeated double error_state = 1;       // size must be 15.
+  repeated double error_covariance = 2;  // size 225 for 15x15 symmetric matrix.
+}
+
+message PvaProto {
+  optional Vec3dProto lla = 1;  // Longitude, Latitude, Altitude
+  optional Vec3dProto vel = 2;  // Velocity_east, velocity_north, velocity_up
+  optional Vec3dProto rpy = 3;  // roll, pitch, yaw eular angles
+}
+
+message IntegratedNavigationStateProto {
+  optional EskfFilterStateProto eskf_filter_state = 1;
+  repeated double innovation = 2;  // size 9[a,v,p]
+  optional bool is_stationary = 3;
+  optional PvaProto vehodom_state = 4;
+  optional int32 fusion_mode = 5;
+}

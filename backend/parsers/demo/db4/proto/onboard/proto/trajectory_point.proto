@@ -1,0 +1,88 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message TrajectoryPointProto {
+  // Spatial quantities.
+  optional Vec2dProto pos = 1;
+  optional double s = 2;      // Arc length (starting from first point).
+  optional double theta = 3;  // Facing orientation.
+  optional double kappa = 4;  // dtheta/ds.
+
+  // Temporal quantities.
+  optional double t = 7;   // Time (relative to first point).
+  optional double v = 8;   // Speed. Can not be negative.
+  optional double a = 9;   // dv/dt.
+  optional double j = 10;  // da/dt.
+
+  // Spatial-temporal quantities.
+  optional double psi = 11;  // dkappa/dt. Equal to v lambda.
+  optional double chi = 12;  // dpsi/dt. Equal to v^2 mu + a lambda.
+
+  reserved 5, 6, 13, 14;
+}
+
+// Copy from apollo pnc_point.proto and upgrade to third order.
+message PathPoint {
+  // coordinates
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+
+  // direction on the x-y plane, may or may not be in [-pi, pi), use with
+  // caution.
+  optional double theta = 4;
+
+  // curvature on the x-y planning
+  optional double kappa = 5;
+
+  // accumulated distance from beginning of the path
+  // Positive(driving forward), Negative(driving backward).
+  optional double s = 6;
+
+  // Arclength-parameterized curvature rate, dkappa/ds.
+  optional double lambda = 7;
+
+  reserved 13;
+}
+
+// Copy from apollo pnc_point.proto and upgrade to third order.
+message ApolloTrajectoryPointProto {
+  // path point
+  optional PathPoint path_point = 1;
+
+  // linear velocity
+  // Positive(driving forward), Negative(driving backward).
+  optional double v = 2;  // in [m/s]
+
+  // linear acceleration
+  // Positive(forward acceleration), Negative(backward acceleration).
+  optional double a = 3;
+
+  // linear jerk
+  optional double j = 7;
+
+  // relative time from beginning of the trajectory
+  optional double relative_time = 4;
+
+  reserved 5, 6;
+}
+
+message SecondOrderTrajectoryPointProto {
+  optional Vec2dProto pos = 1;
+  optional double s = 2;
+  optional double theta = 3;
+  optional double kappa = 4;
+  optional double t = 5;
+  optional double v = 6;
+  optional double a = 7;
+}
+
+message PoseTrajectoryPointProto {
+  optional Vec2dProto pos = 1;
+  optional double theta = 2;
+  optional double t = 3;
+}

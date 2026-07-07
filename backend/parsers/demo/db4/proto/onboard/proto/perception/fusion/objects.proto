@@ -1,0 +1,422 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/aabox.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/perception/tracker/proto/tracker.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+import "onboard/proto/perception/types/fine_grained_type.proto";
+import "onboard/proto/perception/types/track_measurement_source_type.proto";
+import "onboard/proto/perception/fusion/prediction_traj2d.proto";
+import "onboard/proto/perception/types/vision_lane_type.proto";
+import "onboard/proto/perception/fusion/point_score.proto";
+import "onboard/proto/perception/vision/bev_point.proto";
+import "onboard/perception/tracker/multi_camera_fusion/proto/multi_camera_fusion.proto";
+import "onboard/proto/perception/fusion/fused_bev_road_geometry.proto";
+import "onboard/proto/perception/vision/bev_detection_keypoint.proto";
+import "onboard/proto/perception/types/image_visibility_type.proto";
+import "onboard/proto/perception/measurements/det2d_measurement.proto";
+import "onboard/proto/perception/active_safety/aeb_scene_info.proto";
+import "onboard/proto/perception/fusion/object.proto";
+
+// next id: 71
+message Camera3dMeasurementProto {
+  // 2D state bbox.
+  optional AABox2iProto bbox_2d = 1;
+  // 2D filter state bbox. Leave this only for backward compatibility.
+  optional AABox2iProto bbox_2d_state = 18 [deprecated = true];
+  // 2D detection bbox.
+  optional AABox2iProto bbox_2d_detection = 20;
+  // 3D pos and heading, vel in smooth coord.
+  optional Vec3dProto pos = 2;
+  optional double heading = 3;
+  optional double heading_rate = 53;
+  optional Vec2dProto vel = 4;
+  optional Vec2dProto acc = 39;
+  optional Vec2dProto relative_vel = 43;
+  optional Vec2dProto relative_acc = 44;
+  optional Vec2dProto relative_pos = 54;
+  optional bool motion_state = 38;
+  optional float nearest_facet_depth = 50;
+  // 3D Size.
+  optional double width = 5;
+  optional double length = 6;
+  optional double height = 7;
+
+  optional CameraId camera_id = 8;
+  // Capture timestamp.
+  optional double timestamp = 9;
+  optional MeasurementType type = 10;
+  optional FineGrainedType fine_grained_type = 46;
+
+  // Detection confidence.
+  optional double existence_confidence = 11;
+
+  // Position, heading, size, covariance.
+  optional Mat2dProto pos_covariance = 12;
+  optional double heading_variance = 13;
+  optional double heading_rate_variance = 64;
+  optional Mat2dProto vel_covariance = 14;
+  optional Mat2dProto acc_covariance = 65;
+  optional Mat3dProto size_covariance = 15;
+  // 2d patch reid feature embeddings.
+  repeated float reid_feature_embeddings = 16 [packed = true];
+
+  // Tracking info.
+  optional int32 track_id = 17;
+  optional Mat3dProto mono3d_pos_cov = 19 [deprecated = true];
+  optional double mono3d_depth = 21;
+  optional double visibility_score = 22;
+
+  // Turncated ratio.
+  optional double turncated_ratio = 23 [default = 0.0];
+  optional Mat3dProto pos_cov = 24;
+
+  // Tracking
+  optional bool is_predicted = 25 [default = false];
+
+  optional int32 measurement_id = 26;
+
+  // Viewing angle and distance under smooth coordinate
+  optional Vec2dProto viewing_angle = 27;
+  optional double viewing_angle_distance = 28;
+
+  message ProjectBox {
+    optional CameraId main_camera_id = 1;
+    // 2D detection bbox.
+    optional AABox2iProto bbox_2d_on_main_camera = 2;
+  }
+
+  optional ProjectBox project_info = 29;
+  optional bool is_man_made_object = 30 [default = false];
+
+  message LaneBindedInfo {
+    enum BindedSide {
+      BS_LEFT = 0;
+      BS_RIGHT = 1;
+    }
+    optional BindedSide binded_side = 1;
+    optional VisionLaneType lane_type = 2;
+    optional double binded_ratio = 3;
+    repeated PointScoreProto lane_line_far_end_points = 4 [deprecated = true];
+    repeated BevPointProto lane_line_far_end_points3d = 5;
+    optional multi_camera_fusion.LaneAssignmentType lane_assignment_type = 6
+        [deprecated = true];
+    optional double crossing_ratio = 7;
+    optional FusedBevRoadGeometryProto.ParameterizedLaneInfo.PositionIndex
+        position_index = 8 [default = DEFAULT];
+  }
+  repeated LaneBindedInfo lane_binded_info = 31;
+
+  optional double width_truncated_ratio = 32 [default = 0.0];
+  optional double height_truncated_ratio = 33 [default = 0.0];
+  optional ObjectAttribute attribute = 34;
+  optional ObjectProto.MovingStateProto moving_state = 35
+      [default = MS_UNKNOWN];
+  optional Density density = 36 [default = UNKNOWN_SCENE];
+  optional multi_camera_fusion.RoadWayPositionType road_way_position = 37
+      [default = RWPT_NO_OUTPUT];
+
+  optional float tracking_period = 40 [default = 0.0];
+  enum TrackingStatus {
+    kInvalid = 0;
+    kNew = 1;
+    kUpdated = 2;
+    kCoasted = 3;
+  }
+  optional TrackingStatus tracking_status = 41 [default = kInvalid];
+  optional double first_timestamp = 49;
+
+  optional VehiclePoseProto pose = 42;
+
+  // Whether camera measurement is triggered by reference image.
+  optional bool is_reference_image = 45;
+
+  message GacSpecialRequirement {
+    optional bool is_ahead_of_cipv = 1;
+  }
+
+  optional GacSpecialRequirement gac_special_requirement = 47;
+
+  // Horizon PerceptionObstacle missing filed
+  message HorizonMissingField {
+    optional int32 position_type = 1;
+    optional int32 aeb_conf = 2;
+    optional double cutin_probability = 3;
+    optional Vec3dProto velocity = 4;
+    optional Mat3dProto velocity_cov = 5;
+    optional Vec3dProto acceleration = 6;
+    optional Mat3dProto acceleration_cov = 7;
+    optional Vec3dProto position = 8;
+    optional Mat3dProto position_cov = 9;
+    optional double receive_sensordata_time = 10;
+  }
+  optional HorizonMissingField horizon_special_requirement = 48;
+  optional Vec3dProto pos_in_vcs = 51;
+  optional int32 aeb_conf = 52;
+  optional int32 pre_fusion_radar_id = 55 [default = -1];
+
+  // For traffic_light.
+  message TrafficLightAdditionalInfo {
+    optional float heading_front = 1;
+    optional float heading_side = 2;
+    optional float heading_back = 3;
+    optional float attr_vehicle = 4;
+    optional float attr_ped = 5;
+  }
+  optional TrafficLightAdditionalInfo tl_additional_info = 56;
+  repeated BevDetectionKeypointProto bev_detection_keypoints = 57;
+
+  repeated Vec2dProto contour = 58;
+  message HistoryTrackStateProto {
+    optional double timestamp = 1;
+    optional MeasurementType type = 2;
+    optional int32 id = 3;
+    optional Vec2dProto pos = 4;
+    optional CameraId camera_id = 5;
+    optional int32 measurement_id = 6;
+    optional MeasurementTypeSource type_source = 7;
+  }
+  repeated HistoryTrackStateProto trajectory =
+      59;  // Trajectory of the object, size always >= 1, time duration < 2s.
+  optional Box2dProto bounding_box = 60;
+  message SurroundingSceneInfo {
+    optional uint32 ped_and_cyclist_num = 1;
+    optional uint32 vehicle_num = 2;
+    optional uint32 ped_only_num = 3;
+  }
+  message OriginFilterResult {
+    optional Vec2dProto estimator_vel = 1;
+    optional Vec2dProto estimator_acc = 2;
+    optional Vec2dProto speed_filter_vel = 3;
+  }
+  optional SurroundingSceneInfo surrounding_scene_info = 61;
+  optional OriginFilterResult origin_filter_result = 62;
+  enum GateStatus {
+    kClosed = 0;
+    kOpened = 1;
+    kOpening = 2;
+  }
+  optional GateStatus gate_status = 63;
+  optional Vec3dProto vcs_pos = 66;
+  optional ImageVisibilityType image_visibility_type = 67;
+  enum Mono3dFilterReason {
+    MFR_NONE = 0;
+    MFR_FAKE_INVASION = 1;
+  }
+  optional Mono3dFilterReason mono3d_filter_reason = 68 [default = MFR_NONE];
+  optional AebSceneInfo aeb_scene_info = 69;
+  message HighwayAutoGate {
+    optional Det2dMeasurementProto.HighwayAutoGateStatus status = 1
+        [default = UNKONWN];
+    optional Vec3dProto arm_end_pos = 2;
+  }
+  optional HighwayAutoGate highway_auto_gate = 70;
+  optional bool suspected_parking_static = 71 [default = false];
+  message PriorityInfo {
+    optional int32 priority_order = 1;
+    optional double important_score = 2;
+    optional double pos_in_lane_score = 3;
+    optional double ttc_score = 4;
+    optional double dist_score = 5;
+    optional double life_time_score = 6;
+  }
+  optional PriorityInfo priority_info = 72;
+}
+
+message TrackMeasurementPairProto {
+  optional int32 track_id = 1;
+  optional int32 measurement_id = 2;
+  optional double measurement_timestamp = 3;
+  optional string measurement_channel = 4 [deprecated = true];
+  optional MeasurementTypeSource type_source = 5;
+}
+
+enum ObservationState {
+  OS_UNKNOWN = 0;
+  OS_PARTIALLY_OBSERVED = 1;
+  OS_PARTIALLY_OCCLUDED = 2;
+}
+
+message ObjectProto {
+  optional string id = 9;
+  optional ObjectType type = 1;
+  optional FineGrainedType fine_grained_type = 51;
+  optional ObjectAttribute attribute = 30;
+  enum PosSourceType {
+    PST_UNKNOWN = 0;
+    PST_LIDAR_BBOX = 1;
+    PST_LIDAR_CENTROID = 2;
+    PST_CAMERA_BBOX = 3;
+    PST_RADAR_BBOX = 4;
+    PST_LIDAR_WEIGHTED_CENTROID = 5;
+  }
+  optional Vec2dProto pos = 2;    // Smooth frame position.
+  optional double yaw = 10;       // Facing orientation.
+  optional double yaw_rate = 11;  // dyaw/dt.
+  optional Vec2dProto vel = 5;    // dpos/dt.
+  optional Vec2dProto accel = 6;  // dvel/dt.
+  optional Vec2dProto fitting_accel =
+      53;  // Fitting acceleration from vel history.
+  optional Vec2dProto radar_measurement_accel = 54;  // radar acceleration
+  optional double radar_measurement_accel_timestamp =
+      55;  // radar acceleration timestamp
+  optional double radar_measurement_life_count = 60;  // radar_life_count
+  repeated Vec2dProto contour = 7;
+  optional double timestamp = 8;
+  optional double laser_timestamp = 25;
+  enum BoundingBoxSource {
+    FIERY_EYE_NET = 1;
+    MIN_AREA_BOX = 2;
+    RADAR_BOX = 3;
+    CAMERA_BOX = 4;
+  }
+  optional Box2dProto bounding_box = 12;
+  optional BoundingBoxSource bounding_box_source = 13;
+  optional bool parked = 14;         // Indicate if this is a parked vehicle.
+  optional bool offroad = 15;        // Indicate if this is an offroad object.
+  optional Mat2dProto pos_cov = 16;  // X-Y position covariance.
+
+  optional double life_time = 18 [default = 0.0];
+
+  enum MovingStateProto {
+    MS_UNKNOWN = 0;
+    MS_STATIC = 1;
+    MS_MOVING = 2;
+  }
+
+  optional MovingStateProto moving_state = 19;
+
+  optional double min_z = 20;
+  optional double max_z = 21;
+  optional double ground_z = 29;
+  optional Vec2dProto icp_vel = 22 [deprecated = true];
+  optional Vec2dProto fen_vel = 23 [deprecated = true];
+  optional Vec2dProto ace_vel = 32 [deprecated = true];
+  optional bool is_radar_only_object = 24;
+
+  message MotionStateProto {
+    optional double timestamp = 1;
+    optional Vec2dProto pos = 2;
+    optional double velocity = 3 [deprecated = true];
+    optional double heading = 4;  // car facing
+    optional Vec2dProto vel = 5;  // dpos/dt.
+  }
+  repeated MotionStateProto trajectory =
+      26;  // Trajectory of the object, size always >= 1, time duration < 2s.
+
+  optional ObservationState observation_state = 27;
+  optional PosSourceType pos_source_type = 28;
+  optional double fen_height = 31 [deprecated = true];
+  optional string sim_agent_name = 33;
+
+  message PrtAttribute {
+    optional Vec2dProto icp_vel = 1;
+    optional Vec2dProto fen_vel = 2;
+    optional Vec2dProto ace_vel = 3;
+    optional ObjectImagePatchInfo image_patch_info = 4;
+  }
+  optional PrtAttribute prt_attribute = 34;
+
+  reserved 3, 4, 17;
+  // WARNING: DON'T use `reserved` to deprecate a field, above line is
+  // historical and should not be followed. Keep the field and mark it
+  // deprecated instead.([deprecated = true])
+  optional TrackMeasurementSourceType measurement_source_type = 35;
+  repeated PredictionTraj2dProto future_trajs = 36;
+  optional double existence_confidence = 37;
+  optional double class_confidence = 38;
+  // the relative velocity of object's velocity relative to ego
+  // vehicle on ego coordinate system
+  optional Vec2dProto relative_velocity = 39;
+  optional Vec2dProto relative_acceleration = 48;
+  optional double bbox3d_height = 40;
+  optional Mat2dProto velocity_cov = 41;
+  optional Mat2dProto accelaration_cov = 42;
+  optional Mat3dProto size_cov = 43;
+
+  repeated TrackMeasurementPairProto used_measurements = 45;
+  repeated Camera3dMeasurementProto.LaneBindedInfo lane_binded_info = 46;
+  optional multi_camera_fusion.RoadWayPositionType road_way_position = 47
+      [default = RWPT_NO_OUTPUT];
+  optional int64 iid = 49;  // Identical to `id`
+  message CameraMeaProto {
+    optional double timestamp = 1;
+    message LatestCheckPoint {  // abstract of `Camera3dMeasurementProto`
+      optional CameraId camera_id = 1;
+      optional MeasurementType type = 2;
+      optional AABox2iProto bbox_2d = 3;            // motion filter revised
+      optional AABox2iProto bbox_2d_detection = 4;  // raw model
+      optional Vec3dProto pos = 5;
+    }
+    optional LatestCheckPoint main_source = 2;
+  }
+  optional CameraMeaProto camera_mea = 50;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo.PositionIndex
+      riding_lane = 52;
+  optional double rcw_conf = 56;
+  optional bool in_parking_state = 57 [default = false];
+  message InfoForLsaeb {
+    optional bool maybe_abnormal_fusion_result = 1 [default = false];
+    optional bool maybe_abnormal_bev_detection = 2 [default = false];
+  }
+  optional InfoForLsaeb lsaeb_info = 58;
+
+  // Lane information for general obstacle
+  enum ObstacleLaneLineRelation {
+    UNKNOWN_LANE = 0;
+    OTHER_LANE = 1;
+    LEFT_FIRST_LANE = 2;
+    RIGHT_FIRST_LANE = 3;
+    SELF_LANE = 4;
+    SELF_AND_LEFT_FIRST_LANE = 5;
+    SELF_AND_RIGHT_FIRST_LANE = 6;
+    LEFT_FIRST_AND_SELF_AND_RIGHT_FIRST_LANE = 7;
+    OUT_OF_CURB = 8;
+  }
+  optional ObstacleLaneLineRelation obstacle_lane_line_relation = 59;
+  optional int32 motion_category = 61;
+  optional int32 cutin_status = 62;
+  // Next id = 63
+}
+
+message ObjectsProto {
+  message TrackerHeader {
+    // Trigger time is the header time of the triggered measurement.
+    optional double trigger_time = 1;  // us
+    // The size of measurements in waiting queue.
+    optional int32 measurement_queue_size = 2;
+    // The oldest header time of measurement in waiting queue.
+    optional double oldest_measurement_header_time = 3;  // us
+  }
+  enum Scope {
+    SCOPE_REAL = 0;
+    SCOPE_VIRTUAL = 1;
+    SCOPE_AV = 2;
+  };
+  optional LiteHeader header = 1;
+  optional Scope scope = 2;
+  repeated ObjectProto objects = 3;
+  // We sync objects timestamp in gac node module, so we do not need ego pose
+  // anymore.
+  optional VehiclePoseProto pose = 4;
+  optional TrackerHeader tracker_header = 5;
+}

@@ -1,0 +1,118 @@
+syntax = "proto2";
+
+package snoah.onbsim;
+
+import "onboard/proto/system_state.proto";
+
+enum SimType {
+  OMC = 2;
+  XAVIER_QVIEW = 3;
+  ORIN1 = 4;
+  ORIN2 = 5;
+  J5_1 = 6;
+  J5_2 = 7;
+  OMC_CAN = 8;
+  X9HP = 9;
+  J5_1_VISION_ONLY = 10;
+  J5_2_VISION_ONLY = 11;
+  OMC_SV = 12;
+  X9U_J5_1 = 13;
+  X9U_J5_2 = 14;
+  X9U_X9_1 = 15;
+  X9U_X9_2 = 16;
+  X9U_J5_1_PRO = 17;
+  X9U_J5_2_PRO = 18;
+  X9U_X9_1_PRO = 19;
+  X9U_X9_2_PRO = 20;
+  J5_X9U = 21;
+  J5_X9U_PRO = 22;
+  J5_X9U_AEB = 23;
+  J5_X9U_PRO_AEB = 24;
+  SINGLE_J5_X9U = 25;
+  J5_S32G = 26;
+  J5_X9U_TSR = 27;
+  SINGLE_J5_X9HP = 28;
+  J6 = 29;
+  J6_LC = 30;
+  J6_MAINLINE = 31;
+
+  SIM_TYPE_TEST_OFFSET = 100;
+  OMC_TEST = 102;
+  XAVIER_QVIEW_TEST = 103;
+  ORIN1_TEST = 104;
+  ORIN2_TEST = 105;
+  J5_1_TEST = 106;
+  J5_2_TEST = 107;
+  OMC_CAN_TEST = 108;
+  X9HP_TEST = 109;
+  J5_1_VISION_ONLY_TEST = 110;
+  J5_2_VISION_ONLY_TEST = 111;
+  OMC_SV_TEST = 112;
+  X9U_J5_1_TEST = 113;
+  X9U_J5_2_TEST = 114;
+  X9U_X9_1_TEST = 115;
+  X9U_X9_2_TEST = 116;
+  X9U_J5_1_PRO_TEST = 117;
+  X9U_J5_2_PRO_TEST = 118;
+  X9U_X9_1_PRO_TEST = 119;
+  X9U_X9_2_PRO_TEST = 120;
+  J5_X9U_TEST = 121;
+  J5_X9U_PRO_TEST = 122;
+  J5_X9U_AEB_TEST = 123;
+  J5_X9U_PRO_AEB_TEST = 124;
+  SINGLE_J5_X9U_TEST = 125;
+  J5_S32G_TEST = 126;
+  J5_X9U_TSR_TEST = 127;
+  SINGLE_J5_X9HP_TEST = 128;
+  J6_TEST = 129;
+  J6_LC_TEST = 130;
+
+  reserved 1;
+}
+
+message SimConfig {
+  optional SimType sim_type = 1;
+  optional string need_device = 2;
+  optional string reference_launch_plan_name_onboard = 3;
+  optional string rsim_launch_plan_name = 4;
+}
+
+message ModuleStateMonitorProto {
+  message ModuleState {
+    message StateNode {
+      optional SystemModuleState.State state = 1;
+      optional int64 timestamp = 2;
+    };
+    message MessageInfo {
+      optional string message_name = 1;
+      optional int32 num = 2;
+      optional string first = 3;
+      optional string last = 4;
+    };
+    optional string module_name = 1;
+    repeated StateNode states = 2;
+    optional bool is_ok = 3;
+    repeated MessageInfo msg_info = 4;
+  }
+  repeated ModuleState module_states = 1;
+  optional int64 start_time = 2;
+  optional int64 end_time = 3;
+  optional bool all_ok = 4;
+  optional bool has_crash = 5;
+  optional bool has_frame_exception = 6;
+}
+
+message WhiteListProto {
+  optional bool is_valid = 1;
+  repeated string names = 2;
+}
+
+message BlackListProto {
+  optional bool is_valid = 1;
+  repeated string names = 2;
+}
+
+message MessageConfigProto {
+  optional BlackListProto blacklist = 1;
+  optional WhiteListProto whitelist = 2;
+}

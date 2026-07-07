@@ -1,0 +1,443 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+import "onboard/proto/trajectory_point.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/planner/common/proto/hysteresis.proto";
+import "onboard/planner/optimization/proto/optimizer.proto";
+import "onboard/planner/speed/proto/speed_finder.proto";
+import "onboard/planner/decision/proto/constraint.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/perception/parking/parking_freespace.proto";
+import "onboard/planner/object/proto/planner_object.proto";
+import "onboard/proto/parking_spot_finder.proto";
+
+// **************FreespacePlannerCommonProto **************
+
+message DirectionalPathProto {
+  repeated PathPoint path = 1;
+  optional bool forward = 2;
+}
+
+message FreespaceTaskProto {
+  enum TaskType {
+    UNKNOWN_TASK = 0;
+    PERPENDICULAR_PARKING = 1;
+    PARALLEL_PARKING = 2;
+    THREE_POINT_TURN = 3;
+    DRIVING_TO_LANE = 4;
+    FREE_DRIVING = 5;
+    CUSTOM_PARKING = 6;
+    FRONT_IN_PERPENDICULAR_PARKING = 8;
+    PERPENDICULAR_PARKING_OUT = 9;
+    PARALLEL_PARKING_OUT = 10;
+
+    reserved 7;
+  }
+}
+
+message FreespaceMapProto {
+  enum BoundaryType {
+    CURB = 1;
+    BARRIER = 2;
+    YELLOW_SOLID_LANE = 3;
+    YELLOW_DASHED_LANE = 4;
+    WHITE_SOLID_LANE = 5;
+    WHITE_DASHED_LANE = 6;
+    PARKING_SPOT = 7;
+    PARKING_STOPPER = 8;
+    OTHER = 9;
+    VIRTUAL = 10;
+
+    reserved 11;
+  }
+
+  enum SpecialBoundaryType {
+    // Consider only when driving backward.
+    GEAR_REVERSE_STOPPER = 1;
+    // Consider in ha* but only as costs.
+    SOFT_PARKING_SPOT_LINE = 2;
+    // Consider in local smoother but not in ha*.
+    CROSSABLE_LANE_LINE = 3;
+  }
+}
+
+message FreespaceReplanReasonProto {
+  enum ReplanReason {
+    NONE = 0;
+    NEW_TASK = 1;
+    NO_PATHS = 2;
+    PATH_NOT_SAFE = 3;
+    CONTROL_ERROR = 4;
+    PARALLEL_PARKING_FINAL_PATH = 5;
+    GOAL_CHANGE = 6;
+    LAT_ERROR_TOO_LARGE = 7;
+    PERPENDICULAR_LARGE_ERROR_TO_GOAL = 8;
+    GOAL_WELL_OBSERVED_REPLAN = 9;
+    BEZIER_BACKWARD_REPLAN = 10;
+    BEZIER_NOT_REACH_GOAL = 11;
+    POSE_NOT_SAFE = 12;
+  }
+  optional ReplanReason replan_reason = 1;
+  optional int64 replan_time = 2;
+}
+
+message FreespaceStopReasonProto {
+  enum StopReason {
+    NONE = 0;
+    CONTROL_ERROR = 1;
+    STATIONARY_OBJECT = 2;
+    EMERGENCY_STATIONARY_OBJECT = 3;
+    MOVING_PEDESTRIAN = 4;
+    MOVING_VEHICLE = 5;
+    STATE_MACHINE_COMMAND = 6;
+    PATH_BLOCKED = 7;
+  }
+  optional StopReason stop_reason = 1;
+}
+
+message FreespaceStopDecisionProto {
+  enum StopDecision {
+    NONE = 0;
+    SOFT_STOP = 1;
+    EMERGENCY_STOP = 2;
+  }
+  optional StopDecision stop_decision = 1;
+}
+
+// **************FreespacePlannerStateProto **************
+
+// This is for corrdinate transformation of existing paths. When source type is
+// HdMapRefProto, we record the goal (same as the last point of paths) in global
+// frame, and then restore it to current smooth, so we can get the transform
+// matrix by comparing two goals. When source type is NoneRefProto, we just
+// record the smooth goal.
+message GlobalGoalReferenceProto {
+  enum Type {
+    NONE = 0;
+    HD_MAP = 1;
+
+    reserved 2;
+  }
+
+  message Pose {
+    optional Vec2dProto pos = 1;
+    optional double theta = 2;
+  }
+
+  message NoneRefProto {
+    optional Pose smooth_goal = 1;
+  }
+
+  message HdMapRefProto {
+    optional Pose global_goal = 1;
+  }
+
+  optional Type source_type = 1;
+  oneof reference {
+    NoneRefProto none_ref = 2;
+    HdMapRefProto hd_map_ref = 3;
+  }
+  reserved 4;
+}
+
+message ParkingSpotFrameTransformerProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double theta = 3;
+  optional bool x_symmetric = 4;
+  optional bool y_symmetric = 5;
+}
+
+enum FreespaceStopPrecisionLevel {
+  STOP_PRECISION_LEVEL_NONE = 0;
+  STOP_PRECISION_LEVEL_HIGH = 1;
+  STOP_PRECISION_LEVEL_NORMAL = 2;
+  STOP_PRECISION_LEVEL_LOW = 3;
+  STOP_PRECISION_LEVEL_LOWER = 4;
+}
+
+message PathManagerStateProto {
+  repeated DirectionalPathProto paths = 4;
+  enum PathType {
+    NONE = 0;
+    LINE_CIRCLE = 1;
+    BEZIER = 2;
+    HYBRID_A_STAR = 3;
+  }
+  optional PathType path_type = 20;
+  optional int64 path_sequence = 19;
+  // Goal of paths when planned, can be null or has error to paths end.
+  optional GlobalGoalReferenceProto.Pose goal = 14;
+  optional int64 curr_path_idx = 5;
+  enum DriveState {
+    UNKNOWN = 0;
+    // Gear shifting and stationary steering to fit next path segment.
+    SWITCHING_TO_NEXT = 1;
+    DRIVING = 2;
+    // Steering wheel back to center, Gear shifting to matched position.
+    CENTER_STEER = 3;
+    REACH_FINAL_GOAL = 4;
+  }
+  optional DriveState drive_state = 6;
+  optional DriveState prev_drive_state = 17;
+  // Only can be true when drive state is SWITCHING_TO_NEXT.
+  optional bool enable_dynamic_switching = 15;
+  optional double current_state_sustained_time = 16;
+  optional ParkingSpotFrameTransformerProto parking_spot_frame = 18;
+  optional uint32 plan_counter = 21;
+  optional FreespaceStopPrecisionLevel prev_stop_precision_level = 22;
+  optional bool is_dec_early_in_switching = 23;
+  optional double prev_trajectory_safe_distance = 24;
+  optional bool is_extend_length_for_dynamic_switching = 25;
+  optional FreespaceReplanReasonProto.ReplanReason path_replan_reason = 26;
+
+  reserved 1, 2, 3, 7, 8, 9, 10, 11, 12, 13;
+}
+
+message VirtualBoundaryProto {
+  optional string id = 1;
+  // for R2
+  optional Vec2dProto start = 2;
+  optional Vec2dProto end = 3;
+
+  repeated Vec2dProto points = 4;
+}
+
+message ParkingOutStateProto {
+  repeated VirtualBoundaryProto virtual_boundaries = 3;
+  optional Box2dProto target_box = 2;
+
+  reserved 1;
+}
+
+message CurbBoundaryProto {
+  optional string id = 1;
+  repeated Vec2dProto points = 2;
+  optional bool near_parking_spot = 3;
+  optional double height = 4;
+}
+
+message ParkingInStateProto {
+  repeated VirtualBoundaryProto virtual_boundaries = 1;
+  optional PathPoint freespace_goal_before_well_observed = 2;
+  optional PathPoint freespace_goal_before_near = 3;
+  optional bool is_near_goal = 4;
+  repeated BoundaryClusterProto locked_parking_freespace_curbs = 5;
+  optional bool is_curb_ignored_for_doubled_parallel_spot = 6;
+  optional bool is_goal_adjusted_inside_for_parallel_spot = 7;
+  repeated CurbBoundaryProto locked_curb_boundaries = 8;
+}
+
+message DynamicObjectInfoProto {
+  optional string id = 1;
+  optional StBoundaryProto.ObjectType type = 2;
+  optional double stop_time = 3;
+}
+
+message StandstillCollisionCheckerProto {
+  optional double last_v = 1;
+  optional double s_from_standstill = 2;
+  optional HysteresisProto is_valid_stabilizer = 3;
+  optional bool is_valid = 4 [default = false];
+  optional double pose_x = 5;
+  optional double pose_y = 6;
+  optional double pose_yaw = 7;
+}
+
+message FreespacePlannerStateProto {
+  optional FreespaceTaskProto.TaskType task_type = 5;
+  optional PathManagerStateProto path_manager_state = 1;
+  optional DirectionalPathProto prev_smooth_directional_path = 11;
+  optional double prev_stop_s = 12;
+  optional GlobalGoalReferenceProto global_goal_ref = 4;
+  optional PathPoint prev_force_stop_point = 6;
+  optional double path_unsafe_time = 7;
+  optional double pose_unsafe_time = 22;
+  optional double path_blocked_time = 8;
+  optional ParkingOutStateProto parking_out_state = 9;
+  optional ParkingInStateProto parking_in_state = 10;
+  optional PathPoint freespace_goal = 13;
+  optional int64 parking_spot_id = 14;
+  optional bool is_apa_left_enter_parallel_spot = 15;
+  optional double fail_time = 16;
+  optional FreespaceStopReasonProto.StopReason prev_stop_reason = 17;
+  optional SpeedPointsProto prev_speed_profile = 18;
+  optional double stationary_time_when_active = 19;
+  repeated DynamicObjectInfoProto stopped_by_dynamic_objects = 21;
+  optional double stopped_by_dynamic_object_time = 23;
+  repeated string narrow_parallel_object_ids = 24;
+  repeated uint32 narrow_parallel_cluster_object_ids = 25;
+  optional StandstillCollisionCheckerProto standstill_collision_checker = 26;
+  optional ParkingOutDirection parking_out_direction = 27;
+
+  reserved 2, 3, 20;
+  // Next ID 28;
+}
+
+// **************FreespacePlannerDebugProto **************
+
+message FreespaceMapDebugProto {
+  repeated double region = 1;
+
+  message FreespaceBoundaryProto {
+    optional string id = 1;
+    optional FreespaceMapProto.BoundaryType type = 2;
+    optional Vec2dProto start = 3;
+    optional Vec2dProto end = 4;
+  }
+
+  message FreespaceSpecialBoundaryProto {
+    optional string id = 1;
+    optional FreespaceMapProto.SpecialBoundaryType type = 2;
+    optional Vec2dProto start = 3;
+    optional Vec2dProto end = 4;
+  }
+
+  repeated FreespaceSpecialBoundaryProto special_boundaries = 4;
+  repeated string boundary_ids = 5;
+  repeated FreespaceBoundaryProto curb_boundaries = 6;
+
+  reserved 2, 3;
+}
+
+message FreespaceTaskDebugProto {
+  optional int64 parking_spot_id = 2;
+  optional PathPoint freespace_goal = 4;
+  optional int64 target_lane_id = 5;
+
+  reserved 1, 3;
+}
+
+message PathFinderDebugProto {
+  enum FinderType {
+    UNKNOWN_TYPE = 1;
+    GEOMETRY = 2;
+    HYBRID_A_STAR = 3;
+  }
+  enum Status {
+    UNKNOWN_STATUS = 1;
+    SUCCESS = 2;
+    START_INVALID = 3;
+    GOAL_INVALID = 4;
+    TASK_TYPE_INVALID = 5;
+    HA_COST_MAP_FAIL = 6;
+    SEARCH_FAIL = 7;
+    PATH_ABNORMAL = 8;
+    NO_PARKING_SPOT = 9;
+    NO_PARKING_OUT_TARGET_BOX = 10;
+    NO_PARKING_OUT_DIRECTION = 11;
+    NO_PARKING_OUT_FRONT_OBJECT_IDS = 12;
+    METHOD_DISABLED = 13;
+  }
+  enum ThreadStatus {
+    INACTIVE = 1;
+    RUNNING = 2;
+    PLAN_FINISH = 3;
+  }
+  optional FinderType finder_type = 1;
+  optional int64 ha_iters = 2;
+  optional Status ha_status = 3;
+  optional Status geo_status = 4;
+  optional double find_path_time_consuming_ms = 7;
+  optional double geometry_method_time_consuming_ms = 8;
+  optional double ha_time_consuming_ms = 9;
+  optional double global_smoother_time_consuming_ms = 10;
+  optional FreespaceReplanReasonProto.ReplanReason replan_reason = 11;
+  optional int64 replan_time = 12;
+  optional ThreadStatus plan_thread_status = 13;
+  optional int64 freespace_segments_num = 14;
+
+  reserved 5, 6;
+}
+
+message TobLocalSmootherDebugProto {
+  enum InitTrajType {
+    PREV_PATH = 1;
+    PURE_PURSUIT = 2;
+  }
+  message EndPoseError {
+    optional double xy = 1;
+    optional double theta = 2;
+  }
+  message CrossableBoundaryProto {
+    optional string id = 1;
+    optional Vec2dProto start = 2;
+    optional Vec2dProto end = 3;
+  }
+  optional string status = 1;
+  optional EndPoseError end_pose_error = 2;
+  repeated TrajectoryPointProto init_traj = 3;
+  repeated TrajectoryPointProto res_traj = 4;
+  optional TrajectoryOptimizerCostInfo init_costs = 5;
+  optional TrajectoryOptimizerCostInfo final_costs = 6;
+  repeated TrajectoryOptimizerCostInfo iter_costs = 7;
+  optional InitTrajType init_traj_type = 8;
+  repeated string enabled_crossable_boundary_ids = 9;
+}
+
+message FreespaceLocalSmootherDebugProto {
+  repeated string ignored_object_ids = 11;
+  optional TobLocalSmootherDebugProto tob_smoother_debug = 12;
+  enum LocalPathType {
+    NONE = 0;
+    TOB = 1;
+    DF = 2;
+    PREVIOUS = 3;
+    SPIRAL = 4;
+    TRUNCATED_GLOBAL_PATH = 5;
+  }
+  optional LocalPathType type = 13;
+  optional double local_smoother_consuming_ms = 14;
+  optional double df_time_consuming_ms = 15;
+  optional double tob_time_consuming_ms = 16;
+  optional string not_use_previous_reason = 17;
+  optional string not_use_df_reason = 18;
+  reserved 1 to 10;
+}
+
+message FreespaceDynamicSwitchingDebugProto {
+  optional int32 disable_reason = 1;
+  optional bool has_collision_risk = 2;
+  optional bool is_cur_traj_finish = 3;
+  optional double cur_path_point_kappa = 4;
+  optional double next_path_point_kappa = 5;
+  optional double cur_path_point_theta = 6;
+  optional double next_path_point_theta = 7;
+  optional bool has_collision_with_parking_stooper = 8;
+  optional bool has_collision_in_next_path = 9;
+}
+
+message FreespacePlannerDebugProto {
+  optional FreespaceLocalSmootherDebugProto local_smoother_debug = 2;
+  optional FreespaceMapDebugProto freespace_map_debug = 3;
+  optional ConstraintProto decision_constraint = 4;
+  optional SpeedFinderDebugProto speed_finder_debug = 5;
+  repeated string stalled_object_ids = 7;
+  optional FreespaceTaskDebugProto freespace_task_debug = 8;
+  optional string planner_status = 9;
+  optional PathFinderDebugProto path_finder_debug = 10;
+  optional FreespaceReplanReasonProto freespace_replan_reason_debug = 12;
+  optional Vec2dProto av_octagon_corner_side_lengths = 13;  //[front, rear].
+  optional Vec3dProto av_octagon_mirror_params = 19;        //[x, y, radius].
+  // for R2
+  repeated string narrow_parallel_object_ids = 14;
+
+  optional double wheel_width = 15;
+  optional bool is_goal_well_observed = 16;
+  optional FreespaceStopReasonProto stop_reason = 17;
+  optional FreespaceStopDecisionProto stop_decision = 18;
+  optional FreespaceDynamicSwitchingDebugProto dynamic_switching_debug = 20;
+  repeated string erased_object_ids = 21;
+  repeated string moving_object_ids = 22;
+
+  message FilteredObjectProto {
+    optional string id = 1;
+    optional FilterReason.Type filter_reason = 2;
+  }
+  repeated FilteredObjectProto filtered_moving_objects = 23;
+
+  reserved 1, 6, 11;
+}

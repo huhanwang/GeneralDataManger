@@ -1,0 +1,46 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/shape_filter/proto/shape_filter";
+
+enum PointSizeMapType {
+  AVG = 0;
+  MIN = 1;
+  MIN_SMOOTHED = 2;
+}
+
+message ShapeFilterConfig {
+  optional bool enable = 1 [default = true];
+  optional PointSizeMapType type = 2 [default = MIN_SMOOTHED];
+  optional double object_pt_size_ratio = 3 [default = 1.0];
+  optional double grid_max_pt_size_ratio = 4 [default = 1.0];
+  optional double grid_distance = 5 [default = 50.0];
+  optional float cross_center_line_threshold = 6 [default = 1.2];
+  optional float hollow_line_threshold = 7 [default = 0.8];
+  optional float hollow_height_threshold = 8 [default = 1.5];
+  optional float ground_height_threshold = 9 [default = 0.3];
+  optional float hollow_prob_threshold = 10 [default = 0.8];
+  optional float fore_distance_threshold = 11 [default = 10.0];
+  optional float fore_fore_distance_threshold = 12 [default = 20.0];
+  optional float fore_fore_distance_diff = 13 [default = 20.0];
+  optional float fore_fore_velocity_threshold = 14 [default = 5.0];
+  optional float ego_velocity_threshold = 15 [default = 0.6];
+  optional float fore_tracking_frames = 16 [default = 30];
+  optional float fore_velocity_threshold = 17 [default = 2.0];
+  optional int32 fore_brintness_cnt = 18 [default = 0];
+  optional int32 filter_max_tracking_frames = 19 [default = 20];
+  optional float protrusion_size = 20 [default = 0.6];
+  optional float protrusion_min_height = 21 [default = 0.35];
+  optional float protrusion_pt_size_ratio = 22 [default = 2];
+  optional float protrusion_grid_max_pt_size_ratio = 23 [default = 2];
+  optional float mirror_point_grid_ratio = 24 [default = 0.5];
+  optional int32 mirror_expand_th = 25 [default = 4];
+  optional float mirror_max_edge = 26 [default = 2];
+  optional float mirror_max_vel_diff = 27 [default = 10];
+  optional int32 exhaust_pt_num_th = 28 [default = 100];
+  optional float exhaust_tight_box_z_th = 29 [default = 0.8];
+  optional float ground_light_size = 30 [default = 2];
+  optional float ground_light_max_height = 31 [default = 0.8];
+  optional float ground_light_height_th = 32 [default = 0.15];
+  optional int32 ground_light_intensity_th = 33 [default = 100];
+  optional int32 ground_light_lower_bright_num_th = 34 [default = 3];
+}

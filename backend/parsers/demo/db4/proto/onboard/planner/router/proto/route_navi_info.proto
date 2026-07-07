@@ -1,0 +1,73 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/planner/router/proto/route_section_sequence.proto";
+
+message RouteLaneInfoProto {
+  optional sfixed64 lane_id = 1;
+  optional double max_driving_distance = 2;
+  optional double max_driving_distance_before_lc = 3;
+  optional double recommend_driving_distance = 4;
+  optional int32 min_lc_num_to_target = 5;
+  optional int32 lc_num_within_driving_dist = 6;
+  optional double len_before_merge_lane = 7;
+  repeated sfixed64 merge_targets = 9;
+  optional double len_to_merge_point = 10;
+  optional double distance_to_enter_traffic_event = 11;
+  optional double distance_to_exit_traffic_event = 12;
+  optional double len_to_bus_lane = 13;
+  reserved 8;
+}
+
+message NaviSectionInfoProto {
+  enum Direction {
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+  }
+
+  optional sfixed64 section_id = 1;
+  optional double length_before_intersection = 2;
+  optional Direction intersection_direction = 3;
+}
+
+message TurnByTurnNaviInfoProto {
+  enum TbtManeuver {
+    NONE = 1;
+    TO_LEFT = 2;
+    TO_RIGHT = 3;
+  }
+  optional TbtManeuver tbt_maneuver = 1;
+}
+
+message IntersectionNaviInfoProto {
+  enum RouteDirection {
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+    UTURN = 4;
+  }
+  optional RouteDirection route_direction = 1;
+  optional double dist_to_intersection = 2;
+}
+
+message RouteNaviInfoProto {
+  repeated RouteLaneInfoProto route_lane_info = 1;
+  optional RouteSectionSequenceProto back_extend_sections = 2;
+  repeated NaviSectionInfoProto navi_section_info = 3;
+  optional bool in_highway = 4;
+  // Ref: TurnByTurn Proto.
+  optional double maneuver_remain_dist = 5;
+  optional TurnByTurnNaviInfoProto tbt_navi_info = 6;
+}
+
+message MaplessNaviInfoProto {
+  repeated RouteLaneInfoProto route_lane_info = 1;
+  optional bool in_highway = 2;
+  // Ref: TurnByTurn Proto.
+  optional double maneuver_remain_dist = 3;
+  optional TurnByTurnNaviInfoProto tbt_navi_info = 4;
+  repeated IntersectionNaviInfoProto intersection_navi_infos = 5;
+}

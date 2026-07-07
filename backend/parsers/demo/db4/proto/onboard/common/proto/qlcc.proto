@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/qlcc";
+
+enum QLCCState {
+  LCC_OFF = 1;
+  LCC_DISABLE = 3;
+  LCC_ENABLE = 4;
+
+  reserved 2;
+}

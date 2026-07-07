@@ -1,0 +1,76 @@
+
+syntax = "proto2";
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/proto/localization.proto";
+import "onboard/proto/adasis.proto";
+import "onboard/maps/proto/semantic_map_meta.proto";
+import "onboard/maps/proto/online_semantic_map.proto";
+
+message OnlineMapProto {
+  optional LiteHeader header = 1;
+  enum DataSource {
+    SNOAH_HDMAP = 1;
+    SNOAH_VISIONMAP = 2;
+    NAVINFO_HDMAP = 3;
+    SDMAP = 4;
+    AUTONAVI_HDMAP = 5;
+    HPP_MAP = 6;
+    BAIDU_MAP = 7;
+  };
+  optional DataSource data_source = 2;
+  oneof map {
+    mapping.SemanticMapProto semantic_map = 4;
+    mapping.OnlineSemanticMapProto vision_semantic_map = 5;
+  }
+  optional mapping.SemanticMapMetaProto semantic_map_meta = 6;
+  enum Type {
+    UNKNOWN = 1;
+    FOREST = 2;
+    TREE = 3;
+  };
+  optional Type type = 7;
+  optional MppSectionsProto mpp_sections_proto = 8;
+
+  reserved 3;
+}
+
+message EHPInputParameters {
+  optional double longitude = 1;
+  optional double latitude = 2;
+  optional double yaw = 3;
+  optional double timestamp = 4;
+  optional MapLocationProto map_location = 5;
+}
+
+message EHRDebugProto {
+  optional string map_release_data = 1;
+  optional string map_ota_status = 2;
+  optional string reset_reason = 3;
+  optional sfixed64 current_ego_path_id = 4;
+  optional sfixed64 current_ego_section_id = 5;
+  optional sfixed64 current_dst_path_id = 6;
+  optional sfixed64 current_dst_section_id = 7;
+  optional bool is_navigating = 8;
+  optional double mpp_length = 9;
+  repeated sfixed64 current_path_ids = 10;
+}
+
+message DynamicLayerDebugProto {
+  optional string dynamic_non_odd_version = 1;
+}
+
+message OnlineMapDebugProto {
+  optional LiteHeader header = 1;
+  optional double latest_online_map_publish_timestamp = 2;
+  optional EHPInputParameters ehp_input_parameters = 3;
+  optional sfixed64 latest_online_map_publish_bytes = 4;
+  // The sd route supports CREATE and DELETE
+  // This is the most recent CREATE timestamp only.
+  optional double latest_sd_route_create_timestamp = 5;
+  // This is the most recent publish timestamp, including CREATE and DELETE.
+  optional double latest_sd_route_publish_timestamp = 6;
+  optional EHRDebugProto ehr_debug_proto = 7;
+  optional DynamicLayerDebugProto dynamic_layer_debug_proto = 8;
+}

@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+message ParkStaticObject {
+  enum StaticObjectType {
+    TYPE_NONE = 0x0;
+    TYPE_SPEED_BUMP = 0x1;
+    TYPE_PILLAR = 0x2;
+    TYPE_WALL = 0x3;
+    TYPE_STRAIGHT_ARROW = 0x4;
+    TYPE_LEFT_TURN_ARROW = 0x5;
+    TYPE_RIGHT_TURN_ARROW = 0x6;
+    TYPE_TURN_AROUND_ARROW = 0x7;
+    TYPE_STRAIGHT_AND_LEFT_ARROW = 0x8;
+    TYPE_STRAIGHT_AND_RIGHT_ARROW = 0x9;
+    TYPE_STRAIGHT_AND_TURN_AROUND_ARROW = 0xA;
+    TYPE_LEFT_AND_TURN_AROUND_ARROW = 0xB;
+    TYPE_LEFT_AND_RIGHT_TURN_ARROW = 0xC;
+    TYPE_PERDESTRIAN_CROSSING = 0xD;
+    TYPE_TURNSTILE_GATE = 0xE;
+  }
+
+  optional int32 id = 1;
+  optional StaticObjectType type = 2;
+  optional Point3D position = 3;
+  optional float heading = 4;
+  optional float length = 5;
+  optional float width = 6;
+  optional float floor = 7;
+}
+
+message ParkStaticObjects {
+  optional HeaderLC header = 1;
+  repeated ParkStaticObject parking_objects = 2;
+}

@@ -1,0 +1,171 @@
+syntax = "proto2";
+
+package snoah.ota;
+
+enum QOtaNode {
+  QOTA_NODE_UNSPECIFIED = 0;
+
+  // J5
+  QOTA_NODE_J5_1 = 1;
+  QOTA_NODE_J5_2 = 2;
+
+  // X9U
+  QOTA_NODE_X9_1 = 3;
+  QOTA_NODE_X9_2 = 4;
+
+  QOTA_NODE_E3 = 5;
+
+  QOTA_NODE_IMU = 6;
+  QOTA_NODE_LIDAR = 7;
+
+  // millimeter wave radar
+  QOTA_NODE_MMWAVE_RADAR = 8;
+}
+
+enum QOtaSlotType {
+  QOTA_SLOT_TYPE_UNSPECIFIED = 0;
+  QOTA_SLOT_TYPE_SYSTEM = 1;
+  QOTA_SLOT_TYPE_BPU = 2;
+}
+
+enum QOtaSlotValue {
+  QOTA_SLOT_VALUE_UNSPECIFIED = 0;
+  QOTA_SLOT_VALUE_A = 1;
+  QOTA_SLOT_VALUE_B = 2;
+}
+
+enum QOtaState {
+  QOTA_STATE_UNSPECIFIED = 0;
+  QOTA_STATE_BEGIN = 1;
+  QOTA_STATE_DOWNLOAD = 2;
+  QOTA_STATE_FLASH = 3;
+  QOTA_STATE_END = 4;
+  QOTA_STATE_IDLE = 5;
+}
+
+enum QOtaError {
+  QOTA_ERROR_UNSPECIFIED = 0;       // succed
+  QOTA_ERROR_NETWORK = 1;           // network error
+  QOTA_ERROR_NETWORK_TIMEOUT = 2;   // network timeout
+  QOTA_ERROR_CHECKSUM = 3;          // checksum error
+  QOTA_ERROR_RSA_VERIFY = 4;        // verify error
+  QOTA_ERROR_NOT_ENOUGH_SPACE = 5;  // space not enough
+  QOTA_ERROR_FLASH = 6;             // flash write error
+  QOTA_ERROR_SYNC = 7;              // sync error
+  QOTA_ERROR_BREAK = 8;             // abort
+  QOTA_ERROR_LAUNCH = 9;            // launch
+  QOTA_ERROR_DEPENDS = 10;          // depends
+  QOTA_ERROR_PATCH = 11;            // diff patch error
+  QOTA_ERROR_BASE_PACKAGE = 12;     // baseline
+  QOTA_ERROR_SLOT = 13;             // slot error
+  QOTA_ERROR_MOUNT = 14;            // mount error
+  QOTA_ERROR_HOT = 15;              // hot upgrade
+  QOTA_ERROR_UPLOAD = 16;           // upload
+  QOTA_ERROR_GPT_ERROR = 17;        // gpt table error
+  QOTA_ERROR_FILE_BROKEN = 18;      // file broken
+  QOTA_ERROR_WRONG_ODER = 19;       // order mismatch
+  // add new error type here
+  QOTA_ERROR_UNKOWN = 10000;  // unkown error
+}
+
+message QOtaOperateMsg {
+  optional QOtaState op = 1;
+  optional QOtaError code = 2 [default = QOTA_ERROR_UNSPECIFIED];
+  optional string msg = 3 [default = ""];
+}
+
+message QOtaFileInfo {
+  optional string name = 1;
+  // local path in current node
+  optional string local_path = 2;
+  // sha256sum
+  optional string sha256sum = 3;
+  // software version
+  optional string version = 4;
+  // size
+  optional uint64 size = 5;
+  // the last one
+  optional bool eof = 6;
+}
+
+message QSlotInfoMsg {
+  // slot type
+  optional QOtaSlotType type = 1;
+  // slot value
+  optional QOtaSlotValue value = 2 [default = QOTA_SLOT_VALUE_A];
+  // version
+  optional string version = 3;
+}
+
+message QOtaSubNodeInfo {
+  // sub node type
+  optional QOtaNode node = 1;
+  // slot info
+  repeated QSlotInfoMsg slots = 2;
+  // uuid
+  optional string uuid = 3;
+  // rollback by system, not check launch status if it's rollback by manual
+  optional bool passive_trigger = 4;
+}
+
+message QOtaNotifyMsg {
+  enum QNotifyType {
+    QNOTIFY_TYPE_ROLLBACK = 1;
+    QNOTIFY_TYPE_UPGRADE = 2;
+  }
+
+  // notify event type
+  optional QNotifyType type = 1;
+  // msg body
+  optional string msg = 2;
+  // operator
+  optional QOtaState op = 3;
+}
+
+message QOtaEnvCheckMsg {
+  // file count
+  optional uint32 file_count = 1 [default = 1];
+  // file infos
+  optional uint64 required_size = 2;
+}
+
+message QOtaRecord {
+  // current node
+  optional QOtaNode node = 1;
+  // filename
+  optional string file = 2;
+  // software version
+  optional string version = 3;
+  // script filename
+  optional string script = 4;
+  // slots to be update (used for virtual slot)
+  repeated QSlotInfoMsg slots = 5;
+  // lonely (if it failed will not rollback all nodes, only rollback itself)
+  optional bool lonely = 6 [default = false];
+  // success
+  optional bool success = 7 [default = true];
+  // status
+  optional QOtaState state = 8;
+}
+
+message QOtaTextMsg {
+  optional QOtaNode node = 1;
+  optional string uuid = 2;
+
+  oneof type {
+    // master -> slave
+    QOtaEnvCheckMsg env_check = 3;
+    // master -> slave
+    QOtaRecord record = 4;
+
+    // both
+    QOtaFileInfo file_info = 5;
+    // both
+    QOtaNotifyMsg notify = 6;
+    // both
+    QOtaOperateMsg op_result = 7;
+
+    // slave -> master
+    QOtaSubNodeInfo slots_info = 8;
+  }
+}

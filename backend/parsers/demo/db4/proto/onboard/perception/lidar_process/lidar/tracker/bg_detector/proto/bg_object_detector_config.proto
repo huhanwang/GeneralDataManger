@@ -1,0 +1,33 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/tracker/bg_detector/proto/bg_object_detector_config";
+
+message BgObjectDetectorConfig {
+  optional bool return_bg_from_semantic_map = 1 [default = true];
+  optional uint32 bg_point_size = 2 [default = 5];
+  optional uint32 gd_min_point_size = 3 [default = 2];
+  optional int32 bg_object_start_id = 4 [default = -99];
+  optional uint32 generation_kernel = 5 [default = 3];
+  optional uint32 suppression_kernel = 6 [default = 5];
+  optional double min_ground_height = 7 [default = 0.01];
+  optional uint32 generation_conv = 8 [default = 9];
+  optional uint32 suppression_conv = 9 [default = 30];
+  optional uint32 use_connect_size = 10 [default = 2];
+  optional uint32 semantic_bitmap_pos_diff = 11 [default = 4];
+  optional uint32 connect_radius = 12 [default = 4];
+  optional uint32 fg_step = 13 [default = 1];
+  optional uint32 bg_step = 14 [default = 2];
+  optional uint32 penalty_step = 15 [default = 2];
+  optional uint32 max_ratio = 16 [default = 10];
+  optional uint32 max_conf = 17 [default = 20];
+  optional uint32 min_intensity = 18 [default = 1];
+  optional uint32 clear_frame_num = 19 [default = 4];
+  optional bool is_down_sample = 20 [default = false];
+  optional bool inflation_use_env = 21 [default = false];
+  optional float inflation_min_height = 22 [default = 2.5];
+  optional float inflation_max_height = 23 [default = 9.0];
+  optional uint32 inflation_min_intensity = 24 [default = 100];
+  optional uint32 inflation_min_cnt = 25 [default = 3];
+  optional uint32 inflation_expand_pixel = 26 [default = 2];
+  optional uint32 inflation_max_nonsuspend = 27 [default = 3];
+}

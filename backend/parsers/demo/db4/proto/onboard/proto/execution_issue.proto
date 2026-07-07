@@ -1,0 +1,21 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/q_issue.proto";
+
+// Represents an onboard issue.
+message ExecutionIssueProto {
+  optional LiteHeader header = 1;
+  oneof Issue {
+    QIssueProto issue = 9;
+  }
+  reserved 2, 3, 4, 5, 6, 7, 8;
+}
+
+message ExecutionIssueRulesProto {
+  optional LiteHeader header = 1;
+  optional QIssueRulesProto rules = 2;
+}

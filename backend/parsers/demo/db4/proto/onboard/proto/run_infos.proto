@@ -1,0 +1,9 @@
+
+syntax = "proto2";
+
+package snoah;
+
+// This message defines run infos
+message RunInfos {
+  optional string purpose = 1;
+}

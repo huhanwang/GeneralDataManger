@@ -1,0 +1,202 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message VideoStreamCapability {
+  optional string driver = 1;
+  optional string card = 2;
+  optional string bus_info = 3;
+  optional uint32 version = 4;
+  optional uint32 capabilities = 5;
+  optional uint32 dev_caps = 6;
+}
+
+message VideoStreamFormatDescription {
+  optional uint32 index = 1;
+  optional uint32 type = 2;
+  optional uint32 flags = 3;
+  optional string description = 4;
+  optional uint32 pixel_format = 5;
+}
+
+message PixFormat {
+  optional uint32 width = 1;
+  optional uint32 height = 2;
+  optional uint32 pixel_format = 3;
+  optional uint32 field = 4;
+  optional uint32 bytes_perline = 5;
+  optional uint32 sizeimage = 6;
+  optional uint32 colorspace = 7;
+}
+
+message VideoStreamFormat {
+  // must be 1, V4L2_BUF_TYPE_VIDEO_CAPTURE
+  optional uint32 type = 1;
+  // actually format
+  optional PixFormat fmt = 2;
+}
+
+enum VideoStreamInputType {
+  // This input uses a tuner (RF demodulator).
+  INPUT_TYPE_TUNER = 0;
+  // Any non-tuner video input, for example Composite Video, S-Video, HDMI,
+  // camera sensor. The naming as _TYPE_CAMERA is historical, today we would
+  // have called it _TYPE_VIDEO.
+  INPUT_TYPE_CAMERA = 1;
+  // This input is a touch device for capturing raw touch data.
+  INPUT_TYPE_TOUCH = 2;
+}
+
+message VideoStreamInputDescription {
+  optional uint32 index = 1;
+  optional string name = 2;
+  optional VideoStreamInputType type = 3;
+  optional uint32 std = 4;
+  optional uint32 status = 5;
+  optional uint32 capabilities = 6;
+}
+
+message FramePeriod {
+  optional uint32 numerator = 1;
+  optional uint32 denominator = 2;
+}
+
+message VideoStreamStandardDescription {
+  optional uint32 index = 1;
+  optional uint32 std_id = 2;
+  optional string name = 3;
+
+  optional FramePeriod frameperiod = 4;
+  optional uint32 framelines = 5;
+}
+
+message VideoStreamParam {
+  optional string name = 1;
+  optional VideoStreamCapability cap = 2;
+  // enum formats
+  repeated VideoStreamFormatDescription fmts = 3;
+  optional VideoStreamFormat fmt_setting = 4;
+  // enum inputs
+  repeated VideoStreamInputDescription inputs = 5;
+  optional uint32 input_setting = 6;
+  // enum standards
+  repeated VideoStreamStandardDescription standards = 7;
+}
+
+message SensorStatus {
+  optional string name = 1;
+  optional string status = 2;
+}
+
+message CameraSetting {
+  optional SensorStatus status = 1;
+  // one camera corresponds to multiple video stream inputs.
+  repeated VideoStreamParam streams = 2;
+}
+
+message SensorInfo {
+  repeated CameraSetting cameras = 1;
+}
+
+message CpldInfo {
+  optional string cpld_version = 1;
+}
+
+message XavierInfo {
+  optional string product = 1;
+  optional string hardware = 2;
+  optional string jetpack = 3;
+  optional string software = 4;
+  optional string type = 5;
+}
+
+message KernelInfo {
+  // onboard device node, omc/obc
+  optional string node = 1;
+  // kernel
+  optional string kernel = 2;
+  // Network node hostname
+  optional string hostname = 3;
+  // Kernel release
+  optional string release = 4;
+  // Kernel version
+  optional string version = 5;
+  // Machine hardware name
+  optional string machine = 6;
+  optional string date = 7;
+  // In second
+  optional int64 uptime = 8;
+  optional string reboot_date = 9;
+}
+
+message CpuInfo {
+  optional int32 cpu_num = 1;
+  optional int32 core_num = 2;
+  optional string model = 3;
+}
+
+message ObcStatusInfoProto {
+  optional KernelInfo kernel = 1;
+  optional XavierInfo xavier = 2;
+  optional SensorInfo sensor = 3;
+  optional CpldInfo cpld = 4;
+}
+
+message GPUDriverInfoProto {
+  optional string nvml_version = 1;
+  optional string driver_version = 2;
+  optional int32 cuda_version = 3;
+  optional string uuid = 4;
+}
+
+message GPUDriverProto {
+  repeated GPUDriverInfoProto gpu_driver_info = 1;
+}
+
+message OmcStatusInfoProto {
+  optional KernelInfo kernel = 1;
+  optional CpuInfo cpu = 2;
+  optional GPUDriverProto gpu_driver = 3;
+}
+
+message DeviceNetworkConnectStatusProto {
+  optional string name = 1;
+  optional string ip = 2 [deprecated = true];
+  optional bool connect = 3;
+  message EthernetConnectionProto {
+    optional string ip = 1;
+  }
+  message SerialConnectionProto {
+    optional string serial_name = 1;
+  }
+  oneof more_connection_proto {
+    EthernetConnectionProto ethernet = 4;
+    SerialConnectionProto serial = 5;
+  }
+}
+
+message AutonomyProcess {
+  optional int32 pid = 1;
+  optional string name = 2;
+}
+
+message DiskCapacity {
+  // In GB
+  optional int32 capacity = 1;
+  // In GB
+  optional int32 free = 2;
+}
+
+message DiskCapacityProto {
+  optional DiskCapacity internal_disk = 1;
+  optional DiskCapacity external_disk = 2;
+}
+
+message SystemStatusInfoProto {
+  optional OmcStatusInfoProto omc = 1;
+  repeated ObcStatusInfoProto obcs = 2;
+  repeated DeviceNetworkConnectStatusProto devices = 3;
+  repeated AutonomyProcess processes = 4;
+  optional DiskCapacityProto disk = 5;
+}

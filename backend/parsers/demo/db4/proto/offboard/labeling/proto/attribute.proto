@@ -1,0 +1,294 @@
+
+syntax = "proto2";
+
+package snoah.labeling;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/attribute";
+
+// Next ID: 20
+enum VehicleType {
+  VEH_CAR = 0;
+  VEH_VAN = 1;
+  VEH_TRUCK = 2;
+  VEH_BUS = 3;
+  VEH_TRAILER = 4;
+  VEH_CONSTRUCTION = 5;
+  VEH_WATERINGCART = 7;
+  VEH_TANKTRUCK = 8;
+  VEH_GARBAGETRUCK = 9;
+  VEH_SWEEPER = 10;
+  VEH_UNKNOWN = 11;
+  VEH_SUV = 12;
+  VEH_PICKUP = 13;
+  VEH_MPV = 14;
+  VEH_DOUBLE_CONSIGNMENT = 15;
+  VEH_FORKLIFT = 16;
+  VEH_MID = 17;   // recreational vehicle, IVECO
+  VEH_MINI = 18;  // patrol car, WULING mini car, 4-wheel delivery vehicle etc.
+  VEH_MINI_TRUCK = 19;
+  // deprecated fields
+  VEH_EMERGENCY = 6 [deprecated = true];
+}
+
+// Next ID: 21
+enum RoadBarrierType {
+  RB_CONE = 1;
+  RB_WARNING_TRIANGLE = 2;
+  RB_ANTI_COLLISION_BUCKET = 3;
+  RB_WATER_FILLED_BARRIER = 4;
+  RB_ANTI_COLLISION_POST = 5;
+  RB_ANTI_COLLISION_MAT = 6;
+  RB_ANTI_COLLISION_PIER = 7;
+  RB_CROWD_CONTROL_BARRIER = 8;
+  RB_UNKNOWN = 9;
+  RB_NO_PARKING_SIGN = 10;
+  RB_CONSTRUCTION_SIGN = 11;
+  RB_SHOPPING_CART = 12;
+  RB_CEMENT_PILLAR = 13;
+  RB_METAL_POST = 14;
+  RB_ANTI_COLLISION_BALL = 15;
+  RB_BARRIER_GATE = 16;
+  RB_GANTRY_TYPE_FLOOR_LOCK = 17;
+  RB_CORRUGATED_BOX = 18;
+  RB_WOVEN_BAG = 19;
+  RB_WHITE_FOAM_BOX = 20;
+  RB_LIFTED_PARKING_LOCK = 21;
+}
+
+// Next ID: 3
+enum XcyclistType {
+  XCY_BICYCLIST = 0;
+  XCY_MOTORCYCLIST = 1;
+  XCY_TRICYCLIST = 2;
+}
+
+// Next ID: 5
+enum VehicleAttribute {
+  VEHATT_DOOROPEN = 0;
+  VEHATT_TRUNKOPEN = 1;
+  VEHATT_OUTSTRETCH = 2;
+  VEHATT_DEFORMABLE = 4;
+}
+
+// Next ID: 6
+enum PedestrianType {
+  PED_ADULT = 0;
+  PED_CHILD = 1;
+  PED_CONSTRUCTION = 2;
+  PED_POLICE = 3;
+  PED_IN_WHEELCHAIR = 4;
+  PED_WITH_ASSISTIVE_DEVICE =
+      5;  // person riding a scooter, skateboard,balance scooter etc.
+}
+
+// Next ID: 42
+enum VehicleLampType {
+  // front
+  LAMP_FRONT_POSITION = 10;  // front lamps which always on, including dipped
+                             // beam, main beam and front position lamps
+  LAMP_DAYTIME_RUNNING = 11;
+  LAMP_FRONT_TURN_LEFT = 12;
+  LAMP_FRONT_TURN_RIGHT = 13;
+  LAMP_FRONT_FLASHERS = 14;
+  LAMP_FRONT_FOG = 15;
+  // rear
+  LAMP_REAR_POSITION = 20;  // the red light in the tail
+  LAMP_REAR_STOP = 21;
+  LAMP_REAR_TURN_LEFT = 22;
+  LAMP_REAR_TURN_RIGHT = 23;
+  LAMP_REAR_FLASHERS = 24;
+  LAMP_REAR_FOG = 25;
+  LAMP_REAR_REVERSING = 26;
+  LAMP_ALWAYS_OFF = 30;
+  LAMP_UNKNOWN_UNKNOWN = 40;  // can't specify the type of lamps or whether the
+                              // lamps are on because low quality image
+  LAMP_UNKNOWN_START = 41;    // sequence is too short to get state
+}
+
+// Next ID: 8
+message VehicleLampAttribute {
+  repeated VehicleLampType lamp_type = 1;
+  optional int32 front_lamp_number = 2;  // the number of front lamps on
+  optional int32 rear_lamp_number = 3;   // the number of rear lamps on
+  optional bool is_complex = 4;  // area of vehicle < 50% of total image area
+  optional bool is_occulued =
+      5;  // > 30% of vehicle is occulued by other objects
+  optional bool is_out_of_roi = 6;
+  optional bool is_lateral_view = 7;
+  optional bool is_flashing_off = 8;
+}
+
+// Next ID: 15
+enum PedestrianAttribute {
+  PEDATT_SIT = 0;
+  PEDATT_LIE = 1;
+  PEDATT_STOOP = 2;
+  PEDATT_SQUAT = 3;
+  PEDATT_WAVE = 4;
+  PEDATT_HOLDING = 5;
+  PEDATT_PHONE = 6;
+  PEDATT_SKATING = 7;
+  PEDATT_WITH_OBJECT = 8;
+  PEDATT_UMBRELLA = 9;
+  PEDATT_HANDTOSTOP = 10;
+  PEDATT_HANDTOPROCEED = 11;
+  PEDATT_EXITINGCARS = 12;
+  PEDATT_STAND = 13;
+  PEDATT_WALK = 14;
+}
+
+// Next ID: 2
+enum ConeColorAttribute {
+  PURE_BLACK = 0;
+  NON_PURE_BLACK = 1;
+}
+
+// Next ID: 3
+enum ConePostureAttribute {
+  STANDING = 0;
+  FALLEN_BOTTOM_FORWARD = 1;
+  FALLEN_NON_BOTTOM_FORWARD = 2;
+}
+
+// Next ID: 3
+enum ConeSizeAttribute {
+  STANDARD = 0;
+  SMALL = 1;
+  UNKNOWN_SIZE = 2;
+}
+
+// Next ID: 4
+message ConeAttribute {
+  optional ConeColorAttribute cone_color = 1;
+  optional ConePostureAttribute cone_posture = 2;
+  optional ConeSizeAttribute cone_size = 3;
+}
+
+// Next ID: 7
+enum StaticObjectType {
+  STA_CONE = 0;
+  STA_WARNING_TRIANGLE = 1;
+  STA_BICYCLE = 2;
+  STA_MOTOCYCLE = 3;
+  STA_TRICYCLE = 4;
+  STA_TRAFFIC_SIGN = 5;
+  STA_GENERAL = 6;
+}
+
+// Next ID: 13
+enum OtherObjectType {
+  OTH_MIST = 0;
+  OTH_FOD = 2;  // Leaf, plastic bag ...
+  OTH_CART = 3;
+  OTH_UNKNOWN = 4;  // Other objects which not in the list
+  OTH_WARNING_TRIANGLE = 6;
+  OTH_ANTI_COLLISION_BUCKET = 7;
+  OTH_WATER_HORSE = 8;
+  OTH_BICYCLE = 9;
+  OTH_MOTOCYCLE = 10;
+  OTH_TRICYCLE = 11;
+  OTH_TRAFFIC_SIGN = 12;
+  // deprecated fields
+  OTH_ANIMAL = 1 [deprecated = true];
+}
+
+// Next ID: 3
+enum TimeType {
+  TIME_DAYTIME = 0;
+  TIME_EVENING = 1;
+  TIME_UNKNOWN = 2;
+}
+
+// Next ID: 6
+enum ImageVisibility {
+  NO_IMAGE = 0;
+  IMAGE_ALL_VISIBLE = 1;
+  // The object occluded by other object and visible part is more than 50% in
+  // the image.
+  IMAGE_PARTIAL_OCCLUSION = 2;
+  // The object occluded by other object and visible part is less than 50% in
+  // the image.
+  IMAGE_HEAVY_OCCLUSION = 3;
+  // The object is in the border of image and truncated less than 50%
+  IMAGE_PARTIAL_TRUNCATED = 4;
+  // The object is in the border of image and truncated more than 50%
+  IMAGE_HEAVY_TRUNCATED = 5;
+}
+
+// Next ID: 6
+enum OcclusionLevel {
+  NO_OCCLUSION = 1;
+  // The object occluded by other object and occulued part is less than 25% in
+  // the image.
+  OCCLUSION_25PERCENT = 2;
+  // The object occluded by other object and occulued part is more than 25% and
+  // less than 50% in the image.
+  OCCLUSION_50PERCENT = 3;
+  // The object occluded by other object and occulued part is more than 50% and
+  // less than 75% in the image.
+  OCCLUSION_75PERCENT = 4;
+  // The object occluded by other object and occulued part is more than 75% in
+  // the image.
+  HEAVY_OCCLUSION = 5;
+}
+
+// Next ID: 4
+enum TruncatedLevel {
+  NO_TRUNCATED = 1;
+  // The object is in the border of image and truncated less than 50%.
+  TRUNCATED_50PERCENT = 2;
+  // The object is in the border of image and truncated more than 50%.
+  HEAVY_TRUNCATED = 3;
+}
+
+enum VehicleLightType {
+  VLT_INVALID = 0;
+  VLT_TURN_LEFT = 1;
+  VLT_TURN_RIGHT = 2;
+  VLT_BRAKE = 3;
+  VLT_HIGH_MOUNTED_BRAKE = 4;
+}
+
+enum VehicleLightStatus {
+  VLS_INVALID = 0;
+  VLS_ON = 1;
+  VLS_OFF = 2;
+  VLS_UNKNOWN = 3;
+  VLS_NOT_EXIST = 4;
+}
+
+enum VehicleLightSeqStatus {
+  VLSS_INVALID = 0;
+  VLSS_ON = 1;
+  VLSS_OFF = 2;
+  VLSS_UNKNOWN = 3;
+  VLSS_NOT_EXIST = 4;
+}
+
+enum BarrierGateStatus {
+  BGS_INVALID = 0;
+  BGS_CLOSED = 1;
+  BGS_OPEN = 2;
+  BGS_CHANGING = 3;
+  BGS_UNKNOWN = 4;
+}
+
+// Next ID: 6
+enum CarDoorStatus {
+  SLIGHTLY_OPEN = 0;
+  HALF_OPEN = 1;
+  FULLY_OPEN = 2;
+  CLOSED = 3;
+  INVISIBLE = 4;
+  UNKNOWN = 5;
+}
+
+// Deprecated: use individual door status fields in ImageLabel instead
+// Next ID: 6
+enum CarDoorType {
+  LEFT_FRONT_DOOR = 0;
+  LEFT_REAR_DOOR = 1;
+  RIGHT_FRONT_DOOR = 2;
+  RIGHT_REAR_DOOR = 3;
+  FRONT_TRUNK_DOOR = 4;
+  TRUNK_DOOR = 5;
+}

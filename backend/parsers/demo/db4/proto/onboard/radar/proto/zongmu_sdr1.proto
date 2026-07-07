@@ -1,0 +1,155 @@
+syntax = "proto2";
+
+package snoah;
+message Total_Number {
+  // 0-15
+  optional uint32 msg_counter = 1;
+  // 0-15
+  optional uint32 rolling_counter = 2;
+  // 0-254 255: invalid value
+  optional uint32 pointcloud_number = 3;
+  // 0-254 255: invalid value
+  optional uint32 local_pointcloud_number = 4;
+  // 0-254 255: invalid value
+  optional uint32 tracked_target_number = 5;
+  // 0-254 255: invalid value
+  optional uint32 local_tracklet_number = 6;
+  // 0-254 255: invalid value
+  optional uint32 freespace_number = 7;
+  // 0-254 255: invalid value
+  optional uint32 convex_hull_point_number = 8;
+}
+
+message Auxiliary_Msg {
+  enum Sensor_Orientation_Type {
+    NORMAL_ORIENTATION = 0;
+    UPSIDE_DOWN_ORIENTATION = 1;
+  }
+  enum Sensor_Mode_Type {
+    SLEEP = 0;
+    STANDBY = 1;
+    ADAS = 2;
+    LONG_RANGE_OBJECT_FRESPACE_FUSION = 3;
+    SHORT_RANGE_OBJECT_FRESPACE_FUSION = 5;
+    LONG_RANGE_POINTCLOUD = 7;
+    SHORT_RANGE_POINTCLOUD = 8;
+    LONG_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION = 10;
+    SHORT_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION = 12;
+    LONG_RANGE_OBJECT_FRESPACE_FUSION_ADAS_GUARDRAIL = 14;
+    LONG_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION_ADAS_GUARDRAIL = 15;
+    MODE_INVALID_VALUE = 31;
+  }
+  enum Sensor_Blockage_Status_Type {
+    NO_DAMP = 0;
+    INC_DAMP = 1;
+    FULL_DAMP = 2;
+    EDC_DAMP = 3;
+  }
+  enum Sensor_Interference_Status_Type {
+    NO_INTERFERENCE = 0;
+    INTERFERENCE_REPAIRABLE = 1;
+    TOTALLY_INTERFEREND = 2;
+    INTERFERENCE_INVALID_VALUE = 3;
+  }
+  enum Misalignment_Calibration_Status_Type {
+    NO_START = 0;
+    IN_PROGRESS = 1;
+    FINISHED_WITHOUT_ERROR = 2;
+    FAILURE = 3;
+  }
+  enum Monitor_Error_Flag_Type {
+    RUN_WELL = 0;
+    EXISTENCE_OF_ERROR = 1;
+    UNUSED = 2;
+    MONITOR_INVALID_VALUE = 3;
+  }
+  // 0-15
+  optional uint32 msg_counter = 1;
+  // 0-15
+  optional uint32 rolling_counter = 2;
+  // 0,No Overtime;1,Overtime
+  optional uint32 msg_overtime_flag = 3;
+  optional Sensor_Orientation_Type sensor_orientation = 4;
+  optional Sensor_Mode_Type sensor_mode = 5;
+  optional Sensor_Blockage_Status_Type sensor_blockage_status = 6;
+  optional Sensor_Interference_Status_Type sensor_interference_staus = 7;
+  optional Misalignment_Calibration_Status_Type
+      misalignment_calibration_status = 8;
+  optional Monitor_Error_Flag_Type monitor_error_flag = 9;
+  // [°][0.1][-5][-5|5]
+  optional double horizontal_mounting_error = 10;
+  // 0,in the allowed range(-3°,3°)；1,not
+  optional uint32 horizontal_mounting_error_flag = 11;
+  // 0 - 4294967295
+  optional uint64 frame_counter = 12;
+}
+
+// [unit] [factor] [offset] [min|max]
+message Tracked_Target_Info {
+  enum Track_Status_Type {
+    TRACKER_STARUS_INVALID_VALUE = 0;
+    TRACKER_STARUS_INVALID = 1;
+    TRACKER_STARUS_NEW = 2;
+    TRACKER_STARUS_UPDATED = 3;
+    TRACKER_STARUS_EXTRAPOLATED = 4;
+  }
+  enum Track_Classification_Type {
+    TRACK_CLASSIFICATION_POINT_TARGET = 0;
+    TRACK_CLASSIFICATION_PEDESTRIAN = 1;
+    TRACK_CLASSIFICATION_BIKE = 2;
+    TRACK_CLASSIFICATION_CAR = 3;
+    TRACK_CLASSIFICATION_TRACK_BUS = 4;
+    TRACK_CLASSIFICATION_INVALID = 15;
+  }
+
+  //[][0.1][0][0|1]
+  optional double confidence = 1;
+  // 0-127,255: invalid value
+  optional uint32 track_id = 2;
+  //[m][0.1][-102.3][-102.3|102.3]
+  optional double distance_x = 3;
+  //[m][0.1][-102.3][-102.3|102.3]
+  optional double distance_y = 4;
+  //[m/s2][0.1][-12.7][-12.7|12.7]
+  optional double acceleration_x = 5;
+  //[m/s2][0.1][-12.7][-12.7|12.7]
+  optional double acceleration_y = 6;
+  //[m/s][0.035][-71.654][-71.654]|71.654]]
+  optional double velocity = 7;
+  //[m][0.3][0][0|4.2]
+  optional double height = 8;
+  //[m][0.3][0][0|18]
+  optional double length = 9;
+  //[°][0.1][-180][-180|180]
+  optional double orientation = 10;
+  //[m][0.1][0][0|6.2]
+  optional double width = 11;
+  optional Track_Status_Type tracker_status = 12;
+  optional Track_Classification_Type track_classification = 13;
+  // 0-126, 127: invalid value
+  optional uint32 survival_cnt = 14;
+  // 0-62, 63: invalid value
+  optional uint32 lost_cnt = 15;
+}
+// Tracked Target
+message Tracked_Target_3A0_3AF {
+  // 0-15
+  optional uint32 msg_counter = 1;
+  // 0-6,7：invalid value
+  optional uint32 valid_object_num = 2;
+  // Up to 4 track information
+  repeated Tracked_Target_Info tracked_target_infos = 3;
+  // 0-15
+  optional uint32 rolling_counter = 4;
+  // CCITT-FALSE CRC16 to check the data integrity
+  optional uint32 check_sum = 5;
+}
+
+// RadarType
+message ZMSDR1 {
+  optional Tracked_Target_3A0_3AF tracked_targets = 1;
+  optional int32 frame_id = 2;
+  optional double timestamp = 3;
+  optional Total_Number total_number = 4;
+  optional Auxiliary_Msg auxiliary_msg = 5;
+}

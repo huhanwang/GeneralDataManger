@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah;
+
+message AutoNaviEhpV2RawMessage {
+  optional double timestamp = 1;
+  enum MessageType {
+    POSITION = 1;
+    STUB = 2;
+    SEGMENT = 3;
+    PROFILE_SHORT = 4;
+    PROFILE_LONG = 5;
+    META_DATA = 6;
+  }
+  optional MessageType message_type = 2;
+  enum MessageFormat {
+    JSON = 1;  // used by LongCheng
+    BINARY =
+        2;  // use for AutoNavi, as it's definition differ from the standard
+    STANDARD_EHPV2_BINARY = 3;  // used for standard ehpv2 binary data
+  }
+  optional MessageFormat message_format = 3;
+  optional bytes message = 4;
+}
+
+message AutoNaviEhpV2RawMessages {
+  repeated AutoNaviEhpV2RawMessage messages = 1;
+}

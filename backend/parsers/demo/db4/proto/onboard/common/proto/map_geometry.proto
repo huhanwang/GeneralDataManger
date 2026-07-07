@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package snoah.mapping;
+option go_package = "qcraft-proto.ai/common/proto/map_geometry";
+
+message GeoPointProto {
+  optional double longitude = 1;  // Radians.
+  optional double latitude = 2;   // Radians.
+  optional double altitude = 3;   // Meters.
+}
+
+// N-1 line segments from N points.
+message GeoPolylineProto {
+  repeated GeoPointProto points = 1;
+}
+
+// Should be self-intersection-free, but not necessarily convex.
+message GeoPolygonProto {
+  repeated GeoPointProto points = 1;
+}

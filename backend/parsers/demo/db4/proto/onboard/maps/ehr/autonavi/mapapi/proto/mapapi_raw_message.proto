@@ -1,0 +1,422 @@
+syntax = "proto2";
+package snoah.mapapi;
+
+message OriginalRoute {
+  optional string route_id = 1;
+  enum Status {
+    STATUS_UNKNOWN = 0;
+    STATUS_FIRSTROUTE = 1;
+    STATUS_NONFIRSTROUTE = 2;
+    STATUS_NAVIFINISH = 3;
+    STATUS_OFFLINEROUTE = 7;
+    STATUS_SUCCESS = 255;
+  }
+  optional Status status = 2;
+  repeated uint64 ids = 3;
+  repeated OriginalRoutePoint points = 4;
+}
+
+message OriginalRoutePoint {
+  optional int32 number = 1;
+  enum RoutePointType {
+    START_POINT = 0;  // 起点
+    END_POINT = 1;    // 终点
+    WAY_POINT = 2;    // 途径点
+    NONE_POINT = 3;   // 未知
+  }
+  optional RoutePointType type = 2;
+  optional int32 index = 3;
+  optional OriginalPosition pos = 4;
+}
+
+message OriginalPosition {
+  optional uint32 latitude = 1;
+  optional uint32 longitude = 2;
+}
+
+message OriginalLocInfo {
+  optional uint32 road_id = 1;
+  optional uint32 offset = 2;
+  optional uint32 region_code = 3;
+  optional Datetime gps_datetime = 4;
+}
+
+message Datetime {
+  optional uint32 year = 1;
+  optional uint32 month = 2;
+  optional uint32 day = 3;
+  optional uint32 hour = 4;
+  optional uint32 minute = 5;
+  optional uint32 second = 6;
+}
+
+message OriginalDynamicData {
+  optional OriginalDynamicDataId id = 1;
+  repeated OriginalTrafficFlowDynamicAttr traffic_flows = 2;
+}
+
+message OriginalDynamicDataId {
+  optional uint32 road_id = 1;
+}
+
+message OriginalTrafficFlowDynamicAttr {
+  enum Status {
+    STATUS_UNKNOWN = 0;
+    STATUS_CREATE = 1;
+    STATUS_UPDATE = 2;
+    STATUS_DELETE = 3;
+  }
+  optional Status status = 1;
+  enum TrafficFlowStatus {
+    TRAFFIC_FLOW_STATUS_UNKNOWN = 0;
+    TRAFFIC_FLOW_STATUS_SMOOTH = 1;
+    TRAFFIC_FLOW_STATUS_AMBLE = 2;
+    TRAFFIC_FLOW_STATUS_CONGESTION = 3;
+    TRAFFIC_FLOW_STATUS_BLOCKAGE = 4;
+    TRAFFIC_FLOW_STATUS_NO = 5;
+    TRAFFIC_FLOW_STATUS_OTHER = 99;
+  }
+  optional TrafficFlowStatus traffic_flow_status = 2;
+}
+
+message TimeOfDay {
+  optional uint32 hours = 1;    // 小时
+  optional uint32 minutes = 2;  // 分钟
+}
+message DayOfYear {
+  optional uint32 year = 1;   // 年
+  optional uint32 month = 2;  // 月
+  optional uint32 day = 3;    // 日
+}
+message TimeRegulation {
+  optional TimeOfDay day = 1;  // 时分信息: hour, min
+  optional uint32 week = 2;  // 星期信息: 默认值0, 有效值1-7:周一至周日
+  optional DayOfYear year = 3;  // 日期信息: year, month, day
+}
+message TimeRegulationRange {
+  optional TimeRegulation start_time = 1;  // 开始时间
+  optional TimeRegulation end_time = 2;    // 结束时间
+  optional bool is_limited = 3;  // true是该规制时间内限行 false是规制时间外限行
+}
+
+enum HolidayType {
+  HOLIDAYTYPE_NONE = 0;     // 非节假日
+  HOLIDAYTYPE_WORKDAY = 1;  // 工作日
+  HOLIDAYTYPE_HOLIDAY = 2;  // 节假日
+}
+
+enum WorkHolidayType {
+  WORKHOLIDAYTYPE_NONE = 0;     // 非补班日
+  WORKHOLIDAYTYPE_VALID = 1;    // 补班日
+  WORKHOLIDAYTYPE_INVALID = 2;  // 补班日不生效
+  WORKHOLIDAYTYPE_WEEKEND = 3;  // 补班日按周末生效
+}
+message RoadPackage {
+  optional uint64 road_id = 1;
+  optional uint32 length = 2;  // 道路长度cm
+  enum Direction {
+    DIR_ONEWAY = 1;  // 单向
+    DIR_BOTH = 2;    // 双向
+  }
+  optional Direction direction = 3;  // 道路方向
+
+  enum RoadClass {
+    ROADCLASS_FREEWAY = 0;         // 高速公路
+    ROADCLASS_NATIONAL_ROAD = 1;   // 国道
+    ROADCLASS_PROVINCE_ROAD = 2;   // 省道
+    ROADCLASS_COUNTY_ROAD = 3;     // 县道
+    ROADCLASS_RURAL_ROAD = 4;      // 乡公路
+    ROADCLASS_IN_COUNTY_ROAD = 5;  // 县乡村内部道路
+    ROADCLASS_CITY_SPEED_WAY = 6;  // 主要大街\城市快速道
+    ROADCLASS_MAIN_ROAD = 7;       // 主要道路
+    ROADCLASS_SECONDARY_ROAD = 8;  // 次要道路
+    ROADCLASS_COMMON_ROAD = 9;     // 普通道路
+    ROADCLASS_NON_NAVI_ROAD = 10;  // 非导航道路
+    ROADCLASS_INVALID = 0xFF;      // 道路等级无效值
+  }
+  optional RoadClass road_class = 4;  // 道路等级
+  enum FormOfWay {
+    FORMWAY_DIVISED_LINK = 1;          // 上下线分离 主路
+    FORMWAY_CROSS_LINK = 2;            // 交叉点内 复杂节点内部道路
+    FORMWAY_JCT = 3;                   // 高架
+    FORMWAY_ROUND_CIRCLE = 4;          // 环岛
+    FORMWAY_SERVICE_ROAD = 5;          // 服务区 辅助道路
+    FORMWAY_SLIP_ROAD = 6;             // 引路 匝道
+    FORMWAY_SIDE_ROAD = 7;             // 辅路
+    FORMWAY_SLIP_JCT = 8;              // 引路 JCT
+    FORMWAY_EXIT_LINK = 9;             // 出口
+    FORMWAY_ENTRANCE_LINK = 10;        // 入口
+    FORMWAY_TURN_RIGHT_LINEA = 11;     // 右转专用道
+    FORMWAY_TURN_RIGHT_LINEB = 12;     // 右转专用道
+    FORMWAY_TURN_LEFT_LINEA = 13;      // 左转专用道
+    FORMWAY_TURN_LEFT_LINEB = 14;      // 左转专用道
+    FORMWAY_COMMON_LINK = 15;          // 普通道路
+    FORMWAY_TURN_LEFTRIGHT_LINE = 16;  // 左右转专用道
+    FORMWAY_NONMOTORIZED_DRIVEWAY = 17;  // ADF+ 专用
+    FORMWAY_FRONTDOOR_ROAD = 18;         // 门前道路
+    FORMWAY_SERVICE_SLIP_ROAD = 19;      // 服务区 + 引路
+    FORMWAY_SERVICE_JCT = 20;            // 服务区 + JCT
+    FORMWAY_SERVICE_JCT_SLIP_ROAD = 21;  // 服务区 + 引路 + JCT
+    FORMWAY_NON_VEHICLE = 22;            // 非机动车道路
+    FORMWAY_INVALID = 0xFF;              // 道路构成无效值
+  }
+  optional FormOfWay form_of_way = 5;  // 道路构成
+  enum AdasFormOfWay {
+    ADAS_FW_UNKNOWN = 0;                                          // 未知
+    ADAS_FW_FREEWAY = 1;                                          // 高速
+    ADAS_FW_MULTIPLE_CARRIAGEWAY_OR_MULTIPLY_DIGITIZED_ROAD = 2;  // 上下线分离
+    ADAS_FW_SINGLE_CARRIAGEWAY = 3;      // 单线道路
+    ADAS_FW_ROUNDABOUT_CIRCLE = 4;       // 环岛
+    ADAS_FW_EXIT_AND_ENTRANCE_LINK = 6;  // 出入口
+    ADAS_FW_PARALLEL_ROAD = 8;           // 平行路
+    ADAS_FW_SLIP_ROAD_OR_RAMP_ON_FREEWAY_OR_CONTROLLED_ACCESS_ROAD =
+        9;                           // 高速和高速间的匝道
+    ADAS_FW_SLIP_ROAD_OR_RAMP = 10;  // 普通道路和高速直接的匝道
+    ADAS_FW_SERVICE_ROAD_OR_FRONTAGE_ROAD = 11;   // 辅路
+    ADAS_FW_ENTRACE_TO_OR_EXIT_OF_CAR_PARK = 12;  // 停车场进入/退出道路
+    ADAS_FW_ENTRACE_TO_OR_EXIT_OF_SERVICE = 13;  // 服务区进入/退出道路
+    ADAS_FW_PEDESTRIAN_ZONE = 14;                // 步行区域
+  }
+  optional AdasFormOfWay adas_form_of_way = 6;  // ADAS道路构成
+  enum DividedRoad {
+    DIVIDED_ROAD_UNKNOWN = 0;   // 未知类型
+    DIVIDED_ROAD_PHYSICAL = 1;  // 物理隔离带
+    DIVIDED_ROAD_LEGAL = 2;     // 法律隔离带
+    DIVIDED_ROAD_NONE = 3;      // 无隔离带
+  }
+  optional DividedRoad divided_road = 7;       // 中央隔离带
+  optional uint32 angle_f = 8;                 // 道路起始角度
+  optional uint32 angle_t = 9;                 // 道路结束角度
+  optional uint32 link_type = 10;              // 道路类型
+  optional uint32 history_average_speed = 11;  // 道路历史经验速度
+  optional bool has_toll = 12;                 // 是否存在收费站
+  optional bool has_traffic_light = 13;        // 是否存在红绿灯
+  optional uint32 num_forward_lanes = 14;      // 道路的正向车道数
+  enum Ownership {
+    OWNERSHIP_PUBLIC = 0;     // 公众道路
+    OWNERSHIP_INNER = 1;      // 内部道路
+    OWNERSHIP_PRIVATE = 2;    // 私有道路
+    OWNERSHIP_UNKNOWN = 255;  // 未知类型
+  }
+  optional Ownership ownership = 15;  // 路权信息
+  optional uint32 region_code = 16;   // 道路所在城市码
+  message Geometry {
+    optional double latitude = 1;
+    optional double longitude = 2;
+    optional int32 height = 3;
+  }
+  repeated Geometry geometries = 17;  // 道路形点
+
+  message PointCurvature {
+    optional uint32 offset = 1;
+    optional uint32 value = 2;
+  }
+  repeated PointCurvature curvatures = 18;  // 道路曲率
+  repeated uint32 arrow_markings = 19;      // 道路箭头信息
+  message Camera {
+    optional uint32 offset = 1;
+    enum CameraType {
+      ECAMERA_SPEED = 0;              ///< 测速摄像头、测速雷达
+      ECAMERA_MONITOR = 1;            ///< 监控摄像头
+      ECAMERA_TRAFIC_LIGHT = 2;       ///< 闯红灯照相
+      ECAMERA_RULE = 3;               ///< 违章摄像头
+      ECAMERA_BUS = 4;                ///< 公交专用道摄像头
+      ECAMERA_EMERGENCY = 5;          ///< 应急车道
+      ECAMERA_NON_MOTORIZED = 6;      ///< 非机动车道
+      ECAMERA_RANGE = 7;              ///< 区间测速
+      ECAMERA_INTER_SPEED_START = 8;  ///< 区间测速起始
+      ECAMERA_INTER_SPEED_END = 9;    ///< 区间测速解除
+      ECAMERA_UNKNOWN = 255;          ///< 未知
+    }
+    optional CameraType type = 2;
+    optional uint32 value = 3;
+  }
+  repeated Camera cameras = 20;  // 电子眼列表
+
+  message Facility {
+    optional uint32 offset = 1;  // 距离道路起点的偏移量
+    enum FacilityType {
+      FACILITY_LEFT_INTER_FLOW = 1;                  // 左侧合流
+      FACILITY_RIGHT_INTER_FLOW = 2;                 // 右侧合流
+      FACILITY_REVERSE_TURN = 4;                     // 反向转弯
+      FACILITY_LINKING_TURN = 5;                     // 连续转弯
+      FACILITY_ACCIDENT_AREA = 6;                    // 事故多发地
+      FACILITY_RAILWAY_CROSS = 8;                    // 铁路道口
+      FACILITY_SLIPPERY = 9;                         // 易滑
+      FACILITY_MAX_SPEED_LIMIT = 10;                 // 最大限速标志
+      FACILITY_MIN_SPEED_LIMIT = 11;                 // 最小限速标志
+      FACILITY_VILLAGE = 12;                         // 村庄
+      FACILITY_LEFT_NARROW = 13;                     // 左侧变窄
+      FACILITY_RIGHT_NARROW = 14;                    // 右侧变窄
+      FACILITY_DOUBLE_NARROW = 15;                   // 两侧变窄
+      FACILITY_CROSS_WIND_AREA = 16;                 // 横风区
+      FACILITY_SCHOOL = 17;                          // 前方学校
+      FACILITY_NOPASSING = 18;                       // 禁止超车
+      FACILITY_NARROW_BRIDGE = 19;                   // 窄桥
+      FACILITY_AROUND_THE_LINE = 20;                 // 左右绕行
+      FACILITY_LEFT_BYPASS = 21;                     // 左侧绕行
+      FACILITY_RIGHT_BYPASS = 22;                    // 右侧绕行
+      FACILITY_LEFT_MOUNTAIN_ROAD = 23;              // 傍山险路（左侧）
+      FACILITY_RIGHT_MOUNTAIN_ROAD = 24;             // 傍山险路（右侧）
+      FACILITY_ONSTEEPLOPE = 25;                     // 上陡坡
+      FACILITY_UNDERSTEEPLOPE = 26;                  // 下陡坡
+      FACILITY_OVER_WATER_ROAD = 27;                 // 过水路面
+      FACILITY_UNEVEN_ROAD = 28;                     // 路面不平
+      FACILITY_STROLL = 29;                          // 慢行
+      FACILITY_ATTENTION_TO_DANGER = 30;             // 注意危险
+      FACILITY_CROSSWALK = 31;                       // 人行横道
+      FACILITY_RIVER_BANK_LEFT = 33;                 // 堤坝路A(左侧)
+      FACILITY_RIVER_BANK_RIGHT = 34;                // 堤坝路B(右侧)
+      FACILITY_CHILDREN = 35;                        // 注意儿童
+      FACILITY_CYCLISTS = 36;                        // 注意非机动车
+      FACILITY_DOMESTIC_ANIMALS_CROSSING = 37;       // 注意牲畜穿越
+      FACILITY_GIVE_WAY = 38;                        // 减速让行
+      FACILITY_STOP = 39;                            // 停车让行
+      FACILITY_PRIORITY_FOR_ONCOMING_TRAFFIC = 40;   // 会车让行
+      FACILITY_PRIORITY_OVER_ONCOMING_TRAFFIC = 41;  // 会车先行
+      FACILITY_HUMPBACK_BRIDGE = 42;                 // 驼峰桥
+      FACILITY_END_OF_SPEED_LIMIT = 43;              // 限速结束
+      FACILITY_END_OF_PROHIBITION_ON_OVERTAKING = 44;  // 禁止超车结束
+      FACILITY_RAILWAY_CROSS_EXTEND = 50;              // 铁道路口
+      FACILITY_RAILWAY_WITH_GATES = 51;     // 有人看管的铁道路口
+      FACILITY_RAILWAY_WITHOUT_GATES = 52;  // 无人看管的铁道路口
+      FACILITY_VARIABLE_SPEED = 53;         // 可变限速牌标志
+      FACILITY_MAX_SPEED_LIMIT_WITH_RULEINFO = 54;  // 带规制信息的最大限速标志
+      FACILITY_PEDESTRIANS = 56;                    // 注意行人
+      FACILITY_UNKNOWN = 255;                       // 无效值
+    }
+    optional FacilityType type = 2;  // 设施类型
+    enum FacilitySceneType {
+      FACILITY_SCENE_TYPE_UNKNOWN = 0;           // 未知
+      FACILITY_SCENE_TYPE_RAMP_SPEED_LIMIT = 2;  // 匝道限速
+    }
+    optional FacilitySceneType scene_type = 3;  // 场景类型
+    optional uint32 value = 4;                  // 限速值
+
+    repeated TimeRegulationRange time_regulation_ranges = 5;  // 时间规制范围
+    message Weather {
+      enum WeatherType {
+        WEATHER_TYPE_INVALID = 0;   // 无效值
+        WEATHER_TYPE_SUNSHINE = 1;  // 晴天
+        WEATHER_TYPE_RAINSNOW = 2;  // 雨(雪)天
+        WEATHER_TYPE_ICE = 4;       // 路面结冰
+        WEATHER_TYPE_FOG = 8;       // 雾天
+      }
+      optional WeatherType weather_type = 1;  // 天气类型
+      optional bool is_limited =
+          2;  // true是该天气条件下限行 false是天气条件外限行
+    }
+    optional Weather weather = 6;  // 天气条件
+  }
+  repeated Facility facilities = 21;  // 道路设施列表
+  message SpeedLimitInfo {
+    optional uint32 speed = 1;  // 限速值, 单位: km/h
+  }
+  repeated SpeedLimitInfo speed_limit_infos = 22;  // 道路最大限速信息
+  repeated SpeedLimitInfo derived_speed_limit_infos = 23;  // 推导最大限速信息
+  message ConnectRoads {
+    repeated uint64 from_road_ids = 1;  // 进入道路ID
+    repeated uint64 to_road_ids = 2;    // 退出道路ID
+  }
+  optional ConnectRoads connect_roads = 24;  // 进入和退出节点关联的link
+  message CheckPoint {
+    optional uint32 offset = 1;  // 距离道路起点的偏移量, 单位: cm
+  }
+  repeated CheckPoint check_points = 25;  // 检查站列表
+  message BusLaneInfo {
+    optional uint32 offset = 1;  // 距离道路起点的偏移量, 单位: cm
+    repeated uint32 on_lanes = 2;  // 从左往右，[0,0,1]表示第3车道为公交车道
+    repeated TimeRegulationRange time = 3;      // 时间规制
+    optional HolidayType holiday = 4;           // 节假日规制
+    optional WorkHolidayType work_holiday = 5;  // 补班日规制
+  }
+  repeated BusLaneInfo bus_lane_infos = 26;  // 公交车道信息
+  message BackLaneInfo {
+    optional uint32 number = 1;  // 车道编号: 从1开始编号, 无效值为0
+    enum LaneDirectType {
+      LANE_DIRECT_TYPE_NORMAL = 0;         // 普通车道
+      LANE_DIRECT_TYPE_BUS = 1;            // 公交车专用车道
+      LANE_DIRECT_TYPE_OTHER_SPECIAL = 2;  // 其他专用车道
+      LANE_DIRECT_TYPE_REVERSIBLE = 3;     // 潮汐车道
+      LANE_DIRECT_TYPE_VARIABLE = 4;       // 可变车道
+    }
+    optional LaneDirectType lane_direct_type = 2;  // 车道类型
+    enum LaneExtendType {
+      LANE_EXTEND_TYPE_DEFAULT = 0;  // 默认值
+      LANE_EXTEND_TYPE_LEFT = 1;     // 左扩展
+      LANE_EXTEND_TYPE_RIGHT = 2;    // 右扩展
+    }
+    optional LaneExtendType lane_extend_type = 3;  // 拓展类型
+    message LaneArrow {
+      enum ArrowType {
+        ARROW_TYPE_INVALID = 0;                       // 无效值
+        ARROW_TYPE_LEFTUTURN = 1;                     // bit0: 左掉头
+        ARROW_TYPE_TURNLEFT = 2;                      // bit1: 左转
+        ARROW_TYPE_STRAIGHT = 4;                      // bit2: 直行
+        ARROW_TYPE_TURNRIGHT = 8;                     // bit3: 右转
+        ARROW_TYPE_RIGHTUTURN = 16;                   // bit4: 右掉头
+        ARROW_TYPE_LEFT_SIDE_WIDTH_CHANGE = 1048576;  // bit20: 左侧车道变窄
+        ARROW_TYPE_RIGHT_SIDE_WIDTH_CHANGE = 2097152;  // bit21: 右侧车道变窄
+        ARROW_TYPE_SINGLE_LANE_NO_UTURN = 4194304;  // bit22: 单车道禁止掉头
+        ARROW_TYPE_LEFT_CURVATURE = 8388608;        // bit23: 左歪
+        ARROW_TYPE_RIGHT_CURVATURE = 16777216;      // bit24: 右歪
+        ARROW_TYPE_EMPTY_LANE = 33554432;           // bit25: 空车道
+      }
+      optional ArrowType arrow_type = 1;          // 箭头类型
+      repeated TimeRegulationRange time = 2;      // 时间规制
+      optional HolidayType holiday = 3;           // 节假日规制
+      optional WorkHolidayType work_holiday = 4;  // 补班日规制
+    }
+    repeated LaneArrow arrows = 4;  // 车道箭头信息
+  }
+  repeated BackLaneInfo back_lanes = 27;  // 背景车道信息
+}
+
+message DeleteRoadIds {
+  // 删除数据消息标识，每次播发+1, 在重置后清0
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  repeated uint64 ids = 2;             // 拖尾删除的roadId
+}
+
+message RoadPackages {
+  // 静态数据消息标识，每次播发+1, 在重置后清0
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  repeated RoadPackage road_packages = 2;
+}
+
+message NaviRoute {
+  // 导航路径消息标识，每次播发+1, 在重置后清0
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  optional OriginalRoute route = 2;
+}
+
+message OriginalLocInfos {
+  // 消息标识, 每次播发+1
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  repeated OriginalLocInfo loc_infos = 2;
+}
+
+message OriginalDynamicDatas {
+  // 消息标识，每次播发+1, 在重置后清0
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  repeated OriginalDynamicData dynamic_datas = 2;
+}
+
+message DeleteOriginalDynamicDataIds {
+  // 消息标识，每次播发+1, 在重置后清0
+  optional uint32 cyclic_counter = 1;  // 循环计数器
+  repeated OriginalDynamicDataId ids = 2;  // 需要删除的动态信息数据ID集合
+}
+
+message MapApiRawMessage {
+  optional double timestamp = 1;  // 消息时间戳
+  oneof message {
+    DeleteRoadIds delete_road_ids = 2;                // 删除道路ID
+    RoadPackages road_packages = 3;                   // 道路包
+    NaviRoute navi_route = 4;                         // 导航路径
+    OriginalLocInfos original_loc_infos = 5;          // 原始定位信息
+    OriginalDynamicDatas original_dynamic_datas = 6;  // 原始动态数据
+    DeleteOriginalDynamicDataIds delete_original_dynamic_data_ids =
+        7;  // 删除原始动态数据ID
+  }
+}

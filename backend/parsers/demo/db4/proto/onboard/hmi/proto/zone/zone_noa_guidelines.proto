@@ -1,0 +1,52 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+
+message GuidelineAttributeInfoType {
+  enum GuidelineColor {
+    GUIDELINE_COLOR_NODISPLAY = 0;
+    GUIDELINE_COLOR_DARK_BLUE = 1;
+    GUIDELINE_COLOR_LIGHT_BLUE = 2;
+    GUIDELINE_COLOR_GREY = 3;
+    GUIDELINE_COLOR_OTHER = 4;
+  }
+  optional GuidelineColor color = 1;
+  optional uint32 start_idx = 2;
+  optional uint32 end_idx = 3;
+  optional float wide = 4;
+}
+
+message GuidelinePtPosInfo {
+  optional float x = 1;
+  optional float y = 2;
+}
+
+message GuidelineAttributeType {
+  optional uint32 num = 1;
+  repeated GuidelineAttributeInfoType guideline = 2;
+}
+
+message GuidelinePointType {
+  optional uint32 num = 1;
+  repeated GuidelinePtPosInfo pt_pos = 2;
+}
+
+message ZoneNoaGuidelines {
+  enum FunctionName {
+    FUNCTION_NAME_INIT = 0;
+    FUNCTION_NAME_NOA = 1;
+    FUNCTION_NAME_LCC = 2;
+  }
+  enum StatusEn {
+    STATUS_INIT = 0;
+    STATUS_OK = 1;
+    STATUS_INVALID = 2;
+  }
+
+  optional uint64 time_stamp = 1;
+  optional uint32 cycle_counter = 2;
+  optional int32 status = 3;
+  optional FunctionName function = 4;
+  optional GuidelineAttributeType attr_type = 5;
+  optional GuidelinePointType pts_type = 6;
+}

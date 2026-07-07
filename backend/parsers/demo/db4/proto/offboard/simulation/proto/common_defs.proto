@@ -1,0 +1,31 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/sim_trajectory.proto";
+
+message SimPointProto {
+  oneof position_type {
+    Vec3dProto pos_smooth = 1;
+    FrenetPositionProto pos_frenet = 2;
+    mapping.GeoPointProto pos_global = 3;
+  }
+}
+
+// A message for distance range.
+message DistanceWindow {
+  optional double min = 1;
+  optional double max = 2;
+}

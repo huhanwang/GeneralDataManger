@@ -1,0 +1,192 @@
+
+syntax = "proto2";
+
+package snoah.emergency_brake;
+
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/prediction.proto";
+
+enum EmergencyBrakeObjectType {
+  UNKNOWN_OBJECT = 1;
+  PEDESTRIAN = 2;
+  CYCLIST = 3;
+  TRICYCLIST = 4;
+  VEHICLE = 5;
+  STATIC = 6;
+}
+
+enum DecisionType {
+  // No decision.
+  UNKNOWN_DECISION = 1;
+  // No need to consider in emergency brake system.
+  IGNORE = 2;
+  // Potential emergency brake object.
+  CONSIDER = 3;
+}
+
+enum IgnoreReasonType {
+  // No ignore reason.
+  NONE = 1;
+
+  // Pre filter.
+  // Not in ego vehicle's region of interest.
+  NOT_IN_EGO_ROI = 2;
+  // Objects just apeared (unstable objects).
+  LIFE_TIME_TOO_SHORT = 3;
+  // Objects' latency too large, no longer updated
+  LATENCY_TOO_LARGE = 16;
+  // Near parallel driving objects.
+  NEAR_PARALLEL_DRIVING = 4;
+  // Objects filtered by perception.
+  FILTERED_BY_PERCEPTION = 5;
+  // Speed angle abnormal.
+  ABNORMAL_SPEED_ANGLE = 6;
+  // Objects only appear for one frame.
+  FIRST_APPEARANCE = 20;
+
+  // Post filter.
+  // Objects is driving away from ego vehicle.
+  DRIVING_AWAY_FROM_EGO = 7;
+  // Stationary objects without overlap with path.
+  STATIONARY_WITHOUT_OVERLAP = 8;
+  // On-path objects with low overlap ratio.
+  LOW_OVERLAP_RATIO = 9;
+  // Objects hit current ego vehicle's position.
+  HIT_CURRENT_POS = 10;
+  // Crowd without overlap with ego vehicle's path.
+  CROWD_WITHOUT_OVERLAP = 11;
+
+  // Candidate selector.
+  // Objects too far away (relative to other objects with same pattern) from ego
+  // vehicle to consider.
+  DISTANCE_TOO_FAR = 12;
+  // Objects' overlap pattern is not the kind we care about.
+  PATTERN_NOT_CONSIDERED = 13;
+  // Objects are too late to cross ego's path.
+  CROSSING_TOO_LATE = 15;
+  // Objects are outside the curb.
+  CROSSING_THROUGH_CURB = 17;
+  // Objects' heading are unstable.
+  UNSTABLE_HEADING = 24;
+  // Crossing objects with large yaw rate.
+  YAW_RATE_TOO_LARGE = 19;
+  // Objects' speed are unstable.
+  UNSTABLE_SPEED = 21;
+  // Objects' position are unstable.
+  UNSTABLE_POSITION = 22;
+  // Objects could stop before invading ego path.
+  OBJECT_COULD_STOP = 25;
+
+  // Filter by backup paths.
+  // Objects can be nudged by backup paths.
+  NUDGED_BY_BACKUP_PATH = 14;
+  // Oncoming objects are not reliable on large curvature path.
+  LARGE_CURVATURE_PATH = 23;
+
+  // RCW
+  // Pre filter.
+  // Unrelated objects' type.
+  UNRELATED_TYPE = 26;
+  // Stationary objects.
+  STATIONARY = 27;
+  // Objects' relative angle too large.
+  RELATIVE_ANGLE_TOO_LARGE = 28;
+  // Objects not completely behind ego.
+  NOT_BEHIND_EGO = 29;
+  // Objects not overlapped with rear rectangular region.
+  NOT_IN_REAR_REGION = 30;
+
+  // Post filter.
+  // Objects' prediction without overlap with ego vehicle.
+  NO_OVERLAP = 31;
+  // Ego vehicle's relative speed angle is too large.
+  LARGE_RELATIVE_SPEED_ANGLE = 32;
+  // Objects not satisfied with MatchConf.
+  LOW_MATCH_CONF = 33;
+  // Object's relative speed is too low.
+  LOW_RELATIVE_SPEED = 34;
+  // Low rcw conf.
+  LOW_RCW_CONF = 35;
+
+  // LSAEB.
+  MOVING_OBJECT = 36;
+
+  reserved 18;
+}
+
+enum OverlapPattern {
+  // Unknown pattern.
+  // The objects do not overlap with path. Or objects overlap with path but its
+  // overlap pattern is not the kind we care about.
+  UNKNOWN_PATTERN = 1;
+  // Object drives at constant speed on the path.
+  CONSTANT_SPEED_ON_PATH = 2;
+  // Object drives at constant acceleration on the path.
+  CONSTANT_ACCELERATION_ON_PATH = 3;
+  // Object crosses the path.
+  CROSSING = 4;
+  // Oncoming object drives on the path.
+  ONCOMING_ON_PATH = 5;
+}
+
+enum MatchConf {
+  UNKNOWN_CONF = 1;
+  LOWEST = 2;
+  LOW = 3;
+  MEDIUM = 4;
+  HIGH = 5;
+  HIGHEST = 6;
+}
+
+message StPointsProto {
+  repeated double s = 1;
+  repeated double t = 2;
+}
+
+message EmergencyBrakeFusionObjectProto {
+  optional string id = 1;
+  optional Box2dProto bounding_box = 2;
+  optional double speed = 3;
+  optional double acceleration = 4;
+  optional PredictedTrajectoryProto prediction = 5;
+
+  optional EmergencyBrakeObjectType type = 6;
+  optional bool is_stationary = 7;
+  optional DecisionType decision = 8;
+  optional IgnoreReasonType ignore_reason = 9;
+  optional OverlapPattern overlap_pattern = 10;
+
+  optional double pass_time_buffer = 11;
+  optional double yield_time_buffer = 12;
+
+  optional MatchConf match_conf = 13;
+  optional double overlap_ratio = 14;
+}
+
+message EmergencyBrakeObjectProto {
+  optional string id = 1;
+  optional Box2dProto bounding_box = 2;
+  optional double speed = 3;
+  optional double acceleration = 4;
+  optional PredictedTrajectoryProto prediction = 5;
+
+  optional EmergencyBrakeObjectType type = 6;
+  optional bool is_stationary = 7;
+  optional DecisionType decision = 8;
+  optional IgnoreReasonType ignore_reason = 9;
+  optional OverlapPattern overlap_pattern = 10;
+
+  optional double pass_time_buffer = 11;
+  optional double yield_time_buffer = 12;
+  optional double overlap_ratio = 13;
+  optional double overlap_s = 14;
+}
+
+message EmergencyBrakeClusterObjectProto {
+  optional uint32 id = 1;
+  optional EmergencyBrakeObjectType type = 2;
+  optional DecisionType decision = 3;
+  optional IgnoreReasonType ignore_reason = 4;
+  optional OverlapPattern overlap_pattern = 5;
+  optional double overlap_ratio = 6;
+}

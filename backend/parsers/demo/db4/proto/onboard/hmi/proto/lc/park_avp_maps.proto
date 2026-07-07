@@ -1,0 +1,93 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/hmi/proto/lc/ap_hmi_slots.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message APHMIAvpPoint {
+  optional LongCheng.Point3D slotpoint = 1;
+  optional float floor = 2;
+  optional int32 point_floor = 3;
+}
+
+message APHMIAvpSlot {
+  optional int64 id = 1;
+  optional int64 display_id = 2;
+  // enter edge midpoint.
+
+  optional APHMIAvpPoint point = 3;
+
+  // enter edge angle [0, 90).
+  optional float edge1ang = 4;
+  // side edge angle [0, 360).
+  optional float edge2ang = 5;
+  // enter edge lenth.
+  optional float edge1len = 6;
+  // side edge lenth.
+  optional float edge2len = 7;
+
+  optional LPP_PARKING_SLOT_STOP_STATUS stop_status = 8;
+  optional LPP_PARKING_SLOT_STATUS status = 9;
+  optional LPP_PARKING_SLOT_TYPE type = 10;
+  optional bool has_limiter = 11;
+  optional LPP_PARKING_SLOT_AVAILABLE slot_available_status = 12;
+  optional bool is_memorized = 13;
+  optional double use_time = 14;
+  optional int32 slot_level = 15;
+  optional int32 slot_floor = 16;
+  optional int32 slot_func_type = 17;
+  repeated LongCheng.Point3D avp_contour = 18;
+  optional Point2D centroid = 19;
+  optional Point2D direction = 20;
+}
+
+message MEM_SLOT_INFO {
+  optional int64 slot_id = 1;
+  optional string slot_memory_time = 2;
+  optional int64 slot_used_times = 3;
+}
+
+message APHMIAvpPath {
+  optional int64 path_id = 1;
+  repeated APHMIAvpPoint points = 2;
+}
+
+message AvpMap {
+  optional string map_id = 1;
+  repeated APHMIAvpSlot avp_slots = 2;
+  repeated MEM_SLOT_INFO memorized_slots_info = 3;
+  repeated APHMIAvpPath paths = 4;
+}
+
+message EntranceCoordinate {
+  optional double longitude = 1;
+  optional double latitude = 2;
+}
+
+message ParkAvpMaps {
+  optional LiteHeader header = 1;
+  optional LongCheng.HeaderLC header_lc = 2;
+  repeated AvpMap avp_maps = 3;
+  optional EntranceCoordinate entrance_coordinate = 4;
+}
+
+message AvpMapIndex {
+  optional string map_id = 1;
+  optional EntranceCoordinate entrance_coordinate = 2;
+  optional EntranceCoordinate coordinate_origin = 3;
+  optional EntranceCoordinate coordinate_upright = 4;
+  optional int32 map_type = 5;
+  optional int64 used_times = 6;
+  optional bool mapping_by_system = 7;
+  optional int32 map_level = 8;
+  optional int32 total_floor = 9;
+  optional int64 route_distance = 10;
+}
+
+message ParkAvpMapsIndex {
+  optional LiteHeader header = 1;
+  optional LongCheng.HeaderLC header_lc = 2;
+  repeated AvpMapIndex avpmap_indexs = 3;
+}

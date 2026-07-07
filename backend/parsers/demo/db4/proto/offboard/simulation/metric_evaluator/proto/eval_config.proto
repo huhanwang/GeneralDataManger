@@ -1,0 +1,3026 @@
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/offboard/simulation/metric_evaluator/proto/eval_config";
+
+import "onboard/proto/safety_func_obstacle.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/maps/proto/ehp_speed_limit_range.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/proto/blind_spot_assist.proto";
+import "onboard/proto/execution_issue.proto";
+import "onboard/proto/q_issue.proto";
+import "onboard/proto/liauto/li_mcu_to_soa_failsafe.proto";
+import "onboard/common/proto/qalc.proto";
+import "onboard/proto/assist_state.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/emergency_brake.proto";
+import "onboard/proto/lane_support.proto";
+import "onboard/common/proto/qacc.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+// not used import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/fault_table.proto";
+import "onboard/proto/hmi_content.proto";
+import "onboard/proto/perception/lsaeb/lsaeb_freespace.proto";
+import "onboard/hmi/proto/lc/city_noa/city_noa_info.proto";
+import "onboard/proto/perception/parking/parking_spots.proto";
+import "onboard/proto/perception/vision/intelligent_speed_limit.proto";
+import "onboard/proto/perception/vision/traffic_sign.proto";
+import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+import "offboard/simulation/metric_evaluator/proto/perception_metric.proto";
+import "offboard/simulation/metric_evaluator/proto/planner_metric.proto";
+import "offboard/simulation/metric_evaluator/proto/localization_metric.proto";
+import "offboard/simulation/metric_evaluator/proto/prt_metric.proto";
+// not used import "onboard/planner/proto/planner_state.proto";
+import "offboard/simulation/metric_evaluator/proto/map_metric.proto";
+// not found import "onboard/hmi/proto/platform/driving_remind_platform.proto";
+import "onboard/hmi/proto/lc/park_hmi_state.proto";
+// not found import "onboard/hmi/proto/platform/parking_remind_platform.proto";
+// not found import "onboard/hmi/proto/platform/active_safety_platform.proto";
+import "onboard/proto/q_power_manager.proto";
+import "onboard/proto/q_run_event_states.proto";
+import "onboard/proto/perception/fusion/object.proto";
+
+// A user-defined evaluation of a simulation.
+message Metric {
+  optional string name = 1;
+
+  oneof type {
+    EnterCruiseMetric enter_cruise_metric = 2;
+    ExecutionIssueMetric execution_issue_metric = 4;
+    ReachDestinationMetric reach_destination_metric = 5;
+    ProhibitedDestinationMetric prohibited_destination_metric = 6;
+    CollisionMetric collision_metric = 7;
+    PrtDetectionMetric prt_detection_metric = 9;
+    PerceptionGroundTruthMetric perception_ground_truth_metric = 10
+        [deprecated = true];
+    TrafficLightGroundTruthMetric traffic_light_ground_truth_metric = 11;
+    LocalizationStabilityMetric localization_stability_metric = 12;
+    StatsMetric stats_metric = 13;
+    ControlPerformanceMetric control_performance_metric = 14;
+    SpeedRangeMetric speed_range_metric = 15;
+    LaneBoundaryProximityMetric lane_boundary_proximity_metric = 16;
+    TrajectoryValidationMetric trajectory_validation_metric = 17;
+    PosrtMetric posrt_metric = 18;
+    PoseDivergenceMetric pose_divergence_metric = 20;
+    AccelerationDivergenceMetric acceleration_divergence_metric = 21;
+    SteerMetric steer_metric = 22;
+    PredTrajectoryMetric pred_trajectory_metric = 23;
+    FollowDistanceMetric follow_distance_metric = 24;
+    LateralDeviationMetric lateral_deviation_metric = 25;
+    NudgeDistanceMetric nudge_distance_metric = 26;
+    ProgressDivergenceMetric progress_divergence_metric = 27;
+    CrossLaneBoundaryMetric cross_lane_boundary_metric = 28;
+    SteerDivergenceMetric steer_divergence_metric = 29;
+    PredScenarioMetric pred_scenario_metric = 30;
+    PassingObjectMetric passing_object_metric = 31;
+    TakeoverMetric takeover_metric = 32;
+    TrajDecisionDiffMetric traj_decision_diff_metric = 33;
+    PredictedTrajMustPassZonesMetric predicted_traj_must_pass_zones_metric = 34;
+    PredictedTrajNoPassZonesMetric predicted_traj_no_pass_zones_metric = 35;
+    PredictedTrajAnyMustPassZonesMetric
+        predicted_traj_any_must_pass_zones_metric = 129;
+    PredictedTrajAllNoPassZonesMetric predicted_traj_all_no_pass_zones_metric =
+        130;
+    PredictedTrajCutinMetric predicted_traj_cutin_metric = 153;
+    UncomfortableAccelerationMetric uncomfortable_acceleration_metric = 36;
+    ComfortMetric comfort_metric = 37;
+    SpeedLimitedRegionMetric speed_limited_region_metric = 38;
+    TrajectoryMetric trajectory_metric = 39;
+    ReproduceDivergenceMetric reproduce_divergence_metric = 40;
+    TrajectoryObjRelationMetric trajectory_obj_relation_metric = 41;
+    TrajectoryNudgeDistanceMetric trajectory_nudge_distance_metric = 42;
+    TrajectoryFollowGapMetric trajectory_follow_gap_metric = 43;
+    LaneSpeedLimitMetric lane_speed_limit_metric = 44;
+    ReachParkingSpotMetric reach_parking_spot_metric = 46;
+    PredEventMetric pred_event_metric = 47;
+    PerceptionVelocityMetric perception_velocity_metric = 48;
+    GearChangeMetric gear_change_metric = 49;
+    PerceptionMissingMetric perception_missing_metric = 50 [deprecated = true];
+    PerceptionUnderSegmentMetric perception_under_segment_metric = 52;
+    PerceptionOverSegmentMetric perception_over_segment_metric = 53;
+    PerceptionRedundantMetric perception_redundant_metric = 54
+        [deprecated = true];
+    ProphnetFeatureSerializer prophnet_feature_serializer = 55;
+    PerceptionFalseNegativeMetric perception_false_negative_metric = 56;
+    PerceptionFalsePositiveMetric perception_false_positive_metric = 57;
+    EgoBehaviorIdentificationMetric ego_behavior_identification_metric = 58
+        [deprecated = true];
+    PerceptionClassificationMetric perception_classification_metric = 59;
+    TntFeatureSerializer tnt_feature_serializer = 60;
+    EmergencyToStopMetric emergency_to_stop_metric = 61;
+    HumanLikePlannerTrajectoryMetric human_like_planner_trajectory_metric = 62;
+    TrajOptMaxDdpIterationsMetric traj_opt_max_ddp_iterations_metric = 63;
+    TrajOptFinalCostMetric traj_opt_final_cost_metric = 64;
+    TrajOptLastIterationJs0Metric traj_opt_last_iteration_js0_metric = 65;
+    TrajOptLastIterationNegativeDropMetric
+        traj_opt_last_iteration_negative_drop_metric = 82;
+    TrajOptMaxAbsLateralJerkMetric traj_opt_max_abs_lateral_jerk_metric = 66;
+    TrajOptMaxAbsLateralAccMetric traj_opt_max_abs_lateral_acc_metric = 67;
+    TrajOptMaxLongitudinalJerkMetric traj_opt_max_longitudinal_jerk_metric = 68;
+    TrajOptMinLongitudinalJerkMetric traj_opt_min_longitudinal_jerk_metric = 69;
+
+    TrajOptMaxLongitudinalAccMetric traj_opt_max_longitudinal_acc_metric = 70;
+    TrajOptMinLongitudinalAccMetric traj_opt_min_longitudinal_acc_metric = 71;
+    TrajOptSolveTimeMetric traj_opt_solve_time_metric = 72;
+    TrajOptAddCostTimeMetric traj_opt_add_cost_time_metric = 73;
+
+    TrajOptCurbCollisionMetric traj_opt_curb_collision_metric = 101;
+
+    SteeringSpeedMetric steering_speed_metric = 74;
+
+    ObjectDistanceMetric object_distance_metric = 94;
+    LateralMovementMetric lateral_movement_metric = 228;
+
+    ComfortAccMetric comfort_acc_metric = 95;
+    ComfortBrakeMetric comfort_brake_metric = 96;
+    ComfortLataccMetric comfort_latacc_metric = 97;
+
+    ProhibitedTrajectoryMetric prohibited_trajectory_metric = 98;
+
+    ObjectDecisionDiffMetric object_decision_diff_metric = 99;
+    StalledObjectsMetric stalled_objects_metric = 100;
+    ParkingScoresMetric parking_scores_metric = 102;
+    ActNetFeatureSerializer act_net_feature_serializer = 106;
+    ActNetTrackerFeatureSerializer act_net_tracker_feature_serializer = 114;
+    QuestNetFeatureSerializer quest_net_feature_serializer = 364;
+
+    PerceptionValidationMetric perception_validation_metric = 107;
+    MsgValidationMetric msg_validation_metric = 334;
+
+    OpenLoopPncScenarioSerializer open_loop_pnc_scenario_serializer = 108;
+    ReachTrajectoryMetric reach_trajectory_metric = 109;
+    InitializerTrajReachRegionMetric initializer_traj_reach_region_metric = 112;
+
+    LaneChangeSafetyMetric lane_change_safety_metric = 110;
+    TrajectorySelectorMetric trajectory_selector_metric = 111;
+
+    LaneCenterDeviationMetric lane_center_deviation_metric = 115;
+
+    CrossSolidLaneBoundaryMetric cross_solid_lane_boundary_metric = 116;
+
+    RunRedLightMetric run_red_light_metric = 117;
+
+    TrajectorySmoothnessDiffMetric trajectory_smoothness_diff_metric = 118;
+
+    ImpassableBoundaryProximityMetric impassable_boundary_proximity_metric =
+        120;
+
+    QalcStateMetric qalc_state_metric = 121;
+
+    OptimizationSpeedTrajectoryComparisonMetric
+        optimization_speed_trajectory_comparison_metric = 122;
+
+    InferredObjectInRegionMetric inferred_object_in_region_metric = 123;
+    InferredObjectPrebrakeMetric inferred_object_prebrake_metric = 124;
+
+    QlccStateMetric qlcc_state_metric = 125;
+    LocalizationInitLevelMetric localization_init_level_metric = 126;
+
+    FollowCarDistanceMetric follow_car_distance_metric = 127;
+    SpeedDecisionMetric speed_decision_metric = 128;
+
+    CaptainNetJitterLossMetric captain_net_jitter_loss_metric = 131;
+    CaptainNetTrajAllMustPassZonesMetric
+        captain_net_traj_all_must_pass_zones_metric = 190;
+    CaptainNetTrajAllNoPassZonesMetric
+        captain_net_traj_all_no_pass_zones_metric = 191;
+    CaptainNetTrajAnyMustPassZonesMetric
+        captain_net_traj_any_must_pass_zones_metric = 192;
+    CaptainNetTrajAnyNoPassZonesMetric
+        captain_net_traj_any_no_pass_zones_metric = 193;
+    CaptainNetObjectCollisionMetric captain_net_object_collision_metric = 201;
+    CaptainNetSpecificObjectCollisionMetric
+        captain_net_specific_object_collision_metric = 212;
+
+    VelRelImpactMetric vel_rel_impact_metric = 132;
+    FcwTtcMetric fcw_ttc_metric = 133;
+    FcwHmiMetric fcw_hmi_metric = 134;
+    CptaPassMetric cpta_pass_metric = 135;
+    CbtaCmftapPassMetric cbta_cmftap_pass_metric = 136;
+    VelImpactMetric vel_impact_metric = 137;
+
+    LaneBoundaryShakeDetectionMetric lane_boundary_shake_detection_metric = 138;
+    ProhibitedLaneRegionMetric prohibited_lane_region_metric = 199;
+    CutinSlFeatureSerializer cutin_sl_feature_serializer = 139;
+    AutonomyStateMetric autonomy_state_metric = 140;
+    AutonomyStateDetectionMetric autonomy_state_detection_metric = 213;
+    HmaStateMetric hma_state_metric = 198;
+    OnlineLaneOffsetMetric online_lane_offset_metric = 141;
+    LssDtleMetric lss_dtle_metric = 142;
+    LdwMetric ldw_metric = 143;
+    AccComfortBrakeMetric acc_comfort_brake_metric = 144;
+
+    TimeToCollisionMetric time_to_collision_metric = 145;
+    TargetLaneStabilityMetric target_lane_stability_metric = 146;
+    OnlineMapQualityMetric online_map_quality_metric = 147;
+
+    AebAutoCalibrationMetric aeb_auto_calibration_metric = 151;
+
+    AccFollowObjectsMetric acc_follow_objects_metric = 152;
+    AccNotFollowObjectsMetric acc_not_follow_objects_metric = 182;
+
+    AebFalsePositiveMetric aeb_false_positive_metric = 148;
+    AebFalseNegativeMetric aeb_false_negative_metric = 154;
+    AebContinuousFalseNegativeMetric aeb_false_continuous_negative_metric = 202
+        [deprecated = true];
+    AebContinuousFalseNegativeMetric aeb_continuous_false_negative_metric = 203;
+    AwbFalsePositiveMetric awb_false_positive_metric = 155;
+    AwbFalseNegativeMetric awb_false_negative_metric = 156;
+
+    PrefillFalsePositiveMetric prefill_false_positive_metric = 157;
+    PrefillFalseNegativeMetric prefill_false_negative_metric = 158;
+
+    AbaFalsePositiveMetric aba_false_positive_metric = 159;
+    AbaFalseNegativeMetric aba_false_negative_metric = 160;
+
+    EbaFalsePositiveMetric eba_false_positive_metric = 161;
+    EbaFalseNegativeMetric eba_false_negative_metric = 162;
+
+    PebsFalsePositiveMetric pebs_false_positive_metric = 163;
+    PebsFalseNegativeMetric pebs_false_negative_metric = 164;
+
+    RaebFalsePositiveMetric raeb_false_positive_metric = 273;
+    RaebFalseNegativeMetric raeb_false_negative_metric = 274;
+
+    FctaFalsePositiveMetric fcta_false_positive_metric = 261;
+    FctaFalseNegativeMetric fcta_false_negative_metric = 262;
+
+    FctbFalsePositiveMetric fctb_false_positive_metric = 263;
+    FctbFalseNegativeMetric fctb_false_negative_metric = 264;
+
+    RctaFalsePositiveMetric rcta_false_positive_metric = 268;
+    RctaFalseNegativeMetric rcta_false_negative_metric = 269;
+
+    RctbFalsePositiveMetric rctb_false_positive_metric = 270;
+    RctbFalseNegativeMetric rctb_false_negative_metric = 271;
+
+    MaiFalsePositiveMetric mai_false_positive_metric = 372;
+    MaiFalseNegativeMetric mai_false_negative_metric = 373;
+
+    FcwStateMetric fcw_state_metric = 204;
+    AbpStateMetric abp_state_metric = 205;
+    AwbStateMetric awb_state_metric = 206;
+    AebStateMetric aeb_state_metric = 207;
+    EbaStateMetric eba_state_metric = 208;
+    TirePressureMaintenanceMetric tire_pressure_maintenance_metric = 209;
+    RaebStateMetric raeb_state_metric = 275;
+    FctaStateMetric fcta_state_metric = 276;
+    FctbStateMetric fctb_state_metric = 277;
+    RctaStateMetric rcta_state_metric = 278;
+    RctbStateMetric rctb_state_metric = 279;
+    RcwStateMetric rcw_state_metric = 280;
+
+    LocalizationLaneErrorMetric localization_lane_error_metric = 165;
+    LocalizationResetTimesMetric localization_reset_times_metric = 166;
+
+    HighBeamToLowBeamMetric high_beam_to_low_beam_metric = 167;
+    LowBeamToHighBeamMetric low_beam_to_high_beam_metric = 177;
+    HighBeamNotToLowBeamMetric high_beam_not_to_low_beam_metric = 178;
+    LowBeamNotToHighBeamMetric low_beam_not_to_high_beam_metric = 179;
+
+    LdwFalsePositiveMetric ldw_false_positive_metric = 168;
+    LdwFalseNegativeMetric ldw_false_negative_metric = 197;
+    LkaFalsePositiveMetric lka_false_positive_metric = 169;
+    LkaFalseNegativeMetric lka_false_negative_metric = 196;
+    ElkFalsePositiveMetric elk_false_positive_metric = 170;
+    ElkFalseNegativeMetric elk_false_negative_metric = 195;
+
+    DrivableRegionRedundantMetric drivable_region_redundant_metric = 171;
+    DrivableRegionMissingMetric drivable_region_missing_metric = 172;
+
+    LaneSelectionFeatureSerializer lane_selection_feature_serializer = 174;
+
+    WorkStateGroundTruthMetric work_state_ground_truth_metric = 175;
+
+    IntelligentSpeedAssistanceCorrectMetric
+        intelligent_speed_assistance_correct_metric = 173;
+    IntelligentSpeedAssistanceWrongMetric
+        intelligent_speed_assistance_wrong_metric = 176;
+    TrafficSignRecognitionWrongMetric traffic_sign_recognition_wrong_metric =
+        180;
+    TrafficSignRecognitionCorrectMetric
+        traffic_sign_recognition_correct_metric = 181;
+
+    TimeOfHeadWayMetric time_of_head_way_metric = 183;
+
+    LateralDeviationOfBevLaneMetric lateral_deviation_of_bev_lane_metric = 184;
+    PlannerPathDivergeMetric planner_path_diverge_metric = 185;
+
+    AccelRangeMetric accel_range_metric = 186;
+
+    AccActiveSourceMetric acc_active_source_metric = 187;
+
+    BsdWarningStateMetric bsd_warning_state_metric = 188;
+
+    DowWarningStateMetric dow_warning_state_metric = 189;
+    TrajectorySpeedDiffMetric trajectory_speed_diff_metric = 194;
+    OnlineMapCoverageMetric online_map_coverage_metric = 200;
+
+    PositioningMetric positioning_metric = 210;
+    MaxJerkMetric max_jerk_metric = 211;
+    ProperBrakeMetric proper_brake_metric = 214;
+    PoseDerivativeMetric pose_derivative_metric = 215;
+
+    BevLaneFalseNegativeMetric bev_lane_false_negative_metric = 216;
+    BevLaneFalsePositiveMetric bev_lane_false_positive_metric = 217;
+    BevLaneBrokenLineMetric bev_lane_broken_line_metric = 218;
+    BevLaneMisclassificationMetric bev_lane_misclassification_metric = 219;
+    BevLaneLateralErrorMetric bev_lane_lateral_error_metric = 220;
+    BevStoplineFalseNegativeMetric bev_stopline_false_negative_metric = 221;
+    BevStoplineFalsePositiveMetric bev_stopline_false_positive_metric = 222;
+    BevStoplineLateralErrorMetric bev_stopline_lateral_error_metric = 223;
+
+    LocalizationDriftErrorMetric localization_drift_error_metric = 224;
+    LocalizationMatchErrorMetric localization_match_error_metric = 226;
+    LocalizationPoseErrorMetric localization_pose_error_metric = 230;
+
+    LaneChangeStateMetric lane_change_state_metric = 225;
+
+    PredrtL2Metric predrt_l2_metric = 227;
+
+    OnlineMapDiffMetric online_map_diff_metric = 229;
+    CutinDivergenceMetric cutin_divergence_metric = 231;
+    RadarFalseNegativeMetric radar_false_negative_metric = 232;
+    RadarFalsePositiveMetric radar_false_positive_metric = 233;
+    RadarOverSegMetric radar_over_seg_metric = 234;
+    RadarUnderSegMetric radar_under_seg_metric = 235;
+    RadarClassificationMetric radar_classification_metric = 239;
+    RadarVelocityMetric radar_velocity_metric = 240;
+    FrontCameraFalseNegativeMetric front_camera_false_negative_metric = 284;
+    FrontCameraFalsePositiveMetric front_camera_false_positive_metric = 285;
+    FrontCameraOverSegMetric front_camera_over_seg_metric = 286;
+    FrontCameraUnderSegMetric front_camera_under_seg_metric = 287;
+    FrontCameraVelocityMetric front_camera_velocity_metric = 288;
+    FrontCameraClassificationMetric front_camera_classification_metric = 289;
+    FrontCameraExistenceConfidenceMetric
+        front_camera_existence_confidence_metric = 292;
+
+    RuleMatcherMetric rule_matcher_metric = 238;
+    PerceptionObjectHeadingMetric perception_object_heading_metric = 241;
+    RadarIdConsistanceMetric radar_id_consistance_metric = 242;
+    OpenLoopTrajectoryCollisionMetric open_loop_trajectory_collision_metric =
+        243;
+
+    SmoothPosrtMetric smooth_posrt_metric = 244;
+
+    FusedBevLaneFalseNegativeMetric fused_bev_lane_false_negative_metric = 245;
+    FusedBevLaneFalsePositiveMetric fused_bev_lane_false_positive_metric = 246;
+    FusedBevLaneBrokenLineMetric fused_bev_lane_broken_line_metric = 247;
+    FusedBevLaneMisclassificationMetric
+        fused_bev_lane_misclassification_metric = 248;
+    FusedBevLaneLateralErrorMetric fused_bev_lane_lateral_error_metric = 249;
+    FusedBevStoplineFalseNegativeMetric
+        fused_bev_stopline_false_negative_metric = 250;
+    FusedBevStoplineFalsePositiveMetric
+        fused_bev_stopline_false_positive_metric = 251;
+    FusedBevStoplineLateralErrorMetric fused_bev_stopline_lateral_error_metric =
+        252;
+
+    CameraFalsePositiveMetric camera_false_positive_metric = 253;
+    CameraFalseNegativeMetric camera_false_negative_metric = 254;
+    CameraOverSegmentMetric camera_over_segment_metric = 255;
+    CameraUnderSegmentMetric camera_under_segment_metric = 256;
+
+    FusedBevLanePositionIndexMetric fused_bev_lane_position_index_metric = 257;
+    LocalizationStatusMetric localization_status_metric = 258;
+    RcwFalsePositiveMetric rcw_false_positive_metric = 259;
+    RcwFalseNegativeMetric rcw_false_negative_metric = 347;
+    RcwTtcMetric rcw_ttc_metric = 260;
+    CalibrationMetric calibration_metric = 265;
+    CalibrationRepeatedAccuracyMetric calibration_repeated_accuracy_metric =
+        290;
+
+    LocalizationErrorCodeMetric localization_error_code_metric = 266;
+    LocalizationMatchStatusMetric localization_match_status_metric = 267;
+
+    PredictedTrajValidityMetric predicted_traj_validity_metric = 281;
+    FaultTableMetric fault_table_metric = 282;
+    ImageAnomalyFalsePositiveMetric image_anomaly_false_positive_metric = 283;
+    ImageAnomalyFalseNegativeMetric image_anomaly_false_negative_metric = 332;
+    ImageAnomalyCameraFalsePositiveMetric
+        image_anomaly_camera_false_positive_metric = 387;
+    TrafficLightDecisionMetric traffic_light_decision_metric = 293;
+
+    SafetyFuncFalseNegativeMetric safety_func_false_negative_metric = 294;
+    SafetyFuncFalsePositiveMetric safety_func_false_positive_metric = 295;
+    SafetyFuncOverSegMetric safety_func_over_seg_metric = 296;
+    SafetyFuncUnderSegMetric safety_func_under_seg_metric = 297;
+    SafetyFuncClassificationMetric safety_func_classification_metric = 298;
+    SafetyFuncVelocityMetric safety_func_velocity_metric = 299;
+    SafetyFuncFuseinfoVisionConfMetric safety_func_fuseinfo_vision_conf_metric =
+        306;
+    SafetyFuncFusionConfMetric safety_func_fusion_conf_metric = 307;
+    TrafficLightIdMetric traffic_light_id_metric = 308;
+    HmiContentMetric hmi_content_metric = 309;
+    SpeedLimitStateMetric speed_limit_state_metric = 310;
+    TrafficLightTwoDimMetric traffic_light_two_dim_metric = 312;
+    ImuCanCalibrationRepeatedAccuracyMetric
+        imu_can_calibration_repeated_accuracy_metric = 313;
+
+    LcAebFalsePositiveMetric lc_aeb_false_positive_metric = 314;
+    LcFcwFalsePositiveMetric lc_fcw_false_positive_metric = 315;
+    LcLdpFalsePositiveMetric lc_ldp_false_positive_metric = 316;
+    LcElkFalsePositiveMetric lc_elk_false_positive_metric = 317;
+
+    LcAebFalseNegativeMetric lc_aeb_false_negative_metric = 323;
+    LcFcwFalseNegativeMetric lc_fcw_false_negative_metric = 324;
+    LcLdpFalseNegativeMetric lc_ldp_false_negative_metric = 325;
+    LcElkFalseNegativeMetric lc_elk_false_negative_metric = 326;
+    PrtTrafficParticipantMetric prt_traffic_participant_metric = 318;
+    PrtBevRgMetric prt_bev_rg_metric = 319;
+    PrtFusedBevRgMetric prt_fused_bev_rg_metric = 320;
+    PrtFusedBevRgStabilityMetric prt_fused_bev_rg_stability_metric = 346;
+    PrtBevParkingSpotsMetric prt_bev_parking_spots_metric = 329;
+    PrtAvmParkingSpotsMetric prt_avm_parking_spots_metric = 331;
+    PrtFusionParkingSpotsMetric prt_fusion_parking_spots_metric = 420;
+
+    FilteredTrafficLightTwoDimMetric filtered_traffic_light_two_dim_metric =
+        322;
+    FilteredTrafficLightTwoDimFalsePositiveMetric
+        filtered_traffic_light_two_dim_false_positive_metric = 327;
+    FilteredTrafficLightTwoDimFalseNegativeMetric
+        filtered_traffic_light_two_dim_false_negative_metric = 328;
+    PrtTsrIsaMetric prt_tsr_isa_metric = 330;
+    PrtQcraftTrafficLightMetric prt_qcraft_traffic_light_metric = 333;
+    PrtHorizonTrafficLightMetric prt_horizon_traffic_light_metric = 337;
+    PrtImageAnomalyMetric prt_image_anomaly_metric = 335;
+
+    PredrtMetric predrt_metric = 336;
+
+    // TrafficLightOkInfoMetric and HmiOkInfoMetric are usually used in
+    // combination to evaluate ok info issues.
+    TrafficLightOkInfoMetric traffic_light_ok_info_metric = 338;
+    HmiOkInfoMetric hmi_ok_info_metric = 339;
+
+    LsaebFalseNegativeMetric lsaeb_false_negative_metric = 340;
+    LsaebFalsePositiveMetric lsaeb_false_positive_metric = 341;
+    LsaebOverSegMetric lsaeb_over_seg_metric = 342;
+    LsaebUnderSegMetric lsaeb_under_seg_metric = 343;
+    LsaebClassificationMetric lsaeb_classification_metric = 344;
+
+    NudgeBypassMetric nudge_bypass_metric = 345;
+    BevSlotDetectionMetric bev_slot_detection_metric = 348;
+    PosrtLocalizationMetric posrt_localization_metric = 349;
+    SlotEntranceCenterMetric slot_entrance_center_metric = 350;
+    PosrtLocalizationWithoutGroundTruthMetric
+        posrt_localization_without_ground_truth_metric = 351;
+    GlobalFusionMetric global_fusion_metric = 352;
+    FreespaceFalseNegativeMetric freespace_false_negative_metric = 353;
+    FreespaceFalsePositiveMetric freespace_false_positive_metric = 354;
+    FusionParkingSpotsFalseNegativeMetric
+        fusion_parking_spots_false_negative_metric = 355;
+    FusionParkingSpotsFalsePositiveMetric
+        fusion_parking_spots_false_positive_metric = 356;
+    FusionParkingSpotsSpotTypeMetric fusion_parking_spots_spot_type_metric =
+        357;
+    FusionParkingSpotsSpotStateMetric fusion_parking_spots_spot_state_metric =
+        358;
+    FusionParkingSpotsOccupiedReasonMetric
+        fusion_parking_spots_occupied_reason_metric = 359;
+    FusionParkingSpotsIdContinuityMetric
+        fusion_parking_spots_id_continuity_metric = 360;
+    FusionParkingSpotsWheelStopperMetric
+        fusion_parking_spots_wheel_stopper_metric = 361;
+    FusionParkingSpotsRearCenterSlotMetric
+        fusion_parking_spots_rear_center_slot_metric = 362;
+    FreespaceClassificationMetric freespace_classification_metric = 363;
+    OccupancyParkingFalsePositiveMetric
+        occupancy_parking_false_positive_metric = 365;
+    // PerceptionTrafficLightOkInfoMetric just evaluates ok info issues caused
+    // by perception.
+    PerceptionTrafficLightOkInfoMetric perception_traffic_light_ok_info_metric =
+        366;
+    OccupancyParkingFalseNegativeMetric
+        occupancy_parking_false_negative_metric = 367;
+    OccupancyParkingClassificationMetric
+        occupancy_parking_classification_metric = 368;
+    PrtE2ETrafficLightMetric prt_e_2_e_traffic_light_metric = 369;
+    PrtOccParkingMetric prt_occ_parking_metric = 370;
+    OnlineSemanticMapValidityMetric online_semantic_map_validity_metric = 371;
+
+    AvAccelerationMetric av_acceleration_metric = 374;
+    LidarFalseNegativeMetric lidar_false_negative_metric = 375;
+    LidarFalsePositiveMetric lidar_false_positive_metric = 376;
+    LidarOverSegMetric lidar_over_seg_metric = 377;
+    LidarUnderSegMetric lidar_under_seg_metric = 378;
+    LidarClassificationMetric lidar_classification_metric = 379;
+    LidarVelocityMetric lidar_velocity_metric = 380;
+    BevSlotFalseNegativeMetric bev_slot_false_negative_metric = 381;
+    BevSlotFalsePositiveMetric bev_slot_false_positive_metric = 382;
+    BevSlotClassificationMetric bev_slot_classification_metric = 383;
+    BevSlotSpotStateMetric bev_slot_spot_state_metric = 384;
+
+    LiParkingLimitersFalseNegativeMetric
+        li_parking_limiters_false_negative_metric = 385;
+    LiParkingLimitersFalsePositiveMetric
+        li_parking_limiters_false_positive_metric = 386;
+    PrtFisheyeFreespaceMetric prt_fisheye_freespace_metric = 388;
+
+    VehicleLightStatusMetric vehicle_light_status_metric = 389;
+
+    // the lodash used in webark treat mono3d as mono_3_d,so just use "mono"
+    FrontMonoFalseNegativeMetric front_mono_false_negative_metric = 390;
+    FrontMonoFalsePositiveMetric front_mono_false_positive_metric = 391;
+    FrontMonoOverSegMetric front_mono_over_seg_metric = 392;
+    FrontMonoUnderSegMetric front_mono_under_seg_metric = 393;
+    FrontMonoClassificationMetric front_mono_classification_metric = 394;
+    FrontMonoVelocityMetric front_mono_velocity_metric = 395;
+    LidarPerceptionNetResultUnderSegMetric
+        lidar_perception_net_result_under_seg_metric = 396;
+    CityNoaInfoDetectionMetric city_noa_info_detection_metric = 397;
+    FusionParkingSpotsEntranceMetric fusion_parking_spots_entrance_metric = 398;
+    FusionParkingSpotsBothSidesMetric fusion_parking_spots_both_sides_metric =
+        399;
+    PrtImageAnomalyFrontAd4Metric prt_image_anomaly_front_ad4_metric = 400;
+    PrtImageAnomalySideAndRearAd4Metric
+        prt_image_anomaly_side_and_rear_ad4_metric = 401;
+    AebMonoFovFifteenFalseNegativeMetric
+        aeb_mono_fov_fifteen_false_negative_metric = 402;
+    AebMonoFovThirtyFalseNegativeMetric
+        aeb_mono_fov_thirty_false_negative_metric = 403;
+    AebMonoFalsePositiveMetric aeb_mono_false_positive_metric = 404;
+    AebMonoFovFifteenOverSegMetric aeb_mono_fov_fifteen_over_seg_metric = 405;
+    AebMonoFovThirtyOverSegMetric aeb_mono_fov_thirty_over_seg_metric = 406;
+    AebMonoFovFifteenUnderSegMetric aeb_mono_fov_fifteen_under_seg_metric = 407;
+    AebMonoFovThirtyUnderSegMetric aeb_mono_fov_thirty_under_seg_metric = 408;
+    AebMonoClassificationMetric aeb_mono_classification_metric = 409;
+    LidarPerceptionNetResultFalseNegativeMetric
+        lidar_perception_net_result_false_negative_metric = 410;
+    LidarPerceptionNetResultFalsePositiveMetric
+        lidar_perception_net_result_false_positive_metric = 411;
+    LidarPerceptionNetResultOverSegMetric
+        lidar_perception_net_result_over_seg_metric = 412;
+    LocalizationInitTimeMetric localization_init_time_metric = 413;
+    LocalizationTargetSpotMetric localization_target_spot_metric = 414;
+    FisheyeBevTrackerFalseNegativeMetric
+        fisheye_bev_tracker_false_negative_metric = 415;
+    FisheyeBevTrackerFalsePositiveMetric
+        fisheye_bev_tracker_false_positive_metric = 416;
+    FisheyeBevTrackerOverSegMetric fisheye_bev_tracker_over_seg_metric = 417;
+    FisheyeBevTrackerUnderSegMetric fisheye_bev_tracker_under_seg_metric = 418;
+    HppLocalizationMatchMetric hpp_localization_match_metric = 419;
+    TrafficLightStateMetric traffic_light_state_metric = 421;
+    TrafficFormerStateMetric traffic_former_state_metric = 422;
+    LcAebAsFuncFalsePositiveMetric lc_aeb_asfunc_false_positive_metric = 423;
+    BevCrosswalkFalseNegativeMetric bev_crosswalk_false_negative_metric = 424;
+    BevCrosswalkFalsePositiveMetric bev_crosswalk_false_positive_metric = 425;
+    BevCrosswalkStateMetric bev_crosswalk_state_metric = 426;
+    PrtLidarOnlySemanticMetric prt_lidar_only_semantic_metric = 427;
+
+    LiParkingRoadGeometryFalseNegativeMetric
+        li_parking_road_geometry_false_negative_metric = 428;
+    LiParkingRoadGeometryFalsePositiveMetric
+        li_parking_road_geometry_false_positive_metric = 429;
+    LiParkingRoadGeometryClassificationMetric
+        li_parking_road_geometry_classification_metric = 430;
+    OccupancyDrivingFalseNegativeMetric
+        occupancy_driving_false_negative_metric = 431;
+    OccupancyDrivingFalsePositiveMetric
+        occupancy_driving_false_positive_metric = 432;
+    OccupancyDrivingClassificationMetric
+        occupancy_driving_classification_metric = 433;
+    FisheyeBevTrackerGateStatusMetric fisheye_bev_tracker_gate_status_metric =
+        434;
+    MppEgoSectionIdMetric mpp_ego_section_id_metric = 435;
+    PrtOccDrivingMetric prt_occ_driving_metric = 436;
+
+    HilLoadDiffMetric hil_load_diff_metric = 437;
+    FrontMovableFusionFalsePositiveMetric
+        front_movable_fusion_false_positive_metric = 438;
+    FrontMovableFusionFalseNegativeMetric
+        front_movable_fusion_false_negative_metric = 439;
+    FrontMovableFusionOverSegMetric front_movable_fusion_over_seg_metric = 440;
+    FrontMovableFusionUnderSegMetric front_movable_fusion_under_seg_metric =
+        441;
+
+    PosrtHppLocalizationMetric posrt_hpp_localization_metric = 442;
+    FisheyeBevTrackerClassificationMetric
+        fisheye_bev_tracker_classification_metric = 443;
+    AesLateralErrorMetric aes_lateral_error_metric = 444;
+    BevCenterlineFalseNegativeMetric bev_centerline_false_negative_metric = 445;
+    BevCenterlineFalsePositiveMetric bev_centerline_false_positive_metric = 446;
+    FusedBevCenterlineFalseNegativeMetric
+        fused_bev_centerline_false_negative_metric = 447;
+    FusedBevCenterlineFalsePositiveMetric
+        fused_bev_centerline_false_positive_metric = 448;
+    NaviInfoMetric navi_info_metric = 449;
+
+    ExternalFusedBevCenterlineFalseNegativeMetric
+        external_fused_bev_centerline_false_negative_metric = 450;
+    ExternalFusedBevCenterlineFalsePositiveMetric
+        external_fused_bev_centerline_false_positive_metric = 451;
+    PrtFusedMarkingMetric prt_fused_marking_metric = 452;
+    IntelligentSpeedFalseNegativeMetric
+        intelligent_speed_false_negative_metric = 453;
+    IntelligentSpeedFalsePositiveMetric
+        intelligent_speed_false_positive_metric = 454;
+    IntelligentSpeedClassificationMetric
+        intelligent_speed_classification_metric = 455;
+
+    PrtOccFusionMetric prt_occ_fusion_metric = 456;
+
+    IntelligentSpeedPointFalseNegativeMetric
+        intelligent_speed_point_false_negative_metric = 457;
+    IntelligentSpeedPointFalsePositiveMetric
+        intelligent_speed_point_false_positive_metric = 458;
+    IntelligentSpeedSemanticClassificationMetric
+        intelligent_speed_semantic_classification_metric = 459;
+    IntelligentSpeedZoneExactNumMetric intelligent_speed_zone_exact_num_metric =
+        460;
+
+    // HPP Escape
+    HppEscapeFalseNegativeMetric hpp_escape_false_negative_metric = 461;
+    HppEscapeFalsePositiveMetric hpp_escape_false_positive_metric = 462;
+    HppEscapeStateMetric hpp_escape_state_metric = 463;
+
+    FrontCameraAccJumpRateMetric front_camera_acc_jump_rate_metric = 464;
+
+    ExternalFusedBevCenterlineDegreeMetric
+        external_fused_bev_centerline_degree_metric = 465;
+
+    FusedMapformerBevCenterlineDegreeMetric
+        fused_mapformer_bev_centerline_degree_metric = 466;
+    FusedMapformerBevCenterlineClassificationMetric
+        fused_mapformer_bev_centerline_classification_metric = 467;
+
+    ExternalFusedCenterlineClassificationMetric
+        external_fused_centerline_classification_metric = 468;
+
+    BevCenterlineClassificationMetric bev_centerline_classification_metric =
+        469;
+
+    FusionOccObjectsFalseNegativeMetric
+        fusion_occ_objects_false_negative_metric = 470;
+    FusionOccObjectsFalsePositiveMetric
+        fusion_occ_objects_false_positive_metric = 471;
+
+    BevCenterlineDirectionMetric bev_centerline_direction_metric = 472;
+
+    FusedMapformerBevCenterlineDirectionMetric
+        fused_mapformer_bev_centerline_direction_metric = 473;
+
+    ExternalFusedCenterlineDirectionMetric
+        external_fused_centerline_direction_metric = 474;
+
+    LiParkingRoadGeometryHeadingMetric li_parking_road_geometry_heading_metric =
+        475;
+
+    PrtRgPointsStabilityMetric prt_rg_points_stability_metric = 476;
+
+    FusionOccObjectsClassificationMetric
+        fusion_occ_objects_classification_metric = 477;
+
+    MapformerBevCenterlineOverSegMetric
+        mapformer_bev_centerline_over_seg_metric = 478;
+    FusedMapformerCenterlineOverSegMetric
+        fused_mapformer_centerline_over_seg_metric = 479;
+    ExternalFusedCenterlineOverSegMetric
+        external_fused_centerline_over_seg_metric = 480;
+    MapformerBevCenterlineUnderSegMetric
+        mapformer_bev_centerline_under_seg_metric = 481;
+    FusedMapformerCenterlineUnderSegMetric
+        fused_mapformer_centerline_under_seg_metric = 482;
+    ExternalFusedCenterlineUnderSegMetric
+        external_fused_centerline_under_seg_metric = 483;
+
+    FusionOccObjectsOverSegMetric fusion_occ_objects_over_seg_metric = 484;
+    FusionOccObjectsUnderSegMetric fusion_occ_objects_under_seg_metric = 485;
+
+    CollisionLevelMetric collision_level_metric = 486;
+
+    HighwayAutoGateStateMetric highway_auto_gate_state_metric = 487;
+
+    IhbcDecisionStateMetric ihbc_decision_state_metric = 488;
+
+    EgoTrajMustPassZonesMetric ego_traj_must_pass_zones_metric = 489;
+
+    MapformerBevCenterlineOrderingMetric
+        mapformer_bev_centerline_ordering_metric = 490;
+
+    FusedMapformerCenterlineOrderingMetric
+        fused_mapformer_centerline_ordering_metric = 491;
+
+    ExternalFusedCenterlineOrderingMetric
+        external_fused_centerline_ordering_metric = 492;
+
+    HighwayAutoGateFalseNegativeMetric highway_auto_gate_false_negative_metric =
+        493;
+
+    HighwayAutoGateFalsePositiveMetric highway_auto_gate_false_positive_metric =
+        494;
+
+    EgoSceneTypeMetric ego_scene_type_metric = 495;
+
+    IntersectionLaneMetric intersection_lane_metric = 496;
+
+    FusedMapformerBevYShapeSemanticTypeMetric
+        fused_mapformer_bev_y_shape_semantic_type_metric = 497;
+
+    ExternalFusedYShapeSemanticTypeMetric
+        external_fused_y_shape_semantic_type_metric = 498;
+
+    TrafficSignSemanticClassificationMetric
+        traffic_sign_semantic_classification_metric = 499;
+
+    NudgeHmiFalseNegativeMetric nudge_hmi_false_negative_metric = 500;
+    NudgeHmiFalsePositiveMetric nudge_hmi_false_positive_metric = 501;
+
+    IntegratedNavigationDriftMetric integrated_navigation_drift_metric = 502;
+
+    MapformerBevLaneFalseNegativeMetric
+        mapformer_bev_lane_false_negative_metric = 503;
+    MapformerBevLaneFalsePositiveMetric
+        mapformer_bev_lane_false_positive_metric = 504;
+    MapformerBevLaneMisclassificationMetric
+        mapformer_bev_lane_misclassification_metric = 505;
+    MapformerBevStoplineFalseNegativeMetric
+        mapformer_bev_stopline_false_negative_metric = 506;
+    FusedMapformerBevLaneFalseNegativeMetric
+        fused_mapformer_bev_lane_false_negative_metric = 507;
+    FusedMapformerBevLaneFalsePositiveMetric
+        fused_mapformer_bev_lane_false_positive_metric = 508;
+    FusedMapformerBevLaneMisclassificationMetric
+        fused_mapformer_bev_lane_misclassification_metric = 509;
+    FusedMapformerBevStoplineFalseNegativeMetric
+        fused_mapformer_bev_stopline_false_negative_metric = 510;
+
+    MergeSpeedLimitFalseNegativeMetric merge_speed_limit_false_negative_metric =
+        511;
+
+    MergeSpeedLimitFalsePositiveMetric merge_speed_limit_false_positive_metric =
+        512;
+    SdlocLinkIdMetric sdloc_link_id_metric = 513;
+
+    FusionObjectsFalseNegativeMetric fusion_objects_false_negative_metric = 514;
+    FusionObjectsFalsePositiveMetric fusion_objects_false_positive_metric = 515;
+    FusionObjectsOverSegMetric fusion_objects_over_seg_metric = 516;
+    FusionObjectsUnderSegMetric fusion_objects_under_seg_metric = 517;
+    FusionObjectsClassificationMetric fusion_objects_classification_metric =
+        518;
+    FusionObjectsVelocityMetric fusion_objects_velocity_metric = 519;
+
+    ExternalFusedLaneFalseNegativeMetric
+        external_fused_lane_false_negative_metric = 520;
+    ExternalFusedLaneFalsePositiveMetric
+        external_fused_lane_false_positive_metric = 521;
+
+    ExternalFusedLaneUnderSegMetric external_fused_lane_under_seg_metric = 522;
+    ExternalFusedLaneOverSegMetric external_fused_lane_over_seg_metric = 523;
+
+    FusedMapformerBevLaneUnderSegMetric
+        fused_mapformer_bev_lane_under_seg_metric = 524;
+    FusedMapformerBevLaneOverSegMetric
+        fused_mapformer_bev_lane_over_seg_metric = 525;
+
+    TrafficGapMetric traffic_gap_metric = 526;
+
+    DwFalsePositiveMetric dw_false_positive_metric = 527;
+    DwFalseNegativeMetric dw_false_negative_metric = 528;
+
+    SdlocDeviatedFromRouteMetric sdloc_deviated_from_route_metric = 529;
+    IntegratedNavigationAccuracyMetric integrated_navigation_accuracy_metric =
+        530;
+
+    ExternalFusedStoplineFalseNegativeMetric
+        external_fused_stopline_false_negative_metric = 531;
+    ExternalFusedStoplineFalsePositiveMetric
+        external_fused_stopline_false_positive_metric = 532;
+    FusedMapformerBevStoplineFalsePositiveMetric
+        fused_mapformer_bev_stopline_false_positive_metric = 533;
+    MapformerBevStoplineFalsePositiveMetric
+        mapformer_bev_stopline_false_positive_metric = 534;
+    ExternalFusedLaneMisclassificationMetric
+        external_fused_lane_misclassification_metric = 535;
+
+    LiParkingObstaclesLockFalseNegativeMetric
+        li_parking_obstacles_lock_false_negative_metric = 536;
+    LiParkingObstaclesLockFalsePositiveMetric
+        li_parking_obstacles_lock_false_positive_metric = 537;
+
+    BevLaneOverSegMetric bev_lane_over_seg_metric = 538;
+    BevLaneUnderSegMetric bev_lane_under_seg_metric = 539;
+    FusedBevLaneOverSegMetric fused_bev_lane_over_seg_metric = 540;
+    FusedBevLaneUnderSegMetric fused_bev_lane_under_seg_metric = 541;
+    MapformerBevLaneOverSegMetric mapformer_bev_lane_over_seg_metric = 542;
+    MapformerBevLaneUnderSegMetric mapformer_bev_lane_under_seg_metric = 543;
+
+    BevGroundMarkingFalseNegativeMetric
+        bev_ground_marking_false_negative_metric = 544;
+    BevGroundMarkingFalsePositiveMetric
+        bev_ground_marking_false_positive_metric = 545;
+    BevGroundMarkingClassificationMetric
+        bev_ground_marking_classification_metric = 546;
+
+    LiParkingObstaclesLockTypeMetric li_parking_obstacles_lock_type_metric =
+        547;
+
+    MapFusionDiffMetric map_fusion_diff_metric = 548;
+
+    AutonomyStateTransitionMetric autonomy_state_transition_metric = 549;
+    TurnSignalMetric turn_signal_metric = 550;
+
+    ProtoFpsMetric proto_fps_metric = 551;
+
+    ProtoEnumCountMetric proto_enum_count_metric = 552;
+
+    FusedBevDriveBoundaryFalseNegativeMetric
+        fused_bev_drive_boundary_false_negative_metric = 553;
+    FusedBevDriveBoundaryFalsePositiveMetric
+        fused_bev_drive_boundary_false_positive_metric = 554;
+    BevDriveBoundaryFalseNegativeMetric
+        bev_drive_boundary_false_negative_metric = 555;
+    BevDriveBoundaryFalsePositiveMetric
+        bev_drive_boundary_false_positive_metric = 556;
+
+    RunEvaluationDowngradeMetric run_evaluation_downgrade_metric = 559;
+    RunEvaluationLaneChangeMetric run_evaluation_lane_change_metric = 560;
+    RunEvaluationIntersectionStatsMetric intersection_stats_metric = 561;
+
+    HppMappingResultMetric hpp_mapping_result_metric = 562;
+
+    DrivingRemindMetric driving_remind_metric = 563;
+    DrivingParkingSwitchMetric driving_parking_switch_metric = 564;
+
+    TrafficSignFalseNegativeMetric traffic_sign_false_negative_metric = 565;
+    TrafficSignFalsePositiveMetric traffic_sign_false_positive_metric = 566;
+
+    RunEvaluationAccelerationPercentileMetric
+        run_evaluation_acceleration_percentile_metric = 567;
+
+    ParkHmiStateDetectionMetric park_hmi_state_detection_metric = 568;
+    HmiCityNoaInfoMetric hmi_city_noa_info_metric = 569;
+
+    TrafficSignClassificationMetric traffic_sign_classification_metric = 570;
+
+    RunEvaluationBrakeEventMetric run_evaluation_brake_event_metric = 571;
+
+    StaticFusedMeasurementsFalsePositiveMetric
+        static_fused_measurements_false_positive_metric = 572;
+    StaticFusedMeasurementsFalseNegativeMetric
+        static_fused_measurements_false_negative_metric = 573;
+    StaticFusedMeasurementsOverSegMetric
+        static_fused_measurements_over_seg_metric = 574;
+    StaticFusedMeasurementsUnderSegMetric
+        static_fused_measurements_under_seg_metric = 575;
+
+    TrafficLightOccludeMetric traffic_light_occlude_metric = 576;
+    StaticFusedClassificationMetric static_fused_classification_metric = 577;
+
+    ParkingRemindMetric parking_remind_metric = 578;
+    ExecutionIssueDetectionMetric execution_issue_detection_metric = 579;
+
+    LidarPerceptionNetResultClassificationMetric
+        lidar_perception_net_result_classification_metric = 580;
+    HppLocalizationVprErrorMetric hpp_localization_vpr_error_metric = 581;
+
+    ExternalFusedCenterlineFineTypeClassificationMetric
+        external_fused_centerline_fine_type_classification_metric = 582;
+    FusedMapformerBevCenterlineFineTypeClassificationMetric
+        fused_mapformer_bev_centerline_fine_type_classification_metric = 583;
+    BevCenterlineFineTypeClassificationMetric
+        bev_centerline_fine_type_classification_metric = 584;
+
+    NaviInfoFalseTrueMetric navi_info_false_true_metric = 585;
+
+    TargetSpeedRegionMetric target_speed_region_metric = 586;
+
+    LiMcuToSoaFailsafeDetectionMetric li_mcu_to_soa_failsafe_detection_metric =
+        587;
+
+    TsrTargetSpeedMetric tsr_target_speed_metric = 588;
+    BevStaticPerceptionEgoTrajectoryFalseNegativeMetric
+        bev_static_perception_ego_trajectory_false_negative_metric = 589;
+    BevStaticPerceptionEgoTrajectoryFalsePositiveMetric
+        bev_static_perception_ego_trajectory_false_positive_metric = 590;
+    ActiveSafetyRemindMetric active_safety_remind_metric = 591;
+    CameraMeasurementsFalseNegativeMetric
+        camera_measurements_false_negative_metric = 592;
+    CameraMeasurementsFalsePositiveMetric
+        camera_measurements_false_positive_metric = 593;
+    CameraMeasurementsOverSegMetric camera_measurements_over_seg_metric = 594;
+    CameraMeasurementsUnderSegMetric camera_measurements_under_seg_metric = 595;
+
+    ObjectsMovingStateMetric objects_moving_state_metric = 596;
+
+    VisionBevResultsFalseNegativeMetric
+        vision_bev_results_false_negative_metric = 597;
+    VisionBevResultsFalsePositiveMetric
+        vision_bev_results_false_positive_metric = 598;
+    VisionBevResultsOverSegMetric vision_bev_results_over_seg_metric = 599;
+    VisionBevResultsUnderSegMetric vision_bev_results_under_seg_metric = 600;
+
+    QIssueToAutonomyStateDelayMetric q_issue_to_autonomy_state_delay_metric =
+        601;
+
+    StopPointFalseNegativeMetric stop_point_false_negative_metric = 602;
+    StopPointFalsePositiveMetric stop_point_false_positive_metric = 603;
+
+    VisionBevResultsVelocityMetric vision_bev_results_velocity_metric = 604;
+    VisionBevResultsClassificationMetric
+        vision_bev_results_classification_metric = 605;
+    HmiVelocityFlowSafetyMetric hmi_velocity_flow_safety_metric = 606;
+
+    ImgFailFalsePositiveMetric img_fail_false_positive_metric = 607;
+    ImgFailFalseNegativeMetric img_fail_false_negative_metric = 608;
+
+    FrontMovableFusionVelocityMetric front_movable_fusion_velocity_metric = 609;
+    VisionBevResultsFollowingStateMetric
+        vision_bev_results_following_state_metric = 610;
+    LiParkingRoadBarrierGateInfoFalseNegativeMetric
+        li_parking_road_barrier_gate_info_false_negative_metric = 611;
+    LiParkingRoadBarrierGateInfoFalsePositiveMetric
+        li_parking_road_barrier_gate_info_false_positive_metric = 612;
+    LiParkingRoadBarrierGateInfoGateStatusMetric
+        li_parking_road_barrier_gate_info_gate_status_metric = 613;
+    VisionBevRoadGeometryFalseNegativeMetric
+        vision_bev_road_geometry_false_negative_metric = 614;
+    VisionBevRoadGeometryFalsePositiveMetric
+        vision_bev_road_geometry_false_positive_metric = 615;
+    VisionBevRoadGeometryOverSegMetric
+        vision_bev_road_geometry_over_seg_metric = 616;
+    QfpNetFeatureSerializer qfp_net_feature_serializer = 617;
+    ObjectsFollowingStateMetric objects_following_state_metric = 618;
+    IntegratedNavigationStatusMetric integrated_navigation_status_metric = 619;
+    IntelligentDirectionSignsSeqClassificationMetric
+        intelligent_direction_signs_seq_classification_metric = 620;
+    ObjectsCrossingLineStateMetric objects_crossing_line_state_metric = 621;
+    IntegratedNavigationGnssDiagnoserMetric
+        integrated_navigation_gnss_diagnoser_metric = 622;
+
+    HighBeamToLowBeamPerceptionMetric high_beam_to_low_beam_perception_metric =
+        623;
+    LowBeamToHighBeamPerceptionMetric low_beam_to_high_beam_perception_metric =
+        624;
+    HighBeamNotToLowBeamPerceptionMetric
+        high_beam_not_to_low_beam_perception_metric = 625;
+    LowBeamNotToHighBeamPerceptionMetric
+        low_beam_not_to_high_beam_perception_metric = 626;
+
+    GuardianCmdDetectionMetric guardian_cmd_detection_metric = 627;
+    RouteInfoMetric route_info_metric = 628;
+    PrtFreespaceFusionMetric prt_freespace_fusion_metric = 629;
+    QRunEventStatesDetectionMetric q_run_event_states_detection_metric = 630;
+
+    BlindAreaWarningFalseNegativeMetric
+        blind_area_warning_false_negative_metric = 631;
+
+    BlindAreaWarningFalsePositiveMetric
+        blind_area_warning_false_positive_metric = 632;
+    HppMappingVprMetric hpp_mapping_vpr_metric = 633;
+    LongitudinalCmdValidityMetric longitudinal_cmd_validity_metric = 634;
+
+    FrontMovableFusionClassificationMetric
+        front_movable_fusion_classification_metric = 635;
+
+    IntersectionCenterLineMetric intersection_center_line_metric = 636;
+
+    MapformerBevLaneExtraTypeClassificationMetric
+        mapformer_bev_lane_extra_type_classification_metric = 637;
+    BevLaneExtraTypeClassificationMetric
+        bev_lane_extra_type_classification_metric = 638;
+
+    HumanDrivingBrakeMetric human_driving_brake_metric = 639;
+    SdLinkAccuracyMetric sd_link_accuracy_metric = 640;
+    // Next ID: 641.
+  }
+  reserved 3, 8, 19, 45, 51, 75, 76, 77, 78, 79, 80, 81, 83, 84, 85, 86, 87, 88,
+      89, 90, 91, 92, 93, 103, 104, 105, 113, 119, 149, 150, 236, 237, 272, 300,
+      301, 302, 303, 304, 305, 311, 557, 558;
+}
+
+message HilLoadDiffMetric {}
+
+message FrontCameraAccJumpRateMetric {}
+
+// The critical metric name list.
+// The value equals to the fieldname of `one of Type` in `Metric`
+message CriticalMetrics {
+  repeated string metrics = 1;
+}
+
+// A metric that checks whether the AV has entered cruise during the
+// simulation.
+message EnterCruiseMetric {}
+
+// A metric that checks whether there is any execution issue after the AV
+// entered the cruise (i.e. "kickout").
+message ExecutionIssueMetric {
+  repeated ExecutionIssueProto execution_issue_whitelist = 1;
+  optional bool only_entered_cruise = 2;
+  // Will check all lite modules if no expected modules.
+  repeated LiteModuleName expected_modules = 3;
+
+  optional TimeWindow time_window = 4;
+}
+
+// This metric is for pose divergence event.
+message PoseDivergenceMetric {
+  // Reports an event when the simulated pose and shadow pose's distance is
+  // larger than this threshold.
+  optional double min_pos_difference = 1;  // Meters.
+  // Reports an event when the simulated pose's yaw and shadow pose's yaw is
+  // larger than this threshold.
+  optional double min_yaw_difference = 2;  // Radians.
+}
+
+// This metric is to compare the simulated pose and shadow pose's lateral
+// deviation.
+message LateralDeviationMetric {
+  // Reports an event when the simulated pose and the shadow pose's lateral
+  // deviation respecting to lane center line is more than this threshold.
+  optional double min_lateral_deviation_difference = 1;
+}
+
+// This metric is to compare the object nudge distance difference.
+message NudgeDistanceMetric {
+  // Reports an event when the simulated pose and the shadow pose's nudge
+  // distance difference is more than this threshold.
+  optional double min_nudge_distance_difference = 1;  // Meters.
+}
+
+// This metric is for brake divergence event. It reports an event when the
+// simulated longitudinal acceleration and shadow pose's longitudinal
+// acceleration are different than the provided threshold.
+message AccelerationDivergenceMetric {
+  // A threshold to trigger an event when the simulated acceleration is smaller
+  // than shadow pose's acceleration.
+  optional double min_under_acceleration_difference = 1;
+  // A threshold to trigger an event when the simulated acceleration is larger
+  // than shadow pose's acceleration.
+  optional double min_over_acceleration_difference = 2;
+}
+
+// This metric is for steer divergence event. It will reports an event when the
+// difference between the simulated chassis steer and the shadow chassis steer
+// beyond the threshold.
+message SteerDivergenceMetric {
+  // A threshold to trigger an event when simulated chassis steer's absolute
+  // value is smaller than the shadow chassis steer percentage.
+  optional double min_under_steer_difference = 1;  // percentage.
+  // A threshold to trigger an event when simulated chassis steer's absolute
+  // value is larger than the shadow chassis steer percentage.
+  optional double min_over_steer_difference = 2;  // percentage.
+}
+
+// This metric produces a QEvent when the simulated distance and shadow distance
+// with an front side object matches the conditions.
+message FollowDistanceMetric {
+  // This number should be larger than 1.0. It reports an event when sim pose's
+  // follow distance is longer than shadow pose's follow distance times this
+  // value.
+  optional double longer_follow_distance_ratio = 1;
+  // This number should be between 0.0 and 1.0. It reports an event when sim
+  // pose's follow distance is shorter than shadow pose's follow distance times
+  // this value.
+  optional double shorter_follow_distance_ratio = 2;
+  optional double max_follow_distance_diff = 3;
+  optional TimeWindow time_window = 4;
+  optional double max_standstill_distance = 5;
+  optional double min_standstill_distance = 6;
+}
+
+// This metric produces a QEvent when the simulated travel distance diverges
+// with shadow travel distance.
+message ProgressDivergenceMetric {
+  // A threshold to trigger an event when the simulated pose goes further on
+  // route than the shadow pose.
+  optional double min_further_distance_difference = 1;
+  // A threshold to trigger an event when the simulated pose goes shorter on
+  // route than the shadow pose.
+  optional double min_shorter_distance_difference = 2;
+}
+
+// This metric reports whether the simulated AV reproduces shadow AV's behavior
+// with limited divergence (under certain thresholds)
+// and reports potential cause of that reproduce divergence
+message ReproduceDivergenceMetric {
+  optional double pos_diff_thres = 1;
+  optional double vel_diff_thres = 2;
+  optional double acc_diff_thres = 3;
+  optional double yaw_diff_thres = 4;  // The unit is rad
+  optional double kappa_diff_thres = 5;
+  optional double curvature_diff_thres = 6;
+}
+
+message CrossLaneBoundaryMetric {
+  // If no lane boundaries found on map, use this value to calculate lane
+  // boundaries.
+  optional double max_default_lane_width = 1;
+  // A threshold to trigger cross lane boundary qevent.
+  optional double cross_boundary_threshold = 2;
+}
+
+// A metric that checks whether the AV has reached the specified regions in
+// time.
+message ReachDestinationMetric {
+  message Region {
+    optional PointListProto destination = 1 [deprecated = true];
+    optional double reach_within_secs = 2 [deprecated = true];
+    optional MatchingOptions.DetectionApproach approach = 3;
+    optional PointListProto polygon = 4;
+    optional TimeWindow time_window = 5;
+  }
+  repeated Region regions = 1;
+}
+
+// A metric that checks whether the PNC Trajectory has reached the
+// regions in time.
+message ReachTrajectoryMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+    optional MatchingOptions.DetectionApproach detection_approach = 3;
+    optional MatchingOptions.PassCriteria pass_criteria = 4;
+  }
+  repeated Region regions = 1;
+}
+
+// A metric that checks whether the AV has reached the prohibited regions in
+// time.
+message ProhibitedDestinationMetric {
+  message Region {
+    optional PointListProto destination = 1 [deprecated = true];
+    optional double reach_within_secs = 2 [deprecated = true];
+    optional MatchingOptions.DetectionApproach approach = 3;
+    optional PointListProto polygon = 4;
+    optional TimeWindow time_window = 5;
+  }
+  repeated Region regions = 1;
+}
+
+// A metric that checks whether the AV has collision with other objects within
+// the time.
+message CollisionMetric {
+  enum Label {
+    UNKNOWN_OBJECT = 0;
+    REAR_END = 1;
+    LOW_SPEED = 2;
+    POSE_DIVERGENCE = 3;
+    NOT_ENTER_CRUISE = 4;
+    KICKOUT = 5;
+    NEWLY_OBJECT = 6;
+  }
+  optional double collision_buffer_distance = 1;
+  optional double collision_within_secs = 2;
+  repeated string ignored_object_ids = 3;
+  repeated Label show_labels = 4;
+  optional bool check_engaged = 5 [default = true];
+}
+
+message LcNumMetric {
+  optional TimeWindow time_window = 1;
+  optional bool all_same = 2;  // 如果不牵涉到左右转的话，可认为是一样的
+  optional int32 min_num_index_from_left =
+      3;  // 左数第几车道是最小变道次数的车道
+  optional int32 min_num_index_from_right =
+      4;  // 右数第几车道是最小变道次数的车道
+}
+
+message DrivingDistTruth {
+  optional bool all_same = 5;
+  optional int32 index_from_left = 1;   // 从左边数第几个车道
+  optional int32 index_from_right = 2;  // 从右边数第几个车道
+  optional double min_value =
+      3;  // 当前车道可行驶距离的最小值/到达汇入点的最小距离
+  optional double max_value =
+      4;  // 当前车道可行驶距离的最大值/到达汇入点的最大距离
+}
+
+message DrivingDistMetric {
+  optional TimeWindow time_window = 1;
+  repeated DrivingDistTruth truths = 2;
+}
+
+message NaviInfoMetric {
+  repeated LcNumMetric min_lc_num_to_target_metrics =
+      1;  // 到达目标点的最小变道次数
+  repeated DrivingDistMetric max_driving_dist_metrics =
+      2;  // 当前车道可行驶的最远距离
+  repeated DrivingDistMetric len_before_merge_lane_metrics =
+      3;  // 到汇入点的距离
+}
+
+message ComfortMetric {
+  optional double max_brake = 1;
+  optional double max_acc = 2;
+  optional double max_lateral_acc = 3;
+}
+
+message ComfortAccMetric {
+  optional double max_acc = 1 [deprecated = true];
+  optional TimeWindow time_window = 2;
+}
+
+message ComfortBrakeMetric {
+  optional double max_brake = 1;
+}
+
+message ComfortLataccMetric {
+  optional double max_lateral_acc = 1;
+}
+
+message HumanDrivingBrakeMetric {}
+
+message StatsMetric {
+  // meta data
+  optional string tag = 1;
+
+  // collection flag
+  optional bool system_info_collection = 2;
+  optional bool mileage_collection = 3;
+  optional bool objects_collection = 4;
+}
+
+message SpeedRangeMetric {
+  message Check {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_time = 3;
+    optional double max_time = 4;
+    optional TimeWindow time_window = 5;
+  }
+  // Succeeds if the AV speed ever reaches the specified range within the given
+  // time frame.
+  repeated Check desired_speed_ranges = 2;
+  // Fails if the AV speed ever reaches the specified range within the given
+  // time frame.
+  repeated Check prohibited_speed_ranges = 3;
+  reserved 1;
+}
+
+message SpeedLimitedRegionMetric {
+  message SpeedLimitedRegion {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional PointListProto region = 3;
+    optional MatchingOptions.DetectionApproach approach = 4;
+  }
+  optional double min_time = 1;
+  optional double max_time = 2;
+  repeated SpeedLimitedRegion regions = 3;
+}
+
+// A metric evaluate the speed of AV according to lane info from semantic_map.
+message LaneSpeedLimitMetric {
+  // Effected time window, to skip the noise of initialization status.
+  optional double min_time = 1;
+  optional double max_time = 2;
+  // Allowed error for the speed.
+  optional double buffer = 3 [default = 0.05];
+  optional TimeWindow time_window = 4;
+}
+
+// Fails if the AV ever comes within some distance of any lane boundary of the
+// specified types.
+message LaneBoundaryProximityMetric {
+  optional double min_time = 1;
+  optional double max_time = 2;
+  optional MatchingOptions.DetectionApproach approach = 3
+      [default = CAR_CONTOUR];
+  optional double buffer = 4 [default = 0.0];
+  repeated mapping.LaneBoundaryProto.Type types = 5;
+}
+
+message PredrtL2Metric {}
+
+message PredEventMetric {
+  repeated int64 object_types = 1;
+  // duration_secs_list contains a list of durations that we want to evaluate
+  // trajectories with.
+  repeated int64 duration_secs_list = 2;
+}
+
+message EgoBehaviorIdentificationMetric {}
+
+message PredScenarioMetric {}
+
+message TakeoverMetric {
+  optional double probability_threshold = 1 [default = 0.5];
+}
+
+message PassingObjectMetric {
+  optional double min_distance_between_shadow_sim_pos = 1 [default = 2.0];
+}
+
+message TrajDecisionDiffMetric {}
+
+message UncomfortableAccelerationMetric {
+  optional double max_comfortable_acc = 1 [default = 1.5];
+  optional double max_comfortable_brake = 2 [default = -2.0];
+}
+
+message MsgValidationMetric {
+  message TargetValidChannel {
+    optional string channel_name = 1;
+  }
+  repeated TargetValidChannel targets = 1;
+}
+
+message EmergencyToStopMetric {}
+
+message ProphnetFeatureSerializer {}
+
+message TntFeatureSerializer {}
+
+message BikeCentricFeatureSerializer {}
+
+message VehicleCentricFeatureSerializer {}
+
+message ActNetFeatureSerializer {}
+
+message QuestNetFeatureSerializer {}
+
+message ActNetTrackerFeatureSerializer {}
+
+message CutinSlFeatureSerializer {}
+
+message LaneSelectionFeatureSerializer {}
+
+message PedCentricFeatureSerializer {}
+
+message OpenLoopPncScenarioSerializer {}
+
+message QfpNetFeatureSerializer {}
+
+message ExternalPotentialCollisionMetric {
+  optional double collision_buffer_distance = 1;
+  optional TimeWindow time_window = 2;
+}
+
+message ExternalCollisionMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message ExternalHarshBrakeMetric {
+  optional double max_brake = 1;
+}
+
+message ExternalHarshSwerveMetric {
+  optional double max_angular_acc = 1;
+}
+
+message ExternalStuckMetric {
+  optional double low_speed_threshold = 1;
+  optional double duration = 2;
+}
+
+message ExternalPoseDivergenceMetric {
+  optional double min_pos_difference = 1;
+}
+
+message ExternalJerkMetric {
+  optional double max_jerk = 1;
+}
+
+message ExternalJukeMetric {
+  optional double max_juke = 1;
+}
+
+message ExternalComfortMetric {
+  optional double max_brake = 1;
+  optional double max_acc = 2;
+  optional double max_lateral_acc = 3;
+}
+
+message ExternalPerceptionMissingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalPerceptionRedundantMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalPerceptionOverSegmentMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalPerceptionUnderSegmentMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalPerceptionClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectType object_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalArrivalAreaMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional double reach_within_secs = 2;
+    optional MatchingOptions.DetectionApproach approach = 3;
+    optional PointListProto polygon = 4;
+    optional TimeWindow time_window = 5;
+  }
+  repeated Region regions = 1;
+}
+
+message ExternalForbiddenAreaMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional double reach_within_secs = 2;
+    optional MatchingOptions.DetectionApproach approach = 3;
+    optional PointListProto polygon = 4;
+    optional TimeWindow time_window = 5;
+  }
+  repeated Region regions = 1;
+}
+
+message ExternalLaneCenterDeviationMetric {
+  optional double max_deviation = 1;    // meters
+  optional TimeWindow time_window = 2;  // seconds
+}
+
+message ExternalCustomizeMetric {
+  message Metric {
+    optional string name = 1;
+    optional bool enable = 2;
+    map<string, string> param = 3;
+    optional string description = 4;
+  }
+  repeated Metric metrics = 1;
+}
+
+message ExternalPerceptionVelocityMetric {
+  message GroundTruth {
+    optional PointListProto region = 1 [deprecated = true];
+    optional double start_offset_secs = 2 [deprecated = true];
+    optional double duration_secs = 3 [deprecated = true];
+    optional double min_speed = 4;
+    optional double max_speed = 5;
+    optional double heading_radian = 6;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 7;
+      double heading_buffer_radian = 8;
+    }
+    optional ObjectFilter object_filter = 10;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// Fails if the AV ever comes within some distance of any lane boundary of the
+// specified types.
+message ExternalLaneBoundaryProximityMetric {
+  optional double min_time = 1;
+  optional double max_time = 2;
+  optional MatchingOptions.DetectionApproach approach = 3
+      [default = CAR_CONTOUR];
+  optional double buffer = 4 [default = 0.0];
+  repeated mapping.LaneBoundaryProto.Type types = 5;
+}
+
+message PoseDeterminismMetric {}
+
+message TrajectoryDeterminismMetric {}
+
+message PredictionDeterminismMetric {}
+
+message ControlDeterminismMetric {}
+
+message RouteDeterminismMetric {}
+
+message ObjectsSizeDeterminismMetric {}
+
+message ObjectsPosDeterminismMetric {}
+
+message ObjectDistanceMetric {
+  // The threshold of the minimum distance between the simulated pose and
+  // perception's objects.
+  optional double min_distance = 1;  // Meters.
+  repeated string object_ids = 2;
+  optional bool check_engaged = 3 [default = true];
+}
+
+message LateralMovementMetric {}
+
+message ObjectDecisionDiffMetric {
+  optional bool only_consider_st_objects = 1 [default = true];
+}
+
+message StalledObjectsMetric {
+  message StalledObject {
+    optional string id = 1;
+    optional double expected_stalled_decision_time = 2 [deprecated = true];
+    optional bool is_stalled_object = 3;
+    optional TimeWindow time_window = 4;
+  }
+  repeated StalledObject objects = 1;
+}
+
+message LaneChangeSafetyMetric {
+  repeated int64 lane_ids = 1;
+  optional bool safe = 2;
+}
+
+message TrafficLightDecisionMetric {
+  optional TimeWindow time_window = 1;
+  optional bool pass = 2;
+  reserved 3;
+}
+
+message TrajectorySelectorMetric {
+  repeated int64 target_lane_ids = 1;
+}
+
+// A metric that checks whether the AV cross the solid lane boundary
+message CrossSolidLaneBoundaryMetric {
+  optional TimeWindow time_window = 1;
+  repeated mapping.LaneBoundaryProto.Type types = 2;
+}
+
+message IntersectionCenterLineMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message LaneCenterDeviationMetric {
+  optional double max_deviation = 1;    // meters
+  optional TimeWindow time_window = 2;  // seconds
+}
+
+message RunRedLightMetric {}
+
+message TrajectorySmoothnessDiffMetric {
+  optional double pos_diff_thres = 1;
+  optional double vel_diff_thres = 2;
+  optional double lat_acc_diff_thres = 3;
+  optional double lat_jerk_diff_thres = 4;
+}
+
+message ImpassableBoundaryProximityMetric {
+  optional TimeWindow time_window = 1;
+  optional double buffer = 2;
+}
+
+// A metric that checks whether the AV under corresponding QALC state
+message QalcStateMetric {
+  message ExpectState {
+    optional TimeWindow time_window = 1;
+    optional QALCState state = 2;
+    optional bool state_maintain = 3 [default = false];
+  }
+  repeated ExpectState expect_states = 1;
+}
+
+message OptimizationSpeedTrajectoryComparisonMetric {
+  optional double length_threshold = 1;
+}
+
+message InferredObjectInRegionMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+    optional MatchingOptions.PassCriteria pass_criteria = 3;
+  }
+  repeated Region regions = 1;
+}
+
+message InferredObjectPrebrakeMetric {
+  message Region {
+    optional TimeWindow time_window = 2;
+    optional MatchingOptions.PassCriteria pass_criteria = 3;
+  }
+  repeated Region regions = 1;
+}
+
+// A metric that checks whether the AV under corresponding QLCC state
+message QlccStateMetric {
+  enum QlccState {
+    OFF = 0;
+    STAND_BY_DISABLE = 1;
+    STAND_BY_ENABLE = 2;
+    ACTIVE = 3;
+    FAIL_KICKOUT = 4;
+    THROTTLE_OVERRIDE = 5;
+  }
+  message ExpectState {
+    optional TimeWindow time_window = 1;
+    optional QlccState state = 2;
+    optional bool state_maintain = 3 [default = false];
+  }
+  repeated ExpectState expect_states = 1;
+}
+
+// A metric that checks whether the AV follow the object appropriately
+message FollowCarDistanceMetric {
+  message ExpectFollowDistance {
+    optional TimeWindow time_window = 1;
+    optional string car_id = 2 [deprecated = true];
+    optional double distance = 3;
+    optional double buffer = 4;
+    optional string object_id = 5;
+    optional double distance_delta = 6
+        [deprecated = true];  // default:3.5 in c++ code
+  }
+  repeated ExpectFollowDistance follow_distances = 1;
+}
+
+// A metric that checks whether the AV follow the object appropriately for
+// lixiang
+message LiFollowCarDistanceMetric {
+  message ExpectFollowDistance {
+    optional TimeWindow time_window = 1;
+    optional string car_id = 2;
+    optional double distance = 3;
+    optional double buffer = 4;
+    optional string object_id = 5;
+    optional double distance_delta = 6;  // default:3.5 in c++ code
+  }
+  repeated ExpectFollowDistance follow_distances = 1;
+}
+
+message AssessmentProtocols {
+  enum AssessmentProtocol {
+    ENCAP2023 = 0;
+    CNCAP2021 = 1;
+    IVISTA2023 = 2;
+    CIASI2020 = 3;
+    SERES = 4;
+  }
+}
+
+message ENCAPAEBOptions {
+  enum TestScenariosName {
+    CCRs = 0;
+    CCRm = 1;
+    CCRb = 2;
+    CCFtap = 3;
+    CCCscp = 4;
+    CCFho = 5;
+    CPFA = 6;
+    CPNA = 7;
+    CPNCO = 8;
+    CPLA = 9;
+    CPTA = 10;
+    CPRA = 11;
+    CPRC = 12;
+    CBNA = 13;
+    CBNAO = 14;
+    CBFA = 15;
+    CBLA = 16;
+    CBTA = 17;
+    CBDA = 18;
+    CMRs = 19;
+    CMRb = 20;
+    CMFtap = 21;
+    CMoncoming = 22;
+    CMovertaking = 23;
+    CSFA = 24;
+    CPNSOC = 25;
+    CPNDOC = 26;
+    CSFtap = 27;
+    CTLA = 28;
+  }
+  enum DayOrNight {
+    DAY = 0;
+    NIGHT = 1;
+  }
+  enum AEBModule {
+    AEB = 0;
+    FCW = 1;
+  }
+}
+
+message SpeedWindow {
+  optional double min_speed = 1;
+  optional double max_speed = 2;
+}
+
+// Record score for ENCAP Metric
+message ENCAPScoreTable {
+  message Score {
+    optional ENCAPAEBOptions.TestScenariosName test_scenario_name = 1
+        [deprecated = true];
+    optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 5;
+    optional double speed_av_test = 2;            // km/h
+    optional SpeedWindow speed_impact_range = 3;  // km/h
+    optional double score = 4;
+  }
+  repeated Score scores = 1;
+}
+
+// Record weight for ENCP Metric
+message ENCAPWeightTable {
+  message Weight {
+    optional ENCAPAEBOptions.TestScenariosName test_scenario_name = 1
+        [deprecated = true];
+    optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 7;
+    optional ENCAPAEBOptions.DayOrNight day_or_night = 2 [default = DAY];
+    optional ENCAPAEBOptions.AEBModule module = 3 [default = AEB];
+    optional double speed_av_test = 4;                      // km/h
+    optional double speed_object_test = 5 [default = 0.0];  // km/h
+    optional double weight = 6;
+  }
+  repeated Weight weights = 1;
+}
+
+message VelRelImpactMetric {
+  optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 4;
+  optional ENCAPAEBOptions.DayOrNight day_or_night = 2 [default = DAY];
+  optional AssessmentProtocols.AssessmentProtocol assessment_protocol = 8;
+  optional TimeWindow time_window = 3;
+  optional double av_test_speed = 5 [default = 0.0];      // km/h
+  optional double object_test_speed = 6 [default = 0.0];  // km/h
+  optional double overlap = 7;
+  reserved 1;
+}
+
+message CollisionLevelMetric {
+  optional TimeWindow time_window = 1;
+}
+
+// A metric that calculate av's score in TTC
+message FcwTtcMetric {
+  optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 1;
+  optional AssessmentProtocols.AssessmentProtocol assessment_protocol = 6;
+  optional TimeWindow time_window = 2;
+  optional double ttc_threshold = 3 [deprecated = true];
+  optional double ttc_upper_threshold = 7;
+  optional double ttc_lower_threshold = 8;
+  optional double av_test_speed = 4 [default = 0.0];  // km/h
+  optional double overlap = 5;
+}
+
+message FcwHmiMetric {
+  optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 1;
+  optional AssessmentProtocols.AssessmentProtocol assessment_protocol = 5;
+  optional TimeWindow time_window = 2;
+  optional double hmi_ttc_threshold = 3;  // sceonds
+  optional double overlap = 4;
+}
+
+message CptaPassMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message CbtaCmftapPassMetric {
+  optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 1;
+  optional TimeWindow time_window = 2;
+}
+
+message VelImpactMetric {
+  optional ENCAPAEBOptions.TestScenariosName test_scenarios_name = 1;
+  optional ENCAPAEBOptions.DayOrNight day_or_night = 2;
+  optional AssessmentProtocols.AssessmentProtocol assessment_protocol = 7;
+  optional TimeWindow time_window = 3;
+  optional double av_test_speed = 4 [default = 0.0];      // km/h
+  optional double object_test_speed = 5 [default = 0.0];  // km/h
+  optional double overlap = 6;
+}
+// A metric that checks whether the lane boundarys in OnlineSemanticMapProto
+// shake too much
+message LaneBoundaryShakeDetectionMetric {
+  message LaneBoundaryShakeThreshold {
+    optional double shake_threshold = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated LaneBoundaryShakeThreshold boundary_shake_thresholds = 1;
+}
+
+// Metric fail when actual dtle < dtle_threshold
+message LssDtleMetric {
+  optional double dtle_threshold = 1;  // default: -0.3m in c++ code
+  optional TimeWindow time_window = 2;
+}
+
+message LdwMetric {
+  optional double dtle_threshold = 1;  // default: -0.2m in c++ code
+  optional TimeWindow time_window = 2;
+}
+
+message AutonomyStateMetric {
+  message AutonomyState {
+    optional double trigger_offset = 1;
+    optional double buffer = 2;
+    optional double trigger_buffer = 7 [default = 0.02];
+    repeated AssistStateProto.AssistDriveSystemState pre_assist_states = 3;
+    repeated AutonomyStateProto.State pre_autonomy_states = 4;
+    repeated AssistStateProto.HmaState pre_hma_states = 11;
+    repeated AutonomyStateProto pre_autonomy_state_protos = 13;
+    repeated AssistStateProto.AssistDriveSystemState post_assist_states = 5;
+    repeated AutonomyStateProto.State post_autonomy_states = 6;
+    repeated AssistStateProto.HmaState post_hma_states = 12;
+    repeated AutonomyStateProto post_autonomy_state_protos = 14;
+    optional TimeWindow pre_time_window = 8;
+    optional TimeWindow post_time_window = 9;
+    optional ObjectFilter av_filter = 10;
+  }
+  repeated AutonomyState autonomy_states = 1;
+}
+
+message AutonomyStateDetectionMetric {
+  message AutonomyState {
+    optional TimeWindow time_window = 1;
+    repeated AutonomyStateProto autonomy_state_protos = 2;
+    optional ObjectFilter av_filter = 3;
+  }
+  repeated AutonomyState autonomy_states = 1;
+}
+
+message HmaStateMetric {
+  repeated AutonomyStateMetric.AutonomyState autonomy_states = 1;
+}
+
+message FaultTableMetric {
+  message FaultTableState {
+    optional TimeWindow time_window = 1;
+    repeated FaultTableProto fault_table_protos = 2;
+  }
+  repeated FaultTableState fault_table_states = 1;
+}
+
+message BsdWarningStateMetric {
+  message Region {
+    optional TimeWindow time_window = 1;
+    optional BlindSpotAssistProto.BsdWarningProto expect_bsd_warning = 2;
+    optional BlindSpotAssistProto.FunctionState expect_bsd_state = 3;
+  }
+  repeated Region regions = 1;
+}
+
+message DowWarningStateMetric {
+  message Region {
+    optional TimeWindow time_window = 1;
+    optional BlindSpotAssistProto.DowWarningProto expect_dow_warning = 2;
+    optional BlindSpotAssistProto.FunctionState expect_dow_state = 3;
+  }
+  repeated Region regions = 1;
+}
+
+message AccComfortBrakeMetric {
+  optional double max_brake = 1;        // default:-3.0m/s^2 in c++ code
+  optional double cut_in_distance = 2;  // default:0.3m in c++ code
+  optional double ignore_speed = 3;     // default:0.2m/s in c++ code
+  optional double ignore_acc = 4;       // default:-2.0m/s^2 in c++ code
+}
+
+// A metric that check whether av brake when ttc <=ttc_threshold
+message TimeToCollisionMetric {
+  optional TimeWindow time_window = 1;
+  optional double ttc_threshold = 2 [default = 2.0];
+  optional double ttc_threshold_buffer = 3 [default = 0.1];
+}
+
+message AebFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebContinuousFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AwbFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AwbFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PrefillFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PrefillFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AbaFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AbaFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message EbaFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message EbaFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PebsFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PebsFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RaebFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RaebFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctaFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctaFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctbFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctbFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctaFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctaFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctbFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctbFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MaiFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MaiFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message DwFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message DwFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+enum EmergencyBrakeMetricState {
+  UNDEFINED = 0;
+  OFF = 1;
+  STANDBY = 2;
+  ACTIVE = 3;
+  FAILURE = 4;
+}
+
+message FcwStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AbpStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AwbStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message EbaStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TirePressureMaintenanceMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RaebStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctaStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FctbStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctaStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RctbStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RcwStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional EmergencyBrakeMetricState state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebAutoCalibrationMetric {}
+
+message AccFollowObjectsTruth {
+  optional TimeWindow time_window = 1;
+  repeated string object_ids = 2;
+  optional double lateral_distance = 3;  // meters
+  optional double lateral_distance_buffer =
+      4;  // meters,default:0.1 in c++ code
+  optional int64 target_lane_id = 5;
+  optional double min_invasion_percentage = 6;
+  optional double max_invasion_percentage = 7;
+  // true : AV changes lane
+  // false : object changes lane
+  optional bool av_or_object_change_lane = 8;
+}
+
+message AccFollowObjectsMetric {
+  message AccFollowObjectsTruth {
+    optional TimeWindow time_window = 1;
+    repeated string object_ids = 2;
+    optional double lateral_distance = 3;  // meters
+    optional double lateral_distance_buffer =
+        4;  // meters,default:0.1 in c++ code.
+  }
+  repeated AccFollowObjectsTruth acc_follow_objects_truths = 1
+      [deprecated = true];
+  repeated snoah.AccFollowObjectsTruth follow_objects_truths = 2;
+}
+
+message AccNotFollowObjectsMetric {
+  repeated AccFollowObjectsTruth follow_objects_truths = 1;
+}
+
+message LdwFalsePositiveMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState rejected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message LdwFalseNegativeMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState expected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message LkaFalsePositiveMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState rejected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message LkaFalseNegativeMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState expected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message ElkFalsePositiveMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState rejected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message ElkFalseNegativeMetric {
+  message Truth {
+    optional TimeWindow time_window = 1;
+    repeated LaneSupportProto.FunctionState expected_states = 2;
+  }
+  repeated Truth truths = 1;
+}
+
+message HighBeamToLowBeamMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message DrivableRegionRedundantMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region undrivable_regions = 1;
+}
+
+message DrivableRegionMissingMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region drivable_regions = 1;
+}
+
+message IntelligentSpeedAssistanceCorrectMetric {
+  message ExpectIntelligentSpeedLimitSign {
+    optional IntelligentSpeedLimitProto.Category expect_category = 1;
+    optional IntelligentSpeedLimitProto.SpeedLimitNumber
+        expect_speed_limit_number = 2;
+  }
+  optional TimeWindow time_window = 1;
+  optional double distance = 2 [deprecated = true];  // default 3m
+  optional double longitudinal_distance = 5;         // default 3m
+  optional Vec2dProto speed_limit_sign_point = 3;
+  repeated ExpectIntelligentSpeedLimitSign
+      expect_intelligent_speed_limit_signs = 4;
+}
+
+message WorkStateGroundTruthMetric {
+  message GroundTruth {
+    optional WorkStateProto state = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedAssistanceWrongMetric {
+  optional TimeWindow time_window = 1;
+  optional double distance = 2 [deprecated = true];  // default 3m
+  optional double longitudinal_distance = 4;         // default 3m
+  optional Vec2dProto speed_limit_sign_point = 3;
+}
+
+message LowBeamToHighBeamMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighBeamNotToLowBeamMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LowBeamNotToHighBeamMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficSignRecognitionWrongMetric {
+  optional TimeWindow time_window = 1;
+  optional double distance = 2 [deprecated = true];  // default 30m
+  optional double longitudinal_distance = 4;         // default 30m
+  optional Vec2dProto traffic_sign_point = 3;
+}
+
+message TrafficSignRecognitionCorrectMetric {
+  optional TimeWindow time_window = 1;
+  optional double distance = 2 [deprecated = true];  // default 30m
+  optional double longitudinal_distance = 5;         // default 30m
+  optional Vec2dProto traffic_sign_point = 3;
+  repeated TrafficSignProto.Category expect_traffic_signs = 4;
+}
+
+// A metric that check whether THW >=thw_threshold
+message TimeOfHeadWayMetric {
+  optional TimeWindow time_window = 1;
+  optional double time_of_head_way_threshold = 2 [default = 5.0];
+  optional Vec2dProto target_point = 3;
+  // the deviation between av_yaw and theta of the lane.
+  optional double direction_deviation_threshold = 4 [default = 1.0];
+}
+
+// A metric that checks the  lateral deviation between pred lane and the
+// corresponding gt lane in BevRoadGeometry detection
+message LateralDeviationOfBevLaneMetric {
+  repeated TimeWindow time_windows = 1;             // second
+  optional double lateral_deviation_threshold = 2;  // meter
+}
+
+// AccelRangeMetric defines a metric for measuring acceleration or deceleration
+// events within a specified range. The type field specifies whether the
+// metric is for acceleration or deceleration, and the low and high fields
+// define the acceptable range of acceleration or deceleration values. The
+// time_window field specifies the duration of the time window for measuring the
+// acceleration or deceleration events.
+message AccelRangeMetric {
+  enum Type {
+    ACCEL = 0;
+    DECEL = 1;
+  }
+  optional TimeWindow time_window = 1;
+  optional Type type = 2;
+  optional double lower_bound = 3;
+  optional double upper_bound = 4;
+  optional TimeWindow peak_val_time_window = 5;
+}
+
+message AccActiveSourceMetric {
+  message AccActiveSourceTruth {
+    optional TimeWindow time_window = 1;
+    optional AccCorridorSource active_corridor_source = 2;
+  }
+  repeated AccActiveSourceTruth acc_active_source_truths = 1;
+}
+
+message LaneChangeStateMetric {
+  message LaneChangeStateTruth {
+    optional TimeWindow time_window = 1;
+    repeated LaneChangeStateProto lane_change_state_protos = 2;
+  }
+  repeated LaneChangeStateTruth truths = 1;
+}
+
+message OnlineMapDiffMetric {}
+
+message CutinDivergenceMetric {
+  optional TimeWindow cutin_time_window = 1;
+}
+
+message RuleMatcherMetric {
+  optional string rule_config_file_path = 1;
+}
+
+message LiParkingLimitersFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingLimitersFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// A metric to detect whether the planned trajectory of AV will collide with
+// the predicted trajectory(oracle) of objects in the next detection_duration
+// seconds.
+message OpenLoopTrajectoryCollisionMetric {
+  optional TimeWindow time_window = 1;
+  optional double detection_duration = 2 [default = 999];
+  optional MatchingOptions.DetectionApproach detection_approach = 3;
+}
+
+message RcwFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RcwFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RcwTtcMetric {
+  optional TimeWindow time_window = 1;
+  optional double ttc_threshold = 2;  // sceonds
+}
+
+message SlowFrontVehicleMetric {
+  enum Type {
+    TP = 0;
+    FP = 1;
+  }
+  optional TimeWindow time_window = 1;
+  optional Type type = 2;
+}
+
+message PredictedTrajValidityMetric {}
+
+message ImageAnomalyFalsePositiveMetric {}
+
+message SafetyFuncFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated ObjectTypeConstants expected_object_types = 2;
+    repeated ObjectTypeConstants rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncFuseinfoVisionConfMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 fuseinfo_vision_conf_truth = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 3;
+    optional double max_acc = 4;
+    optional double heading_radian = 5;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 6;
+      double heading_buffer_radian = 7;
+    }
+    optional ObjectFilter object_filter = 8;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SafetyFuncFusionConfMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double fusion_conf_th = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficLightIdMetric {
+  optional TimeWindow time_window = 1;
+  optional int64 traffic_light_id = 2;
+}
+
+message HmiContentMetric {
+  message HmiContentTruth {
+    optional TimeWindow time_window = 1;
+    repeated HmiContentProto hmi_content_protos = 2;
+  }
+  repeated HmiContentTruth hmi_content_truths = 1;
+}
+
+message SpeedLimitStateMetric {
+  message SpeedLimitStateTruth {
+    optional ObjectFilter av_filter = 1;
+    optional double max_speed = 2;  // kph
+    optional double min_speed = 3;  // kph
+  }
+  repeated SpeedLimitStateTruth speed_limit_state_truths = 1;
+}
+
+message LcAebFalsePositiveMetric {}
+
+message LcFcwFalsePositiveMetric {}
+
+message LcLdpFalsePositiveMetric {}
+
+message LcElkFalsePositiveMetric {}
+
+message LcAebFalseNegativeMetric {}
+
+message LcFcwFalseNegativeMetric {}
+
+message LcLdpFalseNegativeMetric {}
+
+message LcElkFalseNegativeMetric {}
+
+message LcAebAsFuncFalsePositiveMetric {}
+
+message PredrtMetric {}
+
+message TrafficLightOkInfoMetric {}
+
+message PerceptionTrafficLightOkInfoMetric {}
+
+message HmiOkInfoMetric {}
+
+message LsaebFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LsaebFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LsaebOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LsaebUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LsaebClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated BoundaryProto.ObjectType expected_object_types = 2;
+    repeated BoundaryProto.ObjectType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message NudgeBypassMetric {
+  optional string object_id = 1;
+  optional TimeWindow time_window = 2;
+}
+
+message PosrtLocalizationMetric {
+  optional VehiclePoseProto localization_accuracy = 1;
+}
+
+message PosrtHppLocalizationMetric {
+  optional VehiclePoseProto localization_accuracy = 1;
+}
+
+message PosrtLocalizationWithoutGroundTruthMetric {
+  optional VehiclePoseProto localization_smoothness = 1;
+  optional VehiclePoseProto localization_offset_to_gnss = 2;
+  optional int32 localization_kickout_count = 3;
+}
+
+message OnlineSemanticMapValidityMetric {}
+
+message AvAccelerationMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional double min_vertical_acc = 2;  // meters / s2
+    optional double max_vertical_acc = 3;  // meters / s2
+    optional double min_lateral_acc = 4;   // meters / s2
+    optional double max_lateral_acc = 5;   // meters / s2
+    // "false" means the metric must always pass within the time_window.
+    // "true" means the metric should just pass within the time_window.
+    optional bool expected_pass_once = 6 [default = false];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VehicleLightStatusMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectAttribute.VehicleLightInfo.VehicleLightType
+        vehicle_light_type = 2;
+    repeated ObjectAttribute.VehicleLightInfo.VehicleLightStatus
+        expected_vehicle_light_status = 3;
+    repeated ObjectAttribute.VehicleLightInfo.VehicleLightStatus
+        rejected_vehicle_light_status = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CityNoaInfoDetectionMetric {
+  message CityNoaStateTruth {
+    optional TimeWindow time_window = 1;
+    optional LongCheng.CityNoaInfo city_noa_info = 2;
+  }
+  repeated CityNoaStateTruth city_noa_state_truths = 1;
+}
+
+message LiParkingRoadGeometryFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadGeometryFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadGeometryClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated ParkingRoadGeometryProto.RoadGeometryType
+        expected_road_geometry_types = 2;
+    repeated ParkingRoadGeometryProto.RoadGeometryType
+        rejected_road_geometry_types = 3;
+    repeated ParkingRoadGeometryProto.ArrowType expected_arrow_types = 4;
+    repeated ParkingRoadGeometryProto.ArrowType rejected_arrow_types = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MppEgoSectionIdMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional double allow_error_time = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AesLateralErrorMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional double lateral_error = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LongitudinalCmdValidityMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional double throttle_threshold = 2;  // Threshold for throttle check
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedBevCenterlineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedBevCenterlineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedPointFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto destination = 2;  // should only one point
+    optional double allow_error_time = 3;     // default:0.0 seconds
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedPointFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto destination = 2;  // should only one point
+    optional double allow_error_time = 3;     // default:0.0 seconds
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HppEscapeFalseNegativeMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message HppEscapeFalsePositiveMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message HppEscapeStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional PointListProto destination = 2;
+    optional double max_allowed_distance = 3;  // C++ defaults to 0.0
+    optional double theta = 4;                 // C++ defaults to 0.0
+    // optional snoah.planner.EscapePointProto.Type exact_escape_type = 5;
+  }
+  optional TimeWindow time_window = 1 [deprecated = true];
+  optional PointListProto destination = 2 [deprecated = true];
+  optional double max_allowed_distance = 3
+      [deprecated = true];  // C++ default: 0.0
+  optional double theta = 4 [deprecated = true];
+  repeated GroundTruth truths = 5;
+}
+
+message EgoSceneTypeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional ParkSceneProto.SceneType scene_type = 2;
+    // optional ParkSceneProto.TunnelType tunnel_type = 4;
+    // optional ParkSceneProto.BridgeType bridge_type = 5;
+    optional double allow_error_time = 3;  // C++ buffer defaults to 0.0s
+    optional double allow_unknown_time_scene_type = 6;   // C++ defaults to 1.0s
+    optional double allow_unknown_time_tunnel_type = 7;  // C++ defaults to 1.0s
+    optional double allow_unknown_time_bridge_type = 8;  // C++ defaults to 5.0s
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntersectionLaneMetric {
+  optional TimeWindow time_window = 1;
+  optional double max_lateral_diff = 2 [default = 2.0];
+  optional double max_heading_diff = 3 [default = 0.17];
+  optional double max_average_curvature = 4;
+}
+
+message NudgeHmiFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message NudgeHmiFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MergeSpeedLimitFalseNegativeMetric {}
+
+message MergeSpeedLimitFalsePositiveMetric {}
+
+message AutonomyStateTransitionMetric {
+  repeated AutonomyStateProto autonomy_state_protos = 1;
+  optional TimeWindow time_window = 2;
+}
+
+message ProtoFpsMetric {
+  repeated string proto_channels = 1;
+}
+
+// This metric counts the occurrences of enum field values in specified proto
+// messages
+message ProtoEnumCountMetric {
+  // List of proto message types to monitor
+  repeated ProtoEnumTarget proto_targets = 1;
+
+  message ProtoEnumTarget {
+    // Channel name of the proto message (corresponds to lite message field
+    // name)
+    optional string proto_channel = 1;
+
+    // List of enum fields to count
+    repeated EnumFieldTarget enum_fields = 2;
+  }
+
+  message EnumFieldTarget {
+    // Complete path to the enum field, using "." to seperate levels
+    // Examples: "status", "filed.status"
+    optional string field_path = 1;
+
+    // Whether to count all enum values
+    optional bool count_all_values = 2 [default = true];
+
+    // If count_all_values = false, specify which enum values to count
+    repeated string specific_enum_values = 3;
+
+    // Optional time window to filter messages by relative time offset
+    optional TimeWindow time_window = 4;
+  }
+}
+
+message RunEvaluationDowngradeMetric {}
+message RunEvaluationLaneChangeMetric {}
+message RunEvaluationIntersectionStatsMetric {
+  optional TimeWindow time_window = 1;
+}
+
+message RunEvaluationAccelerationPercentileMetric {
+  optional bool only_record_in_functional_mode = 1 [default = true];
+}
+
+message RunEvaluationBrakeEventMetric {
+  optional bool only_record_in_functional_mode = 1 [default = true];
+}
+
+message HppMappingResultMetric {
+  optional bool hpp_mapping_result = 1 [default = true];
+}
+
+message DrivingRemindMetric {
+  message DrivingRemindTruth {
+    optional TimeWindow time_window = 1;
+    // repeated hmi.platform.DrivingRemindPlatform driving_remind_platform_truths =
+    //     2;
+  }
+  repeated DrivingRemindTruth driving_remind_truths = 1;
+}
+
+message ParkingRemindMetric {
+  message ParkingRemindTruth {
+    optional TimeWindow time_window = 1;
+    // repeated hmi.platform.PlatformParkingRemind parking_remind_platform_truths =
+    //     2;
+  }
+  repeated ParkingRemindTruth parking_remind_truths = 1;
+}
+
+message ActiveSafetyRemindMetric {
+  message ActiveSafetyRemindTruth {
+    optional TimeWindow time_window = 1;
+    // repeated hmi.platform.PlatformActiveSafety active_safety_platform_truths =
+    //     2;
+  }
+  repeated ActiveSafetyRemindTruth active_safety_remind_truths = 1;
+}
+message DrivingParkingSwitchMetric {
+  message StateOutputPair {
+    message ChannelFrequencyPair {
+      optional string channel = 1;
+      optional float frequency = 2;
+      optional string field_tag = 3;
+    }
+    optional RunNormalSubtype run_normal_subtype = 1;
+    repeated ChannelFrequencyPair channel_frequencies = 2;
+  }
+  repeated StateOutputPair state_outputs = 1;
+}
+
+message ParkHmiStateDetectionMetric {
+  message ParkHmiStateTruth {
+    optional TimeWindow time_window = 1;
+    repeated LongCheng.ParkHmiState park_hmi_state_protos = 2;
+    optional bool is_triggered = 3 [default = false];
+  }
+  repeated ParkHmiStateTruth park_hmi_state_truths = 1;
+}
+
+message HmiCityNoaInfoMetric {
+  message CityNoaStateTruth {
+    optional TimeWindow time_window = 1;
+    repeated LongCheng.CityNoaInfo city_noa_info_protos = 2;
+    optional bool is_triggered = 3 [default = false];
+  }
+  repeated CityNoaStateTruth city_noa_state_truths = 1;
+}
+
+message ExecutionIssueDetectionMetric {
+  message ExecutionIssueTruth {
+    optional TimeWindow time_window = 1;
+    repeated ExecutionIssueProto execution_issue_protos = 2;
+    optional double allow_error_time = 3;  // C++ defaults to 0.0
+  }
+  repeated ExecutionIssueTruth execution_issue_truths = 1;
+}
+
+message TargetSpeedRegionMetric {
+  message GroundTruth {
+    optional mapping.SpeedLimitRangeType range_type = 1;
+    optional double speed_limit_kph = 2;
+    optional double allow_error_time = 3;
+  }
+  repeated GroundTruth truths = 1;
+  optional TimeWindow time_window = 2;
+}
+
+message LiMcuToSoaFailsafeDetectionMetric {
+  message LiMcuToSoaFailsafeTruth {
+    optional TimeWindow time_window = 1;
+    repeated LiMcuToSoaFailsafeProto li_mcu_to_soa_failsafe_protos = 2;
+    optional double allow_error_time = 3;  // C++ defaults to 0.0
+  }
+  repeated LiMcuToSoaFailsafeTruth li_mcu_to_soa_failsafe_truths = 1;
+}
+
+message TsrTargetSpeedMetric {
+  message GroundTruth {
+    optional mapping.EhpSpeedLimitRangesProto.TsrType tsr_type = 1;
+    optional int32 tsr_speed_limit_kph = 2;
+    optional double allow_error_time = 3;
+    optional TimeWindow time_window = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message QIssueToAutonomyStateDelayMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional QIssueSeverity q_issue_severity = 2;  // C++ defaults to QIS_FATAL
+    optional ExecutionIssueProto q_issue_protos = 3;
+    repeated AutonomyStateProto autonomy_state_protos = 4;
+    repeated EmergencyBrakeProto emergency_brake_protos = 6;
+    optional LaneSupportProto lane_support_proto = 7;
+    optional double max_allowed_delay = 5;  // seconds, C++ defaults to 0.0
+  }
+  repeated GroundTruth ground_truths = 1;
+}
+
+message HmiVelocityFlowSafetyMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional bool is_vehicle_flow_safety = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message GuardianCmdDetectionMetric {
+  message GuardianCmdTruth {
+    optional TimeWindow time_window = 1;
+    repeated GuardianCmdProto guardian_cmd_protos = 2;
+    optional bool is_triggered = 3 [default = false];
+  }
+  repeated GuardianCmdTruth guardian_cmd_truths = 1;
+}
+
+message QRunEventStatesDetectionMetric {
+  message QRunEventStatesTruth {
+    optional TimeWindow time_window = 1;
+    repeated QRunEventStatesProto q_run_event_states_protos = 2;
+    optional bool is_triggered = 3 [default = false];
+  }
+  repeated QRunEventStatesTruth q_run_event_states_truths = 1;
+}
+
+message HppMappingVprMetric {
+  optional double trip_distance_threshold = 1 [default = 50.0];      // Meters.
+  optional double euclidean_distance_threshold = 2 [default = 2.0];  // Meters.
+  optional double precision_threshold = 3
+      [default = 0.8];  // Precision threshold (0.0-1.0).
+  optional double recall_threshold = 4
+      [default = 0.8];  // Recall threshold (0.0-1.0).
+}

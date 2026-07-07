@@ -1,0 +1,68 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+enum PowerManagerState {
+  POWER_MANAGER_NONE = 0;
+  POWER_MANAGER_SLEEP = 1;
+  POWER_MANAGER_SELF_CHECK = 2;
+  POWER_MANAGER_RUN_NORMAL = 3;
+  POWER_MANAGER_RUN_IDLE = 4;
+  POWER_MANAGER_LOW_POWER = 5;
+  POWER_MANAGER_SENTRY = 6;
+  POWER_MANAGER_UPDATE = 7;
+  POWER_MANAGER_CALIBRATION_PRODUCTION = 8;  // production
+  POWER_MANAGER_CALIBRATION_RELEASE = 9;     // release
+  POWER_MANAGER_POWER_DOWN = 10;
+  POWER_MANAGER_POWER_UP = 11;
+  POWER_MANAGER_ERROR = 20;
+}
+
+enum PowerManagerStateErrorCode {
+  POWER_MANAGER_STATE_ERROR_CODE_NONE = 0;
+  POWER_MANAGER_STATE_ERROR_CODE_SWITCHING = 1;
+}
+
+enum RunNormalSubtype {
+  RUN_NORMAL_SUBTYPE_NONE = 0;
+  RUN_NORMAL_SUBTYPE_DRIVING = 1;
+  RUN_NORMAL_SUBTYPE_PARKING = 2;
+  RUN_NORMAL_SUBTYPE_PRIMARY_DRIVING = 3;
+  RUN_NORMAL_SUBTYPE_PARKING_SEARCHING = 4;
+}
+
+enum PowerManagerNodeType {
+  POWER_MANAGER_NODE_NONE = 0;
+  POWER_MANAGER_NODE_MAIN_NODE_0 = 1;  // J5-1
+  POWER_MANAGER_NODE_MAIN_NODE_1 = 2;  // J5-2
+  POWER_MANAGER_NODE_MAIN_NODE_2 = 3;  // X9U-SSA
+  POWER_MANAGER_NODE_MAIN_NODE_3 = 4;  // X9U-SSB
+}
+
+enum NodeSelfCheckResult {
+  NODE_SELF_CHECK_NONE = 0;
+  NODE_SELF_CHECK_SUCCESS = 1;
+  NODE_SELF_CHECK_FAIL = 2;
+}
+
+message NodeSelfCheckState {
+  optional PowerManagerNodeType node_type = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional NodeSelfCheckResult result = 2
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message QPowerManagerStateProto {
+  optional LiteHeader header = 1;
+  optional PowerManagerState state = 2
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional PowerManagerStateErrorCode error_code = 3
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];  // Soc to Mcu
+  optional RunNormalSubtype run_normal_subtype = 4;
+
+  repeated NodeSelfCheckState self_check_state = 5 [(trans_matrix) = true];
+}

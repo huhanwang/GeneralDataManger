@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+import "offboard/onb_sim/perf_service/server/db/proto/db.proto";
+
+message LocalCacheSchemaProto {
+  message SpportedDataVersion {
+    optional string bucket = 1;
+    optional string version = 2;
+  };
+  message SingleFileInfo {
+    optional string name = 1;
+    optional string version = 2;
+    optional string path = 3;
+    repeated SpportedDataVersion supported_data_version = 4;
+    optional int64 modify_time = 5 [default = 0];
+  };
+  repeated SingleFileInfo file_info = 1;
+  repeated SingleFileInfo schema_info = 2;
+  repeated SpportedDataVersion supported_data_version = 3;
+  optional int32 prune_num = 4 [default = 0];
+}
+
+message DeploySummaryLocalStoreProto {
+  repeated snoah.onbsim.perf.DeploySummaryProto local = 1;
+}

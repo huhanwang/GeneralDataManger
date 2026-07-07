@@ -1,0 +1,49 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/lite/proto/lite_common.proto";
+
+// 蓝圈限速类型
+enum SpeedLimitRangeType {
+  HIGHWAY = 1;              // 高速
+  CITY_EXPRESS = 2;         // 城市快速路
+  RAMP = 3;                 // 普通匝道
+  JUNCTION = 4;             // 高速间匝道
+  SPEED_DETECT_CAMERA = 5;  // 电子眼
+  OTHERS = 6;               //  其它
+  // 平行路(与高速或城快主路平行，主要功能是为高速、城快主路分流的单向通行道路)
+  PARALLEL_ROAD = 7;
+  SERVICE_AREA = 8;
+  TOLL_STATION_AREA = 9;
+  TUNNEL_AREA = 10;
+}
+
+message EhpSpeedLimitRange {
+  optional SpeedLimitRangeType range_type = 2;
+  optional double speed_limit_kph = 3;
+  optional double start_offset = 4;  // m.
+  optional double end_offset = 5;    // m.
+  // For hmi, usually equal to speed_limit_kph except transition.
+  optional double display_speed_limit_kph = 6 [deprecated = true];
+  // NOTE(zuowei): Only for hack.
+  optional double planner_speed_kph = 7;
+  reserved 1;
+};
+
+message EhpSpeedLimitRangesProto {
+  optional LiteHeader header = 1;
+  // 蓝圈限速
+  // Sort from near to far.
+  repeated EhpSpeedLimitRange speed_limit_ranges = 2;
+
+  // 红圈限速
+  enum TsrType {
+    SPEED_DETECT_CAMERA = 1;
+    SD_MAP = 2;
+    DEFAULT_FILL = 3;
+    NO_SPEED_LIMIT = 4;
+  }
+  optional TsrType tsr_type = 3;
+  optional int32 tsr_speed_limit_kph = 4;
+};

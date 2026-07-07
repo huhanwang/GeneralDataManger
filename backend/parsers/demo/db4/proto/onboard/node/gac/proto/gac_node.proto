@@ -1,0 +1,207 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/positioning.proto";
+import "onboard/node/gac/proto/gac_calibration.proto";
+
+message GacLineParamsProto {
+  // The coefficient of cubic curve.
+  optional float c0 = 1;
+  optional float c1 = 2;
+  optional float c2 = 3;
+  optional float c3 = 4;
+  optional double range_start = 5;
+  optional double range_end = 6;
+}
+
+enum PILOTSPROCESSTATE {
+  kUnknow = 0;
+  kActive = 1;
+  kHibernation = 2;
+}
+
+message GacPoint {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+message GacLineTypeProto {
+  enum LineType {
+    UNKNOWN = 0;
+    DASHED = 1;
+    SOLID = 2;
+    DOUBLE_DASHED = 3;
+    DOUBLE_SOLID = 4;
+    LEFT_DASHED_RIGHT_SOLID = 5;
+    LEFT_SOLID_RIGTH_DASHED = 6;
+    CURB = 7;
+  }
+  optional GacPoint cut_point = 1;
+  optional LineType type = 2;
+  optional bool has_fishbone = 3;
+}
+
+message GacLineColorProto {
+  enum LineColor {
+    UNKNOWN = 0;
+    WHITE = 1;
+    YELLOW = 2;
+    ORANGE = 3;
+    BLUE = 4;
+  }
+  optional GacPoint cut_point = 1;
+  optional LineColor color = 2;
+}
+
+message GacLineWidthProto {
+  optional GacPoint cut_point = 1;
+  optional double width = 2;
+}
+
+message GacLaneBoundaryProto {
+  enum PositionIndex {
+    HOST_LEFT = 0;
+    HOST_RIGHT = 1;
+    LEFT_NEIGHBOR_LANE_LEFT = 2;
+    LEFT_NEIGHBOR_LANE_RIGHT = 3;
+    RIGHT_NEIGHBOR_LANE_LEFT = 4;
+    RIGHT_NEIGHBOR_LANE_RIGHT = 5;
+    REAR_RIGHT = 6;
+    REAR_LEFT = 7;
+    ROAD_EDGE_LEFT = 8;
+    ROAD_EDGE_RIGHT = 9;
+    DEFAULT = 255;
+  }
+  optional int32 lane_id = 1;
+  optional PositionIndex lane_position_index = 2 [default = DEFAULT];
+  optional double confidence = 3;
+  optional GacLineParamsProto lane_params = 4;
+  repeated GacLineTypeProto lane_types = 5;
+  repeated GacLineColorProto lane_colors = 6;
+  repeated GacLineWidthProto lane_widths = 7;
+}
+
+message GacLaneBoundaryDebugProto {
+  optional LiteHeader header = 1;
+  optional double mid_center_timestamp = 2;
+  optional PoseProto pose_proto = 4;
+  repeated GacLaneBoundaryProto gac_lane_boundaries = 3;
+}
+
+message GacGeneralObstacle {
+  optional uint32 obstacle_id = 1;
+  optional uint32 type = 2;
+  optional uint32 subtype = 3;
+  optional double existence_confidence = 4;
+  optional Vec2dProto center_position = 5;
+  optional Vec2dProto absolute_velocity = 6;
+  optional Vec2dProto relative_velocity = 7;
+  optional Vec2dProto absolute_accelaration = 8;
+  optional double heading_angle = 9;
+  optional double heading_angular_velocity = 10;
+  optional uint32 moving_status = 11;
+  optional double bbox3d_width = 12;
+  optional double bbox3d_length = 13;
+  optional double bbox3d_height = 14;
+  optional Mat2fProto center_position_cov = 15;
+  optional Mat2fProto velocity_cov = 16;
+  optional Mat2fProto accelaration_cov = 17;
+  optional Mat3dProto size_cov = 18;
+  optional double tracking_period = 19;
+  optional int32 lane_assignment = 20;
+}
+
+message GacFusionObstacleProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional uint32 obstacle_num = 3;
+  repeated GacGeneralObstacle gac_general_obstacle = 4;
+}
+
+message GacAebDebugInfoProto {
+  optional LiteHeader header = 1;
+  optional uint32 aeb_active = 2;
+  optional int32 fusion_obj_id = 3;
+  optional uint32 vision_obj_id = 4;
+  optional double occurred_time = 5;
+  optional uint32 aeb_status = 6;
+  optional uint32 aeb_not_enter_reason = 7;
+}
+
+message GacVehicleStateProto {
+  optional LiteHeader header = 1;
+  optional uint64 operations = 2;
+  optional uint64 configurations = 3;
+  optional uint64 state_flags = 4;
+  optional uint64 invalid_flags = 5;
+  optional uint64 actuator_states = 6;
+  optional uint64 function_states = 7;
+  optional uint32 acu_switch = 8;
+  optional uint32 acu_card = 9;
+  optional uint32 nda_lc_style_req = 10;
+  optional uint32 iacc_function_req = 11;
+  optional uint32 nda_voice_mode = 12;
+  optional uint32 acu_button_state = 13;
+  optional uint32 deleteaccount = 14;
+  optional uint32 vehicle_run_mode = 15;
+  optional uint32 wiper_state = 16;
+  optional uint32 steering_wheel_angular_speed = 17;
+  optional uint32 total_odometer = 18;
+  optional uint32 auid = 19;
+  optional uint32 display_speed = 20;
+  optional uint32 alc_sensitivity = 21;
+  optional uint32 sunshine_intensity = 22;
+  optional uint32 rain_level = 23;
+  optional uint32 isli_state = 24;
+  optional bool crash_state = 25;
+  optional uint32 vehdrvmod = 26;
+  optional uint32 accmaxspdlimit = 27;
+  optional float steering_wheel_torque = 28;
+  optional float acc_pedal = 29;
+  optional float master_cylinder_pressure = 30;
+  optional float outdoor_temperature = 31;
+  optional float vehwheeltorqmax = 32;
+  optional float eps_torque = 33;
+  optional float esp_deceleration = 34;
+  optional float request_motor_torque = 35;
+  optional float motor_torque = 36;
+  optional float front_left_tire_pressure = 37;
+  optional float front_right_tire_pressure = 38;
+  optional float rear_left_tire_pressure = 39;
+  optional float rear_right_tire_pressure = 40;
+  optional float ipb_input_stroke = 41;
+}
+
+message GacImudProto {
+  optional LiteHeader header = 1;
+  optional uint32 coordinate = 2;
+  optional Vec3dProto angular_velocity = 3;
+  optional Vec3dProto linear_acceleration = 4;
+  optional uint32 status = 5;
+}
+
+message GacCalibrationProto {
+  optional LiteHeader header = 1;
+  optional GacCalibrationUdsMsgProto gac_cali_msg_proto = 2;
+}
+
+message ECUInfoProto {
+  optional DIDType did_type = 1;
+  optional string vin = 2;
+}
+
+enum DIDType {
+  UNKNOWN_DID = 0;                       // 未知或默认值
+  SOFTWARE_VERSION_NUMBER = 1;           // F189 软件版本号
+  SN_NUMBER = 2;                         // F18C SN号
+  EXTENDED_SOFTWARE_VERSION_NUMBER = 3;  // F195 扩展软件版本号
+  VIN = 4;                               // F190 VIN码
+  PKI_INFORMATION = 5;                   // 9A3E PKI信息
+  CONFIGURATION_CODE1 = 6;               // 0100 配置码1
+  CONFIGURATION_CODE2 = 7;               // 0101 配置码2
+  FACTORY_MODE_STATUS = 8;               // 0110 工厂模式状态
+  ALL = 9;                               // FFFF ALL
+}

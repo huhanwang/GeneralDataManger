@@ -1,0 +1,46 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.active_safety;
+
+enum FineGrainedTrackScene {
+  UNKNOWN = 0;
+  NCAP_HIGHSPEED_CPLA = 1;
+  NCAP_HIGHSPEED_CBLA = 2;
+  NCAP_HIGHSPEED_CPFA = 3;
+  NCAP_HIGHSPEED_CSFA = 4;
+  NCAP_HIGHSPEED_CCRSCROSSING = 5;
+  NCAP_NORMAL_CPNSOC = 6;
+  NCAP_LOWSPEED_CBLA = 7;
+  URBN_CLOSE_TURNING = 8;
+  URBN_ADULT_ON_RAMP = 9;
+  URBN_CLOSE_PED = 10;
+  NCAP_CCFT_SCENE = 11;
+  NCAP_CPLA_BAD_TYPE = 12;
+  URBN_DEACC_CROSS_CYC = 13;
+  URBN_DEACC_CROSS_PED = 14;
+  URBN_DENSE_CROSS_PED = 15;
+  URBN_CLOSE_CUTIN_VEH = 16;
+  URBN_SIDE_FORWARD_WALKING_PED = 17;
+  URBN_INSIDE_BLIND_AREA_MULTI = 18;
+  URBN_INSIDE_BLIND_AREA_CORNER = 19;
+  NCAP_CCRS = 20;
+  URBN_VISION_PREDICTED_SCENE = 21;
+  URBN_SOCIAL_SCENE = 22;
+  URBN_VISION_HEADING_ANOMALY = 23;
+  URBN_VISION_FRONT_PED_ANOMALY = 24;
+  URBN_SOCIAL_SCENE_CROSSING = 25;
+  URBN_WALKING_PED_CLOSE_TO_VEHICLE = 26;
+  URBN_UNSTABLE_RADAR_ASSOCIATED_TRUCK = 27;
+  NCAP_CPNSOC = 28;
+}

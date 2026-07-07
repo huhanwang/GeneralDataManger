@@ -1,0 +1,68 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/q_issue.proto";
+import "onboard/proto/q_assist_state.proto";
+
+message QState {
+  enum Type {
+    // Vehicle isn't ready to do anything.
+    NOT_READY = 0;
+
+    // Vehicle won't execute control command and is ready to engage.
+    READY_TO_AUTO_DRIVE = 1;
+
+    // Vehicle will execute control command and is engaged by the local driver.
+    AUTO_DRIVE = 2;
+
+    // Vehicle is triggering issue lead to won't execute control command and
+    // need to be take over.
+    EMERGENCY_TO_TAKEOVER = 3;
+
+    // Vehicle won't execute control command and is ready to remote dirve.
+    READY_TO_REMOTE_DRIVE = 5;
+
+    // Vehicle will execute control command that is sent by the remote driver.
+    REMOTE_DRIVE = 6;
+
+    // Vehicle will execute control command and is engaged by the remote driver.
+    REMOTE_ASSIST_AUTO_DRIVE = 7;
+
+    // Vehicle is triggering issue and braking immediately.
+    EMERGENCY_TO_STOP = 8;
+
+    // Vehicle won't execute speed control command and only execute steer
+    // control command.
+    AUTO_STEER_ONLY = 10;
+
+    // Vehicle won't execute steer control command and only execute speed
+    // control command.
+    AUTO_SPEED_ONLY = 11;
+
+    // Vehicle is shutting down.
+    SHUTDOWN = 20;
+
+    // Vehicle is initing.
+    INIT = 21;
+
+    // Vehicle won't execute steer control command and speed control
+    // command,triggered by assist drive system override.
+    READY_OVERRIDE = 30;
+
+    // Vehicle is exiting slowly
+    SHORT_BRAKE = 31;
+
+    // Deprecated.
+    TAKEOVER = 4 [deprecated = true];
+    STOP = 9 [deprecated = true];
+  }
+  optional QState.Type type = 1;
+  optional QIssueProto issue = 2;
+  optional string failed_issues = 3;
+  optional string id = 4;
+  optional int64 timestamp = 5;  // unit: us
+
+  optional QAssistState q_assist_state = 6;
+}

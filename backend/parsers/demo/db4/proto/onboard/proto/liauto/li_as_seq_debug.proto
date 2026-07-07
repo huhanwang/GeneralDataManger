@@ -1,0 +1,9 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message AsSeqDebug {
+  optional string type = 1;
+  optional string seq = 2;
+}

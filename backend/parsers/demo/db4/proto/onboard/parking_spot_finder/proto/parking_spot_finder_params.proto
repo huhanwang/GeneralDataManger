@@ -1,0 +1,85 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/parking_spot_finder/proto/parking_spot_finder_params";
+
+import "onboard/planner/proto/planner_params.proto";
+
+message RuleBasedSpotFinderParamsProto {
+  // Horizontal distance.
+  optional double min_horizontal_distance = 1;
+  optional double max_horizontal_distance = 2;
+  optional double horizontal_distance_buffer = 3;
+  // Too far distance.
+  optional double too_far_distance = 4;
+  // Spot size.
+  optional double min_perpendicular_spot_width = 5;
+  optional double perpendicular_spot_width_buffer = 6;
+  optional double min_perpendicular_spot_length = 7;
+  optional double min_angled_spot_length = 57;
+  optional double min_parallel_spot_width = 8;
+  optional double min_parallel_spot_length = 9;
+  optional double parallel_spot_length_buffer = 10;
+  // Spot yaw.
+  optional double min_perpendicular_spot_yaw = 11;
+  optional double max_perpendicular_spot_yaw = 12;
+  optional double min_parallel_spot_yaw = 13;
+  optional double max_parallel_spot_yaw = 14;
+  optional double spot_yaw_buffer = 15;
+  // Wheel stopper.
+  optional double perpendicular_spot_stopper_distance = 16;
+  optional double parallel_spot_stopper_distance = 17;
+  optional double angled_spot_stopper_distance = 58;
+  optional double stopper_distance_buffer = 59;
+  // Detect distance.
+  optional double detect_distance = 18;
+  optional double detect_distance_buffer = 19;
+  // Narrow road by obs.
+  optional double perpendicular_spot_narrow_road_width = 20;
+  optional double dead_end_perpendicular_spot_narrow_road_width = 21;
+  optional double parallel_spot_narrow_road_width = 22;
+  optional double parallel_spot_none_double_narrow_road_width = 55;
+  optional double parallel_spot_none_double_space_length_thres = 56;
+  optional double narrow_road_width_buffer = 23;
+  optional double narrow_road_horizontal_offset = 24;
+  optional double narrow_road_check_length = 25;
+  optional double dead_end_narrow_road_check_length = 26;
+  // Space size.
+  optional double min_perpendicular_space_width = 27;
+  optional double perpendicular_space_width_buffer = 28;
+  optional double min_perpendicular_space_length = 29;
+  optional double min_angled_space_width = 30;
+  optional double angled_space_width_buffer = 31;
+  optional double min_angled_space_length = 32;
+  optional double min_parallel_space_width = 33;
+  optional double min_parallel_space_length = 34;
+  optional double parallel_space_length_buffer = 35;
+  optional double min_parallel_wheel_stopper_front_space_length = 36;
+  optional double parallel_wheel_stopper_front_space_length_buffer = 37;
+  optional double perpendicular_spot_length_buffer = 38;
+  optional double parallel_spot_width_buffer = 39;
+  optional double perpendicular_space_length_buffer = 40;
+  optional double angled_space_length_buffer = 41;
+  optional double parallel_space_width_buffer = 42;
+  // Narrow road by road info.
+  optional double perpendicular_spot_space_width_buffer = 43;
+  optional double perpendicular_road_width_buffer = 44;
+  optional double perpendicular_road_near_width1 = 45;
+  optional double perpendicular_road_far_width1 = 46;
+  optional double perpendicular_road_near_width2 = 47;
+  optional double perpendicular_road_far_width2 = 48;
+  optional double perpendicular_road_near_width3 = 49;
+  optional double perpendicular_road_far_width3 = 50;
+  optional double perpendicular_road_near_width4 = 51;
+  optional double perpendicular_road_far_width4 = 52;
+  optional double perpendicular_road_near_width5 = 53;
+  optional double perpendicular_road_far_width5 = 54;
+
+  // Next ID: 60.
+}
+
+message ParkingSpotFinderParamsProto {
+  optional FreespacePathFinderParamsProto path_finder_params = 1;
+  optional RuleBasedSpotFinderParamsProto rule_based_spot_finder_params = 2;
+  optional bool use_front_lidar = 3;
+}

@@ -1,0 +1,84 @@
+
+syntax = "proto2";
+
+package snoah;
+
+// Not using planner namespace.
+
+enum LaneChangeStage {
+  LCS_NONE = 0;
+  LCS_WAITING = 1;
+  LCS_EXECUTING = 2;
+  LCS_PAUSE = 3;
+  LCS_RETURN = 4;
+}
+
+message LaneChangeStateProto {
+  optional LaneChangeStage stage = 1;
+  optional bool crossed_boundary = 9;
+  optional bool entered_target_lane = 3;
+  // Whether this is a lane change to left side.
+  optional bool lc_left = 5;
+  optional bool force_merge = 8 [default = false];
+
+  reserved 2, 4, 6, 7;
+
+  // Next ID: 9
+}
+
+enum LaneChangeWaitingCancelReason {
+  LC_WAITING_CANCEL_REASON_NONE = 0;
+  LC_WAITING_CANCEL_REASON_EXPIRED = 1;  // too long
+  LC_WAITING_CANCEL_REASON_GENERAL = 2;  // general reason
+  LC_WAITING_CANCEL_REASON_NO_TARGET_LANE = 3;
+  LC_WAITING_CANCEL_REASON_NO_NEED = 4;
+}
+
+enum LaneChangeWaitingReason {
+  LC_WAITING_REASON_NONE = 0;
+  LC_WAITING_REASON_SOLID_LANE = 1;  // cross solid boundary.
+  LC_WAITING_REASON_MOVING_OBJ = 2;
+  LC_WAITING_REASON_NO_VALID_BRANCH = 3;  // No valid lane change branch
+  LC_WAITING_REASON_STILL_WAITING = 4;    // Insufficient waiting time.
+  LC_WAITING_REASON_STATIC_OBJ = 5;
+  LC_WAITING_REASON_GENERAL = 6;  // general reason.
+}
+
+enum LaneChangeCancelReason {
+  LC_CANCEL_REASON_NONE = 0;
+  LC_CANCEL_REASON_NO_VALID_TARGET = 1;   // No valid lane change branch。
+  LC_CANCEL_REASON_SOLID_LANE = 2;        // cross solid boundary.
+  LC_CANCEL_REASON_NO_LONGER_NEEDED = 3;  // Do not need lc any more.
+  LC_CANCEL_REASON_MOVING_OBJ = 4;
+  LC_CANCEL_REASON_PAUSE_BEFORE_NODD =
+      5;  // Lane change cancel because still in lane change pause in front of
+          // non odd。
+  LC_CANCEL_REASON_FAIL_TO_ENTER_BEFORE_NODD =
+      6;  // Lane change cancel because failure to enter target lane in front of
+          // non odd。
+  LC_CANCEL_REASON_STATIC_OBJ = 7;
+  LC_CANCEL_REASON_GENERAL = 8;  // General reason.
+}
+
+enum LaneChangeUnavailableReason {
+  LC_UNAVAILABLE_REASON_NONE = 0;
+  LC_UNAVAILABLE_REASON_GENERAL = 1;  // Generic lane change unavailable reason.
+  LC_UNAVAILABLE_REASON_JUST_ACTIVATED = 2;  // Just activated
+  LC_UNAVAILABLE_REASON_PAUSE_EXPIRED = 3;
+  LC_UNAVAILABLE_REASON_WAITING_RESPONSE = 4;
+  LC_UNAVAILABLE_REASON_OPPOSITE_PADDLE_LC = 5;
+  LC_UNAVAILABLE_REASON_FRONT_PEDESTRIAN = 6;
+  LC_UNAVAILABLE_REASON_FORCE_STOP = 7;
+  LC_UNAVAILABLE_REASON_NEAR_TO_MERGE_POINT = 8;
+  LC_UNAVAILABLE_REASON_LOW_SPEED = 9;
+  LC_UNAVAILABLE_REASON_HIGH_ACC = 10;
+  LC_UNAVAILABLE_REASON_NEAR_LANE_END = 11;
+  LC_UNAVAILABLE_REASON_LARGE_CAR_ASIDE = 12;
+  LC_UNAVAILABLE_REASON_SOLID_LINE = 13;
+  LC_UNAVAILABLE_REASON_CONSTRUCTION_ZONE = 14;
+  LC_UNAVAILABLE_REASON_IN_ODD = 15;
+  LC_UNAVAILABLE_REASON_NEAR_ODD = 16;
+  LC_UNAVAILABLE_REASON_SLOW_LEADER = 17;
+  LC_UNAVAILABLE_REASON_NO_VALID_LEFT_LANE = 18;
+  LC_UNAVAILABLE_REASON_NO_VALID_RIGHT_LANE = 19;
+}

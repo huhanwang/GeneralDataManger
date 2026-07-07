@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package snoah;
+
+enum LaunchPlanName {
+  DEFAULT = 1;
+  DATA_COLLECTION = 2;
+}
+
+message LaunchPlanNameFileMap {
+  message LaunchPlanNameFilePair {
+    optional LaunchPlanName name = 1;
+    optional string file_path = 2;
+    optional string name_str = 3;
+  }
+  repeated LaunchPlanNameFilePair launch_plan_name_file_pairs = 1;
+}

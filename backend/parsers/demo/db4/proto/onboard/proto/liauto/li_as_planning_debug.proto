@@ -1,0 +1,292 @@
+
+syntax = "proto2";
+
+package snoah.li.aeb;
+
+// 定义 MapLocationDebug 结构
+message MapLocationDebug {
+  optional int32 map_type = 1;
+  optional int32 coordinate_type = 2;
+  optional string optimal_lane_id = 3;
+  optional string cur_lane_id = 4;
+  optional double accum_s_on_cur_lane = 5;
+  optional double d2x = 6;
+  optional double odometry_delay = 7;
+  optional double odometry_yaw = 8;
+  optional double localization_yaw = 9;
+  optional int32 ref_line_type = 10;
+}
+
+// 定义 ScenarioDebug 结构
+message ScenarioDebug {
+  optional int32 scenario_type = 1;
+  optional double lc_state_time = 2;
+}
+
+// 定义 MultiTrajDebug 结构
+message MultiTrajDebug {
+  optional string traj_id = 1;
+  optional int32 lat_decision = 2;
+  optional int32 lon_decision = 3;
+  optional string traj_decision_reason = 4;
+}
+
+// 定义 LatDecisionDebug 结构
+message LatDecisionDebug {
+  optional double preview_ds = 1;
+  optional double lane_offset = 2;
+  optional double truck_avoid_offset = 3;
+  optional double lc_lane_offset = 4;
+}
+
+// 定义 LonDecisionDebug 结构
+message LonDecisionDebug {
+  optional double v_limit = 1;
+  optional double kappa = 2;
+  optional double kappa_v_limit = 3;
+  optional double a_limit = 4;
+  optional double a_leader_far = 5;
+  optional double a_leader_break = 6;
+  optional double a_leader_slower = 7;
+  optional double a_leader_close = 8;
+  optional double a_prepare_lc = 9;
+}
+
+// 定义 StateDebug 结构
+message StateDebug {
+  optional double t = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional double s = 4;
+  optional double l = 5;
+  optional double v = 6;
+  optional double a = 7;
+  optional double theta = 8;
+  optional double kappa = 9;
+}
+
+// 定义 LatticePlannerDebug 结构
+message LatticePlannerDebug {
+  optional double result_v = 1;
+  optional double result_a = 2;
+  optional int32 path_count = 3;
+  optional int32 curve_type = 4;
+}
+
+// 定义 MotionBoundsPoint 结构
+message MotionBoundsPoint {
+  optional double s = 1;
+  optional double t = 2;
+  optional double order1 = 3;
+  optional double order1_min = 4;
+  optional double order1_max = 5;
+  optional double order2 = 6;
+  optional double order2_min = 7;
+  optional double order2_max = 8;
+  optional double order3 = 9;
+  optional double order3_min = 10;
+  optional double order3_max = 11;
+}
+
+// 定义 StateInfo 结构
+message StateInfo {
+  optional double order1 = 1;
+  optional double order2 = 2;
+  optional double order3 = 3;
+}
+
+// 定义 MotionBoundsInfo 结构
+message MotionBoundsInfo {
+  optional string lane_id = 1;
+  optional StateInfo init_s = 2;
+  optional StateInfo init_l = 3;
+  repeated MotionBoundsPoint lat_info = 4;
+  repeated MotionBoundsPoint lon_info = 5;
+}
+
+// 定义 MotionBoundsDebug 结构
+message MotionBoundsDebug {
+  repeated MotionBoundsInfo motion_bounds_infos = 1;
+}
+
+// 定义 ObstacleDebug 结构
+message ObstacleDebug {
+  optional string id = 1;
+  optional double center_x = 2;
+  optional double center_y = 3;
+  optional double heading = 4;
+  optional double length = 5;
+  optional double width = 6;
+  optional double v_x = 7;
+  optional double v_y = 8;
+  optional double start_s = 9;
+  optional double end_s = 10;
+  optional double start_l = 11;
+  optional double end_l = 12;
+}
+
+// 定义 SwerveType 枚举
+enum SwerveType {
+  NONE = 0;
+  LANE_BORROW = 1;
+  LANE_CHANGE = 2;
+}
+
+// 定义 SwerveState 枚举
+enum SwerveState {
+  NO_CHANGE = 0;
+  ADJUSTING = 1;
+  ENTERING = 2;
+  FINISH = 3;
+}
+
+// 定义 SwerveDirection 枚举
+enum SwerveDirection {
+  CURRENT_LANE = 0;
+  LEFT_LANE = 1;
+  RIGHT_LANE = 2;
+  NONE_NEIGHBOR = 3;
+}
+
+// 定义 BoundaryBox 结构
+message BoundaryBox {
+  optional double center_x = 1;
+  optional double center_y = 2;
+  optional double heading = 3;
+}
+
+// 定义 PredictedTrajectoryObstacle 结构
+message PredictedTrajectoryObstacle {
+  optional string id = 1;
+  repeated BoundaryBox boundingBox = 2;
+  optional double length = 3;
+  optional double width = 4;
+}
+
+// 定义 BehaviorDebug 结构
+message BehaviorDebug {
+  optional SwerveType swerve_type = 1;
+  optional int32 planning_swerve_type = 2;  // octet 处理为 int32
+  optional int32 change_lane_state = 3;
+  optional int32 target_lane_direction = 4;
+  optional int32 target_lane_direction_tag = 5;
+  optional string target_lane_id = 6;
+  optional string current_lane_id = 7;
+  optional string current_lane_blocked_id = 8;
+  optional double current_lane_safety_distance = 9;
+  optional double left_neighbor_front_safety_distance = 10;
+  optional double left_neighbor_rear_safety_distance = 11;
+  optional double right_neighbor_front_safety_distance = 12;
+  optional double right_neighbor_rear_safety_distance = 13;
+  optional double lane_borrow_extend_distance = 14;
+  optional double target_offset = 15;
+  optional string target_offset_id = 16;
+  optional ObstacleDebug caution_obstacle_info = 17;
+  repeated PredictedTrajectoryObstacle predictedBoundarys = 18;
+  optional float lane_borrow_need_min_d = 19;
+  optional float lane_borrow_actual_d = 20;
+}
+
+// 定义 Status 枚举
+enum Status {
+  PLANNING_OK = 0;
+  PLANNING_FAILED_EMPTY_REFERENCE_LINE = 1;
+  PLANNING_FAILED_NULLPTR = 2;
+  PLANNING_SKIP_OBSTACLE_NOT_STABLE = 3;
+  PLANNING_SKIP_REFERENCELINE_REVERSE = 4;
+  PLANNING_SKIP_REFERENCELINE_NOT_SMOOTH = 5;
+  PLANNING_SKIP_REFERENCELINE_TOO_SHORT = 6;
+  PLANNING_SKIP_REFERENCELINE_OPPOSITE = 7;
+  PLANNING_FAILED_PREPROCESS = 8;
+  PLANNING_FAILED_TARGET_LANE_DECIDER = 9;
+  PLANNING_FAILED_BIAS_DECIDER = 10;
+  PLANNING_FAILED_PATH_BOUNDS = 11;
+  PLANNING_FAILED_PATH_OPTIMIZER = 12;
+  PLANNING_FAILED_ST_DECIDER = 13;
+  PLANNING_FAILED_SPEED_SAMPLER = 14;
+  PLANNING_FAILED_TRAJECTORY_COMBINER = 15;
+  PLANNING_FAILED_POST_PROCESS = 16;
+  PLANNING_REUSED_NULLPTR = 17;
+  PLANNING_REUSED_PREPROCESS = 18;
+  PLANNING_REUSED_TARGET_LANE_DECIDER = 19;
+  PLANNING_REUSED_BIAS_DECIDER = 20;
+  PLANNING_REUSED_PATH_BOUNDS = 21;
+  PLANNING_REUSED_PATH_OPTIMIZER = 22;
+  PLANNING_REUSED_ST_DECIDER = 23;
+  PLANNING_REUSED_SPEED_SAMPLER = 24;
+  PLANNING_REUSED_TRAJECTORY_COMBINER = 25;
+  PLANNING_REUSED_POST_PROCESS = 26;
+}
+
+// 定义 LaneStructure 结构
+message LaneStructure {
+  optional uint32 relative_position = 1;  // unsigned short 处理为 uint32
+  optional uint32 split_bit = 2;          // unsigned short 处理为 uint32
+  optional uint32 merge_bit = 3;          // unsigned short 处理为 uint32
+  optional bool is_same_direction_with_ego_motion = 4;  // boolean 处理为 bool
+  optional bool has_line_boundary = 5;     // boolean 处理为 bool
+  optional bool is_intersection_lane = 6;  // boolean 处理为 bool
+}
+
+// 定义 PlanPreProcessDebug 结构
+message PlanPreProcessDebug {
+  repeated LaneStructure lanes_structure = 1;
+  optional bool locked = 2;                     // boolean 处理为 bool
+  optional bool env_stable_between_frames = 3;  // boolean 处理为 bool
+  optional bool locked_lines_matched = 4;       // boolean 处理为 bool
+  optional bool at_junction = 5;                // boolean 处理为 bool
+  optional string debug_info = 6;
+}
+
+message PlanningDebug {
+  optional Status status = 1;
+  optional int32 planning_status = 2;  // octet replaced by int32
+  optional StateDebug start_point = 3;
+  optional StateDebug vehicle_state = 4;
+  optional ScenarioDebug scenario_debug = 5;
+  optional BehaviorDebug behavior_debug = 6;
+  optional MotionBoundsDebug motion_bounds_debug = 7;
+  optional PlanPreProcessDebug plan_preprocess_debug = 8;
+}
+
+enum Result {
+  RESULT_OK = 0;
+  RESULT_FAIL = 1;
+  RESULT_FAIL_GET_MAP = 2;
+  RESULT_FAIL_GET_TRAFFIC = 3;
+  RESULT_FAIL_GET_VEHICLE = 4;
+  RESULT_FAIL_GET_LOCALIZATION = 5;
+  RESULT_FAIL_UPDATE_MANAGER = 6;
+  RESULT_FAIL_MANAGER_STAMP = 7;
+  RESULT_FAIL_MANAGER_NO_MAP = 8;
+  RESULT_FAIL_MANAGER_TARGET_LANE = 9;
+  RESULT_FAIL_MANAGER_UPDATE_REFLINE = 10;
+  RESULT_FAIL_MANAGER_CURRENT_LANE = 11;
+  RESULT_FAIL_MANAGER_PLANNER = 12;
+}
+
+enum NudgeState {
+  NUDGE_NONE = 0;
+  NUDGE_LEFT = 1;
+  NUDGE_RIGHT = 2;
+}
+
+enum LaneBorrowState {
+  BORROW_NONE = 0;
+  BORROW_PREPARE_LEFT = 1;
+  BORROW_PREPARE_RIGHT = 2;
+  BORROW_WAIT_LEFT = 3;
+  BORROW_WAIT_RIGHT = 4;
+  BORROW_LEFT = 5;
+  BORROW_RIGHT = 6;
+  BORROW_CANCEL = 7;
+}
+
+message PlanningState {
+  optional Result result = 1;
+  optional NudgeState nudge_state = 2;
+  optional LaneBorrowState lane_borrow_state = 3;
+
+  repeated string current_lane_ids = 4;  // sequence replaced by repeated
+  repeated string target_lane_ids = 5;   // sequence replaced by repeated
+}

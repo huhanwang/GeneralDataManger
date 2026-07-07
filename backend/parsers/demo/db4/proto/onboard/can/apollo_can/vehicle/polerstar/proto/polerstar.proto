@@ -1,0 +1,817 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Vector__independent_sig_msg_1 {
+  // Report Message
+  // [%] [0|100]
+  optional double dec_pedal_position_fb = 1;
+  // [Nm] [-3000|3000]
+  optional double regtrqrequest = 2;
+  // [] [0|0]
+  optional int32 energyreceive = 3;
+  // [] [0|0]
+  optional bool remote_ctrl_enable = 4;
+  // [] [0|0]
+  optional bool settemp_enable = 5;
+  // [] [0|0]
+  optional int32 fanspd_control = 6;
+  // [] [0|0]
+  optional int32 operation_mode_ctrl = 7;
+}
+
+message Vcu_acu_pl_180182a7 {
+  // Report Message
+  enum HardgearfbType {
+    HARDGEARFB_N = 0;
+    HARDGEARFB_D = 1;
+    HARDGEARFB_R = 2;
+    HARDGEARFB_P = 3;
+  }
+  enum GearfbType {
+    GEARFB_N = 0;
+    GEARFB_D = 1;
+    GEARFB_R = 2;
+    GEARFB_P = 3;
+  }
+  enum DrivemodefbType {
+    DRIVEMODEFB_AUTODRIVINGMODE = 0;
+    DRIVEMODEFB_MANUALDRIVINGMODE = 1;
+    DRIVEMODEFB_ABNORMAL = 2;
+  }
+  // [] [0|255]
+  optional HardgearfbType hardgearfb = 1;
+  // [] [0|255]
+  optional GearfbType gearfb = 2;
+  // [%] [0|100]
+  optional double dec_pedal_position = 3;
+  // [%] [0|100]
+  optional double acc_pedal_position = 4;
+  // [] [0|3]
+  optional DrivemodefbType drivemodefb = 5;
+}
+
+message Acu_vcu_pl_1801a782 {
+  // Control Message
+  enum Acu_gearType {
+    ACU_GEAR_N = 0;
+    ACU_GEAR_D = 1;
+    ACU_GEAR_R = 2;
+    ACU_GEAR_P = 3;
+  }
+  enum DriveenableType {
+    DRIVEENABLE_FORBID = 0;
+    DRIVEENABLE_ENABLE = 1;
+  }
+  // [%] [0|100]
+  optional double acu_dec_pedal_position = 1;
+  // [] [0|255]
+  optional Acu_gearType acu_gear = 2;
+  // [%] [0|100]
+  optional double acu_acc_pedal_position = 3;
+  // [] [0|1]
+  optional DriveenableType driveenable = 4;
+}
+
+message Bcm1_pl_18a70017 {
+  // Report Message
+  enum Bcm_frontdoorfbType {
+    BCM_FRONTDOORFB_CLOSE = 0;
+    BCM_FRONTDOORFB_OPEN = 1;
+    BCM_FRONTDOORFB_INVALID = 2;
+    BCM_FRONTDOORFB_FAULT = 3;
+  }
+  enum Bcm_hornfbType {
+    BCM_HORNFB_FORBID = 0;
+    BCM_HORNFB_ENABLE = 1;
+  }
+  enum Bcm_middoorfbType {
+    BCM_MIDDOORFB_CLOSE = 0;
+    BCM_MIDDOORFB_OPEN = 1;
+    BCM_MIDDOORFB_INVALID = 2;
+    BCM_MIDDOORFB_FAULT = 3;
+  }
+  // [] [0|3]
+  optional Bcm_frontdoorfbType bcm_frontdoorfb = 1;
+  // [] [0|3]
+  optional Bcm_hornfbType bcm_hornfb = 2;
+  // [] [0|3]
+  optional Bcm_middoorfbType bcm_middoorfb = 3;
+}
+
+message Acu_epb_pl_18ea64ef {
+  // Control Message
+  enum Working_modeType {
+    WORKING_MODE_NORMALMANUALAUTOCONTROL = 0;
+    WORKING_MODE_REPAIRONLYEPBSWITCHCONTROL = 10;
+    WORKING_MODE_CEXTERNALSWITCHCONTROLDEAFULT0C = 12;
+  }
+  enum External_brakecrtlType {
+    EXTERNAL_BRAKECRTL_PULL = 1;
+    EXTERNAL_BRAKECRTL_RELAX = 2;
+  }
+  // [] [0|255]
+  optional int32 csum_FF = 6;
+  // [] [0|255]
+  optional int32 csum = 1;
+  // [] [0|255]
+  optional Working_modeType working_mode = 2;
+  // [] [0|0]
+  optional int32 fixbyte1 = 3;
+  // [] [0|255]
+  optional External_brakecrtlType external_brakecrtl = 4;
+}
+
+message Abs_state_pl_18f0010b {
+  // Report Message
+  enum Asr_lamp_stateType {
+    ASR_LAMP_STATE_FORBID = 0;
+    ASR_LAMP_STATE_ENABLE = 1;
+  }
+  enum Asr_enginecontrolType {
+    ASR_ENGINECONTROL_NOOPERATIONMODE = 0;
+    ASR_ENGINECONTROL_OPERATIONMODE = 1;
+  }
+  enum Asr_brakecontrolType {
+    ASR_BRAKECONTROL_NOOPERATIONMODE = 0;
+    ASR_BRAKECONTROL_OPERATIONMODE = 1;
+  }
+  enum Abs_activeType {
+    ABS_ACTIVE_NOOPERATIONMODE = 0;
+    ABS_ACTIVE_OPERATIONMODE = 1;
+  }
+  enum Ebs_brakeswitchType {
+    EBS_BRAKESWITCH_FORBID = 0;
+    EBS_BRAKESWITCH_ENABLE = 1;
+  }
+  // [] [0|3]
+  optional Asr_lamp_stateType asr_lamp_state = 1;
+  // [%] [0|100]
+  optional double break_pedalpos = 2;
+  // [] [0|3]
+  optional Asr_enginecontrolType asr_enginecontrol = 3;
+  // [] [0|3]
+  optional Asr_brakecontrolType asr_brakecontrol = 4;
+  // [] [0|3]
+  optional Abs_activeType abs_active = 5;
+  // [] [0|3]
+  optional Ebs_brakeswitchType ebs_brakeswitch = 6;
+}
+
+message Eps_state_pl_18f01fff {
+  // Report Message
+  enum Eps_amberlampType {
+    EPS_AMBERLAMP_NORMAL = 0;
+    EPS_AMBERLAMP_FAULT = 1;
+  }
+  enum Eps_redlampType {
+    EPS_REDLAMP_NORMAL = 0;
+    EPS_REDLAMP_FAULT = 1;
+  }
+  // [] [0|9]
+  optional Eps_amberlampType eps_amberlamp = 1;
+  // [] [0|3]
+  optional Eps_redlampType eps_redlamp = 2;
+}
+
+message Mcu_acu_pl_18f120f0 {
+  // Report Message
+  // [Nm] [-3000|3000]
+  optional double mcu_torque = 1;
+  // [rpm] [-12000|12000]
+  optional int32 mcu_speed = 2;
+}
+
+message Mcu_state_pl_18f121f0 {
+  // Report Message
+  enum Mcu_stateType {
+    MCU_STATE_STOP = 0;
+    MCU_STATE_RUN = 2;
+    MCU_STATE_FAULT = 5;
+  }
+  enum Mcu_fault_levelType {
+    MCU_FAULT_LEVEL_NOFAULT = 0;
+    MCU_FAULT_LEVEL_1STFAULT = 1;
+    MCU_FAULT_LEVEL_2NDFAULT = 2;
+    MCU_FAULT_LEVEL_3RDFAULT = 3;
+    MCU_FAULT_LEVEL_4THFAULT = 4;
+  }
+  // [] [0|15]
+  optional Mcu_stateType mcu_state = 1;
+  // [] [0|15]
+  optional Mcu_fault_levelType mcu_fault_level = 2;
+}
+
+message Bms_pl_18f13df3 {
+  // Report Message
+  // [V] [0|1000]
+  optional double bms_voltage = 1;
+  // [%] [0|100]
+  optional double bms_soc = 2;
+  // [A] [-1000|1000]
+  optional double bms_current = 3;
+}
+
+message Bcm3_pl_18f46a17 {
+  // Report Message
+  enum Bcm_sw_leftType {
+    BCM_SW_LEFT_FORBID = 0;
+    BCM_SW_LEFT_ENABLE = 1;
+  }
+  enum Bcm_sw_rightType {
+    BCM_SW_RIGHT_FORBID = 0;
+    BCM_SW_RIGHT_ENABLE = 1;
+  }
+  enum Bcm_sw_emergentType {
+    BCM_SW_EMERGENT_FORBID = 0;
+    BCM_SW_EMERGENT_ENABLE = 1;
+  }
+  // [KM] [0|0]
+  optional double bcm_mileage = 1;
+  // [] [0|1]
+  optional Bcm_sw_leftType bcm_sw_left = 2;
+  // [] [0|1]
+  optional Bcm_sw_rightType bcm_sw_right = 3;
+  // [] [0|1]
+  optional Bcm_sw_emergentType bcm_sw_emergent = 4;
+}
+
+message Vehiclestate_pl_18fb01a7 {
+  // Report Message
+  enum VehiclestateType {
+    VEHICLESTATE_STOP = 0;
+    VEHICLESTATE_READY = 1;
+    VEHICLESTATE_RUN = 2;
+  }
+  // [] [0|0]
+  optional VehiclestateType vehiclestate = 1;
+}
+
+message Ebs_state_pl_18fdc40b {
+  // Report Message
+  enum Foundation_brake_useType {
+    FOUNDATION_BRAKE_USE_NOUSENORMALBRAKE = 0;
+    FOUNDATION_BRAKE_USE_ISUSINGNORMALBRAKE = 1;
+  }
+  enum Xbr_sys_stateType {
+    XBR_SYS_STATE_ACCEPTANYEXTERNALBRAKEREQ = 0;
+    XBR_SYS_STATE_ONLYACCEPTXBR = 1;
+    XBR_SYS_STATE_NOACCEPT = 2;
+  }
+  enum Xbr_crlmodeType {
+    XBR_CRLMODE_NORUNBRAKEREQ = 0;
+    XBR_CRLMODE_RUNBRAKEPEDALNOEXTERNALREQ = 1;
+    XBR_CRLMODE_RUNXBRADDITIONAL = 2;
+    XBR_CRLMODE_RUNXBRMAXIMUM = 3;
+  }
+  enum Hill_holdermodeType {
+    HILL_HOLDERMODE_INVALID = 0;
+    HILL_HOLDERMODE_VALID = 1;
+    HILL_HOLDERMODE_VALIDWILLINVALIDSOON = 2;
+  }
+  // [] [0|3]
+  optional Foundation_brake_useType foundation_brake_use = 1;
+  // [m/s2] [-12.5|12.5]
+  optional double xbr_acc_limit = 2;
+  // [] [0|3]
+  optional Xbr_sys_stateType xbr_sys_state = 3;
+  // [] [0|15]
+  optional Xbr_crlmodeType xbr_crlmode = 4;
+  // [] [0|7]
+  optional Hill_holdermodeType hill_holdermode = 5;
+}
+
+message Epb_acu_pl_18fe1264 {
+  // Report Message
+  enum WarningstatusType {
+    WARNINGSTATUS_NO_WARNING = 0;
+    WARNINGSTATUS_FUNCTION_LIMIT_WARNING = 1;
+    WARNINGSTATUS_SYSTEMFAULT_WARNING = 2;
+    WARNINGSTATUS_NOT_AVAILABLE = 3;
+  }
+  enum LowprerelparkType {
+    LOWPRERELPARK_INVALID = 0;
+    LOWPRERELPARK_OPEN = 1;
+    LOWPRERELPARK_CLOSE = 2;
+    LOWPRERELPARK_FAULT = 3;
+  }
+  enum ResponsepriorityType {
+    RESPONSEPRIORITY_INVALID = 0;
+    RESPONSEPRIORITY_OPEN = 1;
+    RESPONSEPRIORITY_CLOSE = 2;
+    RESPONSEPRIORITY_FAULT = 3;
+  }
+  //  enum Epb_workmodeType {
+  //    EPB_WORKMODE_NORMALMODE = 0;
+  //    EPB_WORKMODE_EBRAKECONTROLMODE = 1;
+  //    EPB_WORKMODE_BRAKEPRESSURECONTROLMODE = 2;
+  //    EPB_WORKMODE_REPAIRMODE = 3;
+  //  }
+  enum Ah_parkactiveType {
+    AH_PARKACTIVE_INVALID = 0;
+    AH_PARKACTIVE_OPEN = 1;
+    AH_PARKACTIVE_CLOSE = 2;
+    AH_PARKACTIVE_FAULT = 3;
+  }
+  enum Ah_brastatusType {
+    AH_BRASTATUS_INVALID = 0;
+    AH_BRASTATUS_OPEN = 1;
+    AH_BRASTATUS_CLOSE = 2;
+    AH_BRASTATUS_FAULT = 3;
+  }
+  enum Epb_workmodeType {
+    EPB_WORKMODE_NORMALMODE = 0;
+    EPB_WORKMODE_EBRAKECONTROLMODE = 1;
+    EPB_WORKMODE_BRAKEPRESSURECONTROLMODE = 2;
+    EPB_WORKMODE_REPAIRMODE = 3;
+  }
+  // [Kpa] [0|1000]
+  optional double park_bra_pres = 1;
+  // [] [0|3]
+  optional WarningstatusType warningstatus = 2;
+  // [] [0|3]
+  optional LowprerelparkType lowprerelpark = 3;
+  // [] [0|3]
+  optional ResponsepriorityType responsepriority = 4;
+  // [] [0|255]
+  optional int32 errcode = 5;
+  // [] [0|3]
+  // optional Epb_workmodeType epb_workmode = 6;
+  // [] [0|3]
+  optional Ah_parkactiveType ah_parkactive = 7;
+  // [] [0|3]
+  optional Ah_brastatusType ah_brastatus = 8;
+  // [] [0|3]
+  optional Epb_workmodeType epb_workmode = 9;
+}
+
+message Abs_acu_pl_18febf0b {
+  // Report Message
+  // [km/h] [-7.8125|7.8125]
+  optional double relative_frontright = 1;
+  // [km/h] [-7.8125|7.8125]
+  optional double relative_frontleft = 2;
+  // [km/h] [-7.8125|7.8125]
+  optional double relative_backright = 3;
+  // [km/h] [-7.8125|7.8125]
+  optional double relative_backleft = 4;
+  // [m/s] [0|250]
+  optional double frontavgspeedfb = 5;
+}
+
+message Ebs_fault_pl_18feca0b {
+  // Report Message
+  enum Protect_lampType {
+    PROTECT_LAMP_CLOSE = 0;
+    PROTECT_LAMP_OPEN = 1;
+  }
+  enum Amberwarning_lampType {
+    AMBERWARNING_LAMP_NORMAL = 0;
+    AMBERWARNING_LAMP_FAULT = 1;
+  }
+  enum Redstop_lampType {
+    REDSTOP_LAMP_NORMAL = 0;
+    REDSTOP_LAMP_FAULT = 1;
+  }
+  enum Lamp_stateType {
+    LAMP_STATE_NORMAL = 0;
+    LAMP_STATE_FAULT = 1;
+  }
+  // [] [0|3]
+  optional Protect_lampType protect_lamp = 1;
+  // [] [0|3]
+  optional Amberwarning_lampType amberwarning_lamp = 2;
+  // [] [0|3]
+  optional Redstop_lampType redstop_lamp = 3;
+  // [] [0|3]
+  optional Lamp_stateType lamp_state = 4;
+}
+
+message Epb_fault_pl_18feca64 {
+  // Report Message
+  enum Epb_protectlampType {
+    EPB_PROTECTLAMP_NORMAL = 0;
+    EPB_PROTECTLAMP_FAULT = 1;
+  }
+  enum Epb_amberlampType {
+    EPB_AMBERLAMP_NORMAL = 0;
+    EPB_AMBERLAMP_FAULT = 1;
+  }
+  enum Epb_redlampType {
+    EPB_REDLAMP_NORMAL = 0;
+    EPB_REDLAMP_FAULT = 1;
+  }
+  enum Epb_lampstateType {
+    EPB_LAMPSTATE_NORMAL = 0;
+    EPB_LAMPSTATE_FAULT = 1;
+  }
+  // [] [0|3]
+  optional Epb_protectlampType epb_protectlamp = 1;
+  // [] [0|3]
+  optional Epb_amberlampType epb_amberlamp = 2;
+  // [] [0|3]
+  optional Epb_redlampType epb_redlamp = 3;
+  // [] [0|3]
+  optional Epb_lampstateType epb_lampstate = 4;
+}
+
+message Bcm2_pl_18fed017 {
+  // Report Message
+  enum Bcm_smalllampType {
+    BCM_SMALLLAMP_FORBID = 0;
+    BCM_SMALLLAMP_ENABLE = 1;
+  }
+  enum Bcm_wiperspray_fbType {
+    BCM_WIPERSPRAY_FB_FORBID = 0;
+    BCM_WIPERSPRAY_FB_ENABLE = 1;
+  }
+  enum Bcm_wiperlowspd_fbType {
+    BCM_WIPERLOWSPD_FB_FORBID = 0;
+    BCM_WIPERLOWSPD_FB_ENABLE = 1;
+  }
+  enum Bcm_wiperhighspd_fbType {
+    BCM_WIPERHIGHSPD_FB_FORBID = 0;
+    BCM_WIPERHIGHSPD_FB_ENABLE = 1;
+  }
+  enum Bcm_wiper_interim_fbType {
+    BCM_WIPER_INTERIM_FB_FORBID = 0;
+    BCM_WIPER_INTERIM_FB_ENABLE = 1;
+  }
+  enum Bcm_rightblink_fbType {
+    BCM_RIGHTBLINK_FB_FORBID = 0;
+    BCM_RIGHTBLINK_FB_ENABLE = 1;
+  }
+  enum Bcm_overtakinglamp_fbType {
+    BCM_OVERTAKINGLAMP_FB_FORBID = 0;
+    BCM_OVERTAKINGLAMP_FB_ENABLE = 1;
+  }
+  enum Bcm_midtv_fbType {
+    BCM_MIDTV_FB_FORBID = 0;
+    BCM_MIDTV_FB_ENABLE = 1;
+  }
+  enum Bcm_mainlight_switch_fbType {
+    BCM_MAINLIGHT_SWITCH_FB_FORBID = 0;
+    BCM_MAINLIGHT_SWITCH_FB_ENABLE = 1;
+  }
+  enum Bcm_mainlamp2_fbType {
+    BCM_MAINLAMP2_FB_FORBID = 0;
+    BCM_MAINLAMP2_FB_ENABLE = 1;
+  }
+  enum Bcm_mainlamp1_fbType {
+    BCM_MAINLAMP1_FB_FORBID = 0;
+    BCM_MAINLAMP1_FB_ENABLE = 1;
+  }
+  enum Bcm_lowbeam_fbType {
+    BCM_LOWBEAM_FB_FORBID = 0;
+    BCM_LOWBEAM_FB_ENABLE = 1;
+  }
+  enum Bcm_leftblink_fbType {
+    BCM_LEFTBLINK_FB_FORBID = 0;
+    BCM_LEFTBLINK_FB_ENABLE = 1;
+  }
+  enum Bcm_highbeam_fbType {
+    BCM_HIGHBEAM_FB_FORBID = 0;
+    BCM_HIGHBEAM_FB_ENABLE = 1;
+  }
+  enum Bcm_fronttv_fbType {
+    BCM_FRONTTV_FB_FORBID = 0;
+    BCM_FRONTTV_FB_ENABLE = 1;
+  }
+  enum Bcm_frontfoglight_fbType {
+    BCM_FRONTFOGLIGHT_FB_FORBID = 0;
+    BCM_FRONTFOGLIGHT_FB_ENABLE = 1;
+  }
+  enum Bcm_backfoglight_fbType {
+    BCM_BACKFOGLIGHT_FB_FORBID = 0;
+    BCM_BACKFOGLIGHT_FB_ENABLE = 1;
+  }
+  // [] [0|1]
+  optional Bcm_smalllampType bcm_smalllamp = 1;
+  // [] [0|1]
+  optional Bcm_wiperspray_fbType bcm_wiperspray_fb = 2;
+  // [] [0|1]
+  optional Bcm_wiperlowspd_fbType bcm_wiperlowspd_fb = 3;
+  // [] [0|1]
+  optional Bcm_wiperhighspd_fbType bcm_wiperhighspd_fb = 4;
+  // [] [0|1]
+  optional Bcm_wiper_interim_fbType bcm_wiper_interim_fb = 5;
+  // [] [0|1]
+  optional Bcm_rightblink_fbType bcm_rightblink_fb = 6;
+  // [] [0|1]
+  optional Bcm_overtakinglamp_fbType bcm_overtakinglamp_fb = 7;
+  // [] [0|1]
+  optional Bcm_midtv_fbType bcm_midtv_fb = 8;
+  // [] [0|1]
+  optional Bcm_mainlight_switch_fbType bcm_mainlight_switch_fb = 9;
+  // [] [0|1]
+  optional Bcm_mainlamp2_fbType bcm_mainlamp2_fb = 10;
+  // [] [0|1]
+  optional Bcm_mainlamp1_fbType bcm_mainlamp1_fb = 11;
+  // [] [0|1]
+  optional Bcm_lowbeam_fbType bcm_lowbeam_fb = 12;
+  // [] [0|1]
+  optional Bcm_leftblink_fbType bcm_leftblink_fb = 13;
+  // [] [0|1]
+  optional Bcm_highbeam_fbType bcm_highbeam_fb = 14;
+  // [] [0|1]
+  optional Bcm_fronttv_fbType bcm_fronttv_fb = 15;
+  // [] [0|1]
+  optional Bcm_frontfoglight_fbType bcm_frontfoglight_fb = 16;
+  // [] [0|1]
+  optional Bcm_backfoglight_fbType bcm_backfoglight_fb = 17;
+}
+
+message Acu_bcm_pl_18ff15ae {
+  // Control Message
+  enum Bcm_wiperhighspdType {
+    BCM_WIPERHIGHSPD_FORBID = 0;
+    BCM_WIPERHIGHSPD_ENABLE = 1;
+  }
+  enum Bcm_wiper_interimType {
+    BCM_WIPER_INTERIM_FORBID = 0;
+    BCM_WIPER_INTERIM_ENABLE = 1;
+  }
+  enum Bcm_wiperlowspdType {
+    BCM_WIPERLOWSPD_FORBID = 0;
+    BCM_WIPERLOWSPD_ENABLE = 1;
+  }
+  enum Bcm_wipersprayType {
+    BCM_WIPERSPRAY_FORBID = 0;
+    BCM_WIPERSPRAY_ENABLE = 1;
+  }
+  enum Bcm_fronttvType {
+    BCM_FRONTTV_FORBID = 0;
+    BCM_FRONTTV_ENABLE = 1;
+  }
+  enum Bcm_overtakinglampType {
+    BCM_OVERTAKINGLAMP_FORBID = 0;
+    BCM_OVERTAKINGLAMP_ENABLE = 1;
+  }
+  enum Bcm_mainlight_switchType {
+    BCM_MAINLIGHT_SWITCH_FORBID = 0;
+    BCM_MAINLIGHT_SWITCH_ENABLE = 1;
+  }
+  enum Bcm_frontfoglightType {
+    BCM_FRONTFOGLIGHT_FORBID = 0;
+    BCM_FRONTFOGLIGHT_ENABLE = 1;
+  }
+  enum Bcm_mainlamp2Type {
+    BCM_MAINLAMP2_FORBID = 0;
+    BCM_MAINLAMP2_ENABLE = 1;
+  }
+  enum Bcm_midtvType {
+    BCM_MIDTV_FORBID = 0;
+    BCM_MIDTV_ENABLE = 1;
+  }
+  enum Bcm_mainlamp1Type {
+    BCM_MAINLAMP1_FORBID = 0;
+    BCM_MAINLAMP1_ENABLE = 1;
+  }
+  enum Bcm_backdoorType {
+    BCM_BACKDOOR_NOACTION = 0;
+    BCM_BACKDOOR_CLOSE = 1;
+    BCM_BACKDOOR_OPEN = 2;
+  }
+  enum Bcm_rightblinkType {
+    BCM_RIGHTBLINK_FORBID = 0;
+    BCM_RIGHTBLINK_ENABLE = 1;
+  }
+  enum Bcm_lowbeamType {
+    BCM_LOWBEAM_FORBID = 0;
+    BCM_LOWBEAM_ENABLE = 1;
+  }
+  enum Bcm_leftblinkType {
+    BCM_LEFTBLINK_FORBID = 0;
+    BCM_LEFTBLINK_ENABLE = 1;
+  }
+  enum Bcm_horncontrolType {
+    BCM_HORNCONTROL_FORBID = 0;
+    BCM_HORNCONTROL_ENABLE = 1;
+  }
+  enum Bcm_highbeamType {
+    BCM_HIGHBEAM_FORBID = 0;
+    BCM_HIGHBEAM_ENABLE = 1;
+  }
+  enum Bcm_frontdoorType {
+    BCM_FRONTDOOR_NOACTION = 0;
+    BCM_FRONTDOOR_CLOSE = 1;
+    BCM_FRONTDOOR_OPEN = 2;
+  }
+  enum Bcm_backfoglightType {
+    BCM_BACKFOGLIGHT_FORBID = 0;
+    BCM_BACKFOGLIGHT_ENBLE = 1;
+  }
+  // [] [0|1]
+  optional Bcm_wiperhighspdType bcm_wiperhighspd = 1;
+  // [] [0|1]
+  optional Bcm_wiper_interimType bcm_wiper_interim = 2;
+  // [] [0|1]
+  optional Bcm_wiperlowspdType bcm_wiperlowspd = 3;
+  // [] [0|1]
+  optional Bcm_wipersprayType bcm_wiperspray = 4;
+  // [] [0|1]
+  optional Bcm_fronttvType bcm_fronttv = 5;
+  // [] [0|1]
+  optional Bcm_overtakinglampType bcm_overtakinglamp = 6;
+  // [] [0|1]
+  optional Bcm_mainlight_switchType bcm_mainlight_switch = 7;
+  // [] [0|1]
+  optional Bcm_frontfoglightType bcm_frontfoglight = 8;
+  // [] [0|1]
+  optional Bcm_mainlamp2Type bcm_mainlamp2 = 9;
+  // [] [0|1]
+  optional Bcm_midtvType bcm_midtv = 10;
+  // [] [0|1]
+  optional Bcm_mainlamp1Type bcm_mainlamp1 = 11;
+  // [] [0|3]
+  optional Bcm_backdoorType bcm_backdoor = 12;
+  // [] [0|1]
+  optional Bcm_rightblinkType bcm_rightblink = 13;
+  // [] [0|1]
+  optional Bcm_lowbeamType bcm_lowbeam = 14;
+  // [] [0|1]
+  optional Bcm_leftblinkType bcm_leftblink = 15;
+  // [] [0|1]
+  optional Bcm_horncontrolType bcm_horncontrol = 16;
+  // [] [0|1]
+  optional Bcm_highbeamType bcm_highbeam = 17;
+  // [] [0|3]
+  optional Bcm_frontdoorType bcm_frontdoor = 18;
+  // [] [0|1]
+  optional Bcm_backfoglightType bcm_backfoglight = 19;
+}
+
+message Yrs_215 {
+  // Report Message
+  // [] [0|0]
+  optional double yrs = 1;
+  // [] [0|0]
+  optional double ays = 2;
+  // [] [0|0]
+  optional double axs = 3;
+  // [] [0|0]
+  optional int32 msg_cnt = 4;
+  // [] [0|0]
+  optional bool internal_error = 5;
+  // [] [0|0]
+  optional bool voltage_error = 6;
+  // [] [0|0]
+  optional int32 yrs_stat = 7;
+  // [] [0|0]
+  optional int32 ays_stat = 8;
+  // [] [0|0]
+  optional int32 axs_stat = 9;
+  // [] [0|0]
+  optional int32 crc = 10;
+}
+
+message Acu_eps_pl_8ebca65 {
+  // Control Message
+  enum Vcu_stateenableType {
+    VCU_STATEENABLE_INVALID = 0;
+    VCU_STATEENABLE_VALID = 1;
+  }
+  enum Eps_enableType {
+    EPS_ENABLE_INVALID = 0;
+    EPS_ENABLE_VALID = 1;
+  }
+  enum Eps_controlmodeType {
+    EPS_CONTROLMODE_STANDBY_MODE_ORDER = 0;
+    EPS_CONTROLMODE_AUTO_MODE_ORDER = 1;
+    EPS_CONTROLMODE_EPS_MODE_ORDER = 4;
+    EPS_CONTROLMODE_INTERVENT_RECOVER_ORDER = 5;
+    EPS_CONTROLMODE_CLEAR_FAULT = 6;
+  }
+  // [deg/s] [0|540]
+  optional double targetsteeringspeed = 1;
+  // [deg] [-1575|1575]
+  optional double targetsteeringangle = 2;
+  // [] [0|1]
+  optional Vcu_stateenableType vcu_stateenable = 3;
+  // [] [0|1]
+  optional Eps_enableType eps_enable = 4;
+  // [] [0|15]
+  optional Eps_controlmodeType eps_controlmode = 5;
+  // [] [0|255]
+  optional int32 acu_life = 6;
+}
+
+message Eps_acu_pl_8ee65ca {
+  // Report Message
+  enum Eps_modefbType {
+    EPS_MODEFB_STANDBY_MODE = 0;
+    EPS_MODEFB_AUTO_MODE = 1;
+    EPS_MODEFB_LKA_MODE = 3;
+    EPS_MODEFB_EPS_MODE = 4;
+    EPS_MODEFB_MANUAL_INTERVENT_MODE = 5;
+    EPS_MODEFB_WARNING_MODE = 6;
+    EPS_MODEFB_ERROR_MODE = 7;
+  }
+  // [Nm] [-20|20]
+  optional double motor_toque = 1;
+  // [] [0|15]
+  optional Eps_modefbType eps_modefb = 2;
+  // [] [0|255]
+  optional int32 eps_heart = 3;
+  // [Nm] [-12.8|12.7]
+  optional double strtorquefb = 4;
+  // [deg/s] [0|540]
+  optional double stranglespeedfb = 5;
+  // [deg] [-1575|1575]
+  optional double stranglefb = 6;
+}
+
+message Ebs_torque_limit_pl_c00000b {
+  // Report Message
+  enum Overide_crl_modeType {
+    OVERIDE_CRL_MODE_DISABLE = 0;
+    OVERIDE_CRL_MODE_WHEELSPEEDCONTROL = 1;
+    OVERIDE_CRL_MODE_TORQUECONTROL = 2;
+    OVERIDE_CRL_MODE_WHEELSPEED_TORQUECONTROL = 3;
+  }
+  enum Req_spd_crlconditionsType { REQ_SPD_CRLCONDITIONS_ALWAYS = 3; }
+  enum Crl_mode_priorityType {
+    CRL_MODE_PRIORITY_MIDPRIORITYCONTROLBYASR = 2;
+    CRL_MODE_PRIORITY_LOWPRORITY = 3;
+  }
+  // [%] [0|100]
+  optional int32 req_torque_limit = 1;
+  // [] [0|3]
+  optional Overide_crl_modeType overide_crl_mode = 2;
+  // [] [0|3]
+  optional Req_spd_crlconditionsType req_spd_crlconditions = 3;
+  // [] [0|3]
+  optional Crl_mode_priorityType crl_mode_priority = 4;
+}
+
+message Acu_ebs_pl_c040b2a {
+  // Control Message
+  enum Xbr_priorityType {
+    XBR_PRIORITY_HIGHEST_EGAEBS = 0;
+    XBR_PRIORITY_HIGH = 1;
+    XBR_PRIORITY_MIDDLE = 2;
+    XBR_PRIORITY_LOW_EGACC = 3;
+  }
+  enum Xbr_ctrlmodeType {
+    XBR_CTRLMODE_FORBIDCONTROL = 0;
+    XBR_CTRLMODE_ALLOWDECELERATIONCRONTOL = 1;
+    XBR_CTRLMODE_ALLOWXBRLARGERTHANPEDAL = 2;
+  }
+  // [] [0|3]
+  optional int32 xbr_ebimode = 1;
+  // [] [0|3]
+  optional Xbr_priorityType xbr_priority = 2;
+  // [] [0|3]
+  optional Xbr_ctrlmodeType xbr_ctrlmode = 3;
+  // [m/s2] [-15.687|15.687]
+  optional double xbr = 4;
+}
+
+message Vcu_fault_pl_cf101a7 {
+  // Report Message
+  enum DrivereadyType {
+    DRIVEREADY_FORBID = 0;
+    DRIVEREADY_ENABLE = 1;
+  }
+  enum VcufaultfbType {
+    VCUFAULTFB_NORMAL = 0;
+    VCUFAULTFB_ERROR = 1;
+  }
+  // [] [0|1]
+  optional DrivereadyType driveready = 1;
+  // [] [0|255]
+  optional int32 vcu_heart = 2;
+  // [] [0|1]
+  optional VcufaultfbType vcufaultfb = 3;
+}
+
+message Polerstar {
+  optional Vector__independent_sig_msg_1 vector__independent_sig_msg_1 =
+      1;                                                     // report message
+  optional Vcu_acu_pl_180182a7 vcu_acu_pl_180182a7 = 2;      // report message
+  optional Acu_vcu_pl_1801a782 acu_vcu_pl_1801a782 = 3;      // control message
+  optional Bcm1_pl_18a70017 bcm1_pl_18a70017 = 4;            // report message
+  optional Acu_epb_pl_18ea64ef acu_epb_pl_18ea64ef = 5;      // control message
+  optional Abs_state_pl_18f0010b abs_state_pl_18f0010b = 6;  // report message
+  optional Eps_state_pl_18f01fff eps_state_pl_18f01fff = 7;  // report message
+  optional Mcu_acu_pl_18f120f0 mcu_acu_pl_18f120f0 = 8;      // report message
+  optional Mcu_state_pl_18f121f0 mcu_state_pl_18f121f0 = 9;  // report message
+  optional Bms_pl_18f13df3 bms_pl_18f13df3 = 10;             // report message
+  optional Bcm3_pl_18f46a17 bcm3_pl_18f46a17 = 11;           // report message
+  optional Vehiclestate_pl_18fb01a7 vehiclestate_pl_18fb01a7 =
+      12;                                                     // report message
+  optional Ebs_state_pl_18fdc40b ebs_state_pl_18fdc40b = 13;  // report message
+  optional Epb_acu_pl_18fe1264 epb_acu_pl_18fe1264 = 14;      // report message
+  optional Abs_acu_pl_18febf0b abs_acu_pl_18febf0b = 15;      // report message
+  optional Ebs_fault_pl_18feca0b ebs_fault_pl_18feca0b = 16;  // report message
+  optional Epb_fault_pl_18feca64 epb_fault_pl_18feca64 = 17;  // report message
+  optional Bcm2_pl_18fed017 bcm2_pl_18fed017 = 18;            // report message
+  optional Acu_bcm_pl_18ff15ae acu_bcm_pl_18ff15ae = 19;      // control message
+  optional Yrs_215 yrs_215 = 20;                              // report message
+  optional Acu_eps_pl_8ebca65 acu_eps_pl_8ebca65 = 21;        // control message
+  optional Eps_acu_pl_8ee65ca eps_acu_pl_8ee65ca = 22;        // report message
+  optional Ebs_torque_limit_pl_c00000b ebs_torque_limit_pl_c00000b =
+      23;                                                   // report message
+  optional Acu_ebs_pl_c040b2a acu_ebs_pl_c040b2a = 24;      // control message
+  optional Vcu_fault_pl_cf101a7 vcu_fault_pl_cf101a7 = 25;  // report message
+}

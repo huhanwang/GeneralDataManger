@@ -1,0 +1,34 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/assist_driving_system_state.proto";
+
+message Condition {
+  repeated string rules = 3;
+}
+
+message ConditionLibrary {
+  optional string name = 1;
+  repeated Condition conditions = 2;
+}
+
+message StateMachineEvent {
+  optional AssistApaStateProto.ApaState next_state = 1;
+  optional QStateMachineEvent state_event = 2;
+  repeated string condition_library_name = 3;
+  repeated Condition conditions = 4;
+  optional AssistHppStateProto.HppState next_hpp_state = 5;
+}
+
+message StateMachine {
+  optional AssistApaStateProto.ApaState cur_state = 1;
+  repeated StateMachineEvent event = 2;
+  optional AssistHppStateProto.HppState hpp_state = 3;
+}
+
+message StateMachines {
+  repeated ConditionLibrary condition_library = 1;
+  repeated StateMachine state_machines = 2;
+}

@@ -1,0 +1,48 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+// A list coordinates.
+// type PointListProto can't be the repeated fields.
+message PointListProto {
+  // Unique id of this geo feature.
+  optional string uuid = 1;
+  // x, y coordinates.
+  repeated Vec2dProto points = 2;
+}
+
+// A message for metric effect time range.
+// start_offset and end_offset are relative to simulation start.
+// To replace the duration, absolute start/end start_timestamp.
+// Use `TimeWindow time_window = id;` to unify the code.
+// Use the utils for this message in evaluation.
+message TimeWindow {
+  optional double start_offset = 1;  // unit: seconds
+  optional double end_offset = 2;    // unit: seconds
+  // field 3 for the exact effect time, there's no use case at present.
+  reserved 3;
+}
+
+message MatchingOptions {
+  enum DetectionApproach {
+    CAR_REAR_AXLE_CENTER = 0;
+    CAR_CONTOUR = 1;
+  }
+  enum PassCriteria {
+    SATISFY_ALL_TIME = 0;
+    SATISFY_ONCE = 1;
+  }
+}

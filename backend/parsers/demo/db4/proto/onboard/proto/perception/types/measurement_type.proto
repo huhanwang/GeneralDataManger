@@ -1,0 +1,77 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+// NEXT ID: 30
+enum MeasurementType {
+  MT_UNKNOWN = 0;
+  MT_VEHICLE = 1;
+  MT_MOTORCYCLIST = 2;
+  MT_PEDESTRIAN = 3;
+  MT_CYCLIST = 4;
+  MT_FOD = 5;
+  MT_STATIC_OBJECT = 6;
+  MT_VEGETATION = 7;
+  MT_BARRIER = 8;
+  MT_ROAD = 9;
+  MT_CONE = 10;
+  MT_MIST = 11;
+  MT_FLYING_BIRD = 12;
+  MT_WARNING_TRIANGLE = 13;
+  MT_TRICYCLIST = 14;
+  MT_TRAFFIC_LIGHT = 15;
+  // This measurement just temporarily add for FEN detection prt.
+  // We won't output large_vehicle measurement for FEN now, at present,
+  // LARGE_VEHICLE and VEHICLE are distinguished according to their size only.
+  MT_LARGE_VEHICLE = 16;
+  MT_TRAFFIC_SIGN = 17;
+  MT_WHEEL = 18;
+  MT_HOLE = 19;
+  MT_HEADLIGHT = 20;
+  MT_ROADBARRIER_TRIANGLE = 21;
+  MT_ROADBARRIER_ANTI_COLLISION_BUCKET = 22;
+  MT_ROADBARRIER_ANTI_COLLISION_WATER_FILLED = 23;
+  MT_ROADBARRIER_ANTI_COLLISION_POST = 24;
+  MT_VEHICLE_CAR = 25;
+  MT_VEHICLE_TRUCK = 26;
+  MT_VEHICLE_BUS = 27;
+  MT_VEHICLE_UNKNOWN = 28;
+  MT_ROADBARRIER_CEMENT_PILLAR = 29;
+  MT_ROADBARRIER_CORRUGATED_BOX = 30;
+  MT_ROADBARRIER_WOVEN_BAG = 31;
+  MT_ROADBARRIER_WHITE_FOAM_BOX = 32;
+  MT_ROADBARRIER_GATE = 33;
+  MT_HIGHWAY_AUTO_GATE = 34;
+  MT_CONSTRUCTION_SIGN = 35;
+  MT_HIGHWAY_ETC = 36;
+}
+
+enum MeasurementTypeSource {
+  MTS_DEFAULT = 0;
+  MTS_FIERY_EYE_NET = 1;
+  MTS_LL_NET = 2;
+  MTS_SEMANTIC_MAP_ZONE = 3 [deprecated = true];
+  MTS_RADAR = 4;
+  MTS_MONO_3D = 5;
+  MTS_KEY_POINT = 6;
+  MTS_VIDAR = 7;
+  MTS_OBSTACLE_SEMANTIC_MANAGER = 8;
+  MTS_VISION_BEV3D = 9;
+  MTS_VISION_2D = 10;
+  MTS_FVP_MONO_3D = 11;
+  MST_VISION_HORIZON3D = 12;
+  MTS_VISION_PARKING_BEV3D = 13;
+  MTS_LIDAR = 14;
+}

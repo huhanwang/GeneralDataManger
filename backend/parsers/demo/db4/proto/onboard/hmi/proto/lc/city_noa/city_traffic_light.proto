@@ -1,0 +1,38 @@
+
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+enum CityTrafficLightType {
+  CityTrafficLight_TYPE_NONE = 0x0;
+  CityTrafficLight_TYPE_PEDESTRIAN_LIGHT = 0x1;
+  CityTrafficLight_TYPE_CIRCLE_TRAFFIC_LIGHT = 0x2;
+  CityTrafficLight_TYPE_STRAIGHT_LIGHT = 0x3;
+  CityTrafficLight_TYPE_LEFT_TURN_LIGHT = 0x4;
+  CityTrafficLight_TYPE_RIGHT_TURN_LIGHT = 0x5;
+  CityTrafficLight_TYPE_TURN_AROUND_LIGHT = 0x6;
+  CityTrafficLight_TYPE_NO_ENTRY_LIGHT = 0x7;
+  CityTrafficLight_TYPE_ETC_LIGHT = 0x8;
+  CityTrafficLight_TYPE_LANE_CLOSURE_LIGHT = 0x9;
+  CityTrafficLight_TYPE_MANUAL_SIGN_LIGHT = 0xA;
+};
+enum CityTrafficLightColor {
+  CityTrafficLight_COLOR_NONE = 0x0;
+  CityTrafficLight_COLOR_RED = 0x1;
+  CityTrafficLight_COLOR_YELLOW = 0x2;
+  CityTrafficLight_COLOR_GREEN = 0x3;
+}
+
+message CityTrafficLight {
+  optional string id = 1;
+
+  optional CityTrafficLightType type = 2;
+
+  optional CityTrafficLightColor color = 3;
+
+  optional bool light_in_the_current_lane = 4;
+
+  optional Point3D position = 5;
+}

@@ -1,0 +1,124 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/proto_field_option.proto";
+
+message Vec2iProto {
+  optional int32 x = 1;
+  optional int32 y = 2;
+}
+
+// Next id: 3
+message Vec2fProto {
+  optional float x = 1 [(trans_matrix) = true];
+  optional float y = 2 [(trans_matrix) = true];
+}
+
+message Vec2dProto {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+message Vec3iProto {
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 z = 3;
+}
+
+message Vec3dProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+// Next id: 4
+message Vec3fProto {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+}
+
+message Vec4dProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double w = 4;
+}
+
+message Vec4fProto {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+  optional float w = 4;
+}
+
+message Mat2dProto {
+  // Length of m must be 4.
+  repeated double m = 1;
+}
+
+message Mat2fProto {
+  // Length of m must be 4.
+  repeated float m = 1;
+}
+
+message Mat3dProto {
+  // Length of m must be 9.
+  repeated double m = 1;
+}
+
+message Mat4dProto {
+  // Length of m must be 16.
+  repeated double m = 1;
+}
+
+message TranslationProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message RotationProto {
+  // Angle-axis representation, convenient for manual editing.
+  optional double angle = 1;  // Degrees, not radians (OpenGL's convention).
+  optional double ax = 2;     // The axis does not have to be normalized.
+  optional double ay = 3;
+  optional double az = 4;
+}
+
+message QuaternionProto {
+  // Quaternion representation
+  optional double w = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 4;
+}
+
+message ScalingProto {
+  optional double sx = 1;
+  optional double sy = 2;
+  optional double sz = 3;
+}
+
+message RigidTransformationProto {
+  optional TranslationProto translation = 1;
+  optional RotationProto rotation = 2;
+}
+
+message AffineTransformationProto {
+  // Should have 16 elements: a column-major 4x4 matrix.
+  repeated double m = 1;
+}
+
+message AffineTransformationSequenceProto {
+  message Operation {
+    oneof operation {
+      TranslationProto translation = 1;
+      RotationProto rotation = 2;
+      ScalingProto scaling = 3;
+    }
+  }
+  repeated Operation operations = 1;
+}

@@ -1,0 +1,103 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/lane_support.proto";
+// import "onboard/proto/perception.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/proto/perception/fusion/fused_bev_road_geometry.proto";
+
+message LaneDepartureStateProto {
+  enum LaneDepartureState {
+    PASSIVE = 0;
+    IN_LANE_STANDBY = 1;
+    LEFT_DEPARTURE = 2;
+    RIGHT_DEPARTURE = 3;
+  }
+  optional LaneDepartureState state = 1;
+  optional double control_request_torque_nm = 2;
+
+  optional double brake_pressure_in_range_time = 3;
+  optional double steering_rate_in_range_time = 4;
+  optional double steering_angle_in_range_time = 5;
+  optional double eps_torsion_bar_in_range_time = 6;
+  optional double accel_pedal_rate_in_range_time = 7;
+  optional double abs_esc_not_active_time = 8;
+  optional double adas_functions_not_active_time = 9;
+  optional double lane_width_in_range_time = 10;
+  optional double lane_curvature_in_range_time = 11;
+
+  optional double speed_too_low_time = 12;
+  optional double speed_too_high_time = 13;
+  optional double lane_width_out_of_range_time = 14;
+  optional double yaw_rate_out_of_range_time = 15;
+  optional double eps_torsion_bar_out_of_range_time = 16;
+  optional double steering_angle_out_of_range_time = 17;
+  optional double lane_curvature_out_of_range_time = 18;
+
+  // Set default value to 1.0 to pass sim scenarios.
+  optional double left_turn_light_off_time = 19 [default = 1.0];
+  optional double right_turn_light_off_time = 20 [default = 1.0];
+
+  optional double left_in_lane_sustained_time = 21;
+  optional double right_in_lane_sustained_time = 22;
+
+  optional double left_warning_sustained_time = 23;
+  optional double left_warning_inhibited_time = 24;
+  optional double right_warning_sustained_time = 25;
+  optional double right_warning_inhibited_time = 26;
+  optional double front_wheel_exceed_boundary_time = 27;
+  optional double none_warning_sustained_time = 28 [default = 99.0];
+
+  optional double fcw_not_active_time = 29;
+  optional double aeb_not_active_time = 30;
+  optional double hdc_not_active_time = 31;
+  optional double tcs_not_active_time = 32;
+  optional double vdc_not_active_time = 33;
+
+  optional double prev_predicted_left_boundary_relative_theta = 34;
+  optional double prev_predicted_right_boundary_relative_theta = 35;
+
+  optional double esc_on_time = 36;
+}
+
+message PostProcessedBoundaries {
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo host_left_boundary =
+      1;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo host_right_boundary =
+      2;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo
+      road_edge_left_boundary = 3;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo
+      road_edge_right_boundary = 4;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo
+      left_neighbor_lane_left_boundary = 5;
+  optional FusedBevRoadGeometryProto.ParameterizedLaneInfo
+      right_neighbor_lane_right_boundary = 6;
+}
+
+message LaneKeepingPathProto {
+  repeated PathPoint path_points = 1;
+  // start_s - end_s in frenet frame.
+  optional double s_range = 2;
+  optional float max_exceed_dist = 3;
+}
+
+message LaneSupportStateProto {
+  optional LiteHeader header = 1;
+  optional LaneDepartureStateProto ldw_lane_departure_state = 6;
+  optional LaneDepartureStateProto lka_lane_departure_state = 7;
+  optional LaneDepartureStateProto elk_target_lane_departure_state = 12;
+  optional LaneKeepingPathProto prev_path = 8;
+  optional double prev_main_loop_called_time = 9;
+  optional LaneSupportProto.FunctionState prev_ldw_lka_state = 10;
+  optional LaneSupportProto.FunctionState prev_elk_state = 11;
+  optional double last_fault_time = 15;
+  optional string system_fault_message = 16;
+  optional PostProcessedBoundaries post_processed_boundaries = 17;
+  optional LaneDepartureStateProto elk_road_edge_lane_departure_state = 18;
+
+  reserved 2 to 5, 13, 14;
+}

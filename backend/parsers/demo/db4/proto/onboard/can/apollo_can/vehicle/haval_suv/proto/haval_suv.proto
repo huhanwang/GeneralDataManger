@@ -1,0 +1,509 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message High_Beam_115 {
+  enum BeamStatsType {
+    BEAMSTATS_OFF = 0;
+    BEAMSTATS_LOWBEAMON = 1;
+    BEAMSTATS_HIGHBEAMON = 3;
+  }
+  //  [] [0|0]
+  optional BeamStatsType beam_stats = 1;
+}
+
+// Report Message.
+message Whlspdr_113 {
+  enum WhlSpdRRDirType {
+    WHLSPDRRDIR_NONE = 0;
+    WHLSPDRRDIR_FORWARD = 1;
+    WHLSPDRRDIR_BACKWARD = 2;
+    WHLSPDRRDIR_STOP = 3;
+  }
+  enum WhlSpdRLDirType {
+    WHLSPDRLDIR_NONE = 0;
+    WHLSPDRLDIR_FORWARD = 1;
+    WHLSPDRLDIR_BACKWARD = 2;
+    WHLSPDRLDIR_STOP = 3;
+  }
+  // [] [0|0]
+  optional WhlSpdRRDirType whl_spd_rrdir = 1;
+  // [kmh] [0|0]
+  optional double whl_spd_rr = 2;
+  // [] [0|0]
+  optional WhlSpdRLDirType whl_spd_rldir = 3;
+  // [kmh] [0|0]
+  optional double whl_spd_rl = 4;
+}
+
+// Report Message.
+message Whlspdf_112 {
+  enum WhlSpdFRDirType {
+    WHLSPDFRDIR_NONE = 0;
+    WHLSPDFRDIR_FORWARD = 1;
+    WHLSPDFRDIR_BACKWARD = 2;
+    WHLSPDFRDIR_STOP = 3;
+  }
+  enum WhlSpdFLDirType {
+    WHLSPDFLDIR_NONE = 0;
+    WHLSPDFLDIR_FORWARD = 1;
+    WHLSPDFLDIR_BACKWARD = 2;
+    WHLSPDFLDIR_STOP = 3;
+  }
+  // [] [0|0]
+  optional WhlSpdFRDirType whl_spd_frdir = 1;
+  // [kmh] [0|0]
+  optional double whl_spd_fr = 2;
+  // [kmh] [0|0]
+  optional double whl_spd_fl = 3;
+  // [] [0|0]
+  optional WhlSpdFLDirType whl_spd_fldir = 4;
+}
+
+// Control Message.
+message Yrs2_132 {
+  enum YRS_LongitSensorStateType {
+    YRS_LONGITSENSORSTATE_VALID = 0;
+    YRS_LONGITSENSORSTATE_INVALID = 1;
+    YRS_LONGITSENSORSTATE_RESERVED = 2;
+    YRS_LONGITSENSORSTATE_INITIALIZING = 3;
+  }
+  // YRS2_Checksum [bit] [0|255]
+  optional int32 yrs2_checksum = 1;
+  // Indicates Longitudinal Sensor State: 0x0: Valid; 0x1: Invalid; 0x2:
+  // Reserved; 0x3: Initializing [bit] [0|3]
+  optional YRS_LongitSensorStateType yrs_longit_sensor_state = 2;
+  // Indicates Longitudinal Acceleration: 0x0FA1~0xFFFF: Invalid [g] [-2|2]
+  optional double yrs_longit_acce = 3;
+  // Indicates the message sending number [bit] [0|15]
+  optional int32 yrs_alive_counter = 4;
+}
+
+// Control Message.
+message Yrs1_131 {
+  enum YRS_YawRateSensorStateType {
+    YRS_YAWRATESENSORSTATE_VALID = 0;
+    YRS_YAWRATESENSORSTATE_INVALID = 1;
+    YRS_YAWRATESENSORSTATE_RESERVED = 2;
+    YRS_YAWRATESENSORSTATE_INITIALIZING = 3;
+  }
+  enum YRS_LateralSensorStateType {
+    YRS_LATERALSENSORSTATE_VALID = 0;
+    YRS_LATERALSENSORSTATE_INVALID = 1;
+    YRS_LATERALSENSORSTATE_RESERVED = 2;
+    YRS_LATERALSENSORSTATE_INITIALIZING = 3;
+  }
+  // YRS1_Checksum [bit] [0|255]
+  optional int32 yrs1_checksum = 1;
+  // Indicates YawRate Sensor State: 0x0: Valid0x1: Invalid0x2: Reserved0x3:
+  // Initializing [bit] [0|3]
+  optional YRS_YawRateSensorStateType yrs_yaw_rate_sensor_state = 2;
+  // Indicates Lateral Sensor State��0x0: Valid��0x1: Invalid��0x2:
+  // Reserved��0x3: Initializing [bit] [0|3]
+  optional YRS_LateralSensorStateType yrs_lateral_sensor_state = 3;
+  // Indicates Lateral Acceleration��0x0FA1~0xFFFF: Invalid [g] [-2|2]
+  optional double yrs_lateral_acce = 4;
+  // Indicates Yaw Rate: 0x8CA1~0xFFFF: Invalid [?s] [-180|180]
+  optional double yrs_yaw_rate = 5;
+  // Indicates the message sending number [bit] [0|15]
+  optional int32 yrs1_alive_counter = 6;
+}
+
+// Control Message.
+message Esc_Frontwheelspeedkph_123 {
+  enum ESC_FLWheelSpeedInvalidType {
+    ESC_FLWHEELSPEEDINVALID_VALID = 0;
+    ESC_FLWHEELSPEEDINVALID_INVALID = 1;
+  }
+  enum ESC_FLWheelDirectionType {
+    ESC_FLWHEELDIRECTION_STANDSTILL = 0;
+    ESC_FLWHEELDIRECTION_FORWARD = 1;
+    ESC_FLWHEELDIRECTION_BACKWARD = 2;
+    ESC_FLWHEELDIRECTION_INVALID = 3;
+  }
+  enum ESC_FRWheelSpeedInvalidType {
+    ESC_FRWHEELSPEEDINVALID_VALID = 0;
+    ESC_FRWHEELSPEEDINVALID_INVALID = 1;
+  }
+  enum ESC_FRWheelDirectionType {
+    ESC_FRWHEELDIRECTION_STANDSTILL = 0;
+    ESC_FRWHEELDIRECTION_FORWARD = 1;
+    ESC_FRWHEELDIRECTION_BACKWARD = 2;
+    ESC_FRWHEELDIRECTION_INVALID = 3;
+  }
+  enum ESC_Mcylinder_PressureInvalidType {
+    ESC_MCYLINDER_PRESSUREINVALID_VALID = 0;
+    ESC_MCYLINDER_PRESSUREINVALID_INVALID = 1;
+  }
+  // Signal from ESC to indicate the front left wheelspeed in kph: 0x1FFF:
+  // Invalid [KPH] [0|460.6875]
+  optional double esc_flwheel_speed_kph = 1;
+  // signal to identify if the wheel speed value valid: 0x0: Valid; 0x1: Invalid
+  // [bit] [0|1]
+  optional ESC_FLWheelSpeedInvalidType esc_flwheel_speed_invalid = 2;
+  // ESC indicates the front left wheel direction: 0x0: Standstill; 0x1:
+  // Forward; 0x2: Backward; 0x3: Invalid [bit] [0|3]
+  optional ESC_FLWheelDirectionType esc_flwheel_direction = 3;
+  // Signal from ESC to indicate the front right wheelspeed in kph: 0x1FFF:
+  // Invalid [KPH] [0|460.6875]
+  optional double esc_frwheel_speed_kph = 4;
+  // signal to identify if the wheel speed value valid: 0x0: Valid; 0x1: Invalid
+  // [bit] [0|1]
+  optional ESC_FRWheelSpeedInvalidType esc_frwheel_speed_invalid = 5;
+  // ESC indicates the front right wheel direction: 0x0: Standstill; 0x1:
+  // Forward; 0x2: Backward; 0x3: Invalid [bit] [0|3]
+  optional ESC_FRWheelDirectionType esc_frwheel_direction = 6;
+  // Master cylinder pressure: 0xFF: Invalid pressure [bar] [0|254]
+  optional double esc_mcylinder_pressure = 7;
+  // signal couting the times of this message [bit] [0|15]
+  optional int32 esc_front_wheel_speeds_kph_alive_cou = 8;
+  // Master cylinder pressure is invalid or not: 0x0: Valid; 0x1: Invalid [bit]
+  // [0|1]
+  optional ESC_Mcylinder_PressureInvalidType esc_mcylinder_pressure_invalid = 9;
+  // CRC code to check the data integrity [bit] [0|255]
+  optional int32 esc_front_wheel_speeds_kph_checksum = 10;
+}
+
+// Control Message.
+message Esc_Rearwheelspeedkph_124 {
+  enum ESC_RLWheelSpeedInvalidType {
+    ESC_RLWHEELSPEEDINVALID_VALID = 0;
+    ESC_RLWHEELSPEEDINVALID_INVALID = 1;
+  }
+  enum ESC_RLWheelDirectionType {
+    ESC_RLWHEELDIRECTION_STANDSTILL = 0;
+    ESC_RLWHEELDIRECTION_FORWARD = 1;
+    ESC_RLWHEELDIRECTION_BACKWARD = 2;
+    ESC_RLWHEELDIRECTION_INVALID = 3;
+  }
+  enum ESC_RRWheelSpeedInvalidType {
+    ESC_RRWHEELSPEEDINVALID_VALID = 0;
+    ESC_RRWHEELSPEEDINVALID_INVALID = 1;
+  }
+  enum ESC_RRWheelDirectionType {
+    ESC_RRWHEELDIRECTION_STANDSTILL = 0;
+    ESC_RRWHEELDIRECTION_FORWARD = 1;
+    ESC_RRWHEELDIRECTION_BACKWARD = 2;
+    ESC_RRWHEELDIRECTION_INVALID = 3;
+  }
+  // Signal from ESC to indicate the rear left wheelspeed in kph: 0x1FFF:
+  // Invalid [KPH] [0|460.6875]
+  optional double esc_rlwheel_speed_kph = 1;
+  // signal to identify if the wheel speed value valid: 0x0: Valid; 0x1: Invalid
+  // [bit] [0|1]
+  optional ESC_RLWheelSpeedInvalidType esc_rlwheel_speed_invalid = 2;
+  // ESC indicates the rear left wheel direction: 0x0: Standstill; 0x1: Forward;
+  // 0x2: Backward; 0x3: Invalid [bit] [0|3]
+  optional ESC_RLWheelDirectionType esc_rlwheel_direction = 3;
+  // Signal from ESC to indicate the rear right wheelspeed in kph: 0x1FFF:
+  // Invalid [KPH] [0|460.6875]
+  optional double esc_rrwheel_speed_kph = 4;
+  // signal to identify if the wheel speed value valid: 0x0: Valid; 0x1: Invalid
+  // [bit] [0|1]
+  optional ESC_RRWheelSpeedInvalidType esc_rrwheel_speed_invalid = 5;
+  // ESC indicates the rear right wheel direction: 0x0: Standstill; 0x1:
+  // Forward; 0x2: Backward; 0x3: Invalid [bit] [0|3]
+  optional ESC_RRWheelDirectionType esc_rrwheel_direction = 6;
+  // signal couting the times of this message [bit] [0|15]
+  optional int32 esc_rear_wheel_speeds_kph_alive_coun = 7;
+  // CRC code to check the data integrity [bit] [0|255]
+  optional int32 esc_rear_wheel_speeds_kph_checksum = 8;
+}
+
+// Report Message.
+message Eps_110 {
+  // [] [0|0]
+  optional bool str_ang_dir = 1;
+  // [] [0|0]
+  optional double str_ang_spd = 2;
+  // [] [0|0]
+  optional double str_ang = 3;
+}
+
+// Control Message.
+message Esc_Status_126 {
+  enum ESC_ABSActiveType {
+    ESC_ABSACTIVE_INACTIVE = 0;
+    ESC_ABSACTIVE_ACTIVE = 1;
+  }
+  enum ESC_BrakePedalSwitchStatusType {
+    ESC_BRAKEPEDALSWITCHSTATUS_BRAKE_PEDAL_ISNOT_ACTIVE = 0;
+    ESC_BRAKEPEDALSWITCHSTATUS_BRAKE_PEDAL_IS_ACTIVE = 1;
+  }
+  enum ESC_TCSActiveType {
+    ESC_TCSACTIVE_TCS_INACTIVE = 0;
+    ESC_TCSACTIVE_TCS_ACTIVE = 1;
+  }
+  enum ESC_ESPActiveType {
+    ESC_ESPACTIVE_ESP_INACTIVE = 0;
+    ESC_ESPACTIVE_ESP_ACTIVE = 1;
+  }
+  enum ESC_ESPFailedType {
+    ESC_ESPFAILED_ESP_NORMAL = 0;
+    ESC_ESPFAILED_ESP_FAILED = 1;
+  }
+  enum ESC_PATAResponseType {
+    ESC_PATARESPONSE_PATA_REQUESTED_EXECUTED_ESP_OFF = 0;
+    ESC_PATARESPONSE_PATA_REQUESTED_IGNORED_ESP_ON = 1;
+  }
+  enum ESC_VehicleSpeedInvalidType {
+    ESC_VEHICLESPEEDINVALID_VALID = 0;
+    ESC_VEHICLESPEEDINVALID_INVALID = 1;
+  }
+  enum ESC_AVHStatusType {
+    ESC_AVHSTATUS_OFF = 0;
+    ESC_AVHSTATUS_INTERVENTION = 1;
+    ESC_AVHSTATUS_STAND_BY = 2;
+    ESC_AVHSTATUS_ERROR = 3;
+  }
+  enum ESC_EPBStatusType {
+    ESC_EPBSTATUS_RELEASED = 0;
+    ESC_EPBSTATUS_CLOSED = 1;
+    ESC_EPBSTATUS_IN_PROGRESS = 2;
+    ESC_EPBSTATUS_RESERVED = 3;
+  }
+  enum ESC_BrakePedalSwitchInvalidType {
+    ESC_BRAKEPEDALSWITCHINVALID_VALID = 0;
+    ESC_BRAKEPEDALSWITCHINVALID_INVALID = 1;
+  }
+  enum ESC_HHCActiveType {
+    ESC_HHCACTIVE_INACTIVE = 0;
+    ESC_HHCACTIVE_ACTIVE = 1;
+  }
+  // Signal from ESC/ABS to indicate if ABS isactivate or not: 0x0: Inactive;
+  // 0x1: Active [bit] [0|1]
+  optional ESC_ABSActiveType esc_absactive = 1;
+  // Signal from ESC/ABS to indicate if Breke Pedalis activated: 0x0: Brake
+  // Pedal is not active; 0x1: Brake Pedal is active [bit] [0|1]
+  optional ESC_BrakePedalSwitchStatusType esc_brake_pedal_switch_status = 2;
+  // Signal from TCS\ESC to indicate if TCS isactivate or not: 0x0: TCS
+  // Inactive; 0x1: TCS Active [bit] [0|1]
+  optional ESC_TCSActiveType esc_tcsactive = 3;
+  // Signal from TCS\ESC to indicate if ESP isactivate or not: 0x0: ESP
+  // Inactive: 0x1: ESP Active [bit] [0|1]
+  optional ESC_ESPActiveType esc_espactive = 4;
+  // Signal from ESC to indicate ESP failure fordriver: 0x0: ESP Normal: 0x1:
+  // ESP Failed [bit] [0|1]
+  optional ESC_ESPFailedType esc_espfailed = 5;
+  // Vehicle Speed: 0x1FFF: Invalid value [KPH] [0|460.6875]
+  optional double esc_vehicle_speed = 6;
+  // Signal from ESC to indicate if PATA request hasbeen treated: 0x0: PATA
+  // Request executed ESP_OFF; 0x1: PATA Requested Ignored ESP_ON [bit] [0|1]
+  optional ESC_PATAResponseType esc_pataresponse = 7;
+  // Signal from ABS_ESC to indicate ifVehicleSpeed is valid: 0x0: Valid; 0x1:
+  // Invalid [bit] [0|1]
+  optional ESC_VehicleSpeedInvalidType esc_vehicle_speed_invalid = 8;
+  // indicates the status of AVH: 0x0: Off; 0x1: Intervention; 0x2: Stand by;
+  // 0x3: Error [bit] [0|3]
+  optional ESC_AVHStatusType esc_avhstatus = 9;
+  // status of EPB system: 0x0: Released; 0x1: Closed; 0x2: In progress; 0x3:
+  // Reserved [bit] [0|3]
+  optional ESC_EPBStatusType esc_epbstatus = 10;
+  // Signal from ESC/ABS to indicate if Breke Pedalactivated is valid: 0x0:
+  // Valid; 0x1: Invalid [bit] [0|1]
+  optional ESC_BrakePedalSwitchInvalidType esc_brake_pedal_switch_invalid = 11;
+  // indicate HHC active signal: 0x0: Inactive; 0x1: Active [bit] [0|1]
+  optional ESC_HHCActiveType esc_hhcactive = 12;
+  // Message Rolling counter [bit] [0|15]
+  optional int32 esc_status_alive_counter = 13;
+  // ESC_Status Checksum [bit] [0|255]
+  optional int32 esc_status_checksum = 14;
+}
+
+// Control Message.
+message Esc_Da_Message_127 {
+  enum ESC_NoBrakeForceType {
+    ESC_NOBRAKEFORCE_EXIST_BRAKE_FORCE = 0;
+    ESC_NOBRAKEFORCE_NO_BRAKE_FORCE = 1;
+  }
+  enum ESC_DiagExtModStsType {
+    ESC_DIAGEXTMODSTS_NOT_INTHE_EXTENSION_MODE = 0;
+    ESC_DIAGEXTMODSTS_INTHE_EXTENSION_MODE = 1;
+  }
+  enum ESC_ABP_availableType {
+    ESC_ABP_AVAILABLE_NOT_AVAILABLE = 0;
+    ESC_ABP_AVAILABLE_AVAILABLE = 1;
+  }
+  enum ESC_ABP_activeType {
+    ESC_ABP_ACTIVE_INACTIVE = 0;
+    ESC_ABP_ACTIVE_ACTIVE = 1;
+  }
+  enum ESC_AEB_activeType {
+    ESC_AEB_ACTIVE_INACTIVE = 0;
+    ESC_AEB_ACTIVE_ACTIVE = 1;
+  }
+  enum ESC_AEB_availableType {
+    ESC_AEB_AVAILABLE_NOT_AVAILABLE = 0;
+    ESC_AEB_AVAILABLE_AVAILABLE = 1;
+  }
+  enum ESC_ABA_activeType {
+    ESC_ABA_ACTIVE_INACTIVE = 0;
+    ESC_ABA_ACTIVE_ACTIVE = 1;
+  }
+  enum ESC_ABA_availableType {
+    ESC_ABA_AVAILABLE_NOT_AVAILABLE = 0;
+    ESC_ABA_AVAILABLE_AVAILABLE = 1;
+  }
+  enum ESC_AWB_activeType {
+    ESC_AWB_ACTIVE_INACTIVE = 0;
+    ESC_AWB_ACTIVE_ACTIVE = 1;
+  }
+  enum ESC_AWB_availableType {
+    ESC_AWB_AVAILABLE_NOT_AVAILABLE = 0;
+    ESC_AWB_AVAILABLE_AVAILABLE = 1;
+  }
+  enum ESC_VehiclestandstillType {
+    ESC_VEHICLESTANDSTILL_NOT_STANDSTILL = 0;
+    ESC_VEHICLESTANDSTILL_STANDSTILL = 1;
+    ESC_VEHICLESTANDSTILL_INVALID = 2;
+    ESC_VEHICLESTANDSTILL_RESERVED = 3;
+  }
+  enum ESC_DTC_ActiveType {
+    ESC_DTC_ACTIVE_INACTIVE = 0;
+    ESC_DTC_ACTIVE_ACTIVE = 1;
+  }
+  enum ESC_BrakeTempTooHighType {
+    ESC_BRAKETEMPTOOHIGH_NORMAL = 0;
+    ESC_BRAKETEMPTOOHIGH_ABNORMAL = 1;
+  }
+  enum ESC_QDCFRSType {
+    ESC_QDCFRS_NO_ERROR = 0;
+    ESC_QDCFRS_ERROR = 1;
+  }
+  // no brake pressure applied; generally it regardswheel cylinder presure: 0x0:
+  // Exist Brake Force; 0x1: No Brake Force [bit] [0|1]
+  optional ESC_NoBrakeForceType esc_no_brake_force = 1;
+  // Whether ESC enters the diagnosisextensionmode or not: 0x0: Not in the
+  // extension mode; 0x1: In the extension mode [bit] [0|1]
+  optional ESC_DiagExtModStsType esc_diag_ext_mod_sts = 2;
+  // Prefill (ABP) is available: 0x0: Not Available; 0x1: Available [bit] [0|1]
+  optional ESC_ABP_availableType esc_abp_available = 3;
+  // Prefill (ABP) is active: 0x0: Inactive: 0x1: Active [bit] [0|1]
+  optional ESC_ABP_activeType esc_abp_active = 4;
+  // Indicates if AEB is intervention or not: 0x0: Inactive; 0x1: Active [bit]
+  // [0|1]
+  optional ESC_AEB_activeType esc_aeb_active = 5;
+  // indicates if AEB_BA is available or not: 0x0: Not Available; 0x1: Available
+  // [bit] [0|1]
+  optional ESC_AEB_availableType esc_aeb_available = 6;
+  // indicates if ABA is intervention or not: 0x0: Inactive; 0x1: Active [bit]
+  // [0|1]
+  optional ESC_ABA_activeType esc_aba_active = 7;
+  // indicates if ABA is available or not: 0x0: Not Available; 0x1: Available
+  // [bit] [0|1]
+  optional ESC_ABA_availableType esc_aba_available = 8;
+  // indicates if AWB is intervention or not: 0x0: Inactive; 0x1: Active [bit]
+  // [0|1]
+  optional ESC_AWB_activeType esc_awb_active = 9;
+  // indicates if AWB is available or not: 0x0: Not Available; 0x1: Available
+  // [bit] [0|1]
+  optional ESC_AWB_availableType esc_awb_available = 10;
+  // indicating whether the vehicle is standstill ornot;must not be set until
+  // standstill is surelyreached: 0x0: Not Standstill; 0x1: Standstill; 0x2:
+  // Invalid; 0x3: Reserved [bit] [0|3]
+  optional ESC_VehiclestandstillType esc_vehiclestandstill = 11;
+  // indicating DTC in active control or not: 0x0: Inactive; 0x1: Active [bit]
+  // [0|1]
+  optional ESC_DTC_ActiveType esc_dtc_active = 12;
+  // Brake disk temperature overheat or not: 0x0: Normal; 0x1: Abnormal [bit]
+  // [0|1]
+  optional ESC_BrakeTempTooHighType esc_brake_temp_too_high = 13;
+  // Error in the FRS message detected by the ESC,like checksum or alivecounter
+  // error: 0x0: No error; 0x1: Error [bit] [0|1]
+  optional ESC_QDCFRSType esc_qdcfrs = 14;
+  // Message Alive Counter [bit] [0|15]
+  optional int32 esc_da_message_alive_counter = 15;
+  // checksum [bit] [0|255]
+  optional int32 esc_da_message_checksum = 16;
+}
+
+// Report Message.
+message Gear_Report_111 {
+  enum GearActlPosType {
+    GEARACTLPOS_PARK = 0;
+    GEARACTLPOS_DRIVE = 5;
+    GEARACTLPOS_NEUTRAL = 6;
+    GEARACTLPOS_REVERSE = 7;
+    GEARACTLPOS_MANUAL = 8;
+  }
+  // Gear Actual Position [] [0|0]
+  optional GearActlPosType gear_actl_pos = 1;
+}
+
+// Control Message.
+message Sas_Status_E1 {
+  enum SAS_SteerWheelAngleType {
+    SAS_STEERWHEELANGLE_INVALID = 32767;
+  }
+  enum SAS_SteerWheelRotSpdType {
+    SAS_STEERWHEELROTSPD_INVALID = 255;
+  }
+  enum SAS_CalibrationStsType {
+    SAS_CALIBRATIONSTS_SENSOR_NOT_CALIBRATED = 0;
+    SAS_CALIBRATIONSTS_SENSOR_CALIBRATED = 1;
+  }
+  enum SAS_FailureStsType {
+    SAS_FAILURESTS_INVALID = 0;
+    SAS_FAILURESTS_VALID = 1;
+  }
+  // Actual steering wheel angle: 0x7FFF: Invalid [?bit] [-780|779.9]
+  optional SAS_SteerWheelAngleType sas_steer_wheel_angle = 1;
+  // Steering wheel rotational speed: 0xFF: Invalid [?s/bit] [0|1016]
+  optional SAS_SteerWheelRotSpdType sas_steer_wheel_rot_spd = 2;
+  // SAS_CalibrationSts: 0x0: Sensor not calibrated; 0x1: Sensor calibrated
+  // [bit] [0|1]
+  optional SAS_CalibrationStsType sas_calibration_sts = 3;
+  // SAS failure status: 0x0: Invalid; 0x1: Valid [bit] [0|1]
+  optional SAS_FailureStsType sas_failure_sts = 4;
+  // Message counter [bit] [0|15]
+  optional int32 sas_status_alive_counter = 5;
+  // SAS_Status Checksum [bit] [0|255]
+  optional int32 sas_status_checksum = 6;
+}
+
+// Report Message.
+message Rain_Info_114 {
+  enum RainType {
+    RAIN_NONE = 0;
+    RAIN_LIGHT = 1;
+    RAIN_MEDIUM = 2;
+    RAIN_HEAVY = 3;
+    RAIN_RESERVED_1 = 4;
+    RAIN_RESERVED_2 = 5;
+  }
+  // [] [0|255]
+  optional RainType rain = 1;
+  // [] [0|4294967295]
+  optional int32 lux = 2;
+}
+
+message Haval_suv {
+  // Report message.
+  optional Whlspdr_113 whlspdr_113 = 1;
+  // Report message.
+  optional Whlspdf_112 whlspdf_112 = 12;
+  // Control message.
+  optional Yrs2_132 yrs2_132 = 13;
+  // Control message.
+  optional Yrs1_131 yrs1_131 = 14;
+  // Control message.
+  optional Esc_Frontwheelspeedkph_123 esc_frontwheelspeedkph_123 = 5;
+  // Control message.
+  optional Esc_Rearwheelspeedkph_124 esc_rearwheelspeedkph_124 = 6;
+  // Report message.
+  optional Eps_110 eps_110 = 7;
+  // Control message.
+  optional Esc_Status_126 esc_status_126 = 8;
+  // Control message.
+  optional Esc_Da_Message_127 esc_da_message_127 = 9;
+  // Report message.
+  optional Gear_Report_111 gear_report_111 = 10;
+  // Control message.
+  optional Sas_Status_E1 sas_status_e1 = 11;
+  // Report message.
+  optional Rain_Info_114 rain_info_114 = 15;
+  // Report message.
+  optional High_Beam_115 high_beam_115 = 16;
+  reserved 2, 3, 4;
+}

@@ -1,0 +1,330 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/maps/proto/map_internal.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message SdNodeProto {
+  optional sfixed64 id = 1;
+  optional GeoPointProto point = 2;
+  enum Type {
+    NOT_CROSS = 1;            // 非路口点
+    SINGLE_CROSS = 2;         // 单一路口点
+    COMPOUND_CROSS_SUB = 3;   // 复合路口子点
+    COMPOUND_CROSS_MAIN = 4;  // 复合路口主点
+  }
+  optional Type type = 3;
+  optional bool has_traffic_light = 4;
+  optional sfixed64 main_node_id = 5;
+  repeated sfixed64 sub_node_ids = 6;
+  repeated sfixed64 connection_link_ids = 7;
+  repeated sfixed64 cross_connection_link_ids = 8;
+  repeated int32 belonging_levels = 9;
+  repeated ValidationRecord skip_records = 10;
+
+  // The path id in EHP v2 this node belongs to.
+  optional int32 path_id = 11;
+  // The start offset of the link starting from the EHP V2 path.
+  // Unit : m
+  optional int32 offset = 12;
+}
+
+message SdLinkProto {
+  optional sfixed64 id = 1;
+  optional GeoPolylineProto polyline = 2;
+  enum RoadClass {
+    HIGHWAY = 1;           // 高速
+    URBAN_EXPRESSWAY = 2;  // 城市快速路
+    NATIONAL = 3;          // 国道
+    PROVINCIAL = 4;        // 省道
+    COUNTY = 5;            // 县道
+    TOWN = 6;              // 乡镇村道
+    OTHER = 7;             // 其它
+    FERRY = 8;             // 轮渡
+    PEDESTRAIN = 9;        // 行人道路
+  }
+  optional RoadClass road_class = 3;
+  enum RoadType {
+    DIRECTION_SPIT = 1;  // 上下线分离
+    ROUNDABOUT = 2;      // 环岛
+    INTER_CHANGE =
+        3;  // 连接高速和其它不同等级道路之间的道路(唯一上高速或出高速的道路)
+    JUNCTION = 4;  // 高速之间的连接道路(如高速与高速,高速与城市高速)
+    CROSS_INNER = 5;              // 路口内连接路(交叉点内Link)
+    MAIN_ROAD = 6;                // 主路
+    SECONDARY = 7;                // 辅路
+    MAIN_SECONDARY_ENTRANCE = 8;  // 主辅连接路
+    RAMP = 9;                     // 匝道
+    TUNNEL = 10;                  // 隧道
+    BUS = 11;                     // 公交专用道
+    NONE = 12;
+    PARKING_AREA = 13;    // 停车区
+    SERVICE_AREA = 14;    // 服务区
+    BRIDGE = 15;          // 固定桥
+    WALKING_STREET = 16;  // 步行街
+    ENCLOSURE = 17;       // 全封闭道路
+    UNDEFINED = 18;       // 未定义交通区域
+    POI_CONNECT = 19;     // POI连接路
+    RIGHT_TURN = 20;      // 提前右转
+    SCENIC = 21;          // 风景路线
+    INNER_REGION = 22;    // 区域内道路
+    LEFT_TURN = 23;       // 提前左转
+    UTURN = 24;           // 调头口
+    PARK_ENTRANCE = 25;   // 停车场出入口连接路
+    MOVABLE_BRIDGE = 26;  // 移动式桥
+    REVERSAL_LEFT = 27;   // 借道左转
+    FRONT_DOOR = 28;      // 门前路
+    VIADUCT = 29;         // 高架路
+    TRUCK_ONLY = 30;      // 货车专用道
+    NORMAL = 31;          // 普通
+    kTOLL = 32;           // 收费站
+    CONSTRUCTION = 33;    // 建设中道路
+    INTERSECTION = 34;    // 十字路口
+    // Types starting with this line is from another version of Tencent's API
+    HIGHWAY_EXIT = 35;              /** 高速出入口 */
+    HIGHWAY_CONNECTION = 36;        /** 高速连接路 */
+    NONSTANDARD_ROUNDABOUT = 37;    /** 非标准环岛 */
+    SPECIAL_CONNECTION = 38;        /** 特殊连接路 */
+    PARKING_OCCUPY_ROAD = 39;       /** 包含占道停车场 */
+    PRIVATE = 40;                   /** 私道 */
+    INNER_VIRTUAL_CONNECT = 41;     /** 区域内虚拟连接路 */
+    TAXI = 42;                      /** 出租车车道 */
+    TIDE = 43;                      /** 潮汐车道 */
+    STEP_ROAD = 44;                 /** 台阶路 */
+    INNER_CROSS_ROAD = 45;          /** 路口面道路 */
+    ENTRANCE_AND_EXIT_CONNECT = 46; /** 出入口连接路 */
+    AHEAD_TURN_RIGHT = 47;          /** 提前右转 */
+    CROSS_LINE_OVERPASS = 48;       /** 跨线天桥 */
+    SUNKEN_ROAD = 49;               /** 下沉道路 */
+    RAMP_BIDIRECTIONAL = 50;        /** 匝道双通 */
+    MOUNTAIN_ROAD = 51;             /** 山路 */
+    SUNKEN_ROAD_EXIT = 52;          /** 下沉道路出入口 */
+    OTHER_TYPE = 53;                // 其他
+    VIRTUAL_SOLID_CONNECTION = 54;  // 虚实线链接路
+    PARKING_INTERNAL_ROAD = 55;     // 停车场内部道路
+  }
+  repeated RoadType road_types = 4;
+  optional string road_name = 5;
+  enum TravelDirection {
+    TWO_WAY = 1;   // 双向
+    FORWARD = 2;   // 正向
+    BACKWARD = 3;  // 逆向
+    NO_ENTRY = 4;  // 禁行
+  }
+  optional TravelDirection travel_direction = 6;
+  optional sfixed64 start_node_id = 7;
+  optional sfixed64 end_node_id = 8;
+  optional double length = 9;  // unit: m
+  optional double width = 10;  // unit: m
+  optional double max_speed_kph = 11;
+  optional int32 lane_count = 12;
+  message LanePropertyProto {
+    // 由于历史原因，腾讯提供Lane到Link级别拓扑，故以前命名其为LaneTopoProto，但更形象的命名应该为LaneToLinkTopoProto，出于兼容考虑暂不修改
+    // Lane to link topo used by Tencent map
+    message LaneTopoProto {
+      optional Direction direction = 1;
+      repeated sfixed64 out_link_ids = 2;
+    }
+    repeated LaneTopoProto lane_topos = 2;
+    // Lane topo used by Ehp V2
+    // 目前Ehp v2可提供Lane到Lane级别拓扑，如下定义为LaneToLaneTopoProto
+    message LaneToLaneTopoProto {
+      optional sfixed64 incoming_link_id = 1;
+      optional sfixed64 incoming_start_lane_number =
+          2;  // 行驶方向从右到左排序, 最右侧汇入车道编号
+      optional sfixed64 incoming_end_lane_number =
+          3;  // 行驶方向从右到左排序, 最左侧汇入车道编号
+      optional sfixed64 incoming_priority_lane_number =
+          4;  // 直接前序连接车道，其他车道汇入当前车道需让行
+    }
+    optional LaneToLaneTopoProto icoming_lane_topo = 4;
+    enum LaneType {
+      GENERAL = 1;                 // 常规车道
+      BUS_ONLY = 2;                // 公交车道
+      TIDE = 3;                    // 潮汐车道
+      VARIABLE_DIRECTION = 4;      // 可变导向车道
+      EXIT = 5;                    // 出口车道
+      ENTRY = 6;                   // 入口车道
+      AUXILIARY = 7;               // EXIT与ENTRY的结合，例如高速路口
+      EMERGENCY = 8;               // 应急车道
+      RESTRICTED_NOT_ALLOWED = 9;  // 禁用车道
+      HOV = 10;      // High-occupancy vehicle lane 高承载车道
+      EXPRESS = 11;  // 快速车道
+    }
+    repeated LaneType lane_types = 1;
+    enum Direction {
+      STRAIGHT = 1;                    // 直行
+      LEFT_TURN = 2;                   // 左转
+      RIGHT_TURN = 3;                  // 右转
+      UTURN = 4;                       // 掉头
+      LANE_BLANK = 5;                  // 空白
+      LEFT_UTURN = 6;                  // 左掉头
+      RIGHT_UTURN = 7;                 // 右掉头
+      STRAIGHT_LEFT_TURN = 8;          // 直行左转
+      STRAIGHT_RIGHT_TURN = 9;         // 直行右转
+      LEFT_RIGHT_TURN = 10;            // 左右转
+      LEFT_RIGHT_TURN_STRAIGHT = 11;   // 左右转直行
+      STRAIGHT_LEFT_UTURN = 12;        // 直行左掉头
+      STRAIGHT_RIGHT_UTURN = 13;       // 直行右掉头
+      LEFT_LEFT_UTURN = 14;            // 左转左掉头
+      RIGHT_RIGHT_UTURN = 15;          // 右转右掉头
+      STRAIGHT_LEFT_LEFT_UTURN = 16;   // 直行左转左掉头
+      RIGHT_LEFT_UTURN = 17;           // 右转左掉头
+      LEFT_RIGHT_LEFT_UTURN = 18;      // 左右转左掉头
+      STRAIGHT_RIGHT_LEFT_UTURN = 19;  // 直行右转左掉头
+      LEFT_RIGHT_UTURN = 20;           // 左转右掉头
+    }
+    optional Direction direction = 3;
+    enum LineMarking {
+      SOLID = 1;                    // 实线（单、双）
+      DASHED = 2;                   // 虚线（单、双）
+      LEFT_SOLID_RIGHT_DASHED = 3;  // 左实右虚
+      RIGHT_SOLID_LEFT_DASHED = 4;  // 右实左虚
+      SHADED = 5;                   // 导流
+    }
+    optional LineMarking line_marking =
+        5;  // Line marking for the inner side of this lane (i.e. left side for
+            // right-hand traffic).
+    optional bool yield_flag =
+        6;  // True if traffic on this lane has to yield to incoming traffic
+            // from a neighboring road when entering this link.
+    optional bool is_part_of_calculated_route =
+        7;  // True indicates that the lane represented by this index in the
+            // current link is on the navigation.
+  }
+  // size is empty or equal to lane_count
+  repeated LanePropertyProto lane_properties = 13;
+  repeated int32 belonging_levels = 14;
+  // Can describe the constraints of the current link, such as prohibiting
+  // driving to the next link.
+  message ConditionalRestrictionProto {
+    optional sfixed64 node_id = 1;
+    optional sfixed64 other_link_id = 2;
+  }
+  repeated ConditionalRestrictionProto conditional_restrictions = 15;
+
+  // Dealing with both direction
+  optional int32 max_speed_kph_s2e = 16;
+  optional int32 max_speed_kph_e2s = 17;
+  optional int32 lane_count_s2e = 18;
+  optional int32 lane_count_e2s = 19;
+  repeated ValidationRecord skip_records = 20;
+
+  // EHP V2 fields
+  // The path id in EHP v2 this link belongs to.
+  optional int32 path_id = 21;
+  // The start offset of the link starting from the EHP V2 path.
+  // Unit : m
+  optional int32 offset = 22;
+  enum FormOfWay {
+    // REF: 《ADAS EHP for 理想 V1.0_20221102.xlsx》
+    kUnknown = 0;
+    // Freeway or Controlled Access road that is not a slip road/ramp
+    // 高速或者封闭道路（不是引路且不是匝道）-> 对应高速，基本不会发送该取值
+    kHighway = 1;
+    // Multiple Carriageway or Multiply Digitized Road 上下线分离
+    kDividedWay = 2;
+    // Single Carriageway(default) 单车道
+    kSingleCarriageway = 3;
+    // Roundabout Circle 环岛
+    kRoundabout = 4;
+    // Traffic Square/Special Traffic Figure 交通广场，非中国需求，删除
+    kTrafficSquare = 5;
+    // Reserved：出入口（Exit Link/Entrance Link）
+    kReservedForExitOrEntrance = 6;
+    kReserved = 7;
+    // Parallel Road (as special type of a slip road/ramp)
+    // 对应平行路（与高速或城快主路平行，主要功能是为高速、城快主路分流的单向通行道路）
+    kParallelRoad = 8;
+    // Slip Road/Ramp on a Freeway or Controlled Access road
+    // 对应高速和高速间的匝道
+    kSlipRoad = 9;
+    // Slip Road/Ramp (not on a Freeway or Controlled Access road)
+    // 对应普通道路和高速直接的匝道
+    kRamp = 10;
+    // Service Road or Frontage Road 对应为辅路
+    kSideRoad = 11;
+    // Entrance to or exit of a Car Park 停车场进入/退出道路
+    kParkingEntranceOrExit = 12;
+    // Entrance to or exit to Service 服务区进入/退出道路
+    kServiceAreaEntranceOrExit = 13;
+    // Pedestrian Zone 步行区域
+    kPedestrianArea = 14;
+    kTunnel = 15;
+    kBridge = 16;
+    kNotAvailable = 17;  // N/A
+  }
+  optional FormOfWay form_of_way = 23;
+  message GeometryShapeProto {
+    optional double curvature = 1;
+    optional GeoPointProto point = 2 [deprecated = true];
+    optional int32 path_offset = 3;
+  }
+  repeated GeometryShapeProto geometry_shapes = 24;
+}
+
+message TrafficSignProto {
+  optional sfixed64 id = 1;
+  optional GeoPointProto point = 2;
+  optional sfixed64 link_id = 3;
+  enum Type {
+    MAX_SPEED_LIMIT = 1;                // 最大限速
+    MIN_SPEED_LIMIT = 2;                // 最低限速
+    REGION_SPEED_LIMIT = 3;             // 区域限速
+    SPEED_LIMIT_REMOVED = 4;            // 解除限速
+    NO_PASS_THROUGH = 5;                // 禁止通行
+    NO_ENTRY = 6;                       // 禁止驶入
+    NO_MOTOR_VEHICLES = 7;              // 禁止机动车驶入
+    NO_LEFT_TURN = 8;                   // 禁止左转
+    NO_RIGHT_TURN = 9;                  // 禁止右转
+    NO_PARKING = 10;                    // 禁止停车
+    TRAFFIC_LIGHT = 11;                 // 交通灯（Ehp v2）
+    CAMERA_MONITOR = 12;                // 监控摄像头
+    CAMERA_RED_LIGHT = 13;              // 闯红灯拍照
+    CAMERA_ILLEGAL = 14;                // 违章拍照
+    REGION_SPEED_LIMIT_START = 15;      // 区域限速开始
+    REGION_SPEED_LIMIT_END = 16;        // 区域限速结束
+    SPEED_DETECTION_CAMERA_LIDAR = 17;  // 测速摄像头、测速雷达
+    SLOW_DOWN = 18;                     // 减速让行
+    STOP = 19;                          // 停车让行
+    TOLL_STATION = 20;                  // 收费站
+  }
+  optional Type type = 4;
+  // Indicates that the semantics of the traffic sign acts on the position of
+  // the link. For a two-way link, it may act on the left or right. For a
+  // one-way link, it acts on its entirety.
+  enum EffectiveDirection {
+    TWO_WAY_LEFT = 1;   // 作用于双向 Link 左边
+    TWO_WAY_RIGHT = 2;  // 作用于双向 Link 右边
+    ONE_WAY = 3;        // 作用于整条单向 Link
+  }
+  optional EffectiveDirection effective_direction = 5;
+  optional int32 heading_in_degree = 6;
+  // When the type is MAX_SPEED_LIMIT and MIN_SPEED_LIMIT, it consists of
+  // numbers and |
+  optional string info = 7;
+  repeated int32 belonging_levels = 8;
+  repeated ValidationRecord skip_records = 9;
+  // The belonging path id in Ehp v2.
+  optional int32 path_id = 10;
+  // The location offset along the link from the start of the link.
+  optional int32 link_offset = 11;
+  // The location offset along the path from the start of the path.
+  optional int32 path_offset = 12;
+}
+
+// logical concept
+message SdMapProto {
+  optional LiteHeader header = 1;
+
+  repeated SdNodeProto sd_nodes = 2;
+  repeated SdLinkProto sd_links = 3;
+  repeated TrafficSignProto signs = 4;
+  // EHP V2 fields.
+  // The link ids belong to the part of calculated route in EHP V2.
+  repeated sfixed64 pocr_link_ids = 5;
+  // If encountered ehpv2 reset, will increment the update_id.
+  optional int64 update_id = 6;
+}

@@ -1,0 +1,172 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.agents;
+option go_package = "qcraft-proto.ai/offboard/simulation/agents/open_agent/proto/actions";
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "offboard/simulation/agents/open_agent/proto/agent_common.proto";
+import "onboard/maps/proto/lane_path.proto";
+import "onboard/proto/human_driving.proto";
+import "onboard/proto/sim_trajectory.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+
+message ActionProto {
+  oneof type {
+    bool default_action = 1;
+    TrafficLightActionProto traffic_light_action = 2;
+    TeleportActionProto teleport_action = 3;
+    LaneChangeActionProto lane_change_action = 4;
+    SpeedActionProto speed_action = 5;
+    ChangeLongitDistanceActionProto change_longit_distance_action = 6;
+    ChangeRelativeVelBodyActionProto change_relative_vel_body_action = 7;
+    UpdateSpeedActionProto update_speed_action = 8;
+  }
+}
+
+message TrafficLightActionProto {
+  optional string name = 1;
+  optional int64 traffic_light_id = 2;
+  optional TrafficLightColor target_color = 3;
+  optional double start_offset = 4;
+  optional double end_offset = 5;
+  optional double duration = 6;
+}
+
+message TeleportActionProto {
+  optional string name = 1;
+  optional string agent_id = 2;
+  oneof position_type {
+    Vec2dProto smooth_pos = 3;
+    FrenetPositionProto frenet_pos = 4;
+  }
+}
+
+message LaneChangeArcProto {
+  optional double radius = 1;
+  optional AngleProto angle = 2;
+  optional double dir = 3;
+}
+
+message LaneChangeSegmentProto {
+  optional double length = 1;
+  optional double dir = 2;
+}
+
+message LaneChangeDoubleArcProto {
+  optional double start_radius = 1;
+  optional double end_radius = 2;
+  optional AngleProto angle = 3;
+  optional double dir = 4;
+}
+
+message LaneChangeCurveProto {
+  oneof type {
+    LaneChangeArcProto arc = 1;
+    LaneChangeSegmentProto segment = 2;
+    LaneChangeDoubleArcProto double_arc = 3;
+  }
+}
+
+message LaneChangeCurvesProto {
+  repeated LaneChangeCurveProto curves = 1;
+}
+
+message CentrosymmetricCurveProto {
+  optional double first_radius = 1;
+  optional AngleProto first_angle = 2;
+  optional double second_radius = 3;
+  optional AngleProto second_angle = 4;
+  optional double segment_length = 5;
+  optional double lateral_offset = 6;
+}
+
+message LateralDynamicProto {
+  enum LateralDynamicType {
+    STEP = 0;
+    CUBIC = 1;
+    COSINE = 2;
+    BEZIER = 3;
+    MULTI_CURVES = 4;
+    CENTROSYMMETRIC_CURVE = 5;
+  }
+  optional LateralDynamicType lateraldynamictype = 1 [default = BEZIER];
+  optional double lane_change_duration = 2;
+  optional double lane_change_offset = 3;
+  optional double lane_change_distance = 4;
+  optional LaneChangeCurvesProto lane_change_curves = 5;
+  optional CentrosymmetricCurveProto centrosymmetric_curve = 6;
+}
+
+message LaneChangeActionProto {
+  optional string name = 1;
+  optional string agent_id = 2;
+  enum LaneChangeType {
+    LEFT = 0;
+    RIGHT = 1;
+  }
+  oneof type {
+    LaneChangeType lane_change_type = 3;
+    int64 target_lane_id = 4;
+    mapping.LanePathProto target_lane_path = 6;
+  }
+  optional LateralDynamicProto lateral_dynamic = 5;
+}
+
+message DynamicSpeedChangeConfig {
+  optional double target_vel_body = 1;
+  oneof type {
+    double acceleration = 2;
+    double duration = 3;
+  }
+}
+
+message SpeedActionProto {
+  enum SpeedDynamicType {
+    STEP = 0;
+    LINEAR = 1;
+  }
+  optional string name = 1;
+  oneof type {
+    ConstantAccelerationConfigProto absolute_speed_change_config = 10;
+    DynamicSpeedChangeConfig dynamic_speed_change_config = 11;
+  }
+
+  optional string agent_id = 2 [deprecated = true];
+  optional SpeedDynamicType dynamic_type = 3 [deprecated = true];
+  optional double dynamic_acceleration = 4 [deprecated = true];
+  optional double dynamic_duration = 5 [deprecated = true];
+  optional Vec2dProto absolute_target_vel = 6 [deprecated = true];
+  optional double absolute_target_vel_body = 7 [deprecated = true];
+  optional Vec2dProto absolute_target_accel = 8 [deprecated = true];
+  optional double absolute_target_accel_body = 9 [deprecated = true];
+}
+
+message ChangeLongitDistanceActionProto {
+  optional string name = 1;
+  optional string target_agent_id = 2;
+  optional double longit_distance = 3;
+  optional double max_accel = 4;
+  optional double min_accel = 5;
+}
+
+message ChangeRelativeVelBodyActionProto {
+  optional string name = 1;
+  optional string target_agent_id = 2;
+  optional double relative_vel_body = 10;
+}
+
+message UpdateSpeedActionProto {
+  optional string name = 1;
+  optional SpeedModeConfigProto config = 2;
+}

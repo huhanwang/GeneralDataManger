@@ -1,0 +1,35 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+
+import "onboard/hmi/proto/zone/common.proto";
+
+enum TrafficMarkerType {
+  TRAFFICMARKERTYPE_UNKNOWN = 0x0;
+  TRAFFICMARKERTYPE_AHEADONLYARROW = 0x1;         // 直行箭头
+  TRAFFICMARKERTYPE_AHEADORTURNRIGHTARROW = 0x2;  // 直行右转箭头
+  TRAFFICMARKERTYPE_TURNRIGHTARROW = 0x3;         // 右转箭头
+
+  TRAFFICMARKERTYPE_AHEADORTURNLEFTARROW = 0x7;  // 直行左转箭头
+  TRAFFICMARKERTYPE_TURNLEFTARROW = 0x8;         // 左转箭头
+
+  TRAFFICMARKERTYPE_UTURNARROW = 0xC;  // 掉头
+
+  TRAFFICMARKERTYPE_CROSSWALK = 0xF;  // 斑马线
+
+  TRAFFICMARKERTYPE_STOPLINE = 0x12;              // 停止线
+  TRAFFICMARKERTYPE_STOPLINEANDCROSSWALK = 0x13;  // 停止线及斑马线
+}
+
+message TrafficMarkerListStruct {
+  optional int32 id = 1;
+  optional TrafficMarkerType type = 2;
+  optional Point3D point = 3;
+  optional float width = 4;
+  optional float height = 5;
+  optional int32 valid = 6 [default = 1];
+}
+
+message TrafficControlStruct {
+  repeated TrafficMarkerListStruct traffic_marker = 2;
+}

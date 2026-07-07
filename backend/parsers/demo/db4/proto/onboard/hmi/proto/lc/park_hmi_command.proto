@@ -1,0 +1,69 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+enum APAHMIDisplayStatus {
+  BACKGROUND = 0;
+  FOREGROUND = 10;
+}
+
+enum APAHMICommand {
+  HMI_APA_COMMAND_NO_COMMAND = 0;
+  HMI_APA_COMMAND_APA_FUNCTION_START = 1;
+  HMI_APA_COMMAND_APA_FUNCTION_QUIT = 2;
+  HMI_APA_COMMAND_APA_FUNCTION_RECOVER = 3;
+  HMI_APA_COMMAND_AVP_FUNCTION_START = 4;
+  HMI_APA_COMMAND_APO_DIR_SEL_FRONT = 5;
+  HMI_APA_COMMAND_APO_DIR_SEL_RIGHT = 6;
+  HMI_APA_COMMAND_APO_DIR_SEL_LEFT = 7;
+  HMI_APA_COMMAND_RPA_MODE_ON = 8;
+  HMI_APA_COMMAND_RPA_MODE_QUIT = 9;
+  HMI_APA_COMMAND_MAPPING_NEW_START = 10;
+  HMI_APA_COMMAND_MAPPING_REPLACE_START = 11;
+  HMI_APA_COMMAND_MAPPING_DELETE = 12;
+  HMI_APA_COMMAND_MAPPING_CANCEL = 13;
+}
+
+enum APAHMIParkOffsetReq {
+  HMI_APA_PARK_OFFSET_REQ_NONE = 0;
+  HMI_APA_PARK_OFFSET_REQ_LEFT = 1;
+  HMI_APA_PARK_OFFSET_REQ_MIDDLE = 2;
+  HMI_APA_PARK_OFFSET_REQ_RIGHT = 3;
+}
+
+message TransString {
+  optional int64 timestamp = 1;
+  optional string content = 2;
+  optional string service_name = 3;
+}
+
+message SvmParkCommand {
+  optional float center_x = 1;
+  optional float center_y = 2;
+  optional float spot_angle = 3;
+  optional uint32 operating_id = 4;
+}
+
+message ParkHmiCommand {
+  optional LiteHeader header = 1;
+  optional HeaderLC header_lc = 2;
+  optional bool is_real = 3;
+  optional APAHMIDisplayStatus hmi_display_status = 4;
+  optional APAHMICommand hmi_command = 5;
+  optional int64 selected_id = 6;
+  optional int64 highlight_id = 7;
+  optional int64 memory_slot_id = 8;
+  optional string slot_set_map_id = 9;
+  optional string delete_map_id = 10;
+  optional string select_map_id = 11;
+  optional bool save_background_map = 12;
+  optional bool rpa_button_request = 13;
+  optional bool camera_is_open = 14;
+  optional APAHMIParkOffsetReq park_offset_req = 15;
+  optional TransString trans_string = 16;
+  optional bool personalized_slot_set_display = 17;
+  optional SvmParkCommand svm_park_command = 18;
+}

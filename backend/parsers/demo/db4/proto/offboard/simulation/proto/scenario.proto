@@ -1,0 +1,441 @@
+
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/agents/open_agent/proto/agent_common.proto";
+import "offboard/simulation/proto/fuzzing.proto";
+import "offboard/simulation/metric_evaluator/proto/eval_config.proto";
+import "offboard/simulation/proto/scenario_external_attribute.proto";
+import "offboard/simulation/modules/sim_events/proto/sim_event.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/lite_msg.proto";
+import "onboard/proto/positioning.proto";
+import "onboard/proto/sim_augmentation.proto";
+import "offboard/simulation/proto/modifier.proto";
+import "offboard/simulation/proto/common_defs.proto";
+import "onboard/proto/human_driving.proto";
+import "onboard/proto/sim_trajectory.proto";
+import "onboard/proto/perception/vision/traffic_light_state.proto";
+
+message ScenarioEditHistory {
+  // Editing timestamp in micro seconds.
+  optional int64 edit_timestamp = 1;
+  // Editing logs.
+  optional string log = 2;
+  // Author
+  optional string author = 3;
+  // Version
+  optional string version = 4;
+}
+
+// Includes scenario human editing attributes
+message ScenarioEdit {
+  // The description of scenario.
+  optional string description = 1;
+
+  // A scenario can have multiple text tags, for fast searching later.
+  // Each tag can be present as two kind of formats:
+  // 1, pure text without ':' in the string.
+  // 2, A key-value format,  key str + ':' + value str, if multiple ':' in the
+  // tag, first one will be used as the delimiter.
+  map<string, string> labels = 2 [deprecated = true];
+
+  // Scenario edit history.
+  repeated ScenarioEditHistory edit_history = 3;
+
+  // Test sets this scenario belongs to.
+  repeated string test_sets = 4 [deprecated = true];
+
+  // LDAPs of the owners of the scenario
+  repeated string assignees = 5;
+
+  reserved 6;
+}
+
+// Lite modules configurations runs in simulation.
+message SimModule {
+  optional LiteModuleName module = 1;
+  // The instance name of lite module registered, if empty use the defined
+  // field name with upper case format.
+  optional string instance_name = 2;
+
+  oneof RunMode {
+    // Will run this module in simulation, all output messages from this module
+    // will be suppressed in all playback sources.
+    bool enable = 3;
+    // Won't run this module in simulation, all output messages from this module
+    // will be suppressed in all playback source if not required.
+    bool disable = 4;
+    // Won't run this module in simulation, but all output messages from this
+    // module will be played back from one of the playback source ids.
+    int32 playback_source_id = 5;
+  }
+  optional SimModuleConf module_conf = 6;
+
+  optional string lite_module_config_filename = 8;
+
+  // Define the message channels that are suppressed during playback.
+  repeated string suppressed_channels = 9;
+
+  // it will override the default playback source using specific playback source
+  // for given channels, only works when RunMode is playback_source_id
+  message PlaybackOverrideChannels {
+    repeated string channels = 1;
+    required int32 playback_source_id = 2;
+  }
+  repeated PlaybackOverrideChannels playback_override_channels = 10;
+
+  // Define the state channel forwarding pairs
+  repeated ModuleStateChannelPair state_channel_pairs = 7 [deprecated = true];
+}
+
+// A list of all lite modules here.
+// Next ID: 100.
+message SimulationModules {
+  // Car onboard modules.
+  optional SimModule perception_module = 1;
+  optional SimModule positioning_module = 2;
+  optional SimModule vehicle_control_module = 3;
+  optional SimModule autonomy_state_module = 10;
+  optional SimModule planner_module = 11;
+  optional SimModule ml_planner_module = 57;
+  optional SimModule online_simulation_module = 13;
+  optional SimModule vision_module = 20;
+  optional SimModule routing_module = 21;
+  optional SimModule localization_module = 24;
+  optional SimModule radar_publisher_module = 25;
+  optional SimModule radar_process_module = 26;
+  optional SimModule tracker_module = 28;
+  optional SimModule autonomy_hmi_module = 29;
+  optional SimModule emergency_brake_module = 30;
+  optional SimModule control_calibration_module = 34;
+  optional SimModule prediction_module = 36;
+  optional SimModule visual_localization_module = 45;
+  optional SimModule integrated_navigation_module = 81;
+  optional SimModule omninet_module = 40;
+  optional SimModule online_map_publisher_module = 41;
+  optional SimModule v2x_module = 43;
+  optional SimModule lane_support_module = 44;
+  optional SimModule aeb_tracker_module = 46;
+  optional SimModule omninet_feature_module = 47;
+  optional SimModule calibration_module = 48;
+  optional SimModule hma_fusion_module = 49;
+  optional SimModule fieryeyenet_module = 51;
+  optional SimModule parking_spot_finder_module = 52;
+  optional SimModule gac_node_module = 53;
+  optional SimModule system_check_module = 60;
+  optional SimModule map_fusion_module = 62;
+  optional SimModule node_module = 65;
+  optional SimModule active_safety_fusion_module = 67;
+  optional SimModule active_safety_module = 68;
+  optional SimModule active_safety_mcu_module = 69;
+  optional SimModule adapter_module = 70;
+  optional SimModule sd_map_publisher_module = 71;
+  optional SimModule vision_map_publisher_module = 74;
+  optional SimModule ad_control_module = 82;
+  optional SimModule adapter_ad4_module = 85;
+  optional SimModule ad4_fusion_module = 87;
+  optional SimModule ad4_asfunc_module = 88;
+  optional SimModule sd_map_adapter_module = 91;
+  optional SimModule qsm_module = 96;
+
+  // car driver level modules.
+  optional SimModule spin_publisher_module = 4;
+  optional SimModule gnss_imu_driver_module = 5;
+  optional SimModule image_publisher_module = 6;
+  optional SimModule can_bus_module = 9;
+
+  // Offboard modules.
+  optional SimModule vantage_forwarding_module = 7;
+  optional SimModule simulation_vehicle_module = 8;
+  optional SimModule virtual_object_module = 12;
+  optional SimModule create_sim_messages_module = 14;
+  optional SimModule remote_assist_module = 18;
+  optional SimModule synthesized_traffic_flow_module = 19;
+  optional SimModule test_module_state_module = 23;
+  optional SimModule mock_localization_module = 27;
+  optional SimModule lite_cyber_module = 31;
+  optional SimModule oracle_module = 32;
+  optional SimModule cyber_forwarding_module = 33;
+  optional SimModule offboard_prediction_module = 35;
+  optional SimModule sim_events_module = 37;
+  optional SimModule acc_lcc_j3_gen_module = 39;
+  optional SimModule human_driving_module = 42;
+  optional SimModule parking_fusion_module = 54;
+  optional SimModule offboard_planner_module = 63;
+  reserved 15 to 17, 22, 38;
+
+  optional SimModule tsr_module = 50;
+  optional SimModule diag_module = 55;
+  optional SimModule offboard_road_geometry_tracker_module = 56;
+  optional SimModule offboard_sd_localization_module = 58;
+  optional SimModule sd_localization_module = 59;
+  optional SimModule lidar_pose_fusion_module = 61 [deprecated = true];
+  optional SimModule offboard_online_map_publisher_module = 72;
+  optional SimModule gac_diag_module = 64;
+  optional SimModule param_service_module = 66;
+  optional SimModule mock_online_map_publisher_module = 73;
+  optional SimModule lsaeb_module = 75;
+  optional SimModule around_view_module = 76;
+  optional SimModule hpp_mapping_module = 77;
+  optional SimModule mock_hmi_module = 78;
+  optional SimModule parking_vision_fusion_module = 79;
+  optional SimModule vision_fusion_module = 80;
+  optional SimModule hpp_online_map_publisher_module = 83;
+  optional SimModule lidar_module = 84;
+  optional SimModule parking_planner_module = 86;
+  optional SimModule lidar_process_module = 89;
+  optional SimModule offboard_controller_module = 90;
+  optional SimModule hpp_localization_module = 92;
+  optional SimModule trigger_module = 93;
+  optional SimModule offboard_lidar_pose_fusion_module = 94;
+  optional SimModule data_forwarding_module = 95;
+  optional SimModule offboard_bev_tracker_module = 97;
+  optional SimModule offboard_mono3d_tracker_module = 98;
+  optional SimModule mnoa_mapping_module = 99;
+  optional SimModule l4_planner_module = 100;
+  optional SimModule l4_prediction_module = 101;
+  optional SimModule l4_tracker_module = 102;
+  optional SimModule l4_routing_module = 103;
+  optional SimModule offboard_parking_bev_tracker_module = 104;
+  optional SimModule gac_avm_module = 105;
+  optional SimModule vhr_module = 106;
+  optional SimModule avm_service_module = 107;
+  optional SimModule uss_freespace_module = 108;
+  optional SimModule ota_service_module = 109;
+  optional SimModule diag_app_module = 110;
+  optional SimModule diag_manage_module = 111;
+  optional SimModule rtpush_module = 112;
+  optional SimModule cloud_module = 113;
+  optional SimModule remote_control_module = 114;
+  optional SimModule remote_drive_video_module_primary = 115;
+  optional SimModule camera_service_module = 116;
+  optional SimModule offboard_lidar_process_module = 117;
+  optional SimModule mnoa_map_manager_module = 118;
+  optional SimModule kpi_data_module = 119;
+  optional SimModule fast_mapping_module = 120;
+  optional SimModule remote_drive_video_module_secondary = 121;
+  optional SimModule perception_api_module = 122;
+  optional SimModule robovan_hmi_module = 123;
+  optional SimModule modified_lite_msg = 124;
+  optional SimModule dynamic_layer_publisher_module = 125;
+  optional SimModule offboard_parking_planner_module = 126;
+  optional SimModule vehicle_guard_module = 127;
+
+  // Next 128
+}
+
+message PlaybackSource {
+  // The lite run name or a single stf file path.
+  optional string run_or_stf_path = 1;
+  // The total playback duration in seconds.
+  optional double duration = 2 [default = 20.0];
+  oneof start_type {
+    // The start offset in seconds relative to the beginning of the logged file.
+    double start_offset = 3 [default = 0.0];
+    // The start timestamp in micro seconds.
+    int64 start_timestamp = 7 [default = 0];
+  }
+  // Additional duration to add to the start of the playback, in seconds.
+  optional double start_delta = 4 [default = 0.0];
+
+  // Run Source mode
+  enum SourceType {
+    UNKNOWN = 0;
+    RUN = 1;
+    SCENARIO = 2;
+    SNAPSHOT = 3;
+  };
+  optional SourceType source_type = 5 [default = UNKNOWN];
+  optional int32 planner_state_seq_num = 6;
+}
+
+message ScenarioExecution {
+  // The simulation's running duration in seconds, should be >=
+  // max(playback sources' duration).
+  optional double sim_duration = 1 [default = 20.0];
+  // The playback sources used in simulation. It supports playbacking different
+  // lite msgs from various saved sources.
+  // The sources can be empty, if simulation is running in a purely virtual
+  // world.
+  repeated PlaybackSource playback_sources = 2;
+  // List out all lite modules here, named same as module name without.
+  optional SimulationModules sim_modules = 3;
+  // List of message modifiers to invoke for the simulation.
+  repeated MessageModifierProto modifiers = 4;
+  // Name of the run conf.
+  optional string run_conf_name = 5;
+  // Git hash of the map to be used for the simulation
+  optional string map_version = 6;
+  // List the lite modules as an array.
+  repeated SimModule sim_module_list = 7;
+  // When set, upload the sim log to the specified path under log bucket.
+  optional string sim_log_output_path = 8;
+}
+
+// The major proto to drive simulation.
+message ScenarioProto {
+  enum Status {
+    UNKNOWN = 0;
+    DRAFT = 1;
+    STABLE = 2;
+  }
+  // Name of scenario, it's a unique name.
+  optional string name = 1;
+
+  // The unique id of scenario, usually it's a fingerprint of the name.
+  optional uint64 uid = 2;
+
+  optional ScenarioEdit edit_attr = 3;
+
+  optional ScenarioExecution execution = 4;
+
+  repeated Metric metrics = 5;
+
+  // flags to apply to the simulation. Must be in the form of "--flag=value".
+  // Note that flags specified directly on the commandline will still take
+  // precedence.
+  repeated string commandline_flags = 6;
+
+  // A list of scenario params which can be fuzzed to generate variations of the
+  // current scenario.
+  optional FuzzedParams fuzzed_params = 8;
+
+  reserved 7;
+
+  // for DB maintenance
+  optional int64 record_created_timestamp = 9;
+
+  // for DB maintenance
+  optional int64 record_updated_timestamp = 10;
+
+  // for history record
+  optional string version = 11;
+
+  // for DB maintenance, quickly locate the latest version
+  optional bool is_latest = 12;
+
+  // Deprecated. Use status instead.
+  optional bool is_stable = 13 [deprecated = true];
+
+  optional ExternalScenarioAttribute external_attribute = 14;
+  optional Status status = 15;
+  optional string name_default_suffix = 16;
+}
+
+// Request for creating a new lite message in simulation.
+message CreateMessageRequestProto {
+  optional string channel = 1;
+  optional string domain = 2;
+  optional LiteMsgWrapper msg = 3;
+}
+
+// Sim header extends regular lite message header, used for storing additional
+// information during simulation.
+message SimLiteHeaderProto {
+  extend LiteHeader {
+    optional SimLiteHeaderProto sim_lite_header = 10000;
+  }
+  repeated CreateMessageRequestProto create_message_requests = 1;
+}
+
+message SimVehicleConf {
+  extend SimModuleConf {
+    optional SimVehicleConf sim_vehicle_conf = 10002;
+  }
+  // Engage start time, relative to the start of the scenario.
+  optional double engage_start_time = 1;
+  // Engage buffer time, in seconds. Used to check whether the car has engaged
+  // quickly, i.e. whether the car has entered cruise within
+  // `engage_buffer_secs` from the time when the engage button is pushed.
+  optional double engage_buffer_secs = 2 [default = 1.0];
+  // Initial pose. Useful for ab inito simulations with no playback source.
+  optional PoseProto initial_pose = 3;
+  // If true will not publish chassis info, it's used for position scenario
+  // test.
+  optional bool no_publish_chassis = 4;
+  // Set AV pose in a variety of ways
+  optional SimPointProto initial_pose_additional = 5;
+}
+
+message RealTimePlaybackConf {
+  extend SimModuleConf {
+    optional RealTimePlaybackConf realtime_playback_conf = 10003;
+  }
+  // If true will start playback by caller, otherwise will start in constructor.
+  optional bool manual_start_playback = 1;
+}
+
+message SimWorldConfProto {
+  message TrafficLightControl {
+    message TrafficLightStatePeriod {
+      optional double start_time = 1 [default = 0.0];
+      optional double end_time = 2 [default = inf];
+      optional TrafficLightStateProto state = 3;
+    }
+    repeated TrafficLightStatePeriod tl_periods = 1;
+  }
+  optional TrafficLightControl tl_control = 1;
+
+  optional bool publish_tl_states = 2 [default = false];
+
+  optional PlaybackSource playback_source = 3;
+}
+
+message VirtualObjectsConfProto {
+  extend SimModuleConf {
+    optional VirtualObjectsConfProto virtual_objects_conf = 10004;
+  }
+
+  repeated VirtualObjectConfProto objects = 2;
+
+  optional SimWorldConfProto sim_world_conf = 3;
+
+  reserved 1;
+}
+
+message OracleConfProto {
+  extend SimModuleConf {
+    optional OracleConfProto oracle_conf = 10005;
+  }
+
+  optional PlaybackSource playback_source = 1;
+}
+
+message SimEventsConfProto {
+  extend SimModuleConf {
+    optional SimEventsConfProto sim_events_conf = 10006;
+  }
+
+  repeated SimEventProto events = 1;
+}
+
+message SimAccLccConf {
+  extend SimModuleConf {
+    optional SimAccLccConf sim_acc_lcc_conf = 10007;
+  }
+  optional int32 button_acc_distance = 1;
+  optional double acc_following_speed = 2;
+  optional double acc_cruise_speed = 3;
+}
+
+message HumanDrivingConfProto {
+  extend SimModuleConf {
+    optional HumanDrivingConfProto human_driving_conf = 10008;
+  }
+  optional PathModeConfigProto path_mode_config = 1;
+  optional agents.SpeedModeConfigProto speed_mode_config = 2;
+  optional SimWorldConfProto sim_world_conf = 3;
+  optional Chassis.DrivingMode driving_mode = 4;
+  optional SimControlConfigProto sim_control_config = 5;
+}
+
+message OffboardPredictionConfProto {
+  extend SimModuleConf {
+    optional OffboardPredictionConfProto offboard_prediction_conf = 10009;
+  }
+  optional PlaybackSource playback_source = 1;
+}

@@ -1,0 +1,287 @@
+syntax = "proto2";
+package snoah.localization;
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+// proto of basic type
+message PointInfo {
+  optional Vec3dProto point_vcs = 1;  // mainly
+  optional Vec3dProto point_enu = 2;
+  optional Vec2dProto point_uv = 3;
+  optional Vec3dProto point_llh = 4;
+}
+
+enum FeatureTypeProto {
+  GNSS = 0;
+  POLE = 1;
+  MARKING = 2;
+  TRAFFIC_SIGN = 3;
+  TRAFFIC_LIGHT = 4;
+
+  ROAD_EDGE = 5;
+  DIVIDER = 6;
+  STOP_LINE = 7;
+
+  ROAD_KEY_POINT = 8;
+  // for hpp localization
+  PARKING_SPOT = 9;
+  PILLAR = 10;
+  SPEED_BUMP = 11;
+};
+
+message PointObject {
+  optional uint32 id = 1;
+  optional PointInfo point = 2;
+  optional FeatureTypeProto type = 3;
+};
+
+message LineObject {
+  optional uint32 id = 1;
+  repeated PointInfo points = 2;
+  optional PointInfo middle_point = 6;
+  enum LineStyle {
+    UnknownStyle = 0;
+    Virtual = 1;
+    WhiteSolid = 2;
+    WhiteDashed = 3;
+    YellowSolid = 4;
+    YellowDashed = 5;
+    LeftDashedRightSolid = 6;
+    RightDashedLeftSolid = 7;
+    DoubleYellowSolid = 8;
+    DoubleWhiteSolid = 9;
+    DoubleYellowDashed = 10;
+    DoubleWhiteDashed = 11;
+  };
+  enum PosType {
+    L4 = -4;
+    L3 = -3;
+    L2 = -2;
+    L1 = -1;
+    UNKNOWN = 0;
+    R1 = 1;
+    R2 = 2;
+    R3 = 3;
+    R4 = 4;
+  };
+
+  optional FeatureTypeProto type = 3;
+  optional LineStyle style = 4;
+  optional PosType pos_type = 5;
+};
+message ShapeObject {
+  optional uint32 id = 1;
+  repeated PointInfo points = 2;
+  optional PointInfo center_point = 3;
+  optional FeatureTypeProto type = 4;
+};
+
+// road geometry
+message TypePointObjects {
+  optional FeatureTypeProto type = 1;
+  repeated PointObject objects = 2;
+}
+message TypeLinesObjects {
+  optional FeatureTypeProto type = 1;
+  repeated LineObject objects = 2;
+}
+message TypeShapeObjects {
+  optional FeatureTypeProto type = 1;
+  repeated ShapeObject objects = 2;
+}
+
+message RoadGeometryDataProto {
+  repeated TypePointObjects type_points = 1;
+  repeated TypeLinesObjects type_lines = 2;
+  repeated TypeShapeObjects type_shapes = 3;
+}
+
+// info of navinfo map
+message NavinfoHDMap {
+  repeated Vec3dProto reference_line_points = 1;  // vcs coord
+  optional Vec3dProto project_point = 2;          // vcs coord
+}
+message ThirdPartyMapInfo {
+  optional NavinfoHDMap navinfo_hdmap = 1;
+}
+// data type
+message MapDataProto {
+  optional RoadGeometryDataProto map_road_data = 1;
+  optional ThirdPartyMapInfo third_map_info = 2;
+  repeated Vec3dProto intersection_polygon = 3;
+  optional bool is_in_intersection = 4;
+}
+
+message PerceptionDataProto {
+  optional double timestamp = 1;
+  optional RoadGeometryDataProto road_data = 2;
+}
+
+message MatchPairProto {
+  optional uint32 id = 1;
+  enum Type {
+    POINT_TO_POINT = 0;
+    POINT_TO_LINE = 1;
+    SHAPE_TO_SHAPE = 2;
+  }
+  optional Type type = 2;
+  optional FeatureTypeProto feature_type = 3;
+  optional double score = 4;
+  optional double offset_distance = 5;
+  optional bool valid = 6 [default = true];
+
+  repeated Vec3dProto source = 7;
+  repeated Vec3dProto target = 8;
+
+  optional Vec3dProto offset_vcs = 9;
+  optional LineObject.PosType semantic_position = 10;
+  optional uint64 source_id = 11 [default = 0];
+  optional uint64 target_id = 12 [default = 0];
+}
+
+message MatchPairsProto {
+  optional MatchPairProto.Type type = 1;
+  optional FeatureTypeProto feature_type = 2;
+  repeated MatchPairProto pairs = 3;
+}
+
+message LocalizationEstimateProto {
+  optional Vec3dProto position = 1;
+  optional Vec3dProto lla = 2;
+  optional Vec3dProto rpy = 3;
+  optional Vec3dProto gnss_position = 4;
+  optional Vec3dProto gnss_sigma = 5;
+  optional int32 gnss_num_star = 6;
+  optional Vec3dProto smooth_position = 7;
+}
+
+message MatchPairInfoProto {
+  optional double average_offset = 1;
+  optional double valid_ratio = 2;
+  optional int32 matched_count = 3;
+}
+
+message VisualLocalizerPlotDebugProto {
+  optional Vec2dProto pf_correct_offset_xy_vcs = 1;
+  optional Vec2dProto longitudinal_correct_offset_xy_vcs = 2;
+
+  optional Vec2dProto offset_xy_vcs = 10;
+  optional Vec2dProto offset_xy_enu = 11;
+  optional double offset_yaw = 12;
+  optional double offset_yaw_pf = 13;
+
+  optional int32 lateral_valid_pairs_cnt = 14;
+  optional double lateral_pair_mean_dist = 15;
+  repeated double divider_pair_match_errors = 24;
+  repeated double curb_pair_match_errors = 30;
+
+  optional int32 longitudinal_valid_pairs_cnt = 16;
+  optional double longitudinal_pair_mean_dist = 17;
+
+  optional int32 satellite_num = 20;
+  optional double lon_sigma = 21;
+  optional double lat_sigma = 22;
+  optional int32 valid_pairs_ratio = 23;
+
+  map<string, MatchPairInfoProto> match_info = 31;
+
+  reserved 3, 4, 5, 6, 7, 8, 9, 18, 19, 25, 26, 27, 28, 29;
+  // next id: 31
+}
+
+message InputMessageSeqNumProto {
+  optional int32 gnss_num = 1;
+  optional int32 bev_num = 2;
+  optional int32 online_map_num = 3;
+  repeated int32 positions_num = 4;
+}
+
+message DiagnostorDataProto {
+  optional double dist_match_invaild = 1;
+  optional double dist_match_boundary_err = 2;
+  optional double dist_match_tunnel_invaild = 3;
+  optional double dist_match_poor = 4;
+  optional double dist_no_map = 5;
+  optional double dist_gnss_invalid = 6 [deprecated = true];
+  optional double dist_no_perception = 7;
+  optional double delta_dist = 8;
+  optional double dist_match_lateral_err = 9;
+}
+
+message VisualLocalizerDebugProto {
+  optional double timestamp = 1;
+  optional LocalizationEstimateProto pose_estimated = 2;
+  optional MapDataProto map_data = 3;
+  optional PerceptionDataProto perception_data = 4;
+  map<string, MatchPairsProto> match_pairs = 5;
+  map<string, MatchPairsProto> longitudinal_pairs = 7;
+  optional VisualLocalizerPlotDebugProto debug_plot_data = 6;
+  enum EstimatorStatus {
+    kEstimatorInit = 0;
+    kEstimatorLateralNormal = 1;
+    kEstimatorInvalid = 2;
+  }
+  optional EstimatorStatus estimator_status = 8;
+}
+
+message VisualLocalizerPoseProto {
+  optional Vec3dProto lla = 1;
+  optional Vec3dProto position = 2;
+  optional Vec3dProto rpy = 3;
+}
+
+message SmoothDataProto {
+  optional double timestamp = 1;
+  optional Vec3dProto position = 2;
+  optional Vec3dProto rpy = 3;
+  optional double speed = 4;
+}
+
+message VisualLocalizerStateProto {
+  optional double timestamp = 1;
+  optional int32 level_id = 2;
+  optional VisualLocalizerPoseProto pose = 4;
+  optional VisualLocalizerPoseProto predicted_pose = 5;
+  optional VisualLocalizerPoseProto last_pose = 6;
+  repeated int32 error_code = 7;
+  optional int32 status = 8;
+  optional SmoothDataProto best_smooth = 9;
+  optional bool gnss_valid = 10;
+  optional Vec3dProto gnss_lla_sigma = 11;
+  optional Vec3dProto gnss_lla = 12;
+  optional double yaw_diff = 13;
+  optional DiagnostorDataProto diagnostor_data = 14;
+  optional Vec2dProto global_ref = 15;
+  optional Vec2dProto smooth_ref = 16;
+}
+
+message GlobalFusionEKFStateProto {
+  optional double last_predict_timestamp = 1;
+  optional double last_measure_timestamp = 2;
+  optional double last_frame_timestamp = 3;
+  repeated double state = 4;
+  repeated double cov = 5;
+}
+
+message SoaInsStateProto {
+  optional double timestamp = 1;
+  optional Vec2dProto global_ref = 2;
+  optional Vec2dProto smooth_ref = 3;
+  optional double yaw_diff = 4;
+  optional int32 reset_cnt = 6;
+  optional int32 rtk_valid_times = 7;
+  optional int32 dr_cnt = 9;
+  enum FusionSignal {
+    FS_NONE = 0;
+    DR = 1;
+    GNSS_DR = 3;
+  }
+  optional FusionSignal last_fusion_signal = 10;
+  enum GpsQuality {
+    Q_NONE = 0;
+    SINGLE = 3;
+    FLOAT = 8;
+    FIXED = 9;
+  }
+  optional GpsQuality last_gnss_quality = 11;
+  optional GlobalFusionEKFStateProto ekf_state = 12;
+}

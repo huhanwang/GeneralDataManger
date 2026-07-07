@@ -1,0 +1,66 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message ActiveSafetyAebObjectDebugProto {
+  optional uint64 id = 1;
+  optional uint64 cipv_selection_debug_bits = 2;
+  optional uint64 cips_selection_debug_bits = 3;
+  optional double stability_in_ego_lane = 4;
+  optional double observation_conformity = 5;
+  optional double lateral_velocity_conformity = 6;
+  optional bool is_implausible_obstacle = 7;
+  optional double overlap_current = 8;
+  optional double overlap_on_ttc = 9;
+}
+
+message LaneModelFusionDebugProto {
+  repeated double coeffs = 1;
+}
+
+message ActiveSafetyAebDebugProto {
+  repeated ActiveSafetyAebObjectDebugProto vehicle_objects = 1;
+  optional LaneModelFusionDebugProto lane_model_fusion = 2;
+  optional uint64 aeb_c2c_inhibit_reason_bits = 3;
+  optional uint64 aeb_vru_inhibit_reason_bits = 4;
+}
+
+message ActiveSafetyLdwDebugProto {
+  optional uint64 ldw_suppress_condition_debug_bits = 1;
+}
+
+message ActiveSafetyLdpDebugProto {
+  optional uint64 ldp_active_debug_bits = 1;
+}
+
+message ActiveSafetyElkDebugProto {
+  optional uint64 elk_active_debug_bits = 1;
+  optional uint64 elk_diag_error_debug_bits = 2;
+  optional uint64 elk_line_condition_debug_bits = 3;
+  optional uint32 elk_active_line_id = 5;
+  optional uint64 driver_unintended_bits = 6;
+  optional double lateral_speed = 7;
+  optional double odd_threshold = 8;
+  optional uint64 elk_warning_debug_bits = 9;
+  optional double road_turning_radius = 10;
+
+  reserved 4;
+}
+
+message ActiveSafetyLssDebugProto {
+  optional ActiveSafetyLdwDebugProto ldw_debug = 1;
+  optional ActiveSafetyLdpDebugProto ldp_debug = 2;
+  optional ActiveSafetyElkDebugProto elk_debug = 3;
+}
+
+message ActiveSafetyDebugProto {
+  optional LiteHeader header = 1;
+
+  // AEB debug.
+  optional ActiveSafetyAebDebugProto aeb_debug = 2;
+  // LSS debug.
+  optional ActiveSafetyLssDebugProto lss_debug = 3;
+}

@@ -1,0 +1,12 @@
+
+syntax = "proto2";
+package snoah;
+
+message AABox3dProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double length = 4;
+  optional double width = 5;
+  optional double height = 6;
+}

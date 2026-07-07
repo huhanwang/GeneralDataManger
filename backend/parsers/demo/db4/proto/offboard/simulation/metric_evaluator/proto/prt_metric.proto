@@ -1,0 +1,178 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/metric_evaluator/prt/traffic_participant/proto/filter.proto";
+import "offboard/simulation/metric_evaluator/prt/traffic_participant/proto/match.proto";
+import "offboard/simulation/metric_evaluator/prt/traffic_participant/proto/tagger.proto";
+import "onboard/proto/lite_camera.proto";
+
+enum PrtType {
+  AEB = 1;
+  BEVDET = 2;
+  MONO3D_DET = 3;
+  MONO3D_FUSION = 4;
+  TRACKING = 5;
+  FVP_BARRIER_DET = 6;
+  BARRIER_FUSION = 7;
+  BEV_RG = 8;
+  FUSED_BEVRG = 9;
+  PARKING_BEVDET = 10;
+  PARKING_BEVDET_FUSION = 14;
+  HORIZON_MONO3D = 11;
+  OTHERS = 12;
+  BEVRG_QEVAL = 13;
+  LIDAR_MEASUREMENT = 15;
+  LIDAR_ONLY_DET = 16;
+  MULTITASK_BEVDET = 17;
+  MULTITASK_FUSION = 18;
+  FRONT_BEV_TRACKER_MEASUREMENTS = 19;
+  FRONT_MOVABLE_FUSION_MEASUREMENTS = 20;
+  FUSION_OBJECTS = 21;
+  IMAGE_ANONYMIZATION = 22;
+  TRAFFIC_SIGN_FUSION = 23;
+  IMAGE_ANOMALIES = 24;
+  IMAGE_ANOMALIES_FUSION = 25;
+  TRAFFIC_SIGN = 26;
+  TRAFFIC_LIGHT_DET = 27;
+  SCENE_TYPE = 28;
+  FVP_IHBC = 29;
+  FVP_LANE = 30;
+  // Next id: 31
+}
+
+message PrtMatchingResultsHeader {
+  optional PrtType type = 1;
+}
+
+message PrtMatchingResultHeader {
+  // to record label_frame-objects_proto pair sequence number for sql
+  optional int32 prt_frame_id = 1;
+  optional int64 label_timestamp = 2;
+  optional int64 detection_timestamp = 3;
+  optional string detection_channel = 4;
+  optional int64 detection_header_timestamp = 5;
+  // to find frame in pb.bin
+  optional int64 label_frame_index = 6;
+}
+
+message MatchingDetail {  // object维度
+  optional string detection_id = 1;
+  optional string label_id = 2;
+  optional string name = 3;     // IOU, L2Distance, Depth, ...
+  optional string message = 4;  // score, 图像iou匹配-camera_id, ...
+  optional int32 camera_id = 5;
+  optional int32 start_idx_detection = 6;
+  optional int32 end_idx_detection = 7;
+  optional int32 start_idx_label = 8;
+  optional int32 end_idx_label = 9;
+}
+
+message FilterDetail {
+  optional string id = 1;
+  repeated string pre_filter_type = 2;   // occlusion, invisibility, ...
+  repeated string post_filter_type = 3;  // 0-50, 50-100, ...
+}
+
+message PrtMatchingResult {  // frame维度
+  optional PrtMatchingResultHeader header = 1;
+  repeated MatchingDetail matching_details = 2;
+  repeated FilterDetail detection_filter_details = 3;
+  repeated FilterDetail label_filter_details = 4;
+}
+
+message PrtMatchingResults {  // snippet维度
+  optional PrtMatchingResultsHeader header = 1;
+  repeated PrtMatchingResult results = 2;
+}
+
+// PRT Metric Definitions
+message PrtDetectionMetric {
+  optional string run_name = 1;
+  optional int64 start_timestamp = 2;
+}
+
+message TrafficParticipantFrameMatchConfig {
+  optional PrtType prt_type = 1;
+  repeated CameraId valid_camera_ids = 2;
+  optional TrafficParticipantFilterConfig filter_config = 3;
+  optional TrafficParticipantMatchConfig match_config = 4;
+  optional TrafficParticipantTaggersConfig taggers_config = 5;
+  optional bool detection_valid_camera_ids_check = 6 [default = false];
+  map<int32, int32> image_frames_id_offset = 7;
+}
+
+message PrtTrafficParticipantMetric {
+  optional string label_channel = 1;
+  optional string detection_channel = 2;
+  optional int64 max_delta_timestamp = 3 [default = 49000];
+  optional TrafficParticipantFrameMatchConfig config = 4;
+}
+
+message PrtBevRgMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtFusedBevRgMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtFusedMarkingMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtRgPointsStabilityMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtFusedBevRgStabilityMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtBevParkingSpotsMetric {}
+
+message PrtFusionParkingSpotsMetric {}
+
+message PrtTsrIsaMetric {}
+
+message PrtAvmParkingSpotsMetric {}
+
+message PrtQcraftTrafficLightMetric {}
+
+message PrtImageAnomalyMetric {}
+
+message PrtFisheyeFreespaceMetric {}
+
+message PrtHorizonTrafficLightMetric {}
+
+message PrtE2ETrafficLightMetric {
+  optional string detection_channel = 1;
+}
+
+message PrtOccParkingMetric {}
+
+message PrtOccDrivingMetric {}
+
+message PrtOccFusionMetric {}
+
+message PrtFreespaceFusionMetric {}
+
+message PrtImageAnomalyFrontAd4Metric {}
+
+message PrtImageAnomalySideAndRearAd4Metric {
+  repeated double side_roi_points = 1;
+  repeated double rear_roi_points = 2;
+  optional int64 side_image_width = 3;
+  optional int64 side_image_height = 4;
+  optional int64 rear_image_width = 5;
+  optional int64 rear_image_height = 6;
+  optional int64 side_roi_denominator = 7;
+  optional int64 rear_roi_denominator = 8;
+  optional double side_blur_threshold = 9;
+  optional double side_normal_threshold = 11;
+  optional double rear_blur_threshold = 12;
+  optional double rear_normal_threshold = 14;
+}
+
+message PrtLidarOnlySemanticMetric {}

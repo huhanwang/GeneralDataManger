@@ -1,0 +1,100 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_evaluation";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message StatisticErrorProto {
+  optional double avg = 1;
+  // Sum number count to calculate the average.
+  optional int32 count = 2;
+  // The following items are compared to ground truth.
+  optional double max = 3;
+  optional double mae = 4;
+  optional double rmse = 5;  // rmse = std + bias.
+  // The following items are compared to average measurement.
+  optional double std = 6;
+  optional double max_deviation = 7;
+}
+
+enum CalibrationEvaluationStatus {
+  kGoodResult = 0;
+  kInvalidData = 1;
+  kBeyondTolerance = 2;
+}
+
+message FrameEvaluationProto {
+  optional string frame_id = 1;
+  optional CameraId camera_id = 2;
+  optional double lane_angle = 3;
+  // Top width - bottom width. See
+  // https://qcraft.feishu.cn/docx/OweodR14hose6mxzYJ5cY6f5nwh for more
+  // information.
+  optional double lane_width_diff = 4;
+  optional double seg_lateral_dist = 5;
+  optional double end_point_dist = 6;
+  optional double timestamp = 7;
+}
+
+message OneCycleEvaluationProto {
+  optional string job_id = 1;
+  optional string task_id = 2;
+  optional CameraId camera_id = 3;
+  optional bool converged = 4;
+  optional VehiclePoseProto init_extrinsic = 11;
+  optional VehiclePoseProto gt_extrinsic = 12;
+  optional VehiclePoseProto calibrated_extrinsic = 13;
+  optional VehiclePoseProto disturb_extrinsic = 14;
+  optional VehiclePoseProto error_extrinsic = 15;
+  repeated FrameEvaluationProto frames_evaluation = 16;
+  optional StatisticErrorProto lane_angle_error = 17;
+  optional StatisticErrorProto lane_width_diff_error = 18;
+  optional StatisticErrorProto seg_lateral_dist_error = 19;
+  optional StatisticErrorProto end_point_dist_error = 20;
+  optional double cost_time = 21;  // Seconds.
+  optional CalibrationEvaluationStatus status = 22 [default = kGoodResult];
+  optional string error_code = 23;
+}
+
+message ScenarioResultProto {
+  optional string job_id = 1;
+  optional string task_id = 2;
+  optional string car_id = 3;
+  optional CameraId camera_id = 4;
+  optional string run_name = 5;
+  optional double start_offset = 6;
+  optional double end_offset = 7;
+
+  optional StatisticErrorProto x_error = 10;
+  optional StatisticErrorProto y_error = 11;
+  optional StatisticErrorProto z_error = 12;
+  optional StatisticErrorProto yaw_error = 13;
+  optional StatisticErrorProto pitch_error = 14;
+  optional StatisticErrorProto roll_error = 15;
+  optional StatisticErrorProto cost_time_info = 16;
+  optional int32 failed_count = 17;
+}
+
+message OneCameraEvaluationProto {
+  optional string car_id = 1;
+  optional CameraId camera_id = 2;
+  repeated OneCycleEvaluationProto evaluation_result = 3;
+  optional StatisticErrorProto x_error = 4;
+  optional StatisticErrorProto y_error = 5;
+  optional StatisticErrorProto z_error = 6;
+  optional StatisticErrorProto roll_error = 7;
+  optional StatisticErrorProto pitch_error = 8;
+  optional StatisticErrorProto yaw_error = 9;
+  optional StatisticErrorProto cost_time_info = 10;
+  optional int32 failed_count = 11;
+  repeated ScenarioResultProto scenario_result = 12;
+}
+
+message CalibrationEvaluationProto {
+  optional LiteHeader header = 1;
+  optional string sim_jod_id = 2;
+  repeated OneCameraEvaluationProto evaluation_results = 3;
+  optional double timestamp = 4;
+}

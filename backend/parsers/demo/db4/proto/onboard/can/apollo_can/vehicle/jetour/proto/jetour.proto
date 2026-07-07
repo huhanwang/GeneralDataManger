@@ -1,0 +1,1002 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Wheel_Spd_R_109 {
+  enum ESP_7_LHRWheelDriveDirectionType {
+    ESP_7_LHRWHEELDRIVEDIRECTION_INIT = 0;
+    ESP_7_LHRWHEELDRIVEDIRECTION_FORWARD = 1;
+    ESP_7_LHRWHEELDRIVEDIRECTION_BACKWARD = 2;
+    ESP_7_LHRWHEELDRIVEDIRECTION_STOP = 3;
+    ESP_7_LHRWHEELDRIVEDIRECTION_INVALID = 4;
+  }
+  enum ESP_7_LHRWheelSpeedRawValidDataType {
+    ESP_7_LHRWHEELSPEEDRAWVALIDDATA_VALID = 0;
+    ESP_7_LHRWHEELSPEEDRAWVALIDDATA_NOT_VALID = 1;
+  }
+  enum ESP_7_RHRWheelDriveDirectionType {
+    ESP_7_RHRWHEELDRIVEDIRECTION_INIT = 0;
+    ESP_7_RHRWHEELDRIVEDIRECTION_FORWARD = 1;
+    ESP_7_RHRWHEELDRIVEDIRECTION_BACKWARD = 2;
+    ESP_7_RHRWHEELDRIVEDIRECTION_STOP = 3;
+    ESP_7_RHRWHEELDRIVEDIRECTION_INVALID = 4;
+  }
+  enum ESP_7_RHRWheelSpeedRawValidDataType {
+    ESP_7_RHRWHEELSPEEDRAWVALIDDATA_VALID = 0;
+    ESP_7_RHRWHEELSPEEDRAWVALIDDATA_NOT_VALID = 1;
+  }
+  enum ESP_7_ABPActiveType {
+    ESP_7_ABPACTIVE_NOT_ACTIVE = 0;
+    ESP_7_ABPACTIVE_ACTIVE = 1;
+  }
+  enum ESP_7_ABPAvailableType {
+    ESP_7_ABPAVAILABLE_NOT_AVAILABLE = 0;
+    ESP_7_ABPAVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_7_AEBdecActiveType {
+    ESP_7_AEBDECACTIVE_NOT_ACTIVE = 0;
+    ESP_7_AEBDECACTIVE_ACTIVE = 1;
+  }
+  enum ESP_7_AEBdecAvailableType {
+    ESP_7_AEBDECAVAILABLE_NOT_AVAILABLE = 0;
+    ESP_7_AEBDECAVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_7_MessageCounterType {
+    ESP_7_MESSAGECOUNTER_RANGE_LOW_STARTUP = 0;
+    ESP_7_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  // [M/s] [-30|80]
+  optional double esp_7_lhrwheel_speed_raw = 1;
+  // [Bit] [0|7]
+  optional ESP_7_LHRWheelDriveDirectionType esp_7_lhrwheel_drive_direction = 2;
+  // [Bit] [0|1]
+  optional ESP_7_LHRWheelSpeedRawValidDataType
+      esp_7_lhrwheel_speed_raw_valid_data = 3;
+  // [M/s] [-30|80]
+  optional double esp_7_rhrwheel_speed_raw = 4;
+  // [Bit] [0|7]
+  optional ESP_7_RHRWheelDriveDirectionType esp_7_rhrwheel_drive_direction = 5;
+  // [Bit] [0|1]
+  optional ESP_7_RHRWheelSpeedRawValidDataType
+      esp_7_rhrwheel_speed_raw_valid_data = 6;
+  // [Bit] [0|1]
+  optional ESP_7_ABPActiveType esp_7_abpactive = 7;
+  // [Bit] [0|1]
+  optional ESP_7_ABPAvailableType esp_7_abpavailable = 8;
+  // [Bit] [0|1]
+  optional ESP_7_AEBdecActiveType esp_7_aebdec_active = 9;
+  // [Bit] [0|1]
+  optional ESP_7_AEBdecAvailableType esp_7_aebdec_available = 10;
+  // [Bit] [0|15]
+  optional ESP_7_MessageCounterType esp_7_message_counter = 11;
+  // [Bit] [0|255]
+  optional int32 esp_7_check_sum = 12;
+}
+
+// Report Message.
+message Abs_Esp_1_10b {
+  enum IPB_ABS_ESP_1_EBDFailStsType {
+    IPB_ABS_ESP_1_EBDFAILSTS_NOT_PRESENT = 0;
+    IPB_ABS_ESP_1_EBDFAILSTS_FAIL_PRESENT_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_ABSFailStsType {
+    IPB_ABS_ESP_1_ABSFAILSTS_NOT_PRESENT = 0;
+    IPB_ABS_ESP_1_ABSFAILSTS_FAIL_PRESENT_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_ABSActiveType {
+    IPB_ABS_ESP_1_ABSACTIVE_NOT_ACTIVE = 0;
+    IPB_ABS_ESP_1_ABSACTIVE_ACTIVE = 1;
+  }
+  enum IPB_ABS_ESP_1_VDCFailStsType {
+    IPB_ABS_ESP_1_VDCFAILSTS_NOT_PRESENT = 0;
+    IPB_ABS_ESP_1_VDCFAILSTS_FAIL_PRESENT_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_VDCActiveType {
+    IPB_ABS_ESP_1_VDCACTIVE_NOT_ACTIVE = 0;
+    IPB_ABS_ESP_1_VDCACTIVE_ACTIVE = 1;
+  }
+  enum IPB_ABS_ESP_1_TCSFailStsType {
+    IPB_ABS_ESP_1_TCSFAILSTS_NOT_PRESENT = 0;
+    IPB_ABS_ESP_1_TCSFAILSTS_FAIL_PRESENT_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_TCSActiveType {
+    IPB_ABS_ESP_1_TCSACTIVE_NOT_ACTIVE = 0;
+    IPB_ABS_ESP_1_TCSACTIVE_ACTIVE = 1;
+  }
+  enum IPB_ESP_IPB_PlungerPressureValidType {
+    IPB_ESP_IPB_PLUNGERPRESSUREVALID_VALID = 0;
+    IPB_ESP_IPB_PLUNGERPRESSUREVALID_NOT_VALID = 1;
+  }
+  enum IPB_ESP1_VehicleSpeedVSOSigValidType {
+    IPB_ESP1_VEHICLESPEEDVSOSIGVALID_VALID = 0;
+    IPB_ESP1_VEHICLESPEEDVSOSIGVALID_NOT_VALID = 1;
+  }
+  enum IPB_AEBdecActiveType {
+    IPB_AEBDECACTIVE_NOT_ACTIVE = 0;
+    IPB_AEBDECACTIVE_ACTIVE = 1;
+  }
+  enum IPB_AEBdecAvailableType {
+    IPB_AEBDECAVAILABLE_NOT_AVAILABLE = 0;
+    IPB_AEBDECAVAILABLE_AVAILABLE = 1;
+  }
+  enum IPB_ABS_ESP_1_HDCCtrlStsType {
+    IPB_ABS_ESP_1_HDCCTRLSTS_OFF = 0;
+    IPB_ABS_ESP_1_HDCCTRLSTS_NOT_ACTIVE_BRAKING_LAMP_ON_ = 1;
+    IPB_ABS_ESP_1_HDCCTRLSTS_ACTIVE_BRAKING_LAMP_FLASH_ = 2;
+    IPB_ABS_ESP_1_HDCCTRLSTS_NOT_USED = 3;
+  }
+  enum IPB_ABS_ESP_1_HDCFailStsType {
+    IPB_ABS_ESP_1_HDCFAILSTS_NOT_PRESENT = 0;
+    IPB_ABS_ESP_1_HDCFAILSTS_FAIL_PRESENT_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_VDCControlStsType {
+    IPB_ABS_ESP_1_VDCCONTROLSTS_ON = 0;
+    IPB_ABS_ESP_1_VDCCONTROLSTS_DISABLE_LAMP_ON = 1;
+  }
+  enum IPB_ABS_ESP_1_VDCControlStsValidType {
+    IPB_ABS_ESP_1_VDCCONTROLSTSVALID_VALID = 0;
+    IPB_ABS_ESP_1_VDCCONTROLSTSVALID_NOT_VALID = 1;
+  }
+  enum IPB_SwitchOffCruiseControlType {
+    IPB_SWITCHOFFCRUISECONTROL_NOT_SWITCH_OFF_CRUISE_CONTROL_ = 0;
+    IPB_SWITCHOFFCRUISECONTROL_SWITCH_OFF_CRUISE_CONTROL = 1;
+  }
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_EBDFailStsType ipb_abs_esp_1_ebdfail_sts = 1;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_ABSFailStsType ipb_abs_esp_1_absfail_sts = 2;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_ABSActiveType ipb_abs_esp_1_absactive = 3;
+  // [Bar] [0|1022]
+  optional int32 ipb_abs_esp_1_ipb_plunger_pressur = 4;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_VDCFailStsType ipb_abs_esp_1_vdcfail_sts = 5;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_VDCActiveType ipb_abs_esp_1_vdcactive = 6;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_TCSFailStsType ipb_abs_esp_1_tcsfail_sts = 7;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_TCSActiveType ipb_abs_esp_1_tcsactive = 8;
+  // [Km/h] [0|511.875]
+  optional double ipb_abs_esp_1_vehicle_speed_vsosig = 9;
+  // [Bit] [0|1]
+  optional IPB_ESP_IPB_PlungerPressureValidType
+      ipb_esp_ipb_plunger_pressure_valid = 10;
+  // [Bit] [0|1]
+  optional IPB_ESP1_VehicleSpeedVSOSigValidType
+      ipb_esp1_vehicle_speed_vsosig_valid = 11;
+  // [Bit] [0|1]
+  optional IPB_AEBdecActiveType ipb_aebdec_active = 12;
+  // [Bit] [0|255]
+  optional int32 ipb_abs_esp_1_checksum = 13;
+  // [Bit] [0|1]
+  optional IPB_AEBdecAvailableType ipb_aebdec_available = 14;
+  // [Bit] [0|3]
+  optional IPB_ABS_ESP_1_HDCCtrlStsType ipb_abs_esp_1_hdcctrl_sts = 15;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_HDCFailStsType ipb_abs_esp_1_hdcfail_sts = 16;
+  // [Bit] [0|15]
+  optional int32 ipb_abs_esp_1_message_counter = 17;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_VDCControlStsType ipb_abs_esp_1_vdccontrol_sts = 18;
+  // [Bit] [0|1]
+  optional IPB_ABS_ESP_1_VDCControlStsValidType
+      ipb_abs_esp_1_vdccontrol_sts_valid = 19;
+  // [Bit] [0|1]
+  optional IPB_SwitchOffCruiseControlType ipb_switch_off_cruise_control = 20;
+}
+
+// Report Message.
+message Icm_5_10a {
+  enum ICM_5_RFSeatBeltWarningStsType {
+    ICM_5_RFSEATBELTWARNINGSTS_STARTUP_DEFAULT = 0;
+    ICM_5_RFSEATBELTWARNINGSTS_WARNING = 1;
+  }
+  enum ICM_5_DriverSeatBeltSwitchQbitType {
+    ICM_5_DRIVERSEATBELTSWITCHQBIT_VALID = 0;
+    ICM_5_DRIVERSEATBELTSWITCHQBIT_INVALID = 1;
+  }
+  enum ICM_5_DriverSeatBeltSwitchType {
+    ICM_5_DRIVERSEATBELTSWITCH_FASTEN = 0;
+    ICM_5_DRIVERSEATBELTSWITCH_UNFASTEN = 1;
+  }
+  enum ICM_5_ACC_Kilometre_MileType {
+    ICM_5_ACC_KILOMETRE_MILE_KILOMETER = 0;
+    ICM_5_ACC_KILOMETRE_MILE_MILE = 1;
+  }
+  enum ICM_5_MessageCounterType {
+    ICM_5_MESSAGECOUNTER_STARTUP = 0;
+    ICM_5_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  // RFSeatBeltWarning [Bit] [0|1]
+  optional ICM_5_RFSeatBeltWarningStsType icm_5_rfseat_belt_warning_sts = 1;
+  // DriverSeatBeltSwitchValid [Bit] [0|1]
+  optional ICM_5_DriverSeatBeltSwitchQbitType
+      icm_5_driver_seat_belt_switch_qbit = 2;
+  // DriverSeatBeltSwitch [Bit] [0|1]
+  optional ICM_5_DriverSeatBeltSwitchType icm_5_driver_seat_belt_switch = 3;
+  // ACC_Kilometre_Mile [Bit] [0|1]
+  optional ICM_5_ACC_Kilometre_MileType icm_5_acc_kilometre_mile = 4;
+  // [Bit] [0|15]
+  optional ICM_5_MessageCounterType icm_5_message_counter = 5;
+  // [Bit] [0|255]
+  optional int32 icm_5_checksum = 6;
+}
+
+// Report Message.
+message Eps_Cgw_2_115 {
+  enum EPS_2_EpsControlStatusType {
+    EPS_2_EPSCONTROLSTATUS_NO_REQUEST = 0;
+    EPS_2_EPSCONTROLSTATUS_REQUESTHONORED = 1;
+    EPS_2_EPSCONTROLSTATUS_CONTROL_REQUESTNOT_ALLOWED_TEMPORARILY = 2;
+    EPS_2_EPSCONTROLSTATUS_CONTROL_REQUESTNOT_ALLOWED_PERMANENT = 3;
+  }
+  enum EPS_2_TosionBarTorqueValidType {
+    EPS_2_TOSIONBARTORQUEVALID_INVALID = 0;
+    EPS_2_TOSIONBARTORQUEVALID_VALID = 1;
+  }
+  enum EPS_2_TorsionBarTorqueDirType {
+    EPS_2_TORSIONBARTORQUEDIR_POSTIVE = 0;
+    EPS_2_TORSIONBARTORQUEDIR_NEGATIVE = 1;
+  }
+  enum EPS_2_MessageCounterType {
+    EPS_2_MESSAGECOUNTER_RANGE_LOW_STARTUP = 0;
+    EPS_2_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  // [NM] [0|10.23]
+  optional double eps_2_torsion_bar_torque = 1;
+  // [Bit] [0|3]
+  optional EPS_2_EpsControlStatusType eps_2_eps_control_status = 2;
+  // [Bit] [0|1]
+  optional EPS_2_TosionBarTorqueValidType eps_2_tosion_bar_torque_valid = 3;
+  // [Bit] [0|1]
+  optional EPS_2_TorsionBarTorqueDirType eps_2_torsion_bar_torque_dir = 4;
+  // [Bit] [0|15]
+  optional EPS_2_MessageCounterType eps_2_message_counter = 5;
+  // [Bit] [0|255]
+  optional int32 eps_2_crc = 6;
+}
+
+// Report Message.
+message Epb_R_121 {
+  enum IPB_EPBErrorStatusType {
+    IPB_EPBERRORSTATUS_NO_ERROR = 0;
+    IPB_EPBERRORSTATUS_ERROR = 1;
+  }
+  enum IPB_EPBStatusType {
+    IPB_EPBSTATUS_RELEASED = 0;
+    IPB_EPBSTATUS_APPLIED = 1;
+    IPB_EPBSTATUS_RELEASING = 2;
+    IPB_EPBSTATUS_APPLYING = 3;
+    IPB_EPBSTATUS_UNKNOWN = 4;
+    IPB_EPBSTATUS_ERRORAPPLIED = 5;
+    IPB_EPBSTATUS_NOT_USED = 6;
+    IPB_EPBSTATUS_NOT_USED_1 = 7;
+  }
+  // [Bit] [0|1]
+  optional IPB_EPBErrorStatusType ipb_epberror_status = 1;
+  // [Bit] [0|7]
+  optional IPB_EPBStatusType ipb_epbstatus = 2;
+}
+
+// Report Message.
+message Wheel_Spd_F_108 {
+  enum ESP_6_LHFWheelDriveDirectionType {
+    ESP_6_LHFWHEELDRIVEDIRECTION_INIT = 0;
+    ESP_6_LHFWHEELDRIVEDIRECTION_FORWARD = 1;
+    ESP_6_LHFWHEELDRIVEDIRECTION_BACKWARD = 2;
+    ESP_6_LHFWHEELDRIVEDIRECTION_STOP = 3;
+    ESP_6_LHFWHEELDRIVEDIRECTION_INVALID = 4;
+  }
+  enum ESP_6_LHFWheelSpeedRawValidDataType {
+    ESP_6_LHFWHEELSPEEDRAWVALIDDATA_VALID = 0;
+    ESP_6_LHFWHEELSPEEDRAWVALIDDATA_NOT_VALID = 1;
+  }
+  enum ESP_6_RHFWheelDriveDirectionType {
+    ESP_6_RHFWHEELDRIVEDIRECTION_INIT = 0;
+    ESP_6_RHFWHEELDRIVEDIRECTION_FORWARD = 1;
+    ESP_6_RHFWHEELDRIVEDIRECTION_BACKWARD = 2;
+    ESP_6_RHFWHEELDRIVEDIRECTION_STOP = 3;
+    ESP_6_RHFWHEELDRIVEDIRECTION_INVALID = 4;
+  }
+  enum ESP_6_RHFWheelSpeedRawValidDataType {
+    ESP_6_RHFWHEELSPEEDRAWVALIDDATA_VALID = 0;
+    ESP_6_RHFWHEELSPEEDRAWVALIDDATA_NOT_VALID = 1;
+  }
+  enum ESP_6_VLCFailType {
+    ESP_6_VLCFAIL_NO_ERROR = 0;
+    ESP_6_VLCFAIL_ERROR = 1;
+  }
+  enum ESP_6_QDCACCType {
+    ESP_6_QDCACC_NO_ERROR = 0;
+    ESP_6_QDCACC_REVERSIBLE_ERROR = 1;
+    ESP_6_QDCACC_IRREVERSIBLE_ERROR = 2;
+    ESP_6_QDCACC_NOT_DEFINED = 3;
+  }
+  enum ESP_6_MessageCounterType {
+    ESP_6_MESSAGECOUNTER_RANGE_LOW_STARTUP = 0;
+    ESP_6_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  // [M/s] [-30|80]
+  optional double esp_6_lhfwheel_speed_raw = 1;
+  // [Bit] [0|7]
+  optional ESP_6_LHFWheelDriveDirectionType esp_6_lhfwheel_drive_direction = 2;
+  // [Bit] [0|1]
+  optional ESP_6_LHFWheelSpeedRawValidDataType
+      esp_6_lhfwheel_speed_raw_valid_data = 3;
+  // [M/s] [-30|80]
+  optional double esp_6_rhfwheel_speed_raw = 4;
+  // [Bit] [0|7]
+  optional ESP_6_RHFWheelDriveDirectionType esp_6_rhfwheel_drive_direction = 5;
+  // [Bit] [0|1]
+  optional ESP_6_RHFWheelSpeedRawValidDataType
+      esp_6_rhfwheel_speed_raw_valid_data = 6;
+  // [Bit] [0|1]
+  optional ESP_6_VLCFailType esp_6_vlcfail = 7;
+  // [Bit] [0|3]
+  optional ESP_6_QDCACCType esp_6_qdcacc = 8;
+  // [Bit] [0|15]
+  optional ESP_6_MessageCounterType esp_6_message_counter = 9;
+  // [Bit] [0|255]
+  optional int32 esp_6_check_sum = 10;
+}
+
+// Control Message.
+message C_Bcm1_123 {
+  enum BCM1_TurnLghtReqType {
+    BCM1_TURNLGHTREQ_OFF = 0;
+    BCM1_TURNLGHTREQ_LEFT = 1;
+    BCM1_TURNLGHTREQ_RIGHT = 2;
+    BCM1_TURNLGHTREQ_RES = 3;
+  }
+  // [] [0|0]
+  optional bool bcm1_turn_lght_req_a = 1;
+  // [] [0|0]
+  optional BCM1_TurnLghtReqType bcm1_turn_lght_req = 2;
+}
+
+// Report Message.
+message Cgw_Abs_Esp_4_111 {
+  enum ESP_4_VLC_AvailableType {
+    ESP_4_VLC_AVAILABLE_NOT_AVAILABLE = 0;
+    ESP_4_VLC_AVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_4_VLC_ActiveType {
+    ESP_4_VLC_ACTIVE_NOT_ACTIVE = 0;
+    ESP_4_VLC_ACTIVE_ACTIVE = 1;
+  }
+  enum ESP_4_DCFailType {
+    ESP_4_DCFAIL_NO_ERROR = 0;
+    ESP_4_DCFAIL_ERROR = 1;
+  }
+  enum ESP_4_ECDTempOffType {
+    ESP_4_ECDTEMPOFF_NOT_HIGH = 0;
+    ESP_4_ECDTEMPOFF_TEMP_TOO_HIGH = 1;
+  }
+  enum ESP_4_AWBavailableType {
+    ESP_4_AWBAVAILABLE_NOT_AVAILABLE = 0;
+    ESP_4_AWBAVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_4_AWBactiveType {
+    ESP_4_AWBACTIVE_NOT_ACTIVE = 0;
+    ESP_4_AWBACTIVE_ACTIVE = 1;
+  }
+  enum ESP_4_VehicleStandstillType {
+    ESP_4_VEHICLESTANDSTILL_NOT_STANDSTILL = 0;
+    ESP_4_VEHICLESTANDSTILL_STANDSTILL = 1;
+    ESP_4_VEHICLESTANDSTILL_INVALID = 2;
+    ESP_4_VEHICLESTANDSTILL_RESERVED = 3;
+  }
+  enum ESP_4_MessageCounterType {
+    ESP_4_MESSAGECOUNTER_RANGE_LOW_STARTUP = 0;
+    ESP_4_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  enum ESP_4_ABAavailableType {
+    ESP_4_ABAAVAILABLE_NOT_AVAILABLE = 0;
+    ESP_4_ABAAVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_4_ABAactiveType {
+    ESP_4_ABAACTIVE_NOT_ACTIVE = 0;
+    ESP_4_ABAACTIVE_ACTIVE = 1;
+  }
+  enum ESP_4_CDDAvailableType {
+    ESP_4_CDDAVAILABLE_NOT_AVAILABLE = 0;
+    ESP_4_CDDAVAILABLE_AVAILABLE = 1;
+  }
+  enum ESP_4_CDDActiveType {
+    ESP_4_CDDACTIVE_NOT_ACTIVE = 0;
+    ESP_4_CDDACTIVE_ACTIVE = 1;
+  }
+  // [M S2] [-7|5.75]
+  optional double esp_4_vlc_internal_target_accelera = 1;
+  // [Bit] [0|1]
+  optional ESP_4_VLC_AvailableType esp_4_vlc_available = 2;
+  // [Bit] [0|1]
+  optional ESP_4_VLC_ActiveType esp_4_vlc_active = 3;
+  // [Bit] [0|1]
+  optional ESP_4_DCFailType esp_4_dcfail = 4;
+  // [Bit] [0|1]
+  optional ESP_4_ECDTempOffType esp_4_ecdtemp_off = 5;
+  // [Bit] [0|1]
+  optional ESP_4_AWBavailableType esp_4_awbavailable = 6;
+  // [Bit] [0|1]
+  optional ESP_4_AWBactiveType esp_4_awbactive = 7;
+  // [Bit] [0|3]
+  optional ESP_4_VehicleStandstillType esp_4_vehicle_standstill = 8;
+  // [Bit] [0|15]
+  optional ESP_4_MessageCounterType esp_4_message_counter = 9;
+  // [Bit] [0|1]
+  optional ESP_4_ABAavailableType esp_4_abaavailable = 10;
+  // [Bit] [0|1]
+  optional ESP_4_ABAactiveType esp_4_abaactive = 11;
+  // [Bit] [0|1]
+  optional ESP_4_CDDAvailableType esp_4_cddavailable = 12;
+  // [Bit] [0|1]
+  optional ESP_4_CDDActiveType esp_4_cddactive = 13;
+  // [Bit] [0|255]
+  optional int32 esp_4_checksum = 14;
+}
+
+// Report Message.
+message Mfs_113 {
+  enum MFS_Cruise_ControlType {
+    MFS_CRUISE_CONTROL_NOTACTION = 0;
+    MFS_CRUISE_CONTROL_PRESSED = 1;
+    MFS_CRUISE_CONTROL_STUCK = 2;
+    MFS_CRUISE_CONTROL_INVALID = 3;
+  }
+  enum MFS_Speed_limitType {
+    MFS_SPEED_LIMIT_NOTACTION = 0;
+    MFS_SPEED_LIMIT_PRESSED = 1;
+    MFS_SPEED_LIMIT_STUCK = 2;
+    MFS_SPEED_LIMIT_INVALID = 3;
+  }
+  enum MFS_CancelType {
+    MFS_CANCEL_NOTACTION = 0;
+    MFS_CANCEL_PRESSED = 1;
+    MFS_CANCEL_STUCK = 2;
+    MFS_CANCEL_INVALID = 3;
+  }
+  enum MFS_RESPlusType {
+    MFS_RESPLUS_NOTACTION = 0;
+    MFS_RESPLUS_PRESSED = 1;
+    MFS_RESPLUS_STUCK = 2;
+    MFS_RESPLUS_INVALID = 3;
+  }
+  enum MFS_SETMinusType {
+    MFS_SETMINUS_NOTACTION = 0;
+    MFS_SETMINUS_PRESSED = 1;
+    MFS_SETMINUS_STUCK = 2;
+    MFS_SETMINUS_INVALID = 3;
+  }
+  enum MFS_Time_GapType {
+    MFS_TIME_GAP_NOTACTION = 0;
+    MFS_TIME_GAP_PRESSED = 1;
+    MFS_TIME_GAP_STUCK = 2;
+    MFS_TIME_GAP_INVALID = 3;
+  }
+  // [Bit] [0|255]
+  optional int32 crc = 1;
+  // [Bit] [0|15]
+  optional int32 alive_mfs_2 = 2;
+  // [Bit] [0|3]
+  optional MFS_Cruise_ControlType mfs_cruise_control = 3;
+  // [Bit] [0|3]
+  optional MFS_Speed_limitType mfs_speed_limit = 4;
+  // [Bit] [0|3]
+  optional MFS_CancelType mfs_cancel = 5;
+  // [Bit] [0|3]
+  optional MFS_RESPlusType mfs_resplus = 6;
+  // [Bit] [0|3]
+  optional MFS_SETMinusType mfs_setminus = 7;
+  // [Bit] [0|3]
+  optional MFS_Time_GapType mfs_time_gap = 8;
+}
+
+// Report Message.
+message Hcu_Ems_Gas_102 {
+  enum GasPedalPositionInvalidDataType {
+    GASPEDALPOSITIONINVALIDDATA_VALID = 0;
+    GASPEDALPOSITIONINVALIDDATA_INVALID = 1;
+  }
+  enum ECFailType {
+    ECFAIL_NO_FAILURE = 0;
+    ECFAIL_FAILURE = 1;
+  }
+  enum ECGPOvrdType {
+    ECGPOVRD_NO_OVERRIDE = 0;
+    ECGPOVRD_DRIVER_OVERRIDE = 1;
+  }
+  // [Rpm] [0|16383]
+  optional double engine_speed = 1;
+  // [Bit] [0|255]
+  optional int32 ems_1_checksum = 2;
+  // [%] [0|99.568]
+  optional double gas_pedal_position = 3;
+  // [Bit] [0|1]
+  optional GasPedalPositionInvalidDataType gas_pedal_position_invalid_data = 4;
+  // [%] [0|99.568]
+  optional double accelerator_pos_raw = 5;
+  // [Bit] [0|15]
+  optional int32 ems_1_message_counter = 6;
+  // [Bit] [0|1]
+  optional ECFailType ecfail = 7;
+  // [Bit] [0|1]
+  optional ECGPOvrdType ecgpovrd = 8;
+}
+
+// Report Message.
+message Eps_Sas_1_G_100 {
+  enum SteeringAngleSpeedValidDataType {
+    STEERINGANGLESPEEDVALIDDATA_VALID = 0;
+    STEERINGANGLESPEEDVALIDDATA_NOT_VALID = 1;
+  }
+  enum SteeringAngleValidDataType {
+    STEERINGANGLEVALIDDATA_VALID = 0;
+    STEERINGANGLEVALIDDATA_NOT_VALID = 1;
+  }
+  enum InternalFailureType {
+    INTERNALFAILURE_NO_FAILURE = 0;
+    INTERNALFAILURE_FAILURE = 1;
+  }
+  enum AngleFailureType {
+    ANGLEFAILURE_NO_FAILURE = 0;
+    ANGLEFAILURE_FAILURE = 1;
+  }
+  // [Deg] [-2048|2047.875]
+  optional double steering_angle = 1;
+  // [Deg/Sec] [0|1016]
+  optional double steering_angle_speed = 2;
+  // [Bit] [0|1]
+  optional SteeringAngleSpeedValidDataType steering_angle_speed_valid_data = 3;
+  // [Bit] [0|1]
+  optional SteeringAngleValidDataType steering_angle_valid_data = 4;
+  // [Bit] [0|1]
+  optional InternalFailureType internal_failure = 5;
+  // [Bit] [0|1]
+  optional AngleFailureType angle_failure = 6;
+  // [Bit] [0|15]
+  optional int32 sas_1_g_message_counter = 7;
+  // [Bit] [0|255]
+  optional int32 sas_1_gcrccheck = 8;
+}
+
+// Report Message.
+message Hcu_Ems_Brake_101 {
+  enum BrakePedalStsForTCUType {
+    BRAKEPEDALSTSFORTCU_NOT_APPLIED = 0;
+    BRAKEPEDALSTSFORTCU_APPLIED = 1;
+  }
+  enum BrakePedalStsValidDataForTCUType {
+    BRAKEPEDALSTSVALIDDATAFORTCU_VALID = 0;
+    BRAKEPEDALSTSVALIDDATAFORTCU_NOT_VALID = 1;
+  }
+  enum EngineStsForDCTType {
+    ENGINESTSFORDCT_INIT = 0;
+    ENGINESTSFORDCT_STOP = 1;
+    ENGINESTSFORDCT_ACTIVATION_OF_STARTER_POWERSTAGE = 2;
+    ENGINESTSFORDCT_ENGINE_RUNNING = 3;
+    ENGINESTSFORDCT_ENGINE_RUNNING_IN_LIMP_HOME_MODE = 4;
+    ENGINESTSFORDCT_RESERVED = 5;
+    ENGINESTSFORDCT_RESERVED_1 = 6;
+    ENGINESTSFORDCT_INVALID = 7;
+  }
+  // [Bit] [0|1]
+  optional BrakePedalStsForTCUType brake_pedal_sts_for_tcu = 1;
+  // [Bit] [0|1]
+  optional BrakePedalStsValidDataForTCUType brake_pedal_sts_valid_data_for_tcu =
+      2;
+  // [Bit] [0|7]
+  optional EngineStsForDCTType engine_sts_for_dct = 3;
+}
+
+// Report Message.
+message Hcu_3_G_119 {
+  enum HCU_PowerLimitType {
+    HCU_POWERLIMIT_OFF = 0;
+    HCU_POWERLIMIT_ON = 1;
+  }
+  enum HCU_GasPedalPositionInvalidDataType {
+    HCU_GASPEDALPOSITIONINVALIDDATA_VALID = 0;
+    HCU_GASPEDALPOSITIONINVALIDDATA_INVALID = 1;
+  }
+  enum HCU_BrakePedalStsValidDataType {
+    HCU_BRAKEPEDALSTSVALIDDATA_VALID = 0;
+    HCU_BRAKEPEDALSTSVALIDDATA_NOT_VALID = 1;
+  }
+  enum HCU_BrakePedalStsType {
+    HCU_BRAKEPEDALSTS_NOT_APPLIED = 0;
+    HCU_BRAKEPEDALSTS_APPLIED = 1;
+  }
+  // [%] [0|99.96]
+  optional double hcu_gas_pedal_position = 1;
+  // [Bit] [0|1]
+  optional HCU_PowerLimitType hcu_power_limit = 2;
+  // [Bit] [0|1]
+  optional HCU_GasPedalPositionInvalidDataType
+      hcu_gas_pedal_position_invalid_data = 3;
+  // [Bit] [0|1]
+  optional HCU_BrakePedalStsValidDataType hcu_brake_pedal_sts_valid_data = 4;
+  // [Bit] [0|1]
+  optional HCU_BrakePedalStsType hcu_brake_pedal_sts = 5;
+}
+
+// Control Message.
+message C_Lat_Fcm_107 {
+  enum FCM_1_ADAS_WarnningVibrationType {
+    FCM_1_ADAS_WARNNINGVIBRATION_NOT_ACTIVE = 0;
+    FCM_1_ADAS_WARNNINGVIBRATION_ACTIVE = 1;
+  }
+  enum FCM_1_ADAS_TorqueReqStatusType {
+    FCM_1_ADAS_TORQUEREQSTATUS_LDSTORQUEINHIBITED = 0;
+    FCM_1_ADAS_TORQUEREQSTATUS_LDSTORQUEREADY = 1;
+    FCM_1_ADAS_TORQUEREQSTATUS_LDSTORQUEACTIVE = 2;
+    FCM_1_ADAS_TORQUEREQSTATUS_RESERVED = 3;
+  }
+  enum FCM_1_MessageCounterType {
+    FCM_1_MESSAGECOUNTER_RANGE_LOW_STARTUP_DEFAULT = 0;
+    FCM_1_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  // [] [-20.48|20.46]
+  optional double fcm_1_adas_torque_req = 1;
+  // [Bit] [0|1]
+  optional FCM_1_ADAS_WarnningVibrationType fcm_1_adas_warnning_vibration = 2;
+  // [Bit] [0|3]
+  optional FCM_1_ADAS_TorqueReqStatusType fcm_1_adas_torque_req_status = 3;
+  // [Bit] [0|15]
+  optional FCM_1_MessageCounterType fcm_1_message_counter = 4;
+  // [Bit] [0|255]
+  optional int32 fcm_1_crccheck = 5;
+}
+
+// Report Message.
+message Hcu_17_104 {
+  enum PRNDGearActType {
+    PRNDGEARACT_INIT = 0;
+    PRNDGEARACT_P = 1;
+    PRNDGEARACT_R = 2;
+    PRNDGEARACT_N = 3;
+    PRNDGEARACT_D = 4;
+    PRNDGEARACT_RESERVED = 5;
+    PRNDGEARACT_RESERVED_1 = 6;
+    PRNDGEARACT_RESERVED_2 = 7;
+  }
+  enum HCU_17_Reserved1PRNDGearActValidType {
+    HCU_17_RESERVED1PRNDGEARACTVALID_NOT_VALID = 0;
+    HCU_17_RESERVED1PRNDGEARACTVALID_VALID = 1;
+  }
+  enum PRNDGearTargetType {
+    PRNDGEARTARGET_INIT = 0;
+    PRNDGEARTARGET_P = 1;
+    PRNDGEARTARGET_R = 2;
+    PRNDGEARTARGET_N = 3;
+    PRNDGEARTARGET_D = 4;
+    PRNDGEARTARGET_RESERVED = 5;
+    PRNDGEARTARGET_RESERVED_1 = 6;
+    PRNDGEARTARGET_RESERVED_2 = 7;
+  }
+  // [Bit] [0|7]
+  optional PRNDGearActType prndgear_act = 1;
+  // [Bit] [0|15]
+  optional int32 hcu_17_message_counter = 2;
+  // [Bit] [0|1]
+  optional HCU_17_Reserved1PRNDGearActValidType
+      hcu_17_reserved1prndgear_act_valid = 3;
+  // [Bit] [0|7]
+  optional PRNDGearTargetType prndgear_target = 4;
+  // [Bit] [0|255]
+  optional int32 hcu_17_crc = 5;
+}
+
+// Report Message.
+message Yas_Lat_105 {
+  enum YawrateSigValidDataType {
+    YAWRATESIGVALIDDATA_VALID = 0;
+    YAWRATESIGVALIDDATA_RESERVED = 1;
+    YAWRATESIGVALIDDATA_INVALID = 2;
+    YAWRATESIGVALIDDATA_INITIALIZE = 3;
+  }
+  enum LateralAccelerationSigValidDataType {
+    LATERALACCELERATIONSIGVALIDDATA_VALID = 0;
+    LATERALACCELERATIONSIGVALIDDATA_RESERVED = 1;
+    LATERALACCELERATIONSIGVALIDDATA_INVALID = 2;
+    LATERALACCELERATIONSIGVALIDDATA_INITIALIZE = 3;
+  }
+  // [Bit] [0|255]
+  optional int32 yas_1_message_counter = 1;
+  // [Bit] [0|3]
+  optional YawrateSigValidDataType yawrate_sig_valid_data = 2;
+  // [Bit] [0|3]
+  optional LateralAccelerationSigValidDataType
+      lateral_acceleration_sig_valid_data = 3;
+  // [G] [-2|2]
+  optional double lateral_acceleration = 4;
+  // [Deg/sec] [-180|180]
+  optional double yaw_rate = 5;
+  // [Bit] [0|255]
+  optional int32 yas_1_checksum = 6;
+}
+
+// Report Message.
+message Cem_Bcm_1_114 {
+  enum CEM_1_HighBeamStsType {
+    CEM_1_HIGHBEAMSTS_STARTUP_DEFAULT = 0;
+    CEM_1_HIGHBEAMSTS_ACTIVE = 1;
+  }
+  enum CEM_1_LowBeamStsType {
+    CEM_1_LOWBEAMSTS_OFF = 0;
+    CEM_1_LOWBEAMSTS_ACTIVE = 1;
+  }
+  enum CEM_1_KeyStsType {
+    CEM_1_KEYSTS_OFF = 0;
+    CEM_1_KEYSTS_ACC = 1;
+    CEM_1_KEYSTS_ON = 2;
+    CEM_1_KEYSTS_CRANK___ON = 3;
+  }
+  enum CEM_1_DirectionIndRightType {
+    CEM_1_DIRECTIONINDRIGHT_NOT_ACTIVE = 0;
+    CEM_1_DIRECTIONINDRIGHT_ACTIVE = 1;
+  }
+  enum CEM_1_DirectionIndLeftType {
+    CEM_1_DIRECTIONINDLEFT_OFF = 0;
+    CEM_1_DIRECTIONINDLEFT_ACTIVE = 1;
+  }
+  enum CEM_1_HazardLightSWType {
+    CEM_1_HAZARDLIGHTSW_NOT_ACTIVE = 0;
+    CEM_1_HAZARDLIGHTSW_ACTIVE = 1;
+  }
+  enum CEM_1_AutoLightSWType {
+    CEM_1_AUTOLIGHTSW_NOT_ACTIVE = 0;
+    CEM_1_AUTOLIGHTSW_ACTIVE = 1;
+  }
+  enum CEM_1_DriverDoorStsType {
+    CEM_1_DRIVERDOORSTS_CLOSE = 0;
+    CEM_1_DRIVERDOORSTS_OPEN = 1;
+  }
+  enum CEM_1_PsngrDoorStsType {
+    CEM_1_PSNGRDOORSTS_CLOSE = 0;
+    CEM_1_PSNGRDOORSTS_OPEN = 1;
+  }
+  enum CEM_1_HoodStsType {
+    CEM_1_HOODSTS_CLOSE = 0;
+    CEM_1_HOODSTS_OPEN = 1;
+  }
+  enum CEM_1_RHRDoorStsType {
+    CEM_1_RHRDOORSTS_CLOSE = 0;
+    CEM_1_RHRDOORSTS_OPEN = 1;
+  }
+  enum CEM_1_LHRdoorStsType {
+    CEM_1_LHRDOORSTS_CLOSE = 0;
+    CEM_1_LHRDOORSTS_OPEN = 1;
+  }
+  enum CEM_1_TrunkStsType {
+    CEM_1_TRUNKSTS_CLOSE = 0;
+    CEM_1_TRUNKSTS_OPEN = 1;
+  }
+  enum DriverDoorStsQbitType {
+    DRIVERDOORSTSQBIT_VALID = 0;
+    DRIVERDOORSTSQBIT_INVALID = 1;
+  }
+  enum CEM_1_HMASWType {
+    CEM_1_HMASW_OFF = 0;
+    CEM_1_HMASW_ACTIVE = 1;
+  }
+  enum CEM_1_FrontFogLightStsType {
+    CEM_1_FRONTFOGLIGHTSTS_OFF = 0;
+    CEM_1_FRONTFOGLIGHTSTS_ACTIVE = 1;
+  }
+  enum CEM_1_HighBeamSWStsType {
+    CEM_1_HIGHBEAMSWSTS_OFF = 0;
+    CEM_1_HIGHBEAMSWSTS_ACTIVE = 1;
+  }
+  enum CEM_1_FlashSWStsType {
+    CEM_1_FLASHSWSTS_OFF = 0;
+    CEM_1_FLASHSWSTS_ACTIVE = 1;
+  }
+  enum CEM_1_WiperStsType {
+    CEM_1_WIPERSTS_OFF = 0;
+    CEM_1_WIPERSTS_AUTO_OR_INTERMITTENT = 1;
+    CEM_1_WIPERSTS_CONTINUOUSSLOW = 2;
+    CEM_1_WIPERSTS_CONTINUOUSFAST = 3;
+  }
+  enum CEM_1_MessageCounterType {
+    CEM_1_MESSAGECOUNTER_RANGE_LOW = 0;
+    CEM_1_MESSAGECOUNTER_RANGE_HIGH = 15;
+  }
+  enum CEM_1_AutoHighSpeedRequestType {
+    CEM_1_AUTOHIGHSPEEDREQUEST_FALSE = 0;
+    CEM_1_AUTOHIGHSPEEDREQUEST_TRUE = 1;
+  }
+  enum CEM_1_RainDetectedType {
+    CEM_1_RAINDETECTED_FALSE = 0;
+    CEM_1_RAINDETECTED_TRUE = 1;
+  }
+  // HighBeamSts [Bit] [0|1]
+  optional CEM_1_HighBeamStsType cem_1_high_beam_sts = 1;
+  // LowBeamSts [Bit] [0|1]
+  optional CEM_1_LowBeamStsType cem_1_low_beam_sts = 2;
+  // KeySts [Bit] [0|3]
+  optional CEM_1_KeyStsType cem_1_key_sts = 3;
+  // [Bit] [0|255]
+  optional int32 cem_1_checksum = 4;
+  // [Bit] [0|1]
+  optional CEM_1_DirectionIndRightType cem_1_direction_ind_right = 5;
+  // [Bit] [0|1]
+  optional CEM_1_DirectionIndLeftType cem_1_direction_ind_left = 6;
+  // HazardLightSW [Bit] [0|1]
+  optional CEM_1_HazardLightSWType cem_1_hazard_light_sw = 7;
+  // AutoLightSW [Bit] [0|1]
+  optional CEM_1_AutoLightSWType cem_1_auto_light_sw = 8;
+  // DriverDoorSts [Bit] [0|1]
+  optional CEM_1_DriverDoorStsType cem_1_driver_door_sts = 9;
+  // [Bit] [0|1]
+  optional CEM_1_PsngrDoorStsType cem_1_psngr_door_sts = 10;
+  // [Bit] [0|1]
+  optional CEM_1_HoodStsType cem_1_hood_sts = 11;
+  // RHRDoorSts [Bit] [0|1]
+  optional CEM_1_RHRDoorStsType cem_1_rhrdoor_sts = 12;
+  // LHRdoorSts [Bit] [0|1]
+  optional CEM_1_LHRdoorStsType cem_1_lhrdoor_sts = 13;
+  // [Bit] [0|1]
+  optional CEM_1_TrunkStsType cem_1_trunk_sts = 14;
+  // [Bit] [0|1]
+  optional DriverDoorStsQbitType driver_door_sts_qbit = 15;
+  // [Bit] [0|1]
+  optional CEM_1_HMASWType cem_1_hmasw = 16;
+  // FrontFogLightSts [Bit] [0|1]
+  optional CEM_1_FrontFogLightStsType cem_1_front_fog_light_sts = 17;
+  // HighBeamSWSts [Bit] [0|1]
+  optional CEM_1_HighBeamSWStsType cem_1_high_beam_swsts = 18;
+  // FlashSWSts [Bit] [0|1]
+  optional CEM_1_FlashSWStsType cem_1_flash_swsts = 19;
+  // [Bit] [0|3]
+  optional CEM_1_WiperStsType cem_1_wiper_sts = 20;
+  // [Bit] [0|15]
+  optional CEM_1_MessageCounterType cem_1_message_counter = 21;
+  // AutoHighSpeedRequest [Bit] [0|1]
+  optional CEM_1_AutoHighSpeedRequestType cem_1_auto_high_speed_request = 22;
+  // RainSensor [Bit] [0|1]
+  optional CEM_1_RainDetectedType cem_1_rain_detected = 23;
+}
+
+// Report Message.
+message Yas_Lon_106 {
+  enum LongitudinalAccelerationSigType {
+    LONGITUDINALACCELERATIONSIG_VALID = 0;
+    LONGITUDINALACCELERATIONSIG_RESERVED = 1;
+    LONGITUDINALACCELERATIONSIG_INVALID = 2;
+    LONGITUDINALACCELERATIONSIG_INITIALIZE = 3;
+  }
+  // [Bit] [0|255]
+  optional int32 yas_2_message_counter = 1;
+  // [Bit] [0|3]
+  optional LongitudinalAccelerationSigType longitudinal_acceleration_sig = 2;
+  // [G] [-2|2]
+  optional double longitudinal_acceleration = 3;
+  // [Bit] [0|255]
+  optional int32 yas_2_checksum = 4;
+}
+
+// Control Message.
+message C_Lon_Frm_116 {
+  enum FRM_1_ACCMode_ESPType {
+    FRM_1_ACCMODE_ESP_OFF_MODE = 0;
+    FRM_1_ACCMODE_ESP_PASSIVE_MODE = 1;
+    FRM_1_ACCMODE_ESP_STANDBY_MODE = 2;
+    FRM_1_ACCMODE_ESP_ACTIVE_CONTROL_MODE = 3;
+    FRM_1_ACCMODE_ESP_BRAKE_ONLY_MODE = 4;
+    FRM_1_ACCMODE_ESP_OVERRIDE = 5;
+    FRM_1_ACCMODE_ESP_STANDSTILL = 6;
+    FRM_1_ACCMODE_ESP_FAILURE_MODE = 7;
+  }
+  enum FRM_1_VLCShutdownModeType {
+    FRM_1_VLCSHUTDOWNMODE_SOFT_OFF = 0;
+    FRM_1_VLCSHUTDOWNMODE_FAST_OFF = 1;
+    FRM_1_VLCSHUTDOWNMODE_IMMEDIATE_OFF = 2;
+    FRM_1_VLCSHUTDOWNMODE_INITIAL = 3;
+  }
+  enum FRM_1_BrakePreferredType {
+    FRM_1_BRAKEPREFERRED_NO_DEMAND = 0;
+    FRM_1_BRAKEPREFERRED_DEMAND = 1;
+  }
+  enum FRM_1_DriveOffType {
+    FRM_1_DRIVEOFF_NO_DEMAND = 0;
+    FRM_1_DRIVEOFF_DEMAND = 1;
+  }
+  enum FRM_1_DecToStopType {
+    FRM_1_DECTOSTOP_NO_DEMAND = 0;
+    FRM_1_DECTOSTOP_DEMAND = 1;
+  }
+  enum FRM_1_ACC_AccECGPOvrdType {
+    FRM_1_ACC_ACCECGPOVRD_NO_DEMAND = 0;
+    FRM_1_ACC_ACCECGPOVRD_DEMAND = 1;
+  }
+  enum FRM_1_HBALevelType {
+    FRM_1_HBALEVEL_LEVEL0 = 0;
+    FRM_1_HBALEVEL_LEVEL1 = 1;
+    FRM_1_HBALEVEL_LEVEL2 = 2;
+    FRM_1_HBALEVEL_LEVEL3 = 3;
+  }
+  enum FRM_1_HBARequestType {
+    FRM_1_HBAREQUEST_NO_DEMAND = 0;
+    FRM_1_HBAREQUEST_DEMAND = 1;
+  }
+  enum FRM_1_PrefillRequestType {
+    FRM_1_PREFILLREQUEST_NO_DEMAND = 0;
+    FRM_1_PREFILLREQUEST_DEMAND = 1;
+  }
+  // [M S2] [-5|5.235]
+  optional double frm_1_acctar_acc = 1;
+  // [Bit] [0|7]
+  optional FRM_1_ACCMode_ESPType frm_1_accmode_esp = 2;
+  // [Bit] [0|3]
+  optional FRM_1_VLCShutdownModeType frm_1_vlcshutdown_mode = 3;
+  // [M S2] [0|3.125]
+  optional double frm_1_comfort_acc_upper_value = 4;
+  // [Bit] [0|1]
+  optional FRM_1_BrakePreferredType frm_1_brake_preferred = 5;
+  // [M S2] [0|3.125]
+  optional double frm_1_comfort_acc_lower_value = 6;
+  // [Bit] [0|1]
+  optional FRM_1_DriveOffType frm_1_drive_off = 7;
+  // [M S2] [0|12.7]
+  optional double frm_1_limit_acc_upper_value = 8;
+  // [Bit] [0|1]
+  optional FRM_1_DecToStopType frm_1_dec_to_stop = 9;
+  // [M S2] [-12.7|0]
+  optional double frm_1_limit_acc_lower_value = 10;
+  // [Bit] [0|1]
+  optional FRM_1_ACC_AccECGPOvrdType frm_1_acc_acc_ecgpovrd = 11;
+  // [Bit] [0|15]
+  optional int32 frm_1_message_counter = 12;
+  // [Bit] [0|3]
+  optional FRM_1_HBALevelType frm_1_hbalevel = 13;
+  // [Bit] [0|1]
+  optional FRM_1_HBARequestType frm_1_hbarequest = 14;
+  // [Bit] [0|1]
+  optional FRM_1_PrefillRequestType frm_1_prefill_request = 15;
+  // [Bit] [0|255]
+  optional int32 frm_1_crc = 16;
+}
+
+message Jetour {
+  // Report message.
+  optional Wheel_Spd_R_109 wheel_spd_r_109 = 1;
+  // Report message.
+  optional Abs_Esp_1_10b abs_esp_1_10b = 2;
+  // Report message.
+  optional Icm_5_10a icm_5_10a = 3;
+  // Report message.
+  optional Eps_Cgw_2_115 eps_cgw_2_115 = 4;
+  // Report message.
+  optional Epb_R_121 epb_r_121 = 5;
+  // Report message.
+  optional Wheel_Spd_F_108 wheel_spd_f_108 = 6;
+  // Control message.
+  optional C_Bcm1_123 c_bcm1_123 = 7;
+  // Report message.
+  optional Cgw_Abs_Esp_4_111 cgw_abs_esp_4_111 = 8;
+  // Report message.
+  optional Mfs_113 mfs_113 = 9;
+  // Report message.
+  optional Hcu_Ems_Gas_102 hcu_ems_gas_102 = 10;
+  // Report message.
+  optional Eps_Sas_1_G_100 eps_sas_1_g_100 = 11;
+  // Report message.
+  optional Hcu_Ems_Brake_101 hcu_ems_brake_101 = 12;
+  // Report message.
+  optional Hcu_3_G_119 hcu_3_g_119 = 13;
+  // Control message.
+  optional C_Lat_Fcm_107 c_lat_fcm_107 = 14;
+  // Report message.
+  optional Hcu_17_104 hcu_17_104 = 15;
+  // Report message.
+  optional Yas_Lat_105 yas_lat_105 = 16;
+  // Report message.
+  optional Cem_Bcm_1_114 cem_bcm_1_114 = 17;
+  // Report message.
+  optional Yas_Lon_106 yas_lon_106 = 18;
+  // Control message.
+  optional C_Lon_Frm_116 c_lon_frm_116 = 19;
+}

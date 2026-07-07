@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/product_setting";
+
+import "onboard/common/proto/scene_setting.proto";
+
+message ProductSettingProto {
+  optional SceneSettingsProto scene_settings = 1;
+
+  message StationSetting {
+    optional bool audio_enable = 1;
+    optional bool qview_player_enable = 2 [default = false];
+    optional bool auto_open_close_door = 3 [default = false];
+    optional int32 auto_close_wait_sec = 4;
+    optional bool auto_next_station = 5 [default = false];
+  }
+  optional StationSetting station_setting = 2;
+
+  enum ProductModeType {
+    PRODUCT_MODE_TYPE_L4 = 0;
+    PRODUCT_MODE_TYPE_L2PLUS_SERES = 1;
+  }
+  optional ProductModeType product_mode_type = 3;
+}

@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message BumpServiceConfigProto {
+  optional int32 port = 1;
+  optional string ip = 2;
+  optional bool first_run = 3;
+  optional int32 message_size_in_mb = 4;
+  optional int32 max_upload_file_size_in_mb = 5;
+}
+
+message BumpConfigProto {
+  // bump server
+  optional BumpServiceConfigProto bump_service_config = 1;
+}

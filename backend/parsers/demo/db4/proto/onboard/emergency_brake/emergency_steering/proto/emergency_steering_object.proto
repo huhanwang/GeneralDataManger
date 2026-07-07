@@ -1,0 +1,27 @@
+
+syntax = "proto2";
+
+package snoah.emergency_steering;
+
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/prediction.proto";
+
+enum EmergencySteeringObjectType {
+  UNKNOWN_OBJECT = 1;
+  PEDESTRIAN = 2;
+  CYCLIST = 3;
+  TRICYCLIST = 4;
+  VEHICLE = 5;
+  STATIC = 6;
+}
+
+message EmergencySteeringObjectProto {
+  optional string id = 1;
+  optional Box2dProto bounding_box = 2;
+  optional double speed = 3;
+  optional double acceleration = 4;
+  optional PredictedTrajectoryProto prediction = 5;
+
+  optional EmergencySteeringObjectType type = 6;
+  optional bool is_stationary = 7;
+}

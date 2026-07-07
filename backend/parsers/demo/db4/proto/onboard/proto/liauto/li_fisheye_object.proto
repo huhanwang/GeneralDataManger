@@ -1,0 +1,25 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/camera_pym_data.proto";
+
+message LiFisheyeObjectProto {
+  optional LiteHeader header = 1;
+  optional uint32 li_camera_id = 2;
+  optional TvProto tv = 3;
+  message RawImageShape {
+    optional int32 width = 1;
+    optional int32 height = 2;
+  }
+  optional RawImageShape raw_image_shape = 4;
+  message Rect {
+    optional float left = 1;
+    optional float top = 2;
+    optional float right = 3;
+    optional float bottom = 4;
+  }
+  repeated Rect objects = 5;
+}

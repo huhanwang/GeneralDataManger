@@ -1,0 +1,27 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+// import "onboard/proto/perception.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+
+package snoah;
+
+message RearCollisionWarningProto {
+  optional LiteHeader header = 1;
+
+  // RCW system output.
+  enum RcwStatus {
+    RCW_STATUS_OFF = 0;
+    RCW_STATUS_ON = 1;
+    RCW_STATUS_FAILURE = 2;
+  }
+  optional RcwStatus rcw_status = 2;
+
+  // RCW function output.
+  optional bool rcw_warning = 3;
+
+  optional string rcw_target_object_id = 4;
+  optional ObjectProto rcw_target_object = 5;
+  optional bool rcw_nearly_collision = 6;
+}

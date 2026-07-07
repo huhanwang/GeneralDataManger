@@ -1,0 +1,93 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message TwoDimensionalProto {
+  repeated double rotation = 1;
+}
+message Affine3d {
+  repeated TwoDimensionalProto rotation = 1;  // 3X3
+  optional Vector3d translation = 2;
+};
+
+message Matrix3d {
+  repeated TwoDimensionalProto mat = 1;  // 3X3
+};
+
+enum octet {
+  unknown = 0;
+  obstacle_hostlane = 1;
+  obstacle_rightlane = 2;
+  obstacle_leftlane = 3;
+}
+
+message Vector3d {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message PerceptionObstacleProto {
+  optional int32 id = 1;
+  optional int32 type = 2;
+  optional double confidence = 3;
+  optional double life_time = 4;
+  optional double cutin_probability = 5;
+  repeated Vector3d polygon = 6;
+  optional double yaw = 7;
+  optional double yaw_variance = 8;
+  optional int32 position_type = 9;
+  optional Vector3d position = 10;
+  optional Matrix3d position_uncertainty = 11;
+  optional Vector3d velocity = 12;
+  optional Matrix3d velocity_uncertainty = 13;
+  optional Vector3d acceleration = 14;
+  optional Matrix3d acceleration_uncertainty = 15;
+  optional Vector3d size = 16;
+  optional Vector3d size_variance = 17;
+  optional int32 aeb_conf = 18;
+  optional string info = 19;
+  optional int32 cam_id = 20;
+  optional octet obstacle_in_lane = 21;
+  optional Vector3d velocity_abs_bsd = 22;
+  optional bool supposed_be_filtered = 23;
+  optional double yaw_full = 24;
+  optional double yaw_variance_full = 25;
+  optional int32 position_type_full = 26;
+  optional Vector3d position_full = 27;
+  optional Matrix3d position_uncertainty_full = 28;
+  optional Vector3d size_full = 29;
+  optional Vector3d size_variance_full = 30;
+};
+
+message Header {
+  optional double stamp = 1;
+  optional int32 seq = 2;
+};
+
+message OcculusionArea {
+  repeated int32 track_id =
+      1;  // Sequence of Lidar objects that cause occlusion
+  repeated Vector3d polygon = 2;  // Occluded area
+};
+
+message Pose {
+  optional double stamp = 1;        // Sense the Odom timestamp information used
+  repeated double quaternion = 4;   // Odom wxyz
+  repeated double translation = 3;  // Odom xyz
+};
+
+message PerceptionObstaclesProto {
+  optional LiteHeader header = 1;
+  optional Header header_msg = 2;
+  optional double receive_sensordata_time = 3;
+  optional double timestamp = 4;
+  optional int32 cipv_id = 5;
+  optional Affine3d sensor2vcs_pose = 6;
+  repeated PerceptionObstacleProto obstacle = 7;
+  optional int32 sensor_state = 8;
+  optional Pose odo_pose = 9;  // Sense the Odom information used by the frame
+};

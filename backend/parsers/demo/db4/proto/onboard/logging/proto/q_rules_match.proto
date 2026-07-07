@@ -1,0 +1,550 @@
+
+
+syntax = "proto2";
+
+package snoah.logging;
+
+import "onboard/eval/proto/qevent.proto";
+import "onboard/logging/proto/message_filter.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/perception.proto";
+import "onboard/proto/q_issue.proto";
+import "onboard/proto/q_run_event.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/assist_state.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/proto/localization.proto";
+import "onboard/proto/data_reflow.proto";
+import "onboard/proto/perception/types/vision_lane_type.proto";
+import "onboard/proto/perception/vision/bev_road_geometry.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+
+// next id: 22
+message QContextInfoProto {
+  optional string run_name = 1;
+  optional string car_id = 2;
+  optional int64 start_timestamp = 3;   // unix timestamp, in microseconds
+  optional int64 header_timestamp = 4;  // unix timestamp, in microseconds
+  optional uint32 mileage_in_meter = 5;
+  optional int64 offset_timestamp = 6;  // unix timestamp, in microseconds
+  optional string route_id = 7;
+  optional string purpose = 8;
+  optional string release_info = 9;
+
+  message QEgoStatusProto {
+    optional Vec3dProto velocity = 1;  // m/s, from pose_proto.vel_body
+    optional Vec3dProto accel = 2;     // m/ss, from pose_proto.accel_body
+    optional double heading = 3;
+    optional int64 lane_id = 4;
+    optional double lane_heading = 5;
+    optional double lane_boundary_dist = 6;
+    optional mapping.LaneProto.Type lane_type = 7;
+
+    // Real throttle location in [%], ranging from 0 to 100.
+    optional float throttle_percentage = 8;  // from chassis.throttle_percentage
+    // Real brake location in [%], ranging from 0 to 100.
+    optional float brake_percentage = 9;  // from chassis.brake_percentage
+
+    // Real steering location in [%], ranging from -100 to 100.
+    // steering_angle / max_steering_angle
+    // Clockwise: negative
+    // CountClockwise: positive
+    optional float steering_percentage =
+        11;  // from chassis.steering_percentage
+
+    optional Chassis.GearPosition gear_location = 23;
+    optional float steer_speed_target = 24;  // rad/s from control_command
+
+    optional double latitude = 30;   // from GnssRawReadingProto.latitude
+    optional double longitude = 31;  // from GnssRawReadingProto.longtitude
+    optional double altitude = 32;   // from GnssRawReadingProto.altitude
+    optional AutonomyStateProto.State autonomy_state = 33;
+    optional AssistStateProto.AssistDriveSystemState assist_state = 34;
+  }
+  optional QEgoStatusProto ego_status = 10;
+  optional WorkStateProto work_state = 11 [deprecated = true];
+  repeated WorkStateProto work_state_traces = 12;
+  repeated QEgoStatusProto ego_status_traces = 13;
+
+  // lane summary in the past 4 seconds (around)
+  message QBevRgResultsProto {
+    optional int64 header_timestamp = 1;
+    optional uint64 channel_seq_number = 2;
+    message QBevRgLaneProto {
+      optional double length = 1 [default = 0.0];
+    }
+    repeated QBevRgLaneProto lanes = 3;
+  }
+  repeated QBevRgResultsProto bev_rg_traces = 14;
+
+  // [left, right] lane: traces, 1hz, duration is 10 seconds
+  message QBevRgLaneTracesProto {
+    message QBevRgLaneTraceProto {
+      optional int64 header_timestamp = 1;
+      // points for each lane: down sample every 5m, distance: [0, 100m]
+      optional BevLaneProto bev_lane = 2;
+    }
+    optional int32 bev_lane_id = 1 [default = -1];
+    optional VisionLaneType bev_lane_type = 2;
+    // trace: one lane per second
+    repeated QBevRgLaneTraceProto lane_traces = 3;
+  }
+  repeated QBevRgLaneTracesProto bev_rg_lanes = 22;  // 0:left, 1:right
+
+  message QBevDetResultsProto {
+    optional int64 header_timestamp = 1;
+    optional uint64 channel_seq_number = 2;
+  }
+
+  repeated QBevDetResultsProto bev_det_traces = 15;
+  repeated AutonomyStateProto autonomy_state_traces = 16 [deprecated = true];
+  repeated LocalizationTransformProto localization_transform_traces = 17;
+
+  enum QNeighboringObjectProtoLocation {
+    NOL_INVALID = 0;
+    NOL_FRONT = 1;
+    NOL_REAR = 2;
+    NOL_LEFT = 3;
+    NOL_RIGHT = 4;
+    NOL_FRONT_LEFT = 5;
+    NOL_FRONT_RIGHT = 6;
+    NOL_REAR_LEFT = 7;
+    NOL_REAR_RIGHT = 8;
+    NOL_CURRENT_LANE_FRONT = 9;
+    NOL_CURRENT_LANE_REAR = 10;
+    NOL_LEFT_LANE_PARALLEL = 11;
+    NOL_RIGHT_LANE_PARALLEL = 12;
+    NOL_LEFT_LANE_FRONT = 13;
+    NOL_RIGHT_LANE_FRONT = 14;
+    NOL_LEFT_LANE_REAR = 15;
+    NOL_RIGHT_LANE_REAR = 16;
+  }
+
+  message RelatedMeasurementProto {
+    optional int64 id = 1;
+    optional string channel = 2;
+    optional int64 timestamp = 3 [deprecated = true];
+    optional Vec2dProto contour_centroid = 4;
+    optional Vec2dProto ego_contour_centroid = 5 [deprecated = true];
+    optional Vec2dProto pos = 6;
+    optional Vec2dProto ego_pos = 7 [deprecated = true];
+    optional Vec2dProto vel = 8;
+    optional Vec2dProto ego_vel = 9 [deprecated = true];
+    optional double heading = 10;
+    optional double timestamp_sec = 11;
+    optional bool motion_state = 12;
+    optional MeasurementType type = 13;
+
+    optional Vec2dProto contour_centroid_body = 20;
+    optional Vec2dProto pos_body = 21;
+    optional Vec2dProto vel_body = 22;
+
+    optional bool found = 30 [default = true];
+  }
+
+  message QNeighboringObjectProto {
+    optional int64 header_timestamp_us = 1;
+    optional bool is_not_null = 2;
+    optional ObjectProto object_proto = 3;
+    optional double life_time_s = 4 [deprecated = true];
+    optional int32 distance_cm = 5 [deprecated = true];
+    optional Vec2dProto ego_pos = 6 [deprecated = true];
+    map<string, RelatedMeasurementProto> channel_measurements = 7;
+    optional double vel_heading = 8 [deprecated = true];
+    optional double distance = 9;
+    optional QNeighboringObjectProtoLocation orientation = 10;
+    optional QNeighboringObjectProtoLocation lane_location = 11;
+    optional double newest_measurement_time = 12;
+
+    optional Vec2dProto ego_vel = 31 [deprecated = true];
+    optional Vec2dProto ego_accel = 32 [deprecated = true];
+    optional Vec2dProto pos_body = 33;
+    optional Vec2dProto vel_body = 34;
+    optional Vec2dProto accel_body = 35;
+  }
+  // history trace belong to the location
+  message QNeighboringObjectTraceProto {
+    optional QNeighboringObjectProtoLocation location = 1;
+    repeated QNeighboringObjectProto traces = 2;
+  }
+  // neighbor car location, one location one trace proto
+  repeated QNeighboringObjectTraceProto neighboring_objects = 20;
+  // objects from all locations
+  message QNeighboringObjectsProto {
+    repeated QNeighboringObjectProto objects = 1;
+    map<string, int32> id_to_idx = 2;
+  }
+  repeated QNeighboringObjectsProto neighboring_objects_traces = 21;
+}
+
+// next id: 12
+message TriggerRuleProto {
+  // meta
+  optional int32 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string owner = 4;
+  optional int32 priority = 5;
+  optional bool enabled = 6 [default = true];
+  optional string project = 7;
+  optional int64 check_interval_us = 8 [deprecated = true];
+  optional string car_id_blacklist = 9;
+  optional string version = 11;
+  optional string cn_name = 12;
+
+  optional int64 hit_then_freeze_time_us = 31
+      [default = 1000000];  // after hit, freeze such time
+  optional int64 try_match_interval_us = 32
+      [default = 1];  // every such time, try match once
+
+  // rule definition
+  enum RuleOpType {
+    ROT_AND = 1;
+    ROT_OR = 2;
+    ROT_NOT = 3;
+  }
+  message MessageRuleProto {
+    optional string name = 1;
+    // expressions in this message rule as a whole
+    optional RuleOpType rule_op = 2;
+    // to which proto we applied this rule
+    // for qevent: = 'qevent.' + qevent.name()
+    // for other proro: = proto_name
+    optional string message_name = 3;
+    // e.g. context_info.ego_status.speed > 150km
+    // we'll combine all rule_expr under one message with &&
+    repeated string rule_expr = 4;
+    // for trigger which consists of a couple of 'ROT_AND' expressions,
+    // each expression once matched should be given an effective duration,
+    // it's not valid forever
+    optional int64 effective_duration_us = 5 [default = 5000000];
+  }
+  repeated MessageRuleProto message_rules = 10;
+
+  // rule action: create snippets
+  message QTriggerGenSnippetProto {
+    optional QTriggerEventType event_type = 1;
+    optional bool req_lite = 2;
+    optional bool req_lidar = 3;
+    optional bool req_camera = 4;
+    optional bool req_camera_low = 5;
+    optional int32 back_duration_us = 6;
+    optional int32 forward_duration_us = 7;
+    optional int32 priority = 8;
+    // camera down sampling actually
+    optional MessageFilterProto message_filter = 9;
+  }
+  optional QTriggerGenSnippetProto trigger_action_gen_snippet = 15;
+  // rule action: add stats
+  message QTriggerAddStatsProto {
+    optional string label_name = 1;
+  }
+  repeated QTriggerAddStatsProto trigger_action_add_stats = 16;
+
+  // rule action: add tags
+  message QTriggerAddTagsProto {
+    optional string label = 1;
+    optional bool save_as_event = 2 [deprecated = true];
+  }
+  repeated QTriggerAddTagsProto trigger_action_add_tags = 17;
+
+  optional bool auto_triage = 18 [default = false];
+  optional bool save_as_event = 19 [default = false];
+
+  message QTriggerSaveEventProto {
+    optional string event_type = 1;
+  }
+  optional QTriggerSaveEventProto trigger_action_save_event = 20;
+}
+
+message TriggerRulesProto {
+  repeated TriggerRuleProto trigger_rule_list = 1;
+}
+
+// next id: 8
+message TriggerQTriageProto {
+  optional int32 trigger_rule_id = 1;
+  optional string trigger_version = 6;
+  optional bool auto_triage = 2 [default = false];
+  optional string name = 3;
+  optional string description = 4;
+  optional string project = 5;
+  optional string cn_name = 7;
+}
+
+enum QTriggerEventType {
+  QTET_UNKNOWN = 0;
+  QTET_CRASH = 1;
+  QTET_DISENGAGE = 2;
+  QTET_COMMENT = 3;
+  QTET_HARDBRAKE = 4;
+  QTET_ADAS = 5;
+  QTET_PERCEPTION = 6;
+}
+
+enum QTriggerEventSubType {
+  QTEST_UNKNOWN = 0;
+  QTEST_CHASSIS_STATE_BAD = 1;
+  QTEST_CHASSIS_PROTO_CHASSIS_TIMEOUT = 2;
+  QTEST_CHASSIS_PROTO_CHASSIS_WHEEL_SPEED_TIMEOUT = 3;
+  QTEST_CHASSIS_STATE_ENGAGE_FALLBACK = 4;
+  QTEST_IMU_STATE_ROLL_UNACCEPTABLE = 5;
+  QTEST_IMU_STATE_PITCH_UNACCEPTABLE = 6;
+  QTEST_IMU_STATE_TIMEOUT_PROCESS = 7;
+  QTEST_IMU = 8;
+  QTEST_GNSS_STATE_AVAILABLE_CHECK_TIMEOUT = 9;
+  QTEST_RADAR_STATE_RECEIVE_ERROR = 10;
+  QTEST_RADAR_PROCESSOR = 11;
+  QTEST_LIDAR_STATE_POLL_TIMEOUT = 12;
+  QTEST_LIDAR_STATE_FRAME_STALE = 13;
+  QTEST_LIDAR_STATE_SYSTEM_CLOCK_ASYNC = 14;
+  QTEST_LOCALIZATION_STATE_LOCALIZER_FAILED = 15;
+  QTEST_LOCALIZATION_LOCALIZER_DISTANCE_TOO_FAR = 16;
+  QTEST_LOCALIZATION_VISUAL_PERCEPTION_TIME_OUT = 17;
+  QTEST_CONTROL_STEER_ANGLE_SPEED_TOO_FAST = 18;
+  QTEST_CONTROL_STEER_FEEDBACK_BIG_DIFF = 19;
+  QTEST_CONTROL_LATERAL_ERROR_TOO_LARGE = 20;
+  QTEST_CONTROL_STATION_FORWARD_ERROR_TOO_LARGE = 21;
+  QTEST_CONTROL_STATION_BACKWARD_ERROR_TOO_LARGE = 22;
+  QTEST_CONTROL_HEADING_ERROR_TOO_LARGE = 23;
+  QTEST_CONTROL_SPEED_ERROR_TOO_LARGE = 24;
+  QTEST_PLANNER_PROTO_POSE_TIMEOUT = 25;
+  QTEST_PLANNER_PROTO_TRAJECTORY_EMPTY = 26;
+  QTEST_PLANNER_PROTO_TRAJECTORY_TIMEOUT = 27;
+  QTEST_PLANNER_PROCESS_TIMEOUT = 28;
+  QTEST_PLANNER_TRAJECTORY_INVALID = 29;
+  QTEST_PLANNER_TRAJECTORY_TOO_SHORT = 30;
+  QTEST_PLANNER_NO_ROUTE_WHEN_DRIVING = 31;
+  QTEST_PLANNER_EMERGENCY_BRAKE = 32;
+  QTEST_PLANNER_ROUTING_REQUEST_FAILED = 33;
+  QTEST_PLANNER_ROUTING_UPDATE_FAILED = 34;
+  QTEST_PREDICTION_PROCESS_TIMEOUT = 35;
+  QTEST_SYSTEM_AUTONOMY = 36;
+  QTEST_TAKEOVER = 37;
+  QTEST_TAKEOVER_WITH_BRAKE = 38;
+  QTEST_TAKEOVER_WITH_WHEEL = 39;
+  QTEST_TAKEOVER_WITH_THROTTLE = 40;
+  QTEST_TAKEOVER_WITH_LEVER = 41;
+  QTEST_CONTROL_LATERAL_ACC_TOO_LARGE = 42;
+}
+
+message QTriggerEventProto {
+  optional QTriggerEventType event_type = 1;
+  optional QTriggerEventSubType event_sub_type = 2;
+  optional int64 header_timestamp = 3;
+  optional int64 event_offset_us = 4;
+  optional int32 trigger_rule_id = 5;
+  optional string trigger_version = 6;
+  enum TriggerSourceType {
+    TST_COMPOSITE = 1;
+    TST_RUN_EVENT = 2;
+    TST_QISSUE = 3;
+    TST_QEVENT = 4;
+  }
+  optional TriggerSourceType source_type = 7;
+  oneof proto_msg {
+    QRunEvent q_run_event = 21;
+    QEventProto q_event = 22;
+    QIssueProto q_issue = 23;
+    // QContextInfoProto q_context_info = 24;
+  }
+}
+
+message QMatchingResultSnippetProto {
+  message SnippetDurationProto {
+    optional bool is_valid = 1;
+    optional int64 start_offset_us = 2 [default = -1];
+    optional int64 end_offset_us = 3 [default = -1];
+  }
+  optional SnippetDurationProto lite_duration = 2;
+  optional SnippetDurationProto lidar_duration = 3;
+  optional SnippetDurationProto camera_duration = 4;
+  optional SnippetDurationProto camera_low_duration = 5;
+  optional MessageFilterProto message_filter = 6;
+  optional string tag_number_whitelist = 7;
+  optional int32 priority = 8;
+}
+
+message QMatchingResultTagProto {
+  repeated string labels = 1;
+}
+
+message QMatchingResultEventProto {
+  optional string event_type = 1;
+}
+
+message QMatchingResultProto {
+  optional QMatchingMergedSnippetsProto matching_merged_snippets = 1;
+  optional QMatchingCounterStatsProto matching_counter_stats = 2;
+  optional QMatchingTagsProto matching_tags = 3;
+
+  // context
+  optional string run_name = 11;
+  optional string route_id = 12;
+  optional string purpose = 13;
+  optional string release_info = 14;
+  optional string trigger_module = 15;
+  optional string comments = 16;
+  optional QTriggerEventProto trigger_event = 17;
+  optional TriggerQTriageProto trigger_qtriage = 18;
+  optional QContextInfoProto.QEgoStatusProto ego_status = 19;
+  repeated QContextInfoProto.QNeighboringObjectProto neighboring_objects = 20;
+
+  // action
+  optional QMatchingResultSnippetProto matching_result_snippet = 21;
+  optional QMatchingResultTagProto matching_result_tag = 22;
+  optional bool save_as_event = 23 [deprecated = true];
+  optional QMatchingResultEventProto matching_result_event = 24;
+  optional bool is_vhr_event = 25 [default = false];
+}
+
+message QMatchingResultsProto {
+  repeated QMatchingResultProto matching_results = 2;
+}
+
+// there are many snippets who have overlaps, we should merge them
+// in order to reduce network i/o
+// next id: 23
+message QMatchingMergedSnippetsProto {
+  optional string run_name = 1;
+
+  // physical aspect: snippet file duration
+  message SnippetDurationProto {
+    optional bool is_valid = 1;
+    optional int64 start_offset_us = 2 [default = -1];
+    optional int64 end_offset_us = 3 [default = -1];
+    optional int64 real_start_offset_us = 4 [deprecated = true];
+  }
+  optional SnippetDurationProto lite_duration = 2;
+  optional SnippetDurationProto lidar_duration = 3;
+  optional SnippetDurationProto camera_duration = 4;
+  optional SnippetDurationProto camera_low_duration = 5;
+  optional int32 priority = 6;
+  optional string route_id = 7;
+  optional string purpose = 20;
+  optional string release_info = 21;
+  // camera down sampling actually
+  // TODO(kg): diff events with diff filter actually
+  optional MessageFilterProto message_filter = 8;
+
+  // logical aspect: events meta
+  // next id: 24
+  message QTriggerEventProto {
+    optional QTriggerEventType event_type = 1;
+    optional int64 header_timestamp = 2;
+    optional int64 event_offset_us = 3;
+    optional int32 priority = 4;
+    optional QTriggerEventSubType event_sub_type = 5;
+
+    // meta that directly copied from source message
+    optional int32 trigger_rule_id = 9;
+    optional string trigger_version = 23;
+    enum TriggerSourceType {
+      TST_COMPOSITE = 1;
+      TST_RUN_EVENT = 2;
+      TST_QISSUE = 3;
+      TST_QEVENT = 4;
+    }
+    optional TriggerSourceType source_type = 10;
+    oneof proto_msg {
+      QRunEvent q_run_event = 11;
+      QEventProto q_event = 12;
+      QIssueProto q_issue = 13;
+    }
+    optional QContextInfoProto.QEgoStatusProto ego_status = 20;
+    optional TriggerQTriageProto trigger_qtriage = 21;
+    optional AutonomyStateProto autonomy_state = 22 [deprecated = true];
+    enum VhrTriggerType {
+      VHR_AEB = 1;
+      VHR_RAEB = 2;
+      VHR_FCTB = 3;
+      VHR_RCTB = 4;
+      VHR_ELK = 5;
+    }
+    optional VhrTriggerType vhr_type = 19;
+  }
+  // events included in this merged proto
+  repeated QTriggerEventProto trigger_events = 15;
+  // pass-through attributes
+  optional string tag_number_whitelist = 16;
+  optional string comments = 17;
+  optional string trigger_module = 18;
+
+  // lc date reflow customized field
+  optional TriggerSignalProto customized_trigger_signal_proto = 22;
+}
+
+message QMatchingCounterStatsProto {
+  optional int64 timestamp = 1;  // unix time
+  optional string run_name = 2;
+  optional string car_id = 3;
+  optional int64 start_time_s = 4;  // unix time
+
+  message QMatchingCounterStatProto {
+    optional string label_name = 1;
+    optional int32 inc_count = 2;
+    optional int32 total_count = 3;
+  }
+  repeated QMatchingCounterStatProto matching_counter_stats = 5;
+
+  optional QContextInfoProto context_info = 6;
+}
+
+message QMatchingTriggerStatsProto {
+  optional int64 timestamp = 1;  // unix time
+  optional string run_name = 2;
+  optional string car_id = 3;
+  optional int64 start_time_s = 4;  // unix time
+
+  optional int32 total_trigger_count = 5;
+  optional int32 inc_trigger_count = 6;
+
+  message QMatchingTriggerPerRuleStatProto {
+    optional int32 trigger_id = 1;
+    optional string trigger_version = 4;
+    optional int32 inc_count = 2;
+    optional int32 total_count = 3;
+  }
+  repeated QMatchingTriggerPerRuleStatProto matching_trigger_stats = 10;
+}
+
+// next: 14
+message QMatchingTagsProto {
+  optional string run_name = 1;
+  optional int64 offset = 2;
+  optional int64 header_timestamp = 3;
+  repeated string labels = 4;
+  optional QContextInfoProto.QEgoStatusProto ego_status = 5;
+  optional string route_id = 6;
+  optional QContextInfoProto context_info = 7;
+  optional int32 trigger_rule_id = 10;
+  optional string trigger_version = 13;
+  optional string purpose = 14;
+  optional string release_info = 15;
+  optional bool save_as_event = 11;
+  optional TriggerQTriageProto trigger_qtriage = 12;
+  optional AutonomyStateProto autonomy_state = 21 [deprecated = true];
+}
+
+message ProductionEventDumpConfigsProto {
+  message ProductionEventDumpConfigProto {
+    optional QTriggerEventType type = 1 [default = QTET_UNKNOWN];
+    optional QTriggerEventSubType sub_type = 2 [default = QTEST_UNKNOWN];
+    optional int32 priority = 3;
+    optional uint64 backward_duration_us = 4 [default = 5000000];
+    optional uint64 forward_duration_us = 5 [default = 5000000];
+    optional bool dump_camera = 6 [default = false];
+    optional bool dump_lidar = 7 [default = false];
+    optional string tag_number_whitelist = 8;
+    optional int64 sleep_duration_us = 9 [default = 2000000];
+  }
+  repeated ProductionEventDumpConfigProto configs = 1;
+}
+
+message RuleMatcherResultProto {
+  optional LiteHeader header = 1;
+  optional QMatchingResultProto result = 2;
+}

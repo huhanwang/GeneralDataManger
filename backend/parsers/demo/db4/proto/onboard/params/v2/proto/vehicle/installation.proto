@@ -1,0 +1,148 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/control/proto/controller_msg.proto";
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+message VehicleInstallationProto {
+  message SpeedometerParamsProto {
+    optional double speed_scale = 1;
+    optional double rpm_scale = 2;
+  }
+  enum ControllerType {
+    TOB_TSPKMPC_CONTROLLER = 2;
+    reserved 1, 3;
+    reserved "TS_PKMPC_CONTROLLER", "POLE_PLACEMENT_CONTROLLER";
+  };
+
+  message ControlParams {
+    optional double steering_delay_step = 1;
+    optional double max_steer_angle_rate = 2;  // radian/s.
+    optional double brake_deadzone = 3;
+    optional double throttle_deadzone = 4;
+    optional double max_acceleration = 5;
+    optional double max_deceleration = 6;
+    optional ControlCalibrationTable ebrake_calibration_table = 7
+        [deprecated = true];
+    optional ControlCalibrationTable calibration_table = 8;
+    optional ControlCalibrationTable ibs_calibration_table_when_ebrake = 9
+        [deprecated = true];
+
+    // The bias DBW adds (i.e. actual EPS steering = control command + bias).
+    // Note that the chassis-reported angle may not be the actual steering
+    // angle. If DBC implementation is correct, chassis will report back the
+    // control command correctly (upon stationarity), but zero control command
+    // may not be executed by EPS as going straight. On some vehicles this bias
+    // is quite significant (~45 degrees).
+    // (+): shift steering command to right;
+    // (-): shift steering command to left.
+    optional double steering_angle_bias = 10;  // radian.
+    optional bool use_planner_speed_for_table = 11 [deprecated = true];
+    optional double max_acceleration_when_stopped = 12 [deprecated = true];
+    optional bool enable_gain_scheduler = 13;
+    optional bool set_steer_limit = 14 [deprecated = true];
+    optional double control_period = 15 [deprecated = true];
+    repeated ControllerType active_controllers = 16;
+    optional double minimum_speed_resolution = 17 [deprecated = true];
+    optional TsPkmpcControllerConf ts_pkmpc_controller_conf = 18;
+    optional double max_abs_speed_when_stopped = 19 [deprecated = true];
+    optional double max_acceleration_cmd = 20;
+    optional double max_deceleration_cmd = 21;
+    optional int32 lpf_cutoff_freq = 22 [deprecated = true];
+    optional double max_lateral_acceleration = 23;  // limit aggressive steering
+    optional FullStopProto full_stop_condition = 24;
+    optional bool linear_speed_from_chassis = 25 [deprecated = true];
+    optional double accel_ref_cutoff_freq = 26 [deprecated = true];
+    optional double accel_cmd_cutoff_freq = 27 [deprecated = true];
+    optional double heading_bias = 28;  // rad.
+    optional StateEstimatorSetting state_estimator_setting = 29
+        [deprecated = true];
+    optional bool ebrake_enable = 30 [deprecated = true];
+    // Acceleration limit when vehicle is starting to move for the comfort.
+    optional PiecewiseLinearFunctionDoubleProto
+        acceleration_start_comfort_ratio_plf = 31 [deprecated = true];
+    // speed mode config
+    optional bool enable_speed_mode_manager = 32;
+    optional double acc2dec_timer = 33;
+    optional double dec2acc_timer = 34;
+    optional double acc_lowerbound = 35;
+    optional double dec_upperbound = 36;
+    optional double acc_mode_threshold = 37;
+    optional double dec_mode_threshold = 38;
+    optional double hysteresis_zone = 39;
+    optional double polynomial1 = 40 [deprecated = true];
+    optional double polynomial2 = 41 [deprecated = true];
+    optional double polynomial3 = 42 [deprecated = true];
+    optional double polynomial4 = 43 [deprecated = true];
+    optional double polynomial5 = 44 [deprecated = true];
+    optional double polynomial6 = 45 [deprecated = true];
+    optional ClosedLoopAccConfProto closed_loop_acc_conf = 46;
+    optional StandStillProto standstill_condition = 47;
+    optional ControlCalibrationTableV2 calibration_table_v2 = 48;
+    optional bool enable_calibration_v2 = 49;
+
+    optional double steer_ratio = 50;
+    optional BiasEstimationConf bias_estimation_conf = 51;
+    optional double steer_delay_time = 52;
+    optional SteerDeadZoneAdaptorConf steer_deadzone_adaptor_conf = 53;
+    optional MracConfProto mrac_conf = 54;
+
+    optional LatControllerType active_lat_controller = 55;
+    optional LonControllerType active_lon_controller = 56;
+    optional LatTsPkmpcControllerConf lat_ts_pkmpc_controller_conf = 57;
+    optional LonTsPkmpcControllerConf lon_ts_pkmpc_controller_conf = 58;
+    optional PiecewiseLinearFunctionDoubleProto steering_gain_wrt_speed = 59;
+    optional VehDynamicModelConf veh_dynamic_model_conf = 60;
+    // Acceleration interface type
+    optional AccelerationInterface acceleration_interface = 61
+        [deprecated = true];
+    optional PiecewiseLinearFunctionDoubleProto v_pole_plf = 62;
+    optional LatAccGainConf lat_acc_gain_conf = 63;
+    optional PiecewiseLinearFunctionDoubleProto kappa_delay_gain_wrt_speed = 64;
+    optional ThrottleInterface throttle_interface = 65;
+    optional BrakeInterface brake_interface = 66;
+    optional SteerInterface steer_interface = 67;
+    optional ControllerSteerTorqueProto steer_torque_conf = 68;
+    optional JerkCalculationConf jerk_calculation_conf = 69;
+    optional bool enable_yaw_consider_slip = 70;
+    optional bool enable_dynamic_prediction_pose = 71;
+    optional PiecewiseLinearFunctionDoubleProto parking_speed_wrt_distance = 72;
+    optional PiecewiseLinearFunctionDoubleProto
+        parking_speed_wrt_distance_reverse = 73;
+    optional bool enable_gear_shift_no_neutral = 74;
+    optional double steering_delay_aes = 75;  // seconds.
+    optional double max_driving_torque = 76;  // Nms.
+    optional double max_braking_force = 77;   // Ns.
+  }
+
+  optional SpeedometerParamsProto speedometer_params = 1;
+  optional ControlParams control_params = 2;
+
+  // The used run when calibration
+  optional string used_run = 3;
+
+  // Fields referencing this definition must be set to a default value of
+  // VP_DBQ_V3.
+  enum VehiclePlan {
+    VP_DBQ = 0;
+    VP_DBQ_V2 = 1;
+    VP_DBQ_V3 = 2;
+    VP_DBQ_V4 = 3;
+    VP_DBQ_V5 = 4;  // 5L+7V+1R
+
+    VP_PBQ = 1000;
+    VP_PBQ_V1 = 1001;
+    VP_PBQ_V2 = 1002;  // vision only
+
+    VP_DPC = 2000;
+
+    VP_CBQ = 3000;
+    VP_CBQ_V1 = 3001;
+    VP_CBQ_V2 = 3002;
+  }
+
+  optional VehiclePlan vehicle_plan = 4 [default = VP_DBQ_V3];
+  optional bool radar_on_multi_nodes = 5 [default = false];
+  optional double min_turn_radius = 6;
+}

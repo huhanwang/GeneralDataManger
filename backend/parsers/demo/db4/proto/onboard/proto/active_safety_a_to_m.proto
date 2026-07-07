@@ -1,0 +1,331 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/hu_interface_info.proto";
+
+package snoah;
+
+message PCAObject {
+  optional uint32 pca_track_id = 1;
+  optional uint32 pca_track_index = 2;
+  optional uint32 pca_vistrk_id = 3;
+  optional float pca_l_long_rel = 4;
+  optional float pca_v_long_obj = 5;
+  optional float pca_a_long_obj = 6;
+  optional float pca_l_lat_rel = 7;
+  optional float pca_v_lat_obj = 8;
+  optional float pca_a_lat_obj = 9;
+  optional float pca_width = 10;
+  optional uint32 pca_object_class = 11;
+  optional uint32 pca_detection_sensor = 12;
+  optional uint32 pca_status = 13;
+  optional uint32 pca_movement = 14;
+  optional uint32 pca_cmbb_primary_confidence = 15;
+  optional float pca_xolc = 16;
+  optional sint32 pca_age = 17;
+  optional bool pca_partly_covered = 18;
+}
+
+message PedTselFCWTgt {
+  optional float fcw_ped_range = 1;
+  optional float fcw_ped_range_rate = 2;
+  optional uint32 fcw_ped_vis_id = 3;
+  optional uint32 fcw_ped_track_id = 4;
+  optional uint32 fcw_ped_match_conf = 5;
+  optional float fcw_ped_xolc = 6;
+  optional float fcw_ped_lat_rate = 7;
+  optional uint32 fcw_ped_obj_class = 8;
+  optional float fcw_ped_angle = 9;
+  optional float fcw_ped_ttc = 10;
+  optional uint64 fcw_ped_age = 11;
+  optional bool fcw_vru_stop = 12;
+  optional bool fcw_vru_crossing = 13;
+  optional bool fcw_vru_proceeding = 14;
+  optional bool fcw_vru_oc_crossing = 15;
+}
+
+message PedTselAEBTgt {
+  optional float cib_ped_ttc = 1;
+  optional uint32 cib_ped_vis_id = 2;
+  optional float cib_ped_lat_est = 3;
+  optional uint32 cib_ped_track_id = 4;
+  optional float cib_ped_range_rate = 5;
+  optional float cib_ped_x_pos = 6;
+  optional float cib_ped_y_pos = 7;
+  optional uint32 cib_ped_obj_class = 8;
+  optional uint32 cib_ped_match_conf = 9;
+  optional uint32 cib_ped_det_sensor = 10;
+  optional float cib_ped_lat_rate = 11;
+  optional bool cib_ped_movoutfun_hold_sel = 12;
+  optional float cib_ped_xolc = 13;
+  optional uint64 cib_ped_age = 14;
+  optional bool cib_ped_oncoming = 15;
+  optional bool cib_ped_long_bicyclist = 16;
+  optional bool cib_vru_stop = 17;
+  optional bool cib_vru_crossing = 18;
+  optional bool cib_vru_proceeding = 19;
+  optional bool cib_vru_oc_crossing = 20;
+}
+
+message PedDebugInfo {
+  optional uint32 debug_fcw_ped_fid = 1;
+  optional uint32 debug_cib_ped_fid = 2;
+  optional uint32 debug_final_ped_fid = 3;
+  optional bool debug_ped_vis_vru_clutter = 4;
+  optional bool debug_vru_moveable = 5;
+  optional float debug_cur_funnel_thres = 6;
+  optional float debug_pred_funnel_thres = 7;
+  repeated uint32 debug_cibtat_reduce_v_flag = 8;
+  optional uint32 debug_vru_tsel_major = 9;
+  optional uint32 debug_vru_tsel_minor = 10;
+  optional float debug_roc = 11;
+  optional float debug_junction_turn_angle = 12;
+  optional uint32 debug_drv_mode_scenerio = 13;
+  optional bool debug_ped_in_roi = 14;
+  optional sint32 debug_vru_tsel_arc = 15;
+  optional uint32 debug_cross_fun_use_flag = 16;
+  optional uint32 debug_cross_manuver_flag = 17;
+  optional float debug_tgt_direc_incumvcs_rad = 18;
+  optional float debug_tgt_direc_incumvcs_rad_v = 19;
+  optional float debug_ped_long_pos = 20;
+  optional float debug_ped_lat_pos = 21;
+  optional float debug_md_xolc_v = 22;
+  optional float debug_lateral_estimate = 23;
+  optional float debug_ped_long_vel = 24;
+  optional float debug_ped_lat_vel_ground = 25;
+  optional uint32 debug_ped_obj_class = 26;
+  optional uint32 debug_tgt_move_type_in_curvcs = 27;
+  optional uint32 debug_tgt_move_type_in_predvcs = 28;
+  optional uint32 debug_fcw_tgt_reduce_flag = 29;
+  optional float debug_yaw_based_rm_offset = 30;
+  optional float debug_pure_pursuit_cuvre_lat_dist = 31;
+  optional float debug_host_head_lat_move_dist = 32;
+  optional float debug_basic_ttc = 33;
+  optional float debug_ackman_turn_ttc = 34;
+  optional uint32 debug_detection_sensor = 35;
+  optional uint32 debug_vru_confidence = 36;
+  optional uint32 debug_vru_age = 37;
+  optional float debug_ego_heading_attrgt = 38;
+  optional bool debug_tsel_poseidon_active1 = 39;
+  optional bool debug_tsel_poseidon_active2 = 40;
+}
+
+message VehlTselCIPS {
+  optional uint32 cips_track_id = 1;
+  optional uint32 cips_status = 2;
+  optional float cips_range = 3;
+  optional float cips_range_rate = 4;
+  optional float cips_angle = 5;
+  optional float cips_lat_rate = 6;
+  optional float cips_range_accel = 7;
+  optional uint32 cips_object_class = 8;
+  optional float cips_width = 9;
+  optional uint32 cips_amplitude = 10;
+  optional uint32 cips_match_conf = 11;
+  optional float cips_xolc = 12;
+  optional uint32 cips_movement = 13;
+  optional float cips_lat_pos = 14;
+  optional uint32 cips_det_sensor = 15;
+  optional uint32 cips_vis_id = 16;
+  optional sint32 cips_age = 17;
+  optional float cips_lead_vel = 18;
+  optional float cips_lead_accel = 19;
+  optional bool cips_partly_covered = 20;
+  optional uint32 cips_postpone_scene = 21;
+}
+
+message VehlTselCIPV {
+  optional uint32 cipv_track_id = 1;
+  optional uint32 cipv_status = 2;
+  optional float cipv_range = 3;
+  optional float cipv_range_rate = 4;
+  optional float cipv_angle = 5;
+  optional float cipv_lat_rate = 6;
+  optional float cipv_range_accel = 7;
+  optional uint32 cipv_object_class = 8;
+  optional float cipv_width = 9;
+  optional uint32 cipv_amplitude = 10;
+  optional uint32 cipv_match_conf = 11;
+  optional float cipv_xolc = 12;
+  optional uint32 cipv_movement = 13;
+  optional float cipv_lat_pos = 14;
+  optional uint32 cipv_det_sensor = 15;
+  optional uint32 cipv_vis_id = 16;
+  optional sint32 cipv_age = 17;
+  optional float cipv_lead_vel = 18;
+  optional float cipv_lead_accel = 19;
+  optional bool cipv_partly_covered = 20;
+  optional uint32 cipv_postpone_scene = 21;
+}
+
+message CCFtapResult {
+  optional uint64 ccftap_sm_trans_condition = 1;
+  optional uint32 ccf_brake_object_id = 2;
+  optional float ccf_brake_Ax_target = 3;
+  optional bool ccf_brake_command = 4;
+  optional uint32 ccftap_State = 5;
+}
+
+message AEBSitResult {
+  optional uint64 timestamp = 1;
+  optional uint32 frame_id = 2;
+  optional PCAObject cipv = 3;
+  optional PCAObject cips = 4;
+  optional PedTselFCWTgt ped_tsel_fcw_taget = 5;
+  optional PedTselAEBTgt ped_tsel_aeb_taget = 6;
+  optional PedDebugInfo ped_debug_info = 7;
+  optional VehlTselCIPS vel_tsel_cips = 8;
+  optional VehlTselCIPV vel_tsel_cipv = 9;
+  optional uint32 error_status = 10;
+  optional CCFtapResult ccftap_result = 11;
+}
+
+message SMActiveState {
+  optional bool available = 1;
+  optional bool activate = 2;
+  optional bool error = 3;
+  optional uint32 warning_level_frontdoor = 4;
+  optional uint32 warning_level_reardoor = 5;
+  optional uint32 object_id = 6;
+  optional uint64 object_vision_id_raw = 7;
+  optional uint32 object_index = 8;
+  optional uint32 object_type = 9;
+  optional float object_dx = 10;
+  optional float object_dy = 11;
+  optional float object_vx = 12;
+  optional float object_vy = 13;
+}
+
+message SMFuncState {
+  optional bool enable = 1;
+  optional SMActiveState left = 2;
+  optional SMActiveState rigth = 3;
+}
+
+message SMResult {
+  optional uint64 timestamp = 1;
+  optional SMFuncState fcta = 2;
+  optional SMFuncState fctb = 3;
+  optional SMFuncState rcta = 4;
+  optional SMFuncState rctb = 5;
+  optional SMFuncState dow = 6;
+  optional SMFuncState bsd = 7;
+
+  optional bool fcta_error = 8;   // true error
+  optional bool fctb_error = 9;   // true error
+  optional bool rcta_error = 10;  // true error
+  optional bool rctb_error = 11;  // true error
+  optional bool rcw_error = 12;   // true error
+
+  optional uint32 fcta_left_wrnng = 13;   // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 fcta_right_wrnng = 14;  // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 rcta_left_wrnng = 15;   // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 rcta_right_wrnng = 16;  // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional bool rcw_wrnng = 17;           // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 fctb_left_wrnng = 18;   // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 fctb_right_wrnng = 19;  // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 rctb_left_wrnng = 20;   // 0 no, 1 vehicle, 2 bicycle, 3.ped
+  optional uint32 rctb_right_wrnng = 21;  // 0 no, 1 vehicle, 2 bicycle, 3.ped
+
+  optional bool lsaeb_error = 22;    // true error
+  optional bool lsaeb_warning = 23;  // true warning
+  optional uint32 lsaeb_status =
+      24;  // 0 OFF, 1 passive, 2 standby, 3 active, 4 fault
+}
+
+message HapticLdpCtl {
+  optional bool steering_vibration_request = 1;
+  optional float steering_vibration_amp = 2;
+  optional float steering_vibration_freq = 3;
+  optional uint32 haptic_status = 4;
+}
+
+message AngleLdpCtl {
+  optional float steerwheel_angle_desired = 1;
+  optional float steerwheel_angle_ffw = 2;
+  optional bool angle_sign = 3;
+  optional uint32 angle_ctl_status = 4;
+}
+
+message LateralActiveST {
+  optional bool function_eab = 1;
+  optional uint32 err_status = 2;
+  optional bool fucntion_active = 3;
+  optional uint32 line_type = 4;
+  optional uint32 index_of_line = 5;
+  optional uint32 func_feedback = 6;
+}
+
+message LateralActiveELK {
+  optional bool function_eab = 1;
+  optional bool error_status = 2;
+  optional uint32 fucntion_status = 3;
+  optional uint32 function_active_reason = 4;
+  optional uint32 func_exit_reason = 5;
+  optional uint32 func_active_type = 6;
+  optional float steerwheel_angle_desired = 7;
+}
+
+message LSMResult {
+  optional uint64 m_timestamp = 1;
+  optional LateralActiveST m_ldp_func_state = 2;
+  optional LateralActiveST m_ldw_func_state = 3;
+  optional AngleLdpCtl control_angle = 4;
+  optional HapticLdpCtl haptic_ldp_ctl = 5;
+  optional LateralActiveELK lateral_active_elk = 6;
+  optional LateralActiveELK lateral_active_elk_target = 7;
+}
+
+message BuckledSafetyInfo {
+  optional uint32 driver = 1;
+  optional uint32 front_right_passenger = 2;
+  optional uint32 middle_left_passenger = 3;
+  optional uint32 middle_middle_passenger = 4;
+  optional uint32 middle_right_passenger = 5;
+  optional uint32 rear_left_passenger = 6;
+  optional uint32 rear_middle_passenger = 7;
+  optional uint32 rear_right_passenger = 8;
+}
+
+message EnvInfo {
+  optional uint32 fun_vruBreakFlag = 1;
+  optional uint32 fun_apaDisableAEB = 2;
+  optional uint32 forbidden_vru_predict = 3;
+  optional uint32 aebActiveNum = 4;
+}
+
+message ScenarioTrigger {
+  optional bool elk_warning_type_1 = 1;
+  optional bool elk_warning_type_2 = 2;
+  optional bool elk_force_active = 3;
+  optional bool ldp_force_active = 4;
+  optional bool ldp_twice_active = 5;
+  optional bool elk_lka_trigger = 6;
+  optional bool ro_aeb_trigger = 7;
+  optional bool rcw_active_trigger = 8;
+}
+
+message AEBControlCommand {
+  optional uint32 AEB_request =
+      1;  // 0 no request, 1 comfort brake, 2 emergency brake
+  optional float AEB_ax_tar = 2;
+  optional bool AEB_avh_req = 3;        // true apply
+  optional bool AEB_prefill_req = 4;    // true req
+  optional uint32 Active_Function = 5;  // 0 no request, 1 AEB, 2 RCTB, 3 LS-AEB
+  optional bool function_fault = 6;     // 0 normal, 1 failure
+};
+
+message ActiveSafetyAToMProto {
+  optional LiteHeader header = 1;
+  optional uint64 time_stamp = 2;
+  optional EnvInfo env_info = 3;
+  optional BuckledSafetyInfo buckled_safety_info = 4;
+  optional AEBSitResult aeb_sit_result = 5;
+  optional SMResult sm_result = 6;
+  optional LSMResult lsm_reuslt = 7;
+  optional HUInterfaceInfo hu_interface_info = 8;
+  optional ScenarioTrigger scenario_triggers = 9;
+  optional AEBControlCommand aeb_control_command = 10;
+  optional bool mai_accel_inhibit_req = 11;
+}

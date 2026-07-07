@@ -1,0 +1,14 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+message LiSensorCanFaultStatusProto {
+  optional LiteHeader header = 1;
+  optional bool acu_error_status = 2;
+  optional bool front_wide_cam_block_status = 3;
+  optional bool front_radar_blind_status = 4;
+  optional bool side_cam_block_status = 5;
+  optional bool pas_error_status = 6;
+}

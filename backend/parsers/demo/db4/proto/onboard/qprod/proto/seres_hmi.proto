@@ -1,0 +1,14 @@
+syntax = "proto2";
+package snoah.qprod;
+
+message SeresAssistStatus {
+  enum BsdState {
+    BSD_STATE_OFF = 0;
+    BSD_STATE_STANDBY = 1;
+    BSD_STATE_ACTIVE = 2;
+    BSD_STATE_FAULT = 3;
+  }
+
+  optional BsdState bsd_left_state = 1;
+  optional BsdState bsd_right_state = 2;
+}

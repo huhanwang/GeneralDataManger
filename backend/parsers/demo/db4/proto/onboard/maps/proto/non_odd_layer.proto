@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/maps/dynamic_layer/proto/non_odd.proto";
+
+message NonODDMetaProto {
+  // History version list.
+  // V0.0: init version, apply to navinfo hdlite city noa.
+  // Current version: <V0.0>.
+  optional string version = 1;
+}
+
+message NonODDObjectProto {
+  optional sfixed64 id = 1;
+  optional GeoPolygonProto polygon = 2;
+  optional non_odd.Reason reason = 3;
+}
+
+message NonODDLayerProto {
+  optional NonODDMetaProto meta = 1;
+  repeated NonODDObjectProto non_odds = 2;
+}

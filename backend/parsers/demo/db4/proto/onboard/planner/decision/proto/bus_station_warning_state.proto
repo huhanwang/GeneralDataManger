@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package snoah.planner;
+import "google/protobuf/timestamp.proto";
+
+message BusStationObjectInfo {
+  optional string object_id = 1;
+  optional double duration = 2;
+  optional google.protobuf.Timestamp start_time = 3;
+}
+
+message BusStationWarningStateProto {
+  repeated BusStationObjectInfo bus_station_objects = 1;
+}

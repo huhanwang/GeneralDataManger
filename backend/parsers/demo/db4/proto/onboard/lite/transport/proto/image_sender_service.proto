@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_camera.proto";
+
+message SendImageRequest {
+  optional CameraId camera_id = 1;
+  optional ImageInfo image_info = 2;
+  optional bytes encoded_image = 3;
+}
+
+message SendImageResponse {
+  optional string message = 1;
+}
+
+service ImageSender {
+  rpc SendImage(SendImageRequest) returns (SendImageResponse);
+}

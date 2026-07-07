@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package snoah;
+
+enum LogWarningType {
+  LOG_WARING_NONE = 0;
+  READ_IMAGE_FAILED = 1;
+  RUN_GDC_FAILED = 2;
+  PARAM_ABNORMAL = 3;
+  CRASH = 4;
+  NO_HEARTBEAT = 5;
+  LOST_CONNECTION = 6;
+  AD_STARTUP_TIMEOUT = 7;
+  DYNAMIC_LAYER_STATUS = 8;
+}

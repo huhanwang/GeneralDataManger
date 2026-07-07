@@ -1,0 +1,64 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/product_event";
+
+message ProductEventProto {
+  enum ProductEventType {
+    reserved 1, 2, 3, 10, 11, 20;
+
+    // ACC engage/disengage related events
+    reserved 100, 101, 102;
+
+    // ICA engage/disengage related events
+    reserved 200, 201, 202, 203, 204, 205;
+
+    // NCA engage/disengage related events
+    reserved 300, 301, 302, 303, 304, 305;
+
+    // NCA function settings
+    NCA_DRIVER_PRIORITY_SPEEDLIMIT = 306;
+    NCA_MAP_PRIORITY_SPEEDLIMIT = 307;
+    NCA_MAP_PRIORITY_SPEEDR_EDUCTION = 308;
+    NCA_DRIVER_PRIORITY = 309;
+    NCA_MAP_PRIORITY = 310;
+    NCA_NUDGE_LARGE_VEHICLE = 311;
+    NCA_NUDGE_OBJECT = 312;
+
+    // chassis button event
+    CHASSIS_TURNLEVER_DOWN = 400;
+    CHASSIS_TURNLEVER_UP = 401;
+
+    // nca events
+    reserved 500, 501, 502, 503;
+    NCA_ALC_TURN_NEED_CONFIRM_CLOSE = 504;
+    NCA_ALC_TURN_DRIVER_NOT_RESPONSE = 505;
+    NCA_ALC_NO_NEED_CONFIRM = 506;
+    NCA_ALC_NEED_CONFIRM_OPEN = 507;
+
+    NCA_TTC_LC_OPEN = 510;
+
+    // NCA enter ramp turn, now merged to alc turn message
+    reserved 520, 521, 522, 523;
+    NCA_FIFTY_METER_TO_ENTER_RAMP = 524;
+    NCA_ENTER_RAMP_TIME_OUT = 525;
+
+    // audio
+    AUDIO_START_RECORD = 600;
+
+    // apa
+    APA_PARKING_SELECTION_STATUS = 700;
+    APA_PARKING_NEW_PARKING = 701;
+
+    // r2
+    ARRIVED_STATION_INDEX = 1000;
+  }
+
+  optional ProductEventType event_type = 1;
+  optional string message = 2;
+}
+
+message TlrOkInfo {
+  optional bool decelerate_request = 1;
+  optional double ego_to_end_dist = 2;
+}

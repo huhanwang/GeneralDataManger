@@ -1,0 +1,50 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/proto/localization.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/hpp/hpp_mapping/protos/feature_map.proto";
+
+// Besides formal message in OnlineMapProto, other debugging message would be
+// defined here.
+message FeatureMappingDebugProto {
+  optional hpp_mapping.FeatureMapProto odometry_debug_proto = 1;
+  optional hpp_mapping.FeatureMapProto loop_closure_debug_proto = 2;
+}
+
+message HppTrajectoryNodeProto {
+  optional double timestamp = 1;
+  optional Vec3dProto trajectory_pose = 2;
+  optional double theta = 3;  // Yaw in Radian.
+  optional bool intersection = 4 [default = false];
+  optional int32 id = 5;
+  optional double curvature = 6;
+}
+
+message HppTrajectoryProto {
+  optional int32 trajectory_id = 1 [default = 1];
+  repeated HppTrajectoryNodeProto trajectory_nodes = 2;
+}
+
+message SemanticMappingDebugProto {
+  optional HppTrajectoryProto hpp_original_trajectory = 1;
+  optional HppTrajectoryProto hpp_smoothed_trajectory = 2;
+}
+
+message HppMappingDebugProto {
+  optional LiteHeader header = 1;
+  optional CoordinateConverterProto coordinate_converter = 2;
+  optional FeatureMappingDebugProto feature_mapping_debug_proto = 3;
+  optional SemanticMappingDebugProto semantic_mapping_debug_proto = 4;
+}
+
+message CoverNodeProto {
+  optional Vec3dProto pos = 1;
+  optional bool cover_left = 2;
+  optional bool cover_right = 3;
+}
+
+message CoverNodeDebugProto {
+  repeated CoverNodeProto cover_nodes = 1;
+}

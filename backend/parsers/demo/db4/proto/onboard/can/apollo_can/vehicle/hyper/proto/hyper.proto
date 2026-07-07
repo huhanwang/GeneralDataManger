@@ -1,0 +1,117 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Wheelspeed_Front_300 {
+  enum Whl_spd_fr_validType {
+    WHL_SPD_FR_VALID_NOT_VALID = 0;
+    WHL_SPD_FR_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_fr_validType {
+    WHL_SPD_DIREC_FR_VALID_NOT_VALID = 0;
+    WHL_SPD_DIREC_FR_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_frType {
+    WHL_SPD_DIREC_FR_FORWARD = 0;
+    WHL_SPD_DIREC_FR_BACKWARD = 1;
+  }
+  enum Whl_spd_fl_validType {
+    WHL_SPD_FL_VALID_NOT_VALID = 0;
+    WHL_SPD_FL_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_fl_validType {
+    WHL_SPD_DIREC_FL_VALID_NOT_VALID = 0;
+    WHL_SPD_DIREC_FL_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_flType {
+    WHL_SPD_DIREC_FL_FORWARD = 0;
+    WHL_SPD_DIREC_FL_BACKWARD = 1;
+  }
+  // Quality/fault information to current wheel speed of front right wheel []
+  // [0|1]
+  optional Whl_spd_fr_validType whl_spd_fr_valid = 1;
+  // Current wheel speed information of front right wheel [km/h] [0|240]
+  optional double whl_spd_fr = 2;
+  //  FR wheel rotate direction validity [] [0|1]
+  optional Whl_spd_direc_fr_validType whl_spd_direc_fr_valid = 3;
+  // FR wheel rotate direction [] [0|1]
+  optional Whl_spd_direc_frType whl_spd_direc_fr = 4;
+  // Quality/fault information to current wheel speed of front left wheel []
+  // [0|1]
+  optional Whl_spd_fl_validType whl_spd_fl_valid = 5;
+  // Current wheel speed information of front left wheel [km/h] [0|240]
+  optional double whl_spd_fl = 6;
+  // FL wheel rotate direction validity [] [0|1]
+  optional Whl_spd_direc_fl_validType whl_spd_direc_fl_valid = 7;
+  // FL wheel rotate direction [] [0|1]
+  optional Whl_spd_direc_flType whl_spd_direc_fl = 8;
+}
+
+// Report Message.
+message Wheel_Speed_Rear_301 {
+  enum Whl_spd_rr_validType {
+    WHL_SPD_RR_VALID_NOT_VALID = 0;
+    WHL_SPD_RR_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_rr_validType {
+    WHL_SPD_DIREC_RR_VALID_NOT_VALID = 0;
+    WHL_SPD_DIREC_RR_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_rrType {
+    WHL_SPD_DIREC_RR_FORWARD = 0;
+    WHL_SPD_DIREC_RR_BACKWARD = 1;
+  }
+  enum Whl_spd_rl_validType {
+    WHL_SPD_RL_VALID_NOT_VALID = 0;
+    WHL_SPD_RL_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_rl_validType {
+    WHL_SPD_DIREC_RL_VALID_NOT_VALID = 0;
+    WHL_SPD_DIREC_RL_VALID_VALID = 1;
+  }
+  enum Whl_spd_direc_rlType {
+    WHL_SPD_DIREC_RL_FORWARD = 0;
+    WHL_SPD_DIREC_RL_BACKWARD = 1;
+  }
+  // Quality/fault information to current wheel speed of rear right wheel []
+  // [0|1]
+  optional Whl_spd_rr_validType whl_spd_rr_valid = 1;
+  // Current wheel speed information of rear right wheel [km/h] [0|240]
+  optional double whl_spd_rr = 2;
+  // RR wheel rotate direction validity [] [0|1]
+  optional Whl_spd_direc_rr_validType whl_spd_direc_rr_valid = 3;
+  // RR wheel rotate direction [] [0|1]
+  optional Whl_spd_direc_rrType whl_spd_direc_rr = 4;
+  // Quality/fault information to current wheel speed of rear left wheel []
+  // [0|1]
+  optional Whl_spd_rl_validType whl_spd_rl_valid = 5;
+  // Current wheel speed information of rear left wheel [km/h] [0|240]
+  optional double whl_spd_rl = 6;
+  // RL wheel rotate direction validity [] [0|1]
+  optional Whl_spd_direc_rl_validType whl_spd_direc_rl_valid = 7;
+  // RL wheel rotate direction [] [0|1]
+  optional Whl_spd_direc_rlType whl_spd_direc_rl = 8;
+}
+
+// Report Message.
+message Gear_302 {
+  enum GearType {
+    GEAR_INVALID = 0;
+    GEAR_D = 1;
+    GEAR_N = 2;
+    GEAR_R = 3;
+    GEAR_P = 4;
+  }
+  // [] [0|7]
+  optional GearType gear = 1;
+}
+
+message Hyper {
+  // Report message.
+  optional Wheelspeed_Front_300 wheelspeed_front_300 = 1;
+  // Report message.
+  optional Wheel_Speed_Rear_301 wheel_speed_rear_301 = 2;
+  // Report message.
+  optional Gear_302 gear_302 = 3;
+}

@@ -1,0 +1,33 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message SensorScenario {
+  repeated CameraId cameras = 1;
+  repeated LidarId lidars = 2;
+  repeated RadarId radars = 3;
+  optional string scenario = 4;
+}
+
+message IgnoreChecker {
+  message ChannelCheck {
+    optional LiteModuleName module_id = 1;
+    optional string channel = 2;
+    optional string domain = 3;
+    optional string sensor_id = 4;
+  }
+  repeated ChannelCheck channel_checks = 1;
+  optional string scenario = 2;
+}
+
+message SensorScenarioConfig {
+  repeated SensorScenario sensor_scenarios = 5;
+  repeated IgnoreChecker ignore_checkers = 6;
+  reserved 1, 2, 3, 4;
+}

@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package snoah.tcn_model;
+option go_package = "qcraft-proto.ai/onboard/perception/trackerr2/track_classifier/proto/tcn_model";
+
+enum TcnType {
+  TCN_VEHICLE = 0;
+  TCN_PEDESTRIAN = 1;
+  TCN_CYCLIST = 2;
+  TCN_TRICYCLIST = 3;
+  TCN_VEGETATION = 4;
+  TCN_BARRIER = 5;
+  TCN_UNKNOWN = 6;
+}
+
+enum TcnVehLampType {
+  TCN_VEHLAMP_LIGHTOFF = 0;
+  TCN_VEHLAMP_STOP = 1;
+  TCN_VEHLAMP_TURNLEFT = 2;
+  TCN_VEHLAMP_TURNRIGHT = 3;
+  TCN_VEHLAMP_OTHERS = 4;
+}

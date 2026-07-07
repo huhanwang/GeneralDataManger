@@ -1,0 +1,26 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+message BevDetectionKeypointProto {
+  optional float confidence = 1;
+  enum BevDetectionKeypointType {
+    FRONT_CENTER = 1;
+    REAR_CENTER = 2;
+  }
+  optional BevDetectionKeypointType type = 2;
+  optional float x = 3;
+  optional float y = 4;
+}

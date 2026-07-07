@@ -1,0 +1,55 @@
+syntax = "proto2";
+package snoah.lite;
+
+import "onboard/proto/q_state.proto";
+import "onboard/proto/q_command.proto";
+import "onboard/proto/q_vehicle_info.proto";
+import "onboard/proto/q_log_info.proto";
+import "onboard/proto/q_run_event.proto";
+import "onboard/common/proto/scene_setting.proto";
+
+message CommandRequest {
+  optional int64 timestamp = 1;  // unit: us
+  optional QCommand command = 2;
+}
+
+message CommandResponse {
+  optional int64 timestamp = 1;  // unit: us
+}
+
+message StateRequest {
+  optional int64 timestamp = 1;  // unit: us
+}
+
+message StateResponse {
+  optional int64 timestamp = 1;  // unit: us
+  optional QState state = 2;
+}
+
+message InfoRequest {
+  optional int64 timestamp = 1;  // unit: us
+}
+
+message InfoResponse {
+  optional int64 timestamp = 1;  // unit: us
+  optional QVehicleInfo vehicle_info = 2;
+  optional QLogInfo log_info = 3;
+
+  optional SceneSettingsProto scene_settings = 4;
+}
+
+message RunEventRequest {
+  optional int64 timestamp = 1;  // unit: us
+  repeated QRunEvent run_events = 2;
+}
+
+message RunEventResponse {
+  optional int64 timestamp = 1;  // unit: us
+}
+
+service PortalService {
+  rpc Command(CommandRequest) returns (CommandResponse);
+  rpc State(StateRequest) returns (stream StateResponse);
+  rpc Info(InfoRequest) returns (InfoResponse);
+  rpc RunEvent(RunEventRequest) returns (RunEventResponse);
+}

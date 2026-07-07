@@ -1,0 +1,21 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message PathStatInfoProto {
+  optional double length = 1;
+  optional double non_motor_len = 2;
+  optional int32 traffic_light_num = 3;
+  optional int32 left_turn_num = 4;
+  optional int32 right_turn_num = 5;
+  optional int32 u_turn_num = 6;
+  optional int32 intersection_num = 7;
+  // Solid lane change at origin
+  optional bool solid_lc_at_origin = 8;
+  // Infeasible consecutive lane chagne at origin
+  optional bool feasible_lc_at_origin = 9;
+  repeated sfixed64 non_motor_ids = 11;
+  repeated sfixed64 u_turn_ids = 12;
+  repeated sfixed64 left_turn_ids = 13;
+}

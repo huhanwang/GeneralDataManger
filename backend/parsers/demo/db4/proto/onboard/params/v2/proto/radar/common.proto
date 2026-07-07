@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package snoah;
+
+enum RadarModel {
+  RADAR_CONTI408 = 0;
+  RADAR_CONTI430 = 1;
+  RADAR_CONTI308 = 2;
+  RADAR_CONTI410 = 3;
+  RADAR_ZMSDR1 = 4;
+  RADAR_DESSAYA02 = 5;
+  RADAR_BOSCHA02 = 6;
+  RADAR_SSTK776 = 7;
+  RADAR_BOSCHCR5CP = 8;
+}
+
+message RadarCommonProto {
+  optional int32 input_interval = 1;
+  optional int32 output_interval = 2;
+}

@@ -1,0 +1,88 @@
+syntax = "proto2";
+
+package snoah.tflabeling;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/tl_label";
+
+message LightInfo {
+  // center x and center y of light
+  optional double x = 1;
+  optional double y = 2;
+  enum Label {
+    UNKNOWN = 0;
+    INACTIVE = 1;
+    RED = 2;
+    YELLOW = 3;
+    GREEN = 4;
+    RED_LEFT_ARROW = 5;
+    YELLOW_LEFT_ARROW = 6;
+    GREEN_LEFT_ARROW = 7;
+    RED_RIGHT_ARROW = 8;
+    YELLOW_RIGHT_ARROW = 9;
+    GREEN_RIGHT_ARROW = 10;
+    RED_UP_ARROW = 11;
+    YELLOW_UP_ARROW = 12;
+    GREEN_UP_ARROW = 13;
+    RED_DOWN_ARROW = 14;
+    YELLOW_DOWN_ARROW = 15;
+    GREEN_DOWN_ARROW = 16;
+    RED_FLASHING_LIGHT_ON = 17;
+    RED_FLASHING_LIGHT_OFF = 18;
+    YELLOW_FLASHING_LIGHT_ON = 19;
+    YELLOW_FLASHING_LIGHT_OFF = 20;
+    GREEN_FLASHING_LIGHT_ON = 21;
+    GREEN_FLASHING_LIGHT_OFF = 22;
+  }
+  optional Label label = 3;
+}
+
+message Countdown {
+  enum Number {
+    UNKNOWN = 0;
+    One = 1;
+    Two = 2;
+    Three = 3;
+    Four = 4;
+    Five = 5;
+    Six = 6;
+    Seven = 7;
+    Eight = 8;
+    Nine = 9;
+    GreaterThanNine = 10;
+  }
+  // center x and center y of countdown
+  optional double x = 1;
+  optional double y = 2;
+  optional Number number = 3;
+}
+
+message LightBodyInfo {
+  // center x and center y of light body
+  optional double x = 1;
+  optional double y = 2;
+  optional double w = 3;
+  optional double h = 4;
+  // whether the light body is clearly seen
+  optional bool confident = 5;
+  repeated LightInfo light_info = 6;
+  repeated Countdown countdown = 7;
+}
+
+message TLRegion {
+  // center x and center y of light region
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+}
+
+enum TLLabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_21_8_10 = 1;  // Added countdown.
+}
+
+message TLLabelingDataProto {
+  optional string name = 1;
+  repeated LightBodyInfo light_body_info = 2;
+  optional TLRegion light_region = 3;
+  optional string version = 4;
+}

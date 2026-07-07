@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package snoah;
+
+message NavInfoAomRawMessage {
+  optional double timestamp = 1;
+  enum MessageType {
+    ROUTE_MATCH_RESULT = 1;
+    SYSSTATE_HEART_BEAT = 2;
+    FOREST_DRIVING_SPACE = 3;
+    VEHICLE_INFO = 4;
+    DRIVING_SPACE = 5;
+    MANEUVERUPDATE = 6;
+    TRAFFIC_EVENT_LIST = 7;
+    TRAFFIC_FLOW_LIST = 8;
+    WEATHER_INFO_LIST = 9;
+  }
+  optional MessageType message_type = 2;
+  optional int32 sequence_id = 3;
+  optional int32 sequence_total = 4;
+  optional bytes message = 5;
+}
+
+message NavInfoAomRawMessages {
+  repeated NavInfoAomRawMessage messages = 1;
+}

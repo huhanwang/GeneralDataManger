@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/sd/navinfo/nisdk/proto/nisdk_debug_msg.proto";
+
+message NiSdkDebugMessageProto {
+  optional LiteHeader header = 1;
+  optional NiSdkDebugMessage ni_sdk_debug_message = 2;
+}

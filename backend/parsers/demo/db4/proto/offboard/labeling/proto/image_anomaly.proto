@@ -1,0 +1,137 @@
+syntax = "proto2";
+
+package snoah.image_anomaly;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/image_anomaly";
+
+import "onboard/proto/lite_camera.proto";
+
+// Next ID: 6
+enum AnomalyLabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_23_1_10 = 1;   // Added Version details.
+  V_23_2_13 = 2;   // add SequenceAnomalyLabel
+  V_23_03_02 = 3;  // adapt to new labeling guidelines
+  V_23_05_08 = 4;  // add vehicle taillight blooming
+  V_23_06_13 = 5;  // add tunnel in out glare
+}
+
+// Next ID: 22
+enum AnomalyCategory {
+  OCCLUSION = 0 [deprecated = true];
+  GLARE = 1 [deprecated = true];
+  GLARE_VEHICLE_HEADLIGHT = 2;
+  GLARE_VEHICLE_TAILLIGHT = 3;
+  GLARE_STREET_LIGHT = 4;
+  GLARE_TRAFFIC_LIGHT = 5;
+  GLARE_SUN = 6;
+  GLARE_OTHER = 7;
+  OCCLUSION_WINDSHIELD_WIPER = 8;
+  OCCLUSION_MUD_DOTS = 9;
+  OCCLUSION_LEAVES = 10;
+  OCCLUSION_SNOW_FROST_FLAKES = 11;
+  BLOOMING_VEHICLE_HEADLIGHT = 12;
+  BLOOMING_TRAFFIC_LIGHT = 13;
+  BLOOMING_STREET_LIGHT = 14;
+  BLOOMING_OTHER = 15;
+  OCCLUSION_LARGE_WATER_DROPLETS = 16;
+  OCCLUSION_SCATTERED_WATER_DROPLETS = 17;
+  BLUR = 18;
+  ANOMALY_UNKNOWN = 19;
+  BLOOMING_VEHICLE_TAILLIGHT = 20;
+  GLARE_TUNNEL_IN_OUT = 21;
+}
+
+enum ImgFailTypes {
+  IMG_NORMAL = 0;
+  IMG_BLUR = 1;     // Image Blur (Rain drop/Loss of focus)
+  IMG_SHELTER = 2;  // Image Blockage
+  IMG_FREEZE = 4;   // Image Freeze
+  IMG_GLARE = 8;    // Image Glare
+  IMG_ANOMALY_UNKNOWN = 3;
+};
+
+// Next ID: 7
+// deprecated
+enum OcclusionType {
+  WINDSHIELD_WIPER = 0;
+  LEAVES = 1;
+  MUD_DOTS = 2;
+  SNOW_FROST_FLAKES = 3;
+  WATER_DROPLETS = 4;
+  BLOOMING_LIGHT = 5;
+  OCCLUSION_OTHERS = 6;
+}
+
+// Next ID: 6
+// deprecated
+enum GlareType {
+  SUNSHINE = 0;
+  VEHICLE_HIGH_BEAM = 1;
+  STREET_LIGHT = 2;
+  TUNNEL_IN_OUT = 3;
+  REFLECTIVE = 4;
+  GLARE_OTHERS = 5;
+}
+
+// Next ID: 12
+message AnomalyBboxLabel {
+  optional int32 bbox_id = 1;
+  optional double area_ratio = 2 [deprecated = true];  // bbox area / image area
+  optional int32 x = 3;                                // left top x coordinate
+  optional int32 y = 4;                                // left top y coordinate
+  optional int32 bbox_height = 5;
+  optional int32 boox_width = 6;
+  optional AnomalyCategory anomaly_category = 7;
+  // Fine-grained anomaly type
+  repeated OcclusionType occlusion_type = 8 [deprecated = true];
+  repeated GlareType glare_type = 9 [deprecated = true];
+  // anomaly area in bbox / bbox area
+  enum IntraBboxAnomalyRatio {
+    RATIO_25 = 0;
+    RATIO_50 = 1;
+    RATIO_75 = 2;
+    RATIO_100 = 3;
+  }
+  optional IntraBboxAnomalyRatio intra_bbox_anomaly_ratio = 10;
+  // how clear the bbox region is, filled 0~2 only when the category is blur
+  // other categories should be filled 3
+  enum Visibility {
+    SLIGHTLY_INVISIBLE = 0;
+    MODERATELY_INVISIBLE = 1;
+    SERIOUSLY_INVISIBLE = 2;
+    COMPLETELY_INVISIBLE = 3;
+  }
+  optional Visibility visibility = 11;
+}
+
+// proto for a single image
+// Next ID: 11
+message ImageAnomalyLabel {
+  optional AnomalyLabelingPolicyVersion version = 1;
+  optional string image_name = 2;  // image name
+  optional int32 height = 3;       // image height
+  optional int32 width = 4;        // image width
+  optional bool is_normal = 5
+      [default =
+           true];  // whether the image is normal or abnormal (ie. anomaly )
+  repeated AnomalyBboxLabel anomaly_bbox_label = 6;
+  optional int32 frame_id = 7 [default = -1];
+  optional double timestamp = 8;
+  optional CameraId camera_id = 9;
+  enum SceneLabel {
+    TUNNEL_IN_OUT = 0;
+  }
+  optional SceneLabel scene_label = 10;
+  repeated ImgFailTypes img_fail_types = 11;
+}
+
+// proto for a sequence
+// Next ID: 7
+message SequenceAnomalyLabel {
+  optional AnomalyLabelingPolicyVersion version = 1;
+  optional string run_name = 2;
+  optional CameraId camera_id = 3;
+  optional double start_timestamp = 4;
+  optional double end_timestamp = 5;
+  repeated ImageAnomalyLabel image_anomaly_label = 6;
+}

@@ -1,0 +1,111 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message ObstacleDebug {
+  optional uint64 id = 1;  // change the original string type to unsigned long
+  optional float t = 2;
+  optional float ds = 3;
+  optional float dl = 4;
+  optional float v = 5;
+  optional float a = 6;
+  optional uint32 lat_decision = 7;
+  optional uint32 lon_decision = 8;
+  optional float time_buffer = 9;
+}
+
+message ACCFuncInfo {
+  optional double time_stamp = 1;
+  optional ObstacleDebug leader_car = 2;
+  optional ObstacleDebug nudge_car = 3;
+  optional float acc_desired_ax = 4;
+  optional bool target_cutin_flag = 5;
+  optional string yield_obstacle_id = 6;
+}
+
+message DrivingFuncStatus {
+  optional double time_stamp = 1;
+  optional uint32 acc_mode = 2;
+  optional uint32 lka_mode = 3;
+  optional uint32 alc_mode = 4;
+  optional uint32 noa_mode = 5;
+  optional bool ldp_enable = 6;
+  optional uint32 ldp_reason = 7;
+  optional bool noa_quit_with_lka = 8;
+}
+
+message EnvEgoState {
+  enum LightType {
+    Light_Natruallight = 0;
+    Light_Lamplight = 1;
+    Light_Hardlight = 2;
+    Light_Lowsun = 3;
+    Light_Dark = 4;
+    Light_Other = 5;
+  }
+
+  enum GPSStatus {
+    GPSStatus_INVALID = 0;
+    GPSStatus_RTK = 1;
+    GPSStatus_GPS = 2;
+    GPSStatus_IMUFUSION = 3;
+  }
+
+  optional uint64 time_stamp = 1;
+  optional uint32 map_lane_number = 2;
+  optional uint32 ego_map_lane_index = 3;
+  optional uint32 ego_per_lane_index = 4;
+  optional float dist_start_split_point = 5;
+  optional float dist_end_split_point = 6;
+  optional float dist_start_merge_point = 7;
+  optional sint64 dist_end_merge_point = 8;
+  optional sint64 dist_tunnel_in_front = 9;
+  optional bool location_module_status = 10;
+  optional bool ego_vehicle_on_highway = 11;
+  optional LightType lighttype = 12;
+  optional GPSStatus gps_status = 13;
+}
+
+message ParkingSignalToBSD {
+  optional uint64 time_stamp = 1;
+  optional uint32 left_slot_number = 2;
+  optional uint32 right_slot_number = 3;
+  optional uint32 left_lat_vehicle_num = 4;
+  optional uint32 right_lat_vehicle_num = 5;
+  optional uint32 reserved = 6;
+}
+
+message SeatOccupy {
+  enum SeatOccupition {
+    SeatOccupitionUnknow = 0;
+    SeatOccupitionOnePerson = 1;
+    SeatOccupitionTwoPerson = 2;
+    SeatOccupitionMomAndBaby = 3;
+    SeatOccupitionMoreThanTwoPerson = 4;
+    SeatOccupitionReserve = 5;
+  }
+  optional SeatOccupition oms_occu_info_driver = 1;
+  optional SeatOccupition oms_occu_info_codriver = 2;
+  optional SeatOccupition oms_occu_info_ml_pessenger = 3;
+  optional SeatOccupition oms_occu_info_mm_pessenger = 4;
+  optional SeatOccupition oms_occu_info_mr_pessenger = 5;
+  optional SeatOccupition oms_occu_info_rl_pessenger = 6;
+  optional SeatOccupition oms_occu_info_rm_pessenger = 7;
+  optional SeatOccupition oms_occu_info_rr_pessenger = 8;
+}
+
+message HUInterfaceInfo {
+  optional ACCFuncInfo acc_info = 1;
+  optional DrivingFuncStatus adas_func_status = 2;
+  optional EnvEgoState env_infomation = 3;
+  optional ParkingSignalToBSD park_signal_to_bsd = 4;
+  optional SeatOccupy seat_occupy = 5;
+}
+
+message HuInterfaceInfoProto {
+  optional LiteHeader header = 1;
+  optional HUInterfaceInfo hu_interface_info = 2;
+}

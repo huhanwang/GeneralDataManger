@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/proto/localization.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/planner/router/proto/route_navi_info.proto";
+import "onboard/planner/router/proto/route_manager_output.proto";
+import "onboard/maps/proto/online_semantic_map.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/maps/map_fusion/proto/sd_fused_intersection.proto";
+
+message MapFusionResultProto {
+  optional LiteHeader header = 1;
+
+  optional OnlineSemanticMapProto vision_map = 2;
+  optional MaplessNaviInfoProto mapless_navi_info = 3;
+
+  optional SemanticMapProto hd_map = 4;
+  optional planner.RouteManagerOutputProto route_manager_output = 5;
+  optional LocalizationTransformProto localization_transform = 6;
+
+  repeated Vec2dProto reference_path_points = 7;
+  optional SdFusedIntersectionProto sd_fused_intersection_proto = 8;
+}
+
+// Deprecated.
+message HdFusionNaviResultProto {
+  optional LiteHeader header = 1;
+}

@@ -1,0 +1,176 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "snoah.proto.ai/onboard/nets/proto/net_param";
+
+import "onboard/proto/ads.proto";
+
+// Information for input/output tensors
+message TensorInfo {
+  enum DataType {
+    UNKNOWN = -1;
+    FP32 = 0;
+    INT32 = 1;
+    INT64 = 2;
+    INT8 = 3;
+    UINT8 = 4;
+    INT16 = 5;
+    UINT16 = 6;
+    NUM_DATATYPE = 7;
+    FP16 = 8;
+  }
+  optional string name = 1;
+  repeated int32 shape = 2; // n, c, h, w
+  optional DataType data_type = 3 [default = FP32];
+  repeated int32 min_shape = 4; // n, c, h, w
+  repeated int32 opt_shape = 5; // n, c, h, w
+  repeated int32 max_shape = 6; // n, c, h, w
+  optional bool is_cached = 7 [default = true]; // j5
+}
+
+// Next Id: 36
+// A message defines the ML model parameters such as input/output layers, memory
+// usage and so on.
+message NetParam {
+  // Device type, we run the model on this device
+  enum DeviceType {
+    CPU = 0;
+    GPU = 1;
+    DLA = 2;
+    BPU = 3;
+    HTP = 4;
+  }
+  optional DeviceType device_type = 21;
+
+  // Device ID for cpu, gpu, bpu
+  enum DeviceID {
+    DEVICE_0 = 0;
+    DEVICE_1 = 1;
+    DEVICE_2 = 2;
+    DEVICE_3 = 3;
+  }
+  optional DeviceID device_id = 22 [default = DEVICE_0];
+
+  // Backend type, we run the model on this inference engine backend
+  enum BackendType {
+    ONNX = 0;
+    TENSORRT = 1;
+    LIBTORCH = 2;
+    HBDNN = 3;
+    QUALCOMM = 4;
+  }
+  optional BackendType backend_type = 23;
+
+  // Model path.
+  optional string model_path = 1 [deprecated = true];
+
+  // A map from input name to layer name map.
+  map<string, string> input_layer_map = 2;
+
+  // A map from output name to layer name map.
+  map<string, string> output_layer_map = 3;
+
+  // Decides how much gpu to allocate for the net. Will only take effects when
+  // fraction is in range (0., 1.]. Default value meaning no gpu usage fraction
+  // setting.
+  optional float gpu_usage_fraction = 4 [deprecated = true];
+
+  // GPU id that determines which gpu to run the net on. Default to -1 meaning
+  // not assigning a specific gpu to the net.
+  optional GpuId gpu_id = 5 [deprecated = true];
+
+  // If true, run the net on GPU; otherwise, run it on CPU.
+  optional bool use_gpu = 6 [deprecated = true];
+
+  // trt model max batch size.
+  optional int32 max_batch_size = 8 [default = 64];
+  optional int32 opt_batch_size = 30 [default = 16];
+  optional int32 min_batch_size = 31 [default = 1];
+
+  // trt model precision (TYPE_FP32/TYPE_FP16/TYPE_INT8).
+  optional string precision = 9 [deprecated = true];
+
+  enum PrecisionType {
+    INT4 = 0;
+    INT8 = 1;
+    FP16 = 2;
+    FP32 = 3;
+    TF32 = 4;
+  }
+  optional PrecisionType precision_type = 24 [default = FP32];
+
+  // whether trt model.
+  optional bool use_trt = 10 [deprecated = true];
+
+  // features name of mist net model
+  repeated string feature_names = 12;
+
+  // whether libtorch model.
+  optional bool use_libtorch = 13 [deprecated = true];
+
+  // CPU model path.
+  optional string cpu_model_path = 7 [deprecated = true];
+
+  // path to libtorch cpu model.
+  optional string libtorch_cpu_path = 14 [deprecated = true];
+
+  // path to libtorch gpu model.
+  optional string libtorch_gpu_path = 15 [deprecated = true];
+
+  // ONNX model path
+  optional string onnx_model_path = 25;
+
+  // path to trt model.
+  optional string trt_model_path = 11;
+
+  // path to hbdnn model
+  optional string hbdnn_model_path = 26;
+
+  // path to libtorch model
+  optional string libtorch_model_path = 27;
+
+  // path to qualcomm model
+  optional string qualcomm_model_path = 38;
+
+  // path to calibration
+  optional string calib_path = 32;
+
+  // input tensor's name and shape
+  repeated TensorInfo input_tensor_list = 16;
+
+  // output tensor's name and shape
+  repeated TensorInfo output_tensor_list = 17;
+
+  // pixel mean of input image
+  repeated double input_mean = 18;
+
+  // pixel variance of input image
+  repeated double input_std = 19;
+
+  // input image channel is rgb or bgr, default is rgb
+  optional bool is_rgb = 20 [default = true];
+
+  // priority for qnn model
+  optional int32 priority = 28 [default = 0];
+
+  // whether to dynamic batch
+  optional bool dynamic_batch_size = 29 [default = false];
+
+  // model name
+  optional string name = 33;
+
+  // timeout milliseconds to wait for the preceding model
+  optional int32 timeout_milliseconds_to_wait = 34 [default = 0];
+
+  // according to priority, the name of the preceding model
+  optional string preceding_model_name = 35;
+
+  // model idx in packed hbdnn model file
+  optional int32 model_idx = 36 [default = 0];
+
+  // whether to use nv12 separate data type
+  // Y and UV data are stored in separate memory
+  optional bool use_nv12_separate = 37 [default = false];
+
+  optional string custom_yaml_config_path = 39;
+}

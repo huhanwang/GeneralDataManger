@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+message ParkUUorOC {
+  enum PolygonType {
+    TYPE_NONE = 0x0;
+    TYPE_UU = 0x1;          // 基于lidar的uu
+    TYPE_OC_FENCE = 0x2;    // vision_oc_fence
+    TYPE_OC_GENERAL = 0x3;  //   vision_oc_general
+  }
+
+  enum PolygonColor {
+    COLOR_NONE = 0x0;
+    COLOR_YELLOW = 0x1;  // reserve
+    COLOR_RED = 0x2;     // lidar uu 功能目标
+  }
+
+  optional string id = 1;
+  optional PolygonType type = 2;
+  repeated Point3D uuoroc_polygon = 3;
+  optional Point3D center_point = 4;
+  optional double heading_angle = 5;
+  optional int32 hight_level = 6;
+  optional PolygonColor color = 7;
+}

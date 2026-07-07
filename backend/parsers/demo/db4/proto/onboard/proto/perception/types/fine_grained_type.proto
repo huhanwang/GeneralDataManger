@@ -1,0 +1,57 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+enum FineGrainedType {
+  FGT_PEDESTRIAN = 0;
+  FGT_VEHICLE_CAR = 1;
+  FGT_VEHICLE_TRUCK = 2;
+  FGT_VEHICLE_BUS = 3;
+  FGT_VEHICLE_UNKNOWN = 4;
+  FGT_CYCLIST = 5;
+  FGT_TRICYCLIST = 6;
+  FGT_UNKNOWN_TYPE = 7;  // FGT_UNKNOWN_TYPE is default type of FineGrainedType
+  FGT_FAKE_PED = 8;
+  FGT_FAKE_VEHICLE_CAR = 9;
+  FGT_FAKE_CYCLIST = 10;
+  FGT_MOTORCYCLIST = 11;
+  FGT_FOD = 12;
+  FGT_VEGETATION = 13;
+  FGT_BARRIER = 14;
+  FGT_ROAD = 15;
+  FGT_CONE = 16;
+  FGT_MIST = 17;
+  FGT_FLYING_BIRD = 18;
+  FGT_WARNING_TRIANGLE = 19;
+  FGT_TRAFFIC_LIGHT = 20;
+  FGT_TRAFFIC_SIGN = 21;
+  FGT_WHEEL = 22;
+  FGT_HOLE = 23;
+  FGT_HEADLIGHT = 24;
+  FGT_ROADBARRIER_TRIANGLE = 25;
+  FGT_ROADBARRIER_ANTI_COLLISION_BUCKET = 26;
+  FGT_ROADBARRIER_ANTI_COLLISION_WATER_FILLED = 27;
+  FGT_ROADBARRIER_ANTI_COLLISION_POST = 28;
+  FGT_ROADBARRIER_CEMENT_PILLAR = 29;
+  FGT_DRIVEABLE_SURFACE = 30;
+  FGT_SIDEWALK = 31;
+  FGT_MOVEABLE_OBJECT = 32;
+  FGT_UNMOVEABLE_OBJECT = 33;
+  FGT_SUSPEND_OBJECT = 34;
+  FGT_CURB = 35;
+  FGT_FENCE = 36;
+  FGT_NOISE = 37;
+  FGT_ROADBARRIER_GATE = 38;
+}

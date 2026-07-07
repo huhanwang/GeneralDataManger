@@ -1,0 +1,70 @@
+syntax = "proto2";
+
+package snoah.mapping.non_odd;
+
+import "onboard/common/proto/map_geometry.proto";
+
+enum Reason {
+  REASON_ROAD_LEVEL_NOT_SATISFIED = 1;  // 道路等级不满足, 例如非高速路段
+  REASON_ROAD_COMPONENT_NOT_SATISFIED =
+      2;  // 道路构成不满足, 例如地图车道宽度过窄
+  REASON_TOLLBOOTH = 3;  // 收费站 & 检查站区域
+  REASON_UNDER_CONSTRUCTION =
+      4;  // 施工或被借用路段, 例如地图采集时刻正在施工道路
+  REASON_FORKING_TUNNEL = 5;  // 隧道分叉, 长度大于 1.7km 或者存在分叉的道路
+  REASON_GENERICTUNNEL = 6;       // 普通隧道, 动态非 ODD
+  REASON_CURVATURE_EXCEEDED = 7;  // 曲率超限，例如大曲率弯道
+  REASON_SPECIAL_LANE = 8;  // 特殊车道路段，例如危化品车道专用道
+  REASON_LANE_WIDTH_INVALID = 9;  // 车道宽度不满足，例如超宽车道
+  REASON_NO_GUARD = 10;  // 无物理防护区域，例如护栏缺失路段
+  REASON_LANELINE_LOW_CONF = 11;  // 车道线低置信度路段
+  REASON_TRAFFIC_AREA = 12;  // 交通灯区域，例如主路上的红绿灯
+  REASON_CROSSWALK_AREA = 13;  // 斑马线区域，例如西藏部分路段有动物保护区域
+  REASON_STOPLINE_AREA = 14;  // 停止线区域
+  REASON_SHORT_TUNNEL = 15;  // 短隧道, 隧道按长度小于 1.7km 且没有分叉的道路
+  REASON_MISSING_MAP_AREA = 16;  // 地图缺失场景，例如建设之中的道路
+  REASON_VIRTUAL_LINE_CASE1 =
+      17;  // 虚拟车道线场景前后车道数一致，例如车道线缺失
+  REASON_VIRTUAL_LINE_CASE2 = 18;  // 虚拟车道线前后车道数不一致，例如车道线缺失
+  REASON_E_UNDER_CONSTRUCTION = 19;      // 修路路段, 动态非 ODD
+  REASON_INSENSITIVE_DEGRADE_AREA = 20;  // 无感降级区域, 动态非 ODD
+  REASON_POSITION_FAIL_AREA = 21;        // 定位失败区域, 动态非 ODD
+  REASON_STATIC_NONODD_KILLER =
+      22;  // 抹除静态非 ODD 区域, 不会透传给下游, 动态非 ODD
+  REASON_DYNAMIC_CONSTRUCTION_EVENT = 23;  // 动态施工事件, 动态非 ODD
+  REASON_CITY_INSENSITIVE_DEGRADE_AREA = 24;  // 城市无感降级, 动态非 ODD
+  REASON_CITY_SENSITIVE_DEGRADE_AREA = 25;    // 城市降级, 动态非 ODD
+  REASON_SENSITIVE_DEGRADE_AREA = 26;         // 降级区域, 动态非 ODD
+  REASON_ROAD_MODEL_CHANGE = 27;              // 路网变化, 动态非 ODD
+  REASON_AVOID_LANE_SEGMENTS = 28;            // 避行路段, 动态非 ODD
+}
+
+enum Type {
+  TYPE_GENERAL = 0;
+
+  TYPE_UNKNOWN = 255;
+}
+
+enum Action {
+  ACTION_QUIT = 0;
+
+  ACTION_UNKNOWN = 255;
+}
+
+// Object information describing non odd.
+// NOTE(luzou): reason, polygon is usually sufficient.
+message NonODDProto {
+  // Describe the reasons for non odd.
+  optional Reason reason = 1;
+  // Sourced from AutoNavi Map.
+  optional Type type = 2;
+  // Sourced from AutoNavi Map.
+  optional Action action = 3;
+  optional double start_fraction = 4;
+  optional double end_fraction = 5;
+  // 车道编号, 顺序自左向右从 0 开始编号, 为空时代表作用全部车道
+  repeated int32 lane_number = 6 [packed = true];
+  optional string version = 7;
+  optional GeoPolygonProto polygon = 8;
+  optional int64 id = 9;
+}

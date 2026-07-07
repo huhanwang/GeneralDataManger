@@ -1,0 +1,127 @@
+syntax = "proto2";
+
+package snoah;
+
+// [unit] [factor] [offset] [min|max]
+message FRS_Status_080 {
+  enum FRS_Status_BlkProg_Type {
+    FRS_ISNOT_BLOCKED = 0;
+    FRS_IS_BLOCKED = 1;
+  }
+  enum FRS_Fail_Type {
+    FRS_ISNOT_WORKING = 0;
+    FRS_IS_WORKING = 1;
+  }
+  enum FRS_MeasEnabled_Type {
+    FRS_MEASUREMENT_DISABLED = 0;
+    FRS_MEASUREMENT_ENABLED = 1;
+  }
+  enum FRS_Status_MisAlign_Type {
+    FRS_MISALIGN_UNKNOWN = 0;
+    FRS_MISALIGN_CALIBRATED = 1;
+    FRS_MISALIGN_SENSOR_MISALIGNMENT_DETECTED = 2;
+    FRS_MISALIGN_CALIBRATION_IN_PROGRESS = 3;
+    FRS_MISALIGN_UNCALIBRATABLE = 4;
+    FRS_MISALIGN_RESERVED_0 = 5;
+    FRS_MISALIGN_RESERVED_1 = 6;
+    FRS_MISALIGN_RESERVED_2 = 7;
+  }
+  enum FRS_Status_HWErr_Type {
+    FRS_HW_ISNOT_FAILED = 0;
+    FRS_HW_FAILED = 1;
+  }
+  // [ms] [2] [0] [0|126]
+  optional double frs_latency = 1;  // s
+  // [s] [1] [0] [0|65535]
+  optional double frs_timestamp = 2;  // s
+  // [m/s] [0.025] [-20] [-20|82.375]
+  optional double frs_hostspeed = 3;  // m/s
+  optional FRS_Status_BlkProg_Type frs_status_blkprog = 4;
+  optional FRS_Fail_Type frs_fail = 5;
+  optional FRS_MeasEnabled_Type frs_measenabled = 6;
+  // [deg/s] [0.1] [-102.4] [-102.4|102.3]
+  optional double frs_host_yaw = 7;
+  // [n/a] [1] [0] [0|15]
+  optional uint32 frs_msg_aliveconter = 8;
+  optional FRS_Status_MisAlign_Type frs_status_misalign = 9;
+  optional FRS_Status_HWErr_Type frs_status_hwerr = 10;
+  // [n/a] [1] [0] [0|255]
+  optional uint32 frs_msg_checksum = 11;
+}
+// [unit] [factor] [offset] [min|max]
+message FRS_Obj_Part_1_050_077 {
+  enum FRS_Obj_UpdateFlag_Type {
+    FRS_NEW_OBJECT_IN_THE_CYCLE = 0;
+    FRS_OBJECT_EXISTED_IN_PREVIOUS_CYCLE = 1;
+  }
+  enum FRS_Obj_ValidFlag_Type {
+    FRS_OBJECT_INVALID = 0;
+    FRS_OBJECT_VALID = 1;
+  }
+  enum FRS_Obj_MotionPattern_Type {
+    FRS_MOTION_UNKNOWN = 0;
+    FRS_MOTION_STATIONARY = 1;
+    FRS_MOTION_STOPPED = 2;
+    FRS_MOTION_MOVING = 3;
+    FRS_MOTION_CROSSING = 4;
+    FRS_MOTION_RESERVED_0 = 5;
+    FRS_MOTION_RESERVED_1 = 6;
+    FRS_MOTION_RESERVED_2 = 7;
+  }
+  // 0xFF: Invalid  0x00 - 0xFE: Valid
+  optional uint32 frs_obj_id = 1;
+  // [m] [0.1] [0] [0|12.7]
+  optional double frs_obj_xpos_stdev = 2;
+  optional FRS_Obj_UpdateFlag_Type frs_obj_updateflag = 3;
+  // [m] [0.1] [0] [0|12.7]
+  optional double frs_obj_ypos_stdev = 4;
+  optional FRS_Obj_ValidFlag_Type frs_obj_validflag = 5;
+  // [%] [3.2258] [0] [0|99.9998]
+  optional double frs_obj_obstacleprob = 6;
+  optional FRS_Obj_MotionPattern_Type frs_obj_motionpattern = 7;
+  // [m/s2] [0.15] [-9.6] [-9.6|9.45]
+  optional double frs_obj_xaccrel = 8;
+  // [m/s] [0.05] [0] [0|6.35]
+  optional double frs_obj_xvelrel_stdev = 9;
+  // [n/a] [1] [0] [0|15]
+  optional uint32 frs_msg_alivecounter = 10;
+  // [%] [1.5873] [0] [0|99.9999]
+  optional double frs_obj_exstprob = 11;
+  // [n/a] [1] [0] [0|255]
+  optional uint32 frs_msg_checksum = 12;
+}
+// [unit] [factor] [offset] [min|max]
+message FRS_Obj_Part_2_020_047 {
+  enum FRS_Obj_Type {
+    FRS_Obj_UNKNOWN = 0;
+    FRS_Obj_4_WHEELER = 1;
+    FRS_Obj_2_WHEELER = 2;
+    FRS_Obj_PEDESTRIAN = 3;
+  }
+  enum FRS_Obj_MeasFlag_Type {
+    FRS_OBJECT_MEASURED_IN_THIS_CYCLE = 0;
+    FRS_OBJECT_EXTRAPOLATED_IN_THIS_CYCLE = 1;
+  }
+  // [m/s] [0.1] [-102.4] [-102.4|102.3]
+  optional double frs_obj_xvelrel = 1;
+  // [m] [0.015625] [-64] [-64|63.984375]
+  optional double frs_obj_ypos = 2;
+  optional FRS_Obj_Type frs_obj_type = 3;
+  // [m] [0.015625] [0] [0|255.984375]
+  optional double frs_obj_xpos = 4;
+  // [n/a] [1] [0] [0|15]
+  optional uint32 frs_msg_alivecounter = 5;
+  optional FRS_Obj_MeasFlag_Type frs_obj_measflag = 6;
+  // [m/s] [0.1] [-102.4] [-102.4|102.3]
+  optional double frs_obj_yvelrel = 7;
+  // [n/a] [1] [0] [0|255]
+  optional uint32 frs_msg_checksum = 8;
+}
+
+message Conti410 {
+  optional FRS_Status_080 frs_status_080 = 1;                  // report message
+  optional FRS_Obj_Part_1_050_077 frs_obj_part_1_050_077 = 2;  // report message
+  optional FRS_Obj_Part_2_020_047 frs_obj_part_2_020_047 = 3;  // report message
+  optional int32 frame_id = 22;
+  optional double timestamp = 23;
+}

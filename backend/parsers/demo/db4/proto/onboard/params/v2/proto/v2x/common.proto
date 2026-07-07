@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah;
+
+enum V2xModel {
+  V2X_UNKNOWN = 0;
+  V2X_HUALI = 1;
+  V2X_WANJI = 2;
+  V2X_ZHONGTONG = 3;
+  V2X_DATANG = 4;
+  V2X_EZHOU_AIRPORT = 5;
+  V2X_LENOVO = 6;
+  V2X_WUHAN_HUALI = 7;
+  V2X_JINLV_POLARIS = 8;
+  V2X_CHANGSHA_CIDI = 9;
+  V2X_SUZHOU_TRANSUN = 10;
+  V2X_DATANG_GSENTRY = 11;
+  V2X_SNOAH = 12;
+  V2X_LONGQUANYI = 13;
+  V2X_DATANG_BJCW = 14;
+  V2X_INCH = 15;
+}
+
+message V2xCommonProto {}

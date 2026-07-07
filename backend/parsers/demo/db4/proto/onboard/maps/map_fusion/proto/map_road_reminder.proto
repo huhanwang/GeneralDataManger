@@ -1,0 +1,90 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/proto/sd_map.proto";
+import "onboard/maps/sd/turn_by_turn/proto/turn_by_turn.proto";
+
+enum MppCheckStatus {
+  NORMAL = 1;
+  LANE_NUME_SHRINK_ABRUBTLY = 2;
+  TOO_MANY_LANES_BEFORE_TOLL = 3;
+};
+
+message MapRoadReminderProto {
+  optional LiteHeader header = 1;
+  // 高精地图边界距离
+  optional int32 dist_to_map_boundary = 2;  // Unit: m.
+  optional bool in_hdmap = 8;
+  // NOTE(zuowei): e.g., has_dist_to_ramp() is false, means no
+  // ramp in sd route or ramp is too far from ego car (beyond
+  // kMapRoadReminderMaxValidDist, 3000m). When has_dist_to_ramp() is true, 0
+  // <= dist <= kMapRoadReminderMaxValidDist. dist == 0 means in ramp.
+  // 进入隧道
+  optional int32 dist_to_tunnel = 3;  // Unit: m.
+  // 进入匝道
+  optional int32 dist_to_ramp = 4;  // Unit: m.
+  // 汇入主路
+  optional int32 dist_to_main_road = 5;  // Unit: m.
+  // Merge to the ramp on our left hand.
+  optional bool to_left_ramp = 6;
+  // Merge to the main road on our left hand.
+  optional bool to_left_main_road = 7;
+
+  message IntersectionInfo {
+    optional int32 dist_to_intersection = 1;  // Unit: m.
+    optional bool has_traffic_lights = 2;
+  }
+
+  repeated IntersectionInfo intersections_info = 9;
+  // sort from near to far.
+  repeated int32 dist_to_traffic_lights = 11;
+  message TrafficLightState {
+    optional TurnByTurnProto.TrafficLightType type = 1;
+    optional uint64 end_time = 2;  // in seconds, 1970，UTC+8
+  }
+  optional TrafficLightState first_traffic_light_state = 24;
+
+  // Information from the rear of ego car.
+  // 0 <= dist <= kRoadReminderMaxHistoricalInfoDist(600m) if has_xxx() is
+  // true.
+  optional int32 dist_away_from_ramp = 10;
+  optional int32 dist_away_from_tunnel = 13;
+
+  message RoadClassRange {
+    optional SdLinkProto.RoadClass road_class = 1;
+    optional double start_s = 2;
+    optional double end_s = 3;
+  }
+  // NOTE: only provide current link: start and end s are empty.
+  repeated RoadClassRange road_class_ranges = 12;
+
+  optional int32 dist_to_toll_gate = 14;
+  optional int32 dist_to_path_fork = 15;
+
+  optional int32 dist_to_traffic_detect_camera = 16;
+
+  optional MppCheckStatus mpp_check_status = 17;
+  optional bool in_tunnel = 18;
+
+  optional int32 dist_to_sharp_turn_start = 19;  // m.
+  optional int32 dist_to_sharp_turn_end = 20;    // m.
+  optional int32 sharp_turn_radius = 21;         // m.
+  optional int32 dist_to_min_radius = 23;        // m.
+
+  message DistRange {
+    optional int32 dist_to_start = 1;
+    optional int32 dist_to_end = 2;
+  }
+  message SharpTurn {
+    optional DistRange dist_range = 1;  // m.
+    optional int32 radius = 2;          // m.
+    optional int32 dist_to_min_radius = 3;
+  }
+  repeated SharpTurn sharp_turns = 22;
+
+  optional bool is_ramp_hd_map_miss = 25;
+
+  // Next id: 26.
+};

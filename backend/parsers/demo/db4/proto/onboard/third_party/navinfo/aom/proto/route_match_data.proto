@@ -1,0 +1,103 @@
+/**
+ * Project: i-Navi
+ * (c) copyright 2022
+ *
+ * All rights reserved
+ */
+
+syntax = "proto2";
+
+option optimize_for = LITE_RUNTIME;
+
+package RouteMatch;
+option go_package = "qcraft-proto.ai/third_party/navinfo/aom/proto/route_match_data";
+
+enum Formway {
+  Formway_NULL = -1;       /**< 无效 */
+  Formway_NONE = 0;        /**< 无 */
+  Formway_DivisedLink = 1; /**< 主路，上下线分离 */
+  Formway_CrossLink = 2;   /**< 复杂节点内部道路 */
+  // 连接不同道路道路或连接同一高速道路不同方向的匝道；高速道路连接的立交桥处有中央隔离到分上下行的主干线不制作为JCT
+  Formway_JCT = 3;
+  Formway_RoundCircle = 4; /**< 环岛 */
+  Formway_ServiceRoad = 5; /**< 服务区：表示高速公路服务区的道路 */
+  // < 引路：连接高速道路与一般道路、连接一般道路与一般道路的道路
+  Formway_SlipRoad = 6;
+  Formway_SideRoad = 7; /**< 辅路 */
+  Formway_SlipJCT = 8;  /**< 引路+JCT：引路与JCT重合部分的道路 */
+  Formway_ExitLink = 9; /**< 出口 */
+  Formway_EntranceLink = 10;  /**< 入口 */
+  Formway_TurnRightLine = 11; /**< 右转专用道 */
+  Formway_TurnLeftLine = 12;  /**< 左转专用道 */
+  Formway_CommonLink = 13;    /**< 普通道路 */
+  // 左右转专用道：以不同道路为入口，既供车辆右转也供车辆左转使用的车道
+  Formway_TurnLeftRightLine = 14;
+  // 服务区+JCT：既是服务区内部道路也是连接高速道路与高速道路的JCT的道路
+  Formway_ServiceJCTRoad = 15;
+  // 服务区+引路：既是服务区内部道路也是连接高速道路与一般道路的引路的道路
+  Formway_ServiceSlipRoad = 16;
+  // < 服务区+引路+JCT：同时是服务区内部道路、引路、JCT的道路
+  Formway_ServiceSlipJCTRoad = 17;
+  Formway_BusRoad = 18; /**< 公交专用道路 */
+}
+
+enum LinkType {
+  LinkType_NULL = -1;      /**< 无效 */
+  LinkType_Common = 0;     /**< 普通道路 */
+  LinkType_Ferry = 1;      /**< 航道 */
+  LinkType_Tunnel = 2;     /**< 隧道 */
+  LinkType_Bridge = 3;     /**< 桥梁 */
+  LinkType_Elevatedrd = 4; /**< 高架路 */
+}
+
+enum RoadClass {
+  RoadClass_NULL = -1;         /**< 无效值 */
+  RoadClass_Freeway = 0;       /**< 高速公路 */
+  RoadClass_NationalRoad = 1;  /**< 国道 */
+  RoadClass_ProvinceRoad = 2;  /**< 省道 */
+  RoadClass_CountyRoad = 3;    /**< 县道 */
+  RoadClass_RuralRoad = 4;     /**< 乡公路 */
+  RoadClass_InCountyRoad = 5;  /**< 县乡村内部道路 */
+  RoadClass_CitySpeedway = 6;  /**< 主要大街、城市快速道 */
+  RoadClass_MainRoad = 7;      /**< 主要道路 */
+  RoadClass_SecondaryRoad = 8; /**< 次要道路 */
+  RoadClass_CommonRoad = 9;    /**< 普通道路 */
+  RoadClass_NonNaviRoad = 10;  /**< 非导航道路 */
+}
+
+message GeoPos2D {
+  required int32 Lon = 1;
+  required int32 Lat = 2;
+}
+
+message SlopePoint {
+  required GeoPos2D point = 1;
+  required double slopePercent = 2;
+}
+
+message WayPointInfo {
+  required GeoPos2D point = 1;
+  required uint32 linkNo = 2;
+}
+
+message RMLink {
+  required LinkType linkType = 1;    // 道路类型
+  required RoadClass roadClass = 2;  // 道路等级
+  required Formway usage = 3;        // 道路用途
+  optional int32 averageSpeed = 4;   // 平均速度 km/h
+  optional int32 speedLimit = 5;     // 限速信息 km/h
+  optional int32 length = 6;         // link长度，单位cm
+  optional string roadName = 7;   // 路线名称，多个名称以“|”分割
+  optional bool isInnerRoad = 8;  // 是否是内部路
+  optional bool isRestricting = 9;       // 是否限行
+  optional bool isParkingRoad = 10;      // 是否是停车场
+  optional bool isToll = 11;             // 是否收费
+  repeated GeoPos2D shapePoints = 12;    // 形状点信息
+  repeated SlopePoint slopePoints = 13;  // 坡度信息
+  optional int32 elevationlevel = 14;  // 道路的分层信息，例如高架的1 2 3... 层
+}
+
+message RouteMatchData {
+  repeated WayPointInfo wayPointInfos = 1;
+  repeated RMLink RMLinks = 2;
+}

@@ -1,0 +1,399 @@
+
+syntax = "proto2";
+
+package snoah.emergency_brake;
+
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+message PreWarnParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto low_ttc_thres_plf = 3;
+  optional PiecewiseLinearFunctionDoubleProto mid_ttc_thres_plf = 4;
+  optional PiecewiseLinearFunctionDoubleProto high_ttc_thres_plf = 5;
+  optional int32 delayed_exit_frame_count_thres = 6;
+  reserved 1, 2;
+}
+
+message AbaParamsProto {
+  optional double max_speed_kph_vehicle_stationary = 1;
+  optional double max_speed_kph_vehicle_moving = 2;
+  optional double max_speed_kph_vru = 3;
+  optional double min_speed_kph_vehicle = 4;
+  optional double min_speed_kph_vru = 5;
+  optional double max_brake_pedal_ratio_for_vehicle = 6;     // (0,1)
+  optional double max_brake_pressure_ratio_for_vehicle = 7;  // (0,1)
+  optional double max_brake_pedal_ratio_for_vru = 8;         // (0,1)
+  optional double max_brake_pressure_ratio_for_vru = 9;      // (0,1)
+}
+
+message AwbParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto low_ttc_thres_plf = 1;
+  optional PiecewiseLinearFunctionDoubleProto mid_ttc_thres_plf = 6;
+  optional PiecewiseLinearFunctionDoubleProto high_ttc_thres_plf = 7;
+  optional double level_1_max_speed = 2;  // km / h.
+  optional double level_2_max_speed = 3;  // km / h.
+  optional double level_3_max_speed = 4;  // km / h.
+  optional double level_4_max_speed = 5;  // km / h.
+}
+
+message AebParamsProto {
+  optional double ttc_thres = 1;
+  optional double target_decel = 2;
+  optional double max_decel_jerk = 3;
+  optional PiecewiseLinearFunctionDoubleProto ttc_thres_plf = 4;
+  optional double desired_decel_enter_thres = 5;
+  optional double desired_decel_exit_thres = 6;
+  optional double delayed_exit_effective_time = 7;
+  optional int32 delayed_exit_frame_count_thres = 8;
+  optional double partial_target_decel = 9;
+  optional PiecewiseLinearFunctionDoubleProto partial_ttc_thres_plf = 10;
+  optional double partial_desired_decel_enter_thres = 11;
+  optional double partial_desired_decel_exit_thres = 12;
+  optional int32 delayed_in_frame_count_thres = 13;
+  optional double min_on_path_relative_speed = 14;  // m/s.
+}
+
+message RaebParamsProto {
+  optional double ttc_thres = 1;
+  optional double target_decel = 2;
+  optional double max_decel_jerk = 3;
+  optional PiecewiseLinearFunctionDoubleProto ttc_thres_plf = 4;
+  optional double delayed_exit_effective_time = 5;
+  optional int32 delayed_exit_frame_count_thres = 6;
+  optional int32 delayed_in_frame_count_thres = 7;
+}
+
+message PrefillParamsProto {
+  optional double trigger_ahead_time = 1;
+  optional double min_speed_kph = 2;
+  optional double max_speed_kph = 3;
+  optional double min_active_interval = 4;
+  optional double max_brake_pedal_ratio = 5;     // (0,1)
+  optional double max_brake_pressure_ratio = 6;  // (0,1)
+  optional double max_lasting_time = 7;          // s
+}
+
+message MaiParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto
+      on_path_target_additional_ttc_thres_plf = 1;
+  optional PiecewiseLinearFunctionDoubleProto
+      crossing_vru_additional_ttc_thres_plf = 2;
+  optional double desired_decel_enter_thres = 3;
+  optional double desired_decel_exit_thres = 4;
+  optional double throttle_rate_confirm_time = 5;  // s
+  optional double min_throttle_percentage = 6;
+  optional double max_throttle_percentage = 7;
+  optional double max_throttle_percentage_diff = 8;
+  optional double throttle_rate_delay_out_time = 9;  // s
+  optional int32 delayed_exit_frame_count_thres = 10;
+  optional PiecewiseLinearFunctionDoubleProto delay_factor_for_long_accel = 11;
+}
+message MaiPassiveParamsProto {
+  optional double max_speed_kph = 1;
+  optional double min_active_interval = 2;
+  optional double veh_throttle_confirm_time = 3;  // s
+  optional double vru_throttle_confirm_time = 4;  // s
+  optional double collision_confirm_time = 5;     // s
+  optional double collision_long_accel = 6;       // mpss
+}
+message MaiExitParamsProto {
+  optional double max_brake_pedal_percentage = 1;
+  optional double max_active_duration = 2;
+  optional int32 max_throttle_release_and_press_times = 3;
+}
+message MaisParamsProto {
+  optional MaiParamsProto mai_params = 1;
+  optional MaiPassiveParamsProto passive_params = 2;
+  optional MaiExitParamsProto exit_params = 3;
+}
+message RmaiParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto
+      on_path_target_additional_ttc_thres_plf = 1;
+  optional int32 delayed_exit_frame_count_thres = 2;
+  optional double throttle_rate_delay_out_time = 3;
+}
+message RmaiPassiveParamsProto {
+  optional double max_speed_kph = 1;
+  optional double min_speed_kph = 2;
+  optional double min_active_interval = 3;
+  optional double veh_throttle_confirm_time = 4;  // s
+  optional double vru_throttle_confirm_time = 5;  // s
+  optional double collision_confirm_time = 6;     // s
+  optional double collision_long_accel = 7;       // mpss
+}
+message RmaiExitParamsProto {
+  optional double max_brake_pedal_percentage = 1;
+  optional double max_active_duration = 2;
+  optional int32 max_throttle_release_and_press_times = 3;
+}
+message RmaisParamsProto {
+  optional RmaiParamsProto rmai_params = 1;
+  optional RmaiPassiveParamsProto passive_params = 2;
+  optional RmaiExitParamsProto exit_params = 3;
+}
+
+message FcwPassiveParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 3;       // %.
+  optional double max_throttle_percentage_rate = 4;  // % / second.
+  optional double min_speed_kph = 5;                 // km / h.
+  optional double max_speed_kph = 6;                 // km / h.
+  optional double awb_max_esc_tcs_hdc_vdc_active_duration = 7;  // s.
+  optional double awb_min_active_interval = 8;                  // s.
+  optional double prewarn_min_active_interval = 9;              // s.
+  optional double min_vehicle_deceleration = 10;                // m / s^2.
+}
+
+message FcwExitParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 3;       // %.
+  optional double max_throttle_percentage_rate = 4;  // % / second.
+  optional double min_speed_kph = 5;                 // km / h.
+  optional double max_speed_kph = 6;                 // km / h.
+  optional double awb_max_esc_tcs_hdc_vdc_active_duration = 7;  // s.
+  optional double min_vehicle_deceleration = 8;                 // m / s^2.
+}
+
+message FcwParamsProto {
+  optional PreWarnParamsProto prewarn_params = 1;
+  optional FcwPassiveParamsProto passive_params = 2;
+  optional FcwExitParamsProto exit_params = 3;
+  optional AwbParamsProto awb_params = 4;
+  // The time from the driver receiving the alarm signal to braking.
+  optional PiecewiseLinearFunctionDoubleProto driver_response_time_plf = 6;
+
+  reserved 5;
+}
+
+message AebsPassiveParamsProto {
+  optional double max_steering_wheel_angle = 1;           // degree.
+  optional double max_steering_wheel_speed = 2;           // degree / second.
+  optional double max_throttle_percentage = 3;            // %. For AEB.
+  optional double secondary_max_throttle_percentage = 4;  // %. For EBA.
+  optional double secondary_max_throttle_percentage_speed_kph = 5;  // For EBA.
+  optional double max_throttle_percentage_rate = 6;   // % / second.
+  optional double min_speed_kph = 8;                  // km / h.
+  optional double max_speed_kph = 9;                  // km / h.
+  optional double min_active_interval = 10;           // s.
+  optional double aeb_min_vehicle_deceleration = 11;  // m / s^2.
+  optional double min_speed_kph_vehicle = 12;
+  optional double max_speed_kph_vehicle = 13;
+  optional double esc_active_confirm_time = 14;
+  optional double tcs_active_confirm_time = 15;
+  optional double min_radius_of_curvature_thres = 16;
+  optional double min_speed_kph_vru = 17;
+  optional double max_speed_kph_vru = 18;
+  optional double secondary_min_speed_kph_vehicle = 19;  // for EBA
+  optional double secondary_max_speed_kph_vehicle = 20;  // for EBA
+  optional double secondary_max_steering_wheel_angle = 21;
+  optional double max_throttle_press_during_aeb = 22;
+  optional double steering_angle_filter_gain = 23;
+  optional double max_yaw_accel_for_driver_override = 24;
+  optional double steer_angle_rate_override_enable_frame = 25;
+  optional double driver_override_duration_frame = 26;
+  optional double max_brake_pedal_ratio = 27;          // (0,1)
+  optional double max_brake_pressure_ratio = 28;       // (0,1)
+  optional double seat_belt_status_confirm_time = 29;  // s
+  optional double secondary_min_speed_kph_vru = 30;    // for EBA
+  optional double secondary_max_speed_kph_vru = 31;    // for EBA
+
+  reserved 7;
+}
+
+message RaebsPassiveParamsProto {
+  optional double max_throttle_percentage = 1;  // %. For AEB.
+  optional double min_speed_kph = 2;            // km / h.
+  optional double max_speed_kph = 3;            // km / h.
+  optional double min_active_interval = 4;      // s.
+}
+
+message AebsExitParamsProto {
+  optional double min_steering_wheel_angle = 1;           // degree.
+  optional double max_steering_wheel_speed = 2;           // degree / second.
+  optional double max_steering_wheel_speed_duration = 3;  // s.
+  optional double max_throttle_percentage = 4;            // %. For AEB.
+  optional double max_throttle_percentage_rate = 5;       // % / sec.
+  optional double secondary_max_throttle_percentage = 6;  // %. For EBA.
+  optional double secondary_max_throttle_percentage_speed_kph = 7;  // For EBA.
+  optional double max_esc_tcs_hdc_vdc_active_duration = 8;          // s.
+  optional double aeb_min_vehicle_deceleration = 9;                 // m / s^2.
+  optional double aeb_max_standstill_duration = 10;                 // s.
+  optional double aeb_max_standstill_throttle_percentage = 11;      // %.
+  optional double aeb_max_lasting_time = 12;                        // sec.
+}
+
+message RaebsExitParamsProto {
+  optional double min_steering_wheel_angle = 1;           // degree.
+  optional double max_steering_wheel_speed = 2;           // degree / second.
+  optional double max_steering_wheel_speed_duration = 3;  // s.
+  optional double max_throttle_percentage = 4;            // %.
+  optional double max_speed_kph = 5;                      // km / h.
+  optional double aeb_max_standstill_duration = 6;        // s.
+  optional double aeb_max_standstill_throttle_percentage = 7;  // %.
+}
+
+message FctaPassiveParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 3;       // %.
+  optional double max_throttle_percentage_rate = 4;  // % / second.
+  optional double min_speed_kph = 5;                 // km / h.
+  optional double max_speed_kph = 6;                 // km / h.
+  optional double min_active_interval = 7;           // s.
+  optional double min_vehicle_deceleration = 8;      // m / s^2.
+  optional double max_starting_time = 9;             // s.
+}
+
+message FctaExitParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 3;       // %.
+  optional double max_throttle_percentage_rate = 4;  // % / second.
+  optional double min_speed_kph = 5;                 // km / h.
+  optional double max_speed_kph = 6;                 // km / h.
+  optional double min_vehicle_deceleration = 7;      // m / s^2.
+}
+
+message FctbPassiveParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 3;       // %.
+  optional double max_throttle_percentage_rate = 4;  // % / second.
+  optional double min_speed_kph = 5;                 // km / h.
+  optional double max_speed_kph = 6;                 // km / h.
+  optional double min_active_interval = 7;           // s.
+  optional double min_vehicle_deceleration = 8;      // m / s^2.
+  optional double max_starting_time = 9;             // s.
+}
+
+message FctbExitParamsProto {
+  optional double min_steering_wheel_angle = 1;             // degree.
+  optional double max_steering_wheel_speed = 2;             // degree / second.
+  optional double max_steering_wheel_speed_duration = 3;    // s.
+  optional double max_throttle_percentage = 4;              // %.
+  optional double max_throttle_percentage_rate = 5;         // % / second.
+  optional double max_esc_tcs_hdc_vdc_active_duration = 6;  // s.
+  optional double min_vehicle_deceleration = 7;             // m / s^2.
+  optional double max_standstill_duration = 8;              // s.
+  optional double max_standstill_throttle_percentage = 9;   // %.
+  optional double max_speed_kph = 10;                       // km / h.
+}
+
+message RctaPassiveParamsProto {
+  optional double min_speed_kph = 5;        // km / h.
+  optional double max_speed_kph = 6;        // km / h.
+  optional double min_active_interval = 7;  // s.
+}
+
+message RctaExitParamsProto {
+  optional double max_steering_wheel_angle = 1;      // degree.
+  optional double max_steering_wheel_speed = 2;      // degree / second.
+  optional double max_throttle_percentage = 4;       // %.
+  optional double max_throttle_percentage_rate = 5;  // % / second.
+  optional double min_speed_kph = 6;                 // km / h.
+  optional double max_speed_kph = 7;                 // km / h.
+}
+
+message RctbPassiveParamsProto {
+  optional double min_speed_kph = 2;        // km / h.
+  optional double max_speed_kph = 3;        // km / h.
+  optional double min_active_interval = 4;  // s.
+}
+
+message RctbExitParamsProto {
+  optional double min_steering_wheel_angle = 1;            // degree.
+  optional double max_steering_wheel_speed = 2;            // degree / second.
+  optional double max_steering_wheel_speed_duration = 3;   // s.
+  optional double max_throttle_percentage = 4;             // %.
+  optional double max_speed_kph = 6;                       // km / h.
+  optional double max_standstill_duration = 7;             // s.
+  optional double max_standstill_throttle_percentage = 8;  // %.
+}
+
+message LaebPassiveParamsProto {
+  optional double min_speed_kph = 1;           // km / h.
+  optional double max_positive_speed_kph = 2;  // km / h.
+  optional double max_negative_speed_kph = 4;  // km / h.
+  optional double min_active_interval = 3;     // s.
+}
+
+message FctaParamsProto {
+  optional FctaPassiveParamsProto passive_params = 1;
+  optional FctaExitParamsProto exit_params = 2;
+  optional double desired_decel_thres = 3;
+  optional int32 delayed_exit_frame_count_thres = 4;
+  optional double max_ttc_thres = 5;
+  optional int32 delayed_in_frame_count_thres = 6;
+}
+
+message FctbParamsProto {
+  optional FctbPassiveParamsProto passive_params = 1;
+  optional FctbExitParamsProto exit_params = 2;
+  optional double target_decel = 3;
+  optional double max_decel_jerk = 4;
+  optional double desired_decel_enter_thres = 5;
+  optional double desired_decel_exit_thres = 6;
+  optional int32 delayed_exit_frame_count_thres = 7;
+  optional double delayed_exit_effective_time = 8;
+  optional double max_ttc_thres = 9;
+  optional int32 delayed_in_frame_count_thres = 10;
+}
+
+message RctaParamsProto {
+  optional RctaPassiveParamsProto passive_params = 1;
+  optional RctaExitParamsProto exit_params = 2;
+  optional double desired_decel_thres = 3;
+  optional int32 delayed_exit_frame_count_thres = 4;
+  optional double max_ttc_thres = 5;
+  optional int32 delayed_in_frame_count_thres = 6;
+}
+
+message RctbParamsProto {
+  optional RctbPassiveParamsProto passive_params = 1;
+  optional RctbExitParamsProto exit_params = 2;
+  optional double target_decel = 3;
+  optional double max_decel_jerk = 4;
+  optional double desired_decel_enter_thres = 5;
+  optional double desired_decel_exit_thres = 6;
+  optional int32 delayed_exit_frame_count_thres = 7;
+  optional double delayed_exit_effective_time = 8;
+  optional double max_ttc_thres = 9;
+  optional int32 delayed_in_frame_count_thres = 10;
+}
+
+message AebsParamsProto {
+  optional AebParamsProto aeb_params = 1;
+  optional AebsPassiveParamsProto passive_params = 2;
+  optional AebsExitParamsProto exit_params = 3;
+  optional PrefillParamsProto prefill_params = 4;
+  optional AbaParamsProto aba_params = 5;
+}
+
+message RaebsParamsProto {
+  optional RaebParamsProto raeb_params = 1;
+  optional RaebsPassiveParamsProto passive_params = 2;
+  optional RaebsExitParamsProto exit_params = 3;
+}
+
+message LaebParamsProto {
+  optional LaebPassiveParamsProto passive_params = 1;
+  optional double target_decel = 3;
+  optional double max_decel_jerk = 4;
+  optional double delayed_exit_effective_time = 10;
+  optional int32 delayed_exit_frame_count_thres = 11;
+  reserved 2, 5 to 9;
+}
+
+message EmergencyBrakeParamsProto {
+  optional FcwParamsProto fcw_params = 1;
+  optional AebsParamsProto aebs_params = 2;
+  optional RaebsParamsProto raebs_params = 3;
+  optional LaebParamsProto laeb_params = 8;
+  optional FctaParamsProto fcta_params = 4;
+  optional FctbParamsProto fctb_params = 5;
+  optional RctaParamsProto rcta_params = 6;
+  optional RctbParamsProto rctb_params = 7;
+  optional MaisParamsProto mais_params = 9;
+  optional RmaisParamsProto rmais_params = 10;
+}

@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package snoah;
+
+message OssUpload {
+  optional string local_dir = 1;
+  // Directory upload
+  optional string bucket_name = 2;
+  optional string cloud_dir = 3;
+  optional string regex_filter = 4 [default = ".*"];
+
+  // Files upload
+  repeated string local_files = 5;
+  optional string cloud_file_prefix = 6;
+}
+
+message EvalOutput {
+  repeated OssUpload oss_uploads = 1;
+}

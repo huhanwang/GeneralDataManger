@@ -1,0 +1,75 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/uss.proto";
+import "onboard/proto/q_state_manager_info.proto";
+
+message SystemCommandProto {
+  enum Command {
+    UNKNOWN_CMD = 0;
+    START_PUBLISHING = 1;
+    STOP_PUBLISHING = 2;
+    STOP = 3;
+    START = 4;
+    IDLE = 5;
+    RUN = 6;
+
+    RUN_ACK = 101;
+    IDLE_ACK = 102;
+  }
+
+  enum SensorCommand {
+    SENSOR_UNKNOWN_CMD = 0;
+    SENSOR_TURN_OFF = 1;
+    SENSOR_TURN_ON = 2;
+  }
+
+  message ModuleCommand {
+    optional string module_name = 1;
+    optional Command command = 2;
+  }
+
+  message CameraCommand {
+    optional CameraId camera_id = 1;
+    optional SensorCommand command = 2;
+  }
+  message LidarCommand {
+    optional LidarId lidar_id = 1;
+    optional SensorCommand command = 2;
+  }
+  message RadarCommand {
+    optional RadarId radar_id = 1;
+    optional SensorCommand command = 2;
+  }
+  message UssRadarCommand {
+    optional UssRadarId uss_radar_id = 1;
+    optional SensorCommand command = 2;
+  }
+
+  message NetCommand {
+    repeated QSmNetInfo commands = 1;
+  }
+
+  message AllModulesOk {
+    optional bool value = 1;
+  }
+
+  optional LiteHeader header = 1;
+
+  oneof msg {
+    ModuleCommand module_command = 2;
+    CameraCommand camera_command = 4;
+    LidarCommand lidar_command = 5;
+    RadarCommand radar_command = 6;
+    UssRadarCommand uss_radar_command = 7;
+    NetCommand net_command = 8;
+
+    // deprecated
+    AllModulesOk all_modules_ok = 3 [deprecated = true];
+  }
+}

@@ -1,0 +1,532 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/proto/drive_mission.proto";
+import "onboard/common/proto/special_region.proto";
+import "onboard/common/proto/semantic_map_modifier.proto";
+import "onboard/common/proto/product_setting.proto";
+import "onboard/proto/run_event_common_value.proto";
+import "onboard/proto/minimal_risk_rules.proto";
+import "onboard/proto/q_assist_settings.proto";
+import "onboard/common/proto/product_event.proto";
+import "onboard/proto/driver_handoff_steer_monitor.proto";
+import "onboard/proto/severe_weather_mode_info.proto";
+import "onboard/calibration/proto/calibration_request.proto";
+import "onboard/proto/adasis.proto";
+import "onboard/proto/parking_spot_finder.proto";
+import "onboard/proto/lane_change_type.proto";
+import "onboard/maps/proto/ehp_speed_limit_range.proto";
+import "onboard/proto/cockpit_vehicle_state.proto";
+
+message QRunEventTrafficSigns {
+  message TrafficSign {
+    enum Category {
+      CATEGORY_NONE = 0;
+      CATEGORY_STOP = 1;
+      CATEGORY_NO_ENTRY = 2;
+      CATEGORY_NO_VEHICLES = 3;
+      CATEGORY_NO_LEFT_TURN = 4;
+      CATEGORY_NO_RIGHT_TURN = 5;
+      CATEGORY_NO_PARKING = 6;
+    }
+    optional Category category = 2;
+    reserved 1;
+  }
+  repeated TrafficSign traffic_sign = 1;
+}
+
+message QRunEvent {
+  enum Key {
+    // basic event
+    KEY_PURPOSE = 1;             // value_type: TYPE_STRING
+    KEY_DRIVER = 2;              // value_type: TYPE_STRING
+    KEY_ENGINEER = 3;            // value_type: TYPE_STRING
+    KEY_LOCATION = 4;            // value_type: TYPE_STRING
+    KEY_ROUTE_ID = 5;            // value_type: TYPE_STRING
+    KEY_COLLECTION_SCEND = 6;    // value_type: TYPE_STRING
+    KEY_COLLECTION_PURPOSE = 7;  // value_type: TYPE_STRING
+    KEY_RELEASE_TAG = 8;         // value_type: TYPE_STRING
+
+    // q_state event
+    KEY_QSTATE_ENGAGE = 101;     // value_type: TYPE_BOOL
+    KEY_QSTATE_DISENGAGE = 102;  // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_KICKOUT = 103;    // value_type: TYPE_NONE
+    KEY_QSTATE_TAKEOVER = 104;   // value_type: TYPE_NONE
+    KEY_QSTATE_CRASH = 105;      // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_COMMENT = 106;    // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_REMOTE_ASSISTANCE =
+        107;                      // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_HARD_BRAKE = 108;  // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_ISSUE_AFFECT_ENGAGE =
+        109;                      // value_type: TYPE_MSG,QRunEventCommonValue
+    KEY_QSTATE_ACC_ENGAGE = 110;  // value_type: TYPE_BOOL
+
+    // q_command event
+    KEY_QCOMAND_ENGAGE = 1001;                        // value_type: TYPE_NONE
+    KEY_QCOMAND_DISENGAGE = 1002;                     // value_type: TYPE_NONE
+    KEY_QCOMAND_DOOR_OPEN = 1003;                     // value_type: TYPE_NONE
+    KEY_QCOMAND_DOOR_CLOSE = 1004;                    // value_type: TYPE_NONE
+    KEY_QCOMAND_REQUEST_REMOTE_ASSIST = 1005;         // value_type: TYPE_NONE
+    KEY_QCOMAND_NEXT_STATION = 1008;                  // value_type: TYPE_NONE
+    KEY_QCOMAND_DRIVE_NOTE = 1009;                    // value_type: TYPE_NONE
+    KEY_QCOMAND_DRIVE_MISSION = 1010;                 // value_type: TYPE_MSG
+    KEY_QCOMAND_SEMANTIC_MAP_MODIFIER = 1011;         // value_type: TYPE_MSG
+    KEY_QCOMAND_TRAFFIC_LIGHT_IGNORE_ENABLE = 1012;   // value_type: TYPE_NONE
+    KEY_QCOMAND_TRAFFIC_LIGHT_IGNORE_DISABLE = 1013;  // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_LEFT = 1014;              // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_RIGHT = 1015;             // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_FORCE_KEEP = 1016;        // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_CANCEL = 1017;            // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_STATIONARY_OBJECTS_ENABLE =
+        1018;  // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_STATIONARY_OBJECTS_DISABLE =
+        1019;                                     // value_type: TYPE_NONE
+    KEY_QCOMAND_PULL_OVER_ENABLE = 1020;          // value_type: TYPE_NONE
+    KEY_QCOMAND_PULL_OVER_DISABLE = 1021;         // value_type: TYPE_NONE
+    KEY_QCOMAND_LEFT_BLINKER_ON = 1022;           // value_type: TYPE_NONE
+    KEY_QCOMAND_LEFT_BLINKER_OFF = 1023;          // value_type: TYPE_NONE
+    KEY_QCOMAND_LEFT_BLINKER_CANCEL = 1024;       // value_type: TYPE_NONE
+    KEY_QCOMAND_RIGHT_BLINKER_ON = 1025;          // value_type: TYPE_NONE
+    KEY_QCOMAND_RIGHT_BLINKER_OFF = 1026;         // value_type: TYPE_NONE
+    KEY_QCOMAND_RIGHT_BLINKER_CANCEL = 1027;      // value_type: TYPE_NONE
+    KEY_QCOMAND_EMERGENCY_BLINKER_ON = 1028;      // value_type: TYPE_NONE
+    KEY_QCOMAND_EMERGENCY_BLINKER_OFF = 1029;     // value_type: TYPE_NONE
+    KEY_QCOMAND_EMERGENCY_BLINKER_CANCEL = 1030;  // value_type: TYPE_NONE
+    KEY_QCOMAND_NEXT_N_STATIONS =
+        1031;  // value_type: TYPE_INT32, no run_event_state type
+    KEY_QCOMAND_LANE_CHANGE_IGNORE_ENABLE = 1032;   // value_type: TYPE_NONE
+    KEY_QCOMAND_LANE_CHANGE_IGNORE_DISABLE = 1033;  // value_type: TYPE_NONE
+    KEY_QCOMAND_SPECIAL_REGION = 1034;              // value_type: TYPE_MSG
+
+    KEY_QCOMAND_ACC_ENGAGE = 1035;  // value_type: TYPE_NONE
+
+    KEY_QCOMAND_CRUISING_SPEED = 1036;  // value_type: TYPE_FLOAT
+
+    KEY_QCOMAND_PRODUCT_SETTING = 1100;  // value_type: TYPE_MSG
+
+    // APA Command Event
+    KEY_QCOMAND_APA_START_PARKING = 1101;              // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PARKING_RESUME_CONFIRM = 1102;     // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PARKING_SPOT_SELECTED = 1103;      // value_type: TYPE_MSG
+    KEY_QCOMAND_PARKING_SPOT_CUSTOM = 1104;            // value_type: TYPE_MSG
+    KEY_QCOMAND_DRIVER_PARKING_PAUSE = 1105;           // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PAUSE_CONDITION_TRIGGER = 1106;    // value_type: TYPE_BOOL
+    KEY_QCOMAND_APA_EXIT_MODE = 1107;                  // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PARKING_SPOT_CUSTOM_EXIT = 1108;   // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PARKING_OUT_DIRECTION = 1109;      // value_type: TYPE_ENUM
+    KEY_QCOMAND_APA_PARKING_SPOT_CUSTOM_ENTER = 1110;  // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_ENTER_MODE = 1111;                 // value_type: TYPE_NONE
+    KEY_QCOMAND_APA_PARKING_PAUSE_EXIT = 1112;         // value_type: TYPE_NONE
+    KEY_QCOMAND_PARKING_SPOT_QPAD_SELECTED = 1113;     // value_type: TYPE_MSG
+    KEY_QCOMAND_HPP_MAPPING_ENGAGE = 1114;             // value_type: TYPE_NONE
+    KEY_QCOMAND_HPP_MAPPING_DISENGAGE = 1115;          // value_type: TYPE_NONE
+    KEY_QCOMAND_HPP_CRUISE_ENGAGE = 1116;              // value_type: TYPE_NONE
+
+    // RPA Command event
+    KEY_QCOMAND_RPA_COMMAND_STATUS = 1130;  // value_type: TYPE_ENUM
+    KEY_QCOMAND_RPA_APP_COMMAND = 1131;     // value_type: TYPE_ENUM
+
+    // HPP command event
+    KEY_QCOMAND_HPP_START_MAPPING = 1140;
+    KEY_QCOMAND_HPP_STOP_MAPPING = 1141;
+    KEY_QCOMAND_HPP_START_CRUISE = 1142;
+    KEY_QCOMAND_HPP_PAUSE_CRUISE = 1143;
+    KEY_QCOMAND_HPP_RESUME_CRUISE = 1144;
+
+    // assit mode
+    KEY_QEVENT_ACC_ENABLE = 1201;           // value_type: TYPE_BOOL
+    KEY_QEVENT_LCC_ENABLE = 1202;           // value_type: TYPE_BOOL
+    KEY_QEVENT_NOA_SETTINGS = 1203;         // value_type: TYPE_MSG
+    KEY_QEVENT_PLC_ENABLE = 1204;           // value_type: TYPE_BOOL
+    KEY_QEVENT_SLA_SETTINGS = 1205;         // value_type: TYPE_MSG
+    KEY_QEVENT_HMA_ENABLE = 1206;           // value_type: TYPE_BOOL
+    KEY_QEVENT_FCW_SETTINGS = 1207;         // value_type: TYPE_MSG
+    KEY_QEVENT_AEB_ENABLE = 1208;           // value_type: TYPE_BOOL
+    KEY_QEVENT_LDW_LKA_SETTINGS = 1209;     // value_type: TYPE_MSG
+    KEY_QEVENT_ELK_ENABLE = 1210;           // value_type: TYPE_BOOL
+    KEY_QEVENT_BSD_DOW_SETTINGS = 1211;     // value_type: TYPE_MSG
+    KEY_QEVENT_AEB_SETTINGS = 1212;         // value_type: TYPE_MSG
+    KEY_QEVENT_APA_SETTINGS = 1213;         // value_type: TYPE_MSG
+    KEY_QEVENT_LAEB_SETTINGS = 1214;        // value_type: TYPE_MSG
+    KEY_QEVENT_CHILD_SEAT_SETTINGS = 1215;  // value_type: TYPE_MSG
+    KEY_QEVENT_DRIVING_STYLE = 1216;        // value_type: TYPE_MSG
+    KEY_QEVENT_ELK_W_ENABLE = 1217;         // value_type: TYPE_BOOL
+    KEY_QEVENT_MAI_ENABLE = 1218;           // value_type: TYPE_BOOL
+    KEY_QEVENT_MRM_SETTINGS = 1219;         // value_type: TYPE_MSG
+
+    KEY_QEVENT_AUTONOMY_ABNORMAL_REASON = 1220;  // value_type: TYPE_MSG
+
+    KEY_QEVENT_OPERATIONAL_CONDITION = 1300;  // value_type: TYPE_MSG
+
+    KEY_QEVENT_SPEED_LIMIT = 1400;         // value_type: TYPE_INT32
+    KEY_QEVENT_SPEED_LIMIT_CANCEL = 1401;  // value_type: TYPE_INT32
+    KEY_QEVENT_OVERSPEED = 1402;  // value_type: TYPE_INT32 , speed linit km/h
+    KEY_QEVENT_TRAFFIC_SIGN = 1403;  // value_type: TYPE_MSG, TrafficSignProto
+    // driver_handoff_steer
+    KEY_QEVENT_DRIVER_HANDOFF_STEER_MONITOR =
+        1404;  // value_type: TYPE_MSG HandOff Monitor
+    KEY_QEVENT_HDTURNLIGHT_SETTINGS = 1405;  // value_type: TYPE_ENUM
+
+    KEY_QEVENT_SEVERE_WEATHER_MODE_INFO = 1406;  // value_type: TYPE_MSG
+
+    // qview event
+    KEY_QVIEW_ROUTE_INFO = 2001;  // value_type: TYPE_STRING
+
+    // qlauncher event
+    KEY_QLAUNCHER_COMMENT_LIKE =
+        3001;  // value_type: TYPE_NONE, no run_event_state type
+    KEY_QLAUNCHER_COMMENT_DISLIKE =
+        3002;  // value_type: TYPE_NONE, no run_event_state type
+
+    // product events, use for QProd/QPad etc.
+    KEY_PRODUCT_EVENT = 4001;  // value_type: TYPE_MSG
+    // noa: if driver confirm or reject lane change request
+    KEY_PRODUCT_AUTO_LANE_CHANGE_DRIVER_CONFIRM =
+        4002;                               // value_type: TYPE_BOOL
+    KEY_PRODUCT_NOTIFY_DRIVER = 4003;       // value_type: TYPE_ENUM
+    KEY_PRODUCT_AUDIO_RECORD = 4004;        // value_type: TYPE_MSG
+    KEY_PRODUCT_AUDIO_PLAYER_QVIEW = 4005;  // value_type: TYPE_STRING
+
+    // qpad logging enable
+    KEY_QEVENT_LOGGING_ENABLE = 4006;  // value_type: TYPE_BOOL
+
+    KEY_PRODUCT_LOGGING_STATUS = 4007;  // value_type: TYPE_MSG
+
+    // mapping event
+    KEY_QEVENT_SET_SD_ROUTE = 5000;  // value_type: TYPE_MSG
+    // TODO(luzou, wangbi): Replace this event with Client/Server mode to send
+    // sd route response.
+    KEY_QEVENT_SD_ROUTE_RESPONSE = 5001;  // value_type: TYPE_MSG
+
+    // use it be careful
+    KEY_QCOMAND_EMERGENCY_STOP = 10001;  // value_type: TYPE_NONE
+
+    // test purpose
+    KEY_QCOMAND_MANUAL_CONTROL_ENABLE =
+        100001;  // value_type: TYPE_NONE, no run_event_state type
+    KEY_QCOMAND_MANUAL_CONTROL_DISABLE =
+        100002;  // value_type: TYPE_NONE, no run_event_state type
+
+    KEY_QEVENT_FEEDBACK = 100003;  // value_type: TYPE_MSG
+
+    // driver action qevent
+    KEY_QEVENT_DRIVER_DISCOMFORT = 1000001;  // value_type: TYPE_NONE
+
+    // lcc: cruising speed,m/s
+    KEY_QEVENT_LCC_CRUISING_SPEED = 1000013;  // value_type: TYPE_FLOAT
+
+    // lcc: following distance level,LccFollowingDistanceLevel
+    KEY_QEVENT_LCC_FOLLOWING_DISTANCE_LEVEL = 1000014;  // value_type: TYPE_ENUM
+
+    // last station
+    KEY_QEVENT_LAST_STATION = 1000015;  // value_type: TYPE_MSG
+
+    // noa: cruising speed, m/s
+    KEY_QEVENT_NOA_CRUISING_SPEED = 1000016;  // value_type: TYPE_FLOAT
+
+    // plc signals for both noa and alcc.
+    KEY_QEVENT_PLC_REPORT_SIGNAL = 1000017;  // value_type: TYPE_ENUM
+
+    // noa: auto lane change request
+    KEY_QEVENT_AUTO_LANE_CHANGE_REQUEST_SIGNAL =
+        1000018;  // value_type: TYPE_ENUM
+
+    // Acc: front target car drive off in standwait mode.
+    KEY_QEVENT_FRONT_TARGET_CAR_DRIVE_OFF = 1000019;  // value_type: TYPE_BOOL
+
+    // cruising speed
+    KEY_QEVENT_CRUISING_SPEED = 1000020;  // value_type: TYPE_MSG CruisingSpeed
+
+    // calibration
+    KEY_QEVENT_START_CALIBRATE = 1000021;  // value_type: TYPE_MSG
+
+    // noa: route ttc lane change request
+    KEY_QEVENT_ROUTE_TTC_LANE_CHANGE_REQUEST =
+        1000022;  // value_type: TYPE_MSG RouteTtcLaneChangeRequestProto
+
+    // noa: auto lane change request
+    KEY_QEVENT_AUTO_LANE_CHANGE_REQUEST =
+        1000023;  // value_type: TYPE_MSG AutoLaneChangeRequestProto
+
+    // trigger an emrgency event and auto upload
+    KEY_QEVENT_EMERGENCY_EVENT = 1000024;  // value_type: TYPE_NONE
+
+    KEY_QEVENT_CRUISING_SPEED_ERROR_CODE =
+        1000025;  // value_type: TYPE_MSG QCruisingSpeedErrorCode
+
+    KEY_QEVENT_TRAFFIC_LIGHT_REQUEST = 1000026;  // value_type: TlrOkInfo
+
+    // City signal lights start and stop
+    KEY_QEVENT_CITY_SIGNAL_LIGHTS_START_STOP_ENABLE =
+        1000030;  // value_type: TYPE_BOOL
+
+    // Avh not pull up
+    KEY_QEVENT_AVH_NOT_PULL_UP = 1000031;  // value_type: TYPE_BOOL
+
+    // cancel remote drive
+    KEY_QEVENT_CANCEL_REMOTE_DRIVE = 1000032;  // value_type: TYPE_NONE
+
+    KEY_QEVENT_PRE_DECELERATION = 1000033;  // value_type: TYPE_NONE
+
+    // remote drive cockpit
+    KEY_QEVENT_RDC_SUSPENDED = 1000034;       // value_type: TYPE_BOOL
+    KEY_QEVENT_RDC_VM_SWITCH = 1000035;       // value_type: VehicleConnectInfo
+    KEY_QEVENT_RDC_VC_SWITCH = 1000036;       // value_type: VehicleConnectInfo
+    KEY_QEVENT_RDC_CONNECT_RESULT = 1000037;  // value_type: VehicleConnectInfo
+
+    reserved 1006, 1007;
+  }
+
+  // lcc : following distance level
+  enum LccFollowingDistanceLevel {
+    LCC_FOLLOWING_DISTANCE_LEVEL_NONE = 0;
+    LCC_FOLLOWING_DISTANCE_LEVEL_NEAR = 1;
+    LCC_FOLLOWING_DISTANCE_LEVEL_SLIGHTLY_NEAR = 2;
+    LCC_FOLLOWING_DISTANCE_LEVEL_MEDIUM = 3;
+    LCC_FOLLOWING_DISTANCE_LEVEL_SLIGHTLY_FAR = 4;
+    LCC_FOLLOWING_DISTANCE_LEVEL_FAR = 5;
+  }
+
+  enum NotifyDriver {
+    NOTIFY_DRIVER_NONE = 0;
+    NOTIFY_DRIVER_SEAT_BELT_SHOULD_FASTEN = 1;
+    NOTIFY_DRIVER_ACC_HAS_NOT_ACTIVATED_BEFORE = 2;
+  }
+
+  // Run events for paddle lane change.
+  enum PlcEventReportSignal {
+    PLC_START_LANE_CHANGE_LEFT = 0;
+    PLC_START_LANE_CHANGE_RETURN_LEFT = 1;
+    PLC_START_WAITING_LEFT = 2;
+    PLC_START_LANE_CHANGE_RIGHT = 3;
+    PLC_START_LANE_CHANGE_RETURN_RIGHT = 4;
+    PLC_START_WAITING_RIGHT = 5;
+    PLC_START_WAITING_SOLID_LINE_LEFT = 6;
+    PLC_START_WAITING_SOLID_LINE_RIGHT = 7;
+
+    PLC_COMPLETE_LANE_CHANGE = 10;
+    PLC_COMPLETE_LANE_CHANGE_RETURN = 11;
+    PLC_CANCEL_BEFORE_START = 12;
+
+    PLC_REJECT_TARGET_NOT_FOUND = 20;
+    PLC_REJECT_PREV_CMD_INCOMPLETE = 21;
+    PLC_REJECT_PERFORMING_LANE_CHANGE = 22;
+    PLC_REJECT_NOT_ON_ROUTE = 23;
+
+    PLC_REJECT_RETURN_CROSSED_LANE = 30;
+    PLC_REJECT_RETURN_ORIGIN_UNAVAILABLE = 31;
+
+    PLC_FAIL_WAIT_TIMEOUT = 40;
+    PLC_FAIL_INTERNAL = 41;
+    PLC_FAIL_ALL_BRANCHES = 43;
+
+    PLC_BUS_STATION_WARNING = 44;
+
+    reserved 42;
+  }
+
+  // Run events for auto lane change request.
+  enum AutoLaneChangeRequestSignal {
+    ALCR_NO_CHANGE = 0;
+
+    ALCR_PROGRESS_CHANGE_LEFT = 1;
+    ALCR_PROGRESS_CHANGE_RIGHT = 2;
+
+    ALCR_ROUTE_CHANGE_LEFT = 3;
+    ALCR_ROUTE_CHANGE_RIGHT = 4;
+
+    ALCR_DEFAULT_CHANGE_LEFT = 5;
+    ALCR_DEFAULT_CHANGE_RIGHT = 6;
+  }
+
+  message CruisingSpeed {
+    enum CruisingSpeedChangeReason {
+      CRUISING_SPEED_NONE = 0;
+      CRUISING_SPEED_CHANGE_BY_CURRENT_SPEED = 1;
+      CRUISING_SPEED_CHANGE_BY_LEVER = 2;
+      CRUISING_SPEED_CHANGE_BY_QDAD = 3;
+      CRUISING_SPEED_CHANGE_BY_MAP = 4;
+      CRUISING_SPEED_CHANGE_BY_RESUME = 5;
+      CRUISING_SPEED_CHANGE_BY_EHPSPEED = 6;
+      CRUISING_SPEED_CHANGE_BY_NOA_DEGRADE_RAMP = 7;
+      CRUISING_SPEED_CHANGE_BY_OVERWHELMED = 8;
+      CRUISING_SPEED_CHANGE_BY_DIVERSION = 9;
+      CRUISING_SPEED_CHANGE_BY_SEVEREWEATHER = 10;
+    }
+    optional double cruising_speed_mps = 1;
+    optional CruisingSpeedChangeReason cruising_speed_change_reason = 2;
+    optional double current_speed_mps = 3;
+
+    repeated mapping.EhpSpeedLimitRange speed_limit_ranges = 4;
+  }
+
+  message RouteTtcLaneChangeRequestProto {
+    optional bool route_lc_left = 1;
+    optional bool request_lc_left = 2;
+    optional double driving_dist = 3;
+  }
+
+  message AutoLaneChangeRequestProto {
+    optional bool lc_left = 1;
+    optional LaneChangeType lane_change_type = 2;
+    reserved 3;
+  }
+
+  message Feedback {
+    enum FeedbackType {
+      FCW_EARLY = 0;
+      FCW_LATE = 1;
+      FCW_TIMELY = 2;
+      FCW_FALSE_TRIGGER = 3;
+    }
+    optional FeedbackType feed_back_type = 1;
+  }
+
+  enum ValueType {
+    TYPE_NONE = 0;
+    TYPE_BOOL = 1;
+    TYPE_INT32 = 2;
+    TYPE_FLOAT = 3;
+    TYPE_STRING = 4;
+    TYPE_MSG = 5;
+    TYPE_ENUM = 6;
+  }
+  optional QRunEvent.Key key = 1;
+  optional QRunEvent.ValueType value_type = 2;
+
+  oneof value {
+    bool bool_value = 3;
+    int32 int32_value = 4;
+    float float_value = 5;
+    string string_value = 6;
+
+    RoutingRequestProto routing_request_proto = 7;
+    // TYPE_MSG ; available key: DRIVE_MISSION
+
+    mapping.SemanticMapModifierProto semantic_map_modifier_proto = 8;
+    // TYPE_MSG ; available key: SEMANTIC_MAP_MODIFIER
+
+    ProductSettingProto product_setting_proto = 9;
+    // TYPE_MSG ; available key: KEY_QCOMAND_PRODUCT_SETTING
+
+    LccFollowingDistanceLevel lcc_following_distance_level = 10;
+    // TYPE_ENUM ; available key: KEY_QEVENT_LCC_FOLLOWING_DISTANCE_LEVEL
+
+    RunEventCommonValue run_event_common_value = 11;
+    // TYPE_MSG ;  available key: 102,105,106,107,108
+
+    SpecialRegionProto special_region_proto = 12;
+    // TYPE_MSG ; available key:  KEY_QCOMAND_SPECIAL_REGION
+
+    OperationalConditionProto operational_condition_proto = 13;
+    // TYPE_MSG ; available key: KEY_QEVENT_OPERATIONAL_CONDITION
+
+    PlcEventReportSignal plc_signal_value = 14;
+    // TYPE_ENUM ;  available key: KEY_QEVENT_PLC_REPORT_SIGNAL
+
+    ProductEventProto product_event_proto = 15;
+    // TYPE_MSG ; available key: KEY_PRODUCT_EVENT
+
+    QRunEventTrafficSigns qrunevent_traffic_signs = 16;
+    // TYPE_MSG ; available key: KEY_QEVENT_TRAFFIC_SIGN
+
+    NoaSettings noa_settings = 17;  // available key: KEY_QEVENT_NOA_SETTINGS
+
+    SpeedLimitSettings speed_limit_settings =
+        18;  // available key: KEY_QEVENT_SLA_SETTINGS
+
+    FcwSettings fcw_settings = 19;  // available key: KEY_QEVENT_FCW_SETTINGS
+
+    LdwLkaSettings ldw_lka_settings =
+        21;  // available key: KEY_QEVENT_LDW_LKA_SETTINGS
+
+    CruisingSpeed cruising_speed =
+        22;  // available key: KEY_QEVENT_LCC_CRUISING_SPEED,
+             // KEY_QEVENT_NOA_CRUISING_SPEED KEY_QEVENT_CRUISING_SPEED
+
+    AutonomyAbnormalReason autonomy_abnormal_reason =
+        23;  // available key: KEY_QEVENT_AUTONOMY_ABNORMAL_REASON
+
+    AutoLaneChangeRequestSignal auto_lane_change_request_signal =
+        24;  // TYPE_ENUM ; available key:
+             // KEY_QEVENT_AUTO_LANE_CHANGE_REQUEST_SIGNAL
+
+    BsdDowSettings bsd_dow_settings =
+        25;  // available key: KEY_QEVENT_BSD_DOW_SETTINGS
+
+    DriverHandOffSteerWarning driver_handoff_steer_warning =
+        26;  // available key: KEY_QEVENT_DRIVER_HANDOFF_STEER
+
+    CalibrationRequest start_calibration =
+        27;  // availabel key: KEY_QEVENT_START_CALIBRATE
+
+    NotifyDriver notify_driver = 28;  // available key: KEY_QEVENT_NOTIFY_DRIVER
+
+    RouteTtcLaneChangeRequestProto route_ttc_lane_change_request =
+        29;  // available key: KEY_QEVENT_ROUTE_TTC_LANE_CHANGE_REQUEST
+
+    AebSettings aeb_settings = 30;  // available key: KEY_QEVENT_AEB_SETTINGS
+
+    AudioRecordEventValue audio_record_event =
+        31;  // available key: KEY_PRODUCT_AUDIO_RECORD
+
+    SDRouteProto sd_route = 32;  // available key: KEY_QEVENT_SET_SD_ROUTE
+    SdRouteResponse sd_route_response =
+        33;  // available key: KEY_QEVENT_SD_ROUTE_RESPONSE
+
+    ApaSettings apa_settings = 34;  // available key: KEY_QEVENT_APA_SETTINGS
+
+    Feedback feedback = 35;  // available key: KEY_QEVENT_FEEDBACK
+
+    ParkingSpotFinderInfo parking_spot_info =
+        36;  //  available key: KEY_QCOMAND_APA_PARKING_SPOT_SELECTED,
+             //  KEY_QEVENT_PARKING_SPOT_CUSTOM
+
+    AutoLaneChangeRequestProto auto_lane_change_request =
+        37;  // available key: KEY_QEVENT_AUTO_LANE_CHANGE_REQUEST
+
+    ParkingOutDirection parking_out_direction = 38;
+    // key : KEY_QCOMAND_APA_PARKING_OUT_DIRECTION
+
+    LAebSettings laeb_settings = 39;  // available key: KEY_QEVENT_LAEB_SETTINGS
+
+    ChildSeatSettings child_seat_settings =
+        40;  // available key: KEY_QEVENT_CHILD_SEAT_SETTINGS
+
+    QDrivingStyle q_driving_style =
+        41;  // available key: KEY_QEVENT_DRIVING_STYLE
+
+    QCruisingSpeedErrorCode q_cruising_speed_error_code =
+        42;  // available key: KEY_QEVENT_CRUISING_SPEED_ERROR_CODE
+
+    QRpaCommandStatus q_rpa_command_status =
+        43;  // available key: KEY_QCOMAND_RPA_COMMAND_STATUS
+
+    QRpaAppCommand q_rpa_app_command =
+        44;  // available key: KEY_QCOMAND_RPA_APP_COMMAND
+
+    TlrOkInfo tlr_ok_info =
+        45;  // available key: KEY_QEVENT_TRAFFIC_LIGHT_REQUEST
+
+    LoggingStatusProto logging_status =
+        46;  // available key: KEY_PRODUCT_LOGGING_STATUS
+
+    MrmSettings mrm_settings = 47;  // available key: KEY_QEVENT_MRM_SETTINGS
+
+    HdTurnLightSettings hd_turn_light_settings =
+        48;  // available key: KEY_QEVENT_HDTURNLIGHT_SETTINGS
+
+    SEVERE_WEATHER_MODE_INFO severe_weather_mode_info =
+        49;  // available key: KEY_QEVENT_SEVERE_WEATHER_MODE_INFO
+
+    VehicleConnectInfo vehicle_connect_info =
+        50;  // available key:
+             // KEY_QEVENT_RDC_VM_SWITCH KEY_QEVENT_RDC_VC_SWITCH
+             // KEY_QEVENT_RDC_CONNECT_RESULT
+  }
+
+  // display or audio notice
+  optional bool is_notice = 20;
+}

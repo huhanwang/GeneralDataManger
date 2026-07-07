@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/qalc";
+
+enum QALCState {
+  ALC_OFF = 1;
+  ALC_STANDBY = 2;
+  ALC_STANDBY_ENABLE = 3;
+  ALC_ONGOING = 5;
+  ALC_COMPLETED = 6;
+  ALC_CROSSING_LANE = 7;
+  ALC_RETURNING = 8;
+  ALC_RETURN_COMPLETED = 9;
+  ALC_PREPARE = 10;
+
+  reserved 4;
+}
+
+enum LaneChangeDirection {
+  LCD_NONE = 1;
+  LCD_LEFT = 2;
+  LCD_RIGHT = 3;
+}

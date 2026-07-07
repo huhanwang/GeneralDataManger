@@ -1,0 +1,25 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/trans_phase_timestamp.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message TransTimestamp {
+  repeated TransPhaseTimestamp event = 1;
+}
+
+message TransPhaseItemProto {
+  optional uint32 source_node_id = 1;       // hash_value of source_node_name
+  optional uint32 target_node_id = 2;       // hash_value of target_node_name
+  optional uint32 domain_channel_hash = 3;  // hash_value of domain_channel
+  optional uint64 channel_seq_number = 4;
+  optional int32 sub_module_id = 5;
+  optional TransTimestamp timestamp = 6;
+}
+
+message QTransPhaseProto {
+  optional LiteHeader header = 1;
+  repeated TransPhaseItemProto item = 2;
+}

@@ -1,0 +1,15 @@
+syntax = "proto2";
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_immediate_data";
+
+import "onboard/calibration/proto/calibration_response.proto";
+import "onboard/calibration/proto/calibration_workflow.proto";
+
+message OnlineCalibrationImmediateData {
+  optional string car_id = 1;
+  optional int64 last_calibrate_time = 2;  // Seconds
+  optional int32 last_step = 3;
+  repeated CameraExtrinsicMap last_camera_calibrated_param = 4;
+  repeated CameraExtrinsicMap last_camera_install_param = 5;
+  optional CalibrationWorkflowProto last_work_flow = 6;
+}

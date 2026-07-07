@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+
+message SectionAssociaterProto {
+  optional sfixed64 section_id = 1;
+  repeated sfixed64 feature_ids = 2;
+}
+
+message TrajectoryPointInfoProto {
+  optional int64 timestamp = 1;
+  // WGS-84, radian system.
+  optional GeoPointProto point = 2;
+  repeated sfixed64 section_ids = 3;
+}
+
+message MapMatchMetaProto {
+  optional string version = 1;
+  optional string run_name = 2;
+  optional string map_name = 3;
+  optional int64 point_nums = 4;
+  optional double trajectory_length = 5;
+  optional string date = 6;
+}
+
+message MapMatchProto {
+  optional MapMatchMetaProto meta = 1;
+  repeated TrajectoryPointInfoProto trajectory_point_infos = 2;
+  repeated SectionAssociaterProto section_associaters = 3;
+}

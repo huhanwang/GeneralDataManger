@@ -1,0 +1,305 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/proto/lane_path.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/route_navigation.proto";
+import "onboard/proto/lane_change_type.proto";
+import "onboard/maps/ehr/proto/dynamic_event.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+import "onboard/proto/turn_signal.proto";
+
+message OddCustomEvent {
+  optional mapping.CustomEvent.Type type = 1;
+  optional int32 distance = 2;  // UNIT=meters
+}
+
+message OddTrafficEvent {
+  optional mapping.TrafficEvent.Type type = 1;
+  optional int32 distance = 2;  // UNIT=meters
+}
+
+message DistanceEvent {
+  enum EventType {
+    HD_ENTRY = 1;         // distance to hd entry
+    TOLL_STATION = 2;     // distance to toll station
+    REVERSIBLE_LANE = 3;  // Reversible lanes,tidy flow
+    TRAFFIC_LIGHT = 4;
+  }
+  optional EventType event_type = 1;
+  optional int32 distance = 2;
+}
+
+message DistanceRangeProto {
+  optional int32 start = 1;  // UINT=meters
+  optional int32 end = 2;    // UINT=meters
+}
+
+message NcaOdcProto {
+  optional int32 distance_to_map_boundary = 1;  // UNIT=meters
+  optional NavMode nav_mode = 4;
+  repeated OddCustomEvent odd_custom_events = 5;
+  repeated OddTrafficEvent odd_traffic_events = 6;
+  optional int32 distance_to_hd_destination = 7;  // UNIT=meters
+  repeated DistanceEvent distance_events = 8;
+  repeated DistanceRangeProto sd_route_match_dist_ranges = 9;
+
+  reserved 2, 3;
+}
+
+message RouteContentProto {
+  // If not empty, this is a list of bus stop names
+  repeated string stations_list = 1;
+
+  // If available, this is the index into the predefined station list. This
+  // field is unset if the vehicle is not near any station.
+  optional int64 approaching_station = 2;
+  optional int64 next_station = 3;
+  optional double distance_to_next_station = 4;  // UNIT=meters
+  optional string routing_request_id = 5;
+  optional double distance_to_next_viapoint = 6;  // UNIT=meters
+  optional string next_viapoint_id = 7;
+  optional NaviActionProto nav_action = 8;
+  optional int32 distance_to_action = 9;  // UNIT=meters
+  optional NcaOdcProto nca_odc = 10;
+  optional NavMode nav_mode = 11;
+}
+
+message HmiPathBoundaryProto {
+  enum BoundaryRenderStyle {
+    STYLE_NORMAL = 0;
+    STYLE_WARN = 1;
+  }
+
+  repeated Vec2dProto left_boundary = 1;
+  repeated Vec2dProto right_boundary = 2;
+  optional BoundaryRenderStyle left_render_style = 3;
+  optional BoundaryRenderStyle right_render_style = 4;
+}
+
+message HmiByPassProto {
+  enum ByPassType {
+    LANE_CHANGE = 0;
+    IN_LANE = 1;
+  }
+  enum ByPassStage {
+    WAITING_COMFIRM = 0;
+    PRE_BY_PASS = 1;
+    WAITING = 2;
+    RUNNING = 3;
+  }
+  enum TargetType {
+    VEHICLE = 0;
+    CONSTRUCTION = 1;
+    UNIVERSIAL_OBJECT = 2;
+    OBSTACLE = 3;
+  }
+  optional ByPassType type = 1;
+  optional ByPassStage stage = 2;
+  optional TargetType target_type = 3;
+  optional bool left = 4;
+  optional string object_id = 5;
+}
+
+message HmiContentProto {
+  optional LiteHeader header = 1;
+
+  // If available, this is a request to display a predefined message (e.g. for
+  // a fixed duration such as 5s).
+  enum MessageType {
+    MSG_NONE = 0;
+    MSG_VEHICLE_STARTING = 1;
+    MSG_VEHICLE_PULLING_IN = 2;
+    MSG_VEHICLE_STOPPED = 3;
+    MSG_TRAFFIC_CONGESTION = 4;
+    MSG_YIELDING_TO_PEDESTRIAN = 5;
+    MSG_YIELDING_TO_NON_MOTORIZED_VEHICLE = 6;
+    MSG_YIELDING_TO_VEHICLE = 7;
+    MSG_UNPROTECTED_LEFT_TURN = 8;
+    MSG_ADVERSE_WEATHER_CONDITIONS = 9;
+    MSG_PASSING_VEHICLE = 10;
+    MSG_HANDLING_CUT_IN = 11;
+  }
+  optional MessageType message = 2;
+
+  optional RouteContentProto route_content = 3;
+
+  optional int64 turning = 4
+      [default = 0];  // 0 : not turning. 1: left. -1: right.
+
+  enum DrivingState {
+    DS_OVERTAKING = 0;
+    DS_YIELDING_CUT_IN = 1;
+    DS_BORROW_OPPOSITE_LANE = 2;
+    DS_UNPROTECTED_LEFT_TURNING = 3;
+    DS_THROUGH_ROUNDABOUT = 4;
+    DS_REQUEST_HELP_LANE_CHANGE_BY_ROUTE = 5;
+  }
+
+  repeated DrivingState driving_states = 5;
+
+  optional HmiPathBoundaryProto path_boundary = 8;
+
+  optional double distance_to_traffic_light_stop_line = 9;
+
+  optional double distance_to_roadblock = 12;
+
+  optional bool all_trajectories_blocked = 16;
+
+  message HighlightObjectInfo {
+    optional string object_id = 1;
+
+    enum HighlightObjectType {
+      HLO_ACC_FOLLOWING_TARGET = 0;
+
+      HLO_SPEED_DECEL_TARGET = 10;
+      HLO_LANE_CHANGE_UNSAFE = 11;
+      HLO_NUDGE_OBJECT = 12;
+      HLO_NUDGE_LARGE_VEHICLE = 13;
+      HLO_DEFENSE_LC_OBSTACLE = 15;
+      HLO_BLOCKER_OBJECT = 16;
+      HLO_YIELD_PEDESTRIAN = 17;
+      HLO_YIELD_VEHICLE = 18;
+      HLO_HARD_BRAKE_TARGET = 19;
+      HLO_CUTIN_VEHICLE = 20;
+
+      reserved 14;
+    }
+    optional HighlightObjectType type = 2;
+    optional double dist_to_object = 3;
+  }
+  repeated HighlightObjectInfo highlight_objects = 11;
+
+  message IgnoredObjectInfo {
+    optional string object_id = 1;
+
+    enum IgnoredObjectType {
+      IGO_VOID_PRED = 0;
+    }
+    optional IgnoredObjectType type = 2;
+  }
+  repeated IgnoredObjectInfo ignored_objects = 36;
+
+  optional mapping.LanePathProto plc_target_lane_path = 13;
+  optional sfixed64 online_map_id = 14 [default = -1];
+
+  optional bool lc_left = 18;
+  optional LaneChangeType lane_change_type = 19;
+
+  enum MergeAlarmType {
+    MERGE_ALARM_NONE = 0;
+    MERGE_ALARM_DANGER = 1;
+    MERGE_ALARM_TAKEOVER = 2;
+  }
+  optional MergeAlarmType merge_alarm_type = 21;
+  optional LaneChangeStage lane_change_stage = 22;
+  optional bool lane_change_for_obstacle_fail = 23;
+  optional bool collision_warning_request = 24;
+  optional string collision_warning_object = 35;
+  optional string collision_risk_general_object = 56;
+  optional string brake_warning_general_object = 60;
+  optional string raw_cipv_id = 51;
+  optional bool longitudinal_override_collision_risk_status = 64;
+
+  // Longcheng Warnings.
+  // Two level work zone warnings.
+  enum RoadWorkZoneWarningType {
+    NO_WORK_ZONE_WARNING = 0;
+    WORK_ZONE_WARNING_LEVEL_1 = 1;
+    WORK_ZONE_WARNING_LEVEL_2 = 2;
+  }
+  optional RoadWorkZoneWarningType work_zone_warning = 25;
+  // Pedestrian on front lanes warning.
+  optional bool is_pedestrian_on_front_lanes_warning = 26;
+  // Warning if calculated trajectory collides with front objs.
+  optional bool inevitable_collision_warning = 27;
+  // Front cut-in warning.
+  optional bool front_cutin_warning = 28;
+
+  // Large curvature warning.
+  enum LargeCurvatureWarningType {
+    LARGE_CURVATURE_WARNING_LEVEL_NONE = 0;
+    LARGE_CURVATURE_WARNING_LEVEL_1 = 1;
+    LARGE_CURVATURE_WARNING_LEVEL_2 = 2;
+    LARGE_CURVATURE_WARNING_LEVEL_3 = 3;
+  }
+  optional LargeCurvatureWarningType large_curvature_warning = 30;
+  optional HmiByPassProto by_pass = 31;
+  optional bool miss_ramp_warning = 32;
+  optional bool fail_to_merge_warning = 33;
+
+  // Leading vehicle departure alert
+  optional bool leading_vehicle_departure_alert = 34;
+
+  optional LaneChangeUnavailableReason lane_change_unavailable_type = 37;
+  optional LaneChangeWaitingReason lane_change_waiting_type = 38;
+  optional LaneChangeWaitingCancelReason lane_change_waiting_cancel_type = 39;
+  optional LaneChangeCancelReason lane_change_cancel_type = 40;
+
+  // Intersetion warning.
+  enum IntersectionWarningType {
+    INTERSECTION_WARNING_TYPE_NONE = 0;
+    STRAIGHT_INTO_INTERSECTION_WAITING = 1;
+    STRAIGHT_INTO_INTERSECTION_PASS_THROUGH_GREEN_LIGHT = 2;
+    STRAIGHT_INTO_INTERSECTION_PASS_GENERAL = 3;
+  }
+  optional IntersectionWarningType intersection_warning_type = 41;
+
+  optional bool lc_target_congestion = 42;
+
+  message RpaEnhancedRemind {
+    message VehicleSurroundingSection {
+      optional uint32 warning_level = 1;
+    }
+    repeated VehicleSurroundingSection vehicle_surrounding_sections = 1;
+  }
+  optional RpaEnhancedRemind rpa_enhanced_remind = 43;
+  message RpaInfo {
+    enum ObsatcleDirection {
+      OBSTACLE_DIRECTION_NONE = 0;
+      OBSTACLE_DIRECTION_FRONT_LEFT = 1;
+      OBSTACLE_DIRECTION_FRONT_MIDDLE = 2;
+      OBSTACLE_DIRECTION_FRONT_RIGHT = 3;
+      OBSTACLE_DIRECTION_RIGHT_SIDE_FRONT = 4;
+      OBSTACLE_DIRECTION_RIGHT_SIDE_REAR = 5;
+      OBSTACLE_DIRECTION_REAR_RIGHT = 6;
+      OBSTACLE_DIRECTION_REAR_MIDDLE = 7;
+      OBSTACLE_DIRECTION_REAR_LEFT = 8;
+      OBSTACLE_DIRECTION_LEFT_SIDE_REAR = 9;
+      OBSTACLE_DIRECTION_LEFT_SIDE_FRONT = 10;
+    }
+    optional ObsatcleDirection obstacle_direction = 1;
+  };
+  optional RpaInfo rpa_info = 45;
+  repeated string considered_object_ids = 44;
+  enum ApaStopReason {
+    APA_STOP_REASON_NONE = 0;
+    APA_STOP_REASON_MOVING_PEDESTRIAN = 1;
+    APA_STOP_REASON_MOVING_VEHICLE = 2;
+  }
+  optional ApaStopReason apa_stop_reason = 46;
+  enum RouteIntention {
+    ROUTE_INTENTION_NONE = 0;
+    ROUTE_INTENTION_LEFT = 1;
+    ROUTE_INTENTION_RIGHT = 2;
+  }
+  optional RouteIntention route_intention = 47;
+  optional bool is_construction_scenario = 48;
+  optional TurnSignal turn_signal = 49;
+  optional TurnSignalReason turn_signal_reason = 50;
+  optional bool is_left_cone_warning = 52;
+  optional bool is_right_cone_warning = 53;
+  optional bool need_take_over = 54;
+  optional bool is_cone_in_lane = 55;
+  optional int32 construction_lane_num = 58;
+  optional RouteIntention construction_lane_change_intention = 59;
+  optional bool is_left_movable_curb_warning = 63;
+  optional bool is_right_movable_curb_warning = 61;
+  optional bool is_movable_curb_in_lane = 62;
+
+  reserved 6, 7, 10, 15, 17, 20, 29, 57;
+  // Next id: 65.
+}

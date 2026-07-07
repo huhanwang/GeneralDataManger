@@ -1,0 +1,21 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message LogCollectConfigs {
+  message LogCollectConfig {
+    enum CompressType {
+      CT_NONE = 0;
+      CT_SNAPPY = 1;
+    }
+    optional string source_folder = 1;
+    optional string file_name_prefix = 2;
+    optional string target_folder = 3;
+    optional CompressType compress_type = 4;
+    optional int32 backup_num = 5;
+    optional bool collect_backup_file = 6;
+    optional bool clear_before_start = 7;
+  }
+  repeated LogCollectConfig configs = 1;
+}

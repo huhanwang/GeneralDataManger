@@ -1,0 +1,206 @@
+
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/offboard/simulation/proto/modifier";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/planner/assist/proto/external_command_status.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/emergency_brake.proto";
+import "onboard/proto/localization.proto";
+import "onboard/proto/perception.proto";
+import "onboard/proto/vehicle_signal.proto";
+import "offboard/simulation/agents/proto/sim_agent.proto";
+// import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+import "onboard/proto/positioning.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/fusion/object.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+import "onboard/maps/map_fusion/proto/map_road_reminder.proto";
+import "onboard/maps/sd/turn_by_turn/proto/turn_by_turn.proto";
+import "onboard/maps/map_fusion/proto/map_fusion_result.proto";
+import "onboard/maps/proto/sd_map.proto";
+import "onboard/proto/hmi_content.proto";
+import "onboard/proto/lane_support.proto";
+import "onboard/proto/liauto/li_mcu_to_soa_failsafe.proto";
+import "onboard/proto/safety_to_hui.proto";
+// import "onboard/proto/lite_msg.proto";
+
+// A modifier that removes specified perception objects from simulation.
+message RemoveObjectsModifier {
+  // Only object ids specified here will be removed.
+  repeated string object_ids = 1;
+}
+
+// A modifier that keeps specified perception objects from simulation.
+message KeepObjectsModifier {
+  // Only object ids specified here will be kept.
+  repeated string object_ids = 1;
+}
+
+// A modifier that change specified traffic light states.
+// TODO(mike): support changing TL states starting from specific time.
+message ChangeTrafficLightsModifier {
+  message Mod {
+    optional int64 tl_id = 1;
+    optional TrafficLightColor target_color = 2;
+    // Start trigger offset, relative to the scenario start.
+    optional double start_offset_secs = 3;
+    // End trigger offset, relative to the scenario start. If not set, will
+    // default to the infinity future (i.e. always trigger after start offset).
+    optional double end_offset_secs = 4;
+    optional bool target_flashing = 5 [default = false];
+  }
+  repeated Mod mods = 1;
+}
+
+// A modifier that replaces existing perception objects with a sim agent.
+message ReplaceObjectsModifier {
+  message Mod {
+    // Two methods of specifying the object, and object_type is preferred to
+    // object_id.
+    oneof ModType {
+      // Replace the object of this id.
+      string object_id = 1;
+      // Replace all objects of this type.
+      ObjectType object_type = 6;
+    }
+    // Start trigger offset, relative to the scenario start.
+    optional double start_offset_secs = 2;
+    // End trigger offset, relative to the scenario start. If not set, will
+    // default to the infinity future (i.e. always trigger after start offset).
+    optional double end_offset_secs = 3;
+    optional agents.SimAgentConfigProto sim_agent_config = 5;
+    reserved 4;
+  }
+  repeated Mod mods = 1;
+}
+
+message TeleportSdcModifier {
+  message Mod {
+    // Object id whose pose will be used by the AV to follow initially before
+    // engaging.
+    optional string object_id = 1;
+  }
+  optional Mod mod = 1;
+}
+
+// A modifier that change specified chassis msg.
+message ChassisModifier {
+  message Mod {
+    // Start trigger offset, relative to the scenario start.
+    optional double start_offset_secs = 1;
+    // End trigger offset, relative to the scenario start.
+    optional double end_offset_secs = 2;
+
+    optional snoah.Chassis modified_chassis = 23;
+
+    // Following fields to be deprecated.
+    optional snoah.Chassis.TurnLeverType turn_lever_state = 3
+        [deprecated = true];
+    optional snoah.Chassis.AuxiliaryLeverType auxiliary_lever_feedback = 4
+        [deprecated = true];
+    optional float throttle_percentage = 5 [deprecated = true];
+    optional float brake_percentage = 6 [deprecated = true];
+    optional float steering_percentage = 7 [deprecated = true];
+    optional snoah.Chassis.LonStateType lon_state = 8 [deprecated = true];
+    optional snoah.Chassis.DrivingMode driving_mode = 9 [deprecated = true];
+    optional snoah.Chassis.GearPosition gear_location = 10 [deprecated = true];
+    optional bool esc_abs_active = 11 [deprecated = true];
+    optional snoah.Chassis.DoorStatus front_left_door_status = 12
+        [deprecated = true];
+    optional snoah.Chassis.DoorStatus front_right_door_status = 13
+        [deprecated = true];
+    optional snoah.Chassis.DoorStatus rear_left_door_status = 14
+        [deprecated = true];
+    optional snoah.Chassis.DoorStatus rear_right_door_status = 15
+        [deprecated = true];
+    optional snoah.Chassis.DoorStatus hood_status = 16 [deprecated = true];
+    optional snoah.Chassis.DoorStatus trunk_status = 17 [deprecated = true];
+    optional snoah.Chassis.EpbStateType epb_status = 18 [deprecated = true];
+    optional snoah.Chassis.SeatBeltStatus driver_seat_belt_status = 19
+        [deprecated = true];
+    optional snoah.Chassis.SeatBeltStatus passenger_seat_belt_status = 20
+        [deprecated = true];
+    optional bool wiper = 21 [deprecated = true];
+    optional snoah.VehicleSignal signal = 22 [deprecated = true];
+
+    // Next order number is 24.
+  }
+  repeated Mod mods = 1;
+}
+
+message FovModifier {
+  optional double detection_range = 1;
+}
+
+// A modifier that drop the specified message.
+message DropMsgModifier {
+  message Mod {
+    // Start trigger offset, relative to the scenario start.
+    optional double start_offset_secs = 1;
+    // End trigger offset, relative to the scenario start. If not set, will
+    // default to the infinity future (i.e. always trigger after start offset).
+    optional double end_offset_secs = 2;
+    optional string channel = 3;
+  }
+  repeated Mod mods = 1;
+}
+
+// A modifier that modify the specified message with MergeFrom logic.
+message GeneralMsgModifier {
+  message ModifiedMsg {
+    optional Chassis chassis = 1;
+    optional EmergencyBrakeProto emergency_brake_proto = 2;
+    optional LocalizationTransformProto localization_transform_proto = 3;
+    optional PlannerExternalCommandStatusProto
+        planner_external_command_status_proto = 4;
+    optional VisionResultForHmaProto vision_result_for_hma_proto = 5;
+    optional AutonomyStateProto autonomy_state_proto = 6;
+    optional ImuRawReadingProto imu_raw_reading_proto = 7;
+    optional mapping.MapRoadReminderProto map_road_reminder_proto = 8;
+    optional TurnByTurnProto turn_by_turn_proto = 9;
+    optional mapping.MapFusionResultProto map_fusion_result_proto = 10;
+    optional mapping.SdMapProto sd_map_proto = 11;
+    optional HmiContentProto hmi_content_proto = 12;
+    optional LaneSupportProto lane_support_proto = 13;
+    optional LiMcuToSoaFailsafeProto li_mcu_to_soa_failsafe_proto = 14;
+    optional SafetyToHuiProto safety_to_hui_proto = 15;
+  }
+  message Mod {
+    /// optional TimeWindow time_window = 1;
+    optional ModifiedMsg modified_msg = 2 [deprecated = true];
+    /// optional LiteMsgWrapper modified_lite_msg = 3;
+    // If true, override repeated fields, otherwise append repeated fields.
+    // other types of fields will be merged with the target message.
+    optional bool override_repeated_field = 4 [default = false];
+  }
+  repeated Mod mods = 1;
+}
+
+// Message modifier wrapper.
+message MessageModifierProto {
+  optional string name = 1;
+  oneof type {
+    RemoveObjectsModifier remove_objects_modifier = 2;
+    ChangeTrafficLightsModifier change_traffic_lights_modifier = 3;
+    ReplaceObjectsModifier replace_objects_modifier = 4;
+    TeleportSdcModifier teleport_sdc_modifier = 5;
+    KeepObjectsModifier keep_objects_modifier = 6;
+    FovModifier fov_modifier = 7;
+    ChassisModifier chassis_modifier = 8;
+    DropMsgModifier drop_msg_modifier = 9;
+    GeneralMsgModifier general_msg_modifier = 10;
+    FusionOutputProtoModifierConfigProto fusion_output_proto_modifier = 11;
+  }
+}
+
+message AddModifierProto {
+  optional LiteHeader header = 1;
+  optional MessageModifierProto modifier = 2;
+}
+
+message FusionOutputProtoModifierConfigProto {}

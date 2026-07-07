@@ -1,0 +1,164 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/proto/obstacle";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/perception/proto/detection_range.proto";
+import "onboard/perception/proto/type.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message LaserPointProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double range = 4;
+  // Intensity is [0, 255.0] in float.
+  optional float intensity = 5;
+  // Return index 0 or 1.
+  optional int32 return_index = 6;
+  // Whether the current point has returns behind it.
+  optional bool has_returns_behind = 7;
+  optional int32 beam_index = 8;
+  optional int32 scan_or_point_index = 9;
+  optional LidarId lidar_id = 10;
+  optional LidarType lidar_type = 11;
+  // TODO(dong): add planarity when available
+}
+
+message ObstacleProto {
+  enum Type {
+    STATIC = 0;
+    DYNAMIC = 1 [deprecated = true];
+    OFFROAD = 2;
+    IGNORED = 3;
+    VEGETATION = 4;
+    BARRIER = 5;
+    CONE = 6;
+    GROUND = 7;
+    CAR = 8;
+    PEDESTRIAN = 9;
+    XCYCLIST = 10;
+    ANIMAL = 11;
+    UNKNOWN = 12;
+  }
+  enum TypeSource {
+    DEFAULT = 0;
+    REFLECTION_CLUSTER_FILTER = 1;
+    NOISY_OBSTACLE_FILTER = 2;
+    MIST_OBSTACLE_FILTER = 3;
+    MIST_OBSTACLE_FILTER_V2 = 4;
+    MIST_CLUSTER_FILTER = 5;
+    SMALL_CLUSTER_FILTER = 6;
+    SEMANTIC_MAP_ZONE = 7;
+    BLOOMING_CLUSTER_FILTER = 8;
+    OBSTACLE_SEMANTIC_MANAGER = 9;
+    LEAF_CLUSTER_FILTER = 10;
+    FIERY_EYE_NET = 11;
+    LL_NET = 12;
+    SEGMENTATION_NOISE = 13;
+    GROUND_PROPAGATION = 14;
+    REFLECTION_PROPOSER = 15;
+    BLOOMING_PROPOSER = 16;
+    MIST_OBSTACLE_NET_FILTER = 17;
+    GHOSTING_CLUSTER_FILTER = 18;
+    GROUND_EXTRACTION = 19;
+    GROUND_EXTRACTOR_PROPOSER = 20;
+    MIST_FILTER_CS = 21;
+    MIST_PROPOSER = 22;
+    HIGH_INTENSITY_WHITELIST = 23;
+    SPLASH_PROPOSER = 24;
+    PLASTIC_BAG_PROPOSER = 25;
+    OVERHANGING_PROPOSER = 26;
+    DEFAULT_UNKNOWN_FILTER = 27;
+    FILTER_PROPOSER = 28;
+  }
+  optional int64 id = 1;
+  optional double diameter = 2;
+  optional double x = 3;
+  optional double y = 4;
+  optional double min_z = 5;
+  optional double max_z = 6;
+  optional double ground_z = 7;
+  optional int32 num_points = 8;
+  optional int32 num_points_above_ground = 15;
+  optional Type type = 9;
+  optional double clearance = 10;
+  optional float mist_score = 11;
+  optional TypeSource type_source = 12;
+  optional double dist_to_curb = 13;
+  repeated LaserPointProto points = 14;
+}
+
+// A compact version of ObstacleProto as a replacement.
+message CompactObstacleProto {
+  optional uint32 x_index = 1;
+  optional uint32 y_index = 2;
+  optional uint32 min_z_cm = 3;
+  optional uint32 max_z_cm = 4;
+  optional uint32 ground_z_cm = 5;
+  optional uint32 num_points = 6;
+  optional uint32 num_points_above_ground = 12;
+  optional ObstacleProto.Type type = 7;
+  optional uint32 clearance_cm = 8;
+  optional int32 mist_score = 9;
+  optional ObstacleProto.TypeSource type_source = 10;
+  optional int32 dist_to_curb_cm = 11;
+  optional uint32 osm_prob = 13;
+  optional uint32 range_image_uncertainty = 14;
+  optional uint32 pillar_semantic_confidence = 15;
+  optional SegmentationType range_image_type = 16 [default = ST_DONTCARE];
+  optional PillarType pillar_semantic_type = 17 [default = PLT_NONE];
+}
+
+message ObstaclesProto {
+  optional LiteHeader header = 1;
+
+  repeated ObstacleProto obstacles = 2 [deprecated = true];
+
+  // The compact version: 1/3 of the size of ObstacleProto.
+  repeated CompactObstacleProto compact_obstacles = 3;
+  message CompactObstacleInfo {
+    optional double diameter = 1;
+    optional Vec3dProto origin = 2;
+  }
+  optional CompactObstacleInfo compact_obstacle_info = 4;
+  optional double timestamp = 5;
+  optional DetectionRangeProto obstacle_detection_range = 6;
+}
+
+message ObstacleSemanticCellProto {
+  optional uint32 x_index = 1;
+  optional uint32 y_index = 2;
+  optional ObstacleProto.Type type = 3;
+  optional float osm_log_odds = 4;
+  optional float occupied_log_odds = 5;
+}
+
+message ObstacleSemanticGridProto {
+  optional LiteHeader header = 1;
+  message CompactObstacleSemanticGridInfo {
+    optional double diameter = 1;
+    optional Vec2dProto origin = 2;
+    optional DetectionRangeProto detection_range = 3;
+    optional VehiclePoseProto pose = 4;
+  }
+  optional CompactObstacleSemanticGridInfo compact_obstacle_semantic_grid_info =
+      2;
+  optional double timestamp = 3;
+  repeated ObstacleSemanticCellProto cells = 4;
+}

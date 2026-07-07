@@ -1,0 +1,67 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/geo/geolocation.proto";
+import "onboard/proto/vehicle.proto";
+import "onboard/conf/proto/run_conf.proto";
+import "onboard/params/v2/proto/assembly/vehicle.proto";
+
+enum Locale {
+  LOC_UNKNOWN = 0;
+  LOC_BAY_AREA = 1;
+  LOC_SHENZHEN = 2;
+  LOC_SUZHOU = 3;
+  LOC_DOJO = 4;
+  LOC_ZHENGZHOU = 5;
+  LOC_CHANGZHOU = 6;
+  LOC_HANGZHOU = 7;
+  LOC_WUHAN = 8;
+  LOC_SHANGHAI = 9;
+  LOC_HAIDIAN = 10;
+  LOC_JIAXING = 11;
+  LOC_XIXIAN = 12;
+  LOC_LIAOCHENG = 13;
+  LOC_CHONGQING = 14;
+  LOC_ZHANGZHOU = 15;
+  LOC_YUNNAN_DALI = 16;
+  LOC_HUNAN_CHANGSHA = 17;
+  LOC_HEBEI_XIONGAN = 18;
+}
+// TODO(shuai): rm next mr after refactor mapping decouple locale
+message LocaleInfo {
+  optional Locale locale = 1 [deprecated = true];
+  enum Country {
+    UNKNOWN = 0;
+    CHINA = 1;
+    US = 2;
+  }
+  optional Country country = 2 [deprecated = true];
+  // Used as the origin of local coordinate.
+  optional double longitude = 3 [deprecated = true];
+  optional double latitude = 4 [deprecated = true];
+}
+// TODO(shuai): rm next mr after refactor mapping decouple locale
+message LocaleInfos {
+  repeated LocaleInfo locale_infos = 1 [deprecated = true];
+}
+
+message LocaleParamsProto {
+  optional Locale locale = 3 [deprecated = true];
+  optional string map_locale = 4;  // just represent map name
+
+  optional string location = 1 [deprecated = true];
+  optional Coordinate home_coordinate = 2 [deprecated = true];
+}
+
+message HmiParamsProto {
+  optional RunConfProto.HmiParams.Mode hmi_mode = 1;
+}
+
+message RunParamsProto {
+  optional VehicleParamsProto vehicle_params = 1;
+  optional LocaleParamsProto locale_params = 2 [deprecated = true];
+  optional HmiParamsProto hmi_params = 3;
+  optional HardwareParametersProto v2_vehicle_params = 4;
+  optional bool has_v2 = 5 [default = false];
+}

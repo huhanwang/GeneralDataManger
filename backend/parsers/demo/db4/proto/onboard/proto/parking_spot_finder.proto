@@ -1,0 +1,209 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+package snoah;
+
+// Please refer to https://qcraft.feishu.cn/docx/VDsedgxL0oASTixlaUcc2QsHnIe.
+
+message ParkingProperty {
+  optional bool is_dead_end = 1;
+  optional bool is_heading_reversed = 2 [default = false];
+  optional bool is_spot_adjusted = 3 [default = false];
+}
+
+message ParkingSpotFinderInfo {
+  enum SpotDetectionSourceType {
+    VISION = 0;
+    ULTRA_SONIC = 1;
+    FUSION = 2;
+    CUSTOM = 3;
+  }
+
+  enum ParkingSpotType {
+    PARALLEL = 0;
+    PERPENDICULAR = 1;
+    ANGLED = 2;
+    UNKNOWN = 3;
+  }
+
+  enum ParkableType {
+    NONE_PARKABLE = 0;
+    REVERSE_IN = 2;
+    FRONT_IN = 3;
+    REVERSE_AND_FRONT_IN = 4;
+
+    reserved 1;
+  }
+
+  enum ParkableReason {
+    NONE_REASON = 0;
+    GEOMETRY = 1;
+    A_STAR = 2;
+    RULE = 3;
+  }
+
+  enum NoneParkableType {
+    PARKABLE = 0;
+    UNREACHABLE = 1;
+    LOCK_OPEN = 2;
+    CAR_OCCUPIED = 3;
+    CONE_OCCUPIED = 4;
+    NO_PARKING_SIGN_OCCUPIED = 5;
+    PEDESTRIAN_OCCUPIED = 6;
+    FREESPACE_OCCUPIED = 7;
+    OTHER_OCCUPIED = 8;
+    TOO_FAR = 10;
+    SPOT_SIZE_SMALL = 11;
+    SPOT_YAW_NOT_SATISFIED = 12;
+    WHEEL_STOPPER_WRONG_SIDE = 13;
+    SPOT_EDGE_POINTS_NOT_REACHED = 14;
+    DETECT_DISTANCE_NOT_SATISFIED = 15;
+    NARROW_ROAD = 16;
+    SPACE_SIZE_SMALL = 17;
+    HORIZONTAL_DISTANCE_NEAR = 18;
+    HORIZONTAL_DISTANCE_FAR = 19;
+
+    reserved 9;
+  }
+
+  enum ParkOffsetType {
+    NONE = 0;
+    LEFT = 1;
+    MIDDLE = 2;
+    RIGHT = 3;
+  }
+
+  enum ParkOffsetStatus {
+    INVALID = 0;
+    AVAILABLE = 1;
+    UNAVAILABLE_PARALLEL = 2;  // 平行车位不可用
+    UNAVAILABLE_ANGLED = 3;    // 斜列车位不可用
+    OBSTACLE = 4;              // 障碍物过近，offset幅度有限
+  }
+
+  // Spot info.
+  optional string id = 1;
+  optional ParkingSpotType type = 2;
+  optional SpotDetectionSourceType detection_source_type = 3;
+  repeated Vec2dProto contour = 4;    // Smooth coordinate.
+  optional Vec2dProto centroid = 5;   // Smooth coordinate.
+  optional Vec2dProto direction = 6;  // Smooth coordinate.
+  optional bool is_wheel_stopper_available = 11;
+  repeated Vec2dProto wheel_stopper_points = 12;  // Smooth coordinate.
+  repeated Vec2dProto space_points = 20;          // Smooth coordinate.
+  optional bool on_left = 21;
+  // Spot finder info.
+  optional bool parkable = 7 [default = false];
+  optional ParkableType parkable_type = 8;
+  optional ParkableReason parkable_reason = 14;
+  optional NoneParkableType none_parkable_type = 10;
+  optional ParkableType recommended_parkable_type = 13;
+  optional ParkingProperty parking_property = 15;
+  optional ParkOffsetType recommended_park_offset_type = 16;
+  optional ParkOffsetStatus park_offset_left_status = 17;
+  optional ParkOffsetStatus park_offset_middle_status = 18;
+  optional ParkOffsetStatus park_offset_right_status = 19;
+
+  reserved 9;
+}
+
+// apa parking out direction
+enum ParkingOutDirection {
+  PARKING_OUT_DIR_NONE = 0;
+  PARKING_OUT_DIR_PARA_LEFT = 1;        // Parallel left.
+  PARKING_OUT_DIR_PARA_RIGHT = 2;       // Parallel right.
+  PARKING_OUT_DIR_PERP_FWD = 3;         // Perpendicular/angled forward.
+  PARKING_OUT_DIR_PERP_LEFT_FWD = 4;    // Perpendicular/angled left forward.
+  PARKING_OUT_DIR_PERP_RIGHT_FWD = 5;   // Perpendicular/angled right forward.
+  PARKING_OUT_DIR_PERP_LEFT_BACK = 6;   // Perpendicular/angled left backward.
+  PARKING_OUT_DIR_PERP_RIGHT_BACK = 7;  // Perpendicular/angled right backward.
+  PARKING_OUT_DIR_PERP_BACK = 8;        // Perpendicular/angled backward.
+}
+
+message ParkingOutDirectionFinderInfo {
+  // [FRONT_LEFT,REAR_LEFT,REAR_RIGHT,FRONT_RIGHT].
+  repeated Vec2dProto ego_spot_points = 1;
+  repeated ParkingOutDirection parking_out_directions = 2;
+  optional ParkingOutDirection recommended_parking_out_direction = 4;
+  optional ParkingSpotFinderInfo.ParkingSpotType spot_type = 5;
+  optional bool has_wheel_stopper = 6;
+  optional double perpendicular_road_angle = 7;
+  optional string ego_spot_id = 8;
+
+  reserved 3;
+}
+
+enum SpotFinderStateType {
+  FINDER_STATE_PASSIVE = 0;
+  FINDER_STATE_ACTIVE = 1;
+  FINDER_STATE_FAULT = 2;
+}
+
+message ParkingStatistics {
+  enum BoundaryType {
+    BOUNDARY_TYPE_NONE = 1;
+    BOUNDARY_TYPE_SINGLE = 2;
+    BOUNDARY_TYPE_DOUBLE = 3;
+  }
+  enum ObjectType {
+    OBJECT_TYPE_CURB = 0;
+    OBJECT_TYPE_WALL = 1;
+    OBJECT_TYPE_PILLAR = 2;
+    OBJECT_TYPE_VEHICLE = 3;
+    OBJECT_TYPE_PEDESTRIAN = 4;
+    OBJECT_TYPE_ANIMAL = 5;
+    OBJECT_TYPE_TRICYCLE = 6;
+    OBJECT_TYPE_BICYCLE = 7;
+    OBJECT_TYPE_RAILING = 8;
+    OBJECT_TYPE_CONE = 9;
+    OBJECT_TYPE_PARKING_LOCK_OPEN = 10;
+    OBJECT_TYPE_SPACE_LIMITER = 11;
+    OBJECT_TYPE_SPEED_BUMP = 12;
+    OBJECT_TYPE_STICK = 13;
+    OBJECT_TYPE_UNKNOWN = 14;
+    OBJECT_TYPE_PARKING_LOCK_CLOSED = 15;
+    OBJECT_TYPE_VEGETATION = 16;
+  }
+  optional int32 angle_between_ego_and_target_spot = 1;  // Deg, -180~180.
+  optional uint32 shift_times = 2;
+  optional BoundaryType target_spot_boundary_type = 3;
+  optional ObjectType target_spot_inner_object_type = 4;
+  optional ObjectType target_spot_outer_object_type = 5;
+  optional ObjectType target_parallel_spot_boundary_object_type = 6;
+  optional uint32 target_spot_space_width = 7;                // Cm.
+  optional uint32 target_spot_road_width = 8;                 // Cm.
+  optional uint32 target_parallel_spot_distance_to_curb = 9;  // Cm.
+  optional bool is_ego_in_spot = 11;                          // Rear axle.
+  optional string ego_in_spot_id = 12;
+  reserved 10;
+}
+
+message ParkingSpotFinderProto {
+  optional LiteHeader header = 1;
+  repeated ParkingSpotFinderInfo spots = 2;
+  optional SpotFinderStateType state = 11;
+  optional ParkingOutDirectionFinderInfo parking_out_direction_finder_info = 5;
+  optional bool is_parking_out_task = 6;
+  optional string recommended_parking_spot = 7;
+  optional ParkingSpotFinderInfo.ParkOffsetType user_selected_park_offset_type =
+      8;
+  optional string target_parking_spot_id = 9;
+  optional ParkingOutDirection target_parking_out_direction = 10;
+  optional ParkingStatistics parking_statistics = 12;
+  optional bool is_parking_out_file_available = 13;
+
+  reserved 3, 4;
+}

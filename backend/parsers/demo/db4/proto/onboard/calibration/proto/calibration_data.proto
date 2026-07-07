@@ -1,0 +1,304 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_data";
+
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/calibration/proto/calibration_board.proto";
+import "onboard/proto/perception/types/vision_lane_type.proto";
+
+enum InstanceType {
+  kUnknownInstanceType = 0;
+  kSolidDivider = 1;
+  kDashedDivider = 2;
+  kRoadMarking = 3;
+};
+
+enum LinePosType {
+  kL4 = 4;
+  kL3 = 3;
+  kL2 = 2;
+  kL1 = 1;
+  kMiddle = 0;
+  kR1 = -1;
+  kR2 = -2;
+  kR3 = -3;
+  kR4 = -4;
+  kUnknownLinePosType = 100;
+};
+
+enum InstanceEndPointType {
+  kUnknownEndPoint = 0;
+  kFrontEndPoint = 1;
+  kRearEndPoint = 2;
+  kLeftEndPoint = 3;
+  kRightEndPoint = 4;
+}
+
+enum FilterReason {
+  kUnknownFilterReason = 0;
+  kFeatureQualityBad = 1;
+  kObservationInsufficient = 2;
+  kMotionConditionBad = 3;
+  kSequenceContinuity = 4;
+  kVanishPointRansacOutlier = 5;
+  kDualFramesMatchBad = 6;
+  kSmoothPoseZDrift = 7;
+  kLidarHandeyeMatchBad = 8;
+};
+
+enum FeatureSpace {
+  kUnknownFeatureSpace = 0;
+  kImage = 1;
+  kBev = 2;
+};
+
+enum MatchPairType {
+  kUnknownMatchPairType = 0;
+  kPointToPoint = 1;
+  kPointToLine = 2;
+};
+
+enum PointSideType {
+  kUnknownPointSideType = 0;
+  kLeftPoint = 1;
+  kRightPoint = 2;
+};
+
+message PointInfoProto {
+  optional Vec2dProto point_uv = 1;
+  optional Vec3dProto point_vcs = 2;
+  optional PointSideType point_side_type = 3;
+};
+
+message SegmentationInstanceProto {
+  optional int32 instance_id = 1;
+  optional CameraId camera_id = 2;
+  repeated PointInfoProto points = 3;
+  optional InstanceType instance_type = 4;
+  optional LinePosType pos_type = 5 [default = kUnknownLinePosType];
+  optional bool is_truncated = 6 [default = false];
+};
+
+message RoadGeometryLineProto {
+  optional int32 line_id = 1;
+  optional CameraId camera_id = 2;
+  optional LinePosType pos_type = 3 [default = kUnknownLinePosType];
+  optional VisionLaneType lane_type = 4;
+  repeated PointInfoProto points = 5;
+  optional bool is_truncated = 6 [default = false];
+  optional int32 valid_index = 7 [default = 0];
+  optional double valid_length = 8;
+};
+
+message LidarEdgeFeaturesProto {
+  message LidarEdgePointProto {
+    optional Vec3dProto point = 1;
+    optional double range = 2;
+    optional uint32 intensity = 3;
+    optional uint32 beam_index = 4;
+    optional uint32 scan_index = 5;
+    optional double max_range = 6;
+  };
+  optional LidarId lidar_id = 1;
+  repeated LidarEdgePointProto lidar_edge_points = 2;
+};
+
+message CameraStartEndPoseProto {
+  optional CameraId camera_id = 1;
+  optional VehiclePoseProto start_pose = 2;
+  optional VehiclePoseProto end_pose = 3;
+};
+
+message CameraPoseProto {
+  optional CameraId camera_id = 1;
+  optional VehiclePoseProto pose = 2;
+};
+
+message LidarPoseProto {
+  optional LidarId lidar_id = 1;
+  optional VehiclePoseProto pose = 2;
+};
+
+message VanishPointInfoProto {
+  message LateralPoint {
+    optional bool valid = 1 [default = false];
+    optional Vec2dProto point = 2;
+  };
+  message CarToLaneCenter {
+    optional bool valid = 1 [default = false];
+    optional double value = 2;
+  };
+  message LineSegment {
+    optional Vec2dProto start_point = 1;
+    optional Vec2dProto end_point = 2;
+  };
+  optional CameraId camera_id = 1;
+  optional double timestamp = 2;
+  optional Vec2dProto vanish_point = 3;
+  optional double residual = 4;
+  optional double center_lane_angle = 5;  // rad.
+  optional VehiclePoseProto pose = 6;
+  repeated LateralPoint lateral_points = 7;
+  optional int32 inlier_num = 8;
+  optional bool is_both_side = 9;
+  optional bool is_good = 10;
+  optional CarToLaneCenter car_to_lane_center = 11;
+  optional Vec2dProto vanish_point_distance = 12;
+  optional Vec2dProto center_line_angle_difference = 13;
+  optional Vec2dProto car_to_lane_center_difference = 14;
+  repeated LineSegment vis_lines = 15;
+};
+
+message Line2dProto {
+  optional double a = 1 [default = 0.0];
+  optional double b = 2 [default = 0.0];
+  optional double c = 3 [default = 0.0];
+};
+
+message FittingLinesProto {
+  message FittingLineProto {
+    optional int32 fitting_line_id = 1;
+    optional CameraId camera_id = 2;
+    optional bool ref_instance_id_valid = 3 [default = false];
+    optional int32 ref_instance_id = 4;
+    optional bool ref_line_id_valid = 5 [default = false];
+    optional int32 ref_line_id = 6;
+    optional FeatureSpace feature_space = 7;
+    optional Line2dProto fitting_line = 8;
+    optional LinePosType pos_type = 9 [default = kUnknownLinePosType];
+  };
+  optional CameraId camera_id = 1;
+  repeated FittingLineProto fitting_lines = 2;
+};
+
+message FilterInfoProto {
+  message FilterValidInfoProto {
+    optional bool valid = 1 [default = true];
+    optional FilterReason filter_reason = 2 [default = kUnknownFilterReason];
+    optional string filter_code = 3;
+  };
+  optional CameraId camera_id = 1;
+  optional CameraId ref_camera_id = 2;
+  optional FilterValidInfoProto vanish_point_valid_info = 3;
+  optional FilterValidInfoProto coarse_match_valid_info = 4;
+  optional FilterValidInfoProto precise_match_valid_info = 5;
+  optional FilterValidInfoProto lidar_valid_info = 6;
+  optional FilterValidInfoProto camera_eol_valid_info = 7;
+  optional FilterValidInfoProto lidar_eol_valid_info = 8;
+};
+
+message PointWithValidInfoProto {
+  optional bool valid = 1 [default = false];
+  optional PointInfoProto point = 2;
+};
+
+message EndPointInfoProto {
+  optional PointInfoProto point = 1;
+  optional InstanceEndPointType end_point_type = 2;
+}
+
+message EndPointsProto {
+  optional int32 instance_id = 1;
+  optional CameraId camera_id = 2;
+  repeated EndPointInfoProto end_points = 3;
+  optional InstanceType instance_type = 4;
+};
+
+message CalibrationMatchPairProto {
+  message SegmentProto {
+    optional PointInfoProto start_point = 1;
+    optional PointInfoProto end_point = 2;
+  };
+  optional int32 pair_id = 1;
+  optional CameraId camera_id = 2;
+  optional CameraId ref_camera_id = 3;
+  optional MatchPairType pair_type = 4;
+  optional PointInfoProto source_point = 5;
+  optional PointWithValidInfoProto target_point = 6;
+  optional bool target_line_valid = 7 [default = false];
+  optional Line2dProto target_line = 8;
+  optional bool target_segment_valid = 9 [default = false];
+  optional SegmentProto target_segment = 10;
+  optional double weight = 11 [default = 1.0];
+  optional FeatureSpace feature_space = 12;
+  optional InstanceType instance_type = 13;
+};
+
+message MarkerProto {
+  optional int32 marker_context = 1;
+  repeated Vec2dProto corners = 2;
+  optional MarkerTypeProto marker_type = 3;
+}
+
+message BoardCropRegion {
+  optional Vec2dProto left_top_point = 1;
+  optional Vec2dProto right_bottom_point = 2;
+}
+message CameraMarkerDetectionProto {
+  optional CameraId camera_id = 1;
+  repeated MarkerProto markers = 2;
+  repeated BoardCropRegion crop_regions = 3;
+}
+
+message SingleCameraExtrinsic {
+  optional CameraId camera_id = 1;
+  optional VehiclePoseProto install_params = 2;
+  optional VehiclePoseProto calib_params = 3;
+  optional bool calib_success = 4;
+}
+
+message CalibrationResults {
+  repeated SingleCameraExtrinsic cameras_extrinsics = 1;
+}
+
+message CameraAssociatedMarkerDetectionProto {
+  optional CameraId camera_id = 1;
+  repeated CalibrationBoardProto board_aruco_markers = 2;
+}
+
+message BoardMarkerPointsProto {
+  optional int32 board_id = 1;
+  message MarkerPointProto {
+    optional int32 marker_id = 1;
+    repeated Vec3dProto points = 2;
+  }
+  repeated MarkerPointProto marker_points = 2;
+}
+
+message CalibrationDetectionFrameProto {
+  optional LiteHeader header = 1;
+  optional string frame_id = 2;
+  optional double timestamp = 3;
+  repeated SegmentationInstanceProto seg_instances_map = 4;
+  repeated RoadGeometryLineProto road_geometry_lines_map = 5;
+  repeated LidarEdgeFeaturesProto lidar_edge_features = 6;
+  repeated CameraStartEndPoseProto camera_start_end_poses = 7;
+  repeated CameraPoseProto camera_poses = 8;
+  repeated LidarPoseProto lidar_poses = 9;
+
+  repeated CameraMarkerDetectionProto detected_markers = 10;
+};
+
+message PostProcessingFrameProto {
+  optional LiteHeader header = 1;
+  optional string frame_id = 2;
+  optional double timestamp = 3;
+  repeated SegmentationInstanceProto updated_seg_instances_map = 4;
+  repeated RoadGeometryLineProto updated_road_geometry_lines_map = 5;
+  repeated LidarEdgeFeaturesProto updated_lidar_edge_features = 6;
+  repeated CameraStartEndPoseProto camera_start_end_poses = 7;
+  repeated CameraPoseProto camera_poses = 8;
+  repeated LidarPoseProto lidar_poses = 9;
+  repeated VanishPointInfoProto vanish_point_info_map = 10;
+  repeated FittingLinesProto fitting_lines_map = 11;
+  repeated FilterInfoProto filter_infos = 12;
+  repeated EndPointsProto end_points_map = 13;
+  repeated CalibrationMatchPairProto calibration_match_pairs = 14;
+  // TODO(mingbo): Add Proto for eol-calibration here.
+  repeated CameraAssociatedMarkerDetectionProto board_align_markers = 15;
+};

@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/ehr/proto/dynamic_event.proto";
+// Add Horizon$ to diff from `dynamic_event`.
+message RoadHorizonTrafficEvent {
+  optional TrafficEvent.Type traffic_event_type = 1;
+  // Passed the point if lt 0
+  optional int32 dist_to_start = 2;
+  optional int32 dist_to_end = 3;
+  optional bool on_specified_lanes = 4;
+  // Provided if on_specified_lanes is false
+  repeated RoadRelativeSide road_relative_sides = 5;
+  // Provided if on_specified_lanes is true.
+  repeated LaneTrafficEvent.LaneDrivableStatus lanes_drivable_status = 6;
+}
+
+message RoadHorizonTrafficEventsProto {
+  optional LiteHeader header = 1;
+  repeated RoadHorizonTrafficEvent road_traffic_events = 2;
+}

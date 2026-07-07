@@ -1,0 +1,54 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message GridProto {
+  enum ObjectType {
+    OT_UNKNOWN = 0;
+    OT_GENERAL_BOUND = 1;
+    OT_VEHICLE = 2;
+    OT_CYCLIST = 3;
+    OT_PEDESTRIAN = 4;
+    // adapt lixiang
+    OT_CURB = 5;
+    OT_WALL = 6;
+    OT_PILLAR = 7;
+    OT_ANIMAL = 8;
+    OT_TRICYCLE = 9;
+    OT_RAILING = 10;
+    OT_CONE = 11;
+    OT_PARKING_LOCK = 12;
+    OT_SPACE_LIMITER = 13;
+    OT_SPEED_BUMP = 14;
+    OT_STICK = 15;
+  }
+
+  optional double timestamp = 1;  // uint: s
+  optional double height = 2;     // unit: m
+  optional double life_time = 3;  // unit: s
+  optional uint32 confidence = 4;
+  optional ObjectType object_type = 5;
+  optional bool is_bevdet_observed = 6;
+  optional bool is_freespace_observed = 7;
+  optional bool is_uss_object_observed = 8;
+  optional bool is_uss_de_observed = 9;
+  optional bool is_uss_ce_observed = 10;
+  optional bool is_uss_point_cloud_observed = 11;
+  optional bool is_radar_observed = 12;
+  optional bool is_occ_observed = 13;
+}
+
+message GridMapProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;  // unit:s
+  optional VehiclePoseProto vehicle_pose = 3;
+  optional double resolution = 4;
+  repeated Vec2dProto points = 5;
+  repeated GridProto grids = 6;
+}

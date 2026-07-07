@@ -1,0 +1,44 @@
+
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/city_noa/point2D_conf_level.proto";
+
+enum CityLaneLineType {
+  CityLaneLine_TYPE_NONE = 0;
+  CityLaneLine_TYPE_DASH_LINE = 1;
+  CityLaneLine_TYPE_SOLID_LINE = 2;
+  CityLaneLine_TYPE_CURB = 3;
+  CityLaneLine_TYPE_DOUBLE_SOLID_LINE = 4;
+  CityLaneLine_TYPE_DASH_SOLID_LINE = 5;
+  CityLaneLine_TYPE_SOLID_DASH_LINE = 6;
+  CityLaneLine_TYPE_DOUBLE_DASH_LINE = 7;
+}
+
+enum CityLaneLineColor {
+  CityLaneLine_COLOR_NONE = 0;
+  CityLaneLine_COLOR_WHITE = 1;
+  CityLaneLine_COLOR_BLUE = 2;
+  CityLaneLine_COLOR_YELLOW = 3;
+}
+
+message LineAttribute {
+  optional int32 start_index = 1;
+
+  optional int32 points_count = 2;
+
+  optional CityLaneLineType type = 3;
+
+  optional CityLaneLineColor color = 4;
+}
+
+message CityLaneLine {
+  optional string id = 1;
+
+  repeated LineAttribute line_attribute = 2;
+
+  repeated Point2DConfLevel city_laneline = 3;
+
+  optional float conf_level = 4 [default = 1.0];
+}

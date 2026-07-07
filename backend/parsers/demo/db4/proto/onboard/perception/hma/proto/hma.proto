@@ -1,0 +1,74 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/hma/proto/hma";
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message HmaDebugProto {
+  optional LiteHeader header = 1;
+  message ProjectionPosition {
+    optional int32 radar_id = 1;
+    optional double radar_timestamp = 2;
+    optional bool is_verified_by_det2d_measurement = 3;
+    optional Vec2dProto projection_position = 4;
+    optional double height = 5;  // projection height, pixel
+    optional double width = 6;   // projection width, pixel
+  }
+  message RadarProjectionInfo {
+    optional CameraId camera_id = 1;
+    optional double camera_timestamp = 2;
+    repeated ProjectionPosition projection_positions = 3;
+  }
+  message AllCameraLightIntensityProto {
+    optional CameraId camera_id = 1;
+    optional int32 light_intensity = 2;
+    optional bool is_light_intensity_valid = 3;
+  }
+  optional bool is_radar_used = 2;
+  repeated RadarProjectionInfo radar_projection_infos = 3;
+  repeated AllCameraLightIntensityProto all_camera_light_intensity = 8;
+
+  optional bool ihbc_decision = 9;
+  enum IhbcDecisionReason {
+    IDR_OPEN = 0;
+    IDR_CLOSE_HIGH_LIGHT_INTENSITY = 1;
+    IDR_CLOSE_HAS_LIGHT_SPOT = 2;
+    IDR_CLOSE_HAS_MOVING_VEHICLE = 3;
+    IDR_CLOSE_HISTORY_PREDICT = 4;
+  }
+  optional IhbcDecisionReason ihbc_decision_reason = 10;
+
+  message IhbcDecisionInfo {
+    optional double timestamp = 1;
+    optional bool ihbc_decision = 2;
+    optional IhbcDecisionReason ihbc_decision_reason = 3;
+  }
+  repeated IhbcDecisionInfo ihbc_decision_history = 11;
+}
+
+enum HmaSensorType {
+  HST_UNKNOWN = 0;
+  HST_RADAR_ONLY = 1;
+  HST_CAMERA_TELE = 2;
+  HST_CAMERA_WIDE = 3;
+  // Temporary solution for adapting virtual camera, will be removed in the
+  // future.
+  HST_CAMERA_WIDE_RESET_OPTICAL_H110 = 4;
+  HST_CAMERA_WIDE_RESET_OPTICAL_H60 = 5;
+  HST_CAMERA_TELE_RESET_OPTICAL_H30 = 6;
+}

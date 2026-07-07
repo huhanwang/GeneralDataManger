@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/shm_message.proto";
+
+message LargeMsgMetadata {
+  extend ShmMessageMetadata {
+    optional LargeMsgMetadata large_msg_meta = 10005;
+  }
+}

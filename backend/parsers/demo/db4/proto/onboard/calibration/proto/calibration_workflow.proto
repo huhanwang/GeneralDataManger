@@ -1,0 +1,73 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_workflow";
+
+import "onboard/proto/lidar.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/calibration/proto/calibration_board.proto";
+
+enum CalibrationMode {
+  kCalibrationIdle = 0;
+  kEndOfLine = 1;  // 产线标定
+  kOnRoad = 2;     // 售后标定(Including dsim)
+  kOnline = 3;
+  kMonitoring = 4;
+  kSimulation = 5 [deprecated = true];
+}
+
+enum CalibrationPairType {
+  kCalibrationPairTypeUnknown = 0;
+  kCameraToVehicle = 1;
+  kLidarToVehicle = 2;
+  kCameraToLidar = 3;
+  kCameraToCamera = 4;
+}
+
+message CalibrationPairProto {
+  optional CalibrationPairType type = 1 [default = kCalibrationPairTypeUnknown];
+  optional CameraId camera_id = 2;
+  optional LidarType lidar_type = 3;
+  optional LidarId lidar_id = 4;
+  repeated CameraId refer_camera_ids = 5;  // camera to camera
+  repeated int32 board_ids = 6;
+  enum CalibrationPairAlgorithm {
+    kAlgorithmUnknown = 0;
+    kVanishPoint = 1;
+    kLaneAndSegMatch = 2;
+    kEdgeMatch = 3;
+    kDualFrames = 4;
+    kLidarHandeye = 5;
+    kFisheyeParking = 6;
+  }
+  optional CalibrationPairAlgorithm algorithm = 7 [default = kAlgorithmUnknown];
+}
+
+// TODO(youhuang): To be deprecated.
+enum CalibrationStepAlgorithm {
+  kAlgorithmUnknown = 0;
+  kVanishPoint = 1;
+  kBevLane = 2;
+  kEdgeMatch = 3;
+  kDualFrames = 4;
+  kLidarHandeye = 5;
+  kFisheyeParking = 6;
+}
+
+message CalibrationStepProto {
+  optional int32 step_id = 1;
+  repeated CalibrationPairProto calibration_pairs = 2;
+  optional CalibrationStepAlgorithm algorithm = 3 [default = kAlgorithmUnknown];
+  optional bool for_fisheye = 4 [default = false];
+  optional bool joint_optimize_after_this_step = 5 [default = false];
+}
+
+message CalibrationWorkflowProto {
+  optional string oem = 1;
+  optional string car_type = 2;
+  optional string description = 3;
+  optional CalibrationMode mode = 4 [default = kCalibrationIdle];
+  repeated CalibrationStepProto steps = 5;
+  optional CalibrationBoardsProto calibration_boards =
+      6;  // empty in ON_ROAD mode
+}

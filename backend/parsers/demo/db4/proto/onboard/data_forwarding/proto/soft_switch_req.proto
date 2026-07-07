@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package snoah;
+
+message SoftSwitchReq {
+  optional int32 acc_tja_mode_sw_req = 1;
+  optional int32 ilc_sw_req = 2;
+  optional int32 auto_lane_change_sw_req = 3;
+  optional int32 auto_lane_change_set_req = 4;
+  optional int32 zop_sw_req = 5;
+  optional int32 lane_change_recmed_sw_req = 6;
+  optional int32 noa_report_set_req = 7;
+}

@@ -1,0 +1,68 @@
+syntax = "proto2";
+
+package snoah;
+
+// A run conf proto represents a set of configurations used to launch a run of
+// a particular type of purpose.
+message RunConfProto {
+  // Name of the run conf. E.g. mkz_testing.
+  // For each run conf, there is a corresponding param file with the same name
+  // under "onboard/param".
+  optional string name = 1;
+
+  // Options for retrieving the vehicle params.
+  message VehicleParams {
+    oneof Mode {
+      // The vehicle params should be fetched via the --car_id flag passed
+      // to the binary (e.g. by launch_car_main to start actual runs).
+      bool from_car_id_flag = 1;
+      // Use default vehicle params (e.g. by launch_car_main to play back
+      // previous runs).
+      bool use_default_params = 2;
+      // The vehicle params should be fetched from some run (e.g.
+      // simulating a scenario with vehicle params used in a previous
+      // run).
+      bool from_run_dir = 3;
+      // Use the specified vehicle's param.
+      string car_id = 4;
+    }
+  }
+  optional VehicleParams vehicle_params = 2;
+
+  // Options for retrieving the locale params.
+  message LocaleParams {
+    oneof Mode {
+      // The locale params should be fetched via the --locale_id flag passed
+      // to the binary (e.g. by launch_car_main to start actual runs).
+      bool from_locale_id_flag = 1;
+      // Use default locale params (e.g. by launch_car_main to play back
+      // previous runs).
+      bool use_default_params = 2;
+      // The locale params should be fetched from some run (e.g.
+      // simulating a scenario with locale params used in a previous
+      // run).
+      bool from_run_dir = 3;
+    }
+  }
+  optional LocaleParams locale_params = 3;
+
+  // Options for HMI
+  message HmiParams {
+    enum Mode {
+      MODE_UNKNOWN = 0;
+      MODE_PASSENGER_VEHICLE_TEST = 1;
+      MODE_PASSENGER_VEHICLE_PROD = 2;
+      MODE_ROBOBUS_TEST = 3;
+      MODE_ROBOBUS_PROD = 4;
+      MODE_DELIVERY_ROBOT_TEST = 5;
+      MODE_DELIVERY_ROBOT_PROD = 6;
+    }
+    optional Mode mode = 1;
+  }
+  optional HmiParams hmi_params = 4;
+}
+
+// A table of all run configurations.
+message RunConfFileProto {
+  repeated RunConfProto confs = 1;
+}

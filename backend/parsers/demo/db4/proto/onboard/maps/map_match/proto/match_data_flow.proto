@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/common/proto/map_geometry.proto";
+
+message RawGnssPoint {
+  optional mapping.GeoPointProto raw_point = 1;
+  optional double speed = 2;
+  optional double yaw = 3;
+  optional double timestamp = 4;
+}
+
+message MatchProgressData {
+  optional mapping.GeoPointProto map_matched_point = 1;
+  optional double projected_distance = 3;
+  optional double link_segment_yaw = 4;
+  optional double matched_link_offset = 5;
+  optional double start_probability = 6;
+  optional sfixed64 link_id = 7;
+  enum LinkDirection {
+    UNKNOWN = 1;
+    START_TO_END = 2;
+    END_TO_START = 3;
+  }
+  optional LinkDirection matched_link_direction = 8;
+  optional double total_probability = 9;
+  optional sfixed32 backtrack_index = 10;
+  optional double transition_probability = 11;
+  optional sfixed32 link_index = 12;
+  optional sfixed32 point_on_link_index = 13;
+  enum LocStatus {
+    kNormal = 1;
+    kLowPrecision = 2;
+  }
+  optional LocStatus loc_status = 14;
+  optional double dist_to_link_end = 15;
+}
+
+message MapMatchResult {
+  optional RawGnssPoint raw_point = 1;
+  repeated MatchProgressData matched_points = 2;
+}

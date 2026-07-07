@@ -1,0 +1,71 @@
+syntax = "proto2";
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_response";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+
+message CameraExtrinsicMap {
+  optional CameraId id = 1;
+  optional CameraToVehicleExtrinsicsProto camera_to_vehicle = 2;
+}
+message LidarExtrinsicMap {
+  optional LidarId id = 1;
+  optional LidarExtrinsicsProto lidar_to_vehicle = 2;
+}
+
+message ResultStatus {
+  enum CalibrationStatus {
+    kInitializeFailed = 1;
+    kBusy = 2;
+    kCalibrationFinished = 3;
+    kWriteFinished = 4;
+    kSyncFinished = 5;
+    kFailed = 6;
+    kRunning = 7;
+  }
+  enum StepStatus {
+    kSuccess = 1;
+    kTimeOut = 2;
+    kEvaluationFailed = 3;
+  }
+  message StepResult {
+    optional int32 step_id = 1;
+    optional StepStatus step_status = 2;
+    optional double standard_deviation = 3;  // Max SD of roll, pitch yaw.
+  }
+  optional CalibrationStatus calibration_status = 1;
+  repeated StepResult step_results = 2;
+}
+
+message CalibrationResponse {
+  optional LiteHeader header = 1;
+  optional string car_id = 2;
+  optional ResultStatus status = 3;
+  repeated CameraExtrinsicMap new_camera_extrinsics = 4;
+  repeated LidarExtrinsicMap new_lidar_extrinsics = 5;
+  repeated CameraExtrinsicMap original_camera_extrinsics = 6;
+  repeated LidarExtrinsicMap original_lidar_extrinsics = 7;
+}
+
+message CalibrationProgressImage {
+  optional int32 width = 1;
+  optional int32 height = 2;
+  optional int32 element_type = 3;
+  optional int32 element_size = 4;
+  optional bytes data = 5;
+}
+
+// Mainly for Qpad
+message CalibrationProgressData {
+  optional LiteHeader header = 1;
+  optional string car_id = 2;
+  optional int32 current_step = 3;
+  optional bool finish = 4;
+  optional double progress_ratio = 5;  // 0~1, for current step.
+  optional CalibrationProgressImage camera_image = 6;
+  optional CalibrationProgressImage bev_image = 7;
+  optional CalibrationResponse result = 8;
+}

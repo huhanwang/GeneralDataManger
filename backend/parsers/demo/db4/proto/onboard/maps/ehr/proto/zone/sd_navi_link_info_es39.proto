@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+import "onboard/maps/ehr/proto/zone/common_msg.proto";
+
+package snoah.zone_data;
+
+message NaviStatusInfo {
+  optional common.ComHeader header = 1;
+  optional uint32 sd_navi_sts = 2;          // Uint8，映射为 uint32
+  optional uint32 matching_table_sts = 3;   // Uint8，映射为 uint32
+  optional uint32 to_via_point_dist = 4;    // Uint32
+  optional uint32 to_hd_start_dist = 5;     // Uint32
+  optional uint32 route_update_status = 6;  // Uint8，映射为 uint32
+  optional uint64 sd_map_version = 7;       // Uint64
+  optional uint32 bundle_id = 8;            // Uint8，映射为 uint32
+  optional uint32 part_count = 9;           // Uint8，映射为 uint32
+  optional uint32 part_index = 10;          // Uint8，映射为 uint32
+  optional uint32 remain_dist = 11;         // Uint32
+  required uint32 sd_link_count = 12;       // Uint16，映射为 uint32
+  repeated uint64 sd_link_id = 13;          // Uint64
+}

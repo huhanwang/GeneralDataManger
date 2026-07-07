@@ -1,0 +1,200 @@
+
+
+syntax = "proto2";
+
+package snoah.tflabelingv2;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/tl_label_v2";
+import "onboard/proto/vehicle_pose.proto";
+import "offboard/labeling/proto/scene_label.proto";
+import "offboard/labeling/proto/attribute.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+import "onboard/proto/perception/types/traffic_light_shape.proto";
+
+enum TrafficLightColorAttribute {
+  RED = 1;
+  GREEN = 2;
+  YELLOW = 3;
+  COLOR_UNKNOWN = 4;  // Color out of definition, purple, blue, etc.
+}
+
+enum TrafficLightShapeAttribute {
+  ROUND = 1;
+  ARROW = 2 [deprecated = true];
+  COUNTDOWN = 3;
+  PEDESTRIAN = 4;
+  CHINESE = 5;
+  BICYCLE = 6;
+  SHAPE_UNKNOWN = 7;  // Shape out of definition
+  ARROW_UP = 8;
+  ARROW_DOWN = 9;
+  ARROW_LEFT = 10;
+  ARROW_RIGHT = 11;
+  ARROW_U_TURN = 12;
+  ARROW_U_TURN_LEFT = 13;
+  ARROW_UP_LEFT = 14;
+  ARROW_UP_RIGHT = 15;
+  ARROW_OTHERS = 16;
+  CROSS = 17;
+  SHAPE_BLURRED = 18;    // Shape is blurred, can not be recognized
+  SHAPE_OCCLUSION = 19;  // Shape is occluded, can not be recognized
+  SHAPE_OTHER = 20;  // other shape, which is not in above defined categories
+}
+
+enum TrafficLightArrowAttribute {
+  UP = 1;
+  DOWN = 2;
+  LEFT = 3;
+  RIGHT = 4;
+  U_TURN = 5;
+  ARROW_UNKNOWN = 6;
+}
+
+message LightBlubInfo {
+  // center x and center y of light
+  optional double x = 1;
+  optional double y = 2;
+  optional TrafficLightColorAttribute color = 3;
+  optional TrafficLightShapeAttribute shape = 4;
+  optional TrafficLightArrowAttribute arrow_direction = 5 [deprecated = true];
+  optional int32 countdown = 6 [default = -1];
+  optional double width = 7;
+  optional double height = 8;
+}
+
+enum TrafficLightValidity {
+  // valid light
+  VALID = 1;
+  // light is valid but not bright
+  INACTIVE = 2;
+  // light is invalid
+  INVALID = 3;
+}
+
+enum TrafficLightScope {
+  SCOPE_DEFAULT = 0;
+  SCOPE_PEDESTRIAN = 1;
+  SCOPE_VEHICLE = 2;
+  SCOPE_BICYCLE = 3;
+  SCOPE_OTHER = 4;
+  SCOPE_UNKNOWN = 5;
+}
+
+message LightBodyBox3d {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double width = 4;
+  optional double length = 5;
+  optional double height = 6;
+  optional double heading = 7;
+}
+
+message LightBodyInfo {
+  // center x and center y of light body
+  optional double x = 1;
+  optional double y = 2;
+  optional double w = 3;
+  optional double h = 4;
+  // whether the light info is clearly seen
+  optional TrafficLightValidity valid = 5 [deprecated = true];
+  // inactive traffic light do not need light info
+  repeated LightBlubInfo light_info = 6;
+  // for match the traffic light with the object_id
+  optional int32 object_id = 7;
+  // the box is not real seen, but the light info is still valid
+  optional bool is_estimated = 8;
+  // whether the light is in the car scope
+  optional bool use_for_car = 9 [deprecated = true];
+  // whether the light is complete
+  optional bool is_occlusion = 10;
+  // whether the light is flashing
+  optional bool is_flashing = 11;
+  // whether the light is truncated
+  optional bool is_truncated = 12;
+  // whether the countdown is independent
+  optional bool is_independent_countdown = 13;
+  // for match the traffic light with the tl_id
+  optional int32 tl_id = 14;
+  // the scope of the traffic light
+  optional TrafficLightScope scope = 15;
+
+  optional snoah.labeling.OcclusionLevel occlusion_level = 17;
+
+  optional snoah.labeling.TruncatedLevel truncated_level = 18;
+
+  optional LightBodyBox3d light_body_box3d = 19;
+
+  // fields used in prt
+  optional TrafficLightShape prt_detec_shape = 20;
+  optional TrafficLightColor prt_detec_color = 21;
+  optional TrafficLightColor prt_detec_raw_color = 22;
+  optional int32 prt_detec_count_down = 23;
+
+  // whether guiding current road(or the crossroad), in term of the junction.
+  optional bool guiding_current_road_intermof_junction = 24;
+
+  // vehicle pose from corresponding pred
+  optional VehiclePoseProto vehicle_pose = 25;
+
+  enum Heading {
+    HEADING_UNKNOWN = 0;
+    HEADING_FRONT = 1;
+    HEADING_SIDE = 2;
+    HEADING_BACK = 3;
+  }
+  optional Heading heading = 26;
+}
+
+message LabeledTrafficLights {
+  repeated LightBodyInfo light_body_info = 1;
+  optional double camera_center_timestamp = 2;
+  // Has already turned at any junction within current snippet.
+  // Thus: the value of successive frames can turned from `F`to `T`,
+  // when already turned at any(most likely only once) junction.
+  optional bool has_turned_junction_within_cur_snippet = 3;
+}
+
+message ImagelabelingData {
+  optional string image_name = 1;
+  optional double image_center_timestamp = 2;
+  optional LabeledTrafficLights labeled_traffic_lights = 3;
+}
+
+enum TLLabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_22_7_05 = 1;
+  V_CONVERTED_OLD_STYLE_DATA = 2;
+  V_22_11_29 = 3;  // add scene label for each frame
+  V_23_04_24 = 4;  // add more bulb type
+  V_23_06_15 = 5;  // add label for each image
+  V_24_01_16 = 6;  // add SCOPE_OTHER and SCOPE_UNKNOWN to TrafficLightScope
+  V_24_02_21 = 7;  // add SHAPE_OTHER to TrafficLightShapeAttribute
+}
+
+message FrameLabelingData {
+  optional int32 frame_id = 1;
+  optional double frame_timestamp = 3;
+  // key is camera_id, value is labeled info
+  map<int32, LabeledTrafficLights> labeled_traffic_lights = 2;
+  optional labeling.MainScene main_scene = 4 [deprecated = true];
+  optional labeling.SmallScene small_scene = 5 [deprecated = true];
+  optional labeling.SceneWeather scene_weather = 6 [deprecated = true];
+  optional labeling.SceneLight scene_light = 7 [deprecated = true];
+  optional labeling.SceneTime scene_time = 8 [deprecated = true];
+}
+
+message TLLabelingDataProto {
+  optional string run_name = 1;
+  optional double start_time = 2;
+  optional double duration = 3;
+  // key is frame_id, value is frame_labeling_data
+  map<int32, FrameLabelingData> frames_label_info = 4;
+  optional TLLabelingPolicyVersion version = 5 [default = V_23_04_24];
+  optional labeling.TimeType time_type = 6 [deprecated = true];
+  optional labeling.MainScene main_scene = 7;
+  optional labeling.SmallScene small_scene = 8;
+  optional labeling.SceneWeather scene_weather = 9;
+  optional labeling.SceneLight scene_light = 10;
+  optional labeling.SceneTime scene_time = 11;
+  optional ImagelabelingData image_labeling_data = 12;
+}

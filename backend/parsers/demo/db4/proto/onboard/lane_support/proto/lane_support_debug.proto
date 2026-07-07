@@ -1,0 +1,135 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/control_cmd.proto";
+import "onboard/lane_support/proto/lane_support_state.proto";
+
+message LaneDepartureToPassiveReasonProto {
+  enum Type {
+    NONE = 0;
+    SPEED_OUT_OF_RANGE = 1;
+    NO_LANE_BOUNDARY = 2;
+    LANE_WIDTH_OUT_OF_RANGE = 3;
+    HIGH_YAW_RATE = 4;
+    LARGE_LANE_CURVATURE = 5;
+    ABS_ACTIVE = 6;
+    ESC_ACTIVE = 7;
+    BRAKE = 8;
+    HIGH_STEERING_RATE = 9;
+    ACCEL_PEDAL = 11;
+    WARNING_INHIBITIED = 12;
+    LEFT_CROSS = 13;
+    LEFT_TURN_SIGNAL_ON = 14;
+    NO_LEFT_BOUNDARY = 15;
+    RIGHT_CROSS = 16;
+    RIGHT_TURN_SIGNAL_ON = 17;
+    NO_RIGHT_BOUNDARY = 18;
+    TWO_SIDES_DEPARTURE = 19;
+    DEPARTURE_DISABLED = 20;
+    LARGE_EPS_TORQUE = 21;
+    LARGE_STEERING_ANGLE = 22;
+    ADAS_ACTIVE = 23;
+    PLAN_FAIL = 25;
+    LANE_MERGE = 26;
+    DOORS_OPEN = 28;
+    TRUNKS_OPEN = 29;
+    SEAT_BELT_UNBUCKLED = 30;
+    LANE_EXIT = 31;
+    ELK_ACTIVE = 32;
+    AEB_ACTIVE = 33;
+    HDC_ACTIVE = 34;
+    TCS_ACTIVE = 35;
+    VDC_ACTIVE = 36;
+    EPS_NOT_READY = 37;
+    ESC_OFF = 38;
+    FCW_ACTIVE = 39;
+    reserved 10, 24;
+  }
+}
+
+message LaneDepartureStayInPassiveReasonProto {
+  enum Type {
+    NONE = 0;
+    SPEED_OUT_OF_RANGE = 1;
+    NO_LANE_BOUNDARY = 2;
+    LANE_WIDTH_OUT_OF_RANGE = 3;
+    LANE_MERGE = 4;
+    HIGH_YAW_RATE = 5;
+    LARGE_LANE_CURVATURE = 6;
+    BRAKE = 9;
+    HIGH_STEERING_RATE = 10;
+    ACCEL_PEDAL = 12;
+    NOT_IN_LANE = 14;
+    LARGE_EPS_TORQUE = 15;
+    LARGE_STEERING_ANGLE = 16;
+    ABS_ESC_ACTIVE = 17;
+    ADAS_ACTIVE = 18;
+    DOORS_OPEN = 19;
+    TRUNKS_OPEN = 20;
+    SEAT_BELT_UNBUCKLED = 21;
+    AEB_ACTIVE = 22;
+    HDC_ACTIVE = 23;
+    TCS_ACTIVE = 24;
+    VDC_ACTIVE = 25;
+    EPS_NOT_READY = 26;
+    ESC_OFF = 27;
+    FCW_ACTIVE = 28;
+    reserved 7, 8, 11, 13;
+  }
+}
+
+message LaneDepartureNotActiveReasonProto {
+  enum Type {
+    NONE = 0;
+    TURN_LIGHT_ON = 1;
+    WARNING_INHIBITIED = 2;
+    NO_LANE_BOUNDARY = 3;
+    NOT_IN_LANE = 4;
+    LARGE_DEPARTURE_ANGLE = 5;
+    LANE_EXIT = 6;
+  }
+}
+
+message LaneDepartureDebugProto {
+  optional LaneDepartureStateProto.LaneDepartureState lane_departure_state = 1;
+  optional LaneDepartureToPassiveReasonProto.Type to_passive_reason = 2;
+  optional LaneDepartureStayInPassiveReasonProto.Type stay_in_passive_reason =
+      3;
+  optional LaneDepartureNotActiveReasonProto.Type left_not_active_reason = 4;
+  optional LaneDepartureNotActiveReasonProto.Type right_not_active_reason = 5;
+  optional string path_planner_error_msg = 6;
+}
+
+message LaneKeepingPathDebugProto {
+  message PathPointDebugProto {
+    optional float x = 1;
+    optional float y = 2;
+    optional float theta = 3;
+    optional float kappa = 4;
+  }
+
+  repeated PathPointDebugProto path_points = 1;
+  optional float s_range = 2;
+  optional float max_exceed_dist = 3;
+  optional float max_lateral_accel = 4;
+  optional float max_lateral_jerk = 5;
+  optional float max_extra_lateral_accel = 6;
+}
+
+message LaneSupportDebugProto {
+  optional LiteHeader header = 1;
+  optional LaneDepartureDebugProto ldw_lane_departure_debug = 3;
+  optional ControllerDebugProto controller_debug_proto = 4;
+  optional LaneDepartureDebugProto lka_lane_departure_debug = 5;
+  optional LaneKeepingPathDebugProto path_debug = 6;
+  optional string ldw_fault_info = 8;
+  optional string lka_fault_info = 9;
+  optional string elk_fault_info = 10;
+  optional LaneDepartureDebugProto elk_target_lane_departure_debug = 11;
+  optional LaneDepartureDebugProto elk_road_edge_lane_departure_debug = 13;
+
+  reserved 2, 7, 12;
+}

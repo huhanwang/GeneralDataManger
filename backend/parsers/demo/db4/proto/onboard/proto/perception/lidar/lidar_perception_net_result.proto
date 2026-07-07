@@ -1,0 +1,73 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+
+message LidarPerceptionNetResultProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  message DetectionResultProto {
+    optional int32 id = 1;
+    message Box3dProto {
+      optional float x = 1;
+      optional float y = 2;
+      optional float z = 3;
+      optional float length = 4;
+      optional float width = 5;
+      optional float height = 6;
+      optional float heading = 7;
+    }
+    optional Box3dProto box3d = 2;
+    enum DetectionType {
+      CAR = 1;
+      TRUCK = 2;
+      PEDESTRIAN = 3;
+      CYCLIST = 4;
+      TRICYCLIST = 5;
+      TRAFFIC_CONE = 6;
+    }
+    optional DetectionType type = 3;
+    optional float confidence_score = 4;
+  }
+  repeated DetectionResultProto detection_result = 4;
+  message PillarSemanticResultProto {
+    optional int32 height = 1;
+    optional int32 width = 2;
+    message PillarSizeInfo {
+      optional float x_size = 1;
+      optional float y_size = 2;
+      optional float z_size = 3;
+    }
+    optional PillarSizeInfo pillar_size = 3;
+    optional bytes label_data = 4;
+    optional bytes score_data = 5;
+    optional int32 score_data_type = 6;
+    optional float score_data_scale = 7;
+  }
+  optional PillarSemanticResultProto pillar_semantic_result = 5;
+  message RangeInfo {
+    optional float x_min = 1;
+    optional float y_min = 2;
+    optional float z_min = 3;
+    optional float x_max = 4;
+    optional float y_max = 5;
+    optional float z_max = 6;
+  }
+  optional RangeInfo detection_range = 6;
+  optional RangeInfo pillar_semantic_range = 7;
+}

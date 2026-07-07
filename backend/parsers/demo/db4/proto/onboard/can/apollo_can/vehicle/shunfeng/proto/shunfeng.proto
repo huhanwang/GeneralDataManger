@@ -1,0 +1,191 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Drive_command_110 {
+  // Control Message
+  // [m/s] [0|100]
+  optional double desired_velocity = 1;
+  // [] [0|1]
+  optional int32 control_mode = 2;
+  // [] [0|100]
+  optional int32 desired_throttle_pedal = 3;
+  // [] [0|3]
+  optional int32 desired_gear = 4;
+  // [] [0|4]
+  optional int32 drive_motor_id = 5;
+  // [] [-8388608|8388607]
+  optional int32 reserved = 6;
+  // [] [0|1]
+  optional int32 drive_motor_enable = 7;
+}
+
+message Drive_status_111 {
+  // Report Message
+  // [] [-128|127]
+  optional int32 reserved = 1;
+  // [] [0|100]
+  optional int32 throttle_status = 2;
+  // [] [-32768|32767]
+  optional int32 exception_code = 3;
+  // [] [0|1]
+  optional int32 out_bounds_info = 4;
+  // [] [0|3]
+  optional int32 current_gear = 5;
+  // [] [0|4]
+  optional int32 motor_id = 6;
+  // [m/s] [0|0]
+  optional int32 motor_speed = 7;
+  // [] [1|3]
+  optional int32 current_control_mode = 8;
+}
+
+message Brake_command_120 {
+  // Control Message
+  // [] [0|100]
+  optional int32 desired_brake_pedal = 1;
+  // [] [0|1]
+  optional int32 brake_motor_enable = 2;
+}
+
+message Brake_status_121 {
+  // Report Message
+  // [] [-2147483648|2147483647]
+  optional int32 brake_exception_code = 1;
+  // [] [0|1]
+  optional int32 out_bound_info = 2;
+  // [] [0|1]
+  optional int32 brake_light_status = 3;
+  // [] [0|100]
+  optional int32 current_brake_pedal = 4;
+  // [] [1|3]
+  optional int32 current_control_mode = 5;
+}
+
+message Park_command_130 {
+  // Control Message
+  // [] [0|1]
+  optional int32 park_request = 1;
+  // [] [0|1]
+  optional int32 park_motor_enable = 2;
+}
+
+message Park_status_131 {
+  // Report Message
+  // [] [1|3]
+  optional int32 current_control_mode = 1;
+  // [] [-8388608|8388607]
+  optional int32 reserved = 2;
+  // [] [0|1]
+  optional int32 out_bound_info = 3;
+  // [] [0|3]
+  optional int32 parking_motor_status = 4;
+  // [] [-32768|32767]
+  optional int32 park_exception_code = 5;
+}
+
+message Wheel_speed_status_141 {
+  // Report Message
+  // [] [0|0]
+  optional int32 right_rear_wheel_speed = 1;
+  // [] [0|0]
+  optional int32 right_front_wheel_speed = 2;
+  // [] [0|0]
+  optional int32 left_rear_wheel_speed = 3;
+  // [] [0|0]
+  optional int32 left_front_wheel_speed = 4;
+}
+
+message Steer_command_210 {
+  // Control Message
+  // [] [0|0]
+  optional int32 reserved = 1;
+  // [deg/s] [0|250]
+  optional int32 desired_steer_speed = 2;
+  // [] [-450|450]
+  optional int32 desired_steer_angle = 3;
+  // [] [0|1]
+  optional int32 steer_enable = 4;
+}
+
+message Steer_status_211 {
+  // Report Message
+  // [] [-32768|32767]
+  optional int32 steer_exception_code = 1;
+  // [] [0|1]
+  optional int32 out_bound_info = 2;
+  // [] [0|250]
+  optional int32 current_steer_speed = 3;
+  // [] [-450|450]
+  optional int32 current_steer_angle = 4;
+  // [] [1|3]
+  optional int32 current_control_mode = 5;
+}
+
+message Body_command_310 {
+  // Control Message
+  // [] [0|3]
+  optional int32 far_light = 1;
+  // [] [0|1]
+  optional int32 horn = 2;
+  // [] [0|3]
+  optional int32 rear_frog_light = 3;
+  // [] [0|3]
+  optional int32 front_frog_light = 4;
+  // [] [0|3]
+  optional int32 emergence_light = 5;
+  // [] [0|3]
+  optional int32 near_light = 6;
+  // [] [0|3]
+  optional int32 right_turn_light = 7;
+  // [] [0|3]
+  optional int32 left_turn_light = 8;
+}
+
+message Body_status_311 {
+  // Report Message
+  // [] [0|1]
+  optional int32 horn_status = 1;
+  // [] [0|3]
+  optional int32 rear_frog_light_status = 2;
+  // [] [0|3]
+  optional int32 front_frog_light_status = 3;
+  // [] [0|3]
+  optional int32 emergence_light_status = 4;
+  // [] [0|3]
+  optional int32 far_light_status = 5;
+  // [] [0|3]
+  optional int32 near_light_status = 6;
+  // [] [0|3]
+  optional int32 right_turn_light_status = 7;
+  // [] [0|3]
+  optional int32 left_turn_light_status = 8;
+}
+
+message Vcu_battery_status_321 {
+  // Report Message
+  // [] [0|0]
+  optional int32 reserved = 1;
+  // [] [-32768|32767]
+  optional int32 battery_exception_code = 2;
+  // [] [0|100]
+  optional int32 battery_power = 3;
+  // [] [0|0]
+  optional int32 vcu_exception_code = 4;
+}
+
+message Shunfeng {
+  optional Drive_command_110 drive_command_110 = 1;  // control message
+  optional Drive_status_111 drive_status_111 = 2;    // report message
+  optional Brake_command_120 brake_command_120 = 3;  // control message
+  optional Brake_status_121 brake_status_121 = 4;    // report message
+  optional Park_command_130 park_command_130 = 5;    // control message
+  optional Park_status_131 park_status_131 = 6;      // report message
+  optional Wheel_speed_status_141 wheel_speed_status_141 = 7;  // report message
+  optional Steer_command_210 steer_command_210 = 8;  // control message
+  optional Steer_status_211 steer_status_211 = 9;    // report message
+  optional Body_command_310 body_command_310 = 10;   // control message
+  optional Body_status_311 body_status_311 = 11;     // report message
+  optional Vcu_battery_status_321 vcu_battery_status_321 =
+      12;  // report message
+}

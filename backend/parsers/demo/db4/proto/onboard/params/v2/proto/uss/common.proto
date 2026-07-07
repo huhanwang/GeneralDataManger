@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package snoah;
+
+enum UssModel {
+  USS_APA = 0;
+  USS_UPA = 1;
+}
+
+message UssCommonProto {
+  optional int32 frequency = 1;
+
+  optional double full_fov_width = 2;
+  optional double full_fov_height = 3;
+
+  optional double blind_distance = 4;
+  optional double max_detection_distance = 5;
+
+  optional double resolution = 6;
+}

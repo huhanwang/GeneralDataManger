@@ -1,0 +1,14 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/hmi_content.proto";
+import "onboard/proto/trajectory.proto";
+import "onboard/proto/planner.proto";
+
+message LiParkingPlanningResult {
+  optional TrajectoryProto trajectory_proto = 1;
+  optional HmiContentProto hmi_content_proto = 2;
+  optional PlannerDebugProto planner_debug_proto = 3;
+}

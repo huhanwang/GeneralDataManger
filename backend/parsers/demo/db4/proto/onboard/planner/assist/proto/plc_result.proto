@@ -1,0 +1,15 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+
+enum PlcInternalStatus {
+  OK = 1;
+  BRANCH_NOT_FOUND = 2;
+  BRANCH_FAILED_INTERNAL = 3;
+  SOLID_BOUNDARY = 4;
+  UNSAFE_OBJECT = 5;
+  INHIBITING_OBJECT = 6;
+  INTERSECTION = 7;
+}

@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package snoah;
+
+enum OccModel { OCC_GPLUS_VCU_TC387 = 1; }
+
+message OccCommonProto {}

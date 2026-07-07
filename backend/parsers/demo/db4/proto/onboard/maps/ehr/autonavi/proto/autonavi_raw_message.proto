@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/maps/ehr/autonavi/mapapi/proto/mapapi_raw_message.proto";
+
+message AutoNaviRawMessage {
+  optional double timestamp = 1;
+  enum MessageType {
+    // EHPv3 message, effectively adasisv3.proto serialized
+    EHP_V3_MESSAGE_ON_BUS = 1;
+    // 1 ~ 3 is LongCheng/Horizon.ai data types, they are plain text
+    // (proto.ShortDebugString()) Storing plain text, because we don't have
+    // access to the proto definition. This allows us to parse the message by
+    // inspecting the text and writing our own proto definition.
+    NDM_MAP = 2;
+    NDM_NAVIGATION = 3;
+    EHP_V3_INPUT_LOCATION = 4;
+  }
+
+  optional MessageType message_type = 2;
+  optional bytes message = 3;
+}
+
+message AutoNaviRawMessages {
+  repeated AutoNaviRawMessage messages = 1;
+  repeated mapapi.MapApiRawMessage mapapi_raw_messages = 2;
+}

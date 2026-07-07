@@ -1,0 +1,234 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/perception/fusion/fusion_object.proto";
+// import "onboard/proto/perception.proto";
+import "onboard/proto/perception/lsaeb/lsaeb_freespace.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+
+package snoah;
+
+// AEB control cmd
+message AebControlCommand {
+  optional LiteHeader header = 1;
+
+  // AWB
+  optional bool awb_request = 2 [(trans_matrix) = true];
+  optional EmergencyBrakeProto.AwbLevel awb_level = 3
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // ABP
+  optional bool prefill_request = 4 [(trans_matrix) = true];
+
+  // ABA
+  optional bool aba_request = 5 [(trans_matrix) = true];
+  optional EmergencyBrakeProto.AbaLevel aba_level = 6
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // AEB
+  optional bool aeb_request = 7 [(trans_matrix) = true];
+  optional double aeb_target_decel = 8 [(trans_matrix) = true];
+
+  // EBA
+  optional bool eba_request = 9 [(trans_matrix) = true];
+}
+
+// Next ID: 27
+message EmergencyBrakeProto {
+  optional LiteHeader header = 1;
+
+  // FCW system output.
+  enum FcwStatus {
+    FCW_STATUS_OFF = 0;
+    FCW_STATUS_ON = 1;
+    FCW_STATUS_FAILURE = 2;
+  }
+  optional FcwStatus fcw_status = 4;
+
+  enum FcwSetting {
+    FCW_SETTING_NONE = 0;
+    FCW_SETTING_OFF = 1;
+    FCW_SETTING_LOW = 2;
+    FCW_SETTING_MID = 3;
+    FCW_SETTING_HIGH = 4;
+  }
+  optional FcwSetting fcw_setting = 17;
+
+  enum AebSetting {
+    AEB_SETTING_NONE = 0;
+    AEB_SETTING_OFF = 1;
+    AEB_SETTING_LOW = 2;
+    AEB_SETTING_MID = 3;
+    AEB_SETTING_HIGH = 4;
+  }
+  optional AebSetting aeb_setting = 25;
+
+  optional bool mai_setting = 55;
+
+  enum AebActiveType {
+    AEB_ACTIVE_TYPE_NONE = 0;
+    AEB_ACTIVE_TYPE_PARTIAL = 1;
+    AEB_ACTIVE_TYPE_FULL = 2;
+  }
+  optional AebActiveType aeb_active_type = 26;
+
+  enum AebFunction {
+    NONE = 0;
+    AEB = 1;
+    EBA = 2;
+    RAEB = 3;
+    LAEB = 4;
+  }
+  optional AebFunction aeb_active_function = 35;
+
+  // Pre-warning function output.
+  optional bool pebs_warning = 6;
+
+  // AWB function output.
+  optional bool awb_request = 7;
+  enum AwbLevel {
+    AWB_LEVEL_NONE = 0;
+    AWB_LEVEL_1 = 1;
+    AWB_LEVEL_2 = 2;
+    AWB_LEVEL_3 = 3;
+    AWB_LEVEL_4 = 4;
+  }
+  optional AwbLevel awb_level = 8;
+
+  // AEB system output.
+  enum AebStatus {
+    AEB_STATUS_OFF = 0;
+    AEB_STATUS_ON = 1;
+    AEB_STATUS_FAILURE = 2;
+  }
+  optional AebStatus aeb_status = 9;
+
+  // AEB function output.
+  optional bool aeb_request = 11;
+  optional double aeb_target_decel = 12;
+  optional bool aeb_standstill = 18;
+
+  // Prefill function output.
+  optional bool prefill_request = 14;
+
+  // ABA function output.
+  optional bool aba_request = 15;
+  enum AbaLevel {
+    ABA_LEVEL_0 = 0;
+    ABA_LEVEL_1 = 1;
+    ABA_LEVEL_2 = 2;
+    ABA_LEVEL_3 = 3;
+  }
+  optional AbaLevel aba_level = 16;
+
+  enum CrossTrafficActiveType {
+    CT_ACTIVE_NONE = 0;
+    CT_ACTIVE_LEFT = 1;
+    CT_ACTIVE_RIGHT = 2;
+    CT_ACTIVE_BOTH = 3;
+  }
+
+  // FCTA system output
+  enum FctaStatus {
+    FCTA_STATUS_OFF = 0;
+    FCTA_STATUS_ON = 1;
+    FCTA_STATUS_FAILURE = 2;
+  }
+  optional FctaStatus fcta_status = 27;
+  optional CrossTrafficActiveType fcta_active_type = 28;
+
+  // RCTA system output
+  enum RctaStatus {
+    RCTA_STATUS_OFF = 0;
+    RCTA_STATUS_ON = 1;
+    RCTA_STATUS_FAILURE = 2;
+  }
+  optional RctaStatus rcta_status = 36;
+  optional CrossTrafficActiveType rcta_active_type = 37;
+
+  // FCTB system output
+  enum FctbStatus {
+    FCTB_STATUS_OFF = 0;
+    FCTB_STATUS_ON = 1;
+    FCTB_STATUS_FAILURE = 2;
+  }
+  optional FctbStatus fctb_status = 29;
+  optional CrossTrafficActiveType fctb_active_type = 30;
+
+  // RCTB system output
+  enum RctbStatus {
+    RCTB_STATUS_OFF = 0;
+    RCTB_STATUS_ON = 1;
+    RCTB_STATUS_FAILURE = 2;
+  }
+  optional RctbStatus rctb_status = 38;
+  optional CrossTrafficActiveType rctb_active_type = 39;
+
+  // RAEB system output.
+  enum RaebStatus {
+    RAEB_STATUS_OFF = 0;
+    RAEB_STATUS_ON = 1;
+    RAEB_STATUS_FAILURE = 2;
+  }
+  optional RaebStatus raeb_status = 31;
+
+  // LAEB system output.
+  enum LaebStatus {
+    LAEB_STATUS_OFF = 0;
+    LAEB_STATUS_ON = 1;
+    LAEB_STATUS_FAILURE = 2;
+  }
+  optional LaebStatus laeb_status = 44;
+
+  // MAI system output.
+  enum MaiStatus {
+    MAI_STATUS_OFF = 0;
+    MAI_STATUS_ON = 1;
+    MAI_STATUS_FAILURE = 2;
+  }
+  optional MaiStatus mai_status = 51;
+
+  // RMAI system output.
+  enum RmaiStatus {
+    RMAI_STATUS_OFF = 0;
+    RMAI_STATUS_ON = 1;
+    RMAI_STATUS_FAILURE = 2;
+  }
+  optional RmaiStatus rmai_status = 56;
+
+  // MAI/RMAI function output.
+  optional bool mai_request = 52;
+
+  enum MaiFunction {
+    MAI_FUNCTION_NONE = 0;
+    MAI_FUNCTION_MAI = 1;
+    MAI_FUNCTION_RMAI = 2;
+  }
+  optional MaiFunction mai_active_function = 57;
+
+  optional string fcw_target_object_id = 21;
+  optional FusionObjectProto fcw_target_object = 22;
+  optional string aeb_target_object_id = 23;
+  optional FusionObjectProto aeb_target_object = 24;
+  optional string prefill_target_object_id = 47;
+  optional FusionObjectProto prefill_target_object = 48;
+  optional string eba_target_object_id = 49;
+  optional FusionObjectProto eba_target_object = 50;
+  optional string raeb_target_object_id = 33;
+  optional ObjectProto raeb_target_object = 34;
+  optional string ct_left_target_object_id = 40;
+  optional ObjectProto ct_left_target_object = 41;
+  optional string ct_right_target_object_id = 42;
+  optional ObjectProto ct_right_target_object = 43;
+  optional string laeb_target_object_id = 45;
+  optional BoundaryProto laeb_target_object = 46;
+  optional string mai_target_object_id = 53;
+  optional FusionObjectProto mai_target_object = 54;
+  optional string rmai_target_object_id = 58;
+  optional ObjectProto rmai_target_object = 59;
+
+  reserved 2, 3, 5, 10, 13, 19, 20, 32;
+  // NEXT ID: 60
+}

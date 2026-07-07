@@ -1,0 +1,30 @@
+syntax = "proto2";
+package snoah.lidar_process.common;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/common/sensor_manager/proto/sensor_meta_schema";
+
+message SensorMeta {
+  enum SensorType {
+    UNKNOWN_SENSOR_TYPE = -1;
+    AT_128 = 0;
+    PANDAR_128 = 1;
+    RADAR = 2;
+    CAMERA = 3;
+    ATL = 4;
+  }
+
+  enum SensorOrientation {
+    FRONT = 0;
+    LEFT = 1;
+    REAR = 2;
+    RIGHT = 3;
+    PANORAMIC = 4;
+  }
+
+  required string name = 1;
+  required SensorType type = 2;
+  required SensorOrientation orientation = 3;
+}
+
+message MultiSensorMeta {
+  repeated SensorMeta sensor_meta = 1;
+}

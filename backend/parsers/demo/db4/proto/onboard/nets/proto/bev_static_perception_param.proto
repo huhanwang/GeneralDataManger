@@ -1,0 +1,52 @@
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "snoah-proto.al/onboard/nets/proto/bev_static_perception_param";
+
+import "onboard/nets/proto/net_param.proto";
+import "onboard/proto/lidar.proto";
+
+message BevStaticPerceptionConfig {
+   optional LidarId enable_lidar_id = 8 [default = LDR_FRONT];
+   optional bool enable_lidar = 9;
+   optional bool enable_mapformer_heads = 10;
+   optional bool enable_sdroute = 11;
+   optional int32 enable_sdroute_point_num = 19 [default = 20];
+
+   optional float polyline_score_threshold = 12 [default = 0.5];
+   optional float polyline_slowdown_score_threshold = 13 [default = 0.5];
+
+   optional float centerline_score_threshold = 14 [default = 0.3];
+   optional float centerline_lclc_score_threshold = 15 [default = 0.5];
+   optional float centerline_direction_score_threshold = 16 [default = 0.3];
+
+   optional float ego_centerline_score_threshold = 17 [default = 0.5];
+
+   // this is a feature for quantization of transform on grid center
+   optional bool enable_grid2vehicle_transform = 18;
+
+   optional bool enable_point_type = 20;
+   optional bool enable_front_double_sixty_cameras = 21;
+
+   optional float ego_trajectory_score_threshold = 22 [default = 0.1];
+   optional bool enable_mapformer_label_v2 = 23;
+}
+
+message BevRangeParams {
+   optional float bev_min_x = 1;
+   optional float bev_max_x = 2;
+   optional float bev_min_y = 3;
+   optional float bev_max_y = 4;
+   optional int32 bev_grid_x = 5;
+   optional int32 bev_grid_y = 6;
+
+   optional float lidar_min_y = 7;
+   optional float lidar_grid_y = 8;
+}
+
+message BevStaticPerceptionParam {
+   optional NetParam net_param = 1;
+   optional BevStaticPerceptionConfig config = 2;
+   optional BevRangeParams bev_range_params = 3;
+}

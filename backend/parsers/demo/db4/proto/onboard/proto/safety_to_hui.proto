@@ -1,0 +1,203 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message SafetyAirStat {
+  optional float aeb_beginning_speed = 1;
+  optional float aeb_obj_px = 2;
+  optional float aeb_obj_py = 3;
+  optional float aeb_obj_vx = 4;
+  optional float aeb_obj_vy = 5;
+  optional float aeb_ttc = 6;
+  optional uint32 aeb_obj_type = 7;
+  optional uint32 aeb_override_status =
+      8;  // 1 teering, 2 gas pedal, 3 sterring & gas
+  optional uint32 aeb_status = 9;
+  optional bool fcw_function_wrnng = 10;
+  optional float fcw_obj_px = 11;
+  optional float fcw_obj_py = 12;
+  optional float fcw_obj_vx = 13;
+  optional float fcw_obj_vy = 14;
+  optional float fcw_ttc = 15;
+  optional uint32 fcw_obj_type = 16;
+  optional uint32 bsd_function_wrnng = 17;
+  optional uint32 dow_function_wrnng = 18;
+  optional uint32 ldw_function_warnning = 19;
+  optional uint32 ldp_function_active = 20;
+  optional uint32 ldp_false_active = 21;
+  optional uint32 ldp_exit_reason = 22;
+  optional uint32 ldp_fail_reason = 23;
+  optional uint32 ld_active_speed = 24;  // LDW/LDP激活时速度；
+  optional uint32 elk_state = 25;
+  optional uint32 elk_lane_type = 26;
+  optional uint32 elk_trigger_type = 27;
+  optional uint32 elk_exit_reason = 28;
+  optional uint32 elk_fail_reason = 29;
+  optional uint32 elk_wrong_touch_state = 30;
+  optional uint32 elk_wrong_touch_reason = 31;
+  optional uint32 raeb_status = 32;
+  optional float raeb_ttc = 33;
+  optional uint32 raeb_obj_type = 34;
+  optional float raeb_obj_px = 35;
+  optional float raeb_obj_py = 36;
+  optional uint32 raeb_exit_reason = 37;
+  optional float as_ego_speed = 38;
+  optional float as_steering_angle = 39;
+  optional float as_gas_pedal = 40;
+  optional int32 as_brake_pedal = 41;
+  optional uint32 als_aeb_status = 42;
+  optional float als_aeb_beginning_speed = 43;
+  optional float als_aeb_ttc = 44;
+  optional float als_aeb_turning_angle = 45;
+  optional float als_aeb_gas_pedal = 46;
+  optional float als_aeb_brake_pedal = 47;
+  optional float als_aeb_obj_px = 48;
+  optional float als_aeb_obj_py = 49;
+  optional uint32 als_aeb_obj_type = 50;
+  optional uint32 als_aeb_quit_reason = 51;
+}
+
+message SafetyFuncHuInfo {
+  enum EIDObjectType {
+    OBJECT_TYPE_DEFAULT = 0;
+    OBJECT_TYPE_BICYCLE = 1;
+    OBJECT_TYPE_VEHICLE = 2;
+    OBJECT_TYPE_PEDESTRIAN = 3;
+    OBJECT_TYPE_TRICYCLE = 4;
+    OBJECT_TYPE_CONE = 5;
+    OBJECT_TYPE_BARREL = 6;
+    OBJECT_TYPE_UNKNOWN_STATIC = 7;
+  }
+
+  enum EIDWrnngColor {
+    WARNING_COLOR_DEFAULT = 0;
+    WARNING_COLOR_YELLOW = 1;
+    WARNING_COLOR_RED = 2;
+  }
+
+  enum AEBInhibitReason {
+    AEBInhibitReason_NOT_INHIBIT = 0;
+    AEBInhibitReason_SAFEBELT_NOT_TIED = 1;
+    AEBInhibitReason_PESSENGER_EXCEED = 2;
+    AEBInhibitReason_RESERVED = 3;
+  }
+
+  message SafetyFuncEIDInfo {
+    optional uint64 object_id = 1;
+    optional EIDObjectType object_type = 2;
+    optional float object_pos_x = 3;
+    optional float object_pos_y = 4;
+    optional EIDWrnngColor warnng_color = 5;
+    optional float object_vel_x = 6;
+    optional float object_vel_y = 7;
+    optional double heading = 8;
+    optional double timestamp = 9;
+  }
+
+  optional bool safety_fcw_wrnng_active = 1;     // true: active, alse: inactive
+  optional bool safety_fcw_error_status = 2;     // true: error, false: no error
+  optional bool safety_aeb_function_enable = 3;  // true:enable,  false: disable
+  optional bool safety_aes_function_enable = 4;  // true:enable,  false: disable
+  optional bool safety_fcta_function_enable = 5;  // true:enable,  false:
+                                                  // disable
+  optional bool safety_fcta_error_status = 6;    // true: error,  alse: no error
+  optional bool safety_rct_function_enable = 7;  // true:enable,  false: disable
+  optional bool safety_rctb_left_active = 8;   // true: active, false: inactive
+  optional bool safety_rctb_right_active = 9;  // true: active, false: inactive
+  optional bool safety_bsd_function_enable = 10;  // true:enable, false: disable
+  optional bool safety_bsd_error_status = 11;  // true: error, false: no error
+  optional bool safety_dow_function_enable = 12;  // true:enable, false: disable
+  optional bool safety_dow_error_status = 13;  // true: error, false: no error
+  optional bool safety_elk_function_feedback =
+      14;                                      // true: enable, false: disable
+  optional bool safety_elk_error_status = 15;  // true: error, false: no error
+
+  optional uint32 safety_fcw_function_feedback = 16;
+  optional uint32 safety_aeb_function_status = 17;
+  optional uint32 safety_aes_function_status = 18;
+  optional uint32 safety_aes_function_direction = 19;
+  optional uint32 safety_fcta_left_warning =
+      20;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_fcta_right_warning =
+      21;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_fcta_left_object_type = 22;
+  optional uint32 safety_fcta_right_object_type = 23;
+  optional uint32 safety_rcta_left_warning =
+      24;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_rcta_right_warning =
+      25;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_rcta_left_object_type = 26;
+  optional uint32 safety_rcta_right_object_type = 27;
+  optional uint32 safety_rct_error_status = 28;
+  optional uint32 safety_bsd_left_warning_level = 29;
+  optional uint32 safety_bsd_right_warning_level = 30;
+  optional uint32 safety_ld_function_feedback = 31;
+  optional uint32 safety_ld_function_line_type = 32;
+  optional uint32 safety_ld_error_status = 33;
+  optional uint32 safety_ldw_warning_direction = 34;
+  optional uint32 safety_ldP_warning_direction = 35;
+  optional uint32 safety_ldp_function_status = 36;
+  optional uint32 safety_dow_rldoor_warning_level = 37;
+  optional uint32 safety_dow_rrdoor_warning_level = 38;
+  optional uint32 safety_dow_fldoor_warning_level = 39;
+  optional uint32 safety_dow_frdoor_warning_level = 40;
+  optional SafetyFuncEIDInfo aeb_fcw_object = 41;
+  optional SafetyFuncEIDInfo aes_object = 42;
+  optional SafetyFuncEIDInfo fcta_left_object = 43;
+  optional SafetyFuncEIDInfo fcta_right_object = 44;
+  optional SafetyFuncEIDInfo rct_left_object = 45;
+  optional SafetyFuncEIDInfo rct_right_object = 46;
+  optional SafetyFuncEIDInfo bsd_left_object = 47;
+  optional SafetyFuncEIDInfo bsd_right_object = 48;
+  optional SafetyFuncEIDInfo dow_left_object = 49;
+  optional SafetyFuncEIDInfo dow_right_object = 50;
+  optional SafetyFuncEIDInfo elk_left_object = 51;
+  optional SafetyFuncEIDInfo elk_right_object = 52;
+  optional bool aeb_func_inhibit_flag = 53;
+  optional AEBInhibitReason aeb_func_inhibit_reason = 54;
+  optional uint32 safety_elk_function_control_type = 55;
+  optional uint32 safety_elk_function_warning_type = 56;
+  optional uint32 safety_elk_function_status = 57;
+  optional uint32 safety_fctb_left_warning =
+      70;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_fctb_right_warning =
+      71;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_rctb_left_warning =
+      58;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional uint32 safety_rctb_right_warning =
+      59;  // 0:no, 1:vehicle, 2:bicycle, 3:ped
+  optional SafetyFuncEIDInfo fctb_left_object = 72;
+  optional SafetyFuncEIDInfo fctb_right_object = 73;
+  optional SafetyFuncEIDInfo rctb_left_object = 60;
+  optional SafetyFuncEIDInfo rctb_right_object = 61;
+  optional SafetyFuncEIDInfo rcw_object = 62;
+  optional bool safety_rcw_wrnng = 63;
+  optional uint32 ls_aeb_object_type =
+      64;  // 0:default, 1:car, 2:ped, 3:square pillar, 4:circular pillar
+  optional uint32 ls_aeb_warning =
+      65;  // 0:default, 1:front, 2:rear, 3:left, 4:right
+  optional uint32 ls_aeb_active =
+      66;  // 0:default, 1:front, 2:rear, 3:left, 4:right
+  optional float ls_aeb_distance = 67;
+  optional SafetyFuncEIDInfo ls_aeb_object = 68;
+  optional uint32 ls_aeb_status =
+      69;  // 0:off, 1:initial, 2:inactive inhibition, 3:inactive prepare,
+           // 4:active
+  optional uint32 safety_mai_active = 74;
+  optional SafetyFuncEIDInfo mai_object = 75;
+
+  optional uint32 asafety_func_direction = 76;
+  optional SafetyFuncEIDInfo als_aeb_object = 77;
+  optional uint32 elk_active_target_type = 78;
+  // next: 79
+}
+
+message SafetyToHuiProto {
+  optional LiteHeader header = 1;
+  optional SafetyAirStat safety_function_statistics = 2;
+  optional SafetyFuncHuInfo safety_function_dispaly = 3;
+  optional uint32 aeb_flash_light_request = 4;
+}

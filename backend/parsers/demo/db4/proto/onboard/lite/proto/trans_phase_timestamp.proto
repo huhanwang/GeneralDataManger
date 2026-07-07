@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package snoah;
+
+enum TransPhaseId {
+  NODE_BEFORE = 0;
+  NODE_AFTER = 1;
+  PROCESS_IN = 2;
+  CB_BEFORE = 3;
+  CB_AFTER = 4;
+};
+
+message TransPhaseTimestamp {
+  optional TransPhaseId id = 1;
+  optional int64 timestamp = 2;
+}

@@ -1,0 +1,16 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+// Cyber message proto.
+message CyberMessageProto {
+  optional LiteHeader header = 1;
+  optional bytes message = 2;
+  optional string json_msg = 3;
+  map<string, string> total_msg = 4;
+  optional string msg_type = 5;
+  optional bytes proto_desc = 6;
+  map<string, string> channel_to_msg_type = 7;
+}

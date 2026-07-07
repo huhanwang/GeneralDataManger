@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+message LanePathProto {
+  repeated int64 lane_ids = 1;
+  optional double start_fraction = 2;
+  optional double end_fraction = 3;
+  optional bool lane_path_in_forward_direction = 4;
+  repeated double lane_lengths = 5;
+}

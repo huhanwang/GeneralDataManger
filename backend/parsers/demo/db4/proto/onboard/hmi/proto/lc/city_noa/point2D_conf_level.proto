@@ -1,0 +1,10 @@
+
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+message Point2DConfLevel {
+  optional float x = 1;
+  optional float y = 2;
+  optional float conf_level = 3 [default = 1.0];
+}

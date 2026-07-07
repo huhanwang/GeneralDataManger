@@ -1,0 +1,442 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+
+// Control Message.
+message Acu_Vcu_Bus_100 {
+  enum AutoCtrlEnaType {
+    AUTOCTRLENA_MANUALMODE = 0;
+    AUTOCTRLENA_AUTOMODE = 1;
+  }
+  // Automatic control mode master switch: 0=Disabled, 1=Enabled. [-] [0|1]
+  optional AutoCtrlEnaType auto_ctrl_ena = 1;
+  // Message counter. [-] [0|15]
+  optional int32 mode_ctrl_cnt = 2;
+  // Message checksum. [-] [0|255]
+  optional int32 mode_ctrl_cks = 3;
+}
+
+// Control Message.
+message Acu_Acc_Bus_101 {
+  enum AccCtrlEnaType {
+    ACCCTRLENA_ACCDISABLE = 0;
+    ACCCTRLENA_ACCENABLE = 1;
+  }
+  enum AccTkoDisType {
+    ACCTKODIS_TAKEOVERENDACCWIRE = 0;
+    ACCTKODIS_TAKEOVERNOTENDACCWIRE = 1;
+  }
+  // Accelerator pedal position command, valid range 0100%. [%] [0|100]
+  optional double acc_ped_cmd = 1;
+  // Accelerator pedal control enable: 0=Disabled, 1=Enabled. [-] [0|1]
+  optional AccCtrlEnaType acc_ctrl_ena = 2;
+  // Accelerator pedal position validation value: valid range 0100%. [%] [0|100]
+  optional double acc_ped_inv = 3;
+  // Message counter. [-] [0|15]
+  optional int32 acc_ctrl_cnt = 4;
+  // Message checksum. [-] [0|255]
+  optional int32 acc_ctrl_cks = 5;
+  // - [-] [0|1]
+  optional AccTkoDisType acc_tko_dis = 6;
+}
+
+// Control Message.
+message Acu_Ebs_Bus_102 {
+  enum BrkCtrlEnaType {
+    BRKCTRLENA_BRKDISABLE = 0;
+    BRKCTRLENA_BRKENABLE = 1;
+  }
+  enum BrkTkoDisType {
+    BRKTKODIS_BRKCANENDWIRE = 0;
+    BRKTKODIS_BRKNOTENDWIRE = 1;
+  }
+  // Brake pedal position command: valid range 0~100%. [%] [0|100]
+  optional double brk_ped_cmd = 1;
+  // Brake pedal control enable: 0=disabled, 1=enabled. [-] [0|1]
+  optional BrkCtrlEnaType brk_ctrl_ena = 2;
+  // Brake pedal position verification value: valid range 0~100%. [%] [0|100]
+  optional double brk_ped_inv = 3;
+  // Message counter. [-] [0|15]
+  optional int32 brk_ctrl_cnt = 4;
+  // Message checksum. [-] [0|255]
+  optional int32 brk_ctrl_cks = 5;
+  // - [-] [0|1]
+  optional BrkTkoDisType brk_tko_dis = 6;
+  // Brake pedal position limit command: valid range 0~100%. [%] [0|100]
+  optional double brk_ped_limit_cmd = 7;
+}
+
+// Control Message.
+message Acu_Eps_Bus_103 {
+  enum StrCtrlEnaType {
+    STRCTRLENA_STRCTRLENAMANUAL = 0;
+    STRCTRLENA_STRCTRLENAAUTO = 1;
+  }
+  // Steering wheel angle command: valid range -470deg~470deg. [deg]
+  // [-1575|1575]
+  optional double str_ang_cmd = 1;
+  // Steering wheel control enable: 0=disabled, 1=enabled. [-] [0|1]
+  optional StrCtrlEnaType str_ctrl_ena = 2;
+  // Steering wheel angle limit value: valid range 0deg~470deg. [deg]
+  // [-1575|1575]
+  optional double str_ang_limit = 3;
+  // Steering wheel steering speed limit: valid range 0~1020deg/s. [deg/s]
+  // [0|1020]
+  optional int32 str_ang_rate_limit = 4;
+  // Message counter. [-] [0|15]
+  optional int32 str_ctrl_cnt = 5;
+  // Message checksum. [-] [0|255]
+  optional int32 str_ctrl_cks = 6;
+}
+
+// Control Message.
+message Acu_Bms_Bus_104 {
+  enum RearDoorCmdType {
+    REARDOORCMD_RD_DEFAULT = 0;
+    REARDOORCMD_RD_CLOSE = 1;
+    REARDOORCMD_RD_OPEN = 2;
+  }
+  enum FrontDoorCmdType {
+    FRONTDOORCMD_D_DEFAULT = 0;
+    FRONTDOORCMD_D_CLOSE = 1;
+    FRONTDOORCMD_D_OPEN = 2;
+  }
+  enum HornCmdType {
+    HORNCMD_DISABLEHORN = 0;
+    HORNCMD_ENABLEHORN = 1;
+  }
+  enum GearCmdType {
+    GEARCMD_NOACTION = 0;
+    GEARCMD_PGEAR = 1;
+    GEARCMD_RGEAR = 2;
+    GEARCMD_NGEAR = 3;
+    GEARCMD_DGEAR = 4;
+  }
+  enum GearCtrlEnaType {
+    GEARCTRLENA_GEARCTRLDISABLE = 0;
+    GEARCTRLENA_GEARCTRLENABLE = 1;
+  }
+  enum TurnLightCmdType {
+    TURNLIGHTCMD_NOTURNLIGHT = 0;
+    TURNLIGHTCMD_LEFTTURNLIGHT = 1;
+    TURNLIGHTCMD_RIGHTTURNLIGHT = 2;
+    TURNLIGHTCMD_EMERGENCYLIGHT = 3;
+  }
+  enum BeamLightCmdType {
+    BEAMLIGHTCMD_NOLIGHT = 0;
+    BEAMLIGHTCMD_TURNONLIGHT = 1;
+    BEAMLIGHTCMD_LOWBEAMLIGHTS = 2;
+    BEAMLIGHTCMD_HIGHTBEAMLIGHT = 3;
+  }
+  // [] [0|3]
+  optional RearDoorCmdType rear_door_cmd = 1;
+  // [] [0|3]
+  optional FrontDoorCmdType front_door_cmd = 2;
+  // Electronic parking brake control command: 0=default; 1=release; 2=apply;
+  // others: invalid. [-] [0|3]
+  optional int32 epbcmd = 3;
+  // Windshield wiper control command: 0=off, 1=low speed, 2=high speed,
+  // 3=spray. [] [0|7]
+  optional int32 wiper_cmd = 4;
+  // Horn control command: 0=off, 1=on. [-] [0|1]
+  optional HornCmdType horn_cmd = 5;
+  // Fog light control command: 0=do not turn on fog light, 1=turn on front fog
+  // light, 2=turn on rear fog light, 3=turn on front and rear fog lights. [-]
+  // [0|3]
+  optional int32 fog_light_cmd = 6;
+  // Gear control command: 2=R gear, 3=N gear, 4=D gear, others reserved. [-]
+  // [0|255]
+  optional GearCmdType gear_cmd = 7;
+  // Gear control enable: 0=disabled, 1=enabled. [-] [0|1]
+  optional GearCtrlEnaType gear_ctrl_ena = 8;
+  // Turn signal control command: 0=do not control turn signal, 1=left turn
+  // signal blink, 2=right turn signal blink, 3=reserved. [-] [0|3]
+  optional TurnLightCmdType turn_light_cmd = 9;
+  // High/low beam control command: 0=do not turn on light, 1=turn on light,
+  // others reserved. [-] [0|3]
+  optional BeamLightCmdType beam_light_cmd = 10;
+  // Message counter. [-] [0|15]
+  optional int32 gear_ctrl_cnt = 11;
+  // Message checksum. [-] [0|255]
+  optional int32 gear_ctrl_cks = 12;
+}
+
+// Report Message.
+message Vcu_Acu_Bus_200 {
+  enum AutoCtrlStatType {
+    AUTOCTRLSTAT_STATUSMANUALMODE = 0;
+    AUTOCTRLSTAT_STATUSAUTOLMODE = 1;
+    AUTOCTRLSTAT_STATUSERRORMODE = 2;
+  }
+  // Autonomous control mode status: 0=disabled, 1=enabled, 2=fault, 3=reserved.
+  // [-] [0|3]
+  optional AutoCtrlStatType auto_ctrl_stat = 1;
+  // Message counter. [-] [0|15]
+  optional int32 mode_stat_cnt = 2;
+  // Message checksum. [-] [0|255]
+  optional int32 mode_stat_cks = 3;
+}
+
+// Report Message.
+message Acc_Vcu_Bus_201 {
+  enum AccCtrlStatType {
+    ACCCTRLSTAT_ACCSTATUSMANUALMODE = 0;
+    ACCCTRLSTAT_ACCSTATUSAUTOMODE = 1;
+    ACCCTRLSTAT_ACCCMDPEDLCHECKERROR = 2;
+  }
+  // Actual accelerator pedal position: valid range 0-100%. [%] [0|100]
+  optional double acc_ped_act = 1;
+  // Accelerator pedal position command feedback: valid range 0-100%. [-]
+  // [0|255]
+  optional int32 acc_ped_cmd = 2;
+  // Executed accelerator pedal position: valid range 0-100%. [%] [0|100]
+  optional double acc_ped_exe = 3;
+  // Drive control status: 0=disabled, 1=enabled, 2=fault, 3=reserved. [-] [0|3]
+  optional AccCtrlStatType acc_ctrl_stat = 4;
+  // Message counter. [-] [0|15]
+  optional int32 acc_stat_cnt = 5;
+  // Message checksum. [-] [0|255]
+  optional int32 acc_stat_cks = 6;
+  // Drive system fault information. [-] [0|15]
+  optional int32 acc_failure = 7;
+}
+
+// Report Message.
+message Ebs_Acu_Bus_202 {
+  enum BrkCtrlStatType {
+    BRKCTRLSTAT_BRKCTRLSTATMANUAL = 0;
+    BRKCTRLSTAT_BRKCTRLSTATAUTO = 1;
+    BRKCTRLSTAT_BRKCTRLSTATERROR = 2;
+  }
+  // Actual brake pedal position: valid range 0-100%. [%] [0|100]
+  optional double brk_ped_act = 1;
+  // Brake pedal position command feedback: valid range 0-100%. [-] [0|255]
+  optional int32 brk_ped_cmd = 2;
+  // Executed brake pedal position: valid range 0-100%. [%] [0|100]
+  optional double brk_ped_exe = 3;
+  // Brake control status: 0=disabled, 1=enabled, 2=fault, 3=reserved. [-] [0|3]
+  optional BrkCtrlStatType brk_ctrl_stat = 4;
+  // Message counter. [-] [0|15]
+  optional int32 brk_stat_cnt = 5;
+  // Message checksum. [-] [0|255]
+  optional int32 brk_stat_cks = 6;
+  // Brake light status. [-] [0|1]
+  optional bool brk_light_st = 7;
+  // Brake fault information. [-] [0|15]
+  optional int32 brk_failure = 8;
+}
+
+// Report Message.
+message Eps_Acu_Bus_203 {
+  enum StrCtrlStatType {
+    STRCTRLSTAT_STRCTRLSTATMANUAL = 0;
+    STRCTRLSTAT_STRCTRLSTATAUTO = 1;
+    STRCTRLSTAT_EPSOVERHEAT = 2;
+  }
+  // Actual steering wheel angle: valid range -470deg\A1\AB470deg. [deg]
+  // [-1575|1575]
+  optional double str_ang_act = 1;
+  // Steering wheel angle command feedback: valid range -470deg\A1\AB470deg.
+  // [deg] [-1575|1575]
+  optional double str_ang_cmd = 2;
+  // Actual steering wheel torque: valid range -64Nm\A1\AB63Nm. [Nm] [-64|63]
+  optional int32 str_trq_act = 3;
+  // Steering control status: 0=disabled, 1=enabled, 2=fault, 3=reserved. [-]
+  // [0|3]
+  optional StrCtrlStatType str_ctrl_stat = 4;
+  // Message counter. [-] [0|15]
+  optional int32 str_stat_cnt = 5;
+  // Message checksum. [-] [0|255]
+  optional int32 str_stat_cks = 6;
+  // Steering angular velocity. [-] [0|1020]
+  optional double str_ang_speed = 7;
+  // Steering fault information. [-] [0|15]
+  optional int32 str_ang_failure = 8;
+}
+
+// Report Message.
+message Bms_Acu_Bus_204 {
+  enum RearDoorStType {
+    REARDOORST_RDSTUS_DEFAULT = 0;
+    REARDOORST_RDSTUS_CLOSE = 1;
+    REARDOORST_RDSTUS_OPEN = 2;
+  }
+  enum FrontDoorStType {
+    FRONTDOORST_DSTUS_DEFAULT = 0;
+    FRONTDOORST_DSTUS_CLOSE = 1;
+    FRONTDOORST_DSTUS_OPEN = 2;
+  }
+  enum HornCmdType {
+    HORNCMD_HORNCMDBCMCLOSE = 0;
+    HORNCMD_HORNCMDBCMOPEN = 1;
+  }
+  enum HornStatusType {
+    HORNSTATUS_STATUSHORNCLOSE = 0;
+    HORNSTATUS_STATUSHORNOPEN = 1;
+  }
+  enum GearActType {
+    GEARACT_NOGEARACT = 0;
+    GEARACT_GEARACTP = 1;
+    GEARACT_GEARACTR = 2;
+    GEARACT_GEARACTN = 3;
+    GEARACT_GEARACTD = 4;
+  }
+  enum GearCmdType {
+    GEARCMD_GEARCMDNOACITION = 0;
+    GEARCMD_GEARCMDP = 1;
+    GEARCMD_GEARCMDR = 2;
+    GEARCMD_GEARCMDN = 3;
+    GEARCMD_GEARCMDD = 4;
+  }
+  enum TurnLightCmdType {
+    TURNLIGHTCMD_TURNLIGHTCMDNOTURNLIGHT = 0;
+    TURNLIGHTCMD_TURNLIGHTCMDLEFTTURNLIGHT = 1;
+    TURNLIGHTCMD_TURNLIGHTCMDRIGHTTURNLIGHT = 2;
+  }
+  enum TurnLightActType {
+    TURNLIGHTACT_ACTNOTURNLIGHT = 0;
+    TURNLIGHTACT_ACTLEFTTURNLIGHT = 1;
+    TURNLIGHTACT_ACTRIGHTTURNLIGHT = 2;
+  }
+  enum BeamLightActType {
+    BEAMLIGHTACT_ACTNOBEAM = 0;
+    BEAMLIGHTACT_ACTBEAM = 1 [deprecated = true];
+    BEAMLIGHTACT_ACTLOWBEAM = 2;
+    BEAMLIGHTACT_ACTHIGHTBEAM = 3;
+    BEAMLIGHTACT_ACTSMALLBEAM = 4;
+  }
+  enum BeamLightCmdType {
+    BEAMLIGHTCMD_CMDCLOSEBEAM = 0;
+    BEAMLIGHTCMD_CMDBEAM = 1;
+    BEAMLIGHTCMD_CMDLOWBEAM = 2;
+    BEAMLIGHTCMD_CMDHIGHTBEAM = 3;
+  }
+  // [] [0|3]
+  optional RearDoorStType rear_door_st = 1;
+  // [] [0|3]
+  optional FrontDoorStType front_door_st = 2;
+  // Electronic parking brake status: 0=default, 1=brake released, 2=brake
+  // applied, other: invalid. [-] [0|3]
+  optional int32 epbstatus = 3;
+  // Vehicle speed. [km/h] [0|251]
+  optional double veh_spd = 4;
+  // Wiper control command: 0=off, 1=low speed, 2=high speed, 3=spray. [] [0|3]
+  optional int32 wiper_cmd = 5;
+  // Actual wiper status: 0=off, 1=low speed, 2=high speed, 3=spray. [] [0|3]
+  optional int32 wiper_act = 6;
+  // Fog light status: 0=off, 1=front fog lights on, 2=rear fog lights on,
+  // 3=front and rear fog lights on. [] [0|3]
+  optional int32 fog_light_act = 7;
+  // Fog light control command: 0=off, 1=front fog lights on, 2=rear fog lights
+  // on, 3=front and rear fog lights on. [] [0|3]
+  optional int32 fog_light_cmd = 8;
+  // Horn control command: 0=off, 1=on. [-] [0|1]
+  optional HornCmdType horn_cmd = 9;
+  // Horn status: 0=off, 1=on. [-] [0|1]
+  optional HornStatusType horn_status = 10;
+  // Actual gear position: 2=R gear, 3=N gear, 4=D gear, others reserved. [-]
+  // [0|5]
+  optional GearActType gear_act = 11;
+  // Gear command feedback: 2=R gear, 3=N gear, 4=D gear, others reserved. [-]
+  // [0|5]
+  optional GearCmdType gear_cmd = 12;
+  // Turn signal control command feedback: 0=Do not control turn signal, 1=Left
+  // turn signal flashing, 2=Right turn signal flashing, 3=Reserved. [-] [0|3]
+  optional TurnLightCmdType turn_light_cmd = 13;
+  // Turn signal status: 0=Do not control turn signal, 1=Left turn signal
+  // flashing, 2=Right turn signal flashing, 3=Reserved. [-] [0|3]
+  optional TurnLightActType turn_light_act = 14;
+  // High/low beam light status: 0=Light off, 1=Light on, Other=Reserved. [-]
+  // [0|3]
+  optional BeamLightActType beam_light_act = 15;
+  // High/low beam light control command: 0=Light off, 1=Light on,
+  // Other=Reserved. [-] [0|3]
+  optional BeamLightCmdType beam_light_cmd = 16;
+  // Message counter. [-] [0|15]
+  optional int32 gear_stat_cnt = 17;
+  // Message checksum. [-] [0|255]
+  optional int32 gear_stat_cks = 18;
+}
+
+// Report Message.
+message Abs_Acu_Bus_205 {
+  // Rear right wheel speed. [km/h] [0|251]
+  optional double wheel_spd_rr = 1;
+  // Rear left wheel speed. [km/h] [0|251]
+  optional double wheel_spd_rl = 2;
+  // Front right wheel speed. [km/h] [0|251]
+  optional double wheel_spd_fr = 3;
+  // Front left wheel speed. [km/h] [0|251]
+  optional double wheel_spd_fl = 4;
+}
+
+// Report Message.
+message Msg206_Bus_206 {
+  // Total mileage of the vehicle. [km] [0|6553.5]
+  optional double veh_total_odometer = 1;
+  // DCU current operating mode. [-] [0|15]
+  optional int32 dcu_st_mode = 2;
+  // Key status. [-] [0|3]
+  optional int32 veh_key_st = 3;
+  // DCU system fault level. [-] [0|255]
+  optional int32 dcu_system_level = 4;
+  // DCU system fault code. [-] [0|255]
+  optional int32 dcu_system_err_code = 5;
+  // Allow line control condition. [-] [0|255]
+  optional int32 dcu_auto_control_condition = 6;
+  // Line control conditions not allowed, return to manual. [-] [0|255]
+  optional int32 dcu_manual_control_condition = 7;
+  // DCU software version number. [-] [0|255]
+  optional int32 dcu_software_version = 8;
+}
+
+// Report Message.
+message Msg207_Bus_207 {
+  // [-] [0|255]
+  optional int32 vehicle_vin_no = 1;
+  // [-] [0|255]
+  optional int32 vehicle_vin1 = 2;
+  // [-] [0|255]
+  optional int32 vehicle_vin2 = 3;
+  // [-] [0|255]
+  optional int32 vehicle_vin3 = 4;
+  // [-] [0|255]
+  optional int32 vehicle_vin4 = 5;
+  // [-] [0|255]
+  optional int32 vehicle_vin5 = 6;
+  // [-] [0|255]
+  optional int32 vehicle_vin6 = 7;
+  // [-] [0|255]
+  optional int32 vehicle_vin7 = 8;
+}
+
+message Zev {
+  // Control message.
+  optional Acu_Vcu_Bus_100 acu_vcu_bus_100 = 2;
+  // Control message.
+  optional Acu_Acc_Bus_101 acu_acc_bus_101 = 3;
+  // Control message.
+  optional Acu_Ebs_Bus_102 acu_ebs_bus_102 = 4;
+  // Control message.
+  optional Acu_Eps_Bus_103 acu_eps_bus_103 = 5;
+  // Control message.
+  optional Acu_Bms_Bus_104 acu_bms_bus_104 = 6;
+  // Report message.
+  optional Vcu_Acu_Bus_200 vcu_acu_bus_200 = 7;
+  // Report message.
+  optional Acc_Vcu_Bus_201 acc_vcu_bus_201 = 8;
+  // Report message.
+  optional Ebs_Acu_Bus_202 ebs_acu_bus_202 = 9;
+  // Report message.
+  optional Eps_Acu_Bus_203 eps_acu_bus_203 = 10;
+  // Report message.
+  optional Bms_Acu_Bus_204 bms_acu_bus_204 = 11;
+  // Report message.
+  optional Abs_Acu_Bus_205 abs_acu_bus_205 = 12;
+  // Report message.
+  optional Msg206_Bus_206 msg206_bus_206 = 13;
+  // Report message.
+  optional Msg207_Bus_207 msg207_bus_207 = 14;
+}

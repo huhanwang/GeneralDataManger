@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message ShmSegmentConfigs {
+  optional int64 transport_managed_shared_memory_size = 1;
+  optional DefaultShmSegmentConfig default_shm_segment_config = 2;
+  repeated ShmSegmentConfig shm_segment_config = 3;
+}
+
+message DefaultShmSegmentConfig {
+  optional int64 min_segment_shm_size = 1;
+  repeated LiteModuleName modules_on_segment = 2;
+}
+
+message ShmSegmentConfig {
+  optional int64 segment_shm_size = 1;
+  repeated LiteModuleName modules_on_segment = 2;
+}

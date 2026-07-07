@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah;
+
+enum LedModel {
+  LED_UNKNOWN = 0;
+  LED_CHENGHAO = 1;
+  LED_TONGDA = 2;
+}
+
+message LedCommonProto {}

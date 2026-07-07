@@ -1,0 +1,85 @@
+syntax = "proto2";
+package snoah.qprod;
+
+import "onboard/proto/q_assist_settings.proto";
+
+message AssisedDrivingConfig {
+  message Acc {
+    optional bool enable = 1;
+  }
+  optional Acc acc = 1;
+
+  //  集成式巡航辅助（ICA, LCC）
+  message Lcc {
+    optional bool enable = 1;
+  }
+  optional Lcc lcc = 2;
+
+  // 指令变道辅助 (PLC, ILC, ALC)
+  message Plc {
+    optional bool enable = 1;
+  }
+  optional Plc plc = 3;
+
+  // 智能大灯辅助（HMA)
+  message Hma {
+    optional bool enable = 1;
+  }
+  optional Hma hma = 4;
+
+  // 自动紧急制动（AEB）
+  optional AebSettings aeb = 5;
+
+  // 紧急车道保持 (ELK)
+  message Elk {
+    optional bool enable = 1;
+  }
+  optional Elk elk = 6;
+
+  // 导航式巡航辅助（NCA, NOA）
+  optional NoaSettings noa = 7;
+
+  // 车道偏离预警（LDW）和纠偏（LKA）
+  optional LdwLkaSettings ldw_lka = 8;
+
+  // 前向碰撞预警（FCW）
+  optional FcwSettings fcw = 9;
+
+  // 限速提醒(SLA, TSR)
+  optional SpeedLimitSettings speed_limit_settings = 10;
+
+  // 盲区监测(BSD)
+  optional BsdDowSettings bsd = 11;
+
+  // 车门开启预警(DOW)
+  optional BsdDowSettings dow = 12;
+
+  // 考试
+  message Exam {
+    optional bool lcc = 1;
+    optional bool noa = 2;
+  }
+  optional Exam exam = 13;
+
+  // 交通信号的监测(TLR) --未实现
+  message Tlr {
+    optional bool enable = 1;
+  }
+  optional Tlr tlr = 14;
+
+  // 后碰撞预警(RCW) --未实现
+  message Rcw {
+    optional bool enable = 1;
+  }
+  optional Rcw rcw = 15;
+
+  // 前车起步提醒(FVSA) --未实现
+  message Fvsa {
+    optional bool enable = 1;
+  }
+  optional Fvsa fvsa = 16;
+
+  optional AebSettings l_aeb = 17;  // --未实现
+
+  optional ApaSettings apa = 18;
+}

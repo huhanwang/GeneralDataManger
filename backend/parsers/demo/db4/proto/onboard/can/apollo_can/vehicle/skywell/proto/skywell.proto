@@ -1,0 +1,648 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Acu_eps_1801b0a0 {
+  // Control Message
+  enum Eps_control_mode_cmdType {
+    EPS_CONTROL_MODE_CMD_STOPCONTROL = 0;
+    EPS_CONTROL_MODE_CMD_MANUAL = 16;
+    EPS_CONTROL_MODE_CMD_AUTO = 32;
+  }
+  // [] [0|255]
+  optional int32 xor_check_1801b0a0 = 1;
+  // [deg] [-1080|1080]
+  optional double steering_wheel_angle_cmd = 2;
+  // [deg/s] [0|512]
+  optional double angular_velocity_max = 3;
+  // [] [0|255]
+  optional int32 live_1801b0a0 = 4;
+  // [] [0|255]
+  optional Eps_control_mode_cmdType eps_control_mode_cmd = 5;
+}
+
+message Eps_acu_1802a0b0 {
+  // Report Message
+  enum Eps_fault_levelType {
+    EPS_FAULT_LEVEL_NO_ERROR = 0;
+    EPS_FAULT_LEVEL_ERROR_1 = 1;
+    EPS_FAULT_LEVEL_ERROR_2 = 2;
+    EPS_FAULT_LEVEL_ERROR_3 = 3;
+  }
+  enum Eps_control_stateType {
+    EPS_CONTROL_STATE_STOPCONTROL = 0;
+    EPS_CONTROL_STATE_MANUAL = 16;
+    EPS_CONTROL_STATE_AUTO = 32;
+    EPS_CONTROL_STATE_XOR_ERROR = 85;
+    EPS_CONTROL_STATE_COMMUNICATION_ERROR = 86;
+  }
+  // [] [0|255]
+  optional int32 live_1802a0b0 = 1;
+  // [] [0|3]
+  optional Eps_fault_levelType eps_fault_level = 2;
+  // [] [0|126]
+  optional double eps_controller_temperature = 3;
+  // [deg] [-1080|1080]
+  optional double steering_wheel_angle = 4;
+  // [Nm] [-38.4|38.1]
+  optional double eps_output_torque = 5;
+  // [Nm] [-12.8|12.7]
+  optional double steering_wheel_torque = 6;
+  // [] [0|255]
+  optional Eps_control_stateType eps_control_state = 7;
+}
+
+message Acu_speed_1803b0a0 {
+  // Control Message
+  enum Emergency_braking_cmdType {
+    EMERGENCY_BRAKING_CMD_NO_BRAKE = 0;
+    EMERGENCY_BRAKING_CMD_BRAKE = 1;
+  }
+  enum Gear_cmdType {
+    GEAR_CMD_N = 0;
+    GEAR_CMD_D = 1;
+    GEAR_CMD_R = 2;
+  }
+  enum Epb_cmdType {
+    EPB_CMD_NO_ACTION = 0;
+    EPB_CMD_PULL = 1;
+    EPB_CMD_RELEASE = 2;
+    EPB_CMD_BRAKE_ON_DRIVING = 3;
+  }
+  // [] [0|255]
+  optional int32 xor_check_1803b0a0 = 1;
+  // [m/s2] [-12.8|12.7]
+  optional double acceleration_cmd_2 = 2;
+  // [] [0|1]
+  optional bool acceleration_cmd_switch_flag = 3;
+  // [] [0|1]
+  optional Emergency_braking_cmdType emergency_braking_cmd = 4;
+  // [] [0|255]
+  optional int32 live_1803b0a0 = 5;
+  // [] [0|2]
+  optional Gear_cmdType gear_cmd = 6;
+  // [] [0|3]
+  optional Epb_cmdType epb_cmd = 7;
+  // [] [0|3]
+  optional int32 aeb_collision_level = 8;
+  // [m/s2] [-12.8|12.7]
+  optional double acceleration_cmd_1 = 9;
+}
+
+message Vcu_driving_state_1804a0b0 {
+  // Report Message
+  enum Emergency_barking_stateType {
+    EMERGENCY_BARKING_STATE_NO_BRAKE = 0;
+    EMERGENCY_BARKING_STATE_BRAKE = 1;
+  }
+  enum Gear_stateType {
+    GEAR_STATE_N = 0;
+    GEAR_STATE_D = 1;
+    GEAR_STATE_R = 2;
+  }
+  enum Epb_stateType {
+    EPB_STATE_NO_ACTION = 0;
+    EPB_STATE_PULL = 1;
+    EPB_STATE_RELEASE = 2;
+    EPB_STATE_BRAKE_ON_DRIVING = 3;
+  }
+  // [] [0|255]
+  optional int32 xor_check_1804a0b0 = 1;
+  // [m/s2] [-12.8|12.7]
+  optional double current_acceleration = 2;
+  // [rpm/km/h] [30|285]
+  optional int32 motor_speed_vehicle_speed_ratio = 3;
+  // [Nm] [-5000|5000]
+  optional int32 motor_torque = 4;
+  // [rpm] [-15000|15000]
+  optional int32 motor_speed = 5;
+  // [] [0|1]
+  optional bool ultrasonic_radar_barking_state = 6;
+  // [] [0|1]
+  optional Emergency_barking_stateType emergency_barking_state = 7;
+  // [] [0|2]
+  optional Gear_stateType gear_state = 8;
+  // [] [0|3]
+  optional Epb_stateType epb_state = 9;
+}
+
+message Acu_vcu_1805b0a0 {
+  // Control Message
+  enum Air_conditioning_mode_cmdType {
+    AIR_CONDITIONING_MODE_CMD_NO_ACTION = 0;
+    AIR_CONDITIONING_MODE_CMD_COOL = 1;
+    AIR_CONDITIONING_MODE_CMD_HEAT = 2;
+    AIR_CONDITIONING_MODE_CMD_CLOSE = 3;
+  }
+  enum Autopilot_system_fault_levelType {
+    AUTOPILOT_SYSTEM_FAULT_LEVEL_NO_ERROR = 0;
+    AUTOPILOT_SYSTEM_FAULT_LEVEL_ERROR_1 = 1;
+    AUTOPILOT_SYSTEM_FAULT_LEVEL_ERROR_2 = 2;
+    AUTOPILOT_SYSTEM_FAULT_LEVEL_ERROR_3 = 3;
+  }
+  enum Autopilot_system_reliabilityType {
+    AUTOPILOT_SYSTEM_RELIABILITY_UNRELIABLE = 0;
+    AUTOPILOT_SYSTEM_RELIABILITY_LOW_QUALITY = 1;
+    AUTOPILOT_SYSTEM_RELIABILITY_PERFECT = 2;
+    AUTOPILOT_SYSTEM_RELIABILITY_RESERVED = 3;
+  }
+  enum Autopilot_system_stateType {
+    AUTOPILOT_SYSTEM_STATE_STARTING = 0;
+    AUTOPILOT_SYSTEM_STATE_START_DONE = 1;
+    AUTOPILOT_SYSTEM_STATE_SHUTTING_DOWN = 2;
+    AUTOPILOT_SYSTEM_STATE_SHUT_DOWN_DONE = 3;
+  }
+  enum Ambient_lamps_cmdType {
+    AMBIENT_LAMPS_CMD_NO_ACTION = 0;
+    AMBIENT_LAMPS_CMD_OPEN = 1;
+    AMBIENT_LAMPS_CMD_CLOSE = 2;
+    AMBIENT_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Inner_ceiling_lamps_cmdType {
+    INNER_CEILING_LAMPS_CMD_NO_ACTION = 0;
+    INNER_CEILING_LAMPS_CMD_OPEN = 1;
+    INNER_CEILING_LAMPS_CMD_CLOSE = 2;
+    INNER_CEILING_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Right_front_fog_lamps_cmdType {
+    RIGHT_FRONT_FOG_LAMPS_CMD_NO_ACTION = 0;
+    RIGHT_FRONT_FOG_LAMPS_CMD_OPEN = 1;
+    RIGHT_FRONT_FOG_LAMPS_CMD_CLOSE = 2;
+    RIGHT_FRONT_FOG_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Left_front_fog_lamps_cmdType {
+    LEFT_FRONT_FOG_LAMPS_CMD_NO_ACTION = 0;
+    LEFT_FRONT_FOG_LAMPS_CMD_OPEN = 1;
+    LEFT_FRONT_FOG_LAMPS_CMD_CLOSE = 2;
+    LEFT_FRONT_FOG_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Rear_fog_lamps_cmdType {
+    REAR_FOG_LAMPS_CMD_NO_ACTION = 0;
+    REAR_FOG_LAMPS_CMD_OPEN = 1;
+    REAR_FOG_LAMPS_CMD_CLOSE = 2;
+    REAR_FOG_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Head_lamps_cmdType {
+    HEAD_LAMPS_CMD_NO_ACTION = 0;
+    HEAD_LAMPS_CMD_OPEN_LOW_BEAM = 1;
+    HEAD_LAMPS_CMD_OPEN_HIGHT_BEAM = 2;
+    HEAD_LAMPS_CMD_CLOSE = 3;
+  }
+  enum Position_lamps_cmdType {
+    POSITION_LAMPS_CMD_NO_ACTION = 0;
+    POSITION_LAMPS_CMD_OPEN = 1;
+    POSITION_LAMPS_CMD_CLOSE = 2;
+    POSITION_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Warning_lamps_cmdType {
+    WARNING_LAMPS_CMD_NO_ACTION = 0;
+    WARNING_LAMPS_CMD_OPEN = 1;
+    WARNING_LAMPS_CMD_CLOSE = 2;
+    WARNING_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Right_turn_lamps_cmdType {
+    RIGHT_TURN_LAMPS_CMD_NO_ACTION = 0;
+    RIGHT_TURN_LAMPS_CMD_OPEN = 1;
+    RIGHT_TURN_LAMPS_CMD_CLOSE = 2;
+    RIGHT_TURN_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Left_turn_lamps_cmdType {
+    LEFT_TURN_LAMPS_CMD_NO_ACTION = 0;
+    LEFT_TURN_LAMPS_CMD_OPEN = 1;
+    LEFT_TURN_LAMPS_CMD_CLOSE = 2;
+    LEFT_TURN_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Driving_lamps_cmdType {
+    DRIVING_LAMPS_CMD_NO_ACTION = 0;
+    DRIVING_LAMPS_CMD_OPEN = 1;
+    DRIVING_LAMPS_CMD_CLOSE = 2;
+    DRIVING_LAMPS_CMD_RESERVED = 3;
+  }
+  enum Door_control_cmdType {
+    DOOR_CONTROL_CMD_NO_ACTION = 0;
+    DOOR_CONTROL_CMD_OPEN = 1;
+    DOOR_CONTROL_CMD_CLOSE = 2;
+    DOOR_CONTROL_CMD_RESERVED = 3;
+  }
+  enum Vehicle_control_mode_cmdType {
+    VEHICLE_CONTROL_MODE_CMD_MANUAL = 0;
+    VEHICLE_CONTROL_MODE_CMD_AUTO = 1;
+    VEHICLE_CONTROL_MODE_CMD_REMOTE = 2;
+    VEHICLE_CONTROL_MODE_CMD_RESERVED = 3;
+  }
+  // [] [0|255]
+  optional int32 live_1805b0a0 = 1;
+  // [] [16|30]
+  optional double air_conditioning_set_tem_cmd = 2;
+  // [] [0|3]
+  optional Air_conditioning_mode_cmdType air_conditioning_mode_cmd = 3;
+  // [] [0|3]
+  optional int32 air_conditioning_wind_speed_cmd = 4;
+  // [] [0|3]
+  optional Autopilot_system_fault_levelType autopilot_system_fault_level = 5;
+  // [] [0|3]
+  optional Autopilot_system_reliabilityType autopilot_system_reliability = 6;
+  // [] [0|3]
+  optional Autopilot_system_stateType autopilot_system_state = 7;
+  // [] [0|3]
+  optional Ambient_lamps_cmdType ambient_lamps_cmd = 8;
+  // [] [0|3]
+  optional Inner_ceiling_lamps_cmdType inner_ceiling_lamps_cmd = 9;
+  // [] [0|3]
+  optional Right_front_fog_lamps_cmdType right_front_fog_lamps_cmd = 10;
+  // [] [0|3]
+  optional Left_front_fog_lamps_cmdType left_front_fog_lamps_cmd = 11;
+  // [] [0|3]
+  optional Rear_fog_lamps_cmdType rear_fog_lamps_cmd = 12;
+  // [] [0|3]
+  optional Head_lamps_cmdType head_lamps_cmd = 13;
+  // [] [0|3]
+  optional Position_lamps_cmdType position_lamps_cmd = 14;
+  //  [] [0|3]
+  optional Warning_lamps_cmdType warning_lamps_cmd = 15;
+  // [] [0|3]
+  optional Right_turn_lamps_cmdType right_turn_lamps_cmd = 16;
+  // [] [0|3]
+  optional Left_turn_lamps_cmdType left_turn_lamps_cmd = 17;
+  // [] [0|3]
+  optional Driving_lamps_cmdType driving_lamps_cmd = 18;
+  //  [] [0|3]
+  optional int32 horn_control_cmd = 19;
+  // [] [0|3]
+  optional Door_control_cmdType door_control_cmd = 20;
+  // [] [0|3]
+  optional Vehicle_control_mode_cmdType vehicle_control_mode_cmd = 21;
+}
+
+message Vcu_acu_1806a0b0 {
+  // Report Message
+  enum Vehicle_fault_levelType {
+    VEHICLE_FAULT_LEVEL_NO_ERROR = 0;
+    VEHICLE_FAULT_LEVEL_ERROR_1 = 1;
+    VEHICLE_FAULT_LEVEL_ERROR_2 = 2;
+    VEHICLE_FAULT_LEVEL_ERROR_3 = 3;
+  }
+  enum Autopilot_system_stateType {
+    AUTOPILOT_SYSTEM_STATE_LAUNCH = 0;
+    AUTOPILOT_SYSTEM_STATE_SHUT_DOWN = 1;
+    AUTOPILOT_SYSTEM_STATE_RESERVED = 2;
+  }
+  enum Door_button_stateType {
+    DOOR_BUTTON_STATE_UNPRESSED = 0;
+    DOOR_BUTTON_STATE_PRESSED = 1;
+  }
+  enum Ambient_lamps_stateType {
+    AMBIENT_LAMPS_STATE_CLOSE = 0;
+    AMBIENT_LAMPS_STATE_OPEN = 1;
+  }
+  enum Inner_ceiling_lamps_stateType {
+    INNER_CEILING_LAMPS_STATE_CLOSE = 0;
+    INNER_CEILING_LAMPS_STATE_OPEN = 1;
+  }
+  enum Right_front_fog_lamps_stateType {
+    RIGHT_FRONT_FOG_LAMPS_STATE_CLOSE = 0;
+    RIGHT_FRONT_FOG_LAMPS_STATE_OPEN = 1;
+  }
+  enum Left_front_fog_lamps_stateType {
+    LEFT_FRONT_FOG_LAMPS_STATE_CLOSE = 0;
+    LEFT_FRONT_FOG_LAMPS_STATE_OPEN = 1;
+  }
+  enum Rear_fog_lamps_stateType {
+    REAR_FOG_LAMPS_STATE_CLOSE = 0;
+    REAR_FOG_LAMPS_STATE_OPEN = 1;
+  }
+  enum Head_lamps_stateType {
+    HEAD_LAMPS_STATE_NO_ACTION = 0;
+    HEAD_LAMPS_STATE_OPEN_LOW_BEAM = 1;
+    HEAD_LAMPS_STATE_OPEN_HIGHT_BEAM = 2;
+    HEAD_LAMPS_STATE_CLOSE = 3;
+  }
+  enum Position_lamps_stateType {
+    POSITION_LAMPS_STATE_CLOSE = 0;
+    POSITION_LAMPS_STATE_OPEN = 1;
+  }
+  enum Warning_lamps_stateType {
+    WARNING_LAMPS_STATE_CLOSE = 0;
+    WARNING_LAMPS_STATE_OPEN = 1;
+  }
+  enum Right_turn_lamps_stateType {
+    RIGHT_TURN_LAMPS_STATE_CLOSE = 0;
+    RIGHT_TURN_LAMPS_STATE_OPEN = 1;
+  }
+  enum Left_turn_lamps_stateType {
+    LEFT_TURN_LAMPS_STATE_CLOSE = 0;
+    LEFT_TURN_LAMPS_STATE_OPEN = 1;
+  }
+  enum Driving_lamps_stateType {
+    DRIVING_LAMPS_STATE_CLOSE = 0;
+    DRIVING_LAMPS_STATE_OPEN = 1;
+  }
+  enum Door_stateType {
+    DOOR_STATE_CLOSE = 0;
+    DOOR_STATE_OPEN = 1;
+  }
+  enum Vehicle_control_mode_stateType {
+    VEHICLE_CONTROL_MODE_STATE_MANUAL = 0;
+    VEHICLE_CONTROL_MODE_STATE_AUTO = 1;
+    VEHICLE_CONTROL_MODE_STATE_REMOTE = 2;
+    VEHICLE_CONTROL_MODE_STATE_RESERVED = 3;
+  }
+  // [] [0|255]
+  optional int32 live_1806a0b0 = 1;
+  // [km] [0|120000]
+  optional double total_mileage = 2;
+  //  [] [0|3]
+  optional Vehicle_fault_levelType vehicle_fault_level = 3;
+  // [] [0|1]
+  optional int32 vehicle_charging_connect_state = 4;
+  // [] [0|3]
+  optional int32 vehicle_charging_state = 5;
+  // [] [0|3]
+  optional Autopilot_system_stateType autopilot_system_state = 6;
+  // [%] [0|125]
+  optional double vehicle_soc_state = 7;
+  // [km/h] [-50|200]
+  optional int32 vehicle_speed = 8;
+  // [] [0|1]
+  optional Door_button_stateType door_button_state = 9;
+  // [] [0|1]
+  optional Ambient_lamps_stateType ambient_lamps_state = 10;
+  // [] [0|1]
+  optional Inner_ceiling_lamps_stateType inner_ceiling_lamps_state = 11;
+  // [] [0|1]
+  optional Right_front_fog_lamps_stateType right_front_fog_lamps_state = 12;
+  // [] [0|1]
+  optional Left_front_fog_lamps_stateType left_front_fog_lamps_state = 13;
+  // [] [0|1]
+  optional Rear_fog_lamps_stateType rear_fog_lamps_state = 14;
+  // [] [0|3]
+  optional Head_lamps_stateType head_lamps_state = 15;
+  // [] [0|1]
+  optional Position_lamps_stateType position_lamps_state = 16;
+  // [] [0|1]
+  optional Warning_lamps_stateType warning_lamps_state = 17;
+  //  [] [0|1]
+  optional Right_turn_lamps_stateType right_turn_lamps_state = 18;
+  // [] [0|1]
+  optional Left_turn_lamps_stateType left_turn_lamps_state = 19;
+  // [] [0|1]
+  optional Driving_lamps_stateType driving_lamps_state = 20;
+  // [] [0|1]
+  optional Door_stateType door_state = 21;
+  //  [] [0|3]
+  optional Vehicle_control_mode_stateType vehicle_control_mode_state = 22;
+}
+
+message Bms1_acu_1810a0b0 {
+  // Report Message
+  // [kWh] [0|65535]
+  optional int32 accumulated_output_of_battery = 1;
+  //  [kWh] [0|65535]
+  optional int32 accumulated_charge_of_battery = 2;
+  // [A] [-500|800]
+  optional double power_battery_current = 3;
+  // [V] [0|800]
+  optional double power_battery_voltage = 4;
+}
+
+message Bms2_acu_1811a0b0 {
+  // Report Message
+  // [] [-40|215]
+  optional int32 motor_controller_temperature = 1;
+  // [] [-40|215]
+  optional int32 motor_temperature = 2;
+  // [V] [0|6]
+  optional double cell_voltage_min = 3;
+  // [V] [0|6]
+  optional double cell_voltagel_max = 4;
+  // [] [-40|215]
+  optional int32 battery_temperature_min = 5;
+  // [] [-40|215]
+  optional int32 battery_temperature_max = 6;
+}
+
+message Bcm_acu_1812a0b0 {
+  // Report Message
+  enum Manual_takeover_stateType {
+    MANUAL_TAKEOVER_STATE_NOT_TAKEN_OVER = 0;
+    MANUAL_TAKEOVER_STATE_TAKEN_OVER = 1;
+  }
+  enum Regenerative_barkingType {
+    REGENERATIVE_BARKING_OFF = 0;
+    REGENERATIVE_BARKING_ON = 1;
+  }
+  enum Pamp_assistType {
+    PAMP_ASSIST_OFF = 0;
+    PAMP_ASSIST_ON = 1;
+  }
+  enum Vehicle_power_stateType {
+    VEHICLE_POWER_STATE_INIT = 0;
+    VEHICLE_POWER_STATE_READY = 1;
+    VEHICLE_POWER_STATE_LIMP = 2;
+    VEHICLE_POWER_STATE_FAULT = 3;
+  }
+  enum Air_conditioning_mode_stateType {
+    AIR_CONDITIONING_MODE_STATE_NO_ACTION = 0;
+    AIR_CONDITIONING_MODE_STATE_COOL = 1;
+    AIR_CONDITIONING_MODE_STATE_HEAT = 2;
+    AIR_CONDITIONING_MODE_STATE_CLOSE = 3;
+  }
+  // [kW] [-325|325]
+  optional double battery_power = 1;
+  // [] [16|30]
+  optional double air_conditioning_tem_set_state = 2;
+  // [] [0|1]
+  optional bool allow_remote_takeover_state = 3;
+  // [] [0|3]
+  optional int32 air_conditioning_windspeed_state = 4;
+  // [] [0|1]
+  optional Manual_takeover_stateType manual_takeover_state = 5;
+  // [km] [0|1000]
+  optional int32 remaining_mileage = 6;
+  // [] [0|1]
+  optional Regenerative_barkingType regenerative_barking = 7;
+  // [] [0|1]
+  optional Pamp_assistType pamp_assist = 8;
+  // [] [0|3]
+  optional Vehicle_power_stateType vehicle_power_state = 9;
+  // [] [0|3]
+  optional Air_conditioning_mode_stateType air_conditioning_mode_state = 10;
+  // [] [-30|95]
+  optional double inside_temperature = 11;
+  // [] [-30|95]
+  optional double outside_temperature = 12;
+}
+
+message Vcu_fault_1813a0b0 {
+  // Report Message
+  enum Failed_to_enter_autopilot_systemType {
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_NO_ERROR = 0;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_VEHICLE_ERROR = 1;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_ACU_ERROR_LEVEL_3 = 2;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_ACU_RELIABILITY_ERROR = 3;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_ACU_STARTING_ERROR = 4;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_ACU_EPS_XOR_ERROR = 5;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_ACU_SPEED_XOR_ERROR = 6;
+    FAILED_TO_ENTER_AUTOPILOT_SYSTEM_CAN_SEND_TIMEOUT = 7;
+  }
+  enum Mcu_fault_stateType {
+    MCU_FAULT_STATE_NO_ERROR = 0;
+    MCU_FAULT_STATE_ERROR_1 = 1;
+    MCU_FAULT_STATE_ERROR_2 = 2;
+    MCU_FAULT_STATE_ERROR_3 = 3;
+  }
+  enum Bms_fault_stateType {
+    BMS_FAULT_STATE_NO_ERROR = 0;
+    BMS_FAULT_STATE_ERROR_1 = 1;
+    BMS_FAULT_STATE_ERROR_2 = 2;
+    BMS_FAULT_STATE_ERROR_3 = 3;
+  }
+  enum Low_tire_pressure_fault_stateType {
+    LOW_TIRE_PRESSURE_FAULT_STATE_NO_ERROR = 0;
+    LOW_TIRE_PRESSURE_FAULT_STATE_ERROR = 1;
+  }
+  enum No_key_detected_fault_stateType {
+    NO_KEY_DETECTED_FAULT_STATE_NO_ERROR = 0;
+    NO_KEY_DETECTED_FAULT_STATE_ERROR = 1;
+  }
+  enum Wirebrake_system_fault_stateType {
+    WIREBRAKE_SYSTEM_FAULT_STATE_NO_ERROR = 0;
+    WIREBRAKE_SYSTEM_FAULT_STATE_ERROR = 1;
+  }
+  enum Epb_fault_stateType {
+    EPB_FAULT_STATE_NO_ERROR = 0;
+    EPB_FAULT_STATE_ERROR = 1;
+  }
+  enum Auxiliary_battery_fault_stateType {
+    AUXILIARY_BATTERY_FAULT_STATE_NO_ERROR = 0;
+    AUXILIARY_BATTERY_FAULT_STATE_ERROR = 1;
+  }
+  enum Air_conditioning_fault_stateType {
+    AIR_CONDITIONING_FAULT_STATE_NO_ERROR = 0;
+    AIR_CONDITIONING_FAULT_STATE_ERROR = 1;
+  }
+  enum Eps_fault_stateType {
+    EPS_FAULT_STATE_NO_ERROR = 0;
+    EPS_FAULT_STATE_ERROR = 1;
+  }
+  enum Mcu_communication_fault_stateType {
+    MCU_COMMUNICATION_FAULT_STATE_NO_ERROR = 0;
+    MCU_COMMUNICATION_FAULT_STATE_ERROR = 1;
+  }
+  enum Bms_communication_fault_stateType {
+    BMS_COMMUNICATION_FAULT_STATE_NO_ERROR = 0;
+    BMS_COMMUNICATION_FAULT_STATE_ERROR = 1;
+  }
+  enum Motor_fault_stateType {
+    MOTOR_FAULT_STATE_NO_ERROR = 0;
+    MOTOR_FAULT_STATE_ERROR = 1;
+  }
+  enum Power_battery_fault_stateType {
+    POWER_BATTERY_FAULT_STATE_NO_ERROR = 0;
+    POWER_BATTERY_FAULT_STATE_ERROR = 1;
+  }
+  enum Motor_overheating_fault_stateType {
+    MOTOR_OVERHEATING_FAULT_STATE_NO_ERROR = 0;
+    MOTOR_OVERHEATING_FAULT_STATE_ERROR = 1;
+  }
+  enum Battery_overheating_fault_stateType {
+    BATTERY_OVERHEATING_FAULT_STATE_NO_ERROR = 0;
+    BATTERY_OVERHEATING_FAULT_STATE_ERROR = 1;
+  }
+  enum Vehicle_system_fault_stateType {
+    VEHICLE_SYSTEM_FAULT_STATE_NO_ERROR = 0;
+    VEHICLE_SYSTEM_FAULT_STATE_ERROR = 1;
+  }
+  enum Vacuumpump_airpump_fault_stateType {
+    VACUUMPUMP_AIRPUMP_FAULT_STATE_NO_ERROR = 0;
+    VACUUMPUMP_AIRPUMP_FAULT_STATE_ERROR = 1;
+  }
+  enum Brake_pressure_fault_stateType {
+    BRAKE_PRESSURE_FAULT_STATE_NO_ERROR = 0;
+    BRAKE_PRESSURE_FAULT_STATE_ERROR = 1;
+  }
+  enum Lowvoltage_cell_fault_stateType {
+    LOWVOLTAGE_CELL_FAULT_STATE_NO_ERROR = 0;
+    LOWVOLTAGE_CELL_FAULT_STATE_ERROR = 1;
+  }
+  enum Low_soc_fault_stateType {
+    LOW_SOC_FAULT_STATE_NO_ERROR = 0;
+    LOW_SOC_FAULT_STATE_ERROR = 1;
+  }
+  enum Dc_fault_stateType {
+    DC_FAULT_STATE_NO_ERROR = 0;
+    DC_FAULT_STATE_ERROR = 1;
+  }
+  enum Vehicle_insulation_fault_stateType {
+    VEHICLE_INSULATION_FAULT_STATE_NO_ERROR = 0;
+    VEHICLE_INSULATION_FAULT_STATE_ERROR_1 = 1;
+    VEHICLE_INSULATION_FAULT_STATE_ERROR_2 = 2;
+    VEHICLE_INSULATION_FAULT_STATE_ERROR_3 = 3;
+  }
+  // [] [0|15]
+  optional int32 failed_to_enter_remote_syetem = 1;
+  // [] [0|15]
+  optional Failed_to_enter_autopilot_systemType
+      failed_to_enter_autopilot_system = 2;
+  // [] [0|3]
+  optional Mcu_fault_stateType mcu_fault_state = 3;
+  // [] [0|3]
+  optional Bms_fault_stateType bms_fault_state = 4;
+  // [] [0|1]
+  optional Low_tire_pressure_fault_stateType low_tire_pressure_fault_state = 5;
+  //  [] [0|1]
+  optional No_key_detected_fault_stateType no_key_detected_fault_state = 6;
+  // [] [0|1]
+  optional Wirebrake_system_fault_stateType wirebrake_system_fault_state = 7;
+  // [] [0|1]
+  optional Epb_fault_stateType epb_fault_state = 8;
+  // [] [0|1]
+  optional Auxiliary_battery_fault_stateType auxiliary_battery_fault_state = 9;
+  // [] [0|1]
+  optional Air_conditioning_fault_stateType air_conditioning_fault_state = 10;
+  // [] [0|1]
+  optional Eps_fault_stateType eps_fault_state = 11;
+  // [] [0|1]
+  optional Mcu_communication_fault_stateType mcu_communication_fault_state = 12;
+  // [] [0|1]
+  optional Bms_communication_fault_stateType bms_communication_fault_state = 13;
+  // [] [0|1]
+  optional Motor_fault_stateType motor_fault_state = 14;
+  // [] [0|1]
+  optional Power_battery_fault_stateType power_battery_fault_state = 15;
+  // [] [0|1]
+  optional Motor_overheating_fault_stateType motor_overheating_fault_state = 16;
+  // [] [0|1]
+  optional Battery_overheating_fault_stateType battery_overheating_fault_state =
+      17;
+  // [] [0|1]
+  optional Vehicle_system_fault_stateType vehicle_system_fault_state = 18;
+  // [] [0|1]
+  optional Vacuumpump_airpump_fault_stateType vacuumpump_airpump_fault_state =
+      19;
+  // [] [0|1]
+  optional Brake_pressure_fault_stateType brake_pressure_fault_state = 20;
+  // [] [0|1]
+  optional Lowvoltage_cell_fault_stateType lowvoltage_cell_fault_state = 21;
+  //  [] [0|1]
+  optional Low_soc_fault_stateType low_soc_fault_state = 22;
+  // [] [0|1]
+  optional Dc_fault_stateType dc_fault_state = 23;
+  // [] [0|3]
+  optional Vehicle_insulation_fault_stateType vehicle_insulation_fault_state =
+      24;
+}
+
+message Skywell {
+  optional Acu_eps_1801b0a0 acu_eps_1801b0a0 = 1;      // control message
+  optional Eps_acu_1802a0b0 eps_acu_1802a0b0 = 2;      // report message
+  optional Acu_speed_1803b0a0 acu_speed_1803b0a0 = 3;  // control message
+  optional Vcu_driving_state_1804a0b0 vcu_driving_state_1804a0b0 =
+      4;                                                // report message
+  optional Acu_vcu_1805b0a0 acu_vcu_1805b0a0 = 5;       // control message
+  optional Vcu_acu_1806a0b0 vcu_acu_1806a0b0 = 6;       // report message
+  optional Bms1_acu_1810a0b0 bms1_acu_1810a0b0 = 7;     // report message
+  optional Bms2_acu_1811a0b0 bms2_acu_1811a0b0 = 8;     // report message
+  optional Bcm_acu_1812a0b0 bcm_acu_1812a0b0 = 9;       // report message
+  optional Vcu_fault_1813a0b0 vcu_fault_1813a0b0 = 10;  // report message
+}

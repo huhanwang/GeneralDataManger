@@ -1,0 +1,60 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/proto_field_option.proto";
+
+message VehicleSignal {
+  enum TurnSignal {
+    TURN_NONE = 0;
+    TURN_LEFT = 1;
+    TURN_RIGHT = 2;
+  };
+  enum SeatbeltStat {
+    SEAT_FASTEN = 0;
+    SEAT_UNFASTEN = 1;
+    UNSEAT_FASTEN = 2;
+    UNSEAT_UNFASTEN = 3;
+  };
+  optional TurnSignal turn_signal = 1
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool is_valid_turn_signal = 12;
+
+  // lights enable command
+  optional bool high_beam = 2 [(trans_matrix) = true];
+  optional bool low_beam = 3 [(trans_matrix) = true];
+  optional bool horn = 4 [(trans_matrix) = true];
+  optional bool emergency_light = 5 [(trans_matrix) = true];
+  optional bool small_light = 6;
+  optional bool front_fog = 7;
+  optional bool rear_fog = 8;
+  optional bool brake_light = 9;
+  optional bool auto_lamp = 10;
+  optional bool pass_light = 11;
+
+  optional SeatbeltStat seat_ad_belt1 = 13
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt2 = 14
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt3 = 15
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt4 = 16
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt5 = 17
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt6 = 18
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt7 = 19
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt8 = 20
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt9 = 21
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt10 = 22
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatbeltStat seat_ad_belt11 = 23
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // next id: 24
+}

@@ -1,0 +1,85 @@
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/parking_spot_finder/proto/parking_spot_finder_state";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/assist_driving_system_state.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/parking_spot_finder.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message EgoParkingSpotInfo {
+  repeated Vec2dProto spot_points = 1;
+  optional bool is_ego_in_parking_spot = 2;
+  optional string ego_spot_id = 3;
+};
+
+message FindParkingSpotHistory {
+  optional bool horizontal_distance_satisfied = 1 [default = false];
+  optional bool spot_size_satisfied = 2 [default = false];
+  optional bool spot_yaw_satisfied = 3 [default = false];
+  optional bool first_spot_point_reached = 4 [default = false];
+  optional bool second_spot_point_reached = 5 [default = false];
+  optional bool detect_distance_satisfied = 6 [default = false];
+  optional bool narrow_road_satisfied = 7 [default = false];
+  optional bool is_dead_end_spot = 8 [default = false];
+  optional bool space_size_satisfied = 9 [default = false];
+  optional double second_spot_point_vertical_distance = 10;
+  optional double first_spot_point_vertical_distance = 11;
+  optional bool is_spot_not_obscured = 12 [default = false];
+  // Narrow road by road info.
+  optional double inner_space_width = 13 [default = 0.0];
+  optional double spot_space_width = 14 [default = 0.0];
+  optional bool narrow_road_satisfied_by_road_info = 15 [default = false];
+  optional uint32 narrow_road_satisfied_type = 16 [default = 0];
+  optional bool is_spot_released = 17 [default = false];
+};
+
+message CustomSpotAdjustTargetInfo {
+  enum Type {
+    NONE = 0;
+    BY_SPOT = 1;
+    BY_CURB_WALL = 2;
+    BY_VEHICLE = 3;
+  }
+  optional Type adjust_type = 1;
+  oneof adjust_id {
+    string spot_id = 2;
+    uint32 curb_wall_id = 3;
+    string vehicle_id = 4;
+  }
+  optional Type last_adjust_type = 5;
+}
+
+message ParkingSpotFinderStateProto {
+  optional LiteHeader header = 1;
+  optional ParkingSpotFinderInfo last_target_parking_spot = 2;
+  optional EgoParkingSpotInfo ego_parking_spot_info = 3;
+  optional string last_recommended_parking_spot = 4;
+  map<uint32, FindParkingSpotHistory> find_parking_spots_history = 5;
+  optional AssistApaStateProto last_apa_state = 6;
+  optional SpotFinderStateType state = 7;
+  optional Chassis.GearPosition last_gear_location = 8;
+  optional bool is_target_spot_on_left_when_standby = 9;
+  optional string last_target_parking_spot_id = 10;
+  optional uint32 shift_times = 11;
+  optional uint32 last_recommended_parking_spot_count = 12;
+  optional bool is_parking_out_file_available = 13;
+  optional uint32 all_message_ready_count = 14;
+  optional bool need_adjust_custom_spot = 15;
+  optional bool custom_spot_has_ever_been_adjusted = 16 [default = false];
+  optional ParkingSpotFinderInfo last_custom_spot = 17;
+  optional CustomSpotAdjustTargetInfo last_adjusted_target_info = 18;
+  optional uint32 apa_not_passive_count = 19 [default = 0];
+  repeated ParkingOutDirection prev_available_parking_out_directions = 20;
+  optional bool need_use_ha_relese = 21;
+  optional bool last_ha_success = 22;
+}
+
+message ParkingOutInfoProto {
+  optional ParkingSpotFinderInfo.ParkingSpotType spot_type = 1;
+  optional bool is_target_spot_on_left_when_standby = 2;
+  optional bool is_wheel_stopper_available = 3;
+}

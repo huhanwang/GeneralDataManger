@@ -1,0 +1,219 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/shm_message.proto";
+
+// UDP data package receive from lidar.
+// This is deprecated now.
+message PandarPacketProto {
+  optional LiteHeader header = 1;
+  // data package.
+  optional bytes data = 2;
+  // actual data size, should <= data.size().
+  optional uint32 size = 3;
+}
+
+// Deprecated.
+message LidarHostTimeDiffProto {
+  optional LiteHeader header = 1;
+  optional double time_diff = 2;
+}
+
+// NEXT ID: 20
+enum LidarType {
+  LDT_UNKNOWN = 0;
+  LDT_PANDAR_40P = 1;
+  LDT_PANDAR_64 = 2;
+  LDT_PANDAR_40M = 3;
+  LDT_PANDAR_QT = 4;
+  LDT_OS0_128 = 5;
+  LDT_OS0_64 = 6;
+  LDT_RS_RUBY_LITE = 7;
+  LDT_RS_RUBY = 11;
+  LDT_RS_BPEARL = 10;
+  LDT_RS_M1 = 8;
+  LDT_LIVOX_HORIZON = 9;
+  LDT_PANDAR_AT128 = 12;
+  LDT_PANDAR_QT128 = 13;
+  LDT_ZVISION_EXCITON = 14;
+  LDT_RAYZ_W100 = 15;
+  LDT_PANDAR_ATL = 16;
+  LDT_RAYZ_H260 = 17;
+  LDT_PANDAR_FT120 = 18;
+  LDT_PANDAR_ATL100 = 19 [deprecated = true];  // not used
+  LDT_PANDAR_128 = 20;
+}
+
+enum LidarId {
+  LDR_UNKNOWN = 0;
+  LDR_CENTER = 1;
+  LDR_FRONT_BLIND = 2;
+  LDR_LEFT_BLIND = 3;
+  LDR_RIGHT_BLIND = 4;
+  LDR_REAR_BLIND = 5;
+  LDR_FRONT_LEFT = 6;
+  LDR_FRONT_RIGHT = 7;
+  LDR_FRONT_LEFT_BLIND = 8;
+  LDR_FRONT_RIGHT_BLIND = 9;
+  LDR_FRONT = 10;
+  LDR_REAR = 11;
+  LDR_REAR_LEFT = 12;
+  LDR_REAR_RIGHT = 13;
+}
+
+enum LidarDataType {
+  LDD_SPIN = 0;
+  LDD_POINT_CLOUD = 1;
+}
+
+enum LidarEncodingType {
+  LDE_NONE = 0;
+  LDE_SNAPPY = 1;
+  LDE_MAYBE_ZSTD = 2;  // likely zstd, if not, then fallback to snappy instead
+}
+
+enum LidarCompatVersion {
+  LDC_V1 = 0;  // For old PointCloud data.
+  LDC_V2 = 1;  // For compressed PointCloud data.
+
+  LDC_RAW = 10;  // For raw PointCloud point data.
+
+  LDC_SPIN_ORIGIN = 21;        // For origin Spin RawReturn data.
+  LDC_SPIN_EXTENSION = 22;     // For extended Spin RawReturn data.
+  LDC_SPIN_EXTENSION_V2 = 23;  // Update extended Spin data with tail point.
+}
+
+message SpinMetadata {
+  extend ShmMessageMetadata {
+    optional SpinMetadata spin_meta = 10003;
+  }
+  optional bool is_partial = 1 [default = false];
+  optional int32 num_scans = 2;   // Only valid for SPIN data.
+  optional int32 num_points = 5;  // Only valid for POINT_CLOUD data.
+  optional LidarType type = 3 [default = LDT_PANDAR_64];
+  optional LidarId id = 4 [default = LDR_CENTER];
+  optional LidarDataType data_type = 6;
+  optional LidarCompatVersion compat_version = 7;
+}
+
+message EncodedLidarFrameMetaData {
+  extend ShmMessageMetadata {
+    optional EncodedLidarFrameMetaData encoded_lidar_frame_meta = 10004;
+  }
+  optional bool is_partial = 1 [default = false];
+  optional int32 num_scans = 2;   // Only valid for SPIN data.
+  optional int32 num_points = 5;  // Only valid for POINT_CLOUD data.
+  optional LidarType type = 3 [default = LDT_PANDAR_64];
+  optional LidarId id = 4 [default = LDR_CENTER];
+  optional LidarDataType data_type = 6;
+  optional LidarEncodingType encoding_type = 7;
+  optional LidarCompatVersion compat_version = 8;
+}
+
+// Will ignore scans with azimuth in degree in the following ranges.
+message ScanAzimuthInterval {
+  optional float first = 1;
+  optional float last = 2;
+  optional int32 first_beam = 3;
+  optional int32 last_beam = 4;
+}
+
+message HesaiLidarParamsProto {
+  optional int32 laser_port = 1 [deprecated = true];
+  optional int32 gps_port = 2 [deprecated = true];
+  optional bool intensity_nonlinear_mapping = 3 [default = false];
+  reserved 4;
+}
+
+message OusterLidarParamsProto {
+  optional string ip_address = 1;
+  optional int32 laser_port = 2 [deprecated = true];
+  optional int32 imu_port = 3 [deprecated = true];
+  reserved 4;
+}
+
+message LivoxLidarParamsProto {
+  optional int32 slot_id = 1;
+  optional int32 lidar_id = 2 [default = 1];
+}
+
+message RsLidarParamsProto {
+  // Device Info Output Protocol
+  optional int32 difop_port = 1;
+  optional string ip_address = 2;
+  optional bool enable_roi = 3 [default = false];
+}
+
+enum LidarInernalError {
+  LIE_NO = 0;
+  LIE_LOW_SQI = 1;
+  LIE_HIGH_INPUT_VOLTAGE = 2;
+  LIE_LOW_INPUT_VOLTAGE = 3;
+  LIE_HIGH_SAFETY_RELATED_VALTAGE = 4;
+  LIE_LOW_SAFETY_RELATED_VALTAGE = 5;
+  LIE_SLOW_CLOCK_FREQUENCY = 6;
+  LIE_FAST_CLOCK_FREQUENCY = 7;
+  LIE_PROGRAM_STREAM_ABNORMAL = 8;
+  LIE_PROCESSOR_ABNORMAL = 9;
+  LIE_CRC_ERROR = 10;
+  LIE_ECC_MULTI_BITS_ERROR = 11;
+  LIE_ECC_SINGLE_BIT_ERROR = 12;
+  LIE_INTERRUPT_SCHEDULE_ERROR = 13;
+  LIE_EMITTER_BLIND_CHANNEL_ERROR = 14;
+  LIE_HIGH_ENITTER_CHANNEL_POWER = 15;
+  LIE_EMITTER_CHIP_ERROR = 16;
+  LIE_DETECTOR_BLIND_CHANNEL_ERROR = 17;
+  LIE_DETECTOR_CHIP_ERROR = 18;
+  LIE_HIGH_MOTOR_SPEED = 19;
+  LIE_LOW_MOTOR_SPEED = 20;
+  LIE_WRONG_MOTOR_MOVEMENT_DIRECTION = 21;
+  LIE_ENCODER_ERROR = 22;
+  LIE_ENCODER_DIRTY = 23;
+  LIE_ADC_ERROR = 24;
+  LIE_LOW_CONNECTION_IO_SIGNAL = 25;
+  LIE_PTP_ERROR = 26;
+  LIE_HIGH_MONITOR_TEMPERATURE = 27;
+  LIE_SELF_SECURITY_MECHANISM_FAIL = 28;
+  LIE_PERIPHERAL_SECURITY_MECHANISM_FAIL = 29;
+  LIE_MASK_DIRTY_OR_OBSCURED = 30;
+  LIE_START_FAIL = 31;
+  LIE_SAFETY_RELATED_TEMPERATURE_NOT_TRUSTED = 32;
+  LIE_NON_SAFETY_RELATED_TEMPERATURE_NOT_TRUSTED = 33;
+  LIE_WINDOW_HEATING_ERROR = 34;
+}
+
+message LidarVersionInfo {
+  optional uint32 software_id = 1;
+  optional uint32 software_version = 2;
+  optional uint32 hardware_version = 3;
+  optional uint32 bt_version = 4;
+}
+
+message LidarFaultMessageProto {
+  optional LiteHeader header = 1;
+  optional LidarVersionInfo lidar_version = 2;
+
+  enum LidarOperationState {
+    LOS_NORMAL = 0;
+    LOS_STANDBY = 1;
+    LOS_FAULT_SHUTDOWN = 2;
+    LOS_OVERHEAT_SHUTDOWN = 3;
+    LOS_SLEEP = 4;
+  }
+  optional LidarOperationState lidar_operation_state = 3;
+
+  enum LidarFaultState {
+    LFS_NORMAL = 0;
+    LFS_WARNING = 1;
+    LFS_PrePerformance_Degradation = 2;
+    LFS_Performance_Degradation = 3;
+    LFS_PreShutdown = 4;
+    LFS_Shutdown = 5;
+    LFS_PreReset = 6;
+    LFS_Reset = 7;
+  }
+  optional LidarFaultState lidar_fault_state = 4;
+}

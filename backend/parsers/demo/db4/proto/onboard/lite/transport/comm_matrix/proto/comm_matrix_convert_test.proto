@@ -1,0 +1,45 @@
+syntax = "proto2";
+package snoah;
+import "onboard/lite/proto/proto_field_option.proto";
+
+message SubMessage1 {
+  repeated int32 int_values = 1
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional float float_value = 2 [(trans_matrix) = true];
+  oneof test_message {
+    int32 value_1 = 3;
+    double value_2 = 4 [(trans_matrix) = true];
+  }
+}
+
+message SubMessage2 {
+  optional int32 int_value = 1 [(trans_matrix) = true];
+  optional float float_value = 2 [(trans_matrix) = true];
+}
+
+message ConvertTestProto {
+  optional uint32 uint_value = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT16];
+  optional float float_value = 2;
+  optional double double_value = 3 [(trans_matrix) = true];
+  optional string string_value = 4 [(trans_matrix) = true];
+  optional SubMessage1 sub1 = 8 [(trans_matrix) = true];
+  repeated SubMessage2 sub2 = 6
+      [(trans_matrix) = true, (matrix_skip_header) = true];
+  optional string string_value_2 = 7;
+  optional bool bool_type = 9 [(trans_matrix) = true];
+  enum EnumType {
+    TYPE1 = 1;
+    TYPE2 = 2;
+    TYPE3 = 3;
+  }
+  optional EnumType enum_type = 111 [(trans_matrix) = true];
+}
+
+message ConvertMathProto {
+  optional double d_value = 1 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT32,
+    (matrix_math_operator) = "DEV_100"
+  ];
+}

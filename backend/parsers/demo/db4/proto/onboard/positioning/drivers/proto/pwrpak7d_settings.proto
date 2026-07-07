@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package snoah;
+
+// Please refer to Novatel's PP7 manual for more details.
+message Pwrpak7dSettingsProto {
+  repeated bytes setup_commands = 1;
+};

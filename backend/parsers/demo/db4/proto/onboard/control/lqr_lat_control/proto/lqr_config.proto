@@ -1,0 +1,48 @@
+
+syntax = "proto2";
+
+package snoah.control;
+
+message LQRConfig {
+  // #group:LqrLatController, size: 40
+  optional double feedforward_preview_time = 1;
+  optional double feedback_preview_time = 2;
+  repeated double speed = 3;
+  repeated double curvature_dead_zone = 4;
+  repeated double target_angle_dead_zone = 5;
+  repeated double steer_angle_rate_max = 6;
+  repeated double steer_angle_rate_min = 7;
+  repeated double speed_matrix_q_0_0 = 8;
+  repeated double speed_matrix_q_1_1 = 9;
+  repeated double speed_matrix_q_2_2 = 10;
+  repeated double speed_matrix_q_3_3 = 11;
+  repeated double speed_middle_q_0_0 = 12;
+  repeated double speed_middle_q_2_2 = 13;
+  repeated double speed_fast_q_0_0 = 14;
+  repeated double speed_fast_q_2_2 = 15;
+  repeated double speed_matrix_r = 16;
+  repeated double curvature_rate_limit = 17;
+  repeated double radius = 18;
+  repeated double radius_matrix_q_0_0 = 19;
+  repeated double radius_matrix_q_1_1 = 20;
+  repeated double radius_matrix_q_2_2 = 21;
+  repeated double radius_matrix_q_3_3 = 22;
+  repeated double radius_matrix_r = 23;
+  repeated double lateral_error_rate_limit = 24;
+  repeated double heading_error_rate_limit = 25;
+  repeated double steer_angle_compensate_ff = 26;
+  repeated double curvature_window_size = 27;
+  repeated double lateral_error = 28;
+  repeated double lateral_error_weight = 29;
+  optional double tolerance = 30;
+  optional double max_iteration = 31;
+  optional double lateral_error_dead_zone = 32;
+  optional double heading_error_dead_zone = 33;
+  optional double target_steer_angle_window_size = 34;
+  optional double compensation_max_steer = 35;
+  optional double vel_gain = 36;
+  optional double curvature_gain = 37;
+  optional double cte_gain = 38;
+  optional double parameter_filter_gain = 39;
+  optional bool eps_compensate_switch = 40;
+}

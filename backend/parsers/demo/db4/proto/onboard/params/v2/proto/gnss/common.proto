@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package snoah;
+
+enum GnssImuModel {
+  GNSS_NERTON_M2 = 0;
+  GNSS_BYNAV_X2C = 1;
+  GNSS_UBLOX_XSENSE = 2;
+  GNSS_UBLOX_ASM330 = 3;
+  GNSS_CHC_CGI230 = 4;
+  GNSS_LG69T_ASENSING5115 = 5;
+  GNSS_M2217F5A_WIBEDA3606 = 6;
+}
+
+message GnssImuCommonProto {}

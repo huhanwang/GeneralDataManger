@@ -1,0 +1,36 @@
+
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+enum CityLaneArrowAndMarkingType {
+  CityLaneArrowAndMarking_TYPE_NONE = 0x0;
+  CityLaneArrowAndMarking_TYPE_STRAIGHT_ARROW = 0x1;
+  CityLaneArrowAndMarking_TYPE_LEFT_TURN_ARROW = 0x2;
+  CityLaneArrowAndMarking_TYPE_RIGHT_TURN_ARROW = 0x3;
+  CityLaneArrowAndMarking_TYPE_TURN_AROUND_ARROW = 0x4;
+  CityLaneArrowAndMarking_TYPE_STRAIGHT_AND_LEFT_ARROW = 0x5;
+  CityLaneArrowAndMarking_TYPE_STRAIGHT_AND_RIGHT_ARROW = 0x6;
+  CityLaneArrowAndMarking_TYPE_STRAIGHT_AND_TURN_AROUND_ARROW = 0x7;
+  CityLaneArrowAndMarking_TYPE_LEFT_AND_TURN_AROUND_ARROW = 0x8;
+  CityLaneArrowAndMarking_TYPE_LEFT_AND_RIGHT_TURN_ARROW = 0x9;
+  CityLaneArrowAndMarking_TYPE_RHOMBUS_SHAPED_SPEED_REDUCTION_MARKING =
+      0xA;  // 无法发送
+  CityLaneArrowAndMarking_TYPE_RESERVE = 0xB;
+  CityLaneArrowAndMarking_TYPE_BUS_LANE_MARKING_ON_ROAD = 0xC;
+  CityLaneArrowAndMarking_TYPE_BIKE_LANE_MARKING_ON_ROAD = 0xD;
+}
+
+message CityLaneArrowAndMarking {
+  optional string id = 1;
+
+  optional CityLaneArrowAndMarkingType type = 2;
+
+  optional Point2D position = 3;
+
+  optional float heading_angle = 4;
+
+  optional float conf_level = 5 [default = 1.0];  // confidence level
+}

@@ -1,0 +1,33 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/active_safety/proto/active_safety_fusion_module_config";
+
+message ActiveSafetyFusionModuleConfig {
+  optional bool enable_func_1 = 1;
+  optional bool enable_func_2 = 2;
+  // ChannelsSubscriber
+  message ChannelsSubscriber {
+    optional bool sub_channel_1 = 1;
+    optional bool sub_channel_2 = 2;
+  }
+  optional ChannelsSubscriber channels_subscriber = 3;
+  // Params
+  message SomeUnitParams {
+    optional double param_1 = 1;
+    optional double param_2 = 2;
+  }
+  optional SomeUnitParams some_unit_params = 4;
+}

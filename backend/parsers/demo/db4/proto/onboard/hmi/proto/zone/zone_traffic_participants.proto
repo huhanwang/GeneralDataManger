@@ -1,0 +1,124 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+
+import "onboard/hmi/proto/zone/common.proto";
+
+message ZoneTrafficParticipant {
+  enum ZoneTrafficParticipantsType {
+    TYPE_UNKNOWN = 0x0;
+    TYPE_SEDAN_CAR = 0x1;
+    TYPE_SUV = 0x2;
+    TYPE_BUS = 0x3;
+    TYPE_BIG_TRUCK = 0x4;
+    TYPE_LORRY = 0x5;
+    TYPE_MINIVAN = 0x6;
+    TYPE_SPECIAL_VEHICLE = 0x7;
+    TYPE_TINY_CAR = 0x8;
+    TYPE_EMERGENCY_VEHICLE = 0x9;
+    TYPE_VEHICLE_OTHERS = 0xA;
+    TYPE_POWER_TWO_WHEELER = 0xB;
+    TYPE_MOTORCYCLE = 0xC;
+    TYPE_BICYCLE = 0xD;
+    TYPE_PEDESTRIAN = 0xE;
+    TYPE_GENERAL_OBJECT = 0xF;
+    TYPE_ANIMAL = 0x10;
+    TYPE_TRICYCLE = 0x11;
+    TYPE_PICKUP = 0x12;
+    TYPE_CHILDREN = 0x13;  // reserved
+  }
+
+  enum MotionProperty {
+    PROPERTY_UNKNOWN = 0x0;
+    PROPERTY_STATIONARY = 0x1;
+    PROPERTY_MOVING = 0x2;
+    PROPERTY_STOPPED = 0x3;
+    PROPERTY_MOVINGSLOWLY = 0x4;
+  }
+
+  enum ZONETrafficParticipantsColor {
+    COLOR_RISK_NONE = 0x0;
+    COLOR_RISK_DISTANCE_LEVEL1 = 0x1;  // red
+    COLOR_RISK_DISTANCE_LEVEL2 = 0x2;  // yellow
+    COLOR_RISK_DISTANCE_LEVEL3 = 0x3;  // normal
+  }
+
+  // enum CityTrafficParticipantsBrake {
+  //   BRAKE_LIGHT_OFF = 0x0;
+  //   BRAKE_LIGHT_ON = 0x1;
+  // }
+
+  enum ZoneTrafficParticipantsLight {
+    TURN_LIGHT_OFF = 0x0;
+    TURN_LIGHT_HIGH_BEAM = 0x1;
+    TURN_LIGHT_LOW_BEAM = 0x2;
+    TURN_LIGHT_RIGHT_TURN_LIGHT = 0x4;
+    TURN_LIGHT_LEFT_TURN_LIGHT = 0x8;
+    TURN_LIGHT_BRAKE = 0x10;
+    TURN_LIGHT_HAZZARD = 0x20;
+  }
+
+  optional uint32 id = 1;
+
+  optional ZoneTrafficParticipantsType type = 2;
+
+  optional Point3D relative_position = 3;
+
+  optional float relative_heading = 4;
+
+  optional Point2D relative_velocity = 6;
+
+  optional float relative_yaw_rate = 7;
+
+  optional Point3D absolute_position = 8;
+
+  optional float absolute_heading = 9;
+
+  optional Point2D absolute_velocity = 10;
+
+  optional float absolute_yaw_rate = 11;
+
+  optional float width = 12;
+
+  optional float length = 13;
+
+  optional float height = 14;
+
+  optional MotionProperty motion_property = 15;
+
+  optional uint32 valid = 16 [default = 1];
+
+  optional ZoneTrafficParticipantsLight traffic_participants_light = 17;
+
+  optional ZONETrafficParticipantsColor color_risk = 18;
+}
+
+message ZoneStaticElement {
+  enum ZoneStaticElementType {
+    STATIC_TYPE_UNKNOWN = 0x0;
+    STATIC_TYPE_STOPPED_VEHICLE = 0x1;     // 静止车辆
+    STATIC_TYPE_STATIONARY_VEHICLE = 0x2;  // 静止车辆
+    STATIC_TYPE_CURB_STONE = 0x3;          // 路沿
+    STATIC_TYPE_GUARD_RAIL = 0x4;          // 护栏
+    STATIC_TYPE_POLE = 0x5;                // 杆
+    STATIC_TYPE_CONE = 0x6;                // 锥桶
+    STATIC_TYPE_SPEEDBUMP = 0x7;           // 减速带
+    STATIC_TYPE_GENERAL_OBSTACLE = 0x8;    // 路障
+    STATIC_TYPE_BICYCLE = 0x9;             // 自行车
+    STATIC_TYPE_CONSTRUCTION = 0xA;        // 施工挡板
+
+    STATIC_TYPE_WATAER_BARRIERS = 0x14;  // 水马
+
+    STATIC_TYPE_ANTI_COLLISION_BUCKET = 0x19;  // 防撞桶
+    STATIC_TYPE_OTHER_CYLINDERS = 0x1B;        // 其他圆柱
+  }
+
+  optional uint32 id = 1;
+  optional ZoneStaticElementType static_element_type = 2;
+  optional Point3D relative_position = 3;
+
+  optional float relative_heading = 4;
+  optional float width = 5;
+  optional float height = 6;
+  optional uint32 valid = 7 [default = 1];
+}

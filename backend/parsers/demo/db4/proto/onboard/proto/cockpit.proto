@@ -1,0 +1,401 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message CockpitRawInputProto {
+  optional LiteHeader header = 1;
+  optional bytes raw_input = 2;
+  optional int64 timestamp = 3;
+}
+
+message CockpitControlCommandProto {
+  enum EmergencyStopState {
+    EMERGENCY_STOP_STATE_OFF = 0;
+    EMERGENCY_STOP_STATE_ON = 1;
+  }
+
+  enum LightState {
+    LIGHT_STATE_UNKNOWN = 0;
+    LIGHT_STATE_ON = 1;
+    LIGHT_STATE_OFF = 2;
+  }
+
+  enum WiperState {
+    WIPER_STATE_UNKNOWN = 0;
+    WIPER_STATE_X1 = 1;
+    WIPER_STATE_SLOW = 2;
+    WIPER_STATE_FAST = 3;
+    WIPER_STATE_OFF = 4;
+  }
+
+  enum WiperWasherState {
+    WIPER_WASHER_STATE_UNKNOWN = 0;
+    WIPER_WASHER_STATE_ON = 1;
+    WIPER_WASHER_STATE_OFF = 2;
+  }
+
+  enum HornState {
+    HORN_STATE_UNKNOWN = 0;
+    HORN_STATE_ON = 1;
+    HORN_STATE_OFF = 2;
+  }
+
+  enum GearPos {
+    GEAN_POS_N = 0;
+    GEAN_POS_P = 1;
+    GEAN_POS_R = 2;
+    GEAN_POS_D = 3;
+  }
+
+  optional LiteHeader header = 1;
+  optional int64 timestamp = 2;
+  // Throttle location in [%], ranging from 0 to 100.
+  optional float throttle_percentage = 3;
+  // Brake location in [%], ranging from 0 to 100.
+  optional float brake_percentage = 4;
+
+  optional GearPos gear_pos = 5;
+
+  // Steer in unit rad, negative for clockwise and postive for countclockwise
+  optional float steer = 6;
+
+  // Steer speed in uint deg/s
+  optional int32 steer_speed = 7;
+
+  optional EmergencyStopState emergency_stop_state = 8;
+
+  optional LightState left_turn_light = 9;
+
+  optional LightState right_turn_light = 10;
+
+  optional LightState double_flash_light = 11;
+
+  optional LightState high_beam_light = 12;
+
+  optional LightState low_beam_light = 13;
+
+  optional LightState front_fog_light = 14;
+
+  optional LightState rear_fog_light = 15;
+
+  optional WiperState front_wiper = 16;
+
+  optional WiperState rear_wiper = 17;
+
+  optional WiperWasherState front_wiper_washer = 18;
+
+  optional WiperWasherState rear_wiper_washer = 19;
+
+  optional HornState horn = 20;
+}
+
+message VehicleFailureInfo {
+  enum SusDmprCtrlFlt {
+    SDCF_NORMAL = 0;
+    SDCF_DAMPER_CONTROL_RESTRICTION = 1;
+    SDCF_DAMPER_CONTROL_NOT_AVAVAVAILABLE = 2;
+  }
+  enum SusHghtCtrlFlt {
+    SHCF_NORMAL = 0;
+    SHCF_LEVEL_CONTROL_RESTRICTION = 1;
+    SHCF_LEVEL_CONTROL_NOT_AVAVAVAILABLE = 2;
+    SHCF_SYSTEM_OVER_HEATATED = 3;
+  }
+  enum FailureStatus {
+    FS_NORMAL = 0;
+    FS_FAFAILURE = 1;
+  }
+  enum PowerSupplyFlrSts {
+    PSFS_NORMAL = 0;
+    PSFS_CP_ERR = 1;
+    PSFS_AC_ERR = 2;
+    PSFS_BOTH_ERR = 3;
+  }
+  enum LightFailureSts {
+    LFS_NO_FAFAILURE = 0;
+    LFS_OPEN_CIRCUIT = 1;
+    LFS_SHORT_CIRCUIT = 2;
+  }
+  enum ValveFltSts {
+    VFS_NORMAL = 0;
+    VFS_VAVALVLVE_1_FAFAULTLT = 1;
+    VFS_VAVALVLVE_2_FAFAULTLT = 2;
+    VFS_VAVALVLVE_3_FAFAULT = 3;
+  }
+  enum SeatLumbarSptMotFltSts {
+    SLSMFS_NORMAL = 0;
+    SLSMFS_SHORT_CIRCUIT_TO_POWER = 1;
+    SLSMFS_SHORT_CIRCUIT_TO_GROUND = 2;
+    SLSMFS_OPEN_CIRCUIT = 3;
+  }
+  enum ExteriorLightFlt {
+    ELF_LAMP_OFF = 0;
+    ELF_YELLOW_LAMP_ON = 1;
+    ELF_RED_LAMP_ON = 2;
+    ELF_RED_LAMP_BLINKING = 3;
+    ELF_YELLOW_LAMP_BLINKING = 4;
+  }
+  enum FrtRrWshrMotFltSts {
+    FRWMFS_NORMAL = 0;
+    FRWMFS_SHORT_TO_BATATTERY = 1;
+    FRWMFS_SHORT_TO_GROUND = 2;
+    FRWMFS_OPEN_LOAD = 3;
+  }
+  enum RrWiperFlrSts {
+    RWFS_NORMAL = 0;
+    RWFS_OPEN_LOAD = 1;
+    RWFS_SHORT_TO_GROUND = 2;
+    RWFS_SHORT_TO_BATATTERY = 3;
+    RWFS_OVER_CURRENT = 4;
+    RWFS_OVER_TEMPERATATURE = 5;
+  }
+  enum FltHadlIntrfc {
+    FHI_NORMAL = -1;
+    FHI_ONLYLY_WARNING = 0;
+    FHI_LIMP_HOME_LEVEL1 = 1;
+    FHI_LIMP_HOME_LEVEL2 = 2;
+    FHI_LIMP_HOME_LEVEL3 = 3;
+    FHI_ASC_DEPENDENT_ON_SPEED = 4;  // TODO
+    FHI_FREE_WHEELING = 5;
+    FHI_FAFAILURE_ASC = 6;
+    FHI_EMERGENCY_DISCHARGE = 7;
+  }
+  enum ParkButtonStatus {
+    PBS_NO_PRESSED = 0;
+    PBS_PRESSED = 1;
+    PBS_PAPARK_BUTTON_FAFAULT = 2;
+  }
+
+  optional SusDmprCtrlFlt sus_dmpr_ctrl_flt_sts_ass =
+      1;  // 悬架阻尼控制系统故障状态
+  optional SusHghtCtrlFlt sus_hght_ctrl_flt_sts_ass =
+      2;  // 悬架高度控制系统故障状态
+  optional FailureStatus chrg_port_flt_sts = 3;  // 充电口盖故障显示信号
+  optional PowerSupplyFlrSts evseerr = 4;        // 供电设备故障
+  optional FailureStatus flseat_heat_flt = 5;    // 主驾座椅加热故障
+  optional ValveFltSts flseat_lum_air_val_flr_sts =
+      6;  // 主驾座椅腰托气阀故障状态
+  optional SeatLumbarSptMotFltSts flseat_lum_mot_flr_sts =
+      7;  // 主驾座椅腰托电机故障状态
+  optional FailureStatus flseat_vent_flt = 8;      // 主驾座椅通风故障
+  optional FailureStatus brk_lght_flr_sts = 9;     // 制动灯故障状态
+  optional FailureStatus cotsy_lght_flr_sts = 10;  // 迎宾灯故障状态
+  optional ExteriorLightFlt exterior_light_faitlure = 11;  // 外部灯光故障
+  optional FailureStatus fladaslght_flr_sts = 12;  // 左前ADAS灯故障状态
+  optional LightFailureSts fldoor_hadl_lght_flr_sts =
+      13;  // 左前门把手灯故障状态
+  optional FailureStatus flpos_lght_flr_sts = 14;  // 左前位置灯故障状态
+  optional FailureStatus flturn_lght_flr_sts = 15;  // 左前转向灯故障状态
+  optional FailureStatus fradaslght_flr_sts = 16;  // 右前ADAS灯故障状态
+  optional LightFailureSts frdoor_hadl_lght_flr_sts =
+      17;  // 右前门把手灯故障状态
+  optional FailureStatus frfog_lght_flr_sts = 18;  // 右前雾灯故障状态
+  optional FailureStatus frpos_lght_flr_sts = 19;  // 右前位置灯故障状态
+  optional FailureStatus frturn_lght_flr_sts = 20;  // 右前转向灯故障状态
+  optional FailureStatus high_brk_lght_flr_sts = 21;  // 高位制动灯故障状态
+  optional FailureStatus ladaslght_flr_sts = 22;   // 左侧ADAS灯故障状态
+  optional FailureStatus lffog_lght_flr_sts = 23;  // 左前雾灯故障状态
+  optional FailureStatus lhigh_beam_flr_sts = 24;  // 左前远光灯故障
+  optional FailureStatus llow_beam_flr_sts = 25;  // 左侧近光灯故障状态
+  optional FailureStatus lmpos_lght_flr_sts = 26;  // 左中位置灯故障状态
+  optional LightFailureSts lturn_ast_flr_sts = 27;  // 左侧转向辅助灯故障状态
+  optional FailureStatus l_revs_lght_flr_sts = 28;  // 左倒车灯故障状态
+  optional FailureStatus lic_lght_flr_sts = 29;     // 牌照灯故障状态
+  optional FailureStatus radaslght_flr_sts = 30;    // 右侧ADAS灯故障状态
+  optional FailureStatus rhigh_beam_flr_sts = 31;   // 右前远光灯故障
+  optional LightFailureSts rldoor_hadl_lght_flr_sts =
+      32;  // 左后门把手灯故障状态
+  optional FailureStatus rlpos_lght_flr_sts = 33;  // 左后位置灯故障状态
+  optional FailureStatus rlturn_lght_flr_sts = 34;  // 左后转向灯故障状态
+  optional FailureStatus rlow_beam_flr_sts = 35;  // 右侧近光灯故障状态
+  optional FailureStatus rmpos_lght_flr_sts = 36;  // 右中位置灯故障状态
+  optional LightFailureSts rrdoor_hadl_lght_flr_sts =
+      37;  // 右后门把手灯故障状态
+  optional FailureStatus rrpos_lght_flr_sts = 38;  // 右后位置灯故障状态
+  optional FailureStatus rrturn_lght_flr_sts = 39;  // 右后转向灯故障状态
+  optional LightFailureSts rturn_ast_flr_sts = 40;  // 右侧转向辅助灯故障状态
+  optional FailureStatus r_revs_lght_flr_sts = 41;  // 右倒车灯故障状态
+  optional FailureStatus rr_adaslght_flr_sts = 42;  // 后部ADAS灯故障状态
+  optional FailureStatus rr_fog_lght_flr_sts = 43;  // 后雾灯故障状态
+  optional FailureStatus espfault = 44;             // ESP系统故障
+  optional FrtRrWshrMotFltSts frt_rr_wshr_mot_fault_sts =
+      45;  // 前后洗涤电机故障状态
+  optional FailureStatus frt_wiper_flr_sts = 46;  // 前雨刮故障状态
+  optional FailureStatus rain_snsr_flr = 47;      // 雨量传感器故障
+  optional RrWiperFlrSts rr_wiper_flr_sts = 48;   // 后雨刮故障状态
+  optional FltHadlIntrfc front_motor_flt_hadl_intrfc = 49;  // 前电机故障状态
+  optional FltHadlIntrfc rear_motor_flt_hadl_intrfc = 50;  // 后电机故障状态
+  optional FailureStatus hu_fault_status = 51;             // Hu故障状态
+  optional ParkButtonStatus park_button_fault = 52;  // P档故障状态信号
+}
+
+message VehicleLightInfo {
+  enum LightName {
+    LN_LOW_BEAM = 0;
+    LN_HIGH_BEAM = 1;
+    LN_FOG_LIGHT = 2;
+    LN_POSITION_LIGHT = 3;
+    LN_TURN_LEFT = 4;
+    LN_TURN_RIGHT = 5;
+  }
+
+  enum LightStatus {
+    LS_UNKNOWN = 0;
+    LS_OFF = 1;
+    LS_ON = 2;
+  }
+
+  optional LightName name = 1;
+  optional LightStatus status = 2;
+}
+
+message VehicleQuaternion4D {
+  optional double w = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 4;
+}
+
+message VehiclePoint3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message VehiclePoint2D {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+message VehicleOdomInfo {
+  optional VehicleQuaternion4D quaternion = 1;
+  optional VehiclePoint3D position = 2;
+}
+
+message VehicleCameraParam {
+  enum DistModel {
+    DM_UNKNOWN = -1;
+    DM_EQUIDISTANT = 0;
+    DM_RADTATAN = 1;
+  }
+
+  optional int32 cam_id = 1;  // 相机id
+  optional DistModel dist_model =
+      2;  // 畸变类型(等距畸变EQUIDISTATANT, T, 径向畸变RADTATAN)
+  repeated double dist_param =
+      3;  // 畸变参数。EQUIDISTATANT对应鱼眼,只用到前4个值,其余默认填充0 [8]
+  repeated double proj_param =
+      4;  // 投影参数。center_u,center_v,focal_u,focal_v [4]
+  repeated double q_vcs_cam = 5;  // 四元数(相机坐标系到车辆坐标系)。wxyz [4]
+  repeated int32 resolution = 6;  // 分辨率。width,height [2]
+  repeated double t_gnd_cam =
+      7;  // 三轴平移量(相机坐标系到地面坐标系,与t_vcs_cam只有z方向数值的区别)。xyz
+          // [3]
+  repeated double t_vcs_cam = 8;  // 三轴平移量(相机坐标系到车辆坐标系)。xyz [3]
+}
+
+message VehicleDoorInfo {
+  enum DoorName {
+    DN_FRONT_LEFT = 0;
+    DN_FRONT_RIGHT = 1;
+    DN_REAR_LEFT = 2;
+    DN_REAR_RIGHT = 3;
+    DN_HOOD = 4;
+    DN_TAIL_DOOR = 5;
+  }
+
+  enum DoorStatus {
+    DS_CLOSED = 0;
+    DS_AJAR = 1;
+  }
+
+  enum LockStatus {
+    LS_LOCKED = 0;
+    LS_UNLOCKED = 1;
+  }
+
+  enum DoorSafetyStatus {
+    DSS_CLOSED_LOCK_LOCKED = 0;
+    DSS_CLOSED_LOCK_UNLOCKED = 1;
+    DSS_AJAR_LOCK_UNLOCKED = 2;
+    DSS_INVALID = 3;
+  }
+
+  optional DoorName name = 1;
+  optional DoorStatus door_status = 2;
+  optional LockStatus lock_status = 3;
+  optional DoorSafetyStatus safety_status = 4;
+}
+
+message VehicleTireInfo {
+  enum TireName {
+    TN_FRONT_LEFT = 0;
+    TN_FRONT_RIGHT = 1;
+    TN_REAR_LEFT = 2;
+    TN_REAR_RIGHT = 3;
+  }
+
+  optional TireName name = 1;
+  optional int64 pressure = 2;
+}
+
+message CockpitVehicleInfoProto {
+  enum GearPosition {
+    GP_INIT = 0;
+    GP_R = 1;
+    GP_N = 2;
+    GP_D = 3;
+    GP_P = 4;
+    GP_INVAVALID = 7;
+  }
+
+  enum WiperStatus {
+    WS_OFF = 0;
+    WS_AUTO_L1 = 1;
+    WS_AUTO_L2 = 2;
+    WS_LOW_SPEED = 3;
+    WS_HIGH_SPEED = 4;
+  }
+
+  enum BrakePedalStatus {
+    BPS_NO_PRESSED = 0;
+    BPS_PRESSED = 1;
+  }
+
+  optional LiteHeader header = 1;
+  optional int64 timestamp = 2;
+
+  // 控制信息
+  optional double speed = 3;           // 速度 m/s
+  optional double accel = 4;           // 加速度 m/s²
+  optional double throttle = 5;        // 油门 0-1 表示踩下的比例
+  optional double brake = 6;           // 刹车
+  optional double fuel_leftft = 7;     // 剩余油量 km
+  optional double battery_leftft = 8;  // 剩余电量 km
+  optional GearPosition gear_pos = 9;  // 档位
+  optional double steering_angle = 10;  // 方向盘转⻆ 弧度 逆时针正 顺时针负
+  optional BrakePedalStatus brake_pedal_status = 11;  // 制动踏板状态
+
+  // 车身信息
+  repeated VehicleLightInfo light_info = 12;  // 灯光信息
+  optional WiperStatus wiper_status = 13;     // 前雨刷状态
+  repeated VehicleDoorInfo door_info = 14;    // 车门信息
+  repeated VehicleTireInfo tire_info = 15;    // 轮胎(胎压信息)
+
+  // 经纬度信息
+  optional double longitude = 16;  // 经度
+  optional double latitude = 17;   // 纬度
+  optional double height = 18;     // 海拔
+
+  // 故障信息
+  optional VehicleFailureInfo failure_info = 19;  // 故障信息
+
+  // 轨迹信息
+  optional VehicleOdomInfo odom_info = 20;  // odom位置信息
+  repeated VehicleCameraParam cam_params = 21;  // 相机参数信息,7v+4⻥眼 [11]
+  repeated VehiclePoint2D traj_points =
+      22;  // 规划轨迹点数组,取前70,不⾜70的部分,⽤0填充 [70]
+}

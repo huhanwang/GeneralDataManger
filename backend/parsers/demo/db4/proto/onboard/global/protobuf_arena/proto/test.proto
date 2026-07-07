@@ -1,0 +1,49 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_msg.proto";
+
+message Test1 {
+  optional int32 a = 1;
+}
+
+message Test2 {
+  optional bytes a = 1;
+  optional string b = 2;
+}
+
+message Test3 {
+  optional Test1 c = 3;
+}
+
+message Test4 {
+  repeated int32 d = 4 [packed = true];
+}
+
+message Test5 {
+  optional sint32 e = 1;
+}
+
+message Test6 {
+  repeated int32 d = 4 [packed = false];
+}
+
+message Test7 {
+  optional fixed32 d = 4;
+}
+
+message Test8 {
+  optional int32 a = 1;
+  optional sint32 b = 2;
+  optional Test1 c = 3;
+  optional float d = 4;
+  optional double e = 5;
+  optional string f = 6;
+  optional fixed64 g = 7;
+}
+
+message Test9 {
+  repeated AggregateLiteMsgWrapper a = 1;
+}

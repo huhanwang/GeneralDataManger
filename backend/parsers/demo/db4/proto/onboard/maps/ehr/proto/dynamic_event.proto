@@ -1,0 +1,254 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message CustomEvent {
+  enum Type {
+    UNKNOWN = 0;
+    FORCED_DOWNGRADE = 1;     // 由于某种原因需要强制降级
+    SILENCE_DOWNGRADE = 2;    // 由于某种原因需要无感降级
+    ROAD_MODEL_CHANGE = 3;    // 路网变化
+    AVOID_LANE_SEGMENTS = 4;  // 避行路段
+  }
+  optional Type type = 1;
+  optional double start_fraction = 2;
+  optional double end_fraction = 3;
+  // 车道编号,顺序自左向右从1开始编号,为空时代表作用全部车道
+  repeated int32 lane_number = 4 [packed = true];
+}
+
+message TrafficEvent {
+  enum Type {
+    UNKNOWN = 0;
+    TRAFFIC_ACCIDENT = 1;                 // 交通事故
+    TRAFFIC_CONTROL = 2;                  // 交通管制
+    ROAD_CLOSURE = 3;                     // 封路/禁行
+    ROAD_CONSTRUCTION = 4;                // 道路施工
+    MAJOR_ACTIVITIES = 5;                 // 重大活动
+    PUBLIC_ANNOUNCEMENT = 6;              // 重大事件
+    ROAD_CONSTRUCTION_IMPACT_TRAVEL = 7;  // 施工影响出行
+    ROAD_CONSTRUCTION_AND_PASS_THROUGH_NOT_RECOMMENDED = 8;  // 施工不建议穿行
+    ROAD_CONSTRUCTION_AND_ROAD_CLOSED = 9;   // 道路施工 & 道路关闭
+    ROAD_CONSTRUCTION_TAILGATING = 10;       // 施工借道
+    ROAD_CONSTRUCTION_DIVERSION_LEFT = 11;   // 施工向左改道
+    ROAD_CONSTRUCTION_DIVERSION_RIGHT = 12;  // 施工向右改道
+  }
+  optional Type type = 1;
+  optional double confidence = 2;
+  optional double start_fraction = 3;
+  optional double end_fraction = 4;
+  optional double start_timestamp = 5;  // 事件开始时间
+  optional double end_timestamp = 6;    // 事件结束时间
+  optional double timestamp = 7;        // 接收message的时间
+}
+
+message TrafficFlow {
+  enum Type {
+    UNKNOWN = 0;
+    SMOOTH = 1;                // 畅通
+    SLOW = 2;                  // 缓慢
+    CONGESTION = 3;            // 拥堵
+    EXTREMELY_CONGESTION = 4;  // 极度拥堵
+    NONE = 5;                  // 无交通流
+    EXTREMELY_SMOOTH = 6;      // 极度畅通
+  }
+  optional Type type = 1;
+
+  optional double confidence = 2;
+  optional double start_fraction = 3;
+  optional double end_fraction = 4;
+  optional double average_speed_kph = 5;  // 路段平均速度 单位: km/h
+  optional double timestamp = 6;          // 接收message的时间
+}
+
+message RoadWeather {
+  enum Status {
+    UNKNOWN = 0;
+    DRY_PAVEMENT = 1;              // 干燥路面
+    SLIPPERY_PAVEMENT = 2;         // 湿滑路面
+    ICE_PAVEMENT = 3;              // 结冰路面
+    FLOODS_PAVEMENT = 4;           // 积水路面
+    SNOW_PAVEMENT = 5;             // 积雪路面
+    POOR_VISIBILITY_PAVEMENT = 6;  // 能⻅度低
+  }
+  optional Status status = 1;
+
+  optional double water_logging_mm = 2;  // 积水值 单位: mm
+  optional double snow_logging_cm = 3;   // 积雪值 单位: cm
+  optional double visibility_m = 4;      // 视觉能见度 单位: m
+
+  enum VisibilityLevel {
+    UNKNOWN_LEVEL = 0;
+    // 能见度非常差(0-200],高速公路可能会封路,非常危险,请您做好应对准备
+    LEVEL_4 = 1;
+    LEVEL_3 = 2;  // 能⻅度很差(200-500],驾驶非常危险,请您注意行⻋安全
+    LEVEL_2 = 3;  // 能⻅度较差(500-1250],请您小心驾驶
+    LEVEL_1 = 4;  // 能⻅度一般(1250-2500],请您安全行驶
+    LEVEL_0 = 5;  // 能⻅度较好(2500~],请您安全行驶
+  }
+  optional VisibilityLevel visibility_level = 5;  // 视觉能见度等级
+
+  optional int32 temperature_degree = 6;  // 路面温度 单位: 摄氏度
+  optional double timestamp = 7;          // 接收message的时间
+}
+
+message ExtremeWeather {
+  enum Type {
+    UNKNOWN = 0;
+    TYPHOON = 1;                  // 台风
+    RAINSTORM = 2;                // 暴雨
+    BLIZZARD = 3;                 // 暴雪
+    COLD_WAVE = 4;                // 寒潮
+    GALE_WIND = 5;                // 大风
+    SANDSTORM = 6;                // 沙尘暴
+    HIGH_TEMPERATURE = 7;         // 高温
+    DROUGHT = 8;                  // 干旱
+    THUNDERSTREAK = 9;            // 雷电
+    HAIL = 10;                    // 冰雹
+    FROSTY = 11;                  // 霜冻
+    HEAVY_FOG = 12;               // 大雾
+    HAZE = 13;                    // 霾
+    ICE_ROAD = 14;                // 道路结冰
+    FOREST_FIRE_DANGER = 15;      // 森林火险
+    UNCONVENTIONAL_WARNING = 16;  // 非常规预警
+  }
+  optional Type type = 1;
+
+  enum Warning {
+    UNKNOWN_WARNING = 0;
+    BLUE_SIGNAL_WARNING = 1;    // 蓝色预警
+    BLUE_YELLOW_WARNING = 2;    // 黄色预警
+    ORANGE_SIGNAL_WARNING = 3;  // 橙色预警
+    RED_SIGNAL_WARNING = 4;     // 红色预警
+  }
+  optional Warning warning = 2;
+  optional double timestamp = 3;  // 接收message的时间
+}
+
+message RealtimeWeather {
+  enum Type {
+    UNKNOWN = 0;
+    SUNNY = 1;                     // 晴天
+    CLOUDY = 2;                    // 多云
+    OVERCAST = 3;                  // 阴天
+    SHOWER = 4;                    // 阵雨
+    THUNDER_SHOWER = 5;            // 雷阵雨
+    THUNDER_WITH_HAIL = 6;         // 雷阵雨伴有冰雹
+    SLEET = 7;                     // 雨夹雪
+    LIGTH_RAIN = 8;                // 小雨
+    MODERATE_RAIN = 9;             // 中雨
+    HEAVY_RAIN = 10;               // 大雨
+    RAINSTORM = 11;                // 暴雨、大暴雨、特大暴雨
+    SNOW_FLURRY = 12;              // 阵雪
+    LIGHT_SNOW = 13;               // 小雪
+    MODERATE_SNOW = 14;            // 中雪
+    HEAVY_SNOW = 15;               // 大雪
+    SNOWSTORM = 16;                // 暴雪
+    FOGGY = 17;                    // 雾
+    ICE_RAIN = 18;                 // 冻雨
+    DUSTSTORM = 19;                // 沙尘暴
+    LIGHT_TO_MODERATE_RAIN = 20;   // 小到中雨
+    MODERATE_TO_HEAVY_RAIN = 21;   // 中到大雨
+    HEAVY_RAIN_TO_RAINSTORM = 22;  // 大到暴雨
+    RAINSTORM_TO_EXTRA_RAINSTORM = 23;  // 暴雨到大暴雨、大暴雨到特大暴雨
+    LIGHT_TO_MODERATE_SNOW = 24;  // 小到中雪
+    MODERATE_TO_HEAVY_SNOW = 25;  // 中到大雪
+    HEAVY_TO_SNOWSTORM = 26;      // 大到暴雪
+    DUST = 27;                    // 浮尘
+    SAND = 28;                    // 扬沙
+    SANDSTORM = 29;               // 强沙尘暴
+    HAZE = 30;                    // 霾
+    HEAVY_FOG = 31;               // 大雾
+    THICK_FOG = 32;               // 浓雾
+    STRONG_DENSE_FOG = 33;        // 强浓雾
+    EXTRA_STRONG_DENSE_FOG = 34;  // 特强浓雾
+    MODERATE_HAZE = 35;           // 中度霾
+    HEAVY_HAZE = 36;              // 重度霾
+    SEVERE_HAZE = 37;             // 严重霾
+    RAIN = 38;                    // 雨
+    SNOW = 39;                    // 雪
+    NONE = 40;                    // 无
+  }
+  optional Type type = 1;
+
+  optional int32 temperature_degree = 2;  // 气象温度 单位: 摄氏度
+  optional double precipitation_mm = 3;   // 降水量 单位: mm
+  optional double wind_mps = 4;           // 风力 单位: m/s
+
+  enum WindScale {
+    UNKNOWN_SCALE = 0;
+    CALM = 1;              // 无风
+    LIGHT_AIR = 2;         // 软风
+    LIGHT_BREEZE = 3;      // 轻风
+    GENTLE_BREEZE = 4;     // 微风
+    MODERATE_BREEZE = 5;   // 和风
+    FRESH_BREEZE = 6;      // 劲风
+    STRONG_BREEZE = 7;     // 强风
+    MODERATE_GALE = 8;     // 疾风
+    FRESH_GALE = 9;        // 大风
+    STRONG_GALE = 10;      // 烈风
+    WHOLE_GALE = 11;       // 狂风
+    STORM = 12;            // 暴风
+    HURRICANE_FORCE = 13;  // 飓风
+  }
+  optional WindScale wind_scale = 5;  // 风力等级
+
+  optional double wind_angle_degree = 6;  // 风向角
+  optional double visibility_km = 7;      // 气象能⻅度
+  optional int32 humidity = 8;            // 相对湿度 单位: 百分比
+  optional int32 pressure_pa = 9;         // 气压 单位: 帕
+  optional double timestamp = 10;         // 接收message的时间
+}
+
+enum RoadRelativeSide {
+  ROAD_SIDE_LEFT = 1;
+  ROAD_SIDE_MID = 2;
+  ROAD_SIDE_RIGHT = 3;
+}
+
+// 模糊道路施工
+message RoadTrafficEvent {
+  optional TrafficEvent.Type traffic_event_type = 1;
+  repeated sfixed64 section_ids = 2;
+  // First section start fraction.
+  optional double start_fraction = 3;
+  // The last section end fraction.
+  optional double end_fraction = 4;
+  repeated RoadRelativeSide road_relative_sides = 5;
+}
+
+message RoadTrafficEventsProto {
+  optional LiteHeader header = 1;
+  repeated RoadTrafficEvent events = 2;
+}
+
+// 精确道路施工
+message LaneTrafficEvent {
+  optional TrafficEvent.Type traffic_event_type = 1;
+  optional sfixed64 section_id = 2;
+  optional double start_fraction = 3;
+  optional double end_fraction = 4;
+  enum LaneDrivableStatus {
+    NOT_DRIVABLE = 1;
+    DRIVABLE = 2;
+    UNKNOWN = 3;
+  }
+  // 顺序自左向右, lanes_status.size = SectionProto.lanes.size
+  repeated LaneDrivableStatus lanes_drivable_status = 5;
+}
+
+message LaneTrafficEventsProto {
+  optional LiteHeader header = 1;
+  repeated LaneTrafficEvent events = 2;
+}
+
+message DynamicEvents {
+  repeated CustomEvent custom_events = 1;
+  repeated TrafficEvent traffic_events = 2;
+  repeated TrafficFlow traffic_flows = 3;
+  repeated RoadWeather road_weathers = 4;
+  repeated ExtremeWeather extreme_weathers = 5;
+  repeated RealtimeWeather realtime_weathers = 6;
+}

@@ -1,0 +1,31 @@
+
+syntax = "proto2";
+
+package snoah.hpp_mapping;
+
+
+import "onboard/proto/vehicle_pose.proto";
+
+message MapMetaProto {
+  optional string map_name = 1;
+  optional double create_timestamp = 2;
+  optional VehiclePoseProto original_pose = 3;
+}
+
+enum SensorId {
+  kVisualOdomPose = 1;
+  kBevParkingSlots = 2;
+  kDeadReckoningPose = 3;
+  kFrontFisheyeImageFeature = 4;
+  kLeftFisheyeImageFeature = 5;
+  kRightFisheyeImageFeature = 6;
+  kRearFisheyeImageFeature = 7;
+  kFrontWideH110ImageFeature = 8;
+  // Initially designed for LX HU, but also used for other function.
+  // The name is misleading, cause it actually includes pole, speed bump and so
+  // on.
+  kLiParkingLimitersProto = 9;
+  kFusionParkingSlots = 10;
+  kFusionParkingFreespaceProto = 11;
+  kFishEyeBevTrackerMeasurement = 12;
+};

@@ -1,0 +1,3173 @@
+
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Hazard_lights_rpt_214 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional bool output_value = 1;
+  // [] [0|1]
+  optional bool commanded_value = 2;
+  // [] [0|1]
+  optional bool manual_input = 3;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 4;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 5;
+  // [] [0|1]
+  optional bool override_active = 6;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 7;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 8;
+  // [] [0|1]
+  optional bool enabled = 9;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Steering_cmd_12c {
+  // Control Message
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [rad] [-32.768|32.767]
+  optional double position = 4;
+  // [rad/s] [0|65.535]
+  optional double rotation_rate = 5;
+}
+
+message Brake_deccel_aux_rpt_338 {
+  // Report Message
+  enum Xbr_active_control_modeType {
+    XBR_ACTIVE_CONTROL_MODE_NO_BRAKE_DEMAND = 0;
+    XBR_ACTIVE_CONTROL_MODE_DRIVERS_BRAKE_DEMAND = 1;
+    XBR_ACTIVE_CONTROL_MODE_ADDITION_MODE_OF_XBR_ACCELERATION_CONTROL = 2;
+    XBR_ACTIVE_CONTROL_MODE_MAXIMUM_MODE_OF_XBR_ACCELERATION_CONTROL = 3;
+  }
+  enum Xbr_system_stateType {
+    XBR_SYSTEM_STATE_ANY_EXTERNAL_BRAKE_DEMAND_WILL_BE_ACCEPTED = 0;
+    XBR_SYSTEM_STATE_NO_EXTERNAL_BRAKE_DEMAND_WILL_BE_ACCEPTED = 2;
+  }
+  enum Foundation_brake_useType {
+    FOUNDATION_BRAKE_USE_FOUNDATION_BRAKES_NOT_IN_USE = 0;
+    FOUNDATION_BRAKE_USE_FOUNDATION_BRAKES_IN_USE = 1;
+  }
+  enum Hill_holder_modeType {
+    HILL_HOLDER_MODE_INACTIVE = 0;
+    HILL_HOLDER_MODE_ACTIVE = 1;
+    HILL_HOLDER_MODE_ACTIVE_BUT_INACTIVE_SOON = 2;
+    HILL_HOLDER_MODE_ERROR = 6;
+  }
+  // [] [0|2]
+  optional Xbr_active_control_modeType xbr_active_control_mode = 1;
+  // [] [0|3]
+  optional Xbr_system_stateType xbr_system_state = 2;
+  // [] [0|2]
+  optional Foundation_brake_useType foundation_brake_use = 3;
+  // [] [0|2]
+  optional Hill_holder_modeType hill_holder_mode = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool xbr_active_control_mode_avail = 5;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool xbr_system_state_avail = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool foundation_brake_use_avail = 7;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool hill_holder_mode_avail = 8;
+}
+
+message Dash_controls_right_rpt_210 {
+  // Report Message
+  enum Output_valueType {
+    OUTPUT_VALUE_DASH_CONTROL_NONE = 0;
+    OUTPUT_VALUE_DASH_CONTROL_OK = 1;
+    OUTPUT_VALUE_DASH_CONTROL_LEFT = 2;
+    OUTPUT_VALUE_DASH_CONTROL_RIGHT = 3;
+    OUTPUT_VALUE_DASH_CONTROL_UP = 4;
+    OUTPUT_VALUE_DASH_CONTROL_DOWN = 5;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_DASH_CONTROL_NONE = 0;
+    COMMANDED_VALUE_DASH_CONTROL_OK = 1;
+    COMMANDED_VALUE_DASH_CONTROL_LEFT = 2;
+    COMMANDED_VALUE_DASH_CONTROL_RIGHT = 3;
+    COMMANDED_VALUE_DASH_CONTROL_UP = 4;
+    COMMANDED_VALUE_DASH_CONTROL_DOWN = 5;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_DASH_CONTROL_NONE = 0;
+    MANUAL_INPUT_DASH_CONTROL_OK = 1;
+    MANUAL_INPUT_DASH_CONTROL_LEFT = 2;
+    MANUAL_INPUT_DASH_CONTROL_RIGHT = 3;
+    MANUAL_INPUT_DASH_CONTROL_UP = 4;
+    MANUAL_INPUT_DASH_CONTROL_DOWN = 5;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|255]
+  optional Output_valueType output_value = 1;
+  // [] [0|255]
+  optional Commanded_valueType commanded_value = 2;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 3;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 4;
+  // [] [0|1]
+  optional bool override_active = 5;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 6;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 7;
+  // [] [0|1]
+  optional bool enabled = 8;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 9;
+  // [] [0|255]
+  optional Manual_inputType manual_input = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Wiper_aux_rpt_334 {
+  // Report Message
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool spray_empty_avail = 1;
+  // [] [0|1]
+  optional bool spray_empty = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool spray_near_empty_avail = 3;
+  // [] [0|1]
+  optional bool spray_near_empty = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool rear_spraying_avail = 5;
+  // [] [0|1]
+  optional bool rear_spraying = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool rear_wiping_avail = 7;
+  // [] [0|1]
+  optional bool rear_wiping = 8;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool front_spraying_avail = 9;
+  // [] [0|1]
+  optional bool front_spraying = 10;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool front_wiping_avail = 11;
+  // [] [0|1]
+  optional bool front_wiping = 12;
+}
+
+message Steering_cmd_limit_rpt_22d {
+  // Report Message
+  // The POSITION_CMD_LIMIT shall have the value of the limit imposed on the
+  // command associated with this system. [rad] [-32.768|32.767]
+  optional double position_cmd_limit = 1;
+  // The LIMITED_POSITION_CMD shall have the value of command associated with
+  // this system constrained by the STEERING_CMD_LIMIT. [rad] [-32.768|32.767]
+  optional double limited_position_cmd = 2;
+  // The ROTATION_RATE_CMD_LIMIT shall have the value of the limit imposed on
+  // the command associated with this system. [rad/s] [0|32.768]
+  optional double rotation_rate_cmd_limit = 3;
+  // The LIMITED_ROTATION_RATE_CMD shall have the value of command associated
+  // with this system constrained by the ROTATION_RATE_CMD_LIMIT. [rad/s]
+  // [0|32.768]
+  optional double limited_rotation_rate = 4;
+}
+
+message Steering_rpt_22c {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [rad] [-32.768|32.767]
+  optional double manual_input = 8;
+  // [rad] [-32.768|32.767]
+  optional double commanded_value = 9;
+  // [rad] [-32.768|32.767]
+  optional double output_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Turn_aux_rpt_330 {
+  // Report Message
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool pass_blinker_bulb_on_avail = 1;
+  // [] [0|1]
+  optional bool pass_blinker_bulb_on = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool driver_blinker_bulb_on_avail = 3;
+  // [] [0|1]
+  optional bool driver_blinker_bulb_on = 4;
+}
+
+message Headlight_rpt_218 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_HEADLIGHTS_OFF = 0;
+    OUTPUT_VALUE_LOW_BEAMS = 1;
+    OUTPUT_VALUE_HIGH_BEAMS = 2;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_HEADLIGHTS_OFF = 0;
+    MANUAL_INPUT_LOW_BEAMS = 1;
+    MANUAL_INPUT_HIGH_BEAMS = 2;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_HEADLIGHTS_OFF = 0;
+    COMMANDED_VALUE_LOW_BEAMS = 1;
+    COMMANDED_VALUE_HIGH_BEAMS = 2;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|2]
+  optional Output_valueType output_value = 8;
+  // [] [0|2]
+  optional Manual_inputType manual_input = 9;
+  // [] [0|2]
+  optional Commanded_valueType commanded_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Turn_cmd_130 {
+  // Control Message
+  enum Turn_signal_cmdType {
+    TURN_SIGNAL_CMD_RIGHT = 0;
+    TURN_SIGNAL_CMD_NONE = 1;
+    TURN_SIGNAL_CMD_LEFT = 2;
+    TURN_SIGNAL_CMD_HAZARD = 3;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|3]
+  optional Turn_signal_cmdType turn_signal_cmd = 4;
+}
+
+message Wiper_cmd_134 {
+  // Control Message
+  enum Wiper_cmdType {
+    WIPER_CMD_WIPERS_OFF = 0;
+    WIPER_CMD_INTERMITTENT_1 = 1;
+    WIPER_CMD_INTERMITTENT_2 = 2;
+    WIPER_CMD_INTERMITTENT_3 = 3;
+    WIPER_CMD_INTERMITTENT_4 = 4;
+    WIPER_CMD_INTERMITTENT_5 = 5;
+    WIPER_CMD_INTERMITTENT_6 = 6;
+    WIPER_CMD_INTERMITTENT_7 = 7;
+    WIPER_CMD_INTERMITTENT_8 = 8;
+    WIPER_CMD_INTERMITTENT_9 = 9;
+    WIPER_CMD_INTERMITTENT_10 = 10;
+    WIPER_CMD_LOW = 253;
+    WIPER_CMD_MEDIUM = 254;
+    WIPER_CMD_HIGH = 255;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|7]
+  optional Wiper_cmdType wiper_cmd = 4;
+}
+
+message Sprayer_cmd_138 {
+  // Control Message
+  enum Sprayer_cmdType {
+    SPRAYER_CMD_NOT_SPRAYING = 0;
+    SPRAYER_CMD_SPRAYING = 1;
+  }
+  // [] [0|1]
+  optional bool enable = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional Sprayer_cmdType sprayer_cmd = 4;
+}
+
+message Component_rpt_00_20 {
+  // Report Message
+  enum Component_typeType {
+    COMPONENT_TYPE_PACMOD = 0;
+    COMPONENT_TYPE_PACMINI = 1;
+    COMPONENT_TYPE_PACMICRO = 2;
+  }
+  enum AccelType {
+    ACCEL_ABSENT = 0;
+    ACCEL_PRESENT = 1;
+  }
+  enum BrakeType {
+    BRAKE_ABSENT = 0;
+    BRAKE_PRESENT = 1;
+  }
+  enum Cruise_control_buttonsType {
+    CRUISE_CONTROL_BUTTONS_ABSENT = 0;
+    CRUISE_CONTROL_BUTTONS_PRESENT = 1;
+  }
+  enum Dash_controls_leftType {
+    DASH_CONTROLS_LEFT_ABSENT = 0;
+    DASH_CONTROLS_LEFT_PRESENT = 1;
+  }
+  enum Dash_controls_rightType {
+    DASH_CONTROLS_RIGHT_ABSENT = 0;
+    DASH_CONTROLS_RIGHT_PRESENT = 1;
+  }
+  enum Hazard_lightsType {
+    HAZARD_LIGHTS_ABSENT = 0;
+    HAZARD_LIGHTS_PRESENT = 1;
+  }
+  enum HeadlightType {
+    HEADLIGHT_ABSENT = 0;
+    HEADLIGHT_PRESENT = 1;
+  }
+  enum HornType {
+    HORN_ABSENT = 0;
+    HORN_PRESENT = 1;
+  }
+  enum Media_controlsType {
+    MEDIA_CONTROLS_ABSENT = 0;
+    MEDIA_CONTROLS_PRESENT = 1;
+  }
+  enum Parking_brakeType {
+    PARKING_BRAKE_ABSENT = 0;
+    PARKING_BRAKE_PRESENT = 1;
+  }
+  enum ShiftType {
+    SHIFT_ABSENT = 0;
+    SHIFT_PRESENT = 1;
+  }
+  enum SteeringType {
+    STEERING_ABSENT = 0;
+    STEERING_PRESENT = 1;
+  }
+  enum TurnType {
+    TURN_ABSENT = 0;
+    TURN_PRESENT = 1;
+  }
+  enum WiperType {
+    WIPER_ABSENT = 0;
+    WIPER_PRESENT = 1;
+  }
+  enum WatchdogType {
+    WATCHDOG_ABSENT = 0;
+    WATCHDOG_PRESENT = 1;
+  }
+  enum Config_faultType {
+    CONFIG_FAULT_NO_FAULT = 0;
+    CONFIG_FAULT_FAULT = 1;
+  }
+  enum Can_timeout_faultType {
+    CAN_TIMEOUT_FAULT_NO_FAULT = 0;
+    CAN_TIMEOUT_FAULT_FAULT = 1;
+  }
+  enum Internal_supply_voltage_faultType {
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_NO_FAULT = 0;
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_FAULT = 1;
+  }
+  // [] [0|15]
+  optional Component_typeType component_type = 1;
+  // [] [0|1]
+  optional AccelType accel = 2;
+  // [] [0|1]
+  optional BrakeType brake = 3;
+  // [] [0|1]
+  optional Cruise_control_buttonsType cruise_control_buttons = 4;
+  // [] [0|1]
+  optional Dash_controls_leftType dash_controls_left = 5;
+  // [] [0|1]
+  optional Dash_controls_rightType dash_controls_right = 6;
+  // [] [0|1]
+  optional Hazard_lightsType hazard_lights = 7;
+  // [] [0|1]
+  optional HeadlightType headlight = 8;
+  // [] [0|1]
+  optional HornType horn = 9;
+  // [] [0|1]
+  optional Media_controlsType media_controls = 10;
+  // [] [0|1]
+  optional Parking_brakeType parking_brake = 11;
+  // [] [0|1]
+  optional ShiftType shift = 12;
+  // [] [0|1]
+  optional bool spray = 13;
+  // [] [0|1]
+  optional SteeringType steering = 14;
+  // [] [0|1]
+  optional TurnType turn = 15;
+  // [] [0|1]
+  optional WiperType wiper = 16;
+  // [] [0|1]
+  optional WatchdogType watchdog = 17;
+  // [] [0|1]
+  optional bool brake_deccel = 18;
+  // [] [0|1]
+  optional bool rear_pass_door = 19;
+  // Counter shall have the value of 0 with the first message transmission.  It
+  // shall increase by 1 with each subsequent message transmission up to and
+  // including the value of 0xF.  The next message transmission shall be 0, and
+  // this pattern shall repeat. [] [0|15]
+  optional int32 counter = 20;
+  // [] [0|15]
+  optional int32 complement = 21;
+  // [] [0|1]
+  optional Config_faultType config_fault = 22;
+  // [] [0|1]
+  optional Can_timeout_faultType can_timeout_fault = 23;
+  // [] [0|1]
+  optional Internal_supply_voltage_faultType internal_supply_voltage_fault = 24;
+}
+
+message Ang_vel_rpt_41a {
+  // Report Message
+  enum Pitch_new_data_rxType {
+    PITCH_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    PITCH_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Roll_new_data_rxType {
+    ROLL_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    ROLL_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Yaw_new_data_rxType {
+    YAW_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    YAW_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Pitch_validType {
+    PITCH_VALID_NOT_VALID = 0;
+    PITCH_VALID_VALID = 1;
+  }
+  enum Roll_validType {
+    ROLL_VALID_NOT_VALID = 0;
+    ROLL_VALID_VALID = 1;
+  }
+  enum Yaw_validType {
+    YAW_VALID_NOT_VALID = 0;
+    YAW_VALID_VALID = 1;
+  }
+  // [] [0|1]
+  optional Pitch_new_data_rxType pitch_new_data_rx = 1;
+  // [] [0|1]
+  optional Roll_new_data_rxType roll_new_data_rx = 2;
+  // [] [0|1]
+  optional Yaw_new_data_rxType yaw_new_data_rx = 3;
+  // [] [0|1]
+  optional Pitch_validType pitch_valid = 4;
+  // [] [0|1]
+  optional Roll_validType roll_valid = 5;
+  // [] [0|1]
+  optional Yaw_validType yaw_valid = 6;
+  // [rad/s] [-32.768|32.767]
+  optional double pitch_vel = 7;
+  // [rad/s] [-32.768|32.767]
+  optional double roll_vel = 8;
+  // [rad/s] [-32.768|32.767]
+  optional double yaw_vel = 9;
+}
+
+message Notification_cmd_41b {
+  // Control Message
+  enum Buzzer_muteType {
+    BUZZER_MUTE_NOT_MUTED = 0;
+    BUZZER_MUTE_MUTED = 1;
+  }
+  enum Underdash_lights_whiteType {
+    UNDERDASH_LIGHTS_WHITE_NO_ACTION = 0;
+    UNDERDASH_LIGHTS_WHITE_WHITE = 1;
+  }
+  // [] [0|1]
+  optional Buzzer_muteType buzzer_mute = 1;
+  // [] [0|1]
+  optional Underdash_lights_whiteType underdash_lights_white = 2;
+}
+
+message Component_rpt_03_23 {
+  // Report Message
+  enum Component_typeType {
+    COMPONENT_TYPE_PACMOD = 0;
+    COMPONENT_TYPE_PACMINI = 1;
+    COMPONENT_TYPE_PACMICRO = 2;
+  }
+  enum AccelType {
+    ACCEL_ABSENT = 0;
+    ACCEL_PRESENT = 1;
+  }
+  enum BrakeType {
+    BRAKE_ABSENT = 0;
+    BRAKE_PRESENT = 1;
+  }
+  enum Cruise_control_buttonsType {
+    CRUISE_CONTROL_BUTTONS_ABSENT = 0;
+    CRUISE_CONTROL_BUTTONS_PRESENT = 1;
+  }
+  enum Dash_controls_leftType {
+    DASH_CONTROLS_LEFT_ABSENT = 0;
+    DASH_CONTROLS_LEFT_PRESENT = 1;
+  }
+  enum Dash_controls_rightType {
+    DASH_CONTROLS_RIGHT_ABSENT = 0;
+    DASH_CONTROLS_RIGHT_PRESENT = 1;
+  }
+  enum Hazard_lightsType {
+    HAZARD_LIGHTS_ABSENT = 0;
+    HAZARD_LIGHTS_PRESENT = 1;
+  }
+  enum HeadlightType {
+    HEADLIGHT_ABSENT = 0;
+    HEADLIGHT_PRESENT = 1;
+  }
+  enum HornType {
+    HORN_ABSENT = 0;
+    HORN_PRESENT = 1;
+  }
+  enum Media_controlsType {
+    MEDIA_CONTROLS_ABSENT = 0;
+    MEDIA_CONTROLS_PRESENT = 1;
+  }
+  enum Parking_brakeType {
+    PARKING_BRAKE_ABSENT = 0;
+    PARKING_BRAKE_PRESENT = 1;
+  }
+  enum ShiftType {
+    SHIFT_ABSENT = 0;
+    SHIFT_PRESENT = 1;
+  }
+  enum SteeringType {
+    STEERING_ABSENT = 0;
+    STEERING_PRESENT = 1;
+  }
+  enum TurnType {
+    TURN_ABSENT = 0;
+    TURN_PRESENT = 1;
+  }
+  enum WiperType {
+    WIPER_ABSENT = 0;
+    WIPER_PRESENT = 1;
+  }
+  enum WatchdogType {
+    WATCHDOG_ABSENT = 0;
+    WATCHDOG_PRESENT = 1;
+  }
+  enum Config_faultType {
+    CONFIG_FAULT_NO_FAULT = 0;
+    CONFIG_FAULT_FAULT = 1;
+  }
+  enum Can_timeout_faultType {
+    CAN_TIMEOUT_FAULT_NO_FAULT = 0;
+    CAN_TIMEOUT_FAULT_FAULT = 1;
+  }
+  enum Internal_supply_voltage_faultType {
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_NO_FAULT = 0;
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_FAULT = 1;
+  }
+  // [] [0|15]
+  optional Component_typeType component_type = 1;
+  // [] [0|1]
+  optional AccelType accel = 2;
+  // [] [0|1]
+  optional BrakeType brake = 3;
+  // [] [0|1]
+  optional Cruise_control_buttonsType cruise_control_buttons = 4;
+  // [] [0|1]
+  optional Dash_controls_leftType dash_controls_left = 5;
+  // [] [0|1]
+  optional Dash_controls_rightType dash_controls_right = 6;
+  // [] [0|1]
+  optional Hazard_lightsType hazard_lights = 7;
+  // [] [0|1]
+  optional HeadlightType headlight = 8;
+  // [] [0|1]
+  optional HornType horn = 9;
+  // [] [0|1]
+  optional Media_controlsType media_controls = 10;
+  // [] [0|1]
+  optional Parking_brakeType parking_brake = 11;
+  // [] [0|1]
+  optional ShiftType shift = 12;
+  // [] [0|1]
+  optional bool spray = 13;
+  // [] [0|1]
+  optional SteeringType steering = 14;
+  // [] [0|1]
+  optional TurnType turn = 15;
+  // [] [0|1]
+  optional WiperType wiper = 16;
+  // [] [0|1]
+  optional WatchdogType watchdog = 17;
+  // [] [0|1]
+  optional bool brake_deccel = 18;
+  // [] [0|1]
+  optional bool rear_pass_door = 19;
+  // Counter shall have the value of 0 with the first message transmission.  It
+  // shall increase by 1 with each subsequent message transmission up to and
+  // including the value of 0xF.  The next message transmission shall be 0, and
+  // this pattern shall repeat. [] [0|15]
+  optional int32 counter = 20;
+  // [] [0|15]
+  optional int32 complement = 21;
+  // [] [0|1]
+  optional Config_faultType config_fault = 22;
+  // [] [0|1]
+  optional Can_timeout_faultType can_timeout_fault = 23;
+  // [] [0|1]
+  optional Internal_supply_voltage_faultType internal_supply_voltage_fault = 24;
+}
+
+message Wheel_speed_rpt_407 {
+  // Report Message
+  // [rad/s] [-327.68|327.67]
+  optional double wheel_spd_rear_right = 1;
+  // [rad/s] [-327.68|327.67]
+  optional double wheel_spd_rear_left = 2;
+  // [rad/s] [-327.68|327.67]
+  optional double wheel_spd_front_right = 3;
+  // [rad/s] [-327.68|327.67]
+  optional double wheel_spd_front_left = 4;
+}
+
+message Steering_motor_rpt_3_406 {
+  // Report Message
+  // [N-m] [-2048.0|2048.0]
+  optional double torque_output = 1;
+  // [N-m] [-2048.0|2048.0]
+  optional double torque_input = 2;
+}
+
+message Steering_motor_rpt_2_405 {
+  // Report Message
+  // [deg C] [-40|210]
+  optional int32 encoder_temperature = 1;
+  // [deg C] [-40|210]
+  optional int32 motor_temperature = 2;
+  // [rad/s] [-12868.0|12868.0]
+  optional double angular_speed = 3;
+}
+
+message Steering_motor_rpt_1_404 {
+  // Report Message
+  // [amps] [-2048.0|2048.0]
+  optional double motor_current = 1;
+  // [radians] [-2048.0|2048.0]
+  optional double shaft_position = 2;
+}
+
+message Brake_motor_rpt_3_403 {
+  // Report Message
+  // [N-m] [-2048.0|2048.0]
+  optional double torque_output = 1;
+  // [N-m] [-2048.0|2048.0]
+  optional double torque_input = 2;
+}
+
+message Brake_motor_rpt_2_402 {
+  // Report Message
+  // [deg C] [-40|210]
+  optional int32 encoder_temperature = 1;
+  // [deg C] [-40|210]
+  optional int32 motor_temperature = 2;
+  // [rad/s] [-12868.0|12868.0]
+  optional double angular_speed = 3;
+}
+
+message Brake_motor_rpt_1_401 {
+  // Report Message
+  // [amps] [-2048.0|2048.0]
+  optional double motor_current = 1;
+  // [radians] [-2048.0|2048.0]
+  optional double shaft_position = 2;
+}
+
+message Vehicle_speed_rpt_400 {
+  // Report Message
+  enum Vehicle_speed_validType {
+    VEHICLE_SPEED_VALID_INVALID = 0;
+    VEHICLE_SPEED_VALID_VALID = 1;
+  }
+  // [m/s] [-327.68|327.67]
+  optional double vehicle_speed = 1;
+  // [] [0|1]
+  optional Vehicle_speed_validType vehicle_speed_valid = 2;
+}
+
+message Software_version_rpt_01_409 {
+  // Report Message
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_major = 1;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_minor = 2;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 patch = 3;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build0 = 4;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build1 = 5;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build2 = 6;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build3 = 7;
+}
+
+message Software_version_rpt_00_408 {
+  // Report Message
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_major = 1;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_minor = 2;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 patch = 3;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build0 = 4;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build1 = 5;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build2 = 6;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build3 = 7;
+}
+
+message Brake_deccel_cmd_13c {
+  // Control Message
+  enum Xbr_ebi_modeType {
+    XBR_EBI_MODE_NO_ENDURANCE_BRAKE_INTEGRATION_ALLOWED = 0;
+    XBR_EBI_MODE_ONLY_ENDURANCE_BRAKES_ALLOWED = 1;
+    XBR_EBI_MODE_ENDURANCE_BRAKE_INTEGRATION_ALLOWED = 2;
+  }
+  enum Xbr_priorityType {
+    XBR_PRIORITY_HIGHEST_PRIORITY = 0;
+    XBR_PRIORITY_HIGH_PRIORITY = 1;
+    XBR_PRIORITY_MEDIUM_PRIORITY = 2;
+    XBR_PRIORITY_LOW_PRIORITY = 3;
+  }
+  enum Xbr_control_modeType {
+    XBR_CONTROL_MODE_OVERRIDE_DISABLE = 0;
+    XBR_CONTROL_MODE_ACCELERATION_CONTROL_WITH_ADDITION_MODE = 1;
+    XBR_CONTROL_MODE_ACCELERATION_CONTROL_WITH_MAXIMUM_MODE = 2;
+  }
+  // [] [0|1]
+  optional bool enable = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [m/s^2] [0|10]
+  optional double brake_deccel_cmd = 4;
+  // [] [0|2]
+  optional Xbr_ebi_modeType xbr_ebi_mode = 5;
+  // [] [0|3]
+  optional Xbr_priorityType xbr_priority = 6;
+  // [] [0|2]
+  optional Xbr_control_modeType xbr_control_mode = 7;
+}
+
+message Date_time_rpt_40f {
+  // Report Message
+  // [sec] [0|60]
+  optional int32 time_second = 1;
+  // [min] [0|60]
+  optional int32 time_minute = 2;
+  // [hr] [0|23]
+  optional int32 time_hour = 3;
+  // [dy] [1|31]
+  optional int32 date_day = 4;
+  // [mon] [1|12]
+  optional int32 date_month = 5;
+  // [yr] [2000|2255]
+  optional int32 date_year = 6;
+}
+
+message Media_controls_cmd_120 {
+  // Control Message
+  enum Media_controls_cmdType {
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_NONE = 0;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_VOICE_COMMAND = 1;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_MUTE = 2;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_PREV_TRACK_ANSWER = 3;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_NEXT_TRACK_HANG_UP = 4;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_VOL_UP = 5;
+    MEDIA_CONTROLS_CMD_MEDIA_CONTROL_VOL_DOWN = 6;
+  }
+  // [] [0|255]
+  optional Media_controls_cmdType media_controls_cmd = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional bool enable = 4;
+}
+
+message Parking_brake_cmd_124 {
+  // Control Message
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional bool parking_brake_cmd = 4;
+}
+
+message Horn_rpt_21c {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_OFF = 0;
+    OUTPUT_VALUE_ON = 1;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_OFF = 0;
+    COMMANDED_VALUE_ON = 1;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_OFF = 0;
+    MANUAL_INPUT_ON = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|1]
+  optional Output_valueType output_value = 8;
+  // [] [0|1]
+  optional Commanded_valueType commanded_value = 9;
+  // [] [0|1]
+  optional Manual_inputType manual_input = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Shift_rpt_228 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_PARK = 0;
+    MANUAL_INPUT_REVERSE = 1;
+    MANUAL_INPUT_NEUTRAL = 2;
+    MANUAL_INPUT_FORWARD_HIGH = 3;
+    MANUAL_INPUT_LOW = 4;
+    MANUAL_INPUT_BETWEEN_GEARS = 5;
+    MANUAL_INPUT_ERROR = 6;
+    MANUAL_INPUT_NONE = 7;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_PARK = 0;
+    COMMANDED_VALUE_REVERSE = 1;
+    COMMANDED_VALUE_NEUTRAL = 2;
+    COMMANDED_VALUE_FORWARD_HIGH = 3;
+    COMMANDED_VALUE_LOW = 4;
+    COMMANDED_VALUE_NONE = 7;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_PARK = 0;
+    OUTPUT_VALUE_REVERSE = 1;
+    OUTPUT_VALUE_NEUTRAL = 2;
+    OUTPUT_VALUE_FORWARD_HIGH = 3;
+    OUTPUT_VALUE_LOW = 4;
+    OUTPUT_VALUE_BETWEEN_GEARS = 5;
+    OUTPUT_VALUE_ERROR = 6;
+    OUTPUT_VALUE_NONE = 7;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|4]
+  optional Manual_inputType manual_input = 8;
+  // [] [0|4]
+  optional Commanded_valueType commanded_value = 9;
+  // [] [0|4]
+  optional Output_valueType output_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Shift_cmd_128 {
+  // Control Message
+  enum Shift_cmdType {
+    SHIFT_CMD_PARK = 0;
+    SHIFT_CMD_REVERSE = 1;
+    SHIFT_CMD_NEUTRAL = 2;
+    SHIFT_CMD_FORWARD_HIGH = 3;
+    SHIFT_CMD_LOW = 4;
+    SHIFT_CMD_NONE = 7;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // FORWARD is also HIGH on vehicles with LOW/HIGH, PARK and LOW only available
+  // on certain Vehicles. [] [0|4]
+  optional Shift_cmdType shift_cmd = 4;
+}
+
+message Parking_brake_rpt_224 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|1]
+  optional bool output_value = 8;
+  // [] [0|1]
+  optional bool commanded_value = 9;
+  // [] [0|1]
+  optional bool manual_input = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Media_controls_rpt_220 {
+  // Report Message
+  enum Output_valueType {
+    OUTPUT_VALUE_MEDIA_CONTROL_NONE = 0;
+    OUTPUT_VALUE_MEDIA_CONTROL_VOICE_COMMAND = 1;
+    OUTPUT_VALUE_MEDIA_CONTROL_MUTE = 2;
+    OUTPUT_VALUE_MEDIA_CONTROL_PREV_TRACK_ANSWER = 3;
+    OUTPUT_VALUE_MEDIA_CONTROL_NEXT_TRACK_HANG_UP = 4;
+    OUTPUT_VALUE_MEDIA_CONTROL_VOL_UP = 5;
+    OUTPUT_VALUE_MEDIA_CONTROL_VOL_DOWN = 6;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_MEDIA_CONTROL_NONE = 0;
+    COMMANDED_VALUE_MEDIA_CONTROL_VOICE_COMMAND = 1;
+    COMMANDED_VALUE_MEDIA_CONTROL_MUTE = 2;
+    COMMANDED_VALUE_MEDIA_CONTROL_PREV_TRACK_ANSWER = 3;
+    COMMANDED_VALUE_MEDIA_CONTROL_NEXT_TRACK_HANG_UP = 4;
+    COMMANDED_VALUE_MEDIA_CONTROL_VOL_UP = 5;
+    COMMANDED_VALUE_MEDIA_CONTROL_VOL_DOWN = 6;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_MEDIA_CONTROL_NONE = 0;
+    MANUAL_INPUT_MEDIA_CONTROL_VOICE_COMMAND = 1;
+    MANUAL_INPUT_MEDIA_CONTROL_MUTE = 2;
+    MANUAL_INPUT_MEDIA_CONTROL_PREV_TRACK_ANSWER = 3;
+    MANUAL_INPUT_MEDIA_CONTROL_NEXT_TRACK_HANG_UP = 4;
+    MANUAL_INPUT_MEDIA_CONTROL_VOL_UP = 5;
+    MANUAL_INPUT_MEDIA_CONTROL_VOL_DOWN = 6;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|255]
+  optional Output_valueType output_value = 1;
+  // [] [0|255]
+  optional Commanded_valueType commanded_value = 2;
+  // [] [0|255]
+  optional Manual_inputType manual_input = 3;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 4;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 5;
+  // [] [0|1]
+  optional bool override_active = 6;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 7;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 8;
+  // [] [0|1]
+  optional bool enabled = 9;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Global_rpt_10 {
+  // Report Message
+  enum Pacmod_system_enabledType {
+    PACMOD_SYSTEM_ENABLED_CONTROL_DISABLED = 0;
+    PACMOD_SYSTEM_ENABLED_CONTROL_ENABLED = 1;
+  }
+  enum Pacmod_system_override_activeType {
+    PACMOD_SYSTEM_OVERRIDE_ACTIVE_NOT_OVERRIDDEN = 0;
+    PACMOD_SYSTEM_OVERRIDE_ACTIVE_OVERRIDDEN = 1;
+  }
+  enum Brk_can_timeoutType {
+    BRK_CAN_TIMEOUT_NO_ACTIVE_CAN_TIMEOUT = 0;
+    BRK_CAN_TIMEOUT_ACTIVE_CAN_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional bool config_fault_active = 1;
+  // [] [0|1]
+  optional bool pacmod_subsystem_timeout = 2;
+  // [] [0|1]
+  optional Pacmod_system_enabledType pacmod_system_enabled = 3;
+  // [] [0|1]
+  optional Pacmod_system_override_activeType pacmod_system_override_active = 4;
+  // [] [0|1]
+  optional bool pacmod_system_fault_active = 5;
+  // [] [0|1]
+  optional bool veh_can_timeout = 6;
+  // [] [0|1]
+  optional bool str_can_timeout = 7;
+  // [] [0|1]
+  optional Brk_can_timeoutType brk_can_timeout = 8;
+  // [] [0|1]
+  optional bool usr_can_timeout = 9;
+  // [] [0|65535]
+  optional int32 usr_can_read_errors = 10;
+}
+
+message Lat_lon_heading_rpt_40e {
+  // Report Message
+  // [deg] [-327.68|327.67]
+  optional double heading = 1;
+  // [sec] [-128|127]
+  optional int32 longitude_seconds = 2;
+  // [min] [-128|127]
+  optional int32 longitude_minutes = 3;
+  // [deg] [-128|127]
+  optional int32 longitude_degrees = 4;
+  // [sec] [-128|127]
+  optional int32 latitude_seconds = 5;
+  // [min] [-128|127]
+  optional int32 latitude_minutes = 6;
+  // [deg] [-128|127]
+  optional int32 latitude_degrees = 7;
+}
+
+message Yaw_rate_rpt_40d {
+  // Report Message
+  // [rad/s] [-327.68|327.67]
+  optional double yaw_rate = 1;
+}
+
+message Software_version_rpt_03_40b {
+  // Report Message
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_major = 1;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_minor = 2;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 patch = 3;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build0 = 4;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build1 = 5;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build2 = 6;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build3 = 7;
+}
+
+message Software_version_rpt_02_40a {
+  // Report Message
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_major = 1;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 my_minor = 2;
+  // MAJOR, MINOR, and PATCH shall be the software version number and shall be
+  // defined by Sematic Versioning 2.0.  For build numbers other than 0000, it
+  // shall be the most recent software release. [] [0|255]
+  optional int32 patch = 3;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build0 = 4;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build1 = 5;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build2 = 6;
+  // BUILD0-BUILD3 shall represent the software build number and shall be
+  // constrained to characters A-Z and 0-9. [ASCII] [0|255]
+  optional int32 build3 = 7;
+}
+
+message Vin_rpt_414 {
+  // Report Message
+  // [] [0|0]
+  optional int32 veh_serial = 1;
+  // [] [0|0]
+  optional int32 veh_my_code = 2;
+  // [] [0|0]
+  optional int32 veh_mfg_code = 3;
+}
+
+message Occupancy_rpt_415 {
+  // Report Message
+  // [] [0|1]
+  optional bool rear_seatbelt_buckled_is_valid = 1;
+  // [] [0|1]
+  optional bool pass_seatbelt_buckled_is_valid = 2;
+  // [] [0|1]
+  optional bool driver_seatbelt_buckled_is_valid = 3;
+  // [] [0|1]
+  optional bool rear_seat_occupied_is_valid = 4;
+  // [] [0|1]
+  optional bool pass_seat_occupied_is_valid = 5;
+  // [] [0|1]
+  optional bool driver_seat_occupied_is_valid = 6;
+  // [] [0|1]
+  optional bool rear_seatbelt_buckled = 7;
+  // [] [0|1]
+  optional bool pass_seatbelt_buckled = 8;
+  // [] [0|1]
+  optional bool driver_seatbelt_buckled = 9;
+  // [] [0|1]
+  optional bool rear_seat_occupied = 10;
+  // [] [0|1]
+  optional bool pass_seat_occupied = 11;
+  // [] [0|1]
+  optional bool driver_seat_occupied = 12;
+}
+
+message Interior_lights_rpt_416 {
+  // Report Message
+  enum Dim_levelType {
+    DIM_LEVEL_DIM_LEVEL_MIN = 0;
+    DIM_LEVEL_DIM_LEVEL_1 = 1;
+    DIM_LEVEL_DIM_LEVEL_2 = 2;
+    DIM_LEVEL_DIM_LEVEL_3 = 3;
+    DIM_LEVEL_DIM_LEVEL_4 = 4;
+    DIM_LEVEL_DIM_LEVEL_5 = 5;
+    DIM_LEVEL_DIM_LEVEL_6 = 6;
+    DIM_LEVEL_DIM_LEVEL_7 = 7;
+    DIM_LEVEL_DIM_LEVEL_8 = 8;
+    DIM_LEVEL_DIM_LEVEL_9 = 9;
+    DIM_LEVEL_DIM_LEVEL_10 = 10;
+    DIM_LEVEL_DIM_LEVEL_11 = 11;
+    DIM_LEVEL_DIM_LEVEL_MAX = 12;
+  }
+  // [] [0|1]
+  optional bool ambient_light_sensor_is_valid = 1;
+  // [] [0|1]
+  optional bool dim_level_is_valid = 2;
+  // [] [0|1]
+  optional bool mood_lights_on_is_valid = 3;
+  // [] [0|1]
+  optional bool rear_dome_lights_on_is_valid = 4;
+  // [] [0|1]
+  optional bool front_dome_lights_on_is_valid = 5;
+  // [] [0|12]
+  optional Dim_levelType dim_level = 6;
+  // [] [0|1]
+  optional bool ambient_light_sensor = 7;
+  // [] [0|1]
+  optional bool mood_lights_on = 8;
+  // [] [0|1]
+  optional bool rear_dome_lights_on = 9;
+  // [] [0|1]
+  optional bool front_dome_lights_on = 10;
+}
+
+message Door_rpt_417 {
+  // Report Message
+  // [] [0|1]
+  optional bool fuel_door_open_is_valid = 1;
+  // [] [0|1]
+  optional bool trunk_open_is_valid = 2;
+  // [] [0|1]
+  optional bool hood_open_is_valid = 3;
+  // [] [0|1]
+  optional bool rear_pass_door_open_is_valid = 4;
+  // [] [0|1]
+  optional bool rear_driver_door_open_is_valid = 5;
+  // [] [0|1]
+  optional bool pass_door_open_is_valid = 6;
+  // [] [0|1]
+  optional bool driver_door_open_is_valid = 7;
+  // [] [0|1]
+  optional bool fuel_door_open = 8;
+  // [] [0|1]
+  optional bool trunk_open = 9;
+  // [] [0|1]
+  optional bool hood_open = 10;
+  // [] [0|1]
+  optional bool rear_pass_door_open = 11;
+  // [] [0|1]
+  optional bool rear_driver_door_open = 12;
+  // [] [0|1]
+  optional bool pass_door_open = 13;
+  // [] [0|1]
+  optional bool driver_door_open = 14;
+}
+
+message Detected_object_rpt_411 {
+  // Report Message
+  // [m] [0|16777.215]
+  optional double front_object_distance_high_res = 1;
+  // [m] [0|16777.215]
+  optional double front_object_distance_low_res = 2;
+}
+
+message Veh_specific_rpt_1_412 {
+  // Report Message
+  // [] [0|0]
+  optional int32 shift_pos_2 = 1;
+  // [] [0|0]
+  optional int32 shift_pos_1 = 2;
+}
+
+message Veh_dynamics_rpt_413 {
+  // Report Message
+  // [] [-32.768|32.767]
+  optional double veh_g_forces = 1;
+}
+
+message Rear_lights_rpt_418 {
+  // Report Message
+  // [] [0|1]
+  optional bool reverse_lights_on_is_valid = 1;
+  // [] [0|1]
+  optional bool brake_lights_on_is_valid = 2;
+  // [] [0|1]
+  optional bool reverse_lights_on = 3;
+  // [] [0|1]
+  optional bool brake_lights_on = 4;
+}
+
+message Linear_accel_rpt_419 {
+  // Report Message
+  enum Lateral_new_data_rxType {
+    LATERAL_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    LATERAL_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Longitudnal_new_data_rxType {
+    LONGITUDNAL_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    LONGITUDNAL_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Vertical_new_data_rxType {
+    VERTICAL_NEW_DATA_RX_NEW_DATA_NOT_RX = 0;
+    VERTICAL_NEW_DATA_RX_NEW_DATA_RX = 1;
+  }
+  enum Lateral_validType {
+    LATERAL_VALID_NOT_VALID = 0;
+    LATERAL_VALID_VALID = 1;
+  }
+  enum Longitudnal_validType {
+    LONGITUDNAL_VALID_NOT_VALID = 0;
+    LONGITUDNAL_VALID_VALID = 1;
+  }
+  enum Vertical_validType {
+    VERTICAL_VALID_NOT_VALID = 0;
+    VERTICAL_VALID_VALID = 1;
+  }
+  // [] [0|1]
+  optional Lateral_new_data_rxType lateral_new_data_rx = 1;
+  // [] [0|1]
+  optional Longitudnal_new_data_rxType longitudnal_new_data_rx = 2;
+  // [] [0|1]
+  optional Vertical_new_data_rxType vertical_new_data_rx = 3;
+  // [] [0|1]
+  optional Lateral_validType lateral_valid = 4;
+  // [] [0|1]
+  optional Longitudnal_validType longitudnal_valid = 5;
+  // [] [0|1]
+  optional Vertical_validType vertical_valid = 6;
+  // [m/s^2] [-327.68|327.67]
+  optional double lateral_accel = 7;
+  // [m/s^2] [-327.68|327.67]
+  optional double longitudnal_accel = 8;
+  // [m/s^2] [-327.68|327.67]
+  optional double vertical_accel = 9;
+}
+
+message Headlight_aux_rpt_318 {
+  // Report Message
+  enum Headlights_modeType {
+    HEADLIGHTS_MODE_HEADLIGHTS_OFF = 0;
+    HEADLIGHTS_MODE_PARKING_LIGHTS_ONLY = 1;
+    HEADLIGHTS_MODE_HEADLIGHTS_ON_MANUAL_MODE = 2;
+    HEADLIGHTS_MODE_HEADLIGHTS_ON_AUTO_MODE = 3;
+  }
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool headlights_mode_avail = 1;
+  // [] [0|3]
+  optional Headlights_modeType headlights_mode = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool fog_lights_on_avail = 3;
+  // [] [0|1]
+  optional bool fog_lights_on = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool headlights_on_bright_avail = 5;
+  // [] [0|1]
+  optional bool headlights_on_bright = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool headlights_on_avail = 7;
+  // [] [0|1]
+  optional bool headlights_on = 8;
+}
+
+message Watchdog_rpt_600 {
+  // Report Message
+  enum Global_enable_flagType {
+    GLOBAL_ENABLE_FLAG_FALSE = 0;
+    GLOBAL_ENABLE_FLAG_TRUE = 1;
+  }
+  enum Global_override_activeType {
+    GLOBAL_OVERRIDE_ACTIVE_FALSE = 0;
+    GLOBAL_OVERRIDE_ACTIVE_TRUE = 1;
+  }
+  enum Global_command_timeout_errorType {
+    GLOBAL_COMMAND_TIMEOUT_ERROR_FALSE = 0;
+    GLOBAL_COMMAND_TIMEOUT_ERROR_TRUE = 1;
+  }
+  enum Global_pacmod_subsystem_timeoutType {
+    GLOBAL_PACMOD_SUBSYSTEM_TIMEOUT_FALSE = 0;
+    GLOBAL_PACMOD_SUBSYSTEM_TIMEOUT_TRUE = 1;
+  }
+  enum Global_vehicle_can_timeoutType {
+    GLOBAL_VEHICLE_CAN_TIMEOUT_FALSE = 0;
+    GLOBAL_VEHICLE_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Global_pacmod_system_fault_activeType {
+    GLOBAL_PACMOD_SYSTEM_FAULT_ACTIVE_FALSE = 0;
+    GLOBAL_PACMOD_SYSTEM_FAULT_ACTIVE_TRUE = 1;
+  }
+  enum Global_config_fault_activeType {
+    GLOBAL_CONFIG_FAULT_ACTIVE_FALSE = 0;
+    GLOBAL_CONFIG_FAULT_ACTIVE_TRUE = 1;
+  }
+  enum Global_timeoutType {
+    GLOBAL_TIMEOUT_FALSE = 0;
+    GLOBAL_TIMEOUT_TRUE = 1;
+  }
+  enum Accel_enabledType {
+    ACCEL_ENABLED_FALSE = 0;
+    ACCEL_ENABLED_TRUE = 1;
+  }
+  enum Accel_override_activeType {
+    ACCEL_OVERRIDE_ACTIVE_FALSE = 0;
+    ACCEL_OVERRIDE_ACTIVE_TRUE = 1;
+  }
+  enum Accel_command_output_faultType {
+    ACCEL_COMMAND_OUTPUT_FAULT_FALSE = 0;
+    ACCEL_COMMAND_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Accel_input_output_faultType {
+    ACCEL_INPUT_OUTPUT_FAULT_FALSE = 0;
+    ACCEL_INPUT_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Accel_output_reported_faultType {
+    ACCEL_OUTPUT_REPORTED_FAULT_FALSE = 0;
+    ACCEL_OUTPUT_REPORTED_FAULT_TRUE = 1;
+  }
+  enum Accel_pacmod_faultType {
+    ACCEL_PACMOD_FAULT_FALSE = 0;
+    ACCEL_PACMOD_FAULT_TRUE = 1;
+  }
+  enum Accel_vehicle_faultType {
+    ACCEL_VEHICLE_FAULT_FALSE = 0;
+    ACCEL_VEHICLE_FAULT_TRUE = 1;
+  }
+  enum Accel_timeoutType {
+    ACCEL_TIMEOUT_FALSE = 0;
+    ACCEL_TIMEOUT_TRUE = 1;
+  }
+  enum Brake_enabledType {
+    BRAKE_ENABLED_FALSE = 0;
+    BRAKE_ENABLED_TRUE = 1;
+  }
+  enum Brake_override_activeType {
+    BRAKE_OVERRIDE_ACTIVE_FALSE = 0;
+    BRAKE_OVERRIDE_ACTIVE_TRUE = 1;
+  }
+  enum Brake_command_output_faultType {
+    BRAKE_COMMAND_OUTPUT_FAULT_FALSE = 0;
+    BRAKE_COMMAND_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Brake_input_output_faultType {
+    BRAKE_INPUT_OUTPUT_FAULT_FALSE = 0;
+    BRAKE_INPUT_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Brake_output_reported_faultType {
+    BRAKE_OUTPUT_REPORTED_FAULT_FALSE = 0;
+    BRAKE_OUTPUT_REPORTED_FAULT_TRUE = 1;
+  }
+  enum Brake_pacmod_faultType {
+    BRAKE_PACMOD_FAULT_FALSE = 0;
+    BRAKE_PACMOD_FAULT_TRUE = 1;
+  }
+  enum Brake_vehicle_faultType {
+    BRAKE_VEHICLE_FAULT_FALSE = 0;
+    BRAKE_VEHICLE_FAULT_TRUE = 1;
+  }
+  enum Brake_timeoutType {
+    BRAKE_TIMEOUT_FALSE = 0;
+    BRAKE_TIMEOUT_TRUE = 1;
+  }
+  enum Shift_enabledType {
+    SHIFT_ENABLED_FALSE = 0;
+    SHIFT_ENABLED_TRUE = 1;
+  }
+  enum Shift_override_activeType {
+    SHIFT_OVERRIDE_ACTIVE_FALSE = 0;
+    SHIFT_OVERRIDE_ACTIVE_TRUE = 1;
+  }
+  enum Shift_command_output_faultType {
+    SHIFT_COMMAND_OUTPUT_FAULT_FALSE = 0;
+    SHIFT_COMMAND_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Shift_input_output_faultType {
+    SHIFT_INPUT_OUTPUT_FAULT_FALSE = 0;
+    SHIFT_INPUT_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Shift_output_reported_faultType {
+    SHIFT_OUTPUT_REPORTED_FAULT_FALSE = 0;
+    SHIFT_OUTPUT_REPORTED_FAULT_TRUE = 1;
+  }
+  enum Shift_pacmod_faultType {
+    SHIFT_PACMOD_FAULT_FALSE = 0;
+    SHIFT_PACMOD_FAULT_TRUE = 1;
+  }
+  enum Shift_vehicle_faultType {
+    SHIFT_VEHICLE_FAULT_FALSE = 0;
+    SHIFT_VEHICLE_FAULT_TRUE = 1;
+  }
+  enum Shift_timeoutType {
+    SHIFT_TIMEOUT_FALSE = 0;
+    SHIFT_TIMEOUT_TRUE = 1;
+  }
+  enum Steer_enabledType {
+    STEER_ENABLED_FALSE = 0;
+    STEER_ENABLED_TRUE = 1;
+  }
+  enum Steer_override_activeType {
+    STEER_OVERRIDE_ACTIVE_FALSE = 0;
+    STEER_OVERRIDE_ACTIVE_TRUE = 1;
+  }
+  enum Steer_command_output_faultType {
+    STEER_COMMAND_OUTPUT_FAULT_FALSE = 0;
+    STEER_COMMAND_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Steer_input_output_faultType {
+    STEER_INPUT_OUTPUT_FAULT_FALSE = 0;
+    STEER_INPUT_OUTPUT_FAULT_TRUE = 1;
+  }
+  enum Steer_output_reported_faultType {
+    STEER_OUTPUT_REPORTED_FAULT_FALSE = 0;
+    STEER_OUTPUT_REPORTED_FAULT_TRUE = 1;
+  }
+  enum Steer_pacmod_faultType {
+    STEER_PACMOD_FAULT_FALSE = 0;
+    STEER_PACMOD_FAULT_TRUE = 1;
+  }
+  enum Steer_vehicle_faultType {
+    STEER_VEHICLE_FAULT_FALSE = 0;
+    STEER_VEHICLE_FAULT_TRUE = 1;
+  }
+  enum Steer_timeoutType {
+    STEER_TIMEOUT_FALSE = 0;
+    STEER_TIMEOUT_TRUE = 1;
+  }
+  enum Mod1_config_faultType {
+    MOD1_CONFIG_FAULT_FALSE = 0;
+    MOD1_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mod1_can_timeoutType {
+    MOD1_CAN_TIMEOUT_FALSE = 0;
+    MOD1_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mod1_counter_faultType {
+    MOD1_COUNTER_FAULT_FALSE = 0;
+    MOD1_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mod2_config_faultType {
+    MOD2_CONFIG_FAULT_FALSE = 0;
+    MOD2_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mod2_can_timeoutType {
+    MOD2_CAN_TIMEOUT_FALSE = 0;
+    MOD2_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mod2_counter_faultType {
+    MOD2_COUNTER_FAULT_FALSE = 0;
+    MOD2_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mod3_config_faultType {
+    MOD3_CONFIG_FAULT_FALSE = 0;
+    MOD3_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mod3_can_timeoutType {
+    MOD3_CAN_TIMEOUT_FALSE = 0;
+    MOD3_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mod3_counter_faultType {
+    MOD3_COUNTER_FAULT_FALSE = 0;
+    MOD3_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mini1_rpt_timeoutType {
+    MINI1_RPT_TIMEOUT_FALSE = 0;
+    MINI1_RPT_TIMEOUT_TRUE = 1;
+  }
+  enum Mini1_config_faultType {
+    MINI1_CONFIG_FAULT_FALSE = 0;
+    MINI1_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mini1_can_timeoutType {
+    MINI1_CAN_TIMEOUT_FALSE = 0;
+    MINI1_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mini1_counter_faultType {
+    MINI1_COUNTER_FAULT_FALSE = 0;
+    MINI1_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mini2_rpt_timeoutType {
+    MINI2_RPT_TIMEOUT_FALSE = 0;
+    MINI2_RPT_TIMEOUT_TRUE = 1;
+  }
+  enum Mini2_config_faultType {
+    MINI2_CONFIG_FAULT_FALSE = 0;
+    MINI2_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mini2_can_timeoutType {
+    MINI2_CAN_TIMEOUT_FALSE = 0;
+    MINI2_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mini2_counter_faultType {
+    MINI2_COUNTER_FAULT_FALSE = 0;
+    MINI2_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mini3_rpt_timeoutType {
+    MINI3_RPT_TIMEOUT_FALSE = 0;
+    MINI3_RPT_TIMEOUT_TRUE = 1;
+  }
+  enum Mini3_config_faultType {
+    MINI3_CONFIG_FAULT_FALSE = 0;
+    MINI3_CONFIG_FAULT_TRUE = 1;
+  }
+  enum Mini3_can_timeoutType {
+    MINI3_CAN_TIMEOUT_FALSE = 0;
+    MINI3_CAN_TIMEOUT_TRUE = 1;
+  }
+  enum Mini3_counter_faultType {
+    MINI3_COUNTER_FAULT_FALSE = 0;
+    MINI3_COUNTER_FAULT_TRUE = 1;
+  }
+  enum Mod_system_present_faultType {
+    MOD_SYSTEM_PRESENT_FAULT_FALSE = 0;
+    MOD_SYSTEM_PRESENT_FAULT_TRUE = 1;
+  }
+  enum Mini_system_present_faultType {
+    MINI_SYSTEM_PRESENT_FAULT_FALSE = 0;
+    MINI_SYSTEM_PRESENT_FAULT_TRUE = 1;
+  }
+  // [] [0|1]
+  optional Global_enable_flagType global_enable_flag = 1;
+  // [] [0|1]
+  optional Global_override_activeType global_override_active = 2;
+  // [] [0|1]
+  optional Global_command_timeout_errorType global_command_timeout_error = 3;
+  // [] [0|1]
+  optional Global_pacmod_subsystem_timeoutType global_pacmod_subsystem_timeout =
+      4;
+  // [] [0|1]
+  optional Global_vehicle_can_timeoutType global_vehicle_can_timeout = 5;
+  // [] [0|1]
+  optional Global_pacmod_system_fault_activeType
+      global_pacmod_system_fault_active = 6;
+  // [] [0|1]
+  optional Global_config_fault_activeType global_config_fault_active = 7;
+  // [] [0|1]
+  optional Global_timeoutType global_timeout = 8;
+  // [] [0|1]
+  optional Accel_enabledType accel_enabled = 9;
+  // [] [0|1]
+  optional Accel_override_activeType accel_override_active = 10;
+  // [] [0|1]
+  optional Accel_command_output_faultType accel_command_output_fault = 11;
+  // [] [0|1]
+  optional Accel_input_output_faultType accel_input_output_fault = 12;
+  // [] [0|1]
+  optional Accel_output_reported_faultType accel_output_reported_fault = 13;
+  // [] [0|1]
+  optional Accel_pacmod_faultType accel_pacmod_fault = 14;
+  // [] [0|1]
+  optional Accel_vehicle_faultType accel_vehicle_fault = 15;
+  // [] [0|1]
+  optional Accel_timeoutType accel_timeout = 16;
+  // [] [0|1]
+  optional Brake_enabledType brake_enabled = 17;
+  // [] [0|1]
+  optional Brake_override_activeType brake_override_active = 18;
+  // [] [0|1]
+  optional Brake_command_output_faultType brake_command_output_fault = 19;
+  // [] [0|1]
+  optional Brake_input_output_faultType brake_input_output_fault = 20;
+  // [] [0|1]
+  optional Brake_output_reported_faultType brake_output_reported_fault = 21;
+  // [] [0|1]
+  optional Brake_pacmod_faultType brake_pacmod_fault = 22;
+  // [] [0|1]
+  optional Brake_vehicle_faultType brake_vehicle_fault = 23;
+  // [] [0|1]
+  optional Brake_timeoutType brake_timeout = 24;
+  // [] [0|1]
+  optional Shift_enabledType shift_enabled = 25;
+  // [] [0|1]
+  optional Shift_override_activeType shift_override_active = 26;
+  // [] [0|1]
+  optional Shift_command_output_faultType shift_command_output_fault = 27;
+  // [] [0|1]
+  optional Shift_input_output_faultType shift_input_output_fault = 28;
+  // [] [0|1]
+  optional Shift_output_reported_faultType shift_output_reported_fault = 29;
+  // [] [0|1]
+  optional Shift_pacmod_faultType shift_pacmod_fault = 30;
+  // [] [0|1]
+  optional Shift_vehicle_faultType shift_vehicle_fault = 31;
+  // [] [0|1]
+  optional Shift_timeoutType shift_timeout = 32;
+  // [] [0|1]
+  optional Steer_enabledType steer_enabled = 33;
+  // [] [0|1]
+  optional Steer_override_activeType steer_override_active = 34;
+  // [] [0|1]
+  optional Steer_command_output_faultType steer_command_output_fault = 35;
+  // [] [0|1]
+  optional Steer_input_output_faultType steer_input_output_fault = 36;
+  // [] [0|1]
+  optional Steer_output_reported_faultType steer_output_reported_fault = 37;
+  // [] [0|1]
+  optional Steer_pacmod_faultType steer_pacmod_fault = 38;
+  // [] [0|1]
+  optional Steer_vehicle_faultType steer_vehicle_fault = 39;
+  // [] [0|1]
+  optional Steer_timeoutType steer_timeout = 40;
+  // [] [0|1]
+  optional Mod1_config_faultType mod1_config_fault = 41;
+  // [] [0|1]
+  optional Mod1_can_timeoutType mod1_can_timeout = 42;
+  // [] [0|1]
+  optional Mod1_counter_faultType mod1_counter_fault = 43;
+  // [] [0|1]
+  optional Mod2_config_faultType mod2_config_fault = 44;
+  // [] [0|1]
+  optional Mod2_can_timeoutType mod2_can_timeout = 45;
+  // [] [0|1]
+  optional Mod2_counter_faultType mod2_counter_fault = 46;
+  // [] [0|1]
+  optional Mod3_config_faultType mod3_config_fault = 47;
+  // [] [0|1]
+  optional Mod3_can_timeoutType mod3_can_timeout = 48;
+  // [] [0|1]
+  optional Mod3_counter_faultType mod3_counter_fault = 49;
+  // [] [0|1]
+  optional Mini1_rpt_timeoutType mini1_rpt_timeout = 50;
+  // [] [0|1]
+  optional Mini1_config_faultType mini1_config_fault = 51;
+  // [] [0|1]
+  optional Mini1_can_timeoutType mini1_can_timeout = 52;
+  // [] [0|1]
+  optional Mini1_counter_faultType mini1_counter_fault = 53;
+  // [] [0|1]
+  optional Mini2_rpt_timeoutType mini2_rpt_timeout = 54;
+  // [] [0|1]
+  optional Mini2_config_faultType mini2_config_fault = 55;
+  // [] [0|1]
+  optional Mini2_can_timeoutType mini2_can_timeout = 56;
+  // [] [0|1]
+  optional Mini2_counter_faultType mini2_counter_fault = 57;
+  // [] [0|1]
+  optional Mini3_rpt_timeoutType mini3_rpt_timeout = 58;
+  // [] [0|1]
+  optional Mini3_config_faultType mini3_config_fault = 59;
+  // [] [0|1]
+  optional Mini3_can_timeoutType mini3_can_timeout = 60;
+  // [] [0|1]
+  optional Mini3_counter_faultType mini3_counter_fault = 61;
+  // [] [0|1]
+  optional Mod_system_present_faultType mod_system_present_fault = 62;
+  // [] [0|1]
+  optional Mini_system_present_faultType mini_system_present_fault = 63;
+  // [] [0|1]
+  optional bool global_internal_power_supply_fault = 64;
+}
+
+message Dash_controls_left_cmd_10c {
+  // Control Message
+  enum Dash_controls_buttonType {
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_NONE = 0;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_OK = 1;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_LEFT = 2;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_RIGHT = 3;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_UP = 4;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_DOWN = 5;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|255]
+  optional Dash_controls_buttonType dash_controls_button = 4;
+}
+
+message Hazard_lights_cmd_114 {
+  // Control Message
+  // [] [0|1]
+  optional bool hazard_lights_cmd = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional bool enable = 4;
+}
+
+message Dash_controls_left_rpt_20c {
+  // Report Message
+  enum Output_valueType {
+    OUTPUT_VALUE_DASH_CONTROL_NONE = 0;
+    OUTPUT_VALUE_DASH_CONTROL_OK = 1;
+    OUTPUT_VALUE_DASH_CONTROL_LEFT = 2;
+    OUTPUT_VALUE_DASH_CONTROL_RIGHT = 3;
+    OUTPUT_VALUE_DASH_CONTROL_UP = 4;
+    OUTPUT_VALUE_DASH_CONTROL_DOWN = 5;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_DASH_CONTROL_NONE = 0;
+    COMMANDED_VALUE_DASH_CONTROL_OK = 1;
+    COMMANDED_VALUE_DASH_CONTROL_LEFT = 2;
+    COMMANDED_VALUE_DASH_CONTROL_RIGHT = 3;
+    COMMANDED_VALUE_DASH_CONTROL_UP = 4;
+    COMMANDED_VALUE_DASH_CONTROL_DOWN = 5;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_DASH_CONTROL_NONE = 0;
+    MANUAL_INPUT_DASH_CONTROL_OK = 1;
+    MANUAL_INPUT_DASH_CONTROL_LEFT = 2;
+    MANUAL_INPUT_DASH_CONTROL_RIGHT = 3;
+    MANUAL_INPUT_DASH_CONTROL_UP = 4;
+    MANUAL_INPUT_DASH_CONTROL_DOWN = 5;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|255]
+  optional Output_valueType output_value = 1;
+  // [] [0|255]
+  optional Commanded_valueType commanded_value = 2;
+  // [] [0|255]
+  optional Manual_inputType manual_input = 3;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 4;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 5;
+  // [] [0|1]
+  optional bool override_active = 6;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 7;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 8;
+  // [] [0|1]
+  optional bool enabled = 9;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Sprayer_rpt_238 {
+  // Report Message
+  // [] [0|1]
+  optional bool enabled = 1;
+  // [] [0|1]
+  optional bool override_active = 2;
+  // [] [0|1]
+  optional bool command_output_fault = 3;
+  // [] [0|1]
+  optional bool input_output_fault = 4;
+  // [] [0|1]
+  optional bool output_reported_fault = 5;
+  // [] [0|1]
+  optional bool pacmod_fault = 6;
+  // [] [0|1]
+  optional bool vehicle_fault = 7;
+  // [] [0|1]
+  optional bool command_timeout = 8;
+  // [] [0|1]
+  optional bool manual_input = 9;
+  // [] [0|1]
+  optional bool commanded_value = 10;
+  // [] [0|1]
+  optional bool output_value = 11;
+}
+
+message Dash_controls_right_cmd_110 {
+  // Control Message
+  enum Dash_controls_buttonType {
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_NONE = 0;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_OK = 1;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_LEFT = 2;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_RIGHT = 3;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_UP = 4;
+    DASH_CONTROLS_BUTTON_DASH_CONTROL_DOWN = 5;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|255]
+  optional Dash_controls_buttonType dash_controls_button = 4;
+}
+
+message Wiper_rpt_234 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_WIPERS_OFF = 0;
+    OUTPUT_VALUE_INTERMITTENT_1 = 1;
+    OUTPUT_VALUE_INTERMITTENT_2 = 2;
+    OUTPUT_VALUE_INTERMITTENT_3 = 3;
+    OUTPUT_VALUE_INTERMITTENT_4 = 4;
+    OUTPUT_VALUE_INTERMITTENT_5 = 5;
+    OUTPUT_VALUE_INTERMITTENT_6 = 6;
+    OUTPUT_VALUE_INTERMITTENT_7 = 7;
+    OUTPUT_VALUE_INTERMITTENT_8 = 8;
+    OUTPUT_VALUE_INTERMITTENT_9 = 9;
+    OUTPUT_VALUE_INTERMITTENT_10 = 10;
+    OUTPUT_VALUE_LOW = 253;
+    OUTPUT_VALUE_MEDIUM = 254;
+    OUTPUT_VALUE_HIGH = 255;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_WIPERS_OFF = 0;
+    COMMANDED_VALUE_INTERMITTENT_1 = 1;
+    COMMANDED_VALUE_INTERMITTENT_2 = 2;
+    COMMANDED_VALUE_INTERMITTENT_3 = 3;
+    COMMANDED_VALUE_INTERMITTENT_4 = 4;
+    COMMANDED_VALUE_INTERMITTENT_5 = 5;
+    COMMANDED_VALUE_INTERMITTENT_6 = 6;
+    COMMANDED_VALUE_INTERMITTENT_7 = 7;
+    COMMANDED_VALUE_INTERMITTENT_8 = 8;
+    COMMANDED_VALUE_INTERMITTENT_9 = 9;
+    COMMANDED_VALUE_INTERMITTENT_10 = 10;
+    COMMANDED_VALUE_LOW = 253;
+    COMMANDED_VALUE_MEDIUM = 254;
+    COMMANDED_VALUE_HIGH = 255;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_WIPERS_OFF = 0;
+    MANUAL_INPUT_INTERMITTENT_1 = 1;
+    MANUAL_INPUT_INTERMITTENT_2 = 2;
+    MANUAL_INPUT_INTERMITTENT_3 = 3;
+    MANUAL_INPUT_INTERMITTENT_4 = 4;
+    MANUAL_INPUT_INTERMITTENT_5 = 5;
+    MANUAL_INPUT_INTERMITTENT_6 = 6;
+    MANUAL_INPUT_INTERMITTENT_7 = 7;
+    MANUAL_INPUT_INTERMITTENT_8 = 8;
+    MANUAL_INPUT_INTERMITTENT_9 = 9;
+    MANUAL_INPUT_INTERMITTENT_10 = 10;
+    MANUAL_INPUT_LOW = 253;
+    MANUAL_INPUT_MEDIUM = 254;
+    MANUAL_INPUT_HIGH = 255;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|7]
+  optional Output_valueType output_value = 8;
+  // [] [0|7]
+  optional Commanded_valueType commanded_value = 9;
+  // [] [0|7]
+  optional Manual_inputType manual_input = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Global_cmd_80 {
+  // Control Message
+  // [] [0|1]
+  optional bool clear_faults = 1;
+}
+
+message Turn_rpt_230 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_RIGHT = 0;
+    MANUAL_INPUT_NONE = 1;
+    MANUAL_INPUT_LEFT = 2;
+    MANUAL_INPUT_HAZARD = 3;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_RIGHT = 0;
+    COMMANDED_VALUE_NONE = 1;
+    COMMANDED_VALUE_LEFT = 2;
+    COMMANDED_VALUE_HAZARD = 3;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_RIGHT = 0;
+    OUTPUT_VALUE_NONE = 1;
+    OUTPUT_VALUE_LEFT = 2;
+    OUTPUT_VALUE_HAZARD = 3;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional bool override_active = 3;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 4;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 5;
+  // [] [0|1]
+  optional bool enabled = 6;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 7;
+  // [] [0|3]
+  optional Manual_inputType manual_input = 8;
+  // [] [0|3]
+  optional Commanded_valueType commanded_value = 9;
+  // [] [0|3]
+  optional Output_valueType output_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Headlight_cmd_118 {
+  // Control Message
+  enum Headlight_cmdType {
+    HEADLIGHT_CMD_HEADLIGHTS_OFF = 0;
+    HEADLIGHT_CMD_LOW_BEAMS = 1;
+    HEADLIGHT_CMD_HIGH_BEAMS = 2;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|2]
+  optional Headlight_cmdType headlight_cmd = 4;
+}
+
+message Rear_pass_door_cmd_140 {
+  // Control Message
+  enum Rear_pass_door_cmdType {
+    REAR_PASS_DOOR_CMD_NEUTRAL = 0;
+    REAR_PASS_DOOR_CMD_OPEN = 1;
+    REAR_PASS_DOOR_CMD_CLOSE = 2;
+  }
+  // [] [0|1]
+  optional bool enable = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|2]
+  optional Rear_pass_door_cmdType rear_pass_door_cmd = 4;
+}
+
+message Shift_aux_rpt_328 {
+  // Report Message
+  enum Write_to_configType {
+    WRITE_TO_CONFIG_SILENT = 0;
+    WRITE_TO_CONFIG_BEEP = 1;
+  }
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool speed_interlock_active_avail = 1;
+  // [] [0|1]
+  optional bool speed_interlock_active = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool brake_interlock_active_avail = 3;
+  // [] [0|1]
+  optional bool brake_interlock_active = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool stay_in_neutral_mode_avail = 5;
+  // [] [0|1]
+  optional bool stay_in_neutral_mode = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool between_gears_avail = 7;
+  // [] [0|1]
+  optional bool between_gears = 8;
+  // [] [0|1]
+  optional Write_to_configType write_to_config = 9;
+  // [] [0|1]
+  optional bool write_to_config_is_valid = 10;
+}
+
+message Accel_cmd_limit_rpt_201 {
+  // Report Message
+  // The ACCEL_CMD_LIMIT shall have the value of the limit imposed on the
+  // command associated with this system. [] [0|1]
+  optional double accel_cmd_limit = 1;
+  // The LIMITED_ACCEL_CMD shall have the value of command associated with this
+  // system constrained by the ACCEL_CMD_LIMIT. [] [0|1]
+  optional double limited_accel_cmd = 2;
+}
+
+message Accel_rpt_200 {
+  // Report Message
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 1;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 2;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 3;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 4;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 5;
+  // [] [0|1]
+  optional bool override_active = 6;
+  // [] [0|1]
+  optional bool enabled = 7;
+  // [] [0|1]
+  optional double manual_input = 8;
+  // [] [0|1]
+  optional double commanded_value = 9;
+  // [] [0|1]
+  optional double output_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Brake_cmd_limit_rpt_205 {
+  // Report Message
+  // The BRAKE_CMD_LIMIT shall have the value of the limit imposed on the
+  // command associated with this system. [] [0|1]
+  optional double brake_cmd_limit = 1;
+  // The LIMITED_BRAKE_CMD shall have the value of command associated with this
+  // system constrained by the BRAKE_CMD_LIMIT. [] [0|1]
+  optional double limited_brake_cmd = 2;
+}
+
+message Brake_rpt_204 {
+  // Report Message
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 1;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 2;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 3;
+  // [] [0|1]
+  optional bool override_active = 4;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 5;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 6;
+  // [] [0|1]
+  optional bool enabled = 7;
+  // [] [0|1]
+  optional double manual_input = 8;
+  // [] [0|1]
+  optional double commanded_value = 9;
+  // [] [0|1]
+  optional double output_value = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Horn_cmd_11c {
+  // Control Message
+  enum Horn_cmdType {
+    HORN_CMD_OFF = 0;
+    HORN_CMD_ON = 1;
+  }
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional Horn_cmdType horn_cmd = 4;
+}
+
+message Accel_aux_rpt_300 {
+  // Report Message
+  enum Operator_interactionType {
+    OPERATOR_INTERACTION_NO_INTERACTION = 0;
+    OPERATOR_INTERACTION_INTERACTION = 1;
+  }
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool operator_interaction_avail = 1;
+  // OPERATOR_INTERACTION shall have the value of 1 if the driver is moving,
+  // changing, or otherwise touching the operator control(s) that relates to
+  // this signal to an extent that is detectable. Otherwise, the value shall be
+  // 0. [] [0|1]
+  optional Operator_interactionType operator_interaction = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_pedal_force_avail = 3;
+  // [] [-32.768|32.767]
+  optional double raw_pedal_force = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_pedal_pos_avail = 5;
+  // [] [-32.768|32.767]
+  optional double raw_pedal_pos = 6;
+}
+
+message Cruise_control_buttons_rpt_208 {
+  // Report Message
+  enum Output_valueType {
+    OUTPUT_VALUE_CRUISE_CONTROL_NONE = 0;
+    OUTPUT_VALUE_CRUISE_CONTROL_CNCL = 1;
+    OUTPUT_VALUE_CRUISE_CONTROL_ACC_FURTHER = 2;
+    OUTPUT_VALUE_CRUISE_CONTROL_ACC_CLOSER = 3;
+    OUTPUT_VALUE_CRUISE_CONTROL_SET_DEC = 4;
+    OUTPUT_VALUE_CRUISE_CONTROL_RES_INC = 5;
+    OUTPUT_VALUE_CRUISE_CONTROL_ON_OFF = 6;
+  }
+  enum Manual_inputType {
+    MANUAL_INPUT_CRUISE_CONTROL_NONE = 0;
+    MANUAL_INPUT_CRUISE_CONTROL_CNCL = 1;
+    MANUAL_INPUT_CRUISE_CONTROL_ACC_FURTHER = 2;
+    MANUAL_INPUT_CRUISE_CONTROL_ACC_CLOSER = 3;
+    MANUAL_INPUT_CRUISE_CONTROL_SET_DEC = 4;
+    MANUAL_INPUT_CRUISE_CONTROL_RES_INC = 5;
+    MANUAL_INPUT_CRUISE_CONTROL_ON_OFF = 6;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_CRUISE_CONTROL_NONE = 0;
+    COMMANDED_VALUE_CRUISE_CONTROL_CNCL = 1;
+    COMMANDED_VALUE_CRUISE_CONTROL_ACC_FURTHER = 2;
+    COMMANDED_VALUE_CRUISE_CONTROL_ACC_CLOSER = 3;
+    COMMANDED_VALUE_CRUISE_CONTROL_SET_DEC = 4;
+    COMMANDED_VALUE_CRUISE_CONTROL_RES_INC = 5;
+    COMMANDED_VALUE_CRUISE_CONTROL_ON_OFF = 6;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NO_FAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Pacmod_faultType {
+    PACMOD_FAULT_NO_FAULT = 0;
+    PACMOD_FAULT_FAULT = 1;
+  }
+  enum Output_reported_faultType {
+    OUTPUT_REPORTED_FAULT_NO_FAULT = 0;
+    OUTPUT_REPORTED_FAULT_FAULT = 1;
+  }
+  enum Input_output_faultType {
+    INPUT_OUTPUT_FAULT_NO_FAULT = 0;
+    INPUT_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_output_faultType {
+    COMMAND_OUTPUT_FAULT_NO_FAULT = 0;
+    COMMAND_OUTPUT_FAULT_FAULT = 1;
+  }
+  enum Command_timeoutType {
+    COMMAND_TIMEOUT_NO_TIMEOUT = 0;
+    COMMAND_TIMEOUT_TIMEOUT = 1;
+  }
+  // [] [0|255]
+  optional Output_valueType output_value = 1;
+  // [] [0|255]
+  optional Manual_inputType manual_input = 2;
+  // [] [0|255]
+  optional Commanded_valueType commanded_value = 3;
+  // [] [0|1]
+  optional Vehicle_faultType vehicle_fault = 4;
+  // [] [0|1]
+  optional Pacmod_faultType pacmod_fault = 5;
+  // [] [0|1]
+  optional bool override_active = 6;
+  // [] [0|1]
+  optional Output_reported_faultType output_reported_fault = 7;
+  // [] [0|1]
+  optional Input_output_faultType input_output_fault = 8;
+  // [] [0|1]
+  optional bool enabled = 9;
+  // [] [0|1]
+  optional Command_output_faultType command_output_fault = 10;
+  // [] [0|1]
+  optional Command_timeoutType command_timeout = 11;
+}
+
+message Brake_aux_rpt_304 {
+  // Report Message
+  enum Operator_interactionType {
+    OPERATOR_INTERACTION_NO_INTERACTION = 0;
+    OPERATOR_INTERACTION_INTERACTION = 1;
+  }
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool brake_on_off_avail = 1;
+  // [] [0|1]
+  optional bool brake_on_off = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool operator_interaction_avail = 3;
+  // OPERATOR_INTERACTION shall have the value of 1 if the driver is moving,
+  // changing, or otherwise touching the operator control(s) that relates to
+  // this signal to an extent that is detectable. Otherwise, the value shall be
+  // 0. [] [0|1]
+  optional Operator_interactionType operator_interaction = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_brake_pressure_avail = 5;
+  // [] [-32.768|32.767]
+  optional double raw_brake_pressure = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_pedal_force_avail = 7;
+  // [] [-32.768|32.767]
+  optional double raw_pedal_force = 8;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_pedal_pos_avail = 9;
+  // [] [-32.768|32.767]
+  optional double raw_pedal_pos = 10;
+}
+
+message Brake_deccel_rpt_23c {
+  // Report Message
+  // [] [0|1]
+  optional bool enabled = 1;
+  // [] [0|1]
+  optional bool override_active = 2;
+  // [] [0|1]
+  optional bool command_output_fault = 3;
+  // [] [0|1]
+  optional bool input_output_fault = 4;
+  // [] [0|1]
+  optional bool output_reported_fault = 5;
+  // [] [0|1]
+  optional bool pacmod_fault = 6;
+  // [] [0|1]
+  optional bool vehicle_fault = 7;
+  // [] [0|1]
+  optional bool command_timeout = 8;
+  // [m/s^2] [0|10]
+  optional double manual_input = 9;
+  // [m/s^2] [0|10]
+  optional double commanded_value = 10;
+  // [m/s^2] [0|10]
+  optional double output_value = 11;
+}
+
+message Cruise_control_buttons_cmd_108 {
+  // Control Message
+  enum Cruise_control_buttonType {
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_NONE = 0;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_CNCL = 1;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_ACC_FURTHER = 2;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_ACC_CLOSER = 3;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_SET_DEC = 4;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_RES_INC = 5;
+    CRUISE_CONTROL_BUTTON_CRUISE_CONTROL_ON_OFF = 6;
+  }
+  // [] [0|255]
+  optional Cruise_control_buttonType cruise_control_button = 1;
+  // [] [0|1]
+  optional bool ignore_overrides = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional bool enable = 4;
+}
+
+message Rear_pass_door_rpt_240 {
+  // Report Message
+  enum Manual_inputType {
+    MANUAL_INPUT_NEUTRAL = 0;
+    MANUAL_INPUT_OPEN = 1;
+    MANUAL_INPUT_CLOSE = 2;
+  }
+  enum Commanded_valueType {
+    COMMANDED_VALUE_NEUTRAL = 0;
+    COMMANDED_VALUE_OPEN = 1;
+    COMMANDED_VALUE_CLOSE = 2;
+  }
+  enum Output_valueType {
+    OUTPUT_VALUE_NEUTRAL = 0;
+    OUTPUT_VALUE_OPEN = 1;
+    OUTPUT_VALUE_CLOSE = 2;
+  }
+  // [] [0|1]
+  optional bool enabled = 1;
+  // [] [0|1]
+  optional bool override_active = 2;
+  // [] [0|1]
+  optional bool command_output_fault = 3;
+  // [] [0|1]
+  optional bool input_output_fault = 4;
+  // [] [0|1]
+  optional bool output_reported_fault = 5;
+  // [] [0|1]
+  optional bool pacmod_fault = 6;
+  // [] [0|1]
+  optional bool vehicle_fault = 7;
+  // [] [0|1]
+  optional bool command_timeout = 8;
+  // [] [0|2]
+  optional Manual_inputType manual_input = 9;
+  // [] [0|2]
+  optional Commanded_valueType commanded_value = 10;
+  // [] [0|2]
+  optional Output_valueType output_value = 11;
+}
+
+message Accel_cmd_100 {
+  // Control Message
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional double accel_cmd = 4;
+}
+
+message Brake_cmd_104 {
+  // Control Message
+  // [] [0|1]
+  optional bool ignore_overrides = 1;
+  // [] [0|1]
+  optional bool enable = 2;
+  // [] [0|1]
+  optional bool clear_override = 3;
+  // [] [0|1]
+  optional double brake_cmd = 4;
+}
+
+message Component_rpt_01_21 {
+  // Report Message
+  enum Component_typeType {
+    COMPONENT_TYPE_PACMOD = 0;
+    COMPONENT_TYPE_PACMINI = 1;
+    COMPONENT_TYPE_PACMICRO = 2;
+  }
+  enum AccelType {
+    ACCEL_ABSENT = 0;
+    ACCEL_PRESENT = 1;
+  }
+  enum BrakeType {
+    BRAKE_ABSENT = 0;
+    BRAKE_PRESENT = 1;
+  }
+  enum Cruise_control_buttonsType {
+    CRUISE_CONTROL_BUTTONS_ABSENT = 0;
+    CRUISE_CONTROL_BUTTONS_PRESENT = 1;
+  }
+  enum Dash_controls_leftType {
+    DASH_CONTROLS_LEFT_ABSENT = 0;
+    DASH_CONTROLS_LEFT_PRESENT = 1;
+  }
+  enum Dash_controls_rightType {
+    DASH_CONTROLS_RIGHT_ABSENT = 0;
+    DASH_CONTROLS_RIGHT_PRESENT = 1;
+  }
+  enum Hazard_lightsType {
+    HAZARD_LIGHTS_ABSENT = 0;
+    HAZARD_LIGHTS_PRESENT = 1;
+  }
+  enum HeadlightType {
+    HEADLIGHT_ABSENT = 0;
+    HEADLIGHT_PRESENT = 1;
+  }
+  enum HornType {
+    HORN_ABSENT = 0;
+    HORN_PRESENT = 1;
+  }
+  enum Media_controlsType {
+    MEDIA_CONTROLS_ABSENT = 0;
+    MEDIA_CONTROLS_PRESENT = 1;
+  }
+  enum Parking_brakeType {
+    PARKING_BRAKE_ABSENT = 0;
+    PARKING_BRAKE_PRESENT = 1;
+  }
+  enum ShiftType {
+    SHIFT_ABSENT = 0;
+    SHIFT_PRESENT = 1;
+  }
+  enum SteeringType {
+    STEERING_ABSENT = 0;
+    STEERING_PRESENT = 1;
+  }
+  enum TurnType {
+    TURN_ABSENT = 0;
+    TURN_PRESENT = 1;
+  }
+  enum WiperType {
+    WIPER_ABSENT = 0;
+    WIPER_PRESENT = 1;
+  }
+  enum WatchdogType {
+    WATCHDOG_ABSENT = 0;
+    WATCHDOG_PRESENT = 1;
+  }
+  enum Config_faultType {
+    CONFIG_FAULT_NO_FAULT = 0;
+    CONFIG_FAULT_FAULT = 1;
+  }
+  enum Can_timeout_faultType {
+    CAN_TIMEOUT_FAULT_NO_FAULT = 0;
+    CAN_TIMEOUT_FAULT_FAULT = 1;
+  }
+  enum Internal_supply_voltage_faultType {
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_NO_FAULT = 0;
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_FAULT = 1;
+  }
+  // [] [0|15]
+  optional Component_typeType component_type = 1;
+  // [] [0|1]
+  optional AccelType accel = 2;
+  // [] [0|1]
+  optional BrakeType brake = 3;
+  // [] [0|1]
+  optional Cruise_control_buttonsType cruise_control_buttons = 4;
+  // [] [0|1]
+  optional Dash_controls_leftType dash_controls_left = 5;
+  // [] [0|1]
+  optional Dash_controls_rightType dash_controls_right = 6;
+  // [] [0|1]
+  optional Hazard_lightsType hazard_lights = 7;
+  // [] [0|1]
+  optional HeadlightType headlight = 8;
+  // [] [0|1]
+  optional HornType horn = 9;
+  // [] [0|1]
+  optional Media_controlsType media_controls = 10;
+  // [] [0|1]
+  optional Parking_brakeType parking_brake = 11;
+  // [] [0|1]
+  optional ShiftType shift = 12;
+  // [] [0|1]
+  optional bool spray = 13;
+  // [] [0|1]
+  optional SteeringType steering = 14;
+  // [] [0|1]
+  optional TurnType turn = 15;
+  // [] [0|1]
+  optional WiperType wiper = 16;
+  // [] [0|1]
+  optional WatchdogType watchdog = 17;
+  // [] [0|1]
+  optional bool brake_deccel = 18;
+  // [] [0|1]
+  optional bool rear_pass_door = 19;
+  // Counter shall have the value of 0 with the first message transmission.  It
+  // shall increase by 1 with each subsequent message transmission up to and
+  // including the value of 0xF.  The next message transmission shall be 0, and
+  // this pattern shall repeat. [] [0|15]
+  optional int32 counter = 20;
+  // [] [0|15]
+  optional int32 complement = 21;
+  // [] [0|1]
+  optional Config_faultType config_fault = 22;
+  // [] [0|1]
+  optional Can_timeout_faultType can_timeout_fault = 23;
+  // [] [0|1]
+  optional Internal_supply_voltage_faultType internal_supply_voltage_fault = 24;
+}
+
+message Steering_aux_rpt_32c {
+  // Report Message
+  enum Operator_interactionType {
+    OPERATOR_INTERACTION_NO_INTERACTION = 0;
+    OPERATOR_INTERACTION_INTERACTION = 1;
+  }
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool operator_interaction_avail = 1;
+  // OPERATOR_INTERACTION shall have the value of 1 if the driver is moving,
+  // changing, or otherwise touching the operator control(s) that relates to
+  // this signal to an extent that is detectable. Otherwise, the value shall be
+  // 0. [] [0|1]
+  optional Operator_interactionType operator_interaction = 2;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool rotation_rate_avail = 3;
+  // [rad/s] [0|65.535]
+  optional double rotation_rate = 4;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_torque_avail = 5;
+  // [] [-32.768|32.767]
+  optional double raw_torque = 6;
+  // PACMod sets this value as a function of which vehicle platform is under
+  // test and, therefore, this value does not change during operation. [] [0|1]
+  optional bool raw_position_avail = 7;
+  // [] [-32.768|32.767]
+  optional double raw_position = 8;
+}
+
+message Component_rpt_02_22 {
+  // Report Message
+  enum Component_typeType {
+    COMPONENT_TYPE_PACMOD = 0;
+    COMPONENT_TYPE_PACMINI = 1;
+    COMPONENT_TYPE_PACMICRO = 2;
+  }
+  enum AccelType {
+    ACCEL_ABSENT = 0;
+    ACCEL_PRESENT = 1;
+  }
+  enum BrakeType {
+    BRAKE_ABSENT = 0;
+    BRAKE_PRESENT = 1;
+  }
+  enum Cruise_control_buttonsType {
+    CRUISE_CONTROL_BUTTONS_ABSENT = 0;
+    CRUISE_CONTROL_BUTTONS_PRESENT = 1;
+  }
+  enum Dash_controls_leftType {
+    DASH_CONTROLS_LEFT_ABSENT = 0;
+    DASH_CONTROLS_LEFT_PRESENT = 1;
+  }
+  enum Dash_controls_rightType {
+    DASH_CONTROLS_RIGHT_ABSENT = 0;
+    DASH_CONTROLS_RIGHT_PRESENT = 1;
+  }
+  enum Hazard_lightsType {
+    HAZARD_LIGHTS_ABSENT = 0;
+    HAZARD_LIGHTS_PRESENT = 1;
+  }
+  enum HeadlightType {
+    HEADLIGHT_ABSENT = 0;
+    HEADLIGHT_PRESENT = 1;
+  }
+  enum HornType {
+    HORN_ABSENT = 0;
+    HORN_PRESENT = 1;
+  }
+  enum Media_controlsType {
+    MEDIA_CONTROLS_ABSENT = 0;
+    MEDIA_CONTROLS_PRESENT = 1;
+  }
+  enum Parking_brakeType {
+    PARKING_BRAKE_ABSENT = 0;
+    PARKING_BRAKE_PRESENT = 1;
+  }
+  enum ShiftType {
+    SHIFT_ABSENT = 0;
+    SHIFT_PRESENT = 1;
+  }
+  enum SteeringType {
+    STEERING_ABSENT = 0;
+    STEERING_PRESENT = 1;
+  }
+  enum TurnType {
+    TURN_ABSENT = 0;
+    TURN_PRESENT = 1;
+  }
+  enum WiperType {
+    WIPER_ABSENT = 0;
+    WIPER_PRESENT = 1;
+  }
+  enum WatchdogType {
+    WATCHDOG_ABSENT = 0;
+    WATCHDOG_PRESENT = 1;
+  }
+  enum Config_faultType {
+    CONFIG_FAULT_NO_FAULT = 0;
+    CONFIG_FAULT_FAULT = 1;
+  }
+  enum Can_timeout_faultType {
+    CAN_TIMEOUT_FAULT_NO_FAULT = 0;
+    CAN_TIMEOUT_FAULT_FAULT = 1;
+  }
+  enum Internal_supply_voltage_faultType {
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_NO_FAULT = 0;
+    INTERNAL_SUPPLY_VOLTAGE_FAULT_FAULT = 1;
+  }
+  // [] [0|15]
+  optional Component_typeType component_type = 1;
+  // [] [0|1]
+  optional AccelType accel = 2;
+  // [] [0|1]
+  optional BrakeType brake = 3;
+  // [] [0|1]
+  optional Cruise_control_buttonsType cruise_control_buttons = 4;
+  // [] [0|1]
+  optional Dash_controls_leftType dash_controls_left = 5;
+  // [] [0|1]
+  optional Dash_controls_rightType dash_controls_right = 6;
+  // [] [0|1]
+  optional Hazard_lightsType hazard_lights = 7;
+  // [] [0|1]
+  optional HeadlightType headlight = 8;
+  // [] [0|1]
+  optional HornType horn = 9;
+  // [] [0|1]
+  optional Media_controlsType media_controls = 10;
+  // [] [0|1]
+  optional Parking_brakeType parking_brake = 11;
+  // [] [0|1]
+  optional ShiftType shift = 12;
+  // [] [0|1]
+  optional bool spray = 13;
+  // [] [0|1]
+  optional SteeringType steering = 14;
+  // [] [0|1]
+  optional TurnType turn = 15;
+  // [] [0|1]
+  optional WiperType wiper = 16;
+  // [] [0|1]
+  optional WatchdogType watchdog = 17;
+  // [] [0|1]
+  optional bool brake_deccel = 18;
+  // [] [0|1]
+  optional bool rear_pass_door = 19;
+  // Counter shall have the value of 0 with the first message transmission.  It
+  // shall increase by 1 with each subsequent message transmission up to and
+  // including the value of 0xF.  The next message transmission shall be 0, and
+  // this pattern shall repeat. [] [0|15]
+  optional int32 counter = 20;
+  // [] [0|15]
+  optional int32 complement = 21;
+  // [] [0|1]
+  optional Config_faultType config_fault = 22;
+  // [] [0|1]
+  optional Can_timeout_faultType can_timeout_fault = 23;
+  // [] [0|1]
+  optional Internal_supply_voltage_faultType internal_supply_voltage_fault = 24;
+}
+
+message Estop_rpt_41c {
+  // Report Message
+  enum EstopType {
+    ESTOP_RELEASED = 0;
+    ESTOP_PRESSED = 1;
+  }
+  enum Estop_faultType {
+    ESTOP_FAULT_NO_FAULT = 0;
+    ESTOP_FAULT_FAULT = 1;
+  }
+  // [] [0|1]
+  optional EstopType estop = 1;
+  // [] [0|1]
+  optional Estop_faultType estop_fault = 2;
+}
+
+message MkzAsPacmod {
+  optional Hazard_lights_rpt_214 hazard_lights_rpt_214 = 1;  // report message
+  optional Steering_cmd_12c steering_cmd_12c = 2;            // control message
+  optional Brake_deccel_aux_rpt_338 brake_deccel_aux_rpt_338 =
+      3;  // report message
+  optional Dash_controls_right_rpt_210 dash_controls_right_rpt_210 =
+      4;                                             // report message
+  optional Wiper_aux_rpt_334 wiper_aux_rpt_334 = 5;  // report message
+  optional Steering_cmd_limit_rpt_22d steering_cmd_limit_rpt_22d =
+      6;                                                    // report message
+  optional Steering_rpt_22c steering_rpt_22c = 7;           // report message
+  optional Turn_aux_rpt_330 turn_aux_rpt_330 = 8;           // report message
+  optional Headlight_rpt_218 headlight_rpt_218 = 9;         // report message
+  optional Turn_cmd_130 turn_cmd_130 = 10;                  // control message
+  optional Wiper_cmd_134 wiper_cmd_134 = 11;                // control message
+  optional Sprayer_cmd_138 sprayer_cmd_138 = 12;            // control message
+  optional Component_rpt_00_20 component_rpt_00_20 = 13;    // report message
+  optional Ang_vel_rpt_41a ang_vel_rpt_41a = 14;            // report message
+  optional Notification_cmd_41b notification_cmd_41b = 15;  // control message
+  optional Component_rpt_03_23 component_rpt_03_23 = 16;    // report message
+  optional Wheel_speed_rpt_407 wheel_speed_rpt_407 = 17;    // report message
+  optional Steering_motor_rpt_3_406 steering_motor_rpt_3_406 =
+      18;  // report message
+  optional Steering_motor_rpt_2_405 steering_motor_rpt_2_405 =
+      19;  // report message
+  optional Steering_motor_rpt_1_404 steering_motor_rpt_1_404 =
+      20;                                                     // report message
+  optional Brake_motor_rpt_3_403 brake_motor_rpt_3_403 = 21;  // report message
+  optional Brake_motor_rpt_2_402 brake_motor_rpt_2_402 = 22;  // report message
+  optional Brake_motor_rpt_1_401 brake_motor_rpt_1_401 = 23;  // report message
+  optional Vehicle_speed_rpt_400 vehicle_speed_rpt_400 = 24;  // report message
+  optional Software_version_rpt_01_409 software_version_rpt_01_409 =
+      25;  // report message
+  optional Software_version_rpt_00_408 software_version_rpt_00_408 =
+      26;                                                   // report message
+  optional Brake_deccel_cmd_13c brake_deccel_cmd_13c = 27;  // control message
+  optional Date_time_rpt_40f date_time_rpt_40f = 28;        // report message
+  optional Media_controls_cmd_120 media_controls_cmd_120 =
+      29;                                                     // control message
+  optional Parking_brake_cmd_124 parking_brake_cmd_124 = 30;  // control message
+  optional Horn_rpt_21c horn_rpt_21c = 31;                    // report message
+  optional Shift_rpt_228 shift_rpt_228 = 32;                  // report message
+  optional Shift_cmd_128 shift_cmd_128 = 33;                  // control message
+  optional Parking_brake_rpt_224 parking_brake_rpt_224 = 34;  // report message
+  optional Media_controls_rpt_220 media_controls_rpt_220 =
+      35;                                     // report message
+  optional Global_rpt_10 global_rpt_10 = 36;  // report message
+  optional Lat_lon_heading_rpt_40e lat_lon_heading_rpt_40e =
+      37;                                           // report message
+  optional Yaw_rate_rpt_40d yaw_rate_rpt_40d = 38;  // report message
+  optional Software_version_rpt_03_40b software_version_rpt_03_40b =
+      39;  // report message
+  optional Software_version_rpt_02_40a software_version_rpt_02_40a =
+      40;                                             // report message
+  optional Vin_rpt_414 vin_rpt_414 = 41;              // report message
+  optional Occupancy_rpt_415 occupancy_rpt_415 = 42;  // report message
+  optional Interior_lights_rpt_416 interior_lights_rpt_416 =
+      43;                                   // report message
+  optional Door_rpt_417 door_rpt_417 = 44;  // report message
+  optional Detected_object_rpt_411 detected_object_rpt_411 =
+      45;  // report message
+  optional Veh_specific_rpt_1_412 veh_specific_rpt_1_412 =
+      46;                                                     // report message
+  optional Veh_dynamics_rpt_413 veh_dynamics_rpt_413 = 47;    // report message
+  optional Rear_lights_rpt_418 rear_lights_rpt_418 = 48;      // report message
+  optional Linear_accel_rpt_419 linear_accel_rpt_419 = 49;    // report message
+  optional Headlight_aux_rpt_318 headlight_aux_rpt_318 = 50;  // report message
+  optional Watchdog_rpt_600 watchdog_rpt_600 = 51;            // report message
+  optional Dash_controls_left_cmd_10c dash_controls_left_cmd_10c =
+      52;                                                     // control message
+  optional Hazard_lights_cmd_114 hazard_lights_cmd_114 = 53;  // control message
+  optional Dash_controls_left_rpt_20c dash_controls_left_rpt_20c =
+      54;                                         // report message
+  optional Sprayer_rpt_238 sprayer_rpt_238 = 55;  // report message
+  optional Dash_controls_right_cmd_110 dash_controls_right_cmd_110 =
+      56;                                             // control message
+  optional Wiper_rpt_234 wiper_rpt_234 = 57;          // report message
+  optional Global_cmd_80 global_cmd_80 = 58;          // control message
+  optional Turn_rpt_230 turn_rpt_230 = 59;            // report message
+  optional Headlight_cmd_118 headlight_cmd_118 = 60;  // control message
+  optional Rear_pass_door_cmd_140 rear_pass_door_cmd_140 =
+      61;                                             // control message
+  optional Shift_aux_rpt_328 shift_aux_rpt_328 = 62;  // report message
+  optional Accel_cmd_limit_rpt_201 accel_cmd_limit_rpt_201 =
+      63;                                     // report message
+  optional Accel_rpt_200 accel_rpt_200 = 64;  // report message
+  optional Brake_cmd_limit_rpt_205 brake_cmd_limit_rpt_205 =
+      65;                                             // report message
+  optional Brake_rpt_204 brake_rpt_204 = 66;          // report message
+  optional Horn_cmd_11c horn_cmd_11c = 67;            // control message
+  optional Accel_aux_rpt_300 accel_aux_rpt_300 = 68;  // report message
+  optional Cruise_control_buttons_rpt_208 cruise_control_buttons_rpt_208 =
+      69;                                                   // report message
+  optional Brake_aux_rpt_304 brake_aux_rpt_304 = 70;        // report message
+  optional Brake_deccel_rpt_23c brake_deccel_rpt_23c = 71;  // report message
+  optional Cruise_control_buttons_cmd_108 cruise_control_buttons_cmd_108 =
+      72;  // control message
+  optional Rear_pass_door_rpt_240 rear_pass_door_rpt_240 =
+      73;                                                   // report message
+  optional Accel_cmd_100 accel_cmd_100 = 74;                // control message
+  optional Brake_cmd_104 brake_cmd_104 = 75;                // control message
+  optional Component_rpt_01_21 component_rpt_01_21 = 76;    // report message
+  optional Steering_aux_rpt_32c steering_aux_rpt_32c = 77;  // report message
+  optional Component_rpt_02_22 component_rpt_02_22 = 78;    // report message
+  optional Estop_rpt_41c estop_rpt_41c = 79;                // report message
+}

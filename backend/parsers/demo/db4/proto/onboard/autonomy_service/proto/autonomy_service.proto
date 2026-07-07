@@ -1,0 +1,611 @@
+syntax = "proto2";
+package snoah.onboard;
+
+import "onboard/proto/release_run_error_code.proto";
+import "onboard/proto/system_status_info.proto";
+import "onboard/lite/proto/module_config.proto";
+import "offboard/tools/proto/import_runs.proto";
+import "offboard/tools/run_process/proto/run_process_service.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/system_checker.proto";
+import "onboard/params/v2/proto/assembly/vehicle.proto";
+
+message SystemStatus {
+  optional string release_version = 1;
+  optional string param_version = 2;
+  optional string map_version = 3;
+  optional int64 free_disk_byte = 4;
+}
+
+message AutonmoyStartResult {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  optional SystemStatus system_status = 3;
+  optional ReleaseRunErrorCode error_code = 4;
+  optional int64 autonomy_module_start_timestamp = 5;
+}
+
+message PreparationOptions {
+  optional string map = 1;
+
+  optional bool boot_check = 2 [default = true];
+
+  optional bool system_check_only = 4 [default = false];
+
+  optional ImportRunsFileProto import_runs_file_proto =
+      6;  // deprecated(internal used)
+
+  // Several of the following options, separated by commas:
+  // map,disk,process,port,ptp4l,node,can,lidar,netif,time,gpu,ram
+  optional string disable_check_list = 7;
+
+  // flag for control localization launch on one of xaviers
+  optional bool localization_on_xavier = 8 [default = true];  // deprecated
+
+  optional bool disable_gpsd = 9;
+
+  // flag for control qview_publisher launch on one of xaviers
+  optional bool qview_publisher_on_xavier = 10 [default = false];  // deprecated
+
+  optional bool enable_h265_encode = 11;
+
+  optional string purpose = 12;
+
+  optional bool orin_check = 13 [default = false];
+
+  reserved 3, 5;
+
+  optional bool strict_mode = 14 [default = true];
+
+  optional bool enable_data_upload_daemon = 15 [default = true];
+
+  // delivered_car, sync more snippets than owned cars
+  optional bool delivered_version = 16 [default = false];
+  // trigger auto disk clean thread
+  optional bool auto_clean_disk = 17 [default = false];
+}
+
+enum StartMode {
+  NORMAL = 1;
+  DATA_COLLECTION = 2;
+  CALIBRATION = 3;
+  MAP_COLLECTION = 4;
+}
+
+message StartAutonomyRequest {
+  optional int64 seq_num = 1;
+
+  // unit: us
+  optional int64 timestamp = 2;
+
+  // value: omc args: shell gflags[--map=suzhou, --light_omc] c++
+  // gflags[enable_ftrace=0]
+  repeated string args = 4;  // deprecated
+
+  optional ImportRunsFileProto import_runs_file_proto = 5;  // deprecated
+
+  // enable for calibrate mode
+  optional bool calibrate_camera = 6;  // deprecated
+
+  // false are for internal debug
+  optional bool start_all_nodes = 7 [default = true];  // deprecated
+
+  // value: xavier args
+  repeated string xavier_args = 8;  // deprecated
+
+  // preparation options for start autonomy
+  optional PreparationOptions options = 9;
+
+  optional StartMode start_mode = 10;
+
+  optional string launch_plan_name_str = 14;
+
+  repeated GFlagConfig gflags_override = 13;
+
+  reserved 3, 11, 12;
+
+  optional bool mount_external_disk = 15;
+
+  optional bool only_start_self_node = 16 [default = false];
+}
+
+message StartAutonomySingleNodeRequest {  // internal
+  optional int64 seq_num = 1;
+
+  // unit: us
+  optional int64 timestamp = 2;
+
+  // preparation options for start autonomy
+  optional PreparationOptions options = 3;
+
+  optional string launch_plan_name_str = 4;
+
+  repeated GFlagConfig gflags_override = 5;
+
+  optional string node_name = 6;
+
+  optional string name_space = 7;
+}
+
+message StartAutonomyResponse {
+  optional int64 seq_num = 1;
+  // unit: us
+  optional int64 timestamp = 2;
+  optional AutonmoyStartResult result = 3;
+}
+
+message StopAutonomyRequest {
+  reserved 1;
+  optional bool only_stop_self_node = 2 [default = false];
+}
+
+message StopAutonomyResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message AutonomyStatusRequest {
+  optional bool timeout = 1 [default = false];
+  optional bool check_self_node_status_only = 2 [default = false];
+}
+
+message AutonomyStatusResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  optional bool running = 3;
+  optional int32 exit_code = 4;
+  repeated string process_name = 5;
+  optional ReleaseRunErrorCode error_code = 6;
+}
+
+message GetSupportedLaunchPlansRequest {}
+
+message GetSupportedLaunchPlansResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  repeated string launch_plan_names = 3;
+  optional string default_launch_plan_name = 4;
+}
+
+message StartAppRequest {
+  repeated string args = 1;
+}
+
+message StartAppResponse {}
+
+message StopAppRequest {}
+
+message StopAppResponse {}
+
+message AppStatusRequest {}
+
+message AppStatusResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  optional bool running = 3;
+  optional int32 exit_code = 4;
+}
+
+message StartRtkRequest {
+  optional string username = 1;
+  optional string password = 2;
+}
+
+message StartRtkResponse {
+  optional bool success = 1;
+  optional bool manual_reboot = 2;
+}
+
+message StopRtkRequest {}
+
+message StopRtkResponse {
+  optional bool success = 1;
+  optional bool manual_reboot = 2;
+}
+
+message GpsInfoProto {
+  optional bool is_valid = 1;
+  optional string status = 2;
+  optional ReleaseRunErrorCode check_error_code = 3;
+}
+
+enum SystemInfoType {
+  SYSTEM_INFO_TYPE_DEVICE = 0;
+  SYSTEM_INFO_TYPE_GPS = 1;
+  SYSTEM_INFO_TYPE_TIMESTAMP = 2;
+  SYSTEM_INFO_TYPE_RTK = 3;
+}
+
+message CollectSystemInfoRequest {
+  // unit: us
+  optional int64 timestamp = 2;
+
+  // collect system info type
+  optional SystemInfoType type = 3 [default = SYSTEM_INFO_TYPE_DEVICE];
+  optional string car_id = 4;
+  optional string node_name = 5;
+}
+
+message CollectSystemInfoResponse {
+  // unit: us
+  optional int64 timestamp = 2;
+
+  // return omc or obc info when request type = SYSTEM_INFO_TYPE_DEVICE;
+  // return gps info when request type = SYSTEM_INFO_TYPE_GPS;
+  // return rtk status when request type == SYSTEM_INFO_TYPE_RTK;
+  oneof info_body {
+    OmcStatusInfoProto omc_info = 3;
+    ObcStatusInfoProto obc_info = 4;
+    GpsInfoProto gps_info = 5;
+    bool rtk_fixed = 6;
+  }
+}
+
+message ListRunDirsRequest {
+  optional int32 offset = 1;
+  optional int32 limit = 2;
+}
+
+message RunDirSummary {
+  required string dir_name = 1;
+  optional ImportRunsFileProto import_runs_file_proto = 2;
+  optional string full_path = 3;
+}
+
+message ListRunDirsResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  repeated RunDirSummary run_dirs = 3;
+}
+
+message GetLatestRunRequest {
+  optional int32 place_holder = 1;
+}
+message GetLatestRunResponse {
+  optional string run = 1;
+}
+
+message DeleteRunDirRequest {
+  required string dir_name = 1;
+}
+
+message DeleteRunDirResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message GetRunDirSizeRequest {
+  required string dir_name = 1;
+}
+
+message GetRunDirSizeResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  optional int64 size = 3;
+}
+
+message UpgradeOCCFirmwareRequest {}
+
+message UpgradeOCCFirmwareResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message CreateAndUploadOnboardUrgentEventRequest {
+  message AuthUserPassword {
+    optional string username = 1;
+    optional string password = 2;
+  }
+  oneof auth_type {
+    AuthUserPassword user_password = 1;
+    string token = 2;
+  }
+}
+
+message CreateAndUploadOnboardUrgentEventResponse {
+  optional bool exit_code = 1;
+  optional string error_msg = 2;
+  optional string urgent_runname = 3;
+}
+
+message GetUrgentEventStatusRequest {
+  optional string urgent_runname = 1;
+}
+
+message GetUrgentEventStatusResponse {
+  enum UrgentEventStatus {
+    UES_UNKNOWN = 0;
+    UES_IN_PROGRESS = 1 [deprecated = true];
+    UES_DONE = 2;
+    UES_FAILED = 3;
+    UES_PROCESSING = 4;
+    UES_UPLOADING = 5;
+  }
+  optional UrgentEventStatus status = 1;
+  optional string error_msg = 2;
+  optional int64 network_speed = 3;
+  optional int32 finished_file_count = 4;
+  optional int64 finished_file_size = 5;
+  optional int32 pending_file_count = 6;
+  optional int64 pending_file_size = 7;
+  optional int64 uploading_file_size = 8;
+}
+
+message FetchMobileDisksRequest {}
+
+message FetchMobileDisksResponse {
+  message MobileDisk {
+    optional string disk_name = 1;
+    optional string mount_path = 2;
+    repeated string run_names = 3;
+  }
+  repeated MobileDisk disks = 1;
+}
+
+message QTriageParams {
+  optional bool enable_qtriage = 1;
+  optional string jira_api_token = 2;
+  optional int32 need_qtriage_time_range = 3 [default = 30];
+}
+
+message InsertUploadTasksRequest {
+  optional snoah.run_process.UploadTask.TaskType task_type = 1;
+  repeated string run_paths = 2;
+  optional QTriageParams qtriage_params = 3;
+  repeated string ignore_files = 4;
+  optional string ldap_username = 5;
+  optional string ldap_password = 6;
+}
+
+message InsertUploadTasksResponse {}
+
+message GetUploadTasksStatusResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+  optional bool running = 3;
+  optional int32 exit_code = 4;
+  optional snoah.run_process.UploadOverview overview = 5;
+  optional int64 network_package_bytes = 6;
+  optional int64 network_speed = 7;
+}
+
+message SystemCheckRequest {
+  optional string node_name = 1;
+  optional string car_name = 2;
+  optional string disable_check_list = 3;
+  optional string run_context = 4;
+  optional string check_items = 5;
+  optional CheckMode check_mode = 6;
+}
+
+message SystemCheckResponse {
+  optional ReleaseRunErrorCode check_error_code = 1;
+  optional string check_error_msg = 2;
+}
+
+message WriteRunImportRequest {
+  required string dir_name = 1;
+  required ImportRunsFileProto import_runs_file_proto = 2;
+}
+
+message WriteRunImportResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message ConnectCheckRequest {
+  required int32 timeout_ms = 1;
+}
+
+message ConnectCheckResponse {
+  optional int64 node_system_time = 1;
+}
+
+message GetListOfHardwareCheckedRequest {}
+
+message GetListOfHardwareCheckedResponse {
+  optional string error_msg = 1;
+  repeated string hardwares = 2;
+}
+
+message StartVehicleHardwareCheckRequest {
+  repeated string hardwares = 1;
+}
+
+message StartVehicleHardwareCheckResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message GetHardwareCheckDetailLogRequest {
+  repeated string hardware_list = 1;
+}
+
+message GetHardwareCheckDetailLogResponse {
+  repeated string hardware_check_detail_log = 1;
+  optional string error_msg = 2;
+}
+
+message GetHardwareCheckResultRequest {}
+
+message GetHardwareCheckResultResponse {
+  optional bool check_finish = 1;
+  repeated CheckResult hardware_check_result = 2;
+}
+
+message GetHardwareParametersRequest {}
+
+message GetHardwareParametersResponse {
+  optional HardwareParametersProto params = 1;
+}
+
+message RestartGptpdRequest {}
+
+message RestartGptpdResponse {}
+
+message GetEventListRequest {}
+
+enum EventType {
+  INVALID = 0;
+  EMERGENCY = 1;
+  KICKOUT = 2;
+  CRASH = 3;
+  TAKE_OVER = 4;
+  COMMENT = 5;
+}
+
+message EventInfo {
+  optional string run_name = 1;
+  optional double offset = 2;
+  optional EventType event_type = 3;
+  optional string car_id = 4;
+}
+message GetEventListResponse {
+  repeated EventInfo events = 1;
+}
+
+message GetEventPreviewRequest {
+  optional string run_name = 1;
+  optional double offset = 2;
+}
+
+message GetEventPreviewResponse {
+  message CameraPreview {
+    optional CameraId camera_id = 1;
+    repeated bytes preview = 2;
+  }
+  repeated CameraPreview camera_preview = 1;
+  optional EncodeType preview_data_type = 2;
+}
+
+message UploadEventsRequest {
+  repeated EventInfo events = 1;
+  optional bool high_definition = 2;
+}
+
+message UploadEventsResponse {}
+
+message StopUploadEventsRequest {}
+
+message StopUploadEventsResponse {}
+
+message GetEventsUploadStatusRequest {}
+
+enum UploadStatus {
+  WAITING = 0;
+  UPLOADING = 1;
+  UPLOADED = 2;
+  FAILED = 3;
+}
+
+message GetEventsUploadStatusResponse {
+  message EventUploadStatus {
+    optional EventInfo event = 1;
+    optional UploadStatus status = 2;
+    optional double percentage = 3;
+  }
+  repeated EventUploadStatus events_upload_status = 1;
+}
+
+service AutonomyService {
+  rpc StartAutonomy(StartAutonomyRequest) returns (StartAutonomyResponse);
+
+  rpc StopAutonomy(StopAutonomyRequest) returns (StopAutonomyResponse);
+
+  rpc GetAutonomyStatus(AutonomyStatusRequest) returns (AutonomyStatusResponse);
+
+  rpc GetSupportedLaunchPlans(GetSupportedLaunchPlansRequest)
+      returns (GetSupportedLaunchPlansResponse);
+
+  rpc StartVantage(StartAppRequest) returns (StartAppResponse);
+
+  rpc StopVantage(StopAppRequest) returns (StopAppResponse);
+
+  rpc GetVantageStatus(AppStatusRequest) returns (AppStatusResponse);
+
+  rpc StartQuill(StartAppRequest) returns (StartAppResponse);
+
+  rpc StopQuill(StopAppRequest) returns (StopAppResponse);
+
+  rpc GetQuillStatus(AppStatusRequest) returns (AppStatusResponse);
+
+  rpc StartPlayback(StartAppRequest) returns (StartAppResponse);
+
+  rpc StopPlayback(StopAppRequest) returns (StopAppResponse);
+
+  rpc GetPlaybackStatus(AppStatusRequest) returns (AppStatusResponse);
+
+  rpc StartRtk(StartRtkRequest) returns (StartRtkResponse);
+
+  rpc StopRtk(StopRtkRequest) returns (StopRtkResponse);
+
+  rpc CollectSystemInfo(CollectSystemInfoRequest)
+      returns (CollectSystemInfoResponse);
+
+  rpc ListRunDirs(ListRunDirsRequest) returns (ListRunDirsResponse);
+  rpc GetLatestRun(GetLatestRunRequest) returns (GetLatestRunResponse);
+
+  rpc DeleteRunDir(DeleteRunDirRequest) returns (DeleteRunDirResponse);
+
+  rpc GetRunDirSize(GetRunDirSizeRequest) returns (GetRunDirSizeResponse);
+
+  rpc UpgradeOCCFirmware(UpgradeOCCFirmwareRequest)
+      returns (UpgradeOCCFirmwareResponse);
+
+  rpc CreateAndUploadOnboardUrgentEvent(
+      CreateAndUploadOnboardUrgentEventRequest)
+      returns (CreateAndUploadOnboardUrgentEventResponse);
+
+  rpc GetUrgentEventStatus(GetUrgentEventStatusRequest)
+      returns (GetUrgentEventStatusResponse);
+
+  rpc FetchMobileDisks(FetchMobileDisksRequest)
+      returns (FetchMobileDisksResponse);
+
+  rpc InsertUploadTasks(InsertUploadTasksRequest)
+      returns (InsertUploadTasksResponse);
+
+  rpc GetUploadTasksStatus(AppStatusRequest)
+      returns (GetUploadTasksStatusResponse);
+
+  rpc StopUploadTasks(StopAppRequest) returns (StopAppResponse);
+
+  // used by QTestTool
+  rpc WriteRunImport(WriteRunImportRequest) returns (WriteRunImportResponse);
+
+  // internal api. check system status for one node.
+  rpc SystemCheck(SystemCheckRequest) returns (SystemCheckResponse);
+
+  // internal api
+  rpc StartAutonomySingleNode(StartAutonomySingleNodeRequest)
+      returns (StartAutonomyResponse);
+
+  rpc ConnectCheck(ConnectCheckRequest) returns (ConnectCheckResponse);
+
+  rpc GetListOfHardwareChecked(GetListOfHardwareCheckedRequest)
+      returns (GetListOfHardwareCheckedResponse);
+
+  rpc StartVehicleHardwareCheck(StartVehicleHardwareCheckRequest)
+      returns (StartVehicleHardwareCheckResponse);
+
+  rpc GetHardwareCheckDetailLog(GetHardwareCheckDetailLogRequest)
+      returns (GetHardwareCheckDetailLogResponse);
+
+  rpc GetHardwareCheckResult(GetHardwareCheckResultRequest)
+      returns (GetHardwareCheckResultResponse);
+
+  rpc GetHardwareParameters(GetHardwareParametersRequest)
+      returns (GetHardwareParametersResponse);
+
+  rpc RestartGptpd(RestartGptpdRequest) returns (RestartGptpdResponse);
+
+  rpc GetEventList(GetEventListRequest) returns (GetEventListResponse);
+
+  rpc GetEventPreview(GetEventPreviewRequest) returns (GetEventPreviewResponse);
+
+  rpc UploadEvents(UploadEventsRequest) returns (UploadEventsResponse);
+  rpc StopUploadEvents(StopUploadEventsRequest)
+      returns (StopUploadEventsResponse);
+  rpc GetEventsUploadStatus(GetEventsUploadStatusRequest)
+      returns (GetEventsUploadStatusResponse);
+}

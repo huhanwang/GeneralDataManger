@@ -1,0 +1,499 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/radar/proto/continental_408.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/can.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+enum RadarId {
+  RAD_UNKNOWN = 0;
+  RAD_LEFT = 1;
+  RAD_FRONT = 2;
+  RAD_RIGHT = 3;
+  RAD_REAR = 4;
+  RAD_FRONT_LEFT = 5;
+  RAD_FRONT_RIGHT = 6;
+  RAD_REAR_LEFT = 7;
+  RAD_REAR_RIGHT = 8;
+}
+
+enum RadarType {
+  RAD_UNKNOWN_TYPE = 0;
+  RAD_CONTI_408 = 1;
+  RAD_CONTI_430 = 2;
+  RAD_CONTI_308 = 3;
+  RAD_CONTI_410 = 4;
+  RAD_ZM_SDR1 = 5;  // Zong Mu SDR1 Radar
+  RAD_DESSAY_A02 = 6;
+  RAD_BOSCH_A02 = 7;
+  RAD_SSTK_776 = 8;
+  RAD_BOSCH_CR5CP = 9;
+}
+
+enum RadarMode {
+  RMD_IGNORED = 0;
+  RMD_OBJECT = 1;
+  RMD_CLUSTER = 2;
+  RMD_BOTH = 3;
+}
+
+enum RadarMessage {
+  RMG_CONFIG = 0x200;
+  RMG_STATE = 0x201;
+  RMG_FILTER_CONFIG = 0x202;
+  RMG_FILTER_STATE_HEADER = 0x203;
+  RMG_FILTER_STATE_CFG = 0x204;
+  RMG_INPUT_SPEED = 0x300;
+  RMG_INPUT_YAW = 0x301;
+  RMG_COLLISION_DETECT_CFG = 0x400;
+  RMG_COLLISION_REGION_CFG = 0x401;
+  RMG_COLLISION_REGION_STATE = 0x402;
+  RMG_COLLISION_DETECT_STATE = 0x408;
+  RMG_CLUSTER_LIST_STATUS = 0x600;
+  RMG_CLUSTER_INFO = 0x701;
+  RMG_CLUSTER_QUALITY_INFO = 0x702;
+  RMG_OBJECT_LIST_STATUS = 0x60a;
+  RMG_OBJECT_INFO = 0x60b;
+  RMG_OBJECT_QUALITY_INFO = 0x60c;
+  RMG_OBJECT_EXT_INFO = 0x60d;
+  RMG_VERSION_ID = 0x700;
+}
+
+enum Conti410Message {
+  C410_STATUS = 0x080;
+  C410_OBJ_PART_1_MIN = 0x050;
+  C410_OBJ_PART_1_MAX = 0x077;
+  C410_OBJ_PART_2_MIN = 0x020;
+  C410_OBJ_PART_2_MAX = 0x047;
+}
+
+enum ZMSDR1Message {
+  ZMSDR1_AUXILIARY_MSG = 0x2FE;
+  ZMSDR1_TOTAL_NUMBER = 0x012;
+  ZMSDR1_TRACKED_TARGET_MIN = 0x3A0;
+  ZMSDR1_TRACKED_TARGET_MAX = 0x3AF;
+}
+
+enum RadarObjectType {
+  ROT_UNKNOWN_STATIC = 0;
+  ROT_VEHICLE = 1;
+  ROT_MOTORCYCLIST = 2;
+  ROT_PEDESTRIAN = 3;
+  ROT_CYCLIST = 4;
+  ROT_FOD = 5;
+  ROT_UNKNOWN_MOVABLE = 6;
+  ROT_VEGETATION = 7;
+  ROT_STATIC_IN_RADIAL = 8;
+}
+
+enum RadarObjectMotionState {
+  RMS_MOVING = 0;
+  RMS_STATIONARY = 1;
+  RMS_UNKNOWN = 2;
+  RMS_STOPPED = 3;
+}
+
+message RawRadarObjectProto {
+  enum ObjDynPropType {
+    OBJ_DYNPROP_MOVING = 0;
+    OBJ_DYNPROP_STATIONARY = 1;
+    OBJ_DYNPROP_ONCOMING = 2;
+    OBJ_DYNPROP_STATIONARY_CANDIDATE = 3;
+    OBJ_DYNPROP_UNKNOWN = 4;
+    OBJ_DYNPROP_CROSSING_STATIONARY = 5;
+    OBJ_DYNPROP_CROSSING_MOVING = 6;
+    OBJ_DYNPROP_STOPPED = 7;
+  }
+  enum ObjMeasStateType {
+    OBJ_MEASSTATE_DELETED = 0;
+    OBJ_MEASSTATE_NEW = 1;
+    OBJ_MEASSTATE_MEASURED = 2;
+    OBJ_MEASSTATE_PREDICTED = 3;
+    OBJ_MEASSTATE_DELETED_FOR_MERGE = 4;
+    OBJ_MEASSTATE_NEW_FROM_MERGE = 5;
+  }
+  enum ObjClassType {
+    OBJ_CLASS_POINT = 0;
+    OBJ_CLASS_CAR = 1;
+    OBJ_CLASS_TRUCK = 2;
+    OBJ_CLASS_PEDESTRIAN = 3;
+    OBJ_CLASS_MOTORCYCLE = 4;
+    OBJ_CLASS_BICYCLE = 5;
+    OBJ_CLASS_WIDE = 6;
+    OBJ_CLASS_DESCRIPTION_FOR_THE_VALUE_0X7 = 7;
+  }
+  enum ClusterInvalidStateType {
+    CLUSTER_INVALIDSTATE_VALID = 0;
+    CLUSTER_INVALIDSTATE_INVALID_WITH_TOO_LOW_RCS = 1;
+    CLUSTER_INVALIDSTATE_INVALID_NEARFIELD = 2;
+    CLUSTER_INVALIDSTATE_INVALID_FAR_NOT_CONFIRMED = 3;
+    CLUSTER_INVALIDSTATE_VALID_WITH_LOW_RCS = 4;
+    CLUSTER_INVALIDSTATE_RESERVED0 = 5;
+    CLUSTER_INVALIDSTATE_INVALID_MIRROR = 6;
+    CLUSTER_INVALIDSTATE_INVALID_OUTSIDE_FIELD_OF_VIEW = 7;
+    CLUSTER_INVALIDSTATE_VALID_WITH_ELEVATION = 8;
+    CLUSTER_INVALIDSTATE_VALID_CHILD = 9;
+    CLUSTER_INVALIDSTATE_VALID_50_DEG_ARTEFACT = 10;
+    CLUSTER_INVALIDSTATE_VALID_BUT_NO_LOCAL_MAXIMUM = 11;
+    CLUSTER_INVALIDSTATE_VALID_ARTEFACT = 12;
+    CLUSTER_INVALIDSTATE_RESERVED1 = 13;
+    CLUSTER_INVALIDSTATE_INVALID_HARMONICS = 14;
+    CLUSTER_INVALIDSTATE_VALID_NEAR_ABOVE_95_M = 15;
+    CLUSTER_INVALIDSTATE_VALID_MULTI_TARGET = 16;
+    CLUSTER_INVALIDSTATE_VALID_SUSPICIOUS_ANGLE = 17;
+  }
+  enum ClusterAmbigStateType {
+    CLUSTER_AMBIGSTATE_INVALID = 0;
+    CLUSTER_AMBIGSTATE_AMBIGUOUS = 1;
+    CLUSTER_AMBIGSTATE_STAGGERED_RAMP = 2;
+    CLUSTER_AMBIGSTATE_UNAMBIGUOUS = 3;
+    CLUSTER_AMBIGSTATE_STATIONARY_CANDIDATE = 4;
+  }
+  enum ClusterPropertiesType {
+    CLUSTER_UNDEFINED_PROPERTY = 0;
+    CLUSTER_STATIC = 1;
+    CLUSTER_DYNAMIC = 2;
+    CLUSTER_AMBIGUOUS = 4;
+    CLUSTER_FROM_NEAR_SCAN = 16;
+    CLUSTER_BEHIND_GUARD_RAIL = 64;
+  }
+  enum ClusterInvalidReasonType {
+    CLUSTER_VALID = 0;
+    CLUSTER_DYNAMIC_WITH_LOW_RCS = 2;
+    CLUSTER_STATIC_WITH_LOW_RCS = 4;
+    CLUSTER_RANGE_RATE_IMPROBABLE = 8;
+    CLUSTER_RANGE_IMPROBABLE = 16;
+    CLUSTER_IS_A_REFLECTION_OF_EGO = 32;
+  }
+  // Object or cluster ID [] [0|255]
+  optional int32 obj_id = 1 [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  // Object measurement status [] [0|7]
+  optional ObjMeasStateType obj_measstate = 2
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];  // Only for object
+  // Object dynamic property [] [0|7]
+  optional ObjDynPropType obj_dynprop = 3
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  // Object RCS value (radar cross section) [dBm\B2] [-64|63.5]
+  optional double obj_rcs = 4 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_10"
+  ];
+  // Object probability of existence [] [0.0|1.0]
+  optional double obj_probofexist = 5 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];  // Only for object
+  // Object classification [] [0|7]
+  optional ObjClassType obj_class = 6
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];  // Only for object
+  // Object longitudinal displacement [m] [-500|1138.2]
+  optional double obj_distlong = 7 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_10"
+  ];
+  // Object lateral displacement [m] [-204.6|204.8]
+  optional double obj_distlat = 8 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_10"
+  ];
+  // Object relative longitudinal velocity [m/s] [-128|127.75]
+  optional double obj_vrellong = 9 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_100"
+  ];
+  // Object relative lateral velocity [m/s] [-64|63.75]
+  optional double obj_vrellat = 10 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_100"
+  ];
+  // Object relative longitudinal acceleration [m/s\B2] [-10|10.47]
+  optional double obj_arellong = 11 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_100"
+  ];  // Only for object
+  // Object relative lateral acceleration [m/s\B2] [-2.5|2.61]
+  optional double obj_arellat = 12 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_100"
+  ];  // Only for object
+  // Object longitudinal distance standard deviation
+  optional double obj_distlong_rms = 13 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];
+  // Object lateral distance standard deviation
+  optional double obj_distlat_rms = 14 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];
+  // Object relative longitudinal velocity standard deviation
+  optional double obj_vrellong_rms = 15 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];
+  // Object relative lateral velocity standard deviation
+  optional double obj_vrellat_rms = 16 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];
+  // Object relative longitudinal acceleration standard deviation
+  optional double obj_arellong_rms = 17 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];  // Only for object
+  // Object relative lateral acceleration standard deviation
+  optional double obj_arellat_rms = 18 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_1000"
+  ];  // Only for object
+  // Object orientation angle [deg] [-180|229.2]
+  optional double obj_orientationangle = 19 [
+    (trans_matrix) = true,
+    (matrix_data_type) = INT16,
+    (matrix_math_operator) = "DEV_10"
+  ];  // Only for object
+  // Object orientation angle standard deviation
+  optional double obj_orientation_rms = 20 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT32,
+    (matrix_math_operator) = "DEV_1000"
+  ];  // Only for object
+  // Object width [m] [0|51]
+  optional double obj_width = 21 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_10"
+  ];  // Only for object
+  // Object length [m] [0|51]
+  optional double obj_length = 22 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT16,
+    (matrix_math_operator) = "DEV_10"
+  ];  // Only for object
+  // Cluster invalid state [] [0|31]
+  optional ClusterInvalidStateType cluster_invalidstate =
+      23;  // Only for cluster
+  // Cluster false alarm probability [] [0.0|1.0]
+  optional double cluster_pdh0 = 24;  // Only for cluster
+  // Cluster Doppler ambiguity status [1] [0|7]
+  optional ClusterAmbigStateType cluster_ambigstate = 25;  // Only for cluster
+  optional ClusterPropertiesType cluster_properties =
+      26;  // Only for cluster of SRR 308
+  optional ClusterInvalidReasonType cluster_invalid_reason =
+      27;  // Only for cluster of SRR 308
+  // Probability of the object being an obstacle [] [0.0|1.0]
+  optional double obj_probofobstacle = 28;  // Only for ARS 410
+}
+
+message RawRadarMessageVecProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional RadarId radar_id = 3;
+  repeated Radar radar_messages = 4 [deprecated = true];
+  optional CanDriverDebugProto radar_can_driver_debug_proto = 5;
+}
+
+message RawRadarObjectsProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2 [(trans_matrix) = true];
+  optional RadarId radar_id = 3
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional RadarType radar_type = 4
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional int32 number_objects = 5
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];  // Only for object
+  optional int32 measurement_counter = 6
+      [(trans_matrix) = true, (matrix_data_type) = UINT16];
+  optional int32 number_clusters_near = 7;  // Only for cluster
+  optional int32 number_clusters_far = 8;   // Only for cluster
+  optional RadarMode radar_mode = 9
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  repeated RawRadarObjectProto raw_radar_objects = 10 [(trans_matrix) = true];
+}
+
+// Next id: 12
+message RadarObjectProto {
+  optional int32 id = 1;
+  optional Vec2fProto position = 2;
+  optional Vec2fProto velocity = 3;
+  optional Vec2fProto acceleration = 4;
+  optional Vec2fProto position_var = 5;
+  optional Vec2fProto velocity_var = 6;
+  optional Vec2fProto acceleration_var = 7;
+  optional float rcs = 8;
+  optional int32 life_cycle = 9;
+  enum ObjectStatus {
+    OBJ_MEASSTATE_DELETED = 0;
+    OBJ_MEASSTATE_NEW = 1;
+    OBJ_MEASSTATE_MEASURED = 2;
+    OBJ_MEASSTATE_PREDICTED = 3;
+    OBJ_MEASSTATE_DELETED_FOR_MERGE = 4;
+    OBJ_MEASSTATE_NEW_FROM_MERGE = 5;
+  }
+  optional ObjectStatus status = 10;
+  optional float prob_exist = 11;
+}
+
+// Next id: 8
+message RadarClusterProto {
+  optional int32 id = 1;
+  optional float range = 2;
+  optional float azimuth = 3;
+  optional float elevation = 4;
+  optional float radial_relative_speed = 5;
+  optional float rcs = 6;
+  optional float snr = 7;
+}
+
+// Next id: 8
+message RadarDataProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional RadarId radar_id = 3;
+  optional RadarType radar_type = 4;
+  optional RadarMode radar_mode = 5;
+  repeated RadarObjectProto objects = 6;
+  repeated RadarClusterProto clusters = 7;
+}
+
+message RadarDebugProto {
+  optional LiteHeader header = 1;
+  optional int64 timestamp_us = 2;
+  optional double estimated_yaw_rate = 3;
+  optional double min_estimated_yaw_rate = 4;
+  optional double max_estimated_yaw_rate = 5;
+  optional int32 static_targets_num = 6;
+}
+
+// Next id： 20
+message RadarMeasurementProto {
+  optional int32 id = 1;
+  optional RadarObjectType type = 2;
+  optional Vec2dProto pos = 3;       // Local frame position.
+  optional double yaw = 4;           // Facing orientation.
+  optional Vec2dProto vel = 5;       // dpos/dt.
+  optional Vec2dProto body_vel = 6;  // dpos/dt.
+  optional Vec2dProto body_pos = 7;
+
+  // Add uncertainty.
+  optional Mat2dProto pos_cov = 8;
+  optional Mat2dProto vel_cov = 9;
+  optional double orientation_variance = 10;
+
+  // Measurement position in radar sensor coord.
+  optional Vec2dProto radar_coord_pos = 11;
+  // Relative velocity from radar directly in world coord.
+  optional Vec2dProto rel_vel = 12;
+  message DebugInfo {
+    enum TrackState {
+      kTrackInvalid = 0;
+      kTrackStart = 1;
+      kTrackStable = 2;
+      kTrackPredict = 3;
+    }
+    optional TrackState track_state = 1;
+    optional int32 life_count = 2;
+    optional int32 continuous_count = 3;
+    optional int32 lost_count = 4;
+    optional int32 raw_id = 5;
+    optional string debug_string = 6;
+    optional RadarObjectMotionState motion_state = 7;
+    optional Box2dProto safe_space_of_moving_car = 8;
+    optional Box2dProto safe_space_between_body_car = 9;
+    optional double body_azimuth = 10;
+    optional Box2dProto extended_box_of_camera_object = 11;
+    optional Box2dProto area_for_camera_filter = 12;
+    optional RadarType radar_type = 13;
+  }
+  optional DebugInfo debug_info = 13;
+  optional bool is_onroad = 14;
+  optional RadarId radar_id = 15;
+  optional Vec2dProto acceleration = 16;  // dvel/dt.
+  optional Mat2dProto acc_cov = 17;
+  // Velocity in the static body frame.
+  optional Vec2dProto static_body_vel = 18;  // dpos/dt.
+
+  optional bool is_vel_valid = 19 [default = true];
+  optional bool is_possible_cipv = 20 [default = false];
+}
+
+message RadarMeasurementsProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional RadarId radar_id = 3;
+  optional RadarMode radar_mode = 4;
+  repeated RadarMeasurementProto radar_measurements = 5;
+  optional uint32 radar_index = 6;
+}
+
+// This is for aggregate radar measurements for vantage visualization only.
+message RadarsMeasurementsProto {
+  repeated RadarMeasurementsProto radars_measurements = 2;
+}
+
+enum BOSCHA02Message {
+  BOSCHA02_SensorState = 0x201;
+  BOSCHA02_Obj_MIN = 0x202;
+  BOSCHA02_Obj_MAX = 0x221;
+
+  BOSCHA02_ADC_SOC_Status = 0x026;
+  BOSCHA02_BCS_2_A = 0x160;
+  BOSCHA02_BCS_1_A = 0x161;
+  BOSCHA02_EPS_1 = 0x16B;
+  BOSCHA02_BCS_3_A = 0x18A;
+  BOSCHA02_ADC_SOC_Time = 0x268;
+  BOSCHA02_ADC_SOC_Gear = 0x28D;
+  BOSCHA02_ADC_SOC_TimeSync = 0x300;
+  BOSCHA02_GW_BCM_2_ADC_SOC = 0x375;
+  BOSCHA02_ADC_SOC_NM = 0x520;
+}
+
+enum DESSAYA02Message {
+  DESSAYA02_XXR_SensorState = 0x600;
+  DESSAYA02_XXR_Obj_MIN = 0x601;
+  DESSAYA02_XXR_Obj_MAX = 0x620;
+
+  ADC_SOC_NM = 0x520;
+  ADC_SOC_Time = 0x268;
+  ADC_TimeSync = 0x190;
+  CCU_BCS_1_C = 0x267;
+  CCU_BCS_2_C = 0x160;
+  CCU_EPS_1_C = 0x16B;
+  CCU_SRS_1 = 0x1AE;
+  FLR_Diag_Tx = 0x792;
+  FLR_NM = 0x512;
+  FLR_Phys_Diag_Rx = 0x712;
+
+  FRR_Diag_Tx = 0x793;
+  FRR_NM = 0x513;
+  FRR_Phys_Diag_Rx = 0x713;
+
+  RLR_Diag_Tx = 0x7CA;
+  RLR_NM = 0x54A;
+  RLR_Phys_Diag_Rx = 0x74A;
+
+  RRR_Diag_Tx = 0x7BF;
+  RRR_NM = 0x53F;
+  RRR_Phys_Diag_Rx = 0x73F;
+
+  Func_Diag_Rx = 0x7DF;
+}

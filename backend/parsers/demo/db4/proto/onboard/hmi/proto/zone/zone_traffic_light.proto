@@ -1,0 +1,42 @@
+
+syntax = "proto2";
+
+package snoah.Qzone;
+
+import "onboard/hmi/proto/zone/common.proto";
+
+enum ZoneTrafficLightType {
+  ZTL_TYPE_UNKNOWN = 0x0;
+  ZTL_TYPE_CIRCUL = 0x1;
+  ZTL_TYPE_ARROWUP = 0x2;
+  ZTL_TYPE_ARROWLEFT = 0x3;
+  ZTL_TYPE_ARROWRIGHT = 0x4;
+  ZTL_TYPE_UTURN = 0x5;
+  ZTL_TYPE_UTURNLEFT = 0x6;
+};
+enum ZoneTrafficLightColor {
+  ZTL_COLOR_UNKNOWN = 0x0;
+  ZTL_COLOR_RED = 0x1;
+  ZTL_COLOR_YELLOW = 0x2;
+  ZTL_COLOR_RED_YELLOW = 0x3;
+  ZTL_COLOR_GREEN = 0x4;
+}
+
+enum ZoneTrafficLightMode {
+  ZTL_MODE_UNKNOWN = 0x0;
+  ZTL_MODE_CONTINUOUS = 0x1;
+  ZTL_MODE_BLINKING = 0x2;
+  ZTL_MODE_OFF = 0x3;
+}
+
+message ZoneTrafficLight {
+  optional uint32 id = 1;
+
+  optional ZoneTrafficLightType type = 2;
+
+  optional ZoneTrafficLightColor color = 3;
+
+  optional Point3D position = 4;
+  optional ZoneTrafficLightMode mode = 5;
+  optional uint32 valid = 6 [default = 1];
+}

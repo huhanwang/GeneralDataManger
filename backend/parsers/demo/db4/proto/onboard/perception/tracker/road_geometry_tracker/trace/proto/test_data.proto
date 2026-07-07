@@ -1,0 +1,25 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/road_geometry_tracker/trace/proto/test_data";
+
+// import "onboard/proto/perception/vision/bev_road_geometry.proto";
+import "onboard/proto/perception.proto";
+
+message BevStaticPerceptionTestTraceProto {
+  optional VisionBevRoadGeometryProto bev_road_geometry_result = 1;
+  optional VisionBevRoadGeometryProto mapformer_result = 2;
+}
+message RoadGeometryTrackerInputMapformerTraceData {
+  repeated BevStaticPerceptionTestTraceProto bev_static_perception_proto = 1;
+}

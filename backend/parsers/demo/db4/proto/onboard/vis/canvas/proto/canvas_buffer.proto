@@ -1,0 +1,180 @@
+syntax = "proto2";
+
+package snoah.vis;
+
+import "onboard/vis/common/proto/color.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+// Border style. Unset to draw the primitive without a border. Note that some
+// primitive types do not have a solid fill (e.g. points and lines). Not
+// setting a border will render the primitive invisible, but Canvas will not
+// attempt to remove such invisible primitives from the buffer.
+message BorderStyleProto {
+  enum LineStyle {
+    SOLID = 0;
+    DOTTED = 1;
+    DASHED = 2;
+    DOT_AND_DASH = 3;
+  }
+
+  optional ColorRGBAProto color = 1;
+  optional int64 line_width = 2;
+  optional LineStyle line_style = 3;
+}
+
+// Solid fill style. Unset to draw the primitive without fill. Note that some
+// primitive types do not have a solid fill (e.g. points and lines). Setting a
+// fill style has no effect on them.
+// TODO(Fang) add support for translucent rendering.
+message FillStyleProto {
+  optional ColorRGBAProto color = 1;
+}
+
+// A single point. This primitive has no solid fill.
+message PointProto {
+  optional BorderStyleProto border_style = 1;
+  optional Vec3dProto pos = 2;
+  optional int64 point_size = 3;
+}
+
+// A collection of points, to exploit OpenGL batch rendering and save on
+// bandwidth. This primitive has neither border style or fill style; the colors
+// of individual points are specified by the colors field. The colors field must
+// have either exactly 1 element or the same number of elements as xs, ys and
+// zs.
+// Set the translucent flag to render with alpha blending. Without this flag the
+// alpha channel in the colors has no effect.
+// Set the depth_sort flag to render in the back-to-front order. Without this
+// flag the translucent blending is still semi-transparent, but may have
+// incorrect appearance. Turning it on may significantly reduce frame rate when
+// rendering many points though. Do not use when translucent is off as it has
+// no effect.
+message PointsProto {
+  repeated fixed32 colors = 1;
+  repeated float xs = 2;
+  repeated float ys = 3;
+  repeated float zs = 4;
+  optional int64 point_size = 5;
+  optional bool translucent = 6 [default = false];
+  optional bool depth_sort = 7 [default = false];
+}
+
+message PointsWithBaseProto {
+  repeated fixed32 colors = 1;
+  repeated sint32 xs = 2;
+  repeated sint32 ys = 3;
+  repeated sint32 zs = 4;
+  optional int64 point_size = 5;
+  optional bool translucent = 6 [default = false];
+  optional bool depth_sort = 7 [default = false];
+  optional float base_x = 8;
+  optional float base_y = 9;
+  optional float base_z = 10;
+}
+
+// A line segment. This primitive has no solid fill.
+message LineProto {
+  optional BorderStyleProto border_style = 1;
+  optional Vec3dProto start = 2;
+  optional Vec3dProto end = 3;
+}
+
+// A polyline. This primitive has no solid fill.
+message LineStripProto {
+  optional BorderStyleProto border_style = 1;
+  repeated Vec3dProto vertices = 2;
+}
+
+// A circle in the x-y plane.
+message CircleProto {
+  optional BorderStyleProto border_style = 1;
+  optional FillStyleProto fill_style = 2;
+  optional Vec3dProto center = 3;
+  optional double radius = 4;
+}
+
+// A box in the x-y plane.
+message BoxProto {
+  optional BorderStyleProto border_style = 1;
+  optional FillStyleProto fill_style = 2;
+  optional Vec3dProto center = 3;
+  optional double heading = 4;
+  optional Vec2dProto size = 5;
+  optional bool render_heading = 6;
+}
+
+// A polygon. There is no requirement on convexity/self-intersection, but solid
+// fill only makes sense for a planar convex polygon.
+message PolygonProto {
+  optional BorderStyleProto border_style = 1;
+  optional FillStyleProto fill_style = 2;
+  repeated Vec3dProto vertices = 3;
+}
+
+// A triangle strip. Vertices in openGL triangle strip order.
+message TriangleStripProto {
+  optional BorderStyleProto border_style = 1;
+  optional FillStyleProto fill_style = 2;
+  repeated Vec3dProto vertices = 3;
+}
+
+// A text string, in the x-y plane. This primitive has no border, only a fill.
+message TextProto {
+  optional FillStyleProto fill_style = 1;
+  optional string text = 2;
+  optional Vec3dProto center = 3;
+  optional double heading = 4;
+  optional double size = 5;
+  enum Align {
+    LEFT = 0;
+    CENTER = 1;
+    RIGHT = 2;
+  }
+  optional Align align = 6 [default = LEFT];
+  optional QuaternionProto quaternion = 7;
+}
+
+// A bitmap image, in the x-y plane. This primitive has neither border nor fill.
+// Size is the side length of a pixel (rendered as a little square).
+message ImageProto {
+  // Each pixel has three bytes: r, g, b.
+  optional bytes pixels = 1;
+  optional int64 width = 2;
+  optional int64 height = 3;
+  optional Vec3dProto center = 4;
+  optional double heading = 5;
+  optional double size = 6;
+}
+
+// A general draw call.
+message DrawCallProto {
+  // Primitives.
+  oneof Primitive {
+    PointProto point = 1;
+    PointsProto points = 8;
+    LineProto line = 2;
+    LineStripProto line_strip = 3;
+    CircleProto circle = 4;
+    BoxProto box = 5;
+    PolygonProto polygon = 6;
+    TextProto text = 7;
+    ImageProto image = 9;
+    TriangleStripProto triangle_strip = 10;
+  }
+}
+
+// A general Canvas operation.
+message OperationProto {
+  oneof Operation {
+    DrawCallProto draw_call = 1;
+    AffineTransformationProto affine_transformation = 2;
+  }
+}
+
+// A Canvas buffer.
+message CanvasBufferProto {
+  repeated OperationProto ops = 1;
+  // Whether to translate z from zero to ground.
+  optional int64 flag = 2;
+  optional string name = 3;
+}

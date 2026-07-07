@@ -1,0 +1,61 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+enum TrafficSignTrackState {
+  TSTS_INVALID = 0;
+  TSTS_NEW = 1;
+  TSTS_UPDATED = 2;
+  TSTS_COASTED = 3;
+}
+
+message TrafficSignProto {
+  optional int32 id = 1;
+  optional int32 box_center_x = 2;
+  optional int32 box_center_y = 3;
+  optional int32 box_width = 4;
+  optional int32 box_height = 5;
+  optional float distance = 6;
+  // Next ID: 14
+  enum Category {
+    STOP = 0;
+    NO_ENTRY = 1;
+    NO_VEHICLES = 2;
+    NO_LEFT_TURN = 3;
+    NO_RIGHT_TURN = 4;
+    NO_PARKING = 5;
+    BACKGROUND = 6;
+    NO_OVERTAKING = 7;
+    CURVES_AHEAD = 8;
+    WATCH_FOR_CHILDREN = 9;
+    STRAIGHT = 10;
+    LEFT_TURN = 11;
+    RIGHT_TURN = 12;
+    RAMP = 13;
+  }
+  optional Category category = 7;
+  optional bool box_tl_visbility = 8;               // Box top left point.
+  optional bool box_tr_visbility = 9;               // Box top right point.
+  optional bool box_bl_visbility = 10;              // Box bottom left point.
+  optional bool box_br_visbility = 11;              // Box bottom right point.
+  optional Vec3dProto position = 12;                // position of vcs
+  optional float confidence = 13;                   // Confidence
+  optional TrafficSignTrackState track_state = 14;  // Track state
+  optional Vec3dProto smooth_position = 15;         // Position under smooth
+  optional float width = 16;                        // 3d
+  optional float height = 17;                       // 3d
+}

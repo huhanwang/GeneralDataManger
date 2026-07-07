@@ -1,0 +1,51 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/common/proto/qalc.proto";
+
+message DriverCommandProto {
+  optional LiteHeader header = 1;
+  optional int64 lane_change_command_id = 2;
+
+  enum LaneChangeCommandType {
+    LC_COMMAND_LEFT = 1;
+    LC_COMMAND_RIGHT = 2;
+    LC_COMMAND_CANCEL = 3;
+    LC_COMMAND_RETURN = 4;
+  }
+  optional LaneChangeCommandType lane_change_command_type = 3;
+}
+
+message DriverCommandResponseProto {
+  optional LiteHeader header = 1;
+
+  optional int64 lane_change_command_id = 2;
+
+  enum LaneChangeStage {
+    LCS_EXECUTING = 1;
+    LCS_PAUSE = 2;
+    LCS_REFUSE = 3;
+    LCS_COMPLETED = 4;
+    LCS_RETURNING = 5;
+    LCS_RETURN_COMPLETED = 6;
+  }
+  optional LaneChangeStage lane_change_stage = 3;
+
+  enum RefuseReason {
+    STATE_NOT_AVALIABLE = 1;
+    NO_VALID_LANE = 2;
+    CROSS_SOLID_LINE = 3;
+    GAP_DETECTION_FAIL = 4;
+  }
+  optional RefuseReason refuse_reason = 4;
+  optional bool entered_target_lane = 5;
+  optional bool take_over = 6;
+}
+
+message AlcFeedbackProto {
+  optional LiteHeader header = 1;
+
+  optional QALCState alc_state = 2;
+}

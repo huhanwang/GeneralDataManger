@@ -1,0 +1,406 @@
+
+
+syntax = "proto2";
+
+package snoah;
+import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+import "onboard/planner/proto/trajectory_validation.proto";
+import "onboard/proto/turn_signal.proto";
+
+// A metric that checks whether the initializer trajectory has reached the
+// regions in time.
+message InitializerTrajReachRegionMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+    optional MatchingOptions.DetectionApproach detection_approach = 3;
+    optional MatchingOptions.PassCriteria pass_criteria = 4;
+  }
+  repeated Region regions = 1;
+}
+
+// A metric that checks whether the PNC Trajectory has reached the prohibited
+// regions in time.
+message ProhibitedTrajectoryMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+    optional MatchingOptions.DetectionApproach approach = 3;
+  }
+  repeated Region regions = 1;
+}
+
+message PredictedTrajRegion {
+  optional PointListProto destination = 1;
+  optional TimeWindow time_window = 2;
+}
+
+// A metric that checks whether the object predicted traj has reached the
+// specified regions in time.
+message PredictedTrajMustPassZonesMetric {
+  repeated PredictedTrajRegion regions = 1;
+  optional string object_id = 2;
+  optional PredictedTrajRegion object_region = 3;
+}
+
+// A metric that checks whether the object predicted any traj has reached the
+// specified regions in time.
+message PredictedTrajAnyMustPassZonesMetric {
+  repeated PredictedTrajRegion regions = 1;
+  optional string object_id = 2;
+  optional PredictedTrajRegion object_region = 3;
+}
+
+// A metric that checks whether the object predicted traj has reached the
+// prohibited regions in time.
+message PredictedTrajNoPassZonesMetric {
+  repeated PredictedTrajRegion regions = 1;
+  optional string object_id = 2;
+  optional PredictedTrajRegion object_region = 3;
+}
+
+// A metric that checks whether the object predicted traj has reached the
+// prohibited regions in time.
+message PredictedTrajAllNoPassZonesMetric {
+  repeated PredictedTrajRegion regions = 1;
+  optional string object_id = 2;
+  optional PredictedTrajRegion object_region = 3;
+}
+
+// A metric that checks whether the object predicted traj has valid cutin
+// prediction
+message PredictedTrajCutinMetric {
+  optional string object_id = 1;
+}
+
+message TrajectoryValidationMetric {
+  optional planner.TrajectoryValidationOptionsProto options = 1;
+}
+
+message SteerMetric {
+  optional double steer_angle_limit = 1 [default = 72.0];
+  optional double delay_time = 2 [default = 0.2];
+}
+
+message PredTrajectoryMetric {
+  repeated int64 object_types = 1;
+  // duration_secs_list contains a list of durations that we want to evaluate
+  // trajectories with.
+  repeated int64 duration_secs_list = 2;
+  repeated bool in_intersection = 3;
+  repeated int64 behavior_types = 4;
+  repeated int64 priority_types = 5;
+}
+
+message PlannerPathDivergeMetric {
+  optional double max_check_distance = 1 [default = 35.0];
+}
+
+message TrajectoryMetric {
+  optional bool open_loop = 1 [default = false];
+  optional double max_brake = 2 [default = -3.5];
+  optional double max_acc = 3 [default = 2.0];
+  optional double max_lon_jerk = 4 [default = 5.0];
+  optional double max_lateral_acc = 5 [default = 2.5];
+  optional double max_lateral_jerk = 6 [default = 2.5];
+  optional double comfort_brake = 7 [default = -1.5];
+  optional double comfort_acc = 8 [default = 1.5];
+  optional double comfort_lon_jerk = 9 [default = 2.5];
+  optional double comfort_lateral_acc = 10 [default = 1.5];
+  optional double comfort_lateral_jerk = 11 [default = 1.5];
+  optional double eval_time = 12 [default = 3.0];
+}
+
+message TrajectoryObjRelationMetric {
+  optional bool open_loop = 1 [default = false];
+  optional double eval_time = 2 [default = 3.0];
+}
+
+message TrajectoryNudgeDistanceMetric {
+  optional bool open_loop = 1 [default = false];
+  optional double eval_time = 2 [default = 3.0];
+  optional double dangerous_nudge_dist_vru = 3 [default = 1.0];
+  optional double close_nudge_dist_vru = 4 [default = 1.5];
+  optional double dangerous_nudge_dist_veh = 5 [default = 0.5];
+  optional double close_nudge_dist_veh = 6 [default = 1.0];
+}
+
+message TrajectoryFollowGapMetric {
+  optional bool open_loop = 1 [default = false];
+  optional double eval_time = 2 [default = 3.0];
+  optional double close_time_gap = 3 [default = 1.5];
+  optional double close_dist_gap = 4 [default = 10.0];
+  optional double cutoff_time_gap = 5 [default = 2.5];
+  optional double cutoff_dist_gap = 6 [default = 20.0];
+}
+
+message ControlPerformanceMetric {
+  message ControlMetricGeneral {
+    optional double error_max = 1;
+    optional double error_rms = 2;
+  }
+
+  optional ControlMetricGeneral lateral_metric = 2;
+  optional ControlMetricGeneral station_metric = 3;
+  optional ControlMetricGeneral heading_metric = 4;
+  optional ControlMetricGeneral speed_metric = 5;
+  optional ControlMetricGeneral stop_distance_metric = 6;
+
+  reserved 1, 7;
+}
+
+// A metric that to check if the AV parked in to the Parking Region.
+message ReachParkingSpotMetric {
+  optional int64 parking_spot_id = 1;
+  optional double buffer = 2;  // Unit: Meters
+}
+
+message GearChangeMetric {
+  // Max gear change (between D and R) num during simulation.
+  optional int64 max_gear_change = 1;
+}
+
+message ParkingScoresMetric {
+  optional int64 parking_spot_id = 1;
+}
+
+message HumanLikePlannerTrajectoryMetric {
+  optional double calc_horizon = 1 [default = 10.0];
+}
+
+message CaptainNetJitterLossMetric {}
+
+message CaptainNetTrajAllMustPassZonesMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region regions = 1;
+}
+
+message CaptainNetTrajAllNoPassZonesMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region regions = 1;
+}
+
+message CaptainNetTrajAnyMustPassZonesMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region regions = 1;
+}
+
+message CaptainNetTrajAnyNoPassZonesMetric {
+  message Region {
+    optional PointListProto destination = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region regions = 1;
+}
+
+message CaptainNetObjectCollisionMetric {
+  optional double buffer = 1 [default = 0.1];
+  optional bool use_post_process = 2 [default = true];
+}
+
+message CaptainNetSpecificObjectCollisionMetric {
+  message TargetObject {
+    optional string object_id = 1;
+    optional TimeWindow time_window = 2;
+    optional double buffer = 3 [default = 0.1];
+  }
+  repeated TargetObject objects = 1;
+  optional bool use_post_process = 2 [default = true];
+}
+
+message TrajOptMaxAbsLateralJerkMetric {
+  optional double max_abs_lateral_jerk = 1 [default = 2.5];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptCurbCollisionMetric {
+  optional double buffer = 1 [default = 0.1];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMaxAbsLateralAccMetric {
+  optional double max_abs_lateral_acc = 1 [default = 3.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMaxLongitudinalJerkMetric {
+  optional double max_longitudinal_jerk = 1 [default = 4.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMinLongitudinalJerkMetric {
+  optional double min_longitudinal_jerk = 1 [default = -8.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMaxLongitudinalAccMetric {
+  optional double max_longitudinal_acc = 1 [default = 1.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMinLongitudinalAccMetric {
+  optional double min_longitudinal_acc = 1 [default = -6.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptMaxDdpIterationsMetric {
+  optional int32 max_iterations = 1 [default = 20];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptLastIterationJs0Metric {
+  optional double max_js0_under_estimation = 1 [default = 50.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptLastIterationNegativeDropMetric {
+  optional double min_js0_under_estimation = 1 [default = -1.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptFinalCostMetric {
+  optional double max_final_cost = 1 [default = 50.0];
+  optional bool evaluate_all_branches = 2;
+}
+
+message TrajOptSolveTimeMetric {
+  optional bool evaluate_all_branches = 1;
+}
+
+message TrajOptAddCostTimeMetric {
+  optional bool evaluate_all_branches = 1;
+}
+
+message SteeringSpeedMetric {
+  optional double steering_speed_limit_threshold = 1
+      [default = 360.0];  // deg/s.
+}
+
+message SpeedDecisionMetric {
+  message ObjectInfo {
+    optional string id = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated ObjectInfo leader_object_info = 1;
+  repeated ObjectInfo follower_object_info = 2;
+}
+
+// A metric that checks whether the lane center in OnlineSemanticMapProto
+// passes some prohibited regions.
+message ProhibitedLaneRegionMetric {
+  message Region {
+    optional PointListProto polygon = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated Region regions = 1;
+}
+
+message OnlineLaneOffsetMetric {
+  optional double max_ade = 1;
+  optional double max_fde = 2;
+}
+
+message TargetLaneStabilityMetric {}
+
+message OnlineMapQualityMetric {
+  optional double min_lane_length = 1;
+}
+
+message MaxJerkMetric {
+  enum Type {
+    ACCEL = 0;
+    DECEL = 1;
+  }
+  optional double max_jerk = 1;
+  optional Type type = 2;
+}
+
+message OnlineMapCoverageMetric {
+  message RequiredLane {
+    repeated int64 lane_ids = 1;
+    optional double start_fraction = 2;
+    optional double end_fraction = 3;
+    optional TimeWindow time_window = 4;
+    optional double required_overlap_fraction = 5 [default = 0.8];
+    optional double lat_offset_thres = 6 [default = 1.0];
+  }
+  repeated RequiredLane required_lanes = 1;
+}
+
+message TrajectorySpeedDiffMetric {
+  optional double speed_diff_thres = 1;  // m/s.
+  optional double eval_cutoff_time = 2;  // s.
+}
+
+message ProperBrakeMetric {}
+
+message PoseDerivativeMetric {
+  optional TimeWindow time_window = 1;
+}
+
+// A metric that checks whether the object's most likely predicted traj has
+// reached the specified regions in time.
+message EgoTrajMustPassZonesMetric {
+  repeated PredictedTrajRegion regions = 1;
+}
+
+// A metric that checks whether the traffic gap results same as truth labeled
+message TrafficGapMetric {
+  message TrafficGapInfo {
+    optional string leader_id = 1;
+    optional string follower_id = 2;
+    optional TimeWindow time_window = 3;
+    optional double time_tolerance_percentage = 4 [default = 0.9];
+  }
+  repeated TrafficGapInfo traffic_gap_infos = 1;
+}
+
+message TurnSignalMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional TurnSignal expected_turn_signal = 2;
+    optional double allow_error_time = 3;  // 默认0.0秒
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message NaviInfoFalseTrueMetric {
+  optional TimeWindow time_window = 1;
+  repeated PointListProto destinations = 2;
+  repeated PointListProto prohibited_regions = 3;
+  optional double distance_buffer = 4 [default = 300.0];
+}
+
+enum BlindArea {
+  OCCLUDED_OBJECT = 0;
+  INTERSECTION_BLIND = 1;
+  NO_TL_INTERSECTION_BLIND = 2;
+  UNPROTECTED_LEFT_TURN_BLIND = 3;
+  MERGE_OPENING_BLIND = 4;
+  RIGHT_TURN_INTERSECTION_BLIND = 5;
+}
+
+message BlindAreaWarningFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    repeated BlindArea scenario_names = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BlindAreaWarningFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    repeated BlindArea scenario_names = 2;
+  }
+  repeated GroundTruth truths = 1;
+}

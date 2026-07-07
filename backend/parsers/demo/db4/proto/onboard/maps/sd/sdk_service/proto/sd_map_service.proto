@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/adasis.proto";
+import "onboard/maps/sd/turn_by_turn/proto/turn_by_turn.proto";
+import "onboard/maps/sd/ehr/autonavi/proto/ehpv2_raw_message.proto";
+
+message SdRouteListenerResult {}
+
+message TurnByTurnListenerResult {}
+
+message EhpV2ListenerResult {}
+
+service SdMap {
+  rpc UpdateSdRouteMessage(SDRouteProto) returns (SdRouteListenerResult) {}
+  rpc UpdateTurnByTurnMessage(TurnByTurnProto)
+      returns (TurnByTurnListenerResult) {}
+  rpc UpdateEhpV2Message(AutoNaviEhpV2RawMessages)
+      returns (EhpV2ListenerResult) {}
+}

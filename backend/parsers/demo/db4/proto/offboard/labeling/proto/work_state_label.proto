@@ -1,0 +1,186 @@
+syntax = "proto2";
+
+package snoah.work_state_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/work_state_label";
+import "onboard/proto/perception.proto";
+
+// Next ID: 6
+enum MainSceneType {
+  OTHER_MAIN_SCENE = 0;  // other scene
+  URBAN = 1;             // urban
+  EXPRESSWAY = 2;        // high speed way in city
+  HIGHWAY = 3;           // highway
+  RURAL = 4;             // countryside
+  PARKING_LOT = 5;       // parking lot
+}
+
+// Next ID: 5
+enum SmallSceneType {
+  OTHER_SMALL_SCENE = 0;
+  TUNNEL = 1;      // tunnel
+  TOLL_GATE = 2;   // toll gate
+  RINGROAD = 3;    // ringroad
+  ROUNDABOUT = 4;  // roundabout
+}
+
+// Next ID: 8
+enum WeatherType {
+  OTHER_WEATHER = 0;  // other weather
+  SUNNY = 1;          // sunny
+  CLOUDY = 2;         // cloudy
+  FOGGY = 3;          // foggy
+  RAINY = 4;          // rainy
+  SNOWY = 5;          // snowy
+  SAND_STORM = 6;     // sand storm
+  OCCLUDED = 7;       // the sky is occluded.
+}
+
+// Next ID: 4
+enum LightType {
+  OTHER_LIGHT = 0;    // other light type
+  NATURAL_LIGHT = 1;  // light source is sun
+  VEHICLE_LIGHT = 2;  // light source is vehicle
+  STREET_LIGHT = 3;   // light source is street light
+}
+
+// Next ID: 5
+enum TimeType {
+  TIME_TYPE_UNKNOWN = 0;  // don't known time from image
+  DAY = 1;                // day
+  NIGHT = 2;              // night
+  DAWN = 3;               // dawn
+  DUSK = 4;               // dusk
+}
+
+// Next ID: 4
+enum EgoState {
+  EGO_STATE_UNKNOWN = 0;
+  ENTERING = 1;  // The vehicle is entering the scene.
+  WITHIN = 2;    // The vehicle is in the scene.
+  LEAVING = 3;   // The vehicle is driving out of the scene.
+}
+
+// Next ID: 3
+enum ParkingLotType {
+  PARK_TYPE_UNKNOWN = 0;
+  FLAT = 1;          // Flat parking lot.
+  STEREOSCOPIC = 2;  // Stereoscopic parking lot.
+}
+
+// Next ID: 3
+enum ParkingLotSite {
+  PARK_SITE_UNKNOWN = 0;
+  INDOOR = 1;   // Indoor parking lot.
+  OUTDOOR = 2;  // Outdoor parking lot.
+}
+
+// Next ID: 9
+enum RoadSurfaceState {
+  ROAD_STATE_UNKNOWN = 0;
+  DRY = 1;               // Dry road surface.
+  WET = 2;               // Wet road surface.
+  SNOW = 3;              // Snow on the road.
+  PONDING = 4;           // Water on the road.
+  MUDDY = 5;             // Muddy road.
+  ICING = 6;             // Icing road.
+  TRAFFIC_ACCIDENT = 7;  // Traffic accident.
+  OTHER_ROAD_STATE = 8;  // Other undefined types.
+}
+
+// Next ID: 4
+enum StateLevel {
+  STATE_LEVEL_UNKNOWN = 0;
+  LIGHT = 1;
+  MIDDLE = 2;
+  HEAVRY = 3;
+}
+
+// Next ID: 5
+enum LightIntensityLevel {
+  INTENSITY_LEVEL_UNKNOWN = 0;
+  STRONG = 1;  // Strong light.
+  NORMAL = 2;  // Normal light.
+  DIM = 3;     // Dim light.
+  DARK = 4;    // No light.
+}
+
+// Next ID: 6
+message SceneInfo {
+  optional MainSceneType scene_type = 1;         // main scene type
+  repeated SmallSceneType small_scene_type = 2;  // small scene type
+  optional EgoState ego_state = 3;               // ego state type
+  optional ParkingLotType parking_lot_type =
+      4;  // when scene type is parking lot, this field will be used
+  optional ParkingLotSite parking_lot_site =
+      5;  // when scene type is parking lot, this field will be used
+}
+
+// Next ID: 4
+message RoadSurfaceInfo {
+  optional RoadSurfaceState road_surface_state = 1;
+  optional StateLevel state_level = 2;
+  optional bool with_lane = 3;  // whether the road has lane
+}
+
+// Next ID: 4
+message WeatherInfo {
+  optional WeatherType weather_type = 1;
+  optional StateLevel state_level = 2;
+  optional float rain_value = 3;  // This value from the rain sensor.
+}
+
+// Next ID: 4
+message LightIntensityInfo {
+  optional float value = 1;  // This value from the light sensor.
+  optional LightIntensityLevel light_intensity_level =
+      2;                              // The level of light intensity.
+  repeated LightType light_type = 3;  // The type of light source.
+}
+
+// Next ID: 6
+enum WorkStateLabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_22_12_16 = 1;  // initial version
+  V_23_01_10 = 2;
+  V_23_02_21 = 3;  // Add icing to RoadSurfaceState
+  V_23_04_25 = 4;  // Update RoadSurfaceStateType and WeatherType.
+  V_23_05_29 = 5;  // Update RoadSurfaceInfo and WeatherInfo.
+}
+
+// Next ID: 10
+message LabeledWorkState {
+  optional string image_name = 1;
+  optional SceneInfo scene_info = 2;
+  repeated RoadSurfaceInfo road_surface_info = 3;
+  repeated WeatherInfo weather_info = 4;
+  optional TimeType time_type = 5;
+  optional LightIntensityInfo light_intensity_info = 6;
+  optional int32 label_frequency = 7;  // 1 or 10
+  optional WorkStateLabelingPolicyVersion version = 8;
+  optional string export_time = 9;
+}
+
+message LabeledWorkStatesV2 {
+  message LabeledWorkStateV2 {
+    optional WorkStateProto work_state_proto = 1;
+    optional string image_path = 2;
+  }
+  repeated LabeledWorkStateV2 labeled_work_states = 1;
+}
+
+// Next ID: 6
+message PRTLabeledWorkState {
+  optional double camera_center_timestamp = 1;
+  optional WorkStateProto.SceneType scene_type = 2;
+  optional WorkStateProto.RoadSurfaceStateType road_surface_state_type = 3;
+  optional WorkStateProto.WeatherType weather_type = 4;
+  optional WorkStateProto.TimeType time_type = 5;
+}
+
+// Next ID: 5
+message PRTLabeledWorkStateData {
+  optional string run_name = 1;
+  optional double start_time = 2;
+  optional double duration = 3;
+  repeated PRTLabeledWorkState prt_labeled_work_states = 4;
+}

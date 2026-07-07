@@ -1,0 +1,61 @@
+syntax = "proto2";
+
+package snoah.labeling;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/scene_label";
+
+enum MainScene {
+  URBAN = 0;
+  EXPRESSWAY = 1;
+  HIGHWAY = 2;
+  RURAL = 3;
+  MOUNTAIN = 4;
+  PARKING_LOT = 5;
+  OTHER_MAIN_SCENE = 6;
+}
+
+enum SmallScene {
+  INTERSECTION = 0;
+  CURVE = 1;
+  RAMP = 2;
+  BUS_STAION = 3;
+  NO_PARKING = 4;
+  TUNNEL = 5;
+  TOLL_GATE = 6;
+  WALL = 7;
+  RINGROAD = 8;
+  ROUNDABOUT = 9;
+  OTHER_SMALL_SCENE = 10;
+}
+
+enum SceneWeather {
+  WEATHER_SUNNY = 0;
+  WEATHER_OVERCAST = 1;
+  WEATHER_MIST = 2;
+  WEATHER_MEDIUM_FOG = 3;
+  WEATHER_DENSE_FOG = 4;
+  WEATHER_LIGHT_RAIN = 5;
+  WEATHER_MODERATE_RAIN = 6;
+  WEATHER_HEAVY_RAIN = 7;
+  WEATHER_LIGHT_SNOW = 8;
+  WEATHER_MODERATE_SNOW = 9;
+  WEATHER_HEAVY_SNOW = 10;
+  WEATHER_SAND_STORM = 11;
+  OTHER_SCENE_WEATHER = 12;
+}
+
+enum SceneLight {
+  NATURAL_LIGHT = 0;
+  LIGHTING = 1;
+  BACKLIGHT = 2;
+  DAZZLE_LIGHT = 3;
+  DARK = 4;
+  OTHER_SCENE_LIGHT = 5;
+}
+
+enum SceneTime {
+  DAY = 0;
+  NIGHT = 1;
+  DAWN = 2;
+  DUSK = 3;
+  OTHER_SCENE_TIME = 4;
+}

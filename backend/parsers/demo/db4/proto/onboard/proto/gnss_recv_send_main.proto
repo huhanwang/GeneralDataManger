@@ -1,0 +1,117 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message Vector3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message Vector3F {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+}
+
+message Vector4D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double w = 4;
+}
+
+message Vector4F {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+  optional float w = 4;
+}
+message GNSSStatus {
+  optional string sol_status = 1;
+  optional string type = 2;
+};
+
+message UNPACK_NAVODO {
+  optional Vector4D orientation = 1;
+  optional Vector3D position = 2;          // lat long height roll yaw pitch
+  optional Vector3D position_std_dev = 3;  // position conv
+  optional Vector3D deg_std_dev = 4;       // degree accuracy
+  optional Vector3D velocity = 5;          // speed:NED north east down :xyz
+};
+
+enum AntennaStatus {
+  ANT_NORMAL = 0x00;
+  ANT_OPEN_CIRCUIT = 0x01;
+  ANT_SHORT_CIRCUIT = 0x02;
+};
+
+message RawMeas {
+  optional uint32 gnss_id = 1;  // GNSS identifier
+  optional uint32 sv_id = 2;    // Satellite identifier
+  optional double pr_mes = 3;   // Pseudorange measurement [m]
+  optional double cp_mes = 4;   // Carrier phase measurement [cycles]
+  optional uint32 cno = 5;      // Carrier-to-noise density ratio [dB-Hz]
+  // Estimated pseudorange measurement standard deviation [m]
+  optional uint32 pr_std = 6;
+  // Estimated carrier phase measurement standard deviation [cycles]
+  optional uint32 cp_std = 7;
+}
+
+message GnssHeader {
+  optional int64 stamp = 1;
+  optional int64 seq = 2;
+  optional string frame_id = 3;
+  optional int32 version = 4;
+}
+
+message GNSSFrame {
+  optional GnssHeader header = 1;
+  optional int64 sensor_stamp = 2;
+  optional int64 sample_stamp = 3;
+  optional string raw_data = 4;
+  optional Vector3D position = 5;
+  optional Vector3F position_std_dev = 6;
+  optional Vector3F velocity = 7;
+  optional Vector3F velocity_std_dev = 8;
+  optional Vector3F angular = 9;
+  optional Vector3F angular_std_dev = 10;
+  optional int32 num_sates = 11;
+  optional string solve_status = 12;
+  optional string ins_status = 13;
+  optional double speed = 14;
+  optional int32 mode = 15;
+  optional double height_of_ellipse = 16;
+  optional int32 gps_fix_info = 17;
+  optional GNSSStatus pos_status = 18;
+  optional GNSSStatus vel_status = 19;
+  optional GNSSStatus head_status = 20;  // ins_status is occupy . so sad
+  optional Vector4D orientation = 21;
+  repeated double pose_covariance = 22;
+  repeated string nmea_sentence = 23;
+  optional float pitch = 24;
+  optional float yaw = 25;
+  optional float roll = 26;
+  optional float x_offset = 27;
+  optional float y_offset = 28;
+  optional float z_offset = 29;
+  optional int32 zone_id = 30;
+  optional Vector3D position_gps = 31;
+  optional Vector3D acc = 32;
+  optional Vector3D accgyo = 33;
+  optional int32 channel_id = 34;
+  optional string desc = 35;
+  optional UNPACK_NAVODO unpack_navodo = 36;
+  repeated bytes raw_array = 37;               // raw data of gnss
+  optional int32 rtk_state_code = 38;          // state code of rtk
+  optional AntennaStatus antenna_status = 39;  // antenna status
+  repeated RawMeas raw_meas = 40;              // raw measurement of gnss
+}
+
+message GnssFrameProto {
+  optional LiteHeader header = 1;
+  optional GNSSFrame frame = 2;
+}

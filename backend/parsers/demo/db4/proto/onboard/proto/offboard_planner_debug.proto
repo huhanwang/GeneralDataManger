@@ -1,0 +1,58 @@
+
+syntax = "proto2";
+package snoah.planner;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/planner.proto";
+import "onboard/planner/scene/proto/scene_understanding.proto";
+import "onboard/planner/ml/condition_feature_extractor/proto/condition_feature.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/planner/initializer/proto/initializer.proto";
+import "onboard/planner/scheduler/proto/scheduler.proto";
+import "onboard/maps/proto/lane_path.proto";
+
+message OffboardPlannerStatus {
+  enum StatusCode {
+    UNINITIALIZED = 0;
+    OK = 1;
+    INPUT_INCORRECT = 2;
+    FAILURE = 3;
+  }
+  optional StatusCode status = 1 [default = OK];
+  optional string message = 2;
+}
+
+message SingleConditionPlannerDebugProto {
+  enum SingleconditionPlannerStatus {
+    OK = 0;
+    PRECONDITION_FAILURE = 1;
+    INITIALIZER_FAILURE = 2;
+    OPTIMIZER_FAILURE = 3;
+    SPEED_FAILURE = 4;
+  }
+  optional SingleconditionPlannerStatus status = 1;
+  optional ml.ConditionProto condition = 2;
+  optional ScheduledPathBoundaryProto path_boundary = 3;
+  optional mapping.LanePathProto target_lane_path = 4;
+  optional double trajectory_start_timestamp = 5;
+  repeated ApolloTrajectoryPointProto trajectory_point = 6;
+  optional InitializerDebugProto initializer_debug = 7;
+}
+
+message OffboardPlannerDebugProto {
+  optional LiteHeader header = 1;
+
+  optional int32 planner_frame_seq_num = 2;  // Used to match the state.
+
+  optional OffboardPlannerStatus offboard_planner_status = 3;
+
+  optional double planning_horizon = 4;
+
+  optional SceneOutputProto scene_understanding_debug = 5;
+
+  repeated PlannerDebugProto.ObjectInfo stalled_objects = 6;
+
+  repeated PlannerDebugProto.ObjectInfo traffic_waiting_objects = 7;
+
+  repeated SingleConditionPlannerDebugProto conditions_result = 100;
+}

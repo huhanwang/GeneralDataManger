@@ -1,0 +1,209 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/calibration/proto/calibration_workflow.proto";
+
+message LidarIntrinsicsProto {
+  optional string calibration_time = 3;
+  optional string calibration_engineer = 4;
+
+  repeated double elevations = 1;
+  repeated double azimuth_offsets = 2;
+  repeated double elevation_adjusts = 5;
+  repeated double azimuth_adjusts = 6;
+  repeated double start_frames = 7;
+  repeated double end_frames = 8;
+  repeated double even_azimuth_offsets = 9;
+  repeated double odd_azimuth_offsets = 10;
+  repeated double even_firetimes = 11;
+  repeated double odd_firetimes = 12;
+
+  optional string serial_no = 13;
+  optional LidarId lidar_id = 14 [default = LDR_FRONT];
+}
+
+message MultiLidarIntrinsicsProto {
+  optional LiteHeader header = 1;
+
+  repeated LidarIntrinsicsProto multi_lidar_intrinsics = 5;
+
+  // Deprecated.
+  optional LidarIntrinsicsProto lidar_intrinsics = 2 [deprecated = true];
+  optional string serial_no = 3 [deprecated = true];
+  optional LidarId id = 4 [default = LDR_FRONT, deprecated = true];
+}
+
+message LidarExtrinsicsProto {
+  optional string calibration_time = 7;
+  optional string calibration_engineer = 10;
+  optional string calibration_run = 11;
+  optional CalibrationMode calibration_mode = 12;
+
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double yaw = 6;
+  optional double pitch = 5;
+  optional double roll = 4;
+
+  message RelativePosition {
+    optional LidarId ref_lidar = 1;
+    optional double x = 2;
+    optional double y = 3;
+    optional double z = 4;
+    optional double roll = 5;
+    optional double pitch = 6;
+    optional double yaw = 7;
+  }
+  // Relative position to the ref lidar. Once this field is set, the extrinsics
+  // will be calculated from it after calibration.
+  optional RelativePosition relative_pos = 9;
+
+  optional string vehicle_name = 8 [deprecated = true];
+}
+
+message CameraDistortCoeffs {
+  optional double k1 = 1;
+  optional double k2 = 2;
+  optional double p1 = 3;
+  optional double p2 = 4;
+  optional double k3 = 5;
+  optional double k4 = 6;
+  optional double k5 = 7;
+  optional double k6 = 8;
+}
+
+message CameraIntrinsicsMatrix {
+  optional double fx = 1;
+  optional double fy = 2;
+  optional double cx = 3;
+  optional double cy = 4;
+}
+
+message CameraIntrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 5;
+
+  optional CameraDistortCoeffs distort_coeffs = 2;
+  optional CameraIntrinsicsMatrix camera_matrix = 3;
+  optional double rms = 6;
+
+  optional string serial_no = 4;
+
+  optional CameraId camera_id = 7;
+}
+
+message CameraIntrinsicsDatabaseProto {
+  repeated CameraIntrinsicsProto camera_intrinsics = 1;
+}
+
+message MultiCameraIntrinsicsProto {
+  optional LiteHeader header = 1;
+  repeated CameraIntrinsicsProto camera_intrinsics = 2;
+}
+
+message CameraToLidarExtrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 10;
+
+  optional double x = 4;
+  optional double y = 5;
+  optional double z = 6;
+  optional double yaw = 7;
+  optional double pitch = 8;
+  optional double roll = 9;
+  optional string calibration_run = 11;
+}
+
+message CameraToVehicleExtrinsicsProto {
+  enum CalibrationPurpose {
+    CALIBRATION_PURPOSE_UNDEFINED = 0;
+    CALIBRATION_PURPOSE_OPTIMIZE_BEV_STITCHING = 1;
+    CALIBRATION_PURPOSE_OPTIMIZE_LIDAR_CAMERA_ALIGNMENT = 2;
+  }
+
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 2;
+  optional CalibrationPurpose calibration_purpose = 9;
+  optional CalibrationMode calibration_mode = 10;
+
+  optional double x = 3;
+  optional double y = 4;
+  optional double z = 5;
+  optional double yaw = 6;
+  optional double pitch = 7;
+  optional double roll = 8;
+}
+
+message ImuBiasProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 2;
+
+  optional double acc_bias_x = 3;
+  optional double acc_bias_y = 4;
+  optional double acc_bias_z = 5;
+  optional double gyro_bias_x = 6;
+  optional double gyro_bias_y = 7;
+  optional double gyro_bias_z = 8;
+}
+
+message ImuExtrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 11;
+
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 4;
+  optional double yaw = 5;
+  optional double pitch = 6;
+  optional double roll = 7;
+  optional double yaw_sdv = 8;
+  optional double pitch_sdv = 9;
+  optional double roll_sdv = 10;
+  optional string calibration_run = 12;
+  optional bool imu_frame_consistent = 13 [deprecated = true];
+}
+
+message GnssAntennaExtrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 6;
+
+  enum AntennaId {
+    ANT1 = 1;
+    ANT2 = 2;
+  }
+  optional AntennaId id = 2;
+  optional double x = 3;
+  optional double y = 4;
+  optional double z = 5;
+}
+
+message RadarExtrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 10;
+
+  optional string description = 2;
+  optional double x = 4;
+  optional double y = 5;
+  optional double z = 6;
+  optional double yaw = 7;
+  optional double pitch = 8;
+  optional double roll = 9;
+}
+
+message UssExtrinsicsProto {
+  optional string calibration_time = 1;
+  optional string calibration_engineer = 10;
+
+  optional string description = 2;
+  optional double x = 4;
+  optional double y = 5;
+  optional double z = 6;
+  optional double yaw = 7;
+  optional double pitch = 8;
+  optional double roll = 9;
+}

@@ -1,0 +1,237 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/localization/visual/proto/data_type.proto";
+import "onboard/common/proto/map_geometry.proto";
+
+message CoordinateConverterProto {
+  required LocalizationTransformProto localization_transform_proto = 1;
+}
+
+enum LocalizationMode {
+  LOCMOD_UNKNOWN = 0;
+  LOCMOD_MAP = 1;
+  LOCMOD_MAP_LATERAL = 2;
+  LOCMOD_INS = 3;
+  LOCMOD_GPS = 4;
+}
+
+message MapLocationProto {
+  optional int64 lane_id = 1;
+  optional uint64 link_identifier = 2;        // section
+  optional uint64 lane_model_identifier = 3;  // lane
+  optional uint32 lane_identifier = 4;        // lane
+  // The index [0, n) of lane shape point where AV pose projected on the lane
+  optional uint32 lane_shape_point_index = 5;  // reference line start point
+  // The projection point of AV pose on the lane
+  optional mapping.GeoPointProto lane_proj_point = 6;  // radian
+  optional int64 section_id = 7;
+  optional float distance_from_lane_start = 8;
+  optional uint64 path_id = 9;
+}
+
+message HPPLocalizationProto {
+  enum GarageState {
+    UNKNOWN = 0;
+    NEW = 1;
+    EXISTING = 2;
+  }
+  optional GarageState garage_state = 1;
+  optional int32 target_map_id = 2;
+  optional int32 target_parking_spot_id = 3;
+  repeated int32 status_code = 4;
+  optional Vec3dProto feature_reloc_pos = 5;
+}
+
+message LocalizationTransformProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+
+  optional double smooth_ref_x = 3;
+  optional double smooth_ref_y = 4;
+  optional double global_ref_x = 5;
+  optional double global_ref_y = 6;
+  // Yaw difference in vehicle frame from smooth to global.
+  optional double yaw_diff = 7;
+  optional double z_diff = 8;
+
+  // The LiDAR/IMU calibration yaw correction.
+  optional double yaw_correct = 10 [default = 0.0];
+
+  // The yaw correction is from online or bias.
+  optional bool yaw_correct_from_online = 13;
+
+  enum Type {
+    LIDAR = 0;
+    RTK = 1;
+    VISUAL = 2;
+  }
+  optional Type type = 11 [default = LIDAR];
+
+  // Multi-level map level
+  optional int32 level_id = 12 [default = 0];
+
+  // Localization mode
+  optional LocalizationMode mode = 14;
+
+  optional MapLocationProto map_location = 15;
+
+  // arry 4: 0:map 1:perception 2:match 3:gnss
+  repeated int32 error_code = 16;
+
+  enum LocStatus {
+    kInit = 0;
+    kNormal = 1;
+    kLowPrecision = 2;
+    kInvalid = 3;
+  }
+  optional LocStatus loc_status = 17;
+
+  optional int64 outside_odd_reason = 18;
+
+  optional HPPLocalizationProto hpp_localization = 19;
+  reserved 9;
+}
+
+message LocalizationTransformProtoCollect {
+  message IsOnRoadProto {
+    optional LiteHeader header = 1;
+    optional double longitude = 2;
+    optional double latitude = 3;
+    optional bool is_on_road = 4;
+  }
+  message LocalizationGlobalInfo {
+    optional LiteHeader header = 1;
+
+    // Localization pose in map coordinate
+    optional double localize_x_global = 2;
+    optional double localize_y_global = 3;
+    optional double localize_z_global = 4;
+    optional double localize_yaw_global = 5;
+    optional double localize_pitch_global = 6;
+    optional double localize_roll_global = 7;
+
+    optional double timestamp = 8;
+
+    // Multi-level map level
+    optional int32 level_id = 9 [default = 0];
+  }
+  repeated LocalizationTransformProto localization_transform_protos = 1;
+  repeated IsOnRoadProto is_on_road_protos = 2;
+  repeated LocalizationGlobalInfo localization_global_protos = 3;
+}
+
+message LocalizationDebugProto {
+  optional LiteHeader header = 1;
+
+  // GNSS pose (used for initialization).
+  optional double gnss_x = 2;
+  optional double gnss_y = 3;
+  optional double gnss_z = 8;
+  optional double gnss_yaw = 4;
+  optional double gnss_pitch = 10;
+  optional double gnss_roll = 11;
+
+  // Localization result (before positioning sensor fusion).
+  optional double localize_x = 5;
+  optional double localize_y = 6;
+  optional double localize_z = 9;
+  optional double localize_yaw = 7;
+  optional double localize_pitch = 12;
+  optional double localize_roll = 13;
+
+  // Localization pose in map coordinate for PosRT
+  optional double localize_x_global = 17;
+  optional double localize_y_global = 18;
+  optional double localize_z_global = 19;
+  optional double localize_yaw_global = 20;
+  optional double localize_pitch_global = 21;
+  optional double localize_roll_global = 22;
+
+  optional bool localization_success = 15;
+  optional double timestamp = 16;
+  optional bool localization_init_status = 23;
+
+  // Localization heatmap
+  message HeatmapPixel {
+    optional float x = 1;
+    optional float y = 2;
+    optional double value = 3;
+  }
+  repeated HeatmapPixel heatmap = 14;
+}
+
+message LocalizationPoseProto {
+  optional LiteHeader header = 1;
+
+  optional Vec3dProto pos_global = 2;
+  optional Vec3dProto pos_smooth = 3;
+  optional RotationProto attitude = 4;
+  optional double yaw = 5;
+  optional double pitch = 6;
+  optional double roll = 7;
+  optional Mat2dProto pos_smooth_xy_cov = 9 [deprecated = true];
+  optional Vec3dProto vel_smooth = 10;
+
+  optional double timestamp = 8;
+}
+
+// visual proto message
+
+message LocalizationPerceptionProto {  // deprecated
+  message LineProto {
+    repeated Vec2dProto pts_uv = 1;
+    repeated Vec2dProto pts_vcs = 2;
+    repeated Vec2dProto pts_sampling = 3;
+  }
+  message ObjectProto {  // deprecated
+    repeated Vec2dProto pts_uv = 1;
+    repeated Vec2dProto pts_vcs = 2;
+  }
+  message DividerProto {  // deprecated
+    optional int32 id = 1;
+    optional int32 position_type = 2;
+    optional int32 type = 3;
+    optional LineProto line = 4;
+  }
+  message RoadEdgeProto {  // deprecated
+    optional int32 id = 1;
+    optional int32 type = 2;
+    optional LineProto line = 3;
+  }
+  message PolesProto {  // deprecated
+    optional int32 id = 1;
+    optional int32 type = 2;
+    optional ObjectProto object = 3;
+  }
+  repeated PolesProto poles = 1;
+  repeated DividerProto dividers = 2;
+  repeated RoadEdgeProto road_edges = 3;
+}
+
+message VisualizePoseProto {
+  optional Vec3dProto pos_smooth = 1;
+  optional RotationProto attitude = 2;
+}
+
+message LocalizationViewerDebugProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional LocalizationPerceptionProto perception = 3 [deprecated = true];
+  optional localization.VisualLocalizerDebugProto v2_message = 4;
+  optional VisualizePoseProto visualize_pose = 5;
+}
+
+message VisualLocalizationStateProto {
+  optional LiteHeader header = 1;
+  optional int32 localization_transform_seq_num = 2;
+  optional localization.InputMessageSeqNumProto seq_num = 3;
+  optional localization.VisualLocalizerStateProto current_state = 4;
+  optional localization.VisualLocalizerStateProto last_state = 5;
+  optional Vec2dProto coordinate_origin = 6;
+  optional localization.SoaInsStateProto soa_ins_state = 7;
+}

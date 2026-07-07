@@ -1,0 +1,217 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Gear_Report_1f5 {
+  enum GearType {
+    GEAR_RESERVED = 0;
+    GEAR_P = 1;
+    GEAR_R = 2;
+    GEAR_N = 3;
+    GEAR_D = 4;
+  }
+  // [] [0|4]
+  optional GearType gear = 1;
+}
+
+// Report Message.
+message Driving_Report_30 {
+  enum Acc_modeType {
+    ACC_MODE_ACC_ENABLED = 0;
+    ACC_MODE_ACC_DISABLED_REVERSIBLE = 1;
+    ACC_MODE_ACC_DISABLED_IRREVERSIBLE = 2;
+    ACC_MODE_ACC_COMMUNICATION_ERROR = 3;
+  }
+  enum System_modeType {
+    SYSTEM_MODE_MANUAL = 0;
+    SYSTEM_MODE_AUTO = 1;
+    SYSTEM_MODE_INTERVENTION = 2;
+  }
+  // [] [0|3]
+  optional Acc_modeType acc_mode = 1;
+  // [] [0|100]
+  optional int32 throttle_pedal_depth = 2;
+  // [] [0|100]
+  optional int32 brake_pedal_depth = 3;
+  // [] [0|2]
+  optional System_modeType system_mode = 4;
+  // [] [0|1]
+  optional bool auto_switch = 5;
+}
+
+// Report Message.
+message Eps_Report_33 {
+  enum Steer_modeType {
+    STEER_MODE_STAND_BY = 0;
+    STEER_MODE_MANUAL = 1;
+    STEER_MODE_AUTO = 2;
+    STEER_MODE_INTERVENTION = 3;
+    STEER_MODE_MECHANICAL = 4;
+    STEER_MODE_FAULT = 5;
+  }
+  // [] [0|6]
+  optional Steer_modeType steer_mode = 1;
+  // [deg/s] [0|520]
+  optional double steer_speed = 2;
+  // [] [-900|900]
+  optional double steer_angle = 3;
+  // [nm] [-20|20]
+  optional double steer_wheel_torque = 4;
+}
+
+// Report Message.
+message Front_Wheel_Speed_348 {
+  // [km/h] [0|225]
+  optional double front_right_wheel_speed = 1;
+  // [km/h] [0|225]
+  optional double front_left_wheel_speed = 2;
+}
+
+// Report Message.
+message Rear_Wheel_Speed_34a {
+  // [km/h] [0|225]
+  optional double rear_left_wheel_speed = 1;
+  // [km/h] [0|225]
+  optional double rear_right_wheel_speed = 2;
+}
+
+// Report Message.
+message System_Status_Report_36 {
+  enum System_modeType {
+    SYSTEM_MODE_MANUAL = 0;
+    SYSTEM_MODE_AUTO = 1;
+    SYSTEM_MODE_INTERVENTION = 2;
+  }
+  enum Intervention_typeType {
+    INTERVENTION_TYPE_NOT_AUTO = 0;
+    INTERVENTION_TYPE_NON_INTERVENTION = 1;
+    INTERVENTION_TYPE_BRAKE = 2;
+    INTERVENTION_TYPE_STEER = 3;
+    INTERVENTION_TYPE_AEB = 4;
+    INTERVENTION_TYPE_THROTTLE = 5;
+  }
+  // [] [0|3]
+  optional System_modeType system_mode = 1;
+  // [km/h] [0|225]
+  optional double vehicle_speed = 2;
+  // [] [0|0]
+  optional bool break_light = 3;
+  // [] [0|1]
+  optional bool horn = 4;
+  // [] [0|1]
+  optional bool low_beam = 5;
+  // [] [0|1]
+  optional bool high_beam = 6;
+  // [] [0|1]
+  optional bool left_turn = 7;
+  // [] [0|1]
+  optional bool right_turn = 8;
+  // [] [0|1]
+  optional bool epb_enable = 9;
+  // [] [0|7]
+  optional Intervention_typeType intervention_type = 10;
+}
+
+// Report Message.
+message Acc_Value_Report_364 {
+  // [m/s2] [-10|10]
+  optional double acc_value = 1;
+}
+
+// Control Message.
+message Acc_Control_365 {
+  // [m/s2] [-10|10]
+  optional double acc_value = 1;
+}
+
+// Control Message.
+message Bcm_Control_E0 {
+  // [] [0|1]
+  optional bool horn = 1;
+  // [] [0|1]
+  optional bool low_beam_light = 2;
+  // [] [0|1]
+  optional bool left_turn = 3;
+  // [] [0|1]
+  optional bool right_turn = 4;
+  // [] [0|0]
+  optional bool break_light = 5;
+  // [] [0|1]
+  optional bool high_beam_light = 6;
+
+  optional double acc_comfort_band = 7;
+  optional double dec_comfort_band = 8;
+  optional double acc_jerk = 9;
+  optional double dec_jerk = 10;
+}
+
+// Control Message.
+message Driving_Control_E2 {
+  enum Gear_targetType {
+    GEAR_TARGET_N = 0;
+    GEAR_TARGET_D = 1;
+    GEAR_TARGET_R = 2;
+  }
+  // [] [0|1]
+  optional bool aeb_enable = 1;
+  // [] [0|3]
+  optional Gear_targetType gear_target = 2;
+  // [] [0|1]
+  optional bool gear_enable = 3;
+  // [] [0|1]
+  optional bool epb_enable = 4;
+  // [] [0|255]
+  optional int32 check_sum = 5;
+  // [] [0|15]
+  optional int32 counter = 6;
+  // [] [0|1]
+  optional bool throttle_enable = 7;
+  // [] [0|1]
+  optional bool brake_enable = 8;
+  // [m/s2] [0|5]
+  optional double throttle_value = 9;
+  // [m/s2] [0|10]
+  optional double brake_value = 10;
+  // [] [0|1]
+  optional bool auto_mode = 11;
+}
+
+// Control Message.
+message Steer_Control_E4 {
+  // [deg] [-480|480]
+  optional double steer_target = 1;
+  // [] [0|1]
+  optional bool steer_enable = 2;
+  // [] [0|255]
+  optional int32 check_sum = 3;
+  // [] [0|15]
+  optional int32 alive_counter = 4;
+  // [deg/s] [0|500]
+  optional double steer_speed = 5;
+}
+
+message Hyundai {
+  // Report message.
+  optional Gear_Report_1f5 gear_report_1f5 = 1;
+  // Report message.
+  optional Driving_Report_30 driving_report_30 = 2;
+  // Report message.
+  optional Eps_Report_33 eps_report_33 = 3;
+  // Report message.
+  optional Front_Wheel_Speed_348 front_wheel_speed_348 = 4;
+  // Report message.
+  optional Rear_Wheel_Speed_34a rear_wheel_speed_34a = 5;
+  // Report message.
+  optional System_Status_Report_36 system_status_report_36 = 6;
+  // Report message.
+  optional Acc_Value_Report_364 acc_value_report_364 = 7;
+  // Control message.
+  optional Bcm_Control_E0 bcm_control_e0 = 8;
+  // Control message.
+  optional Driving_Control_E2 driving_control_e2 = 9;
+  // Control message.
+  optional Steer_Control_E4 steer_control_e4 = 10;
+  // Control message
+  optional Acc_Control_365 acc_control_365 = 11;
+}

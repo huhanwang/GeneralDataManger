@@ -1,0 +1,13 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message QLogDirInfo {
+  optional string base_dir = 1;  // /media/snoah/mount_data/
+  optional string run_name = 2;  // 20220228_143259_Q1006
+}
+
+message QLogInfo {
+  repeated QLogDirInfo log_dir_info = 1;
+}

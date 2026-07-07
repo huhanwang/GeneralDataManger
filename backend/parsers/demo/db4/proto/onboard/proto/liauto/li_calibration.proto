@@ -1,0 +1,35 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/calibration/proto/calibration_workflow.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message LiCalibrationUdsMsgProto {
+  optional LiteHeader header = 1;
+  optional CalibrationMode mode = 2;      // 标定模式
+  optional Instruction instruction = 3;   // 标定指令
+  optional int32 cali_progress_rate = 4;  // 标定进度
+  enum Instruction {
+    AFTER_SALES_BEGINS = 0;  // 开始售后标定
+    AFTER_SALES_ENDS = 1;    // 结束售后标定
+  }
+}
+
+message LiCalibrationRequestProto {
+  optional LiteHeader header = 1;
+  optional CalibrationMode mode = 2;        // 标定模式
+  optional CalibrationRoutine routine = 3;  // 标定进程
+  optional Instruction instruction = 4;     // 标定指令
+  optional int32 cali_progress_rate = 5;    // 标定进度
+  enum Instruction {
+    AFTER_SALES_BEGINS = 0;  // 开始售后标定
+    AFTER_SALES_ENDS = 1;    // 结束售后标定
+  }
+  enum CalibrationRoutine {
+    AFTER_SALES_FRONT_REAR_TELE_CALIB = 0;
+    AFTER_SALES_SURROUNDING_CLAIB = 1;
+    AFTER_SALES_LIDAR_CALIB = 2;
+  }
+}

@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+message MapRepoCommit {
+  // Timestamp in float second.
+  optional int64 timestamp = 1;
+  optional string commit_sha = 2;
+  optional string map_dir = 3;
+  repeated string map_names = 4;
+}

@@ -1,0 +1,887 @@
+
+// This code is from apollo and modified by SNoah.
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_signal.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+// next id: 68
+message Chassis {
+  enum DrivingMode {
+    COMPLETE_MANUAL = 0;  // human drive
+    COMPLETE_AUTO_DRIVE = 1;
+    AUTO_STEER_ONLY = 2;  // only steer
+    AUTO_SPEED_ONLY = 3;  // include throttle and brake
+    // security mode when manual intervention happens, only response status
+    EMERGENCY_MODE = 4;
+    PARKING_AUTO_DRIVE = 5;
+    PARKING_STEER_ONLY = 6;
+    PARKING_SPEED_ONLY = 7;
+  }
+
+  enum ErrorCode {
+    NO_ERROR = 0;
+
+    CMD_NOT_IN_PERIOD = 1;  // control cmd not in period
+
+    // car chassis report error, like steer, brake, throttle, gear fault
+    CHASSIS_ERROR = 2;
+
+    // classify the types of the car chassis errors
+    CHASSIS_ERROR_ON_STEER = 6;
+    CHASSIS_ERROR_ON_BRAKE = 7;
+    CHASSIS_ERROR_ON_THROTTLE = 8;
+    CHASSIS_ERROR_ON_GEAR = 9;
+
+    MANUAL_INTERVENTION = 3;  // human manual intervention
+
+    // receive car chassis can frame not in period
+    CHASSIS_CAN_NOT_IN_PERIOD = 4;
+
+    UNKNOWN_ERROR = 5;
+  }
+
+  enum GearPosition {
+    GEAR_NEUTRAL = 0;
+    GEAR_DRIVE = 1;
+    GEAR_REVERSE = 2;
+    GEAR_PARKING = 3;
+    GEAR_LOW = 4;
+    GEAR_INVALID = 5;
+    GEAR_NONE = 6;
+  }
+
+  enum DoorStatus {
+    UNSPECIFIED = 0;
+    OPEN = 1;
+    CLOSE = 2;
+  }
+
+  enum SeatBeltStatus {
+    SEAT_BELT_UNSPECIFIED = 0;
+    BUCKLED = 1;
+    UNBUCKLED = 2;
+  }
+
+  enum TurnLeverType {
+    TURNLEVER_NONE = 0;
+    TURNLEVER_DOWN = 1;            // 向左重拨
+    TURNLEVER_UP = 2;              // 向右重拨
+    TURNLEVER_RIGHT_SLIGHTLY = 3;  // 向右轻拨
+    TURNLEVER_LEFT_SLIGHTLY = 4;   // 向左轻拨
+  }
+
+  enum AuxiliaryLeverType {
+    AUXILIARYLEVER_NONE = 0;
+    AUXILIARYLEVER_INWARD = 1;
+    AUXILIARYLEVER_OUTWARD = 2;
+    AUXILIARYLEVER_UP = 3;    // 向上重拨 or speed up
+    AUXILIARYLEVER_DOWN = 4;  // 向下重拨 or speed down
+    AUXILIARYLEVER_ROTATION_UP = 5;
+    AUXILIARYLEVER_ROTATION_DOWN = 6;
+    AUXILIARYLEVER_BUTTON_PRESSED = 7;
+    AUXILIARYLEVER_UP_SLIGHTLY = 8;    // 向上轻拨
+    AUXILIARYLEVER_DOWN_SLIGHTLY = 9;  // 向下轻拨
+  }
+
+  enum LonStateType {
+    LON_ONLINE = 0;
+    THROTTLE_PEDAL_PRESSED = 1;
+    BRAKE_PEDAL_PRESSED = 2;
+  }
+
+  enum EpbStateType {
+    EPB_STATE_PULLED = 0;
+    EPB_STATE_RELEASED = 1;
+    EPB_INVALID = 2;
+    EPB_STATE_PULLING = 3;
+    EPB_STATE_RELEASING = 4;
+  }
+
+  enum BcmPepsPowerModeType {
+    DEFAULT_POWERMODE = 0;
+    OFF_POWERMODE = 1;
+    ON_POWERMODE = 2;
+    ACC_POWERMODE = 3;
+    RESERVE_POWERMODE1 = 4;
+    RESERVE_POWERMODE2 = 5;
+    RESERVE_POWERMODE3 = 6;
+    INVALID_POWERMODE = 7;
+  }
+
+  enum IviPcwOnOffSetType {
+    PCWONOFF_NO_REQUEST = 0;
+    PCWONOFF_OFF = 1;
+    PCWONOFF_ON = 2;
+    PCWONOFF_INVALID = 3;
+  }
+
+  enum IviAebOnOffSetType {
+    AEBONOFF_NO_REQUEST = 0;
+    AEBONOFF_OFF = 1;
+    AEBONOFF_ON = 2;
+    AEBONOFF_INVALID = 3;
+  }
+
+  enum ParkingBrakeReason {
+    PARKING_BRAKE_REASON_UNKNOWN = 0;
+    PARKING_GEAR_RELATED = 1;
+    LONG_TERM_BRAKING = 2;
+  }
+
+  enum RainfallStateType {
+    RAIN_NO_RAIN = 0;
+    RAIN_LIGHT_RAIN = 1;
+    RAIN_MODERATE_RAIN = 2;
+    RAIN_HEAVY_RAIN = 3;
+  }
+
+  enum EpsTorqueCtrlStatusType {
+    STATUS_NO_REQUEST = 0;
+    STATUS_REQUEST_HONORED = 1;
+    STATUS_REQUEST_NOT_ALLOWEDTEMP = 2;
+    STATUS_REQUEST_NOT_ALLOWEDPERMANENT = 3;
+  }
+
+  enum ApaFuncStsType {
+    APA_FUNC_OFF = 0;
+    APA_FUNC_STANDBY = 1;
+    APA_FUNC_SEARCHING = 2;
+    APA_FUNC_GUIDANCE_ACTIVE = 3;
+    APA_FUNC_COMPLETED_SUCESSFULLY = 4;
+    APA_FUNC_FAILURE = 5;
+    APA_FUNC_SUSPEND = 6;
+    APA_FUNC_INVALID = 7;
+  }
+
+  enum WiperStsType {
+    WIPER_OFF = 0;
+    LOW_SPEED = 1;
+    HIGH_SPEED = 2;
+    INTERRUPT_RESERVED = 3;
+    WASH = 4;
+    RESERVED = 5;
+    SWTICH_FAILURE_RESERVED = 6;
+    INVALID = 7;
+  }
+
+  enum LaneAssistFunctionSetType {
+    NO_REQUEST_ASSIST = 0;
+    OFF = 1;
+    LDW = 2;
+    LDW_RDP = 3;
+  }
+
+  enum LasWarningModeSelectionType {
+    NO_REQUEST_WARNING = 0;
+    VISION_ONLY = 1;
+    VOICE_VISION = 2;
+  }
+
+  // common error type,include DTC & non-DTC
+  enum CommonErrorType {
+    NORMAL = 0;
+    LOST_COMMUNICATION = 1;
+    CHECK_ERROR = 2;
+    MESSAGE_INVALID = 3;
+    FUNCTION_FAULT = 4;
+    COUNTER_FAULT = 5;
+  }
+
+  enum FueltapStatusType {
+    TAP_CLOSED = 0;
+    TAP_OPEN = 1;
+    TAP_ERROR = 2;
+    NONE = 3;
+  }
+
+  enum EscApaLongControlFaultType {
+    APA_LONG_CONTROL_NO_ERROR = 0;
+    VEHICLE_BLOCKED = 1;
+    UNEXPECTED_GEAR_POSITION = 2;
+    UNEXPECTED_EPB_ACTION = 3;
+    UNEXPECTED_GEAR_INTERVENTION = 4;
+    // RESERVED 5-6
+    APA_LONG_CONTROL_ERROR = 7;
+  }
+
+  enum EpsApaControlFaultType {
+    NORMAL_OPERATION = 0;
+    EPS_INTERNAL_RECOVERABLE_FAILURE = 1;
+    ABNORMAL_SIGNAL = 2;
+    OVER_SPEED = 3;
+    DRIVER_INTERFERENCE = 4;
+    EXCESS_ANGLE_DEVIATION = 5;
+    ABNORMAL_APA_REQUEST = 6;
+    APA_LOW_PRIORITY = 7;
+    ANGLE_SPEED_OUT_OF_LIMIT = 8;
+    // 9-E RESERVED
+    EPS_FAILURE = 15;
+  }
+
+  enum TyrePressureStatusType {
+    INITIAL_TPMS = 0;
+    NORMAL_TPMS = 1;
+    SYS_ERROR = 2;
+    LOW_BATT_VOL = 3;
+    HIGH_TYRE_PRESSURE = 4;
+    HIGH_TEMP = 5;
+    RAPID_LEAK = 6;
+    LOW_TYRE_PRESSURE = 7;
+  }
+
+  enum EspLampStatus {
+    INACTIVE = 0;
+    ACTIVE = 1;
+  }
+
+  enum EpsAngleCtrlMod {
+    EPS_ANGLE_CTRL_MOD_NO_REQUEST = 0;
+    EPS_ANGLE_CTRL_MOD_L3_LAF_FUNCTION = 1;
+    EPS_ANGLE_CTRL_MOD_L2_LAF_FUNCTION = 2;
+    EPS_ANGLE_CTRL_MOD_L3_PAF_FUNCTION = 3;
+    EPS_ANGLE_CTRL_MOD_L2_PAF_FUNCTION = 4;
+    EPS_ANGLE_CTRL_MOD_RESERVED_5 = 5;
+    EPS_ANGLE_CTRL_MOD_RESERVED_6 = 6;
+    EPS_ANGLE_CTRL_MOD_RESERVED_7 = 7;
+  };
+
+  enum EpsSteerAgCtrlAvl {
+    EPS_STEER_AG_CTRL_NOT_AVAILABLE = 0;
+    EPS_STEER_AG_CTRL_AVAILABLE = 1;
+    EPS_STEER_AG_CTRL_AVAILABLE_FAIL_OPERATION = 2;
+    EPS_STEER_AG_CTRL_AVAILABLE_DEGRADED = 3;
+  };
+
+  enum EpsSteerAgCtrlRespSts {
+    EPS_STEER_AG_CTRL_RESP_NOT_ACTIVE = 0;
+    EPS_STEER_AG_CTRL_RESP_READY = 1;
+    EPS_STEER_AG_CTRL_RESP_ACTIVE = 2;
+    EPS_STEER_AG_CTRL_RESP_ACTIVE_WITH_ERROR = 3;
+  };
+
+  enum HU_RearLoadModeSts {
+    HU_INACTIVE = 0;
+    HU_ONLY_TRAILER_HITCH = 1;
+    HU_LOADING_ITEMS = 2;
+    HU_TOWINF_THE_RV = 3;
+  }
+
+  enum VehicleModeStatus {
+    VEHICLE_RESERVED = 0;
+    VEHICLE_NORMAL = 1;
+    VEHICLE_FACTORY = 2;
+    VEHICLE_LOGISTIC = 3;
+    VEHICLE_EXHIBITION = 4;
+    VEHICLE_OTA_MODE1 = 5;
+    VEHICLE_OTA_MODE2 = 6;
+    VEHICLE_REPAIR = 7;
+    VEHICLE_ERROR = 8;
+  }
+
+  enum EpbControlActive {
+    EPB_RELEASED = 0;
+    EPB_APPLIED = 1;
+    EPB_RELEASING = 2;
+    EPB_APPLYING = 3;
+    EPB_COMPLETELY_RELEASED = 4;
+    EPB_UNKNOWN = 5;
+  }
+
+  enum VMMLongMainAxCtrlMode {
+    VMM_NONE = 0;
+    VMM_COMFORT = 1;
+    VMM_EMERGENCY = 2;
+    VMM_RESERVED = 3;
+  }
+
+  enum ActualOutputRodValid {
+    ACTUAL_NORMAL = 0;
+    ACTUAL_FAILURE = 1;
+  }
+
+  enum BrakeLightFailureSts {
+    NO_FAILURE = 0x00;
+    OPEN_CIRCUIT = 0x01;
+    SHORT_CIRCUIT = 0x02;
+  }
+
+  enum ChargingGunStatus {
+    DISCONNECTED = 0x00;
+    CONNECTED = 0x01;
+  }
+
+  enum RecommandLaneChangeMod {
+    RECOMMAND_LANE_CHANGE_NO_REQUEST = 0;
+    RECOMMAND_LANE_CHANGE_OK = 1;
+    RECOMMAND_LANE_CHANGE_CANCEL = 2;
+  }
+
+  enum SeatOccupiedStatus {
+    SEAT_OCCUPIED = 0;
+    SEAT_NOT_OCCUPIED = 1;
+  }
+
+  enum BLEStatus {
+    BLE_STATUS_INVALID = 0;
+    BLE_STATUS_CONNECTED = 1;
+    BLE_STATUS_BROADCAST = 2;
+    BLE_STATUS_FAILURE = 3;
+    BLE_STATUS_CONNECTED_AND_APP_UNACTIVE = 4;
+  };
+
+  enum PowerModeFlag2Status {
+    POWER_MODE_LOCAL_MODE = 0;
+    POWER_MODE_REMOTE_MODE = 1;
+    POWER_MODE_HOLDING = 2;
+    POWER_MODE_ADAS = 3;
+  }
+
+  enum ParkButtonStatus {
+    PARK_BUTTON_NO_PRESSED = 0;
+    PARK_BUTTON_PRESSED = 1;
+    PARK_BUTTON_PARK_BUTTON_FAULT = 2;
+  }
+
+  enum TractionModeStatus {
+    TRACTION_INACTIVE = 0;
+    TRACTION_ACTIVE = 1;
+  }
+
+  enum FbcmRpaReqStatus {
+    FBCM_RPA_REQ_INIT = 0;
+    FBCM_RPA_REQ_ACTIVE = 1;
+  }
+
+  enum FlDoorHandleSw {
+    FL_DOOR_HANDLE_DISABLE = 0;
+    FL_DOOR_HANDLE_ENABLE = 1;
+  }
+
+  enum FbcmRpaRemoteKeyCrtcm {
+    FBCM_RPA_REMOTE_INIT = 0;
+    FBCM_RPA_REMOTE_PAUSE = 1;
+    FBCM_RPA_REMOTE_RUNNING = 2;
+    FBCM_RPA_REMOTE_QUIT = 3;
+  }
+
+  enum RpaBtnSts {
+    RPA_BTN_STS_INIT = 0;
+    RPA_BTN_STS_ACTIVE = 1;
+    RPA_BTN_STS_PAUSE = 2;
+    RPA_BTN_STS_QUIT = 3;
+  }
+
+  enum RpaKeyBtnSts {
+    RPA_KEY_BTN_STS_NO_PRESSED = 0;
+    RPA_KEY_BTN_STS_PRESSED = 1;
+  }
+
+  enum ValidKeyLocat {
+    VALID_KEY_INVALID = 0;
+    VALID_KEY_IN_VEHICLE = 1;
+    VALID_KEY_COURTESY_RANGE = 2;
+    VALID_KEY_LEFT_SIDE_PE = 3;
+    VALID_KEY_RIGHT_SIDE_PE = 4;
+    VALID_KEY_BEHIND_SIDE_PE = 5;
+    VALID_KEY_CAN_NOT_FIND_KEY = 6;
+    VALID_KEY_WAKE_RANGE = 7;
+    VALID_KEY_RL_PE_RANGE = 8;
+    VALID_KEY_RR_PE_RANGE = 9;
+  }
+
+  optional LiteHeader header = 1;
+
+  // Only useful for simulation.
+  optional bool engine_started = 3;
+
+  // Engine speed in RPM.
+  optional float engine_rpm = 4 [default = nan];
+
+  // Vehicle Speed in meters per second.
+  optional float speed_mps = 5 [default = nan, (trans_matrix) = true];
+
+  // Vehicle odometer in meters.
+  optional float odometer_m = 6 [default = nan];
+
+  // Real throttle location in [%], ranging from 0 to 100.
+  optional float throttle_percentage = 8 [default = nan, (trans_matrix) = true];
+
+  // Real brake location in [%], ranging from 0 to 100.
+  optional float brake_percentage = 9 [default = nan, (trans_matrix) = true];
+
+  // Real steering location in [%], ranging from -100 to 100.
+  // steering_angle / max_steering_angle
+  // Clockwise: negative
+  // CountClockwise: positive
+  optional float steering_percentage = 11
+      [default = nan, (trans_matrix) = true];
+
+  // Applied steering torque in [Nm], also used for LSS
+  optional float steering_torque_nm = 12 [(trans_matrix) = true];
+
+  // Parking brake status.
+  optional bool parking_brake = 13;
+  optional bool wiper = 19;
+
+  optional DrivingMode driving_mode = 21 [
+    default = COMPLETE_MANUAL,
+    (trans_matrix) = true,
+    (matrix_data_type) = INT8
+  ];
+  optional ErrorCode error_code = 22 [default = NO_ERROR];
+  optional GearPosition gear_location = 23
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional int32 chassis_error_mask = 26 [deprecated = true];
+
+  // TODO(shijun): move VehicleSignal defination here.
+  optional VehicleSignal signal = 27 [(trans_matrix) = true];
+
+  optional WheelSpeed wheel_speed = 30 [(trans_matrix) = true];
+
+  // Driver button pushes. These buttons are defined according to their function
+  // at SNoah, and may correspond to different buttons on different vehicle
+  // platforms/PACMods. See individual vehicle interfaces for what these buttons
+  // map to.
+  // For example, in LincolnInterface,
+  // - the engage button maps to "ACC Cancel",
+  // - the resume button maps to "ACC Resume", and
+  // - the note button maps to "ACC Off"
+  // on the steering wheel.
+  optional bool engage_button = 34;
+  optional bool resume_button = 36;
+  optional bool note_button = 37;
+
+  optional bool lat_control_online = 40 [(trans_matrix) = true];
+  optional bool lon_control_online = 41 [(trans_matrix) = true];
+  optional double timestamp = 42 [(trans_matrix) = true];
+  // Front door for bus
+  optional DoorStatus front_door_status = 46;
+  // Middle door for bus
+  optional DoorStatus middle_door_status = 47;
+  optional DoorStatus rear_door_status = 48;
+  // State of charge, for electric vehicle, unit: percent
+  optional double soc = 49 [(trans_matrix) = true];
+
+  // Steering speed [deg/s].
+  // Clockwise (right): negative
+  // Count-clockwise (left): positive
+  optional float steering_speed = 50 [(trans_matrix) = true];
+  optional bool auxiliary_button = 51;
+  optional bool is_steer_out_limit = 52;
+  optional TurnLeverType turn_lever_state = 53
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional AuxiliaryLeverType auxiliary_lever_feedback = 54
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // Throttle overide, also for AEB
+  optional LonStateType lon_state = 55
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional DriverOperationCheck driver_operation_check = 56
+      [(trans_matrix) = true];
+
+  // In_Vehicle_Infotainment_Pedestrian_Collision_Warning_ONOFF
+  optional Chassis.IviPcwOnOffSetType ivi_pcw_on_off_set = 57
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // In_Vehicle_Infotainment_Pedestrian_Collision_Warning_ONOFF
+  optional Chassis.IviAebOnOffSetType ivi_aeb_on_off_set = 58
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // Body_Control_Module_Passive_Entry_Passive_Start_Power_Mode
+  optional Chassis.BcmPepsPowerModeType bcm_peps_power_mode = 59
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // Electronic_Stability_Control_Fault
+  optional bool esc_esc_fault = 60 [(trans_matrix) = true];
+  // Electronic_Stability_Control_Active
+  optional bool esc_esc_active = 61 [(trans_matrix) = true];
+  // Electronic_Stability_Control_Traction_Control_System_Active
+  optional bool esc_tcs_active = 62 [(trans_matrix) = true];
+  // DriverSeatBeltStatus
+  optional bool acu_driver_seatbelt_status = 63
+      [default = true, (trans_matrix) = true];
+  // Electronic_Stability_Control_OFF_Status
+  optional bool esc_off_status = 64 [(trans_matrix) = true];
+  // Electronic_Stability_Control_Vehicle_Stand_Still
+  optional bool esc_vehicle_standstill = 65 [(trans_matrix) = true];
+  optional ParkingBrakeReason parking_brake_reason = 67;
+  // EPB status
+  optional EpbStateType epb_status = 71
+      [default = EPB_INVALID, (trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // Seatbelt
+  optional SeatBeltStatus driver_seat_belt_status = 73
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus passenger_seat_belt_status = 74
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional DoorStatus rear_left_door_status = 75
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional DoorStatus rear_right_door_status = 76
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // Trunk and hood
+  optional DoorStatus hood_status = 77
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional DoorStatus trunk_status = 78
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // HDC control status
+  optional bool esc_hdc_active = 79 [(trans_matrix) = true];
+  // VDC controller status
+  optional bool esc_vdc_active = 80 [(trans_matrix) = true];
+
+  // HBA ABS is available or not
+  optional bool esc_aba_available = 81 [(trans_matrix) = true];
+
+  optional double throttle_percentage_rate = 82 [(trans_matrix) = true];
+  // Door for car
+  optional DoorStatus front_left_door_status = 83
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional DoorStatus front_right_door_status = 84
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // AEB available
+  optional bool esc_aeb_available = 85 [(trans_matrix) = true];
+  // Indicate AWB is active or not
+  optional bool esc_awb_active = 86 [(trans_matrix) = true];
+  // Indicate AWB is available or not
+  optional bool esc_awb_available = 87 [(trans_matrix) = true];
+  // Prefill ABP is active or not
+  optional bool esc_abp_active = 88 [(trans_matrix) = true];
+  // Prefill ABP is available or not
+  optional bool esc_abp_available = 89 [(trans_matrix) = true];
+  // HBA ABS is active or not
+  optional bool esc_aba_active = 90 [(trans_matrix) = true];
+  // AEB state
+  optional bool esc_aeb_active = 91 [(trans_matrix) = true];
+  // ABS state
+  optional bool esc_abs_active = 92 [(trans_matrix) = true];
+  optional bool esc_abs_off_status = 93 [(trans_matrix) = true];
+  optional bool esc_abs_fault = 94 [(trans_matrix) = true];
+  optional bool is_driver_control_steer = 95 [(trans_matrix) = true];
+
+  optional RainfallStateType rainfall_state = 96;
+  optional int32 light_state = 97;
+
+  optional EpsTorqueCtrlStatusType eps_torque_ctrl_status = 98
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional double esc_yawrate = 99 [(trans_matrix) = true];
+  optional double esc_mascyl_brake_pressure = 100 [(trans_matrix) = true];
+  optional double esc_long_acceleration = 101 [(trans_matrix) = true];
+  optional double steering_angle = 102 [(trans_matrix) = true];
+  // Indicate CDP Control Active
+  optional bool esc_cdp_active = 103 [(trans_matrix) = true];
+
+  optional bool vcu_ready = 104 [(trans_matrix) = true];
+
+  // Indicating VCU in limp-home error mode.
+  optional bool esc_vcu_tcmfail = 105 [(trans_matrix) = true];
+  optional WiperStsType bcm_front_wipersts = 106
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // Automatic Vehicle Holding
+  optional bool esc_avh_active = 107 [(trans_matrix) = true];
+  optional double esc_lat_acceleration = 108 [(trans_matrix) = true];
+  optional string firmware_version = 109;
+  optional bool is_driver_hands_off_steer = 110 [(trans_matrix) = true];
+  optional bool one_key_activated = 111 [(trans_matrix) = true];
+  optional bool is_eps_calibrated = 112 [(trans_matrix) = true];
+  optional double raw_steer_angle = 113 [(trans_matrix) = true];
+  optional float speed_display = 114 [(trans_matrix) = true];
+  optional LaneAssistFunctionSetType ivi_lane_assist_function_set = 115
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional LasWarningModeSelectionType ivi_las_warning_mode_selection = 116
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool cdd_available = 117 [(trans_matrix) = true];
+  optional bool vlc_available = 118 [(trans_matrix) = true];
+  optional int32 vcu_comprehensive_remaining_mileage = 119
+      [(trans_matrix) = true];
+  optional bool power_saving_mode_on = 120 [(trans_matrix) = true];
+
+  optional bool charge_cap_sts = 146
+      [(trans_matrix) = true];  // 0:close 1: open
+  optional FueltapStatusType fuel_tap_status = 147
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool rear_mirror_status = 148
+      [(trans_matrix) = true];  // 0:fold 1: unfold
+  optional EscApaLongControlFaultType esc_apa_long_control_fault_staus = 149
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional EpsApaControlFaultType eps_apa_control_status = 150
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool cdd_error = 151 [(trans_matrix) = true];  // 0: normal,1:fault
+  optional bool vlc_error = 152 [(trans_matrix) = true];  // 0: normal,1:fault
+  optional TyrePressureStatusType tpms_fl = 153
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional TyrePressureStatusType tpms_fr = 154
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional TyrePressureStatusType tpms_rl = 155
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional TyrePressureStatusType tpms_rr = 156
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool crash_status = 157
+      [(trans_matrix) = true];  // 0:no crash 1: crash
+  optional bool hhc_active = 158
+      [(trans_matrix) = true];  // 0:inactive 1: active
+
+  optional SeatBeltStatus midleft_passenger_seat_belt_status = 159;
+
+  optional SeatBeltStatus midmiddle_passenger_seat_belt_status = 160;
+
+  optional SeatBeltStatus midright_passenger_seat_belt_status = 161;
+
+  optional SeatBeltStatus rearleft_passenger_seat_belt_status = 162;
+
+  optional SeatBeltStatus reatright_passenger_seat_belt_status = 163;
+
+  // Energy consumption per 100 miles.
+  optional float energy_consump = 169;
+
+  optional double front_motor_rpm = 170 [(trans_matrix) = true];
+  optional double rear_motor_rpm = 171 [(trans_matrix) = true];
+  optional bool ebd_active = 172 [(trans_matrix) = true];
+  optional EspLampStatus esp_lamp_status = 173;
+  optional EpsAngleCtrlMod eps_angle_ctrl_mod = 174;
+  optional EpsSteerAgCtrlAvl eps_steer_ag_ctrl_avl = 175;
+  optional EpsSteerAgCtrlRespSts eps_steer_ag_ctrl_resp_sts = 176;
+
+  optional VMMLongMainAxCtrlMode vmm_main_ax_ctrl_mode = 177;
+
+  optional HU_RearLoadModeSts rear_load_model = 178;
+
+  optional int32 actual_output_rod = 179;
+  optional ActualOutputRodValid actual_output_rod_valid = 180;
+  optional VehicleModeStatus vehicle_mode_status = 181;
+
+  optional EpbControlActive epb_control_active = 182;
+  optional int32 eps_error_flag = 183;
+
+  optional bool is_hazardous_switch = 185 [(trans_matrix) = true];
+
+  optional BrakeLightFailureSts brake_light_failure_sts = 186;
+
+  optional BrakeLightFailureSts high_brake_light_failure_sts = 187;
+
+  optional ChargingGunStatus ac_charging_gun_sts = 188;
+
+  optional ChargingGunStatus dc_charging_gun_sts = 189;
+
+  optional ChargingGunStatus dis_charging_gun_sts = 190;
+
+  optional RecommandLaneChangeMod recommand_lane_change_mod = 191;
+  optional SeatOccupiedStatus driver_seat_occupied_status = 192;
+
+  optional AuxiliaryLeverType phy_gear_lever = 193;
+
+  optional int32 flseat_brpos = 194;
+
+  // front right
+  optional SeatOccupiedStatus fr_passenger_seat_occupied_status = 195;
+  // middle left
+  optional SeatOccupiedStatus ml_passenger_seat_occupied_status = 196;
+  // middle middle
+  optional SeatOccupiedStatus mm_passenger_seat_occupied_status = 197;
+  // middle right
+  optional SeatOccupiedStatus mr_passenger_seat_occupied_status = 198;
+  // rear left
+  optional SeatOccupiedStatus rl_passenger_seat_occupied_status = 199;
+  // rear middle
+  optional SeatOccupiedStatus rm_passenger_seat_occupied_status = 200;
+  // rear right
+  optional SeatOccupiedStatus rr_passenger_seat_occupied_status = 201;
+
+  optional BLEStatus ble_status = 202;
+
+  optional PowerModeFlag2Status power_mode_flag2_status = 203;
+
+  optional ParkButtonStatus park_button_status = 204;
+
+  optional uint32 rpa_rlng_ctr = 205;
+  optional uint32 driver_seat_brpos = 206;
+
+  // EPS_StopFeedBack, EPS_Info_10ms CHCAN,
+  // 0x0: noabort, 0x1: VehicleSpeedInvalid, 0x2: DriverOverride, 0x3:
+  // EPSInternalFailure, 0x4: ADASSteerAgRequestInvalidorTimeout 0x5:
+  // ADASSteerAnglerateOutofLimit, 0x6: ADASSteerAgRequestOutofLimit, 0x7:
+  // SteeringTorqueRequestOutOfLimit.
+  optional uint32 eps_stop_feedback = 207;
+  optional bool esc_cdp_available = 208 [(trans_matrix) = true];
+  optional bool brake_valid = 209;
+  optional TractionModeStatus traction_mode_status = 210;
+
+  optional SeatBeltStatus dow_midleft_passenger_seat_belt_status = 211
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_midmiddle_passenger_seat_belt_status = 212
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_midright_passenger_seat_belt_status = 213
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_rearleft_passenger_seat_belt_status = 214
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_reatright_passenger_seat_belt_status = 215
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_driver_seat_belt_status = 216
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_passenger_seat_belt_status = 217
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional SeatBeltStatus dow_reatmid_passenger_seat_belt_status = 218
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional bool is_vmm_communication_fault = 219;
+  optional FbcmRpaReqStatus fbcm_rpa_req_status = 220
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional FlDoorHandleSw fl_door_handle_sw = 221
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional FbcmRpaRemoteKeyCrtcm fbcm_rpa_remote_key_crtcm = 222
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional RpaKeyBtnSts key_lck_btn_sts = 223
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional RpaKeyBtnSts key_tail_door_btn_sts = 224
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional RpaKeyBtnSts key_unlck_btn_sts = 225
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional RpaKeyBtnSts key_slide_door_btn_sts = 226
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional RpaBtnSts rpa_btn_sts = 227
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional ValidKeyLocat valid_key1_locat = 228
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional ValidKeyLocat valid_key2_locat = 229
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional bool collision_signal = 230 [default = false];
+
+  optional VcuStatus vcu_status = 231;
+
+  optional bool door_object_sensor = 232 [default = false];
+
+  optional bool parking_button_pressed = 233 [default = false];
+
+  optional DmsInfo dms_info = 234
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool is_vehicle_moved = 235;
+
+  optional InclementWeatherInfo weather_info = 236
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional float L2_ACC_SetSpeed = 237;
+  optional uint32 L2_ACC_KeepDistanceLevel = 238;
+  optional float L2_ACC_DsrdAccel = 239;
+  optional float L2_LCC_DsrdStrAngDeg = 240;
+
+  reserved 7, 14 to 18, 20, 24, 25, 28, 29, 31 to 33, 35, 38 to 39, 43 to 45,
+      66, 68 to 70, 72, 121 to 145;
+}
+
+message DriverOperationCheck {
+  optional bool is_throttle_ready = 1 [default = true, (trans_matrix) = true];
+  optional bool is_brake_ready = 2 [default = true, (trans_matrix) = true];
+  optional bool is_gear_ready = 3 [default = true, (trans_matrix) = true];
+  optional bool is_door_ready = 4 [default = true, (trans_matrix) = true];
+  optional bool is_seat_belt_readye = 5 [deprecated = true];
+  optional bool is_epb_ready = 6 [default = true, (trans_matrix) = true];
+  optional bool is_vehicle_spd_ready = 7
+      [default = true, (trans_matrix) = true];
+  // standard gear location which allow auto driving for each vehicle
+  optional Chassis.GearPosition proper_gear_location = 8
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  // standard gepb position which allow auto driving for each vehicle
+  optional Chassis.EpbStateType proper_epb_state = 9
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional bool is_seat_belt_ready = 10 [default = true, (trans_matrix) = true];
+}
+
+message WheelSpeed {
+  enum WheelSpeedType {
+    FORWARD = 0;
+    BACKWARD = 1;
+    STANDSTILL = 2;
+    INVALID = 3;
+  }
+  optional bool is_wheel_spd_rr_valid = 1 [default = false];
+  optional WheelSpeedType wheel_direction_rr = 2
+      [default = INVALID, (trans_matrix) = true, (matrix_data_type) = INT8];
+  // unit: rad/s
+  optional double wheel_spd_rr = 3 [default = 0.0, (trans_matrix) = true];
+  optional bool is_wheel_spd_rl_valid = 4 [default = false];
+  optional WheelSpeedType wheel_direction_rl = 5
+      [default = INVALID, (trans_matrix) = true, (matrix_data_type) = INT8];
+  // unit: rad/s
+  optional double wheel_spd_rl = 6 [default = 0.0, (trans_matrix) = true];
+  optional bool is_wheel_spd_fr_valid = 7 [default = false];
+  optional WheelSpeedType wheel_direction_fr = 8
+      [default = INVALID, (trans_matrix) = true, (matrix_data_type) = INT8];
+  // unit: rad/s
+  optional double wheel_spd_fr = 9 [default = 0.0, (trans_matrix) = true];
+  optional bool is_wheel_spd_fl_valid = 10 [default = false];
+  optional WheelSpeedType wheel_direction_fl = 11
+      [default = INVALID, (trans_matrix) = true, (matrix_data_type) = INT8];
+  // unit: rad/s
+  optional double wheel_spd_fl = 12 [default = 0.0, (trans_matrix) = true];
+
+  optional double wheel_spd_rr_pls = 13 [default = 0.0, (trans_matrix) = true];
+  optional double wheel_spd_rl_pls = 14 [default = 0.0, (trans_matrix) = true];
+  optional double wheel_spd_fr_pls = 15 [default = 0.0, (trans_matrix) = true];
+  optional double wheel_spd_fl_pls = 16 [default = 0.0, (trans_matrix) = true];
+}
+
+message VcuStatus {
+  enum VcuDrivingMode {
+    UNKNOWN = 0;
+    MANUAL = 1;
+    REMOTE_DRIVE = 2;
+    AUTO_DRIVE = 3;
+  }
+
+  optional VcuDrivingMode driving_mode = 1 [default = UNKNOWN];
+  optional bool force_stop = 2 [default = false];
+}
+
+message DmsInfo {
+  enum DmsAvailable {
+    DMS_INIT = 0;
+    DMS_AVAILABLE = 1;
+    DMS_UNAVAILABLE = 2;
+  }
+
+  enum DmsTRiggerNotify {
+    DMS_NO_TRIGGER = 0;
+    DMS_DISTRACTED = 1;
+    DMS_TIRED = 2;
+  }
+
+  enum DmsCamBlockNotify {
+    DMS_NO_BLOCK = 0;
+    DMS_CAMERA_OR_PARTLY_BLOCK = 1;
+    DMS_INFRARED_BLOCK = 2;
+    DMS_HAT_BLOCK = 3;
+  }
+  optional DmsAvailable dms_available_status = 1;
+
+  optional DmsTRiggerNotify dms_trigger_notify = 2;
+
+  optional DmsCamBlockNotify dms_cam_block_notify = 3;
+}
+
+message InclementWeatherInfo {
+  enum FrontWiperStatus {
+    FRONT_WIPER_OFF = 0;
+    FRONT_WIPER_AUTO_L1 = 1;
+    FRONT_WIPER_AUTO_L2 = 2;
+    FRONT_WIPER_LOW_SPEED = 3;
+    FRONT_WIPER_HIGH_SPEED = 4;
+  }
+
+  enum WiperSpeed {
+    WIPER_SPEED_OFF = 0;
+    WIPER_SPEED_INTERMITTENT = 1;
+    WIPER_SPEED_LOW_SPEED = 2;
+    WIPER_SPEED_HIGH_SPEED = 3;
+  }
+
+  optional FrontWiperStatus front_wiper_status = 1
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional WiperSpeed wiper_speed = 2
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+  optional uint32 rain_intensity = 3;
+}

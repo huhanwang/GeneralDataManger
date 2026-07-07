@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package snoah;
+
+message LastCalibrationRoutineProto {
+  optional int32 last_routine = 1;
+  optional uint64 timestamp = 2;
+}

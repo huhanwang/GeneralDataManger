@@ -1,0 +1,136 @@
+syntax = "proto2";
+
+package snoah.fisheye_freespace_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/fisheye_freespace_label";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/perception/parking/li_parking_base.proto";
+// Next ID: 3
+message FreeSpaceContourPoint {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+message SegObject {
+  enum ClassName {
+    SPEEDBUMP = 0;
+    LIMITER = 1;
+    LOCKOPEN = 2;
+    LOCKCLOSED = 3;
+    IGNORE = 4;
+  }
+  optional int32 contour_id = 1;
+  repeated FreeSpaceContourPoint points = 2;
+  optional ClassName cls = 3;
+}
+
+// Next ID: 5
+message FreeSpaceContour {
+  enum ContourType {
+    CT_ROADSIDE = 0;
+    CT_WALL = 1;
+    CT_PILLAR = 2;
+    CT_VEH_HEAD = 3;
+    CT_VEH_REAR = 4;
+    CT_VEH_SIDE = 5;
+    CT_VEH_IGNORE = 6;
+    CT_PERSON = 7;
+    CT_ANIMAL = 8;
+    CT_TRICYCLE = 9;
+    CT_BICYCLE = 10;
+    CT_FENCE = 11;
+    CT_TRAFFIC_CONE = 12;
+    CT_SUSPENSION = 13;
+    CT_BOLLARD = 14;
+    CT_OTHERS = 15;
+    CT_IGNORE = 16;
+    CT_NULL = 17;
+    CT_DUMMY_VEH_HEAD = 18;
+    CT_DUMMY_VEH_REAR = 19;
+    CT_DUMMY_VEH_SIDE = 20;
+    CT_DUMMY_VEH_IGNORE = 21;
+    CT_DUMMY_PERSON = 22;
+    CT_DUMMY_PILLAR = 23;
+    CT_DUMMY_BOLLARD = 24;
+  }
+  enum GroundAttr {
+    GA_GROUNDED = 0;
+    GA_NONGROUNDED = 1;
+    GA_NULL = 2;
+  }
+  optional int32 contour_id = 1;
+  repeated FreeSpaceContourPoint points = 2;
+  optional ContourType contour_type = 3;
+  optional GroundAttr grounded_attr = 4;
+}
+
+// Next ID: 3
+enum FreeSpaceLabelPolicyVersion {
+  V_UNKNOWN = 0;
+  V_24_02_02 = 1;
+}
+
+// Next ID: 6
+enum RoadSurfaceState {
+  ROAD_STATE_UNKNOWN = 0;
+  DRY = 1;      // Dry road surface.
+  WET = 2;      // Wet road surface.
+  SNOW = 3;     // Snow on the road.
+  PONDING = 4;  // Water on the road.
+  MUDDY = 5;    // Muddy road.
+}
+
+// Next ID: 5
+enum TimeType {
+  TIME_TYPE_UNKNOWN = 0;  // don't known time from image
+  DAY = 1;                // day
+  NIGHT = 2;              // night
+  DAWN = 3;               // dawn
+  DUSK = 4;               // dusk
+}
+// Next ID: 6
+enum Weather {
+  SUNNY = 0;
+  CLOUDY = 1;
+  FOGGY = 2;
+  RAINY = 3;
+  SNOWY = 4;
+  UNKNOWN_WEATHER = 5;
+}
+
+// Next ID: 9
+enum SceneType {
+  OTHER_MAIN_SCENE = 0;  // other scene
+  URBAN = 1;             // urban
+  EXPRESSWAY = 2;        // high speed way in city
+  HIGHWAY = 3;           // highway
+  RURAL = 4;             // countryside
+  PARKING_LOT = 5;       // parking lot
+  TUNNEL = 6;            // tunnel
+  TOLL_GATE = 7;         // toll gate
+  ROUNDABOUT = 8;        // roundabout
+  RAMP = 9;              // ramp
+}
+
+// Next ID: 10
+message FreeSpaceLabelProto {
+  optional string name = 1;
+  repeated FreeSpaceContour contours = 2;
+  repeated SegObject seg_objects = 3;
+  optional FreeSpaceLabelPolicyVersion version = 4 [default = V_UNKNOWN];
+  optional double center_timestamp = 5;
+  optional int32 frame_id = 6;  // Single frame scene is 0.
+  optional SceneType scene_type = 7;
+  optional Weather weather = 8;
+  optional TimeType time_type = 9;
+  optional RoadSurfaceState road_surface_state = 10;
+  optional CameraId camera_id = 11;
+}
+
+// Next ID: 5
+message FreeSpaceSequenceLabelProto {
+  optional string run_name = 1;
+  optional double start_timestamp = 2;
+  optional double end_timestamp = 3;
+  repeated FreeSpaceLabelProto labels = 4;
+  optional LiParkingFreespaceMsgProto preds = 5;
+}

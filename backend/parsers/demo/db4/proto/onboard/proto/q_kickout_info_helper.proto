@@ -1,0 +1,16 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message QKickoutInfoLiteral {
+  optional int32 q_issue_subtype = 1;
+  optional string type_name = 2;
+  optional string title = 3;
+  optional string content = 4;
+  optional string action = 5;
+}
+
+message QKickoutInfoHelper {
+  repeated QKickoutInfoLiteral result = 1;
+}

@@ -1,0 +1,52 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+message AlarmZoneDebugProto {
+  repeated Vec2dProto left_boundary = 1;
+  repeated Vec2dProto right_boundary = 2;
+}
+
+message AlarmObjectInfo {
+  optional string id = 1;
+  repeated Vec2dProto contour_points = 2;
+}
+
+message AlarmActiveDebugProto {
+  enum Reason {
+    NONE = 0;
+    CONTINUOUS_ALARM = 1;
+    OBJECT_TRIGGER = 2;
+  }
+  optional float active_duration = 3;
+  optional Reason active_reason = 4;
+  optional AlarmObjectInfo active_alarm_object = 5;
+  reserved 1, 2;
+}
+
+message FunctionDebugProto {
+  repeated Vec2dProto reference_line = 1;
+  optional AlarmActiveDebugProto left_alarm_active_debug = 2;
+  optional AlarmActiveDebugProto right_alarm_active_debug = 3;
+  // Debug information for the standby alarm zone is always generated.
+  optional AlarmZoneDebugProto left_near_alarm_zone = 4;
+  optional AlarmZoneDebugProto left_far_alarm_zone = 5;
+  optional AlarmZoneDebugProto right_near_alarm_zone = 6;
+  optional AlarmZoneDebugProto right_far_alarm_zone = 7;
+  // Debug information for the active alarm zone is generated only after the
+  // alarm is activated.
+  optional AlarmZoneDebugProto active_left_near_alarm_zone = 9;
+  optional AlarmZoneDebugProto active_left_far_alarm_zone = 10;
+  optional AlarmZoneDebugProto active_right_near_alarm_zone = 11;
+  optional AlarmZoneDebugProto active_right_far_alarm_zone = 12;
+  optional string fault_reason = 8;
+}
+
+message BlindSpotAssistDebugProto {
+  optional LiteHeader header = 1;
+  optional FunctionDebugProto bsd_debug_proto = 2;
+  optional FunctionDebugProto dow_debug_proto = 3;
+}

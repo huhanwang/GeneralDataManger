@@ -1,0 +1,144 @@
+syntax = "proto2";
+
+package snoah.track_classifier_data;
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "offboard/labeling/proto/track_classifier_label.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/localization.proto";
+import "offboard/labeling/proto/label.proto";
+import "onboard/proto/perception/lidar/track_classifier_debug.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/measurements/measurement.proto";
+import "onboard/proto/perception/fusion/object.proto";
+
+message LaserPoint {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double range = 4;
+  // Intensity is [0, 255.0] in float.
+  optional float intensity = 5;
+  // Return index 0 or 1.
+  optional int32 return_index = 6;
+  // Whether the current point has returns behind it.
+  optional bool has_returns_behind = 7;
+  // LaserPoint projet to image
+  optional double proj_x = 8;
+  optional double proj_y = 9;
+  optional LidarId lidar_id = 10;
+  optional LidarType lidar_type = 11;
+  // for align old pcn data.
+  optional double height = 12;
+  optional double range_xy = 13;
+}
+
+message Roi {
+  // Top left
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+}
+
+message ImagePatch {
+  optional bytes image_data = 1;
+  optional Roi roi = 2;
+  optional double time_diff = 3;
+}
+
+// Message to store the input of laser embedding net.
+message LaserMeasurementRawData {
+  repeated LaserPoint points = 1;
+  // Image patches coresponding to lidar points
+  optional ImagePatch image_patch = 4;
+  // Cluster id and timestamp uniquely identify a laser measurement in a run.
+  optional int32 cluster_id = 2;
+  optional double timestamp = 3;
+}
+
+// Message to store the input of camera embedding net.
+message CameraMeasurementRawData {
+  optional bytes image_patch = 1;
+
+  // Camera id, camera trigger timestamp with box related information uniquely
+  // identify a camera measurement in a run.
+  optional CameraId camera_id = 2;
+  optional double camera_trigger_timestamp = 3;
+  optional double camera_center_timestamp = 4;
+  optional int32 box_center_x = 5;
+  optional int32 box_center_y = 6;
+  optional int32 box_width = 7;
+  optional int32 box_height = 8;
+}
+
+message TrackState {
+  optional double vx = 1;
+  optional double vy = 2;
+  optional double vel = 3;
+  optional double ax = 4;
+  optional double ay = 5;
+  optional double acc = 6;
+  optional double yaw = 7;
+  optional double yaw_rate = 8;
+  optional bool is_in_lane = 9;
+  optional bool has_moving_radar_measurement = 10;
+}
+
+// Message to save track data in simulation, which can get MeasurementRawData by
+// measurements
+message TrackData {
+  repeated MeasurementProto measurements = 1;
+  repeated double heading = 5;
+  optional track_classifier_label.Category label = 2 [deprecated = true];
+  optional double state_timestamp = 3;
+  repeated track_classifier_label.Category labels = 4;
+  repeated TrackClassifierDebugProto.TrackClassifierInfo track_classifier_info =
+      6;
+  repeated VehiclePoseProto vehicle_poses = 7;
+  repeated TrackState track_state = 8;
+  repeated VehicleLampType vehicle_lamp_types = 9;
+  repeated LocalizationTransformProto localization_transforms = 10;
+  repeated labeling.LabelOr ground_truths = 11;
+}
+
+message TcnMeasurementData {
+  oneof MeasurementRawData {
+    LaserMeasurementRawData laser_data = 1;
+    CameraMeasurementRawData camera_data = 2;
+  }
+  optional VehiclePoseProto vehicle_pose = 3;
+  optional MeasurementProto measurements = 4;
+}
+
+// Track level
+message TcnLabelingData {
+  // All measurements of a track
+  repeated TcnMeasurementData tcn_track_measurements = 1;
+  optional uint32 track_id = 2;
+  optional double state_timestamp = 3;
+  repeated double heading = 4;
+  repeated TrackState track_state = 5;
+}
+
+message TcnLabelingDataForRunSegment {
+  repeated TcnLabelingData tcn_labeling_data = 1;
+  optional string run_name = 2;
+  optional double start_offset = 3;
+  optional double duration = 4;
+}
+
+message TcnTrackPack {
+  optional TrackData track_data = 1;
+  repeated LaserMeasurementRawData laser_m_raw_data = 2;
+  repeated uint32 data_index = 3;
+  optional uint32 track_id = 4;
+}
+
+message TcnTrackPackForRunSegment {
+  repeated TcnTrackPack tcn_track_packs = 1;
+  optional string run_name = 2;
+  optional double start_offset = 3;
+  optional double duration = 4;
+}

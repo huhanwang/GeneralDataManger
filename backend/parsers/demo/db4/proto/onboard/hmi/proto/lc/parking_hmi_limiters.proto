@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message ParkingHmiLimiter {
+  optional uint32 id = 1;
+  enum ObjectType {
+    // TC397 runtime_uploading currently only accepts OBJECT_TYPE_SPACE_LIMITER;
+    // additional types, such as OBJECT_TYPE_PILLAR, can be added as needed.
+    OBJECT_TYPE_SPACE_LIMITER = 0;
+  }
+  optional bool is_valid = 2;
+  repeated Point2D pts_vcs = 3;
+}
+
+message ParkingHmiLimiters {
+  optional LiteHeader header = 1;
+  optional HeaderLC header_lc = 2;
+  repeated ParkingHmiLimiter parking_hmi_limiters = 3;
+}

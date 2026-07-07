@@ -1,0 +1,102 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/perception/fusion/object.proto";
+
+message MeasurementInfo {
+  optional uint32 measurement_id = 1;
+  optional float x = 2;
+  optional float y = 3;
+  optional float z = 4;
+  optional float w = 5;
+  optional float l = 6;
+  optional float h = 7;
+  optional float yaw = 8;
+  optional ObjectType type = 9;
+  optional float vx = 10;
+  optional float vy = 11;
+  optional float ax = 12;
+  optional float ay = 13;
+}
+message AssociationGateInfo {
+  optional bool is_radar_vel_unassociatable =
+      1;  // CommonDistanceCompute::RadarCanBeAssigned
+  optional bool is_camera_type_unassociatable =
+      2;  // CommonDistanceCompute::IsCameraOrBevInNonAssoList
+  optional bool is_radar_id_unassociatable = 3;  //
+  optional float delta_para = 4;  // CommonDistanceCompute::ComputeSensorFused
+  optional float delta_orth = 5;
+  optional float delta_velocity_para = 6;
+  optional float delta_velocity_orth = 7;
+  optional bool is_pass_para_thresh = 8;
+  optional bool is_pass_orth_thresh = 9;
+  optional bool is_pass_velocity_para_thresh = 10;
+  optional bool is_pass_velocity_orth_thresh = 11;
+  optional float distance = 12;
+  optional bool is_id_assign = 13;
+  optional bool is_predicted_not_associated = 14;
+  optional bool is_bev_type_unassociatable = 15;
+}
+
+message MeasurementAssociationInfo {
+  optional AssociationGateInfo association_gate = 2;
+  optional MeasurementInfo measurement_info = 3;
+}
+
+message AssociatedMeasurements {
+  optional MeasurementAssociationInfo bev_measurement = 1;
+  optional MeasurementAssociationInfo radar_measurement = 2;
+  optional MeasurementAssociationInfo h_mono_measurement = 3;
+  optional MeasurementAssociationInfo vision_measurement = 4;
+}
+
+message OtherMeasurements {
+  repeated MeasurementAssociationInfo bev_measurement = 1;
+  repeated MeasurementAssociationInfo radar_measurement = 2;
+  repeated MeasurementAssociationInfo h_mono_measurement = 3;
+  repeated MeasurementAssociationInfo vision_measurement = 4;
+}
+message PseudoMeasurementInfo {
+  optional bool mono_merge_bev_pos = 1;
+  optional bool mono_merge_radar_velocity_x = 2;
+  optional bool radar_merge_mono_velocity_y = 3;
+}
+
+message ActiveSafetyTrackerDebugProto {
+  optional uint32 track_id = 1;
+  optional AssociatedMeasurements associated_measurements = 2;
+  optional OtherMeasurements candidate_measurements = 3;
+  optional OtherMeasurements gated_measurements = 4;
+  optional PseudoMeasurementInfo pseudo_measurement = 5;
+  enum FineGrainedTrackScene {
+    UNKNOWN = 0;
+    HIGHSPEED_CPLA = 1;
+    HIGHSPEED_CBLA = 2;
+    HIGHSPEED_CPFA = 3;
+    HIGHSPEED_CSFA = 4;
+    HIGHSPEED_CCRSCROSSING = 5;
+    NORMAL_CPNSOC = 6;
+    LOWSPEED_CBLA = 7;
+    ONCOMING_TURNING = 8;
+    ADULT_ON_RAMP = 9;
+    CLOSE_PED = 10;
+    CCFT_SCENE = 11;
+    CPLA_BAD_TYPE = 12;
+    DEACC_CROSS_CYC = 13;
+    DEACC_CROSS_PED = 14;
+    DENSE_CROSS_PED = 15;
+    CLOSE_CUTIN_VEH = 16;
+    SIDE_FORWARD_WALKING_PED = 17;
+    INSIDE_BLIND_AREA_MULTI = 18;
+    INSIDE_BLIND_AREA_CORNER = 19;
+  }
+  optional FineGrainedTrackScene track_scene = 6;
+}
+
+message ActiveSafetyTrackersDebugProto {
+  optional LiteHeader header = 1;
+  repeated ActiveSafetyTrackerDebugProto active_safety_trackers_debug = 2;
+}

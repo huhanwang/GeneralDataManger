@@ -1,0 +1,74 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/radar.proto";
+import "onboard/proto/calibration.proto";
+
+message RadarInstallationProto {
+  message CanParamsProto {
+    enum Type {
+      DATASPEED = 1;
+      KVASER = 2;
+      SOCKETCAN = 3;
+    }
+    optional Type type = 1;
+    optional int32 kvaser_id = 2;
+    optional int32 bit_rate = 3 [default = 500000];  // bps
+    optional bytes socketcan_ifname = 4;
+  }
+  message UdpParamsProto {
+    optional string ip = 1;
+    optional int32 port = 2;
+  }
+
+  message ZMSDR1ParamsProto {
+    enum Sensor_Mode_Type {
+      SLEEP = 0;
+      STANDBY = 1;
+      ADAS = 2;
+      LONG_RANGE_OBJECT_FRESPACE_FUSION = 3;
+      SHORT_RANGE_OBJECT_FRESPACE_FUSION = 5;
+      LONG_RANGE_POINTCLOUD = 7;
+      SHORT_RANGE_POINTCLOUD = 8;
+      LONG_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION = 10;
+      SHORT_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION = 12;
+      LONG_RANGE_OBJECT_FRESPACE_FUSION_ADAS_GUARDRAIL = 14;
+      LONG_RANGE_OBJECT_FRESPACE_WITHOUT_FUSION_ADAS_GUARDRAIL = 15;
+      MODE_INVALID_VALUE = 31;
+    }
+    optional Sensor_Mode_Type radar_mode = 1;
+  }
+
+  enum RadarType {
+    RAD_UNKNOWN_TYPE = 0;
+    RAD_CONTI_408 = 1;
+    RAD_CONTI_430 = 2;
+    RAD_CONTI_308 = 3;
+    RAD_CONTI_410 = 4;
+    RAD_ZM_SDR1 = 5;  // Zong Mu SDR1 Radar
+    RAD_DESSAY_A02 = 6;
+    RAD_BOSCH_A02 = 7;
+    RAD_SSTK_776 = 8;
+    RAD_BOSCH_CR5CP = 9;
+  }
+  optional RadarId radar_id = 1;
+  optional RadarExtrinsicsProto extrinsics = 2;
+  optional int32 socket_can_id = 3;
+  optional int32 sensor_id = 4;
+  optional RadarType radar_type = 5;
+  oneof CommunicateParam {
+    CanParamsProto can_params = 6;
+    UdpParamsProto udp_params = 7;
+  }
+  // The used run when calibration
+  optional string used_run = 8;
+  optional bool enabled = 9 [default = true];
+
+  oneof RadarParam {
+    ZMSDR1ParamsProto radar_param = 10;
+  }
+
+  // radar data is sent to this node.
+  optional string destination_node_name = 11;
+}

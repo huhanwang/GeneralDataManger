@@ -1,0 +1,1024 @@
+
+
+syntax = "proto2";
+
+package snoah.road_geometry_label;
+
+import "offboard/labeling/proto/scene_label.proto";
+import "onboard/maps/proto/sd_map.proto";
+import "onboard/proto/vehicle_pose.proto";
+// import "onboard/maps/map_match/proto/sd_map_match.proto";
+import "offboard/labeling/proto/ego_trajectory.proto";
+
+message KeypointInfo {
+  enum KeypointType {
+    DASHED_LINE_ENDPOINT = 0;
+    ARROW_VERTEX = 1;
+    Y_SHAPE_NODE = 2;
+    V_SHAPE_NODE = 3;
+  }
+  enum KeypointAttribute {
+    VISIBLE = 0;
+    INVISIBLE = 1;
+  }
+  optional int32 keypoint_id = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 6;  // Only bev space need.
+  optional KeypointType keypoint_type = 4;
+  optional KeypointAttribute keypoint_attribute = 5;
+}
+
+message PoleInfo {
+  enum PoleType {
+    TRUNK = 0;
+    TRAFFIC_SIGN = 1;
+    TRAFFIC_LIGHT = 2;
+    STREET_LIGHT = 3;
+    OTHER = 4;
+  }
+  optional int32 pole_id = 1;
+  repeated double x = 2;
+  repeated double y = 3;
+  repeated double z = 5;  // Only bev space need.
+  optional PoleType pole_type = 4;
+}
+
+enum PanonetClass {
+  UNKNOWN = 0;
+  CAR = 1;
+  BI_CYCLIST = 2;
+  TRI_CYCLIST = 3;
+  PEDESTRIAN = 4;
+  CONE = 5;
+  TRAFFIC_LIGHT = 6;
+  SIGN = 7;
+  VEGETATION = 8;
+  ROAD = 9;
+  GROUND = 10;
+  ROAD_MARKER = 11;
+  LANE_MARKER = 12;
+  OBJECT = 13;
+  SKY = 14;
+  EGO_VEHICLE = 15;
+}
+
+message LaneInfo {
+  // Next ID: 18
+  enum LaneType {
+    SINGLE_SOLID_LINE = 0;
+    SINGLE_DASHED_LINE = 1;
+    DOUBLE_SOLID_LINE = 2;
+    DOUBLE_DASHED_LINE = 3;
+    LEFT_SOLID_RIGHT_DASHED = 4;
+    LEFT_DASHED_RIGHT_SOLID = 5;
+    CURB = 6;
+    STOP_LINE = 7;
+    SPEED_BUMP = 8;
+    VARIABLE_DIRECTION_LINE = 9;
+    TIDAL_LINE = 10;
+    GUIDE_LINE = 11;
+    MOVABLE_CURB = 12;
+    BARRIER = 13;  // NOTE(xiangxiang, zhenye): Barrier reprent fence.
+    CHANNELIZING = 14 [deprecated = true];  // Moved to extra type
+    UNCERTAIN_LINE = 15;
+    _TRIPLE_LINE = 16;
+    _QUADRUPLE_LINE = 17;
+    CENTER_LINE = 18;
+    OTHER_LINE = 19;
+    SECTION_OTHER_LINE = 20;
+    DRIVE_BOUNDARY = 21;
+  }
+  enum LaneColor {
+    YELLOW = 0;
+    WHITE = 1;
+    ORANGE = 2;
+    BLUE = 3;
+    RED = 4;
+    GREEN = 5;
+    LEFT_YELLOW_RIGHT_WHITE = 8;
+    LEFT_WHITE_RIGHT_YELLOW = 9;
+    OTHER_COLOR = 10;
+  }
+  enum LaneBoundaryAttribute {
+    LONGITUDINAL_SPEED_REDUCTION = 0
+        [deprecated = true];  // Moved to extra type
+  }
+
+  // Just for 2D instersection annotation.
+  // Next ID: 3
+  enum LaneSpecialType {
+    PV_NORMAL_LINE = 0;
+    PV_GUIDE_LINE = 1;
+    PV_WAITING_LINE = 2;
+  }
+  // Generated id start from 1, -1 for filtered lane
+  optional int32 lane_id = 1;
+  repeated int32 connected_id = 2;  // Currently not used
+  repeated double x = 3;
+  repeated double y = 4;
+  repeated double z = 7;  // Only bev space need.
+  optional LaneType lane_type = 5;
+  optional LaneColor lane_color = 6;
+  // Unique id in current frame, end with map_element_id
+  optional sfixed64 autolabel_id = 8;
+  repeated sfixed64 autolabel_connected_ids = 9;  // Currently not used
+  optional LaneSpecialType lane_special_type = 10 [default = PV_NORMAL_LINE];
+
+  // In order to provide data for the perception model, the curb type is
+  // subdivided.
+  enum CurbType {
+    NONE = 1;
+    GENERAL_LOW_CURB = 2;
+    FENCE = 3;
+    CEMENT_PIER = 4;
+    GENERAL_HIGH_CURB = 5;
+    WALL = 6;
+    SURFACE = 7;
+    DITCH = 8;
+    OBSTACLE = 9;
+    VIRTUAL = 10;
+    OTHER_CURB = 11;
+    MOVABLE_CURB_TYPE = 12;
+    HIGH_CURB = 13 [deprecated = true];
+    LOW_CURB = 14 [deprecated = true];
+    FLAT_CURB = 15;
+    WALKING_STREET = 16;
+  }
+  optional CurbType curb_type = 11 [default = NONE];
+
+  // Describes the type of lane boundary attachment line.
+  enum ExtraType {
+    NORMAL = 1;
+    VARIABLE_DIRECTION = 2;
+    LEAD = 3;                   // CHANNELIZING
+    SLOW_DOWN = 4;              // LONGITUDINAL_SPEED_REDUCTION
+    TRIPLE_LINE = 5;            // 三线
+    TRIPLE_LINE_INNER = 6;      // 三线内侧线
+    TRIPLE_LINE_OUTER = 7;      // 三线外侧线
+    QUADRUPLE_LINE = 8;         // 四线
+    QUADRUPLE_LINE_INNER = 9;   // 四线内侧线
+    QUADRUPLE_LINE_OUTER = 10;  // 四线外侧线
+    SHADED_AREA = 11;           // max数据转换而来
+    VIRTUAL_LINE = 12;          // max数据转换而来
+    UNSET_TYPE = 13;            // max数据转换而来
+    LEFT_TURN_WAIT = 14;        // max数据转换而来
+    LINEAR_SAFE_ISLAND = 15;    // max数据转换而来
+    OTHER_TURN_WAIT = 16;
+    DECELERATE = 17;  // 减速让行线
+    RIGHT_TURN_WAIT = 18;
+    STRAIGHT_WAIT = 19;
+    U_TURN = 20;
+    VARIABLE_LANE = 21;
+    ROAD_SPLIT_LANE = 22;  // 道路分隔线，指在导流线后方相连的虚线
+    OLD_LINE = 23;         // 旧线
+  }
+  optional ExtraType extra_type = 12 [default = NORMAL];
+
+  // If the lines are connected, even if they are not of the same lane_type or
+  // lane_id, they will be assigned the same aggregate_id.
+  optional int32 aggregate_id = 13;
+  repeated bool visible = 14;
+
+  // Describe the relation of lane boundary and center line;
+  // layout from left to right: left-left, left, <center>, right, right-right
+  enum NeighborLaneBoundaryType {
+    INVALID = 0;
+    LEFT_LEFT = 1;
+    LEFT_RIGHT = 2;
+    HOST_LEFT = 3;
+    HOST_RIGHT = 4;
+    RIGHT_LEFT = 5;
+    RIGHT_RIGHT = 6;
+  }
+  optional NeighborLaneBoundaryType neighbor_lane_boundary_type = 15
+      [default = INVALID];
+  optional float line_width = 16;
+  repeated PanonetClass panonet_class = 17;
+  // If the line is filtered, it still be output but set is_filtered true.
+  optional bool is_filtered = 18 [default = false];
+  optional float line_length = 19;
+  repeated LaneBoundaryAttribute lane_boundary_attributes = 20;
+  optional sfixed64 map_element_id = 21;  // Element id from semantic map proto
+  optional int32 visibility =
+      22;  // https://qcraft.feishu.cn/wiki/WtY4wcDgAivtkMkmMkXcSWSnn9g
+  optional int32 vision_count = 23 [deprecated = true];
+  optional float vision_meter = 24;
+  optional LaneType multi_lane_type = 25;
+  optional int32 lane_line_count = 26;
+  optional string fsdmap_id = 27;
+  optional double ratio_in_intersection = 28;
+  optional string fsdmap_group_id = 29;
+  optional string group_id = 30;
+
+  // Just for PRT.
+  enum Direction {
+    DIRECTION_UNKNOWN = 0;
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+    UTURN = 4;
+  }
+  repeated Direction directions = 31;
+
+  optional CenterLineInfo.Type center_line_type = 32;
+  optional DriveBoundaryInfo.DriveBoundaryPointType drive_boundary_point_type =
+      33;
+}
+
+message MapformerLaneInfo {
+  enum CoarseLaneType {
+    LANE_LINE = 0;
+    CURB_LINE = 1;
+    STOP_LINE = 2;
+    SECTION_OTHER_LINE = 4;
+  }
+  enum FineLaneType {
+    FINELANETYPE_UNKNOWN = 0;
+    SINGLE_SOLID_LINE = 1;
+    SINGLE_DASHED_LINE = 2;
+    DOUBLE_SOLID_LINE = 3;
+    DOUBLE_DASHED_LINE = 4;
+    LEFT_SOLID_RIGHT_DASHED = 5;
+    LEFT_DASHED_RIGHT_SOLID = 6;
+    TRIPLE_LINE = 7;
+    QUADRUPLE_LINE = 8;
+    VIRTUAL_LINE = 9;
+    UNSET_TYPE = 10;
+  }
+  enum ExtraLaneType {
+    GENERAL = 0;
+    SLOW_DOWN = 1;
+    LEAD = 2;
+    LEFT_TURN_WAIT = 3;
+    OTHER_TURN_WAIT = 4;
+    SHORT_DASHED = 5;
+    SHADED_AREA = 6;
+    VARIABLE_DIRECTION = 7;
+    LINEAR_SAFE_ISLAND = 8;
+    DECELERATE = 9;
+    RIGHT_TURN_WAIT = 10;
+    STRAIGHT_WAIT = 11;
+    U_TURN = 12;
+    VARIABLE_LANE = 13;
+    ROAD_SPLIT_LANE = 14;
+    QUADRUPLE_LINE_OUTER = 15;
+    OLD_LINE = 16;
+  }
+  enum LaneColor {
+    COLOR_UNKNOWN = 0;
+    YELLOW = 1;
+    WHITE = 2;
+    LEFT_YELLOW_RIGHT_WHITE = 3;
+    LEFT_WHITE_RIGHT_YELLOW = 4;
+    OTHER_COLOR = 5;
+  }
+  enum CurbType {
+    CURB_UNKNOWN = 0;
+    GENERAL_LOW_CURB = 1;
+    FENCE = 2;
+    CEMENT_PIER = 3;
+    GENERAL_HIGH_CURB = 4;
+    WALL = 5;
+    SURFACE = 6;
+    DITCH = 7;
+    OBSTACLE = 8;
+    VIRTUAL_CURB = 9;
+    OTHER_CURB = 10;
+    MOVABLE_CURB = 11;
+    HIGH_CURB = 12 [deprecated = true];
+    LOW_CURB = 13 [deprecated = true];
+    FLAT_CURB = 14;
+    WALKING_STREET = 15;
+  }
+  enum EndpointType {
+    HEAD = 0;
+    TAIL = 1;
+  }
+  message Connection {
+    optional EndpointType self_endpoint_type = 1;
+    optional EndpointType target_endpoint_type = 2;
+    optional string target_fsd_id = 3;
+    optional double delta_angle = 4;
+    optional double delta_distance = 5;
+  }
+  message PointWithType {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional LaneColor color = 4;
+    optional FineLaneType fine_type = 5;
+    optional ExtraLaneType extra_type = 6;
+    optional CurbType curb_type = 7;
+    optional bool is_ground_point = 8;
+    optional double line_width =
+        9;  // 单线宽度为0cm,双线为两根线中间到最外侧线的距离,以此类推
+    optional bool is_occluded_by_curb = 10;
+  }
+  optional string fsd_id = 1;
+  optional CoarseLaneType coarse_lane_type = 2;
+  repeated PointWithType points = 3;
+  optional bool is_polygon = 4;
+  optional bool is_in_intersection = 5;
+  optional bool is_filtered = 6 [default = false];
+  repeated Connection connections = 7;
+  repeated string prev_connected_stop_line_ids = 8;
+  repeated string post_connected_stop_line_ids = 9;
+  optional bool is_junction_non_driveway_line =
+      10;  // 是否是路口中非机动车道的边线，主要是便于过滤路口中一些横向的白线
+  optional bool is_uturn_virtual_line =
+      11;  // 是否是掉头的虚拟线，lpai数据中会有一些掉头的虚拟线
+  optional string group_id = 12;
+}
+
+enum SectionDirection {
+  STRAIGHT = 1;
+  LEFT_TURN = 2;
+  RIGHT_TURN = 3;
+  UTURN = 4;
+  LEFT_TURN_WAITING = 5;
+  STRAIGHT_WAITING = 6;
+  RIGHT_TURN_WAITING = 7;
+}
+
+message CenterLineInfo {
+  optional sfixed64 id = 1;
+  enum Type {
+    GENERAL = 1;  // General for any passenger vehicle
+    BICYCLE_ONLY = 2;
+    BUS_ONLY = 3;
+    VIRTUAL = 4;
+    EMERGENCY = 5;
+    RAMP = 6;
+    WALKING_STREET = 7;
+    PARKING = 8;             // Parking lane: can drive on it, if not occupied
+    MIXED_WITH_CYCLIST = 9;  // Basically means GENERAL + BICYCLE_ONLY
+    UNKNOWN = 10;            // from lx fsdmap data
+    ACCELERATION = 11;       // from lx fsdmap data
+    DECELERATION = 12;       // from lx fsdmap data
+    SPEED_CHANGE = 13;       // from lx fsdmap data
+    HOV = 14;                // from lx fsdmap data
+    NON_DRIVEWAY = 15;       // from lx fsdmap data
+    LEFT_TURN_WAIT = 16;     // from lx fsdmap data
+    JUNCTION_VIRTUAL = 17;   // from lx fsdmap data
+    JUNCTION_OTHER = 18;     // from lx fsdmap data
+    ROUNDABOUT = 19;         // from lx fsdmap data
+    TUNNEL = 20;             // from lx fsdmap data
+    U_TURN = 21;             // from lx fsdmap data
+    TIDAL = 22;              // from lx fsdmap data
+    OTHER_TURN_WAIT = 23;
+    VARIABLE_DIRECTION = 24;
+    MAIN_AUX_ROAD_SWITCH = 25;
+    EXTENDED = 26;
+  }
+  optional Type type = 2;
+  enum Direction {
+    DIRECTION_UNKNOWN = 0;
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+    UTURN = 4;
+  }
+  enum CrossIntersectionType {
+    OTHER_TYPE = 0;
+    INGOING = 1;
+    OUTGOING = 2;
+    IN_OUT_GOING = 3;
+  }
+  optional Direction direction = 3;
+  repeated sfixed64 incoming_lanes = 4;
+  repeated sfixed64 outgoing_lanes = 5;
+  repeated double x = 6;
+  repeated double y = 7;
+  repeated double z = 8;
+  optional bool is_virtual = 9 [deprecated = true];
+  repeated bool visible = 10;
+  repeated PanonetClass panonet_class = 11;
+  // If the center line is filtered, it still be output but set is_filtered
+  // true.
+  optional bool is_filtered = 12 [default = false];
+  optional sfixed64 map_element_id = 13;  // Element id from semantic map proto
+  optional float fsdmap_curvature = 14;   // from lx fsdmap data
+  optional bool fsdmap_is_current_lane = 15;      // from lx fsdmap data
+  optional string fsdmap_center_lane_id = 16;     // from lx fsdmap data
+  repeated string fsdmap_left_boundary_id = 17;   // from lx fsdmap data
+  repeated string fsdmap_right_boundary_id = 18;  // from lx fsdmap data
+  repeated string fsdmap_left_lane_id = 19;       // from lx fsdmap data
+  repeated string fsdmap_right_lane_id = 20;      // from lx fsdmap data
+  repeated string fsdmap_pred_lane_id = 21;       // from lx fsdmap data
+  repeated string fsdmap_succ_lane_id = 22;       // from lx fsdmap data
+  optional bool fsdmap_is_outjunction_lane = 23;  // from lx fsdmap data
+  optional float fsdmap_relative_yaw_angle = 24;  // from lx fsdmap data
+  repeated Direction fsdmap_direction = 25;       // from lx fsdmap data
+  optional string fsdmap_group_id = 26;           // from lx fsdmap data
+  optional CrossIntersectionType cross_intersection_type = 27;
+  repeated double lane_width = 28;
+  repeated bool is_ground_point = 29;
+  repeated bool is_occluded_by_curb = 30;
+  repeated SectionDirection section_directions = 31;
+}
+
+message ReferenceLineInfo {
+  enum Scene {
+    UNKNOWN = 0;
+    IN_INTERSECTION = 1;
+    BEFORE_INTERSECTION = 2;
+  }
+  optional Scene scene = 1;
+  repeated double x = 2;
+  repeated double y = 3;
+  repeated double z = 4;
+  optional string succ_fsdmap_center_lane_id = 5;
+  optional string succ_fsdmap_group_id = 6;
+  optional bool lane_matched_by_trajectory = 7;
+  optional bool group_matched_by_trajectory = 8;
+}
+
+message StaticReferenceLineInfo {
+  repeated double x = 1;
+  repeated double y = 2;
+  repeated double z = 3;
+  optional bool is_line_valid = 4;
+  optional bool is_dataset_valid = 5;
+}
+
+message DriveBoundaryInfo {
+  enum DriveBoundaryType {
+    BOUNDARY_UNKNOWN = 0;
+    BOUNDARY_CNOA = 1;
+    BOUNDARY_CHNOA = 2;  // for current use: intersection scene same as CNOA,
+                         // highway lead lane scene will extend reference lanes
+  }
+  enum DriveBoundaryPointType {
+    UNKNONWN = 0;
+    CURB = 1;
+    LANE_BOUNDARY = 2;
+    LEAD = 3;
+    VIRTUAL = 4;
+  }
+  repeated double x = 1;
+  repeated double y = 2;
+  repeated double z = 3;
+  optional bool is_filtered = 4;
+  optional double length = 5;
+  optional DriveBoundaryType type = 6;
+  repeated DriveBoundaryPointType point_type = 7;
+}
+
+message DriveBoundaryLaneInfo {
+  optional LaneInfo lane = 1;
+  optional bool is_lead_lane = 2 [default = false];
+}
+
+message DriveBoundaryReferenceLane {
+  repeated LaneInfo left_lanes = 1 [deprecated = true];
+  repeated LaneInfo right_lanes = 2 [deprecated = true];
+  repeated DriveBoundaryLaneInfo left_db_lanes = 3;
+  repeated DriveBoundaryLaneInfo right_db_lanes = 4;
+  repeated DriveBoundaryLaneInfo debug_lanes = 5;
+}
+
+// Next ID: 15
+enum RoadGeometryLabelPolicyVersion {
+  V_UNKNOWN = 0;
+  V_22_02_28 = 1;   // Add keypoint, pole, lane.
+  V_22_04_27 = 2;   // Add image scene, remove low resolution lanes, remove
+                    // unneccessary lanes.
+  V_22_07_08 = 3;   // Add bev space proto.
+  V_22_08_08 = 4;   // Change bev space point's coord format.
+  V_22_08_29 = 5;   // Add some image scene, weather type.
+  V_22_11_29 = 6;   // Add scene label for each frame.
+  V_23_01_11 = 7;   // Add ground marking.
+  V_23_01_17 = 8;   // Add special type for 2D intersection annotation.
+  V_23_01_18 = 9;   // Add movable curb.
+  V_23_02_01 = 10;  // Add barrier type for 2D intersection annotation.
+  V_23_02_20 = 11;  // Add camera center timestamp.
+  V_23_03_01 = 12;  // Add new feature for auto labeling.
+  V_23_05_09 = 13;  // Add new image scene country road.
+  V_23_06_07 = 14;  // Add line width.
+  V_23_08_11 = 15;  // Add new lane type & attribute
+}
+
+message IntersectionInfo {  // Only enabled at intersection regions.
+  enum Scale {
+    SMALL = 1;
+    MEDIUM = 2;
+    BIG = 3;
+  }
+
+  enum DrivingType {
+    STRAIGHT = 1;
+    TURN_LEFT = 2;
+    TURN_RIGHT = 3;
+    U_TURN = 4;
+  }
+
+  // Should be self-intersection-free, but not necessarily convex.
+  message Polygon2d {
+    repeated float x = 1 [packed = true];
+    repeated float y = 2 [packed = true];
+  }
+
+  optional Scale scale = 1;
+  optional DrivingType driving_type = 2;
+  optional double area = 3;
+  // Nearest or current intersection id.
+  optional sfixed64 intersection_id = 4;
+  // Pose distance to nearest intersection.
+  optional double distance = 5;
+  // Polygon nearest to ego pose.
+  optional Polygon2d polygon = 6;
+  repeated string exit_fsdmap_ids = 7;     // Exit fsdmap ids
+  repeated string entry_fsdmap_ids = 8;    // Entry fsdmap ids
+  optional string fsdmap_junction_id = 9;  // Fsdmap id
+}
+
+message CrosswalkInfo {
+  optional sfixed64 id = 1;
+  enum Type {
+    UNCONTROLLED = 1;
+    TRAFFIC_LIGHT_CONTROLLED = 2;
+    // If pedestrain is offroad and in crosswalk will treat it as onroad.
+    MUST_YEILD = 3;
+  }
+  optional Type type = 2;
+  repeated double x = 3;
+  repeated double y = 4;
+  repeated double z = 5;
+  optional int32 visibility = 6;
+  optional bool is_filtered = 7 [default = false];
+  optional int32 visible_ground_points = 8;
+  optional int32 visible_marker_points = 9;
+  optional int32 total_points = 10;
+}
+
+message SpeedBumpInfo {
+  optional sfixed64 id = 1;
+  optional uint32 speed_limit_mph = 2;
+  optional uint32 speed_limit_kph = 3;
+  repeated double x = 4;
+  repeated double y = 5;
+  repeated double z = 6;
+  enum Type {
+    UNKNOWN = 1;
+    RAISED = 2;
+    FLAT = 3;
+  }
+  optional Type type = 7 [default = UNKNOWN];
+}
+
+message BusStationStopArea {
+  optional sfixed64 id = 1;
+  repeated double x = 2;
+  repeated double y = 3;
+  repeated double z = 4;
+}
+
+message GroundMarkingInfo {
+  optional sfixed64 id = 1;
+  enum Type {
+    OTHER = 99;
+    TEXT = 100;
+    BUS_LANE = 101;
+    VARIABLE_ORIENTATION_LANE = 102;
+    ARROW = 200;
+    STRAIGHT = 201;
+    STRAIGHT_LEFT = 202;
+    STRAIGHT_RIGHT = 203;
+    STRAIGHT_U_TURN = 204;
+    LEFT = 205;
+    LEFT_U_TURN = 206;
+    MERGE_TO_LEFT = 207;
+    RIGHT = 208;
+    MERGE_TO_RIGHT = 209;
+    LEFT_RIGHT = 210;
+    U_TURN = 211;
+    FORBID_LEFT = 212;
+    FORBID_RIGHT = 213;
+    FORBID_U_TURN = 214;
+    STRAIGHT_LEFT_RIGHT = 215;
+    STRAIGHT_U_TURN_LEFT = 216;
+    RIGHT_U_TURN = 217;
+    FORBID_STRAIGHT = 218;
+    INDICATING_ARROW = 250;
+    INDICATING_STRAIGHT = 251;
+    NUMBER = 300;
+    MAX_SPEED_LIMIT = 301;
+    MIN_SPEED_LIMIT = 302;
+    TIME = 303;
+    SIGN = 400;
+    OTHER_LINE_MARKING = 500;
+    YIELD_AHEAD_TRIANGLE = 1000;  // 让行三角标志
+    YIELD_AHEAD_HOV = 1001;       // 菱形减速标志
+    NON_MOTORIZED = 1002;         // 非机动车标志
+    DANGER_ZONE = 1003;           // 危险区域标志
+    REVERSIBLE_LANE = 1004;       // 可变车道标志
+  }
+  optional Type type = 2;
+  // For example, when the type is a number, it is an Arabic number.
+  // For example, when the type is text, it is likely to be Chinese characters.
+  optional string text = 3;
+  // There are only four points and are stored counterclockwise from the upper
+  // left point.
+  repeated double x = 4;
+  repeated double y = 5;
+  repeated double z = 6;
+  // For example, when the type is arrow, it is the corner of the arrow.
+  repeated double keypoint_x = 7;
+  repeated double keypoint_y = 8;
+  repeated double keypoint_z = 9;
+  optional bool is_filtered = 10 [default = false];
+  optional int32 visibility = 11;
+  optional int32 visible_ground_points = 12;
+  optional int32 visible_marker_points = 13;
+  optional int32 total_points = 14;
+}
+
+// Next ID: 8
+message OnOffRoadInfo {
+  // NOTE(xiangxiang): start_x, start_y define as
+  // right bottom point in the vehicle coord.
+  optional float start_x = 1;
+  optional float start_y = 2;
+  optional float grid_size_x = 3;
+  optional float grid_size_y = 4;
+  optional int32 width = 5;
+  optional int32 height = 6;
+  optional bytes mask = 7;
+}
+
+message DriveBoundaryFilterInfo {
+  optional double chnoa_db_length = 1;
+  optional double min_pt_distance = 2;
+  optional double max_pt_distance = 3;
+  optional bool cross_vis_range = 4;
+  optional bool self_cross = 5;
+  optional bool db_paired = 6;
+}
+
+message FilterInfo {
+  optional bool is_filtered = 1 [default = false];
+  repeated string filtered_message = 2;
+  optional float wide_projection_pixel_avg = 3 [deprecated = true];  // unit: cm
+  optional float wide_projection_pixel_std = 4 [deprecated = true];  // unit: cm
+
+  // Pose used for finally projected.
+  enum PoseType {
+    RTK_TYPE = 1;
+    LOC_TYPE = 2;
+    MAPPING_TYPE = 3;
+  }
+  enum FilterType {
+    INVALID = 0;
+    RESERVED = 1;
+    NO_MAP_ELEMENT = 2;
+    LANE_MISSING = 3;
+    CURB_MISSING = 4;
+    TOO_MANY_ELEVATION_OUTLIERS = 5;
+    TOO_MANY_MATCH_OUTLIERS = 6;
+    PROJECT_DEVIAITON = 7;
+    OUTSIDE_THE_SECTION_MAP = 8;
+    EGO_TRAJECTORY_CROSS_CURB = 9;
+    IN_NOT_LABEL_ZONE = 10;
+  }
+  enum DeviationType {
+    DEVIAITON_INVALID = 0;
+    FRONT_LANE_AT30M_MORE_THAN_THRESHOLD = 1;
+    FRONT_LANE_AT60M_MORE_THAN_THRESHOLD = 2;
+    FRONT_LANE_AT120M_MORE_THAN_THRESHOLD = 3;
+    FRONT_CURB_AT30M_MORE_THAN_THRESHOLD = 4;
+    FRONT_CURB_AT60M_MORE_THAN_THRESHOLD = 5;
+    FRONT_CURB_AT120M_MORE_THAN_THRESHOLD = 6;
+    REAR_LANE_AT30M_MORE_THAN_THRESHOLD = 7;
+    REAR_CURB_AT30M_MORE_THAN_THRESHOLD = 8;
+  }
+  optional PoseType pose_type = 5;
+  optional float tele_projection_pixel_avg = 6 [deprecated = true];  //
+  optional float tele_projection_pixel_std = 7 [deprecated = true];  // unit: cm
+  optional float refined_min_error = 54;
+  optional float loc_match_point_count = 57;
+  optional float rtk_match_point_count = 58;
+  optional float refined_x_diff = 55;
+  optional float refined_y_diff = 56;
+  optional float refined_z_diff = 8;
+  optional float refined_yaw_diff = 9;
+  optional float refined_pitch_diff = 10;
+  optional float refined_roll_diff = 11;
+  optional float wide_lane_bias_left_ratio = 12 [deprecated = true];
+  optional float wide_lane_bias_right_ratio = 13 [deprecated = true];
+  optional float wide_lane_bias_left_pixel = 14 [deprecated = true];
+  optional float wide_lane_bias_right_pixel = 15 [deprecated = true];
+  optional float wide_lane_bias_average_pixel = 16 [deprecated = true];
+  optional float projection_dist_avg_30 = 17
+      [deprecated = true];  // rear + tele + wide
+  optional float projection_dist_avg_60 = 18
+      [deprecated = true];  // rear + tele + wide
+  optional float projection_dist_avg_120 = 19
+      [deprecated = true];  // rear + tele + wide
+  optional float rear_projection_pixel_avg = 20
+      [deprecated = true];  // unit: cm
+  optional float rear_projection_pixel_std = 21
+      [deprecated = true];                        // unit: cm
+  optional float combine_lane_dist_avg = 22;      // unit: cm rear + tele + wide
+  optional float combine_lane_dist_std = 23;      // unit: cm rear + tele + wide
+  optional float combine_curb_dist_avg = 24;      // unit: cm rear + tele + wide
+  optional float combine_curb_dist_std = 25;      // unit: cm rear + tele + wide
+  optional float front_lane_at30_dist_avg = 26;   // unit: cm wide+tele
+  optional float front_lane_at60_dist_avg = 27;   // unit: cm wide+tele
+  optional float front_lane_at120_dist_avg = 28;  // unit: cm wide+tele
+  optional float front_curb_at30_dist_avg = 29;   // unit: cm wide+tele
+  optional float front_curb_at60_dist_avg = 30;   // unit: cm wide+tele
+  optional float front_curb_at120_dist_avg = 31;  // unit: cm wide+tele
+  optional float wide_lane_dist_avg = 32;         // unit: cm
+  optional float wide_lane_dist_std = 33;         // unit: cm
+  optional float wide_curb_dist_avg = 34;         // unit: cm
+  optional float wide_curb_dist_std = 35;         // unit: cm
+  optional float tele_lane_dist_avg = 36;         // unit: cm
+  optional float tele_lane_dist_std = 37;         // unit: cm
+  optional float tele_curb_dist_avg = 38;         // unit: cm
+  optional float tele_curb_dist_std = 39;         // unit: cm
+  optional float rear_lane_dist_avg = 40;         // unit: cm
+  optional float rear_lane_dist_std = 41;         // unit: cm
+  optional float rear_curb_dist_avg = 42;         // unit: cm
+  optional float rear_curb_dist_std = 43;         // unit: cm
+  optional float wide_lane_l1_at30_panleft_avg = 44;   // unit: cm
+  optional float wide_lane_l1_at30_panright_avg = 45;  // unit: cm
+  optional float wide_lane_r1_at30_panleft_avg = 46;   // unit: cm
+  optional float wide_lane_r1_at30_panright_avg = 47;  // unit: cm
+  optional float tele_lane_l1_at60_panleft_avg = 48;   // unit: cm
+  optional float tele_lane_l1_at60_panright_avg = 49;  // unit: cm
+  optional float tele_lane_r1_at60_panleft_avg = 50;   // unit: cm
+  optional float tele_lane_r1_at60_panright_avg = 51;  // unit: cm
+  optional float rear_lane_at30_dist_avg = 52;         // unit: cm
+  optional float rear_curb_at30_dist_avg = 53;         // unit: cm
+  optional float wide_lane_outliers_count = 100;
+  optional float tele_lane_outliers_count = 101;
+  optional float rear_lane_outliers_count = 102;
+  optional float wide_curb_outliers_count = 103;
+  optional float tele_curb_outliers_count = 104;
+  optional float rear_curb_outliers_count = 105;
+  optional float wide_elevation_outliers_ratio = 106;
+  optional float tele_elevation_outliers_ratio = 107;
+  optional float rear_elevation_outliers_ratio = 108;
+  optional float lane_missing_ratio = 109;
+  optional float curb_missing_ratio = 110;
+  optional bool ego_trajectory_cross_curb = 111;
+  optional float wide_movable_curb_outliers_count = 112;
+  optional float tele_movable_curb_outliers_count = 113;
+  optional float rear_movable_curb_outliers_count = 114;
+  optional float wide_movable_curb_dist_avg = 115;
+  optional float tele_movable_curb_dist_avg = 116;
+  optional float rear_movable_curb_dist_avg = 117;
+  optional VehiclePoseProto opt_pose = 60;  // Save optimized pose.
+  optional FilterType filter_type = 61;
+  optional DeviationType deviation_type = 62;
+  optional bool has_mapformer_lane_info = 63 [default = false];
+  optional int32 missing_camera_count = 64 [default = 0];
+  optional bool has_sd_map = 65 [default = false];
+  optional double ego_trajectory_length = 66;
+  optional bool is_in_not_label_zone = 67;
+  optional bool is_reference_line_invalid = 68 [default = false];
+  optional bool is_outside_the_section_map = 69;
+  optional bool is_in_not_label_zone_relax_limit = 70 [default = false];
+  optional DriveBoundaryFilterInfo db_filter_info = 71;
+  optional bool has_bus_station_stop_area = 76;
+
+  // for filter info save
+  optional string sample_id = 72;
+  optional string run_name = 73;
+  optional string record_timestamp = 74;
+  optional int32 filtered_message_count = 75;
+  optional double longitude = 78;
+  optional double latitude = 79;
+  optional double lon = 80 [deprecated = true];
+  optional double lat = 81 [deprecated = true];
+  optional string section_id = 82;
+
+  // file check
+  optional string qds_image_id_list = 83;
+  optional string qds_segmentation_image_id_list = 84;
+  optional string qds_depth_image_id_list = 85;
+  optional string qds_lidar_id_list = 86;
+  optional string qds_radar_id_list = 87;
+  optional bool qds_virtual_camera_params_exists = 88;
+  optional bool qds_frame_info_exists = 89;
+  optional bool qds_sequence_info_exists = 90;
+  optional bool qds_car_info_file_exists = 91;
+  optional string df_image_id_list = 92;
+  optional string df_segmentation_image_id_list = 93;
+  optional string df_depth_image_id_list = 94;
+  optional string df_lidar_id_list = 95;
+  optional string df_radar_id_list = 96;
+  optional bool df_virtual_camera_params_exists = 97;
+  optional bool df_frame_info_exists = 98;
+  optional bool df_sequence_info_exists = 99;
+  optional bool df_car_info_file_exists = 118;
+
+  // next id: 119
+}
+
+message SdMapInfo {
+  message SdNodeInfo {
+    optional mapping.SdNodeProto sd_node_proto = 1;
+    optional double x = 2;
+    optional double y = 3;
+    optional double z = 4;
+  }
+  repeated SdNodeInfo sd_node_info = 1;
+  message SdLinkInfo {
+    optional mapping.SdLinkProto sd_link_proto = 1;
+    repeated double x = 2;
+    repeated double y = 3;
+    repeated double z = 4;
+    optional bool is_pocr_link = 5 [default = false];
+  }
+  repeated SdLinkInfo sd_link_info = 2;
+  repeated sfixed64 pocr_link_ids = 3;
+}
+
+message NotForLabelZoneInfo {
+  optional sfixed64 id = 1;
+  repeated double x = 3;
+  repeated double y = 4;
+  repeated double z = 5;
+  enum ZoneType {
+    NORMAL = 0;
+    ONLY_FOR_MOVABLE_CURB = 1;
+    CONVERT_INCOMPLETE = 2;    // 转换规格差异(for lpai data)
+    NO_MAP = 3;                // 地图不全(for lpai data)
+    NO_MAIN_SIDE_CONNECT = 4;  // 主辅路连接缺失(for lpai data)
+    UNKNOWN = 5;               // 未知(for lpai data)
+  }
+  optional ZoneType zone_type = 6;
+}
+
+message LabelZoneInfo {
+  optional sfixed64 id = 1;
+  repeated double x = 3;
+  repeated double y = 4;
+  repeated double z = 5;
+}
+
+message IntersectionSceneInfo {
+  required double area = 1;
+  optional double radius = 2;
+  optional int32 crosswalk_num = 3;
+  optional double ego_car_to_intersection_center =
+      4;  // distance between ego car and intersection center
+  // stop line info calculated only when ego car not in intersection polygon
+  optional double ego_car_to_stop_line =
+      5;  // distance between ego car and nearest stop line, positive means stop
+          // line in front, negative at the rear
+  optional double ego_car_to_stop_line_horizontal_distance =
+      6;  // the y-axis coordinate of the nearest stop line in car body
+          // coordinate system, the same as the horizontal distance, positive
+          // for left and negative for right
+  optional double ego_car_to_stop_line_vertical_distance =
+      7;  // the x-axis coordinate of the nearest stop line in car body
+          // coordinate system, the same as the vertical distance, positive for
+          // front and negative for rear
+  optional int32 ego_incoming_lanes_num = 8;
+  optional bool has_guide_line = 9;
+  optional bool has_waiting_line = 10;
+  optional bool is_in_intersection = 11;
+  optional GroundMarkingInfo.Type ego_lane_direction =
+      12;  // the first ground marks on the ego lane sort by x-axis on vehicle
+           // coordinate system (ago lane means absolute value of y-axis on
+           // vehicle coordinate system less than lane_width-0.5, x-axis not in
+           // intersection and greater than -30 so not too far behind)
+}
+
+message LateralCurbInfo {
+  optional float lateral_curb_length = 1 [default = 0.0];
+  optional float max_lateral_curb_angle = 2 [default = 0.0];
+  optional float ego_car_to_lateral_curb =
+      3;  // distance between ego car and nearest lateral curb point
+  optional float ego_car_to_lateral_curb_horizontal_distance =
+      4;  // y-axis of nearest lateral curb point in car body coordinate system,
+          // the same as horizontal distance
+  optional float ego_car_to_lateral_curb_vertical_distance =
+      5;  // x-axis of nearest lateral curb point in car body coordinate system,
+          // the same as vertical distance
+}
+
+message KeepClearZoneProto {
+  optional sfixed64 id = 1;
+  repeated double x = 3;
+  repeated double y = 4;
+  repeated double z = 5;
+}
+
+message NaviInfo {
+  enum DrivableType {
+    DRIVE_UNKNOWN = 0;
+    DRIVE_IGNORE = 1;   // 导航无关中心线
+    DRIVE_VALID = 2;    // 导航方向中心线
+    DRIVE_INVALID = 3;  // 非导航方向中心线
+  }
+  repeated string fsdmap_center_lane_id = 1;
+  repeated DrivableType drivable_type = 2;
+  repeated double drivable_distance = 3;
+}
+
+// Next ID: 27
+message RoadGeometryLabelProto {
+  // Next ID: 8
+  enum ImageScene {
+    INTERSECTION = 0;
+    NON_INTERSECTION = 1;
+    HEAVILY_OCCLUDED = 2;
+    CURVE = 3;
+    RAMP = 4;
+    BUS_STATION = 5;
+    NOSTOP_AREA = 6;
+    COUNTRY_ROAD = 7;
+    CITY_ROAD = 8;
+    CITY_EXPRESS = 9;
+    HIGHWAY = 10;
+    ROAD_MERGE = 11;
+    ROAD_SPLIT = 12;
+    SLOPE = 13;
+    LANES_NUMBER_CHANGED = 14;
+  }
+  enum LabelType {
+    PV_SPACE = 0;
+    BEV_SPACE = 1;
+  }
+  enum WeatherType {
+    SUNNY = 0;
+    RAIN = 1;
+    FOGGY = 2;
+    DUST = 3;
+  }
+  optional string name = 1;
+  repeated KeypointInfo keypoint_info = 2;
+  repeated PoleInfo pole_info = 3;
+  repeated LaneInfo lane_info = 4;
+  optional RoadGeometryLabelPolicyVersion version = 5 [default = V_UNKNOWN];
+  optional ImageScene image_scene = 6 [deprecated = true];
+  optional LabelType label_type = 7;
+  optional WeatherType weather_type = 8 [deprecated = true];
+  repeated CenterLineInfo center_line_info = 9;
+  optional IntersectionInfo intersection_info = 10;
+  repeated CrosswalkInfo crosswalk_info = 11;
+  optional labeling.MainScene main_scene = 12;
+  optional labeling.SmallScene small_scene = 13;
+  optional labeling.SceneWeather scene_weather = 14;
+  optional labeling.SceneLight scene_light = 15;
+  optional labeling.SceneTime scene_time = 16;
+  repeated GroundMarkingInfo ground_marking_info = 17;
+  optional double camera_center_timestamp = 18;
+  repeated SpeedBumpInfo speed_bump_info = 19;
+  repeated OnOffRoadInfo on_off_road_info = 20;
+  optional FilterInfo filter_info = 21;
+  optional SdMapInfo sd_map_info = 22;
+  repeated IntersectionInfo nearby_intersection_info = 23;
+  optional string label_camera_id = 24;   // For Lane2d to bev
+  repeated ImageScene image_scenes = 25;  // Auto mining scenes in autolabeling
+  repeated NotForLabelZoneInfo not_for_label_zones = 26;
+  repeated LabelZoneInfo label_zones = 27;
+  repeated NotForLabelZoneInfo ignore_areas = 28;  // For Lane2D manual label
+  optional IntersectionSceneInfo intersection_scene_info =
+      29;  // For intersection data selection
+  optional LateralCurbInfo lateral_curb_info =
+      30;  // For lateral curb data selection
+  repeated LaneInfo mapformer_lane_info = 31
+      [deprecated = true];  // For mapformer lane info
+  repeated ReferenceLineInfo reference_line_info =
+      32;  // For reference line info,  which is the ego center line
+  repeated DriveBoundaryInfo drive_boundary_info =
+      33;  // which is the navi area for pnc
+  repeated MapformerLaneInfo mapformer_lane_info_v2 =
+      34;  // For mapformer lane info
+  optional DriveBoundaryReferenceLane drive_boundary_reference_lane_info =
+      35;  // which is the reference lane for drive boundary
+  repeated KeepClearZoneProto keep_clear_zones = 36;
+  repeated StaticReferenceLineInfo static_reference_line_info =
+      37;  // For static reference line info
+  repeated FakeDriveBoundaryInfo fake_drive_boundary_infos =
+      38;  // For fake drive boundary info
+  repeated BusStationStopArea bus_station_stop_areas = 39;
+  optional NaviInfo navi_info = 40;
+}
+
+message FakeDriveBoundaryInfo {
+  enum FilterReason {
+    NOT_FILTERED = 0;
+    NO_SD_PATH = 1;          // No pocr_link_ids or cannot get start/goal point
+    INVALID_POLYGON = 2;     // Cannot build valid polygon from drive boundary
+    NOT_CONTAIN_ORIGIN = 3;  // Polygon does not contain origin (0, 0)
+    CLUSTER_GOAL_INCONSISTENT =
+        4;                  // Goal points within cluster are too spread out
+    SAME_LINK_LOW_IOU = 5;  // Same pocr_link_ids but IoU < threshold
+  }
+
+  optional sfixed64 id = 1;
+  optional ego_trajectory.EgoTrajectory ego_trajectory_points = 2;
+  // optional SdMapMatchInputProto sd_map_match_input_proto = 3;
+  repeated DriveBoundaryInfo drive_boundary_info = 4;
+  repeated sfixed64 pocr_link_ids = 5;  // For pocr link ids
+  optional NaviInfo navi_info = 6;
+  optional bool is_filtered = 7 [default = false];
+  optional FilterReason filter_reason = 8 [default = NOT_FILTERED];
+  optional string filter_detail = 9;  // Additional filtering information
+}

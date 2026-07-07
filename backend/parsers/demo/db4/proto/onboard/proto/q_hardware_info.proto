@@ -1,0 +1,73 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/params/v2/proto/vehicle/installation.proto";
+
+message RadarInfoRecord {
+  optional string radar_id = 1;
+  optional string radar_type = 2;
+  optional string firmware = 3;
+}
+
+message HardwareRadarInfo {
+  optional int32 radar_size = 1;
+  repeated RadarInfoRecord radar_info = 2;
+}
+
+message LidarInfoRecord {
+  optional string lidar_id = 1;
+  optional string lidar_type = 2;
+  optional string firmware = 3;
+}
+
+message HardwareLidarInfo {
+  optional int32 lidar_size = 1;
+  repeated LidarInfoRecord lidar_info = 2;
+}
+
+message CameraInfoRecord {
+  optional string camera_id = 1;
+  optional string camera_encode_type = 2;
+}
+
+message HardwareCameraInfo {
+  optional int32 camera_size = 1;
+  repeated CameraInfoRecord camera_info = 2;
+}
+
+message NodeInfoRecord {
+  optional string node_name = 1;
+}
+
+message HardwareNodeInfo {
+  optional int32 node_size = 1;
+  repeated NodeInfoRecord node_info = 2;
+}
+
+message GraphicsInfoRecord {
+  optional string gpu_type = 1;
+  optional string gpu_id = 2;
+}
+
+message HardwareGraphicsInfo {
+  optional int32 gpu_size = 1;
+  repeated GraphicsInfoRecord gpu_info = 2;
+}
+
+message OmcModelInfo {
+  repeated string omc_model = 1;
+}
+
+message HardwareInfo {
+  optional HardwareRadarInfo radar = 1;
+  optional HardwareLidarInfo lidar = 2;
+  optional HardwareCameraInfo camera = 3;
+  optional HardwareNodeInfo node = 4;
+  optional VehicleInstallationProto.VehiclePlan vehicle_plan = 5
+      [default = VP_DBQ_V3];
+  optional HardwareGraphicsInfo gpu = 6;
+  optional string external_disk_product_type = 7;
+  optional OmcModelInfo omc_model_info = 8;
+}

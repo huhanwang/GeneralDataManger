@@ -1,0 +1,132 @@
+syntax = "proto2";
+package snoah.localization.hpp;
+
+import "onboard/proto/lite_camera.proto";
+
+message MapManagerParamsProto {
+  message SemanticMapParamsProto {
+    optional string map_file = 1;
+    optional double map_radius_m = 2;
+  }
+  optional SemanticMapParamsProto semantic_map_params = 1;
+  message VisualFeatureMapParamsProto {
+    optional double descriptor_distance_threshold = 1;
+    optional int32 feature_matching_levels_up = 2;
+  }
+  optional VisualFeatureMapParamsProto visual_feature_map_params = 2;
+  optional string map_file_prefix = 3;
+}
+
+message StartPointPriorProto {
+  message PowerOffGeoMsgProto {
+    optional double latitude = 1;
+    optional double longitude = 2;
+    optional double altitude = 3;
+    optional double heading = 4;
+    optional string time_message = 5;
+  }
+
+  repeated PowerOffGeoMsgProto power_off_poses = 1;
+}
+
+// data association parameters
+message AssociationParamsProto {
+  message SpotAssociationParamsProto {
+    optional double distance_threshold = 1;
+    optional double angle_threshold = 2;
+    optional double ratio_threshold = 3;
+    optional double parallel_threshold_rad = 4;
+    optional double spot_pair_max_distance = 5;
+  }
+  message PillarAssociationParamsProto {
+    optional double distance_threshold = 1;
+    optional double angle_threshold = 2;
+    optional double ratio_threshold = 3;
+  }
+  message SpeedBumpAssociationParamsProto {
+    optional double distance_threshold = 1;
+    optional double angle_threshold = 2;
+    optional double ratio_threshold = 3;
+  }
+  optional double max_num_features = 1;
+  optional double max_associate_score = 2;
+  optional double associated_score_threshold = 3;
+  optional SpotAssociationParamsProto spot_association_params = 4;
+  optional PillarAssociationParamsProto pillar_association_params = 5;
+  optional SpeedBumpAssociationParamsProto speed_bump_association_params = 6;
+}
+
+message DataAssociatorParamsProto {
+  optional AssociationParamsProto association_params = 1;
+}
+
+message FeatureRelocParamsProto {
+  optional bool enable_feature_reloc = 1;
+  repeated CameraId needed_cameras = 2;
+  optional string feature_mapper_config_file = 3;
+}
+
+// initialization
+message InitializationParamsProto {
+  optional int32 num_query_candidate_frames = 1;
+  optional int32 init_check_times = 2;
+  optional double valid_ratio_threshold = 3;
+  optional int32 trigger_min_num_star = 4;
+  optional int32 min_matched_count = 8;
+  optional double trigger_min_pitch_deg = 5;
+  optional double init_max_match_error = 6;
+  message HppParticleFilterParamsProto {
+    message ParticleObserverParamsProto {
+      optional DataAssociatorParamsProto data_associator_params = 1;
+      optional double weight_spot = 2;
+      optional double weight_pillar = 4;
+      optional double weight_speed_bump = 5;
+      optional double weight_default = 3;
+    }
+    optional ParticleObserverParamsProto particle_observer_params = 1;
+    optional double init_range_x = 2;
+    optional double init_range_y = 3;
+    optional double init_range_yaw = 4;
+    optional int32 init_particle_num = 5;
+  }
+  optional HppParticleFilterParamsProto hpp_particle_filter_params = 7;
+}
+
+// common feature processor parameters
+message HppFeatureProcessParamsProto {
+  optional double distance_range_max = 1;
+  optional double angle_range_max = 2;
+  optional double angle_range_min = 3;
+  optional double confidence_threshold = 4;
+}
+
+// observation processor parameters
+message ObservationProcessorParamsProto {
+  optional double local_map_x_max = 1;
+  optional double local_map_x_min = 2;
+  optional double local_map_y_max = 3;
+  optional double local_map_y_min = 4;
+  optional HppFeatureProcessParamsProto spot_params = 5;
+  optional HppFeatureProcessParamsProto pillar_params = 6;
+  optional HppFeatureProcessParamsProto speed_bump_params = 7;
+  optional HppFeatureProcessParamsProto curb_params = 8;
+  optional HppFeatureProcessParamsProto marking_params = 9;
+}
+
+message EstimatorOptimizerParamsProto {
+  optional int32 min_spot_num = 1;
+  optional int32 max_num_iterations = 2;
+  optional int32 min_pairs_num = 3;
+}
+
+// hpp localizer parameters
+message HppLocalizerParamsProto {
+  optional string start_prior_file = 1;
+  optional StartPointPriorProto start_point_prior = 2;
+  optional MapManagerParamsProto map_manager_params = 3;
+  optional DataAssociatorParamsProto data_associator_params = 4;
+  optional FeatureRelocParamsProto feature_reloc_params = 5;
+  optional InitializationParamsProto initialization_params = 6;
+  optional ObservationProcessorParamsProto observation_processor_params = 7;
+  optional EstimatorOptimizerParamsProto estimator_optimizer_params = 8;
+}

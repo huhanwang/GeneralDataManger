@@ -1,0 +1,155 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+
+message LaneDepartureParamsProto {
+  // Enable conditions.
+  optional double enable_min_speed = 1;                          // km/h.
+  optional double enable_max_speed = 2;                          // km/h.
+  optional double enable_max_lane_width = 3;                     // m.
+  optional double enable_min_lane_width = 4;                     // m.
+  optional double enable_lane_width_in_range_time = 5;           // s.
+  optional double enable_lane_exit_width_diff = 63;              // m.
+  optional double enable_max_yaw_rate = 7;                       // rad/s.
+  optional double enable_max_lane_curvature = 8;                 // m^-1.
+  optional double enable_lane_curvature_range_time = 9;          // s.
+  optional double enable_brake_max_pressure = 10;                // bar.
+  optional double enable_min_brake_pressure_in_range_time = 11;  // s.
+  optional PiecewiseLinearFunctionDoubleProto enable_max_steering_speed_plf =
+      12;                                                      // kph-degree/s.
+  optional double enable_steering_speed_in_range_time = 13;    // s.
+  optional double enable_max_steering_angle = 14;              // degree.
+  optional double enable_steering_angle_in_range_time = 15;    // s.
+  optional double enable_max_eps_torsion_bar = 16;             // N*m.
+  optional double enable_eps_torsion_bar_in_range_time = 17;   // s.
+  optional double enable_accel_pedal_max_rate = 18;            // %/s.
+  optional double enable_pedal_rate_in_range_time = 19;        // s.
+  optional double enable_turn_light_off_time = 20;             // s.
+  optional double enable_abs_esc_not_active_time = 21;         // s.
+  optional double enable_adas_functions_not_active_time = 22;  // s.
+  optional double enable_fcw_not_active_time = 65;             // s.
+  optional double enable_aeb_not_active_time = 66;             // s.
+  optional double enable_hdc_not_active_time = 67;             // s.
+  optional double enable_tcs_not_active_time = 68;             // s.
+  optional double enable_vdc_not_active_time = 69;             // s.
+  optional double enable_esc_on_time = 72;                     // s.
+
+  // Disable conditions.
+  optional double disable_min_speed = 23;                         // km/h.
+  optional double disable_speed_too_low_time = 24;                // s.
+  optional double disable_max_speed = 25;                         // km/h.
+  optional double disable_speed_too_high_time = 26;               // s.
+  optional double disable_min_lane_width = 27;                    // m.
+  optional double disable_max_lane_width = 28;                    // m.
+  optional double disable_lane_width_out_of_range_time = 29;      // s.
+  optional double disable_min_yaw_rate = 30;                      // rad/s.
+  optional double disable_yaw_rate_out_of_range_time = 31;        // s.
+  optional double disable_min_lane_curvature = 32;                // m^-1.
+  optional double disable_lane_curvature_out_of_range_time = 33;  // s.
+  optional double disable_min_brake_pressure = 34;                // bar.
+  optional PiecewiseLinearFunctionDoubleProto disable_min_steering_speed_plf =
+      35;                                           // kph-degree/s.
+  optional double diasble_min_steering_angle = 36;  // degree.
+  optional double disable_steering_angle_out_of_range_time = 37;   // s.
+  optional double disable_min_eps_torsion_bar = 38;                // N*m.
+  optional double disable_eps_torsion_bar_out_of_range_time = 39;  // s.
+  optional double disable_min_accel_pedal_rate = 40;               // %/s.
+
+  optional double max_warning_time = 41;            // s.
+  optional double max_warning_inhibited_time = 42;  // s.
+
+  // Lane departure judge params.
+  optional PiecewiseLinearFunctionDoubleProto in_lane_max_c1_plf = 43;
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_in_lane_min_distance_to_boundary_plf = 44;
+  optional double in_lane_min_sustained_time = 45;
+  optional double in_lane_to_departure_max_c1 = 46;
+  optional PiecewiseLinearFunctionDoubleProto lane_width_departure_tlc_plf = 47;
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_min_departure_distance_plf = 48;
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_max_departure_distance_plf = 49;
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_departure_to_in_lane_min_distance_plf = 50;
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_departure_to_in_lane_max_distance_plf = 51;
+  optional double departure_to_in_lane_c1 = 52;
+  optional double departure_to_in_lane_max_c1_error = 53;
+  optional double departure_to_in_lane_max_curvature_error = 54;
+  optional PiecewiseLinearFunctionDoubleProto
+      departure_to_in_lane_c1_curvature_check_max_time_plf = 55;
+  optional double cross_distance_to_boundary = 56;
+  optional double inhibited_distance_to_boundary = 57;
+  optional double inhibited_min_time = 58;
+  optional double min_departure_sustained_time = 59;
+  optional double disable_max_eps_torsion_bar = 60;  // N*m.
+  optional double in_lane_extreme_c1 = 61;
+  optional double in_lane_large_distance_to_boundary = 62;  // m.
+  optional double predicted_exit_time = 70;                 // s.
+  optional double check_departure_tangent_time = 71;        // s.
+
+  reserved 6;
+  // Next ID: 73.
+}
+
+message PathPlannerParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto
+      lane_width_target_distance_to_boundary_plf = 1;
+  optional double reset_lateral_error_threshold = 2;
+  optional double reset_angle_error_threshold = 3;
+  optional double sampling_min_time_distance = 4;
+  optional double sampling_max_time_distance = 5;
+  optional double preferred_max_time_distance = 17;
+  optional double sampling_time_distance_interval = 6;
+  optional double path_min_time_distance = 7;
+  optional double allow_exceed_distance = 16;
+  optional double max_exceed_distance = 8;
+  optional double max_lateral_accel = 9;
+  optional double max_lateral_jerk = 10;
+  optional double max_extra_lateral_accel = 11;
+  optional double plan_fail_exceeding_distance = 12;
+  optional double follow_target_line_max_heading_error = 13;
+  optional double follow_target_line_max_lateral_dist_error = 14;
+  optional double control_latency_predict_time = 15;
+
+  // Next ID: 18.
+}
+
+message ElkTargetRiskDetectionParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto
+      oncoming_object_to_boundary_min_lat_dist_plf = 1;
+  optional PiecewiseLinearFunctionDoubleProto
+      oncoming_object_to_boundary_max_lat_dist_plf = 2;
+  optional PiecewiseLinearFunctionDoubleProto
+      overtaking_object_to_boundary_min_lat_dist_plf = 3;
+  optional PiecewiseLinearFunctionDoubleProto
+      overtaking_object_to_boundary_max_lat_dist_plf = 4;
+  optional double overtaking_object_max_dist = 5;
+  optional double overtaking_object_ttc_threshold = 7;
+  optional double oncoming_object_min_speed = 8;  // km/h.
+  optional double oncoming_object_ttc_threshold = 9;
+
+  reserved 6;
+}
+
+message ElkPathPlannerExceedDistanceParamsProto {
+  optional double max_exceed_distance_curb = 1;
+  optional double max_exceed_distance_solid_line = 2;
+  optional double max_exceed_distance_object = 3;
+}
+
+message LaneSupportParamsProto {
+  optional LaneDepartureParamsProto ldw_lane_departure_params = 1;
+  optional LaneDepartureParamsProto lka_lane_departure_params = 2;
+  optional LaneDepartureParamsProto elk_lane_departure_params = 7;
+  optional PathPlannerParamsProto lka_path_planner_params = 3;
+  optional ElkTargetRiskDetectionParamsProto elk_target_risk_detection_params =
+      4;
+  optional PathPlannerParamsProto elk_path_planner_params = 5;
+  optional ElkPathPlannerExceedDistanceParamsProto elk_exceed_distance_params =
+      6;
+}

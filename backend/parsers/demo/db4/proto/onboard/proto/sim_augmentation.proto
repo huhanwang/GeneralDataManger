@@ -1,0 +1,26 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/proto/virtual_object.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message VirtualObjectConfProto {
+  // The object's first appearance time relative to the start of the scenario.
+  optional double start_sec = 3;
+
+  // Perception's object info at first appearance.
+  optional VirtualPerceptionObjectProto virtual_perception_object = 1;
+
+  // Individual virtual object types.
+  optional FixedRouteVirtualObjectProto fixed_route_virtual_object = 2;
+  optional AgentVirtualObjectProto agent_virtual_object = 4;
+  optional DrivableVirtualObjectProto drivable_virtual_object = 5;
+}
+
+message CreateVirtualObjectsRequestProto {
+  optional LiteHeader header = 1;
+
+  repeated VirtualObjectConfProto virtual_objects = 2;
+}

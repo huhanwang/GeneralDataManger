@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package snoah;
+
+message TraceConfig {
+  enum TraceConfigType {
+    TEST = 0;
+    CAMERA_FRONT_LINK = 1;
+  }
+  optional string domain_channel = 1;
+  optional string sensor_id = 2;
+  optional TraceConfigType type = 3;
+  optional bool trigger = 4;
+}
+
+message TraceConfigList {
+  repeated TraceConfig configs = 1;
+}

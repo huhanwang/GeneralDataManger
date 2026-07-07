@@ -1,0 +1,97 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+import "onboard/proto/autonomy_state.proto";
+
+message SimConditionProto {
+  oneof type {
+    bool bool_condition = 1;
+    CollisionConditionProto collision_condition = 2;
+    StartOffsetConditionProto start_offset_condition = 3;
+    SpeedConditionProto speed_condition = 4;
+    PositionConditionProto position_condition = 5;
+    AccelConditionProto accel_condition = 6;
+    AutonomyStateConditionProto autonomy_state_condition = 7;
+    DistanceToMapBoundaryConditionProto distance_to_map_boundary_condition = 8;
+  }
+}
+
+message SimTriggerProto {
+  enum LogicalOp {
+    AND = 0;
+    OR = 1;
+  }
+  repeated SimConditionProto conditions = 1;
+  optional LogicalOp op = 2 [default = AND];
+}
+
+message CollisionConditionProto {
+  optional string name = 1;
+}
+
+message ConditionCommonProto {
+  enum Relation {
+    EQUAL = 0;
+    NOT_EQUAL = 1;
+    LESS_OR_EQUAL = 2;
+    GREATER_OR_EQUAL = 3;
+    LESS = 4;
+    GREATER = 5;
+  }
+}
+
+message StartOffsetConditionProto {
+  optional string name = 1;
+  optional double start_offset = 2;
+  optional ConditionCommonProto.Relation relation = 3
+      [default = GREATER_OR_EQUAL];
+}
+
+message SpeedConditionProto {
+  optional string name = 1;
+  optional double speed_upper_bound = 2 [default = 100.0];
+  optional double speed_lower_bound = 3 [default = 0.0];
+}
+
+message PositionConditionProto {
+  message Region {
+    optional PointListProto region_corners = 1;
+    optional MatchingOptions.DetectionApproach approach = 2;
+  }
+  optional string name = 1;
+  optional string id = 2 [default = "SIM_AV"];
+  repeated Region regions = 3;
+}
+
+message AccelConditionProto {
+  optional string name = 1;
+  optional double lateral_accel_upper_bound = 2 [default = 100.0];
+  optional double lateral_accel_lower_bound = 3 [default = 0.0];
+  optional double longit_accel_upper_bound = 4 [default = 100.0];
+  optional double longit_accel_lower_bound = 5 [default = 0.0];
+}
+
+message AutonomyStateConditionProto {
+  optional string name = 1;
+  optional snoah.AutonomyStateProto.State prev_state = 2;
+  optional snoah.AutonomyStateProto.State curr_state = 3;
+}
+
+message DistanceToMapBoundaryConditionProto {
+  optional string name = 1;
+  optional double distance_upper_bound = 2;
+  optional double distance_lower_bound = 3;
+}

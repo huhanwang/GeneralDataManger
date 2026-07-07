@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+message PARKHMITrajectory {
+  enum Gear {
+    GEAR_R = 1;
+    GEAR_N = 2;
+    GEAR_D = 3;
+    GEAR_P = 4;
+  }
+
+  repeated Point2D traj = 2;
+  optional Gear park_gear = 3;
+
+  reserved 1;
+}
+
+message PARKHMITrajectoryPose {
+  enum Gear {
+    GEAR_R = 1;
+    GEAR_N = 2;
+    GEAR_D = 3;
+    GEAR_P = 4;
+  }
+
+  repeated Pose3D traj_pose = 2;
+  optional Gear park_gear = 3;
+
+  reserved 1;
+}
+
+message APHMISingleTrajectory {
+  repeated Pose2D points = 1;
+}

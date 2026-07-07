@@ -1,0 +1,36 @@
+
+syntax = "proto2";
+package snoah;
+
+message QSmNetInfo {
+  enum Type {
+    TYPE_NONE = 0;
+    SIDE_BEVDET = 1;
+    AROUND_BEVDET = 2;
+    BEVRG = 3;
+    BEVSLOT = 4;
+    IMG_ANOMALY = 5;
+    DRIVING_DATAMASKING = 6;
+    DATAMSK_5V = 7;
+    FVP = 8;
+    AROUND_OCCUPANCY = 9;
+    LSAEB_BEVDET = 10;
+    FISHEYE_FREESPACE = 11;
+    LSAEB_FREESPACE = 12;
+    LIAVMSLOT = 13;
+    DRIVING_OCCUPANCY = 14;
+    PARKING_DATAMASKING = 15;
+    MONO3D = 16;
+    TLNET = 17;
+    ACTNET = 18;
+    BEV_FUSION_MULTITASK = 19;
+    TRAFFIC_FORMER = 20;
+  }
+  enum State {
+    NONE = 0;
+    OFF = 1;
+    ON = 2;
+  }
+  optional Type type = 1;
+  optional State state = 2;
+}

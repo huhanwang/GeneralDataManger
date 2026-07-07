@@ -1,0 +1,1131 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Evcu1_1000efd0 {
+  enum EVCU1_Brake_Pedal_OKType {
+    EVCU1_BRAKE_PEDAL_OK_INVALID = 0;
+    EVCU1_BRAKE_PEDAL_OK_EFFECTIVE = 1;
+  }
+  enum EVCU1_Vehicle_System_ErrorType {
+    EVCU1_VEHICLE_SYSTEM_ERROR_INVALID = 0;
+    EVCU1_VEHICLE_SYSTEM_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU1_Vehicle_InterlockType {
+    EVCU1_VEHICLE_INTERLOCK_INTERLOCK_INVALID = 0;
+    EVCU1_VEHICLE_INTERLOCK_INTERLOCK_EFFECTIVE = 1;
+  }
+  enum EVCU1_Throttle_Pedal_OKType {
+    EVCU1_THROTTLE_PEDAL_OK_INVALID = 0;
+    EVCU1_THROTTLE_PEDAL_OK_EFFECTIVE = 1;
+  }
+  enum EVCU1_Ready_EffectiveType {
+    EVCU1_READY_EFFECTIVE_INVALID = 0;
+    EVCU1_READY_EFFECTIVE_EFFECTIVE = 1;
+  }
+  enum EVCU1_Pre_Charge_OUTType {
+    EVCU1_PRE_CHARGE_OUT_NOT_TIMEOUT = 0;
+    EVCU1_PRE_CHARGE_OUT_TIMEOUT = 1;
+  }
+  enum EVCU1_Motor_Controller_OffType {
+    EVCU1_MOTOR_CONTROLLER_OFF_NOT_DISCONNECTED = 0;
+    EVCU1_MOTOR_CONTROLLER_OFF_DISCONNECTED = 1;
+  }
+  enum EVCU1_Forced_Power_L_ModeType {
+    EVCU1_FORCED_POWER_L_MODE_NOT_POWER_REDUCED = 0;
+    EVCU1_FORCED_POWER_L_MODE_POWER_REDUCED = 1;
+  }
+  enum EVCU1_Forced_Parking_ModeType {
+    EVCU1_FORCED_PARKING_MODE_NON_FORCED_PARKING = 0;
+    EVCU1_FORCED_PARKING_MODE_FORCED_PARKING = 1;
+  }
+  enum EVCU1_Forced_Dis_ContactorType {
+    EVCU1_FORCED_DIS_CONTACTOR_NOT_OPEN = 0;
+    EVCU1_FORCED_DIS_CONTACTOR_OPEN = 1;
+  }
+  enum EVCU1_Electronic_Brake_StatusType {
+    EVCU1_ELECTRONIC_BRAKE_STATUS_WITHOUT_ELECTRIC_BRAKE = 0;
+    EVCU1_ELECTRONIC_BRAKE_STATUS_WITH_ELECTRIC_BRAKE = 1;
+  }
+  enum EVCU1_DNR_StatusType {
+    EVCU1_DNR_STATUS_N = 0;
+    EVCU1_DNR_STATUS_D = 1;
+    EVCU1_DNR_STATUS_R = 2;
+    EVCU1_DNR_STATUS_ERROR = 3;
+  }
+  enum EVCU1_DCDC_RequestType {
+    EVCU1_DCDC_REQUEST_REQUEST_INVALID = 0;
+    EVCU1_DCDC_REQUEST_REQUEST_EFFECTIVE = 1;
+    EVCU1_DCDC_REQUEST_UNAVAILABLE = 2;
+    EVCU1_DCDC_REQUEST_RESERVED = 3;
+  }
+  enum EVCU1_DCDC_EnableType {
+    EVCU1_DCDC_ENABLE_NOT_ENABLED = 0;
+    EVCU1_DCDC_ENABLE_ENABLED = 1;
+  }
+  enum EVCU1_DCAC_Oil_RequestType {
+    EVCU1_DCAC_OIL_REQUEST_REQUEST_INVALID = 0;
+    EVCU1_DCAC_OIL_REQUEST_RESERVED = 1;
+    EVCU1_DCAC_OIL_REQUEST_REQUEST_VALID = 2;
+    EVCU1_DCAC_OIL_REQUEST_NOT_AVAILABLE = 4;
+  }
+  enum EVCU1_DCAC_EnableType {
+    EVCU1_DCAC_ENABLE_DISABLED = 0;
+    EVCU1_DCAC_ENABLE_ENABLED = 1;
+  }
+  enum EVCU1_DCAC_Air_RequestType {
+    EVCU1_DCAC_AIR_REQUEST_REQUEST_INVALID = 0;
+    EVCU1_DCAC_AIR_REQUEST_REQUEST_VALID = 1;
+    EVCU1_DCAC_AIR_REQUEST_NOT_AVAILABLE = 2;
+    EVCU1_DCAC_AIR_REQUEST_RESERVED = 3;
+  }
+  enum EVCU1_Charge_StatusType {
+    EVCU1_CHARGE_STATUS_CHARGING = 0;
+    EVCU1_CHARGE_STATUS_DISCHARGING = 1;
+  }
+  enum EVCU1_BMS_OffType {
+    EVCU1_BMS_OFF_CONNECTED = 0;
+    EVCU1_BMS_OFF_DISCONNECTED = 1;
+  }
+  enum EVCU1_Air_StopType {
+    EVCU1_AIR_STOP_NOT_REQUESTED = 0;
+    EVCU1_AIR_STOP_REQUESTED = 1;
+  }
+  enum EVCU1_Air_Reduce_PowerType {
+    EVCU1_AIR_REDUCE_POWER_NOT_REQUESTED = 0;
+    EVCU1_AIR_REDUCE_POWER_ENABLED = 1;
+  }
+  // [] [0|1]
+  optional EVCU1_Brake_Pedal_OKType evcu1_brake_pedal_ok = 1;
+  // [] [0|1]
+  optional EVCU1_Vehicle_System_ErrorType evcu1_vehicle_system_error = 2;
+  // [] [0|1]
+  optional EVCU1_Vehicle_InterlockType evcu1_vehicle_interlock = 3;
+  // [] [0|1]
+  optional EVCU1_Throttle_Pedal_OKType evcu1_throttle_pedal_ok = 4;
+  // [] [0|1]
+  optional EVCU1_Ready_EffectiveType evcu1_ready_effective = 5;
+  // [] [0|1]
+  optional EVCU1_Pre_Charge_OUTType evcu1_pre_charge_out = 6;
+  // [] [0|1]
+  optional EVCU1_Motor_Controller_OffType evcu1_motor_controller_off = 7;
+  // [] [0|15]
+  optional int32 evcu1_message_counter = 8;
+  // [] [0|15]
+  optional int32 evcu1_message_checksum = 9;
+  // [] [0|1]
+  optional EVCU1_Forced_Power_L_ModeType evcu1_forced_power_l_mode = 10;
+  // [] [0|1]
+  optional EVCU1_Forced_Parking_ModeType evcu1_forced_parking_mode = 11;
+  // [] [0|1]
+  optional EVCU1_Forced_Dis_ContactorType evcu1_forced_dis_contactor = 12;
+  // [] [0|1]
+  optional EVCU1_Electronic_Brake_StatusType evcu1_electronic_brake_status = 13;
+  // [] [0|3]
+  optional EVCU1_DNR_StatusType evcu1_dnr_status = 14;
+  // [] [0|3]
+  optional EVCU1_DCDC_RequestType evcu1_dcdc_request = 15;
+  // [] [0|1]
+  optional EVCU1_DCDC_EnableType evcu1_dcdc_enable = 16;
+  // [] [0|3]
+  optional EVCU1_DCAC_Oil_RequestType evcu1_dcac_oil_request = 17;
+  // [] [0|1]
+  optional EVCU1_DCAC_EnableType evcu1_dcac_enable = 18;
+  // [] [0|3]
+  optional EVCU1_DCAC_Air_RequestType evcu1_dcac_air_request = 19;
+  // [] [0|1]
+  optional EVCU1_Charge_StatusType evcu1_charge_status = 20;
+  // [%] [0|100]
+  optional double evcu1_brake_pedal = 21;
+  // [] [0|1]
+  optional EVCU1_BMS_OffType evcu1_bms_off = 22;
+  // [] [0|1]
+  optional EVCU1_Air_StopType evcu1_air_stop = 23;
+  // [] [0|1]
+  optional EVCU1_Air_Reduce_PowerType evcu1_air_reduce_power = 24;
+  // [%] [0|100]
+  optional double evcu1_acc_pedal = 25;
+}
+
+// Report Message.
+message Evcu3_183af3d0 {
+  // [km] [0|6553.5]
+  optional double recharge_mileage = 1;
+  // [] [0|6553.5]
+  optional double energy_consump_100 = 2;
+  // [] [0|6553.5]
+  optional double energy_consump_100_1 = 3;
+}
+
+// Report Message.
+message Evcu_2_1818d0f3 {
+  // [] [0|100]
+  optional double soc = 1;
+}
+
+// Control Message.
+message Acu_Ecu_Control1_Cff38ed {
+  enum AutoControl1_Allow_ChargingType {
+    AUTOCONTROL1_ALLOW_CHARGING_NOT_READY = 0;
+    AUTOCONTROL1_ALLOW_CHARGING_READY = 1;
+    AUTOCONTROL1_ALLOW_CHARGING_RESERVED_1 = 2;
+    AUTOCONTROL1_ALLOW_CHARGING_RESERVED_2 = 3;
+  }
+  enum AutoControl1_Steering_EnableType {
+    AUTOCONTROL1_STEERING_ENABLE_DISABLED = 0;
+    AUTOCONTROL1_STEERING_ENABLE_ENABLED = 1;
+    AUTOCONTROL1_STEERING_ENABLE_RESERVED_1 = 2;
+    AUTOCONTROL1_STEERING_ENABLE_RESERVED_2 = 3;
+  }
+  enum AutoControl1_ParkingType {
+    AUTOCONTROL1_PARKING_NOT_AVAILABLE = 0;
+    AUTOCONTROL1_PARKING_PARKING_BRAKE_ACTIVE = 1;
+    AUTOCONTROL1_PARKING_PARKING_BRAKE_PASSIVE = 2;
+    AUTOCONTROL1_PARKING_ERROR = 3;
+  }
+  enum AutoControl1_GearType {
+    AUTOCONTROL1_GEAR_N_GEAR = 0;
+    AUTOCONTROL1_GEAR_D_GEAR = 1;
+    AUTOCONTROL1_GEAR_R_GEAR = 2;
+    AUTOCONTROL1_GEAR_RESERVED = 3;
+  }
+  enum AutoControl1_Control_ModeType {
+    AUTOCONTROL1_CONTROL_MODE_MANUAL_CONTROL = 0;
+    AUTOCONTROL1_CONTROL_MODE_SPEED_AUTOMATIC_CONTROL = 1;
+    AUTOCONTROL1_CONTROL_MODE_DIRECTIONAL_AUTOMATIC_CONTROL = 2;
+    AUTOCONTROL1_CONTROL_MODE_FULLY_AUTOMATIC_CONTROL = 3;
+    AUTOCONTROL1_CONTROL_MODE_STANDBY_MODE = 4;
+  }
+  enum AutoControl1_AUTO_ErrorType {
+    AUTOCONTROL1_AUTO_ERROR_NO_FAULT = 0;
+    AUTOCONTROL1_AUTO_ERROR_FAULT = 1;
+    AUTOCONTROL1_AUTO_ERROR_RESERVED = 2;
+    AUTOCONTROL1_AUTO_ERROR_NOT_AVAILABLE = 3;
+  }
+  enum AutoControl1_Throttle_EnableType {
+    AUTOCONTROL1_THROTTLE_ENABLE_DISABLED = 0;
+    AUTOCONTROL1_THROTTLE_ENABLE_ENABLED = 1;
+    AUTOCONTROL1_THROTTLE_ENABLE_RESERVED_1 = 2;
+    AUTOCONTROL1_THROTTLE_ENABLE_RESERVED_2 = 3;
+  }
+  // [] [0|3]
+  optional AutoControl1_Allow_ChargingType auto_control1_allow_charging = 1;
+  // [] [0|100]
+  optional double auto_control1_throttle_degree = 2;
+  // [] [0|3]
+  optional AutoControl1_Steering_EnableType auto_control1_steering_enable = 3;
+  // [deg] [-1575|4978.5]
+  optional double auto_control1_steering_degree = 4;
+  // [] [0|3]
+  optional AutoControl1_ParkingType auto_control1_parking = 5;
+  // [] [0|15]
+  optional int32 auto_control1_message_counter = 6;
+  // [] [0|15]
+  optional int32 auto_control1_message_checksum = 7;
+  // [] [0|3]
+  optional AutoControl1_GearType auto_control1_gear = 8;
+  // [] [0|15]
+  optional AutoControl1_Control_ModeType auto_control1_control_mode = 9;
+  // [] [0|3]
+  optional AutoControl1_AUTO_ErrorType auto_control1_auto_error = 10;
+  // Throttle Enable [] [0|2]
+  optional AutoControl1_Throttle_EnableType auto_control1_throttle_enable = 11;
+}
+
+// Report Message.
+message Epb_Acu_18fe1264 {
+  enum EPB1_Response_PriorityType {
+    EPB1_RESPONSE_PRIORITY_NOT_AVAILABLE = 0;
+    EPB1_RESPONSE_PRIORITY_ON = 1;
+    EPB1_RESPONSE_PRIORITY_OFF = 2;
+    EPB1_RESPONSE_PRIORITY_ERROR = 3;
+  }
+  enum EPB_ACU_STATUSType {
+    EPB_ACU_STATUS_DRIVERLESS_NOT_READY = 0;
+    EPB_ACU_STATUS_DRIVERLESS_READY = 1;
+    EPB_ACU_STATUS_DRIVERLESS_ACTIVE = 10;
+    EPB_ACU_STATUS_NOT_AVAILABLE = 11;
+  }
+  enum EPB1_Temporary_Parking_WorkType {
+    EPB1_TEMPORARY_PARKING_WORK_ERROR = 0;
+    EPB1_TEMPORARY_PARKING_WORK_TEMPORARY_PARKING_WORKING = 1;
+    EPB1_TEMPORARY_PARKING_WORK_TEMPORARY_PARKING_NOT_WORKING = 2;
+    EPB1_TEMPORARY_PARKING_WORK_ERROR_1 = 3;
+  }
+  enum EPB1_Temporary_Parking_ActiveType {
+    EPB1_TEMPORARY_PARKING_ACTIVE_ERROR = 0;
+    EPB1_TEMPORARY_PARKING_ACTIVE_TEMPORARY_PARKING_ACTIVATED = 1;
+    EPB1_TEMPORARY_PARKING_ACTIVE_TEMPORARY_PARKING_NOT_ACTIVATED = 2;
+    EPB1_TEMPORARY_PARKING_ACTIVE_ERROR_1 = 3;
+  }
+  enum EPB1_Electronic_ParkingType {
+    EPB1_ELECTRONIC_PARKING_ERROR = 0;
+    EPB1_ELECTRONIC_PARKING_START_ELECTRONIC_PARKING_BRAKE_STATE = 1;
+    EPB1_ELECTRONIC_PARKING_RELEASE_ELECTRONIC_PARKING_BRAKE_STATE = 2;
+    EPB1_ELECTRONIC_PARKING_ERROR_1 = 3;
+  }
+  enum EPB1_Low_Pressure_StateType {
+    EPB1_LOW_PRESSURE_STATE_LOW_PRESSURE_RELEASE_PARKING_RESTRICTION_STARTED =
+        0;
+    EPB1_LOW_PRESSURE_STATE_LOW_PRESSURE_RELEASE_PARKING_RESTRICTION_NOT_STARTED =
+        1;
+    EPB1_LOW_PRESSURE_STATE_ERROR_1 = 2;
+    EPB1_LOW_PRESSURE_STATE_ERROR_2 = 3;
+  }
+  enum EPB1_EPB_ErrorType {
+    EPB1_EPB_ERROR_NORMAL = 0;
+    EPB1_EPB_ERROR_ON = 1;
+    EPB1_EPB_ERROR_BLINK = 2;
+    EPB1_EPB_ERROR_NOT_AVAILABLE = 3;
+  }
+  enum EPB1_Child_Lock_StatusType {
+    EPB1_CHILD_LOCK_STATUS_CHILD_LOCK_FUNCTION_TRIGGERED = 0;
+    EPB1_CHILD_LOCK_STATUS_CHILD_LOCK_FUNCTION_NOT_TRIGGERED = 1;
+    EPB1_CHILD_LOCK_STATUS_ERROR_1 = 2;
+    EPB1_CHILD_LOCK_STATUS_ERROR_2 = 3;
+  }
+  // [] [0|3]
+  optional EPB1_Response_PriorityType epb1_response_priority = 1;
+  // [] [-2|1]
+  optional EPB_ACU_STATUSType epb_acu_status = 2;
+  // [] [0|3]
+  optional EPB1_Temporary_Parking_WorkType epb1_temporary_parking_work = 3;
+  // [] [0|3]
+  optional EPB1_Temporary_Parking_ActiveType epb1_temporary_parking_active = 4;
+  // [] [0|3]
+  optional EPB1_Electronic_ParkingType epb1_electronic_parking = 5;
+  // [] [0|3]
+  optional EPB1_Low_Pressure_StateType epb1_low_pressure_state = 6;
+  // [] [0|3]
+  optional EPB1_EPB_ErrorType epb1_epb_error = 7;
+  // [] [0|3]
+  optional EPB1_Child_Lock_StatusType epb1_child_lock_status = 8;
+}
+
+// Report Message.
+message Eps_Acu_Cff0013 {
+  enum ECU_WorkMode_CONTType {
+    ECU_WORKMODE_CONT_STANDBY_MODE = 0;
+    ECU_WORKMODE_CONT_AUTOSTEERING_MODE = 1;
+    ECU_WORKMODE_CONT_RESERVED = 2;
+    ECU_WORKMODE_CONT_OVERLAY_TQ_MODE = 3;
+    ECU_WORKMODE_CONT_EPS_MODE = 4;
+    ECU_WORKMODE_CONT_MANUAL_INTERVENT_MODE = 5;
+    ECU_WORKMODE_CONT_WARNING_MODE = 6;
+    ECU_WORKMODE_CONT_ERROR_MODE = 7;
+  }
+  // [] [0|15]
+  optional int32 eps_fd_checksum = 1;
+  // [] [0|15]
+  optional int32 ws_msg_counter = 2;
+  // [] [0|15]
+  optional ECU_WorkMode_CONTType ecu_work_mode_cont = 3;
+  // [Nm] [-12.8|12.7]
+  optional double torque_steering = 4;
+  // [deg/s] [0|540]
+  optional double steering_angle_spd = 5;
+  // [deg] [-12.8|12.7]
+  optional double ehpscentre_adaptive_offset_angle = 6;
+  // [Nm] [-12.8|12.8]
+  optional double mote_torque_stering = 7;
+  // [deg] [-1575|1575]
+  optional double steering_angle_feedback = 8;
+}
+
+// Report Message.
+message Wabco_Vdc2_18f0090b {
+  // [m/s^2 acc feedback] [-12|13.5]
+  optional double vd2_longitudinal_acltn = 1;
+}
+
+// Report Message.
+message Ebs_Acu_8fe6e0b {
+  // [km/h] [0|251]
+  optional double ehb1_right_rear_wheel_speed = 1;
+  // [km/h] [0|251]
+  optional double ehb1_right_front_wheel_speed = 2;
+  // [km/h] [0|251]
+  optional double ehb1_left_rear_wheel_speed = 3;
+  // [km/h] [0|251]
+  optional double ehb1_left_front_wheel_speed = 4;
+}
+
+// Report Message.
+message Am3_18ffa217 {
+  enum AM3_Turn_LightType {
+    AM3_TURN_LIGHT_NO_TURN = 0;
+    AM3_TURN_LIGHT_LEFT_TURN = 1;
+    AM3_TURN_LIGHT_RIGHT_TURN = 2;
+    AM3_TURN_LIGHT_RESERVED = 3;
+    AM3_TURN_LIGHT_RESERVED_1 = 4;
+    AM3_TURN_LIGHT_RESERVED_2 = 5;
+    AM3_TURN_LIGHT_RESERVED_3 = 6;
+    AM3_TURN_LIGHT_RESERVED_4 = 7;
+    AM3_TURN_LIGHT_RESERVED_5 = 8;
+    AM3_TURN_LIGHT_RESERVED_6 = 9;
+    AM3_TURN_LIGHT_RESERVED_7 = 10;
+    AM3_TURN_LIGHT_RESERVED_8 = 11;
+    AM3_TURN_LIGHT_RESERVED_9 = 12;
+    AM3_TURN_LIGHT_RESERVED_10 = 13;
+    AM3_TURN_LIGHT_ERROR = 14;
+  }
+  enum AM3_Slow_StopType {
+    AM3_SLOW_STOP_SWITCH_OFF = 0;
+    AM3_SLOW_STOP_SWITCH_ON = 1;
+    AM3_SLOW_STOP_RESERVED = 2;
+    AM3_SLOW_STOP_NOT_USED = 3;
+  }
+  enum AM3_Right_LightType {
+    AM3_RIGHT_LIGHT_INVALID = 0;
+    AM3_RIGHT_LIGHT_VALID = 1;
+    AM3_RIGHT_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_RIGHT_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Rear_Fog_LightType {
+    AM3_REAR_FOG_LIGHT_INVALID = 0;
+    AM3_REAR_FOG_LIGHT_VALID = 1;
+    AM3_REAR_FOG_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_REAR_FOG_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Rear_Axle_Brake_PressureType {
+    AM3_REAR_AXLE_BRAKE_PRESSURE_INVALID = 0;
+    AM3_REAR_AXLE_BRAKE_PRESSURE_VALID = 1;
+    AM3_REAR_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_1 = 2;
+    AM3_REAR_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Position_LightType {
+    AM3_POSITION_LIGHT_INVALID = 0;
+    AM3_POSITION_LIGHT_VALID = 1;
+    AM3_POSITION_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_POSITION_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Overtake_LightType {
+    AM3_OVERTAKE_LIGHT_INVALID = 0;
+    AM3_OVERTAKE_LIGHT_VALID = 1;
+    AM3_OVERTAKE_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_OVERTAKE_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Middle_Axle_Brake_PressureType {
+    AM3_MIDDLE_AXLE_BRAKE_PRESSURE_INVALID = 0;
+    AM3_MIDDLE_AXLE_BRAKE_PRESSURE_VALID = 1;
+    AM3_MIDDLE_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_1 = 2;
+    AM3_MIDDLE_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Low_WaterType {
+    AM3_LOW_WATER_INVALID = 0;
+    AM3_LOW_WATER_VALID = 1;
+    AM3_LOW_WATER_NOT_AVAILABLE_1 = 2;
+    AM3_LOW_WATER_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Low_LightType {
+    AM3_LOW_LIGHT_INVALID = 0;
+    AM3_LOW_LIGHT_VALID = 1;
+    AM3_LOW_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_LOW_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Left_LightType {
+    AM3_LEFT_LIGHT_INVALID = 0;
+    AM3_LEFT_LIGHT_VALID = 1;
+    AM3_LEFT_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_LEFT_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Key_ON_PositionType {
+    AM3_KEY_ON_POSITION_INVALID = 0;
+    AM3_KEY_ON_POSITION_VALID = 1;
+    AM3_KEY_ON_POSITION_NOT_AVAILABLE_1 = 2;
+    AM3_KEY_ON_POSITION_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Key_ACC_PositionType {
+    AM3_KEY_ACC_POSITION_INVALID = 0;
+    AM3_KEY_ACC_POSITION_VALID = 1;
+    AM3_KEY_ACC_POSITION_NOT_AVAILABLE_1 = 2;
+    AM3_KEY_ACC_POSITION_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_HornType {
+    AM3_HORN_INVALID = 0;
+    AM3_HORN_VALID = 1;
+    AM3_HORN_NOT_AVAILABLE_1 = 2;
+    AM3_HORN_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_High_LightType {
+    AM3_HIGH_LIGHT_INVALID = 0;
+    AM3_HIGH_LIGHT_VALID = 1;
+    AM3_HIGH_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_HIGH_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Front_Fog_LightType {
+    AM3_FRONT_FOG_LIGHT_AVAILABLE = 1;
+    AM3_FRONT_FOG_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_FRONT_FOG_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Front_Axle_Brake_PressureType {
+    AM3_FRONT_AXLE_BRAKE_PRESSURE_UNAVAILABLE = 0;
+    AM3_FRONT_AXLE_BRAKE_PRESSURE_AVAILABLE = 1;
+    AM3_FRONT_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_1 = 2;
+    AM3_FRONT_AXLE_BRAKE_PRESSURE_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Double_LIghtType {
+    AM3_DOUBLE_LIGHT_UNAVAILABLE = 0;
+    AM3_DOUBLE_LIGHT_AVAILABLE = 1;
+    AM3_DOUBLE_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_DOUBLE_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Door_Pump_AlarmType {
+    AM3_DOOR_PUMP_ALARM_UNAVAILABLE = 0;
+    AM3_DOOR_PUMP_ALARM_AVAILABLE = 1;
+    AM3_DOOR_PUMP_ALARM_NOT_AVAILABLE_1 = 2;
+    AM3_DOOR_PUMP_ALARM_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_DefrostType {
+    AM3_DEFROST_UNAVAILABLE = 0;
+    AM3_DEFROST_AVAILABLE = 1;
+    AM3_DEFROST_NOT_AVAILABLE_1 = 2;
+    AM3_DEFROST_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Brake_LightType {
+    AM3_BRAKE_LIGHT_UNAVAILABLE = 0;
+    AM3_BRAKE_LIGHT_AVAILABLE = 1;
+    AM3_BRAKE_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_BRAKE_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Brake_Alarm_LightType {
+    AM3_BRAKE_ALARM_LIGHT_UNAVAILABLE = 0;
+    AM3_BRAKE_ALARM_LIGHT_AVAILABLE = 1;
+    AM3_BRAKE_ALARM_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_BRAKE_ALARM_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_ASR_Error_LightType {
+    AM3_ASR_ERROR_LIGHT_UNAVAILABLE = 0;
+    AM3_ASR_ERROR_LIGHT_AVAILABLE = 1;
+    AM3_ASR_ERROR_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_ASR_ERROR_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_Alarm_LightType {
+    AM3_ALARM_LIGHT_SWITCH_OFF = 0;
+    AM3_ALARM_LIGHT_SWITCH_ON = 1;
+    AM3_ALARM_LIGHT_RESERVED = 2;
+    AM3_ALARM_LIGHT_NOT_USED = 3;
+  }
+  enum AM3_Air_PowerType {
+    AM3_AIR_POWER_UNAVAILABLE = 0;
+    AM3_AIR_POWER_AVAILABLE = 1;
+    AM3_AIR_POWER_NOT_AVAILABLE_1 = 2;
+    AM3_AIR_POWER_NOT_AVAILABLE_2 = 3;
+  }
+  enum AM3_ABS_Error_LightType {
+    AM3_ABS_ERROR_LIGHT_UNAVAILABLE = 0;
+    AM3_ABS_ERROR_LIGHT_AVAILABLE = 1;
+    AM3_ABS_ERROR_LIGHT_NOT_AVAILABLE_1 = 2;
+    AM3_ABS_ERROR_LIGHT_NOT_AVAILABLE_2 = 3;
+  }
+  // [] [0|7]
+  optional AM3_Turn_LightType am3_turn_light = 1;
+  // [] [0|3]
+  optional AM3_Slow_StopType am3_slow_stop = 2;
+  // [] [0|3]
+  optional AM3_Right_LightType am3_right_light = 3;
+  // [] [0|3]
+  optional AM3_Rear_Fog_LightType am3_rear_fog_light = 4;
+  // [] [0|3]
+  optional AM3_Rear_Axle_Brake_PressureType am3_rear_axle_brake_pressure = 5;
+  // [] [0|3]
+  optional AM3_Position_LightType am3_position_light = 6;
+  // [] [0|3]
+  optional AM3_Overtake_LightType am3_overtake_light = 7;
+  // [] [0|3]
+  optional AM3_Middle_Axle_Brake_PressureType am3_middle_axle_brake_pressure =
+      8;
+  // [] [0|3]
+  optional AM3_Low_WaterType am3_low_water = 9;
+  // [] [0|3]
+  optional AM3_Low_LightType am3_low_light = 10;
+  // [] [0|3]
+  optional AM3_Left_LightType am3_left_light = 11;
+  // [] [0|3]
+  optional AM3_Key_ON_PositionType am3_key_on_position = 12;
+  // [] [0|3]
+  optional AM3_Key_ACC_PositionType am3_key_acc_position = 13;
+  // [] [0|3]
+  optional AM3_HornType am3_horn = 14;
+  // [] [0|3]
+  optional AM3_High_LightType am3_high_light = 15;
+  // [] [0|3]
+  optional AM3_Front_Fog_LightType am3_front_fog_light = 16;
+  // [] [0|3]
+  optional AM3_Front_Axle_Brake_PressureType am3_front_axle_brake_pressure = 17;
+  // [] [0|3]
+  optional AM3_Double_LIghtType am3_double_light = 18;
+  // [] [0|3]
+  optional AM3_Door_Pump_AlarmType am3_door_pump_alarm = 19;
+  // [] [0|3]
+  optional AM3_DefrostType am3_defrost = 20;
+  // [] [0|3]
+  optional AM3_Brake_LightType am3_brake_light = 21;
+  // [] [0|3]
+  optional AM3_Brake_Alarm_LightType am3_brake_alarm_light = 22;
+  // [] [0|3]
+  optional AM3_ASR_Error_LightType am3_asr_error_light = 23;
+  // [] [0|3]
+  optional AM3_Alarm_LightType am3_alarm_light = 24;
+  // [] [0|3]
+  optional AM3_Air_PowerType am3_air_power = 25;
+  // [] [0|3]
+  optional AM3_ABS_Error_LightType am3_abs_error_light = 26;
+}
+
+// Control Message.
+message Acu_Bcm_Control_Cff42ed {
+  enum AutoControl3_Rear_FogType {
+    AUTOCONTROL3_REAR_FOG_OFF = 0;
+    AUTOCONTROL3_REAR_FOG_ON = 1;
+    AUTOCONTROL3_REAR_FOG_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_REAR_FOG_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Low_BeamType {
+    AUTOCONTROL3_LOW_BEAM_OFF = 0;
+    AUTOCONTROL3_LOW_BEAM_ON = 1;
+    AUTOCONTROL3_LOW_BEAM_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_LOW_BEAM_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_High_BeamType {
+    AUTOCONTROL3_HIGH_BEAM_OFF = 0;
+    AUTOCONTROL3_HIGH_BEAM_ON = 1;
+    AUTOCONTROL3_HIGH_BEAM_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_HIGH_BEAM_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Front_FogType {
+    AUTOCONTROL3_FRONT_FOG_OFF = 0;
+    AUTOCONTROL3_FRONT_FOG_ON = 1;
+    AUTOCONTROL3_FRONT_FOG_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_FRONT_FOG_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Right_LightType {
+    AUTOCONTROL3_RIGHT_LIGHT_OFF = 0;
+    AUTOCONTROL3_RIGHT_LIGHT_ON = 1;
+    AUTOCONTROL3_RIGHT_LIGHT_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_RIGHT_LIGHT_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Left_LightType {
+    AUTOCONTROL3_LEFT_LIGHT_OFF = 0;
+    AUTOCONTROL3_LEFT_LIGHT_ON = 1;
+    AUTOCONTROL3_LEFT_LIGHT_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_LEFT_LIGHT_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_HornType {
+    AUTOCONTROL3_HORN_OFF = 0;
+    AUTOCONTROL3_HORN_ON = 1;
+    AUTOCONTROL3_HORN_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_HORN_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Brake_LightType {
+    AUTOCONTROL3_BRAKE_LIGHT_OFF = 0;
+    AUTOCONTROL3_BRAKE_LIGHT_ON = 1;
+    AUTOCONTROL3_BRAKE_LIGHT_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_BRAKE_LIGHT_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Back_LightType {
+    AUTOCONTROL3_BACK_LIGHT_OFF = 0;
+    AUTOCONTROL3_BACK_LIGHT_ON = 1;
+    AUTOCONTROL3_BACK_LIGHT_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_BACK_LIGHT_NOTAVAILABLE_2 = 3;
+  }
+  enum AutoControl3_Warning_LightType {
+    AUTOCONTROL3_WARNING_LIGHT_OFF = 0;
+    AUTOCONTROL3_WARNING_LIGHT_ON = 1;
+    AUTOCONTROL3_WARNING_LIGHT_NOTAVAILABLE_1 = 2;
+    AUTOCONTROL3_WARNING_LIGHT_NOTAVAILABLE_2 = 3;
+  }
+  // [] [0|3]
+  optional AutoControl3_Rear_FogType auto_control3_rear_fog = 1;
+  // [] [0|3]
+  optional AutoControl3_Low_BeamType auto_control3_low_beam = 2;
+  // [] [0|3]
+  optional AutoControl3_High_BeamType auto_control3_high_beam = 3;
+  // [] [0|3]
+  optional AutoControl3_Front_FogType auto_control3_front_fog = 4;
+  // [] [0|3]
+  optional AutoControl3_Right_LightType auto_control3_right_light = 5;
+  // [] [0|3]
+  optional AutoControl3_Left_LightType auto_control3_left_light = 6;
+  // [] [0|3]
+  optional AutoControl3_HornType auto_control3_horn = 7;
+  // [] [0|3]
+  optional AutoControl3_Brake_LightType auto_control3_brake_light = 8;
+  // [] [0|3]
+  optional AutoControl3_Back_LightType auto_control3_back_light = 9;
+  // [] [0|3]
+  optional AutoControl3_Warning_LightType auto_control3_warning_light = 10;
+}
+
+// Control Message.
+message Safeautocontrol_8fe38ed {
+  enum SafeAutoControl_StatusType {
+    SAFEAUTOCONTROL_STATUS_NOT_ENGAGED = 0;
+    SAFEAUTOCONTROL_STATUS_ENGAGED = 1;
+    SAFEAUTOCONTROL_STATUS_FAULT = 2;
+    SAFEAUTOCONTROL_STATUS_RESERVED = 3;
+  }
+  enum SafeAutoControl_ParkingType {
+    SAFEAUTOCONTROL_PARKING_PARKING_BRAKE_PASSIVE = 0;
+    SAFEAUTOCONTROL_PARKING_PARKING_BRAKE_ACTIVE = 1;
+    SAFEAUTOCONTROL_PARKING_ERROR = 2;
+    SAFEAUTOCONTROL_PARKING_NOT_AVAILABLE = 3;
+  }
+  enum SafeAutoControl_Dec_EnableType {
+    SAFEAUTOCONTROL_DEC_ENABLE_DISABLED = 0;
+    SAFEAUTOCONTROL_DEC_ENABLE_ENABLED = 1;
+  }
+  // [m/s2] [0|12.7]
+  optional double safe_auto_control_target_dec = 1;
+  // [] [0|3]
+  optional SafeAutoControl_StatusType safe_auto_control_status = 2;
+  // [] [0|3]
+  optional SafeAutoControl_ParkingType safe_auto_control_parking = 3;
+  // [] [0|15]
+  optional int32 safe_auto_control_message_counter = 4;
+  // [] [0|15]
+  optional int32 safe_auto_control_message_checksum = 5;
+  // [] [0|1]
+  optional SafeAutoControl_Dec_EnableType safe_auto_control_dec_enable = 6;
+}
+
+// Report Message.
+message Mcu1_Cffebef {
+  enum MCU1_RType {
+    MCU1_R_INVALID = 0;
+    MCU1_R_EFFECTIVE = 1;
+  }
+  enum MCU1_Pre_Charge_OKType {
+    MCU1_PRE_CHARGE_OK_INCOMPLETE = 0;
+    MCU1_PRE_CHARGE_OK_COMPLETE = 1;
+  }
+  enum MCU1_NType {
+    MCU1_N_INVALID = 0;
+    MCU1_N_EFFECTIVE = 1;
+  }
+  enum MCU1_Motor_Over_TEMPType {
+    MCU1_MOTOR_OVER_TEMP_NOT_OVERHEATING = 0;
+    MCU1_MOTOR_OVER_TEMP_OVERHEATING = 1;
+  }
+  enum MCU1_Motor_Error_LevelType {
+    MCU1_MOTOR_ERROR_LEVEL_NORMAL = 0;
+    MCU1_MOTOR_ERROR_LEVEL_DRIVE_SYSTEM_LEVEL_1_FAULT_ALARM = 1;
+    MCU1_MOTOR_ERROR_LEVEL_DRIVE_SYSTEM_LEVEL_2_FAULT_REDUCED_POWER = 2;
+    MCU1_MOTOR_ERROR_LEVEL_DRIVE_SYSTEM_LEVEL_3_FAULT_FORCED_STOP = 3;
+    MCU1_MOTOR_ERROR_LEVEL_DRIVE_SYSTEM_LEVEL_3_FAULT_DISCONNECTED_CONTACTOR =
+        4;
+  }
+  enum MCU1_Motor_Controller_Over_TEMPType {
+    MCU1_MOTOR_CONTROLLER_OVER_TEMP_NOT_OVERHEATING = 0;
+    MCU1_MOTOR_CONTROLLER_OVER_TEMP_OVERHEATING = 1;
+  }
+  enum MCU1_Drive_EffectiveType {
+    MCU1_DRIVE_EFFECTIVE_INVALID = 0;
+    MCU1_DRIVE_EFFECTIVE_EFFECTIVE = 1;
+  }
+  enum MCU1_DType {
+    MCU1_D_INVALID = 0;
+    MCU1_D_EFFECTIVE = 1;
+  }
+  enum MCU1_Brake_EffectiveType {
+    MCU1_BRAKE_EFFECTIVE_INVALID = 0;
+    MCU1_BRAKE_EFFECTIVE_EFFECTIVE = 1;
+  }
+  // [] [0|1]
+  optional MCU1_RType mcu1_r = 1;
+  // [] [0|1]
+  optional MCU1_Pre_Charge_OKType mcu1_pre_charge_ok = 2;
+  // [] [0|1]
+  optional MCU1_NType mcu1_n = 3;
+  // [Nm] [-32000|33535]
+  optional int32 mcu1_motor_torque = 4;
+  // [] [0|1]
+  optional MCU1_Motor_Over_TEMPType mcu1_motor_over_temp = 5;
+  // [] [0|7]
+  optional MCU1_Motor_Error_LevelType mcu1_motor_error_level = 6;
+  // [] [0|1]
+  optional MCU1_Motor_Controller_Over_TEMPType mcu1_motor_controller_over_temp =
+      7;
+  // [] [0|255]
+  optional int32 mcu1_motor_controller_life = 8;
+  // [] [0|1]
+  optional MCU1_Drive_EffectiveType mcu1_drive_effective = 9;
+  // [] [0|1]
+  optional MCU1_DType mcu1_d = 10;
+  // [] [0|1]
+  optional MCU1_Brake_EffectiveType mcu1_brake_effective = 11;
+}
+
+// Report Message.
+message Evcu4_Cf101d0 {
+  enum EVCU4_DCAC_Oil_OffType {
+    EVCU4_DCAC_OIL_OFF_UNAVAILABLE = 0;
+    EVCU4_DCAC_OIL_OFF_AVAILABLE = 1;
+  }
+  enum EVCU4_P_Contrctor_StatusType {
+    EVCU4_P_CONTRCTOR_STATUS_NO_FAULT = 0;
+    EVCU4_P_CONTRCTOR_STATUS_STUCK = 1;
+    EVCU4_P_CONTRCTOR_STATUS_FAILED = 2;
+    EVCU4_P_CONTRCTOR_STATUS_RESERVED = 3;
+  }
+  enum EVCU4_N_Contector_StatusType {
+    EVCU4_N_CONTECTOR_STATUS_NO_FAULT = 0;
+    EVCU4_N_CONTECTOR_STATUS_STUCK = 1;
+    EVCU4_N_CONTECTOR_STATUS_FAILED = 2;
+    EVCU4_N_CONTECTOR_STATUS_RESERVED = 3;
+  }
+  enum EVCU4_Motor_MCU_ErrorType {
+    EVCU4_MOTOR_MCU_ERROR_INVALID = 0;
+    EVCU4_MOTOR_MCU_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_MCU_OffType {
+    EVCU4_MCU_OFF_INVALID = 0;
+    EVCU4_MCU_OFF_EFFECTIVE = 1;
+  }
+  enum EVCU4_Insulation_OffType {
+    EVCU4_INSULATION_OFF_INVALID = 0;
+    EVCU4_INSULATION_OFF_EFFECTIVE = 1;
+  }
+  enum EVCU4_Insulation_ErrorType {
+    EVCU4_INSULATION_ERROR_INVALID = 0;
+    EVCU4_INSULATION_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_Insulation_Device_ErrorType {
+    EVCU4_INSULATION_DEVICE_ERROR_INVALID = 0;
+    EVCU4_INSULATION_DEVICE_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_Forced_Stop_ModeType {
+    EVCU4_FORCED_STOP_MODE_NON_FORCED_STOP = 0;
+    EVCU4_FORCED_STOP_MODE_FORCED_STOP = 1;
+  }
+  enum EVCU4_Forced_L_Power_ModeType {
+    EVCU4_FORCED_L_POWER_MODE_NOT_REDUCED_POWER = 0;
+    EVCU4_FORCED_L_POWER_MODE_REDUCED_POWER = 1;
+  }
+  enum EVCU4_Forced_Dis_ContactorType {
+    EVCU4_FORCED_DIS_CONTACTOR_NOT_DISCONNECTED = 0;
+    EVCU4_FORCED_DIS_CONTACTOR_DISCONNECT = 1;
+  }
+  enum EVCU4_DCDC_OffType {
+    EVCU4_DCDC_OFF_INVALID = 0;
+    EVCU4_DCDC_OFF_EFFECTIVE = 1;
+  }
+  enum EVCU4_DCDC_3_ErrorType {
+    EVCU4_DCDC_3_ERROR_INVALID = 0;
+    EVCU4_DCDC_3_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_DCAC_Oil_3_ErrorType {
+    EVCU4_DCAC_OIL_3_ERROR_INVALID = 0;
+    EVCU4_DCAC_OIL_3_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_DCAC_Air_OffType {
+    EVCU4_DCAC_AIR_OFF_INVALID = 0;
+    EVCU4_DCAC_AIR_OFF_EFFECTIVE = 1;
+  }
+  enum EVCU4_DCAC_Air_3_ErrorType {
+    EVCU4_DCAC_AIR_3_ERROR_INVALID = 0;
+    EVCU4_DCAC_AIR_3_ERROR_EFFECTIVE = 1;
+  }
+  enum EVCU4_BMS_OffType {
+    EVCU4_BMS_OFF_INVALID = 0;
+    EVCU4_BMS_OFF_EFFECTIVE = 1;
+  }
+  enum EVCU4_BMS_ErrorType {
+    EVCU4_BMS_ERROR_INVALID = 0;
+    EVCU4_BMS_ERROR_EFFECTIVE = 1;
+  }
+  // [] [0|1]
+  optional EVCU4_DCAC_Oil_OffType evcu4_dcac_oil_off = 1;
+  // [] [0|3]
+  optional EVCU4_P_Contrctor_StatusType evcu4_p_contrctor_status = 2;
+  // [] [0|3]
+  optional EVCU4_N_Contector_StatusType evcu4_n_contector_status = 3;
+  // [] [0|1]
+  optional EVCU4_Motor_MCU_ErrorType evcu4_motor_mcu_error = 4;
+  // [] [0|1]
+  optional EVCU4_MCU_OffType evcu4_mcu_off = 5;
+  // [] [0|1]
+  optional EVCU4_Insulation_OffType evcu4_insulation_off = 6;
+  // [] [0|1]
+  optional EVCU4_Insulation_ErrorType evcu4_insulation_error = 7;
+  // [] [0|1]
+  optional EVCU4_Insulation_Device_ErrorType evcu4_insulation_device_error = 8;
+  // [] [0|1]
+  optional EVCU4_Forced_Stop_ModeType evcu4_forced_stop_mode = 9;
+  // [] [0|1]
+  optional EVCU4_Forced_L_Power_ModeType evcu4_forced_l_power_mode = 10;
+  // [] [0|1]
+  optional EVCU4_Forced_Dis_ContactorType evcu4_forced_dis_contactor = 11;
+  // [] [0|1]
+  optional EVCU4_DCDC_OffType evcu4_dcdc_off = 12;
+  // [] [0|1]
+  optional EVCU4_DCDC_3_ErrorType evcu4_dcdc_3_error = 13;
+  // [] [0|1]
+  optional EVCU4_DCAC_Oil_3_ErrorType evcu4_dcac_oil_3_error = 14;
+  // [] [0|1]
+  optional EVCU4_DCAC_Air_OffType evcu4_dcac_air_off = 15;
+  // [] [0|1]
+  optional EVCU4_DCAC_Air_3_ErrorType evcu4_dcac_air_3_error = 16;
+  // [] [0|1]
+  optional EVCU4_BMS_OffType evcu4_bms_off = 17;
+  // [] [0|1]
+  optional EVCU4_BMS_ErrorType evcu4_bms_error = 18;
+}
+
+// Control Message.
+message Acu_Ecu_Control2_Cff44ed {
+  // [m/s2] [-12.7|0]
+  optional double auto_control2_target_dec = 1;
+  // [m/s2] [0|12.7]
+  optional double auto_control2_target_acc = 2;
+  // [Nm] [-20|25.9]
+  optional double auto_control2_steering_torque = 3;
+  // [] [0|15]
+  optional int32 auto_control2_message_counter = 4;
+  // [] [0|15]
+  optional int32 auto_control2_message_checksum = 5;
+  // Steering Speed Control [deg/s] [-1575|1575]
+  optional double auto_control2_steering_speed = 6;
+}
+
+// Report Message.
+message Am1_18ffa117 {
+  enum AM1_ParkingType {
+    AM1_PARKING_UNAVAILABLE = 0;
+    AM1_PARKING_AVAILABLE = 1;
+  }
+  enum AM1_Key_OnType {
+    AM1_KEY_ON_UNAVAILABLE = 0;
+    AM1_KEY_ON_AVAILABLE = 1;
+  }
+  enum AM1_DoorType {
+    AM1_DOOR_CLOSED = 0;
+    AM1_DOOR_OPEN = 1;
+  }
+  enum AM1_BackType {
+    AM1_BACK_UNAVAILABLE = 0;
+    AM1_BACK_AVAILABLE = 1;
+  }
+  // [] [0|1]
+  optional AM1_ParkingType am1_parking = 1;
+  // [] [0|1]
+  optional AM1_Key_OnType am1_key_on = 2;
+  // [] [0|1]
+  optional AM1_DoorType am1_door = 3;
+  // [] [0|1]
+  optional AM1_BackType am1_back = 4;
+}
+
+// Report Message.
+message Am2_18ffa017 {
+  // [KM] [0|2097151]
+  optional double am2_total_mileage = 1;
+  // [KM/h] [0|2000]
+  optional double am2_speed = 2;
+}
+
+// Report Message.
+message Mcu3_Cffedef {
+  // ['C] [0|255]
+  optional int32 mcu3_motor_temp = 1;
+  // ['C] [-40|215]
+  optional int32 mcu3_motor_controller_temp = 2;
+  // [] [0|15]
+  optional int32 mcu3_message_counter = 3;
+  // [] [0|15]
+  optional int32 mcu3_message_checksum = 4;
+  // [] [0|102]
+  optional double mcu3_drive_cooling_request = 5;
+  // Motor Rotating Speed [rpm] [-20000|45535]
+  optional int32 mcu3_powertrain_rotating_speed = 6;
+}
+
+// Report Message.
+message Evcu2_Cfa00d0 {
+  enum EVCU2_Pre_Charge_ContactorType {
+    EVCU2_PRE_CHARGE_CONTACTOR_OPEN = 0;
+    EVCU2_PRE_CHARGE_CONTACTOR_CLOSED = 1;
+  }
+  enum EVCU2_P_Contactor_StatusType {
+    EVCU2_P_CONTACTOR_STATUS_OPEN = 0;
+    EVCU2_P_CONTACTOR_STATUS_CLOSED = 1;
+  }
+  enum EVCU2_N_Contactor_StatusType {
+    EVCU2_N_CONTACTOR_STATUS_OPEN = 0;
+    EVCU2_N_CONTACTOR_STATUS_CLOSED = 1;
+  }
+  enum EVCU2_Motor_ModeType {
+    EVCU2_MOTOR_MODE_RESERVED = 0;
+    EVCU2_MOTOR_MODE_SPEED_CONTROL_MODE = 1;
+    EVCU2_MOTOR_MODE_TORQUE_CONTROL_MODE = 2;
+    EVCU2_MOTOR_MODE_ACTIVE_DISCHARGE_MODE = 3;
+  }
+  enum EVCU2_MCU_EnableType {
+    EVCU2_MCU_ENABLE_INVALID = 0;
+    EVCU2_MCU_ENABLE_EFFECTIVE = 1;
+  }
+  enum EVCU2_Key_StartType {
+    EVCU2_KEY_START_INVALID = 0;
+    EVCU2_KEY_START_EFFECTIVE = 1;
+  }
+  enum EVCU2_Clear_ErrorType {
+    EVCU2_CLEAR_ERROR_INVALID = 0;
+    EVCU2_CLEAR_ERROR_EFFECTIVE = 1;
+  }
+  // [Nm] [-10000|22767.5]
+  optional double evcu2_request_torque = 1;
+  // [rpm] [-15000|50535]
+  optional int32 evcu2_request_rotating_speed = 2;
+  // [] [0|1]
+  optional EVCU2_Pre_Charge_ContactorType evcu2_pre_charge_contactor = 3;
+  // [] [0|1]
+  optional EVCU2_P_Contactor_StatusType evcu2_p_contactor_status = 4;
+  // [] [0|1]
+  optional EVCU2_N_Contactor_StatusType evcu2_n_contactor_status = 5;
+  // [] [0|4]
+  optional EVCU2_Motor_ModeType evcu2_motor_mode = 6;
+  // [] [0|15]
+  optional int32 evcu2_message_counter = 7;
+  // [] [0|15]
+  optional int32 evcu2_message_checksum = 8;
+  // [] [0|1]
+  optional EVCU2_MCU_EnableType evcu2_mcu_enable = 9;
+  // [] [0|1]
+  optional EVCU2_Key_StartType evcu2_key_start = 10;
+  // [] [0|1]
+  optional EVCU2_Clear_ErrorType evcu2_clear_error = 11;
+}
+
+// Report Message.
+message Evcu_1_Cffefd0 {
+  enum EVCU_1_Expected_Working_ModeType {
+    EVCU_1_EXPECTED_WORKING_MODE_DEFAULT_TORQUE_CONTROL_MODE = 0;
+    EVCU_1_EXPECTED_WORKING_MODE_POSITION_CONTROL_MODE = 1;
+    EVCU_1_EXPECTED_WORKING_MODE_POITION_CONTROL_MODE = 2;
+    EVCU_1_EXPECTED_WORKING_MODE_ALL_CONTROL_DISABLED = 3;
+    EVCU_1_EXPECTED_WORKING_MODE_EXTERNALTORQUE_CONTROL_MODE = 4;
+    EVCU_1_EXPECTED_WORKING_MODE_EXTERNALTORQUE_CONTROL_MODE_1 = 5;
+    EVCU_1_EXPECTED_WORKING_MODE_EXTERNAL_MOTOR_TORQUE_CONTROL = 6;
+  }
+  // [] [0|4]
+  optional int32 evcu_1_message_counter = 1;
+  // [] [0|15]
+  optional int32 evcu_1_message_checksum = 2;
+  // [deg] [-1440|1440]
+  optional double evcu_1_external_controller = 3;
+  // [] [0|6]
+  optional EVCU_1_Expected_Working_ModeType evcu_1_expected_working_mode = 4;
+}
+
+// Report Message.
+message Idrivesw_Cff42d0 {
+  enum IDriveSW_VCU_Drive_ModeType {
+    IDRIVESW_VCU_DRIVE_MODE_OFF = 0;
+    IDRIVESW_VCU_DRIVE_MODE_AUTONOMOUS_DRIVING_MODE = 1;
+    IDRIVESW_VCU_DRIVE_MODE_MANUAL_DRIVING_MODE = 2;
+    IDRIVESW_VCU_DRIVE_MODE_NOT_AVAILABLE = 3;
+  }
+  enum IDriveSW_System_Error_StatusType {
+    IDRIVESW_SYSTEM_ERROR_STATUS_INVALID = 0;
+    IDRIVESW_SYSTEM_ERROR_STATUS_VALID = 1;
+    IDRIVESW_SYSTEM_ERROR_STATUS_RESERVED_1 = 2;
+    IDRIVESW_SYSTEM_ERROR_STATUS_RESERVED_2 = 3;
+  }
+  enum IDriveSW_EPS_StatusType {
+    IDRIVESW_EPS_STATUS_OFFLINE = 0;
+    IDRIVESW_EPS_STATUS_ONLINE = 1;
+    IDRIVESW_EPS_STATUS_FAULT = 2;
+    IDRIVESW_EPS_STATUS_DIAGNOSTIC_MODE = 3;
+  }
+  enum IDriveSW_EPB_StatusType {
+    IDRIVESW_EPB_STATUS_OFFLINE = 0;
+    IDRIVESW_EPB_STATUS_ONLINE = 1;
+    IDRIVESW_EPB_STATUS_FAULT = 2;
+    IDRIVESW_EPB_STATUS_RESERVED = 3;
+  }
+  enum IDriveSW_Drive_EnableType {
+    IDRIVESW_DRIVE_ENABLE_OFF = 0;
+    IDRIVESW_DRIVE_ENABLE_AUTONOMOUS_DRIVING_MODE = 1;
+    IDRIVESW_DRIVE_ENABLE_MANUAL_DRIVING_MODE = 2;
+    IDRIVESW_DRIVE_ENABLE_NOT_AVAILABLE = 3;
+  }
+  enum IDriveSW_Charging_ModeType {
+    IDRIVESW_CHARGING_MODE_INVALID = 0;
+    IDRIVESW_CHARGING_MODE_VALID = 1;
+    IDRIVESW_CHARGING_MODE_FAULT = 2;
+    IDRIVESW_CHARGING_MODE_RESERVED = 3;
+  }
+  enum IDriveSW_Electronic_Brake_StatusType {
+    IDRIVESW_ELECTRONIC_BRAKE_STATUS_OFFLINE = 0;
+    IDRIVESW_ELECTRONIC_BRAKE_STATUS_ONLINE = 1;
+    IDRIVESW_ELECTRONIC_BRAKE_STATUS_FAULT = 2;
+    IDRIVESW_ELECTRONIC_BRAKE_STATUS_RESERVED = 3;
+  }
+  enum IDriveSW_Emergency_StopType {
+    IDRIVESW_EMERGENCY_STOP_OFF = 0;
+    IDRIVESW_EMERGENCY_STOP_ON = 1;
+    IDRIVESW_EMERGENCY_STOP_NOTAVAILABLE_1 = 2;
+    IDRIVESW_EMERGENCY_STOP_NOTAVAILABLE_2 = 3;
+  }
+  // [] [0|3]
+  optional IDriveSW_VCU_Drive_ModeType idrive_sw_vcu_drive_mode = 1;
+  // [] [0|3]
+  optional IDriveSW_System_Error_StatusType idrive_sw_system_error_status = 2;
+  // [] [0|3]
+  optional IDriveSW_EPS_StatusType idrive_sw_eps_status = 3;
+  // [] [0|3]
+  optional IDriveSW_EPB_StatusType idrive_sw_epb_status = 4;
+  // [] [0|3]
+  optional IDriveSW_Drive_EnableType idrive_sw_drive_enable = 5;
+  // [] [0|3]
+  optional IDriveSW_Charging_ModeType idrive_sw_charging_mode = 6;
+  // [] [0|3]
+  optional IDriveSW_Electronic_Brake_StatusType
+      idrive_sw_electronic_brake_status = 7;
+  // [] [0|3]
+  optional IDriveSW_Emergency_StopType idrive_sw_emergency_stop = 8;
+}
+
+message Foton_longzhou_long {
+  // Report message.
+  optional Evcu1_1000efd0 evcu1_1000efd0 = 1;
+  // Control message.
+  optional Acu_Ecu_Control1_Cff38ed acu_ecu_control1_cff38ed = 2;
+  // Report message.
+  optional Epb_Acu_18fe1264 epb_acu_18fe1264 = 3;
+  // Report message.
+  optional Eps_Acu_Cff0013 eps_acu_cff0013 = 4;
+  // Report message.
+  optional Wabco_Vdc2_18f0090b wabco_vdc2_18f0090b = 5;
+  // Report message.
+  optional Ebs_Acu_8fe6e0b ebs_acu_8fe6e0b = 6;
+  // Report message.
+  optional Am3_18ffa217 am3_18ffa217 = 7;
+  // Control message.
+  optional Acu_Bcm_Control_Cff42ed acu_bcm_control_cff42ed = 8;
+  // Control message.
+  optional Safeautocontrol_8fe38ed safeautocontrol_8fe38ed = 10;
+  // Report message.
+  optional Mcu1_Cffebef mcu1_cffebef = 11;
+  // Report message.
+  optional Evcu4_Cf101d0 evcu4_cf101d0 = 12;
+  // Control message.
+  optional Acu_Ecu_Control2_Cff44ed acu_ecu_control2_cff44ed = 13;
+  // Report message.
+  optional Am1_18ffa117 am1_18ffa117 = 14;
+  // Report message.
+  optional Am2_18ffa017 am2_18ffa017 = 15;
+  // Report message.
+  optional Mcu3_Cffedef mcu3_cffedef = 16;
+  // Report message.
+  optional Evcu2_Cfa00d0 evcu2_cfa00d0 = 17;
+  // Report message.
+  optional Evcu_1_Cffefd0 evcu_1_cffefd0 = 18;
+  // Report message.
+  optional Idrivesw_Cff42d0 idrivesw_cff42d0 = 9;
+  // Report message.
+  optional Evcu_2_1818d0f3 evcu_2_1818d0f3 = 19;
+  // Report message.
+  optional Evcu3_183af3d0 evcu3_183af3d0 = 20;
+}

@@ -1,0 +1,126 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/crash_log.proto";
+import "onboard/proto/q_issue.proto";
+
+enum FunctionalModeType {
+  FUNCTIONAL_MODE_TYPE_NONE = 0;
+  FUNCTIONAL_MODE_TYPE_ACC = 1;
+  FUNCTIONAL_MODE_TYPE_LCC = 2;
+  FUNCTIONAL_MODE_TYPE_NOA = 3;
+  FUNCTIONAL_MODE_TYPE_L4 = 4;
+  FUNCTIONAL_MODE_TYPE_APA_SEARCH = 5;  // apa 搜车位
+  FUNCTIONAL_MODE_TYPE_APA_IN = 6;      // apa 泊入
+  FUNCTIONAL_MODE_TYPE_APA_OUT = 7;     // apa 泊出
+  FUNCTIONAL_MODE_TYPE_RPA_IN = 8;      // rpa 泊入
+}
+
+enum ModeChangeReason {
+  MODE_CHANGE_REASON_UNKNOWN = 0;
+  MODE_CHANGE_REASON_UPGRADE = 1;
+  MODE_CHANGE_REASON_DOWNGRADE = 2;
+  MODE_CHANGE_REASON_TAKEOVER = 3;
+  MODE_CHANGE_REASON_KICKOUT = 4;
+  MODE_CHANGE_REASON_LATEMEXIT = 5;
+  MODE_CHANGE_REASON_LATEMEXIT_RESUME = 6;
+  MODE_CHANGE_REASON_LATEMEXIT_DOWNGRADE = 7;
+  MODE_CHANGE_REASON_CRASH = 8;
+  MODE_CHANGE_REASON_ENGAGE = 9;
+  MODE_CHANGE_REASON_ACC_ENGAGE = 10;
+  MODE_CHANGE_REASON_APA_PAUSE = 11;
+}
+
+message ModeChangeEvent {
+  optional int64 timestamp = 1;
+  optional ModeChangeReason reason = 2;
+  optional FunctionalModeType previous_state = 3;
+  optional FunctionalModeType current_state = 4;
+  repeated QIssueProto reason_qissues = 5;
+  optional string message = 6;
+}
+
+message RunEventCommonValue {
+  optional int64 abs_timestamp_us = 1;  // trigger source timestamp
+  optional int64 rel_timestamp_us = 2;  // trigger source lite msg key
+
+  optional string route_id = 3;
+
+  optional double longitude = 4;  // rad
+  optional double latitude = 5;   // rad
+  optional double altitude = 6;   // m
+
+  optional AudioRecordProto audio_record_proto =
+      7;  // display the button; Speech Recognition
+  oneof trigger_proto {
+    AutonomyStateProto autonomy_state_proto = 8;  // kickout takeover
+    CrashLogProto crash_log_proto = 9;
+    EventNoteProto event_note_proto = 10;
+    ModeChangeEvent state_change_event = 11;  // deprecated
+  }
+  optional ModeChangeEvent mode_change_event = 12;
+}
+
+message AutonomyAbnormalReason {
+  enum ReasonType {
+    REASON_TYPE_NONE = 0;
+
+    REASON_TYPE_ENGAGE = 1;     // Only For L4, engage result
+    REASON_TYPE_DISENGAGE = 2;  // Only For L4, exit
+
+    REASON_TYPE_ACC_ENGAGE = 3;     // engage result: fail or succrss
+    REASON_TYPE_ACC_DISENGAGE = 4;  // ACC exit
+
+    REASON_TYPE_LCC_ENGAGE = 5;
+    REASON_TYPE_LCC_DISENGAGE = 6;
+
+    REASON_TYPE_NOA_ENGAGE = 7;
+    REASON_TYPE_NOA_DISENGAGE = 8;
+  }
+  message Reason {
+    optional ReasonType type = 1;
+
+    // engage fail: qissues not empty
+    // engage success: qissues empty
+    // disengage : qissues not empty
+    repeated QIssueProto qissues = 2;
+
+    repeated string describes = 3;
+  }
+  repeated Reason reasons = 1;
+
+  optional ModeChangeEvent state_change_event = 2;
+}
+
+message AudioRecordEventValue {
+  enum RecordSignalType {
+    RECORD_SIGNAL_TYPE_NONE = 0;
+    RECORD_SIGNAL_TYPE_START = 1;
+    RECORD_SIGNAL_TYPE_END = 2;
+  }
+  optional RecordSignalType type = 1;
+  optional int32 error_code = 2;
+  optional string audio_data = 3;
+  optional int64 sample_timestamp = 4;
+}
+
+message LoggingStatusProto {
+  enum LoggingStatus {
+    LOGGING_STATUS_NONE = 0;
+    LOGGING_STATUS_RECORDING = 1;
+    LOGGING_STATUS_PAUSE = 2;
+    LOGGING_STATUS_FINISH = 3;
+  }
+  optional LoggingStatus logging_status = 1;
+
+  message DiskStatus {
+    optional double capacity = 1;  // MB
+    optional double used = 2;      // MB
+  }
+  optional DiskStatus disk_status = 2;
+
+  optional string run_name = 3;
+}

@@ -1,0 +1,14 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/blind_track_reserver/proto/blind_track_reserver_config";
+
+message BlindTrackReserverConfig {
+  optional double blind_area_lat_side = 1 [default = 1.5];
+  optional double blind_area_lon_near_side = 2 [default = 2.0];
+  optional double blind_area_lon_far_side = 3 [default = 4.0];
+  optional int32 reserve_frame_count_inside_area = 4 [default = 200];
+  optional int32 reserve_frame_count_outside_area = 5 [default = 20];
+  optional double firts_appear_distance_th = 6 [default = 20.0];
+  optional double min_car_speed_th = 7 [default = 2.0];
+  optional int32 min_stable_track_frames = 8 [default = 2];
+}

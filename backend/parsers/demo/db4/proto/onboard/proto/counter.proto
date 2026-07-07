@@ -1,0 +1,22 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message CounterItemProto {
+  optional int64 first_timestamp_ms = 1;
+  optional int64 last_timestamp_ms = 2;
+  optional string name = 3;
+  optional int64 max = 4;
+  optional int64 min = 5;
+  optional int64 count = 6;
+  optional int64 sum = 7;
+  map<string, CounterItemProto> fields = 8;
+}
+
+message CounterProto {
+  optional LiteHeader header = 1;
+  repeated CounterItemProto item = 2;
+}

@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/calibration.proto";
+
+message CameraInherentProto {
+  enum CameraVendor {
+    FLIR = 0;
+    LEOPARD = 1;
+    SENSING = 2;
+    LIJING = 3;
+    DESAYSV = 4;
+  }
+
+  optional CameraIntrinsicsProto intrinsics = 1;
+  optional double max_fps = 2 [default = 60.0];
+  // The elapsed time from trigger to the middle row of the image starts to
+  // expose.
+  optional double mid_row_time_since_trigger = 3 [default = 0.07];
+  // The elpased time from image top row to bottom row in rolling shutter mode.
+  optional double rolling_elapse_time = 4 [default = 0.033];
+
+  optional CameraVendor camera_vendor = 5;
+
+  optional string serial_no = 6;
+  // The elpased time from trigger to image arrival.
+  optional double arrival_time_since_trigger = 7 [default = 0.052];
+}

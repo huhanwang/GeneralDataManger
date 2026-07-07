@@ -1,0 +1,87 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+enum CockpitVhicleModel {
+  VM_LI_L6_PRO = 0;
+  VM_LI_L6_MAX = 1;
+  VM_LI_L7_PRO = 2;
+  VM_LI_L7_MAX = 3;
+  VM_LI_L7_ULTRA = 4;
+  VM_LI_L8_PRO = 5;
+  VM_LI_L8_MAX = 6;
+  VM_LI_L8_ULTRA = 7;
+  VM_LI_L9_PRO = 8;
+  VM_LI_L9_ULTRA = 9;
+  VM_LI_MEGA_ULTRA = 10;
+}
+
+message CockpitVehicleStatusProto {
+  optional string vin_code = 1;
+  enum State {
+    VS_NONE = 0;
+    VS_ABNORMAL = 1;
+    VS_MANUAL_DRIVING = 2;
+    VS_AUTO_DRIVING = 3;
+    VS_MONITORING = 4;
+    VS_CONTROLING = 5;
+  }
+  optional State state = 2;
+  optional int32 drive_range = 3;
+}
+
+message CockpitVehicleStatusesProto {
+  optional LiteHeader header = 1;
+  repeated CockpitVehicleStatusProto vehicles = 2;
+}
+
+message CockpitVehicle {
+  optional string vin_code = 1;
+  optional string name = 2;
+  optional CockpitVhicleModel model = 3;
+  optional string location = 4;
+  optional string parameter = 5;
+  optional string createtime = 6;
+  optional string updatetime = 7;
+  optional int32 total_mileage = 8;
+}
+
+message CockpitVehicleListProto {
+  optional LiteHeader header = 1;
+  repeated CockpitVehicle vehicles = 2;
+}
+
+message CockpitGetVehicleInfoProto {
+  optional LiteHeader header = 1;
+  optional CockpitVehicle vehicleinfo = 2;
+}
+
+message CockpitRequestJoinRoomProto {
+  optional LiteHeader header = 1;
+  optional string taskid = 3;
+}
+
+message CockpitTakeoverRequestProto {
+  optional LiteHeader header = 1;
+  optional string request_id = 2;
+  optional string cockpit_id = 3;
+  optional string vin_code = 4;
+  optional string task_id = 5;
+}
+
+message VehicleConnectInfo {
+  optional bool switch_enable = 1;
+  optional string vin_code = 2;
+  optional string task_id = 3;
+  // vehicle monitor task only has up link, vehicle
+  // control task has both up and down link.
+  optional bool connect_ok = 4;
+  enum ConnectType {
+    CT_UP = 1;
+    CT_DOWN = 2;
+  }
+  optional ConnectType type = 5;
+}

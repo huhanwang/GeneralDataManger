@@ -1,0 +1,71 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/proto/type";
+
+enum PillarType {
+  PLT_CAR = 0;
+  PLT_PED = 1;
+  PLT_XCYCLIST = 2;
+  PLT_ANIMAL = 3;
+  PLT_CONE = 4;
+  PLT_BARRIER = 5;
+  PLT_STATIC = 6;
+  PLT_VEGETATION = 7;
+  PLT_BACKGROUND = 8;
+  PLT_MIST = 9;
+  PLT_REFLECTION = 10;
+  PLT_CAR_DOOR = 11;
+  PLT_POLE = 12;
+  PLT_NONE = 100;
+}
+
+enum LiPillarType {
+  LPT_OTHER = 0;
+  LPT_DRIVEABLE_SURFACE = 1;
+  LPT_SIDEWALK = 2;
+  LPT_MOVEABLE_OBJECT = 3;
+  LPT_UNMOVEABLE_OBJECT = 4;
+  LPT_SUSPEND_OBJECT = 5;
+  LPT_CURB = 6;
+  LPT_FENCE = 7;
+  LPT_VEGETATION = 8;
+  LPT_NOISE = 9;
+  LPT_PARKING_CHOCK = 10;
+  LPT_FREE = 11;
+}
+
+enum PillarMotionType {
+  PMT_STATIC = 0;
+  PMT_DYNAMIC = 1;
+  PMT_UNKNOWN = 2;
+}
+
+enum SegmentationType {
+  ST_SURFACE = 0;
+  ST_VEGETATION = 1;
+  ST_OBJECT = 2;
+  ST_TRAFFIC_LIGHT = 3;
+  ST_SKY = 4;
+  ST_BARRIER = 5;
+  ST_CAR = 6;
+  ST_XCYCLIST = 7;
+  ST_HUMAN = 8;
+  ST_TRAFFIC_CONE = 9;
+  ST_TRAFFIC_SIGN = 10;
+  ST_TRAFFIC_LANE = 11;
+  ST_SELF = 12;
+  ST_DONTCARE = 13;
+}

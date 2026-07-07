@@ -1,0 +1,13 @@
+
+syntax = "proto2";
+
+package snoah.ego_trajectory;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/ego_trajectory";
+
+import "onboard/proto/trajectory_point.proto";
+
+// Ego vehicle trajectory data
+message EgoTrajectory {
+  repeated float time_offset = 1;
+  repeated TrajectoryPointProto points = 2;
+}

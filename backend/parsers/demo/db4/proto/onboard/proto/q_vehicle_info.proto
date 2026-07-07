@@ -1,0 +1,41 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/proto/route_navigation.proto";
+
+message QVehiclePose {
+  optional int64 timestamp = 1;
+  optional mapping.GeoPointProto geo = 2;
+  optional double head = 3;   // radians
+  optional double speed = 4;  // meters per second.
+  enum GnssStatus {
+    GPS = 0;
+    RTK = 1;
+  }
+  optional GnssStatus gnss_status = 5;
+  optional double accel = 6;  // m/s2
+}
+
+message QVehicleRoute {
+  optional int64 next_station_index = 1;      // range:[-1,0~]
+  optional double next_station_distance = 2;  // range:[0~] meters
+  // corresponding to command_id in q_command.proto
+  optional string command_id = 3;
+  repeated Vec2dProto path_points = 4;
+
+  // navigation info
+  optional NaviInstructionProto current_navi_instruction = 5;
+}
+
+message QVehicleInfo {
+  optional string vehicle_id = 1;    // Q8001
+  optional int32 vehicle_power = 2;  // range:[-1,0~100]
+  optional QVehiclePose vehicle_pose = 3;
+  optional QVehicleRoute vehicle_route = 4;
+  optional string purpose = 5;      // DBE-testing
+  optional string release_tag = 6;  // DBET-20230811-rc1
+}

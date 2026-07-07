@@ -1,0 +1,234 @@
+syntax = "proto2";
+
+package snoah;
+
+message ImuPerformanceParamsProto {
+  optional double sampling_time_sec = 1;
+  // gyro
+  optional double angular_random_walk_xy = 2;
+  optional double angular_random_walk_z = 3;
+  optional double gyro_bias_instability_xy = 4;
+  optional double gyro_bias_instability_z = 5;
+
+  // accelerometer
+  optional double velocity_random_walk_xy = 6;
+  optional double velocity_random_walk_z = 7;
+  optional double accel_bias_instability_xy = 8;
+  optional double accel_bias_instability_z = 9;
+
+  optional double gyro_bias_limit = 10 [default = 0.17];  // 10 dps
+  optional double acc_bias_limit = 11 [default = 1.96];   // 200 mg
+}
+
+message ObservationParamsProto {
+  optional double speed_var = 1;
+  optional double nhc_y_var = 2;
+  optional double nhc_z_var = 3;
+  optional int64 pseudo_update_frequency = 4;
+  optional double pseudo_position_var = 5;
+  // stationary update
+  optional double pseudo_yaw_var = 6;
+  optional double zero_accel_var = 7;
+  optional double zero_omega_var = 8;
+  optional double zero_vel_var = 9;
+
+  // estimated yaw rate by bev lane
+  optional double max_yawrate_bias = 10;
+  optional double bev_lane_yaw_rate_var = 11;
+  optional double min_bev_lane_life_time_sec = 12;
+  optional double max_bev_lane_curvature = 13;
+  optional double max_yawrate_bias_innovation = 14;
+  optional double max_yawrate_bias_diff_against_stationary = 15;
+  optional double max_yawrate_bias_diff_against_recent = 16;
+  optional double min_speed_to_use_lane_yaw_rate = 17;
+
+  // observation outlier rejection
+  optional double max_speed_innovation = 18;
+  optional double max_lateral_velocity = 19;
+  optional double max_vertical_velocity = 20;
+  optional double max_yawrate_nhc_y_hold = 21 [default = 1.0];
+  optional double max_speed_innovation_rate = 22 [default = 1.5];
+
+  // icp pose observation
+  optional double icp_position_var = 23;
+  optional double icp_attitude_var = 24;
+}
+
+message InitParamsProto {
+  optional double attitude_xy_var = 1;
+  optional double attitude_z_var = 2;
+  optional double vel_xy_var = 3;
+  optional double vel_z_var = 4;
+  optional double position_xy_var = 5;
+  optional double position_z_var = 6;
+  optional double accel_bias_xy_var = 7;
+  optional double accel_bias_z_var = 8;
+  optional double omega_bias_xy_var = 9;
+  optional double omega_bias_z_var = 10;
+  optional double speed_scale_var = 11;
+}
+
+message StationaryParamsProto {
+  optional double min_duration_sec = 1;
+  optional double min_num_of_imu = 2;
+  optional double min_stable_duration_sec = 3;
+  optional double max_accel_var = 4;
+  optional double max_yawrate = 5;
+  optional double max_speed = 6;
+  optional int64 max_buffer_size = 7;
+  optional double max_chitest_val = 8;
+  optional double max_try_startup_duration_sec = 9;
+  optional double min_observation_duration_sec = 10;
+  optional int32 stationary_update_interval_ms = 11;
+}
+
+message SmoothPoseParamsProto {
+  optional ImuPerformanceParamsProto imu_params = 1;
+  optional InitParamsProto init_params = 2;
+  optional ObservationParamsProto observation_params = 3;
+  optional StationaryParamsProto stationary_params = 4;
+}
+
+message SpeedParamsProto {
+  enum SpeedSource {
+    SPEED = 0;
+    WHEEL_SPEED = 1;
+    DIRECTIONAL_WHEEL_SPEED = 2;
+    WHEEL_PULSE = 3;
+    RPM = 4;
+  }
+  optional SpeedSource speed_source = 1;
+  optional double pulses_per_revolution = 2;
+  optional int64 max_num_of_pulses = 3;
+  optional double motor_to_wheel_ratio = 4;
+  // wheel speed unit conversion coefficient
+  optional double wheel_speed_to_mps_ratio = 5;
+  optional SpeedSource driving_speed_source = 6 [default = SPEED];
+  optional SpeedSource parking_speed_source = 7 [default = RPM];
+  optional double low_speed_critical_value = 8;   // m/s
+  optional double wheel_radius_design_value = 9;  // m
+}
+
+message SensorParamsProto {
+  optional double imu_sampling_time_sec = 1;
+  optional double chassis_sampling_sec = 2;
+  optional SpeedParamsProto speed_params = 3;
+}
+
+message ImuCanCalibrationConfigsProto {
+  optional string config_file = 1;
+  optional bool enable_imu_can_online_calibration = 2 [default = false];
+  optional bool use_gnss_raw_reading = 3 [default = false];
+  optional bool check_imu_eol_calibration_result = 4 [default = false];
+}
+
+enum ImuModel {
+  IMU_UNKNOWN = 0;
+  IMU_NEWTON_M2 = 1;
+  IMU_ST_ASM330 = 2;
+  IMU_ASENSING_5115 = 3;
+  IMU_BYNAV_X2C = 4;
+  IMU_BYNAV_M20 = 5;
+  IMU_BYNAV_M22 = 6;
+}
+
+message PositioningParamsProto {
+  optional SensorParamsProto sensor_params = 1;
+  optional SmoothPoseParamsProto smooth_pose_params = 2;
+  optional DiagnosisParamsProto diagnosis_params = 3;
+  optional ImuCanCalibrationConfigsProto imu_can_calibration_configs = 4;
+  optional ModuleParamsProto module_params = 5;
+  optional LidarFusionParamsProto lidar_fusion_params = 6;
+  optional OdometryNetParamsProto odometry_net_params = 7;
+  optional ImuModel imu_model = 8 [default = IMU_UNKNOWN];
+  // (TODO): Add more params
+}
+
+message DiagnosisParamsProto {
+  optional int64 imu_max_allow_delay_us = 1;
+  optional int64 imu_max_allow_ahead_us = 2;
+  optional double imu_time_async_max_lasting_duration = 3;
+  optional double imu_max_allow_loss_sec = 4;
+  optional double chassis_max_allow_loss_sec = 5;
+  optional int64 max_chassis_speed_loss_num = 18;
+
+  optional double max_pitch_radian = 6;
+  optional double max_roll_radian = 7;
+  optional double min_wheel_speed = 8;
+  optional double max_wheel_speed = 9;
+  optional double min_lateral_speed = 10;
+  optional double max_lateral_speed = 11;
+  optional double min_upright_speed = 12;
+  optional double max_upright_speed = 13;
+  optional double min_angular_rate_xy = 14;
+  optional double max_angular_rate_xy = 15;
+  optional double min_angular_rate_z = 16;
+  optional double max_angular_rate_z = 17;
+}
+
+message ModuleParamsProto {
+  optional double max_allowed_advance_time_sec = 1;
+  optional bool compute_kappa_with_can_yawrate = 2 [default = false];
+  optional bool use_gnss = 3;
+  optional bool logging_positioning_state = 4 [default = false];
+  optional int64 positioning_state_pub_interval_ms = 5 [default = 1000];
+  optional int64 calibration_result_logging_interval_sec = 6 [default = 10];
+  optional string time_zone_name = 7 [default = "Asia/Shanghai"];
+  optional int32 time_zone_key = 8 [default = 8];
+  optional bool enable_bev_lane_yawrate_bias_estimation = 9 [default = false];
+}
+
+message LidarFusionParamsProto {
+  optional bool enable_lidar_fusion = 1 [default = false];
+  optional int32 lidar_frame_buffer_size = 2 [default = 2];
+  optional bool only_keep_keyframe = 3 [default = false];
+
+  message KeyFrameSelectorParams {
+    optional double time_diff_threshold = 1 [default = 1.0];
+    optional double translation_threshold = 2 [default = 0.5];
+    optional double rotation_threshold = 3 [default = 0.01];
+  }
+  optional KeyFrameSelectorParams keyframe_selector_params = 4;
+
+  enum AlignMethod {
+    P2P_ICP = 0;   // point to point icp
+    P2PL_ICP = 1;  // point to plane icp
+    GICP = 2;      // generalized icp
+    KISS_ICP = 3;  // kiss icp s2m
+  }
+  message KissIcpParams {
+    optional double voxel_size = 1 [default = 0.2];
+    optional int32 max_points_per_voxel = 2 [default = 20];
+    optional double max_range = 3 [default = 100.0];  // meters
+    optional double min_range = 4 [default = 1.0];    // meters
+    optional double max_height = 5 [default = 4.0];   // meters
+    optional double min_height = 6 [default = -0.2];  //  meters
+    optional double max_fov = 7 [default = 120.0];    // degrees
+    optional double min_motion_threshold = 8 [default = 0.1];
+    optional double initial_threshold = 9 [default = 0.1];
+  }
+  message PointMatcherParams {
+    optional AlignMethod method = 1 [default = P2P_ICP];
+    optional int32 max_iterations = 2 [default = 10];
+    optional int32 max_num_points = 3 [default = 5000];
+    optional double max_mse = 4 [default = 0.01];
+    optional double min_match_ratio = 5 [default = 0.15];
+    optional double max_matching_distance = 6 [default = 0.1];
+    optional bool downsample_ref_points = 7 [default = false];
+    optional double translation_converge_threshold = 8 [default = 1e-3];
+    optional double rotation_converge_threshold = 9 [default = 5e-4];
+    optional KissIcpParams kiss_icp_params = 10;
+  }
+  optional PointMatcherParams point_matcher_params = 5;
+  optional int32 fetch_icp_result_interval_ms = 6 [default = 5];
+  optional double max_imu_pose_timespan_sec = 7 [default = 0.015];
+  optional double imu_pose_buffer_duration_sec = 8 [default = 5.0];
+}
+
+message OdometryNetParamsProto {
+  optional bool enable_odometry_net = 1 [default = false];
+  optional int32 smooth_pose_buffer_size = 2 [default = 50];
+  optional int32 imu_buffer_size = 3 [default = 100];
+  optional int32 chassis_buffer_size = 4 [default = 50];
+  optional double smooth_pose_time_threshold_sec = 5 [default = 0.2];
+}

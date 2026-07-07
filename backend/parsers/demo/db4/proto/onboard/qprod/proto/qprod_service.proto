@@ -1,0 +1,23 @@
+syntax = "proto2";
+package snoah.qprod;
+
+import "onboard/proto/qview.proto";
+
+message TokenRequest {
+  optional int64 timestamp = 1;  // unit: us
+}
+
+message TokenResponse {
+  optional int64 timestamp = 1;  // unit: us
+  optional string token = 2;
+}
+
+message QProdServerMessage {
+  optional bool use_online_map = 1;
+}
+
+service QProdService {
+  rpc GetToken(TokenRequest) returns (TokenResponse);
+  rpc ExchangeProtoBetweenQProdAndQViewPublisher(stream QViewPublisherMessage)
+      returns (stream QProdServerMessage);
+}

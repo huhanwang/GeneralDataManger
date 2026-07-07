@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package snoah.ota;
+
+import "onboard/multi_ota/proto/multi_ota.proto";
+
+message QOtaSequence {
+  repeated QOtaNode rounds = 1;
+}
+
+message QOtaControls {
+  // depends control records
+  repeated QOtaRecord records = 1;
+  // sequence depends on other node list
+  repeated QOtaSequence sequences = 2;
+}
+
+message QOtaRecordTag {
+  // depens
+  optional QOtaControls ctrls = 1;
+  // ota id
+  optional string uuid = 2;
+  // create datetime
+  optional string create_datetime = 3;
+  // modify datetime
+  optional string modify_datetime = 4;
+}
+
+message QOtaHistory {
+  // current ota id
+  optional string active_id = 1;
+  // history
+  repeated QOtaRecordTag histories = 2;
+}
+
+message QOtaGlobalSlotInfo {
+  repeated QOtaSubNodeInfo slot_infos = 1;
+}

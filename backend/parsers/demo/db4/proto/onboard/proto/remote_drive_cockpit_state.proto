@@ -1,0 +1,68 @@
+// reserved.
+//
+// This software and associated documentation files (the "Software") are the
+// proprietary property of snoah. Unauthorized copying of this file, via any
+// medium, is strictly prohibited unless prior written permission is obtained
+// from snoah. Users are prohibited from reverse engineering, decompiling,
+// disassembling, or otherwise attempting to derive the source code of this
+// software, unless explicitly permitted by law. Unless otherwise agreed in
+// writing, any use of this software requires prior written authorization from
+// snoah.
+//
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// snoah or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/q_issue.proto";
+import "onboard/proto/cockpit_vehicle_state.proto";
+
+message RemoteCockpitStateProto {
+  enum State {
+    // Define state for remote drive cockpit
+    // Remote cockpit initialization state
+    RC_STATE_INIT = 0;
+
+    // Remote cockpit isn't ready to do anything.
+    RC_STATE_WAIT = 1;
+
+    // Remote cockpit is ready for remote vehicle monitoring.
+    RC_STATE_VM_STANDBY = 2;
+
+    // Remote cockpit is ready to take over the remote vehicle.
+    RC_STATE_VC_STANDBY = 3;
+
+    // Remote cockpit is remotely monitoring the vehicle.
+    RC_STATE_VM = 4;
+
+    // Remote cockpit He is remotely controlling the vehicle.
+    RC_STATE_VC = 5;
+
+    // Remote cockpit has at least one malfunction.
+    RC_STATE_FAULT = 6;
+
+    // Remote cockpit is connecting to monitor the vehicle.
+    RC_STATE_VM_CONNECT = 7;
+
+    // Remote cockpit is connecting to take control of the vehicle.
+    RC_STATE_VC_CONNECT = 8;
+  }
+  optional State autonomy_state = 1;
+
+  message FaultReason {
+    // The name of failed execution issue type.
+    repeated string failed_issues = 1;
+    repeated QIssueProto issue = 4;
+    reserved 2, 3;
+  }
+  optional FaultReason reason = 2;
+
+  optional VehicleConnectInfo vehicle_connect_info = 3;
+}

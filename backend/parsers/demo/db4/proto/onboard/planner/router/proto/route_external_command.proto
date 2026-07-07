@@ -1,0 +1,11 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+enum ExternalRouterCommand {
+  NONE = 0;
+  INPLACE_REROUTE = 1;
+  ANOTHER_ROUTE = 2;
+  SWITCH_ROUTE = 3;
+}

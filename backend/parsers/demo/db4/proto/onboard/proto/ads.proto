@@ -1,0 +1,120 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/lidar.proto";
+
+enum GpuId {
+  GPU_UNKNOWN = 0;
+  GPU_0 = 3;
+  GPU_1 = 4;
+  GPU_2 = 5;
+  GPU_3 = 6;
+  reserved 1, 2;
+}
+
+enum GpuType {
+  GT_UNKNOWN = 0;
+  GT_RTX_2080_TI = 1;
+  GT_TITAN_RTX = 2;
+  GT_RTX_3080 = 3;
+  GT_RTX_3080_TI = 5;
+  GT_RTX_3090 = 4;
+  GT_RTX_A4000 = 6;
+  GT_A10 = 7;
+  GT_A30 = 8;
+  GT_T4 = 9;
+  GT_ORIN_A100 = 10;
+}
+
+enum BpuId {
+  BPU_UNKNOWN = -1;
+  BPU_0 = 0;
+  BPU_1 = 1;
+  BPU_2 = 2;
+  BPU_3 = 3;
+}
+
+enum CameraCpldTriggerSourceType {
+  CPLD_TRIGGER_SOURCE_INTERNAL_GPS = 0;
+  CPLD_TRIGGER_SOURCE_EXTERNAL_IMU = 1;
+  CPLD_TRIGGER_SOURCE_EXTERNAL_PTP = 2;
+};
+
+enum NodeType {
+  MAIN_NODE = 0;
+  MAIN_NODE_1 = 1;
+
+  SENSOR_NODE = 100;
+  SENSOR_NODE_1 = 101;
+  SENSOR_NODE_2 = 102;
+  SENSOR_NODE_5 = 105;
+
+  SLAVE_NODE = 200;
+  SLAVE_NODE_1 = 201;
+  SLAVE_NODE_2 = 202;
+  SLAVE_NODE_3 = 203;
+}
+
+message NodeNameToRadarId {
+  optional string node_name = 1;
+  repeated RadarId radar_id = 2;
+}
+
+message NodeNameToLidarId {
+  optional string node_name = 1;
+  repeated LidarId lidar_id = 2;
+}
+
+message OmcConfigProto {
+  // To map the GPU ID to real device ID.
+  message GpuIdToDeviceId {
+    optional GpuId gpu_id = 1;
+    optional int32 device_id = 2;
+    optional GpuType gpu_type = 3;
+  }
+  repeated GpuIdToDeviceId gpu_id_to_device_id = 1;
+  optional string ip_address = 2 [default = "192.168.5.100"];
+  optional bool main_display = 3 [default = false];
+  optional NodeType node_type = 4 [default = MAIN_NODE];
+  // if no node_name_to_radar_id field, all radar on omc.
+  optional NodeNameToRadarId node_name_to_radar_id = 5;
+  optional NodeNameToLidarId node_name_to_lidar_id = 6;
+  optional bool gnss_in_this_node = 7;
+  optional bool chassis_in_this_node = 8;
+}
+
+enum ObcType {
+  OT_NVIDIA_XAVIER_AGX = 0;
+  OT_NVIDIA_TX2_NX = 1;
+  OT_NVIDIA_ORIN = 2;
+}
+
+enum ObcHardwareModel {
+  OHM_91S = 0;
+  OHM_91VP = 1;
+  OHM_TX2 = 2;
+}
+
+message ObcConfigProto {
+  optional string ip_address = 1 [default = "192.168.5.101"];
+  message NodeNameToCameraId {
+    optional string node_name = 1;
+    repeated CameraId camera_id = 2;
+  }
+  repeated NodeNameToCameraId node_name_to_camera_id = 2;
+  optional bool main_display = 3 [default = true];
+  optional ObcType obc_type = 4 [default = OT_NVIDIA_XAVIER_AGX];
+  optional ObcHardwareModel obc_hardware_model = 5 [default = OHM_91S];
+
+  optional CameraCpldTriggerSourceType camera_cpld_trigger_source = 6
+      [default = CPLD_TRIGGER_SOURCE_INTERNAL_GPS];
+  optional NodeType node_type = 7 [default = SLAVE_NODE];
+  optional NodeNameToRadarId node_name_to_radar_id = 8;
+  optional NodeNameToLidarId node_name_to_lidar_id = 9;
+  optional bool gnss_in_this_node = 10;
+  optional bool chassis_in_this_node = 11;
+}

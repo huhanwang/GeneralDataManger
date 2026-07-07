@@ -1,0 +1,62 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message RawGnssPointProto {
+  optional mapping.GeoPointProto raw_point = 1;
+  optional double speed = 2;
+  optional double yaw = 3;
+  optional double timestamp = 4;
+}
+
+message LocalizedResultProto {
+  optional mapping.GeoPointProto localized_point = 1;
+  optional double dist_to_link_end = 2;
+  optional sfixed64 link_id = 3;
+  optional sfixed32 link_index = 4;
+  optional sfixed32 point_on_link_index = 5;
+  enum LocStatus {
+    kNormal = 1;
+    kLowPrecision = 2;
+  }
+  optional LocStatus loc_status = 6;
+  // The normalized localization probability.
+  optional double total_probability = 7;
+  enum LinkDirection {
+    kFORWARD = 1;
+    kREVERSED = 2;
+  }
+  // The map matched direction of the sd link.
+  // If the link's travel direction is forward, the matched link direction can
+  // only be forward. If the link's travel direction is backward, the matched
+  // link direction can only be reversed. If the link's travel direction is two
+  // way, the matched link direction can either be forward or reversed depending
+  // on the direction of the trajectory.
+  optional LinkDirection link_direction = 8;
+}
+
+message EhpV2LocalizationProto {
+  optional int32 path_id = 1;
+  // The offset starting from the origin of the path.
+  optional int32 offset = 2;  // unit:m
+  optional sfixed64 link_id = 3;
+  // The offset stating form the localized link on the path.
+  optional int32 link_offset = 4;  // unit:m
+  optional mapping.GeoPointProto global_position = 5;
+}
+
+message SdRouteLocalizationProto {
+  // The given raw gnss position.
+  optional sfixed64 route_id = 1;
+  optional RawGnssPointProto raw_gnss_point = 2;
+  // The top 2 most probable localization results listed by descending order.
+  repeated LocalizedResultProto localized_results = 3;
+}
+
+message SdLocalizationProto {
+  optional LiteHeader header = 1;
+  optional EhpV2LocalizationProto ehp_v2_localization = 2;
+  optional SdRouteLocalizationProto sd_route_localization = 3;
+}

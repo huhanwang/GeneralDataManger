@@ -1,0 +1,97 @@
+
+syntax = "proto2";
+
+package snoah.labeling;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "offboard/labeling/proto/label.proto";
+import "offboard/labeling/proto/tl_label.proto";
+import "offboard/labeling/proto/tl_label_v2.proto";
+import "offboard/labeling/proto/tl_data.proto";
+import "offboard/labeling/proto/traffic_sign.proto";
+import "offboard/labeling/proto/free_space_label.proto";
+import "offboard/labeling/proto/work_state_label.proto";
+import "offboard/labeling/proto/road_geometry_label.proto";
+import "offboard/labeling/proto/image_anomaly.proto";
+import "offboard/labeling/proto/image_anomaly_ad4.proto";
+import "offboard/labeling/proto/fisheye_freespace_label.proto";
+import "offboard/labeling/proto/parking_bev_label.proto";
+import "onboard/proto/prediction.proto";
+import "onboard/proto/localization.proto";
+import "offboard/labeling/proto/tl_state_label.proto";
+import "offboard/labeling/proto/occupancy_prt_label.proto";
+import "onboard/proto/perception/fusion/fused_bev_road_geometry.proto";
+import "onboard/proto/perception/lidar/lidar_perception_net_result.proto";
+import "onboard/proto/perception/vision/bev_road_geometry.proto";
+import "onboard/proto/perception/vision/bev_detection_keypoint.proto";
+
+// Used to work with playback or simulation system.
+message LabelFrameProto {
+  enum LabelFrameType {
+    UNKNOWN = 0;
+    DPC = 1;  // field 3, 4, 9
+    // filed 11 (newly added since 2023.08.30 by zhuqin)
+    TRAFFIC_LIGHT_V2 = 2;                    // field 16, 17 (without 7)
+    CMAERA_2D_DETECTION = 3;                 // field 11
+    CMAERA_TRAFFIC_SIGN = 4;                 // field 10
+    CMAERA_FREESPACE = 5;                    // field 13
+    CMAERA_WORK_STATE = 6;                   // field 14
+    CAMERA_ROAD_GEOMETRY = 7;                // field 15
+    ONLY_3D_LABEL = 8;                       // field 3, 4
+    IMAGE_ANOMALIES = 9;                     // field 18
+    PARKING_BEV_LABEL = 10;                  // field 19
+    OCC = 11;                                // field 24
+    FISHEYE_FREESPACE = 12;                  // field 25
+    IMAGE_ANOMALIES_AD4_FRONT = 13;          // field 26
+    IMAGE_ANOMALIES_AD4_SIDE_AND_REAR = 14;  // field 27
+  }
+  optional LiteHeader header = 1;
+  optional int32 frame_id = 2;
+  repeated Label labels = 3;          // Smooth labels
+  repeated Label camera_labels = 35;  // Interpolate to camera timestamp
+  repeated Label atl_labels = 36;     // Interpolate to atl timestamp
+  message BevDetectionKeypointArray {
+    repeated BevDetectionKeypointProto bev_detection_keypoints = 1;
+  }
+  repeated BevDetectionKeypointArray bev_detection_keypoints = 34;
+  repeated Label label_labels = 28;    // Original labels
+  repeated Label vehicle_labels = 29;  // VCS labels
+  repeated Zone zones = 4;             // Smooth zones
+  repeated Zone label_zones = 30;      // Original zones
+  repeated Zone vehicle_zones = 31;    // VCS zones
+  optional VehiclePoseProto pose = 6;  // Vehicle pose in smooth coordinate
+  optional VehiclePoseProto camera_pose =
+      37;                                   // Vehicle pose in camera timestamp
+  optional VehiclePoseProto atl_pose = 38;  // Vehicle pose in atl timestamp
+  repeated tflabeling.TLLabelingDataProto traffic_light_labeling_data = 7;
+  optional double timestamp = 8;
+  repeated ImageLabels image_labels = 9;
+  optional traffic_sign.CameraFrames traffic_sign_camera_frame = 10;
+  optional CameraFrame camera_frame = 11;  // full 2d image info
+  optional LabelFrameType type = 12;
+  optional free_space_label.FreeSpaceLabelProto freespace = 13;
+  optional work_state_label.PRTLabeledWorkState work_state = 14;
+  optional road_geometry_label.RoadGeometryLabelProto road_geo_label = 15;
+  optional snoah.tflabelingv2.FrameLabelingData tlv2_data = 16;
+  optional snoah.tl_data_v2.FrameData tlv2_for_labeling = 17;
+  optional image_anomaly.ImageAnomalyLabel image_anomaly_label = 18;
+  optional parking_bev_label.ParkingBevLabelProto parking_bev_label = 19;
+  optional ObjectsPredictionProto prediction_proto = 20;
+  optional FusedBevRoadGeometryProto fused_bev_road_geometry_proto = 21;
+  optional LocalizationDebugProto localization_debug_proto = 22;
+  optional tl_state_label.TrafficLightStates traffic_light_states = 23;
+  optional occupancy_prt.OccupancyPrtLabelProto occupancy = 24;
+  optional fisheye_freespace_label.FreeSpaceSequenceLabelProto
+      fisheye_freespace_label = 25;
+  optional image_anomaly_ad4.ImageAnomalyFront image_anomaly_front_label = 26;
+  optional image_anomaly_ad4.ImageAnomalySideAndRear
+      image_anomaly_side_and_rear_label = 27;
+  optional LidarPerceptionNetResultProto lidar_only_semantic_label = 32;
+  repeated BevGroundMarkingProto bev_ground_marking = 33;
+  reserved 5;
+  // Next ID: 40.
+}
+
+message LabelFramesProto {
+  repeated LabelFrameProto frames = 1;
+}

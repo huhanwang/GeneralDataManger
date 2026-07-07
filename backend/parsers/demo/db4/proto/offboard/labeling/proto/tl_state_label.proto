@@ -1,0 +1,115 @@
+
+
+syntax = "proto2";
+package snoah.tl_state_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/tl_state_label";
+
+// one status per drive direction
+message TrafficLightState {
+  enum Status {
+    UNKNOWN = 0;          // default, not labeled
+    NO_EXIST = 1;         // light boby invisible and bulb invisible
+    EXIST = 2;            // light boby visible and bulb visible
+    BULB_UNKNOWN = 3;     // light boby visible but bulb invisible
+    BULB_BLUR_BOUND = 4;  // light shape is blurring
+  }
+  optional Status status = 1;
+
+  // go no-go label, Red means no, green/yellow means yes
+  enum Color {
+    TL_UNKNOWN = 0;
+    TL_RED = 1;
+    TL_YELLOW = 2;
+    TL_GREEN = 3;
+  }
+
+  enum Occluded {
+    NO_OCCLUDED = 0;
+    FULL_OCCLUDED = 1;
+    OCC_UNKNOWN = 2;
+  }
+  optional Color color = 2;
+  optional bool blink = 3;
+  optional Occluded occluded = 4;
+  optional double tl_distance = 5;  // PRT使用，记录自车到交通灯的距离
+}
+
+enum DriveStatus {
+  DS_UNKNOWN = 0;         // 未知行驶状态
+  DS_GOING_STRAIGHT = 1;  // 自车直行
+  DS_TURNING = 2;  // 考虑转弯过程中状态变化频繁，clip 按逐帧切分
+}
+
+enum FilterReason {
+  FR_UNKNOWN = 0;          // 未过滤
+  FR_NO_BULB = 1;          // 无灯泡
+  FR_IN_INTERSECTION = 2;  // 路口内
+}
+
+enum LabelStatus {
+  UNKNOWN = 0;
+  VALID = 1;
+  INVALID = 2;
+}
+
+enum CrossByTrafficLight {
+  CROSS_BY_UNKNOWN = 0;
+  CROSS_BY_TRAFFIC_LIGHT = 1;
+  NOT_CROSS_BY_TRAFFIC_LIGHT = 2;
+}
+
+// for training
+message TrafficLightStates {
+  optional TrafficLightState circle = 1;
+  optional TrafficLightState arrow_up = 2;
+  optional TrafficLightState arrow_left = 3;
+  optional TrafficLightState arrow_right = 4;
+  optional TrafficLightState arrow_uturn = 5;
+  optional DriveStatus drive_status = 6;    // 单帧行驶状态
+  optional FilterReason filter_reason = 7;  // 过滤原因
+  optional bool nearby_stopline = 8;
+  optional LabelStatus label_status = 9;
+  optional CrossByTrafficLight cross_by_traffic_light = 10
+      [default = CROSS_BY_UNKNOWN];
+}
+
+// for snippet label
+message TrafficLightClipStates {
+  optional TrafficLightStates traffic_light_state = 1;
+  optional DriveStatus drive_status = 2;  // clip行驶状态
+  enum Scene {
+    NORMAL = 0;                                // 默认常规场景
+    Y_TYPE = 1;                                // Y字形路口
+    LANE_LEVEL_TRAFFIC_LIGHT = 2;              // 存在车道级灯
+    AMBIGUITY = 3;                             // 存在模糊情况
+    PASS_THROUGTH = 4;                         // 穿透到下一路口
+    TRAFFIC_LIGHTS_ON_THE_SECONDARY_ROAD = 5;  // 辅路有红绿灯
+    WARNING_LIGHT = 6;                         // 警示灯
+    LIGHTS_ON_FRONT_BACK_OF_VIADUCT = 7;       // 高架桥前后都有灯
+    LIGHTS_UNDER_VIADUCT = 8;                  // 高架桥下有灯
+    LIGHTS_ABOVE_THE_TUNNEL = 9;               // 涵洞或者桥洞上方有灯
+    BEND = 10;                                 // 弯道
+    MULTIPE_LIGHT_SHAPES_IN_ONE_BOX = 11;  // 一个灯箱里有多个不同形状的灯泡
+    BUS_SPECIAL_LIGHTS = 12;               // 公交车专用灯
+    REFLECTIVE_LIGHTS = 13;                // 反光
+    LOW_BRIGHTNESS = 14;                   // 灯泡亮度低, 较暗
+    SHORT_LIGHT_POLE = 15;                 // 临时灯等比较矮杆的灯
+  }
+  optional Scene scene = 3 [deprecated = true];  // 保留旧字段以保持兼容性
+
+  // continuous [start_timestamp, end_timestamp), start_timestamp of current
+  // snippet must be the end_timestamp of previous snippet
+  optional double start_timestamp = 4;
+  optional double end_timestamp = 5;
+  optional bool nearby_stopline = 6;
+  optional LabelStatus label_status = 7;
+  optional bool is_blurring = 8;  // 是否是模糊边界区域
+  optional CrossByTrafficLight cross_by_traffic_light = 9
+      [default = CROSS_BY_UNKNOWN];
+  repeated Scene scene_tags = 10;  // 新的 repeated 字段，使用新的字段编号
+}
+
+// for human label
+message TrafficLightClips {
+  repeated TrafficLightClipStates traffic_light_clip = 1;
+}

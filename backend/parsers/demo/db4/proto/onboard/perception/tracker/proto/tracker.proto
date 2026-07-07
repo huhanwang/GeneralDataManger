@@ -1,0 +1,327 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/proto/tracker";
+
+import "onboard/params/v2/proto/lidar/common.proto";
+import "onboard/math/geometry/proto/aabox.proto";
+import "onboard/proto/lite_camera.proto";
+
+enum MovingStateDebugProto {
+  MSD_IsStaticByNaiveTooSlowIsStaticPhilosophy = 0;
+  MSD_IsMovingByNaiveRadarMeasurementa = 1;
+  MSD_IsStaticByNaiveFenVelocity = 2;
+  MSD_IsStaticByStaticObjectZone = 3;
+  MSD_IsStaticByType = 4;
+  MSD_IsUnknownByTrackIsAtBegining = 5;
+  MSD_IsUnknownByDoNotHaveEnoughInformation = 6;
+  MSD_NoJudge = 7;
+  MSD_IsStaticByMotionPillar = 8;
+  MSD_IsStaticByStaticRadarMeasurement = 9;
+  MSD_IsStaticByBevProto = 10;
+  MSD_IsStaticByHeadingCross = 11;
+  MSD_IsStaticByLidarVelocity = 12;
+}
+
+enum MotionFilterParamType {
+  MFPT_CAR_MODEL_HIGHWAY_CAR_CLOSE = 1;
+  MFPT_CAR_MODEL_HIGHWAY_CAR_MID = 2;
+  MFPT_CAR_MODEL_HIGHWAY_CAR_FAR = 3;
+
+  MFPT_CAR_MODEL_HIGHWAY_CYC_CLOSE = 4;
+  MFPT_CAR_MODEL_HIGHWAY_CYC_MID = 5;
+  MFPT_CAR_MODEL_HIGHWAY_CYC_FAR = 6;
+
+  MFPT_CAR_MODEL_URBAN_CAR_CLOSE = 7;
+  MFPT_CAR_MODEL_URABN_CAR_MID = 8;
+  MFPT_CAR_MODEL_URBAN_CAR_FAR = 9;
+
+  MFPT_CAR_MODEL_URBAN_CYC_CLOSE = 10;
+  MFPT_CAR_MODEL_URABN_CYC_MID = 11;
+  MFPT_CAR_MODEL_URBAN_CYC_FAR = 12;
+
+  MFPT_POINT_MODEL_MOVING_CLOSE = 13;
+  MFPT_POINT_MODEL_MOVING_MID = 14;
+  MFPT_POINT_MODEL_MOVING_FAR = 15;
+
+  MFPT_POINT_MODEL_STATIC_CLOSE = 16;
+  MFPT_POINT_MODEL_STATIC_MID = 17;
+  MFPT_POINT_MODEL_STATIC_FAR = 18;
+
+  MFPT_POINT_MODEL_PED_CLOSE = 19;
+  MFPT_POINT_MODEL_PED_MID = 20;
+  MFPT_POINT_MODEL_PED_FAR = 21;
+
+  MFPT_POINT_MODEL_CYC_CLOSE = 22;
+  MFPT_POINT_MODEL_CYC_MID = 23;
+  MFPT_POINT_MODEL_CYC_FAR = 24;
+
+  // camera tracker.
+  MFPT_CAMERA_CAR_MODEL = 33;
+  MFPT_CAMERA_POINT_MODEL = 34;
+
+  // radar tracker.
+  MFPT_RADAR_POINT_MODLE = 35;
+  MFPT_RADAR_CAR_MODLE = 36;
+
+  // speed filter.
+  MFPT_SPEED_FILTER = 37;
+
+  // aeb tracker.
+  MFPT_AEB_CAR_MODEL_HIGHWAY_CAR_CLOSE = 38;
+  MFPT_AEB_CAR_MODEL_HIGHWAY_CYC_CLOSE = 39;
+  MFPT_AEB_POINT_MODEL_PED_CLOSE = 40;
+  MFPT_AEB_POINT_MODEL_CYC_CLOSE = 41;
+  MFPT_AEB_POINT_MODEL_MOVING_CLOSE = 42;
+
+  // deprecated.
+  MFPT_HIGHWAY_CAR_MODEL_CTRA_CAR = 25 [deprecated = true];
+  MFPT_HIGHWAY_CAR_MODEL_CTRA_CYC = 26 [deprecated = true];
+  MFPT_URBAN_CAR_MODEL_CTRA_CAR = 27 [deprecated = true];
+  MFPT_URBAN_CAR_MODEL_CTRA_CYC = 28 [deprecated = true];
+  MFPT_POINT_MODEL_CA = 29 [deprecated = true];
+  MFPT_POINT_MODEL_CP = 30 [deprecated = true];
+  MFPT_POINT_MODEL_CA_PED = 31 [deprecated = true];
+  MFPT_POINT_MODEL_CA_CYC = 32 [deprecated = true];
+  MFPT_DUMMY_MAX = 127;
+}
+
+enum TrackRangeType {
+  kRangeClose = 0;  // [0-10] m
+  kRangeMid = 1;    // [10-70] m
+  kRangeFar = 2;    // [70-+oo] m
+}
+
+enum TrackerEngineType {
+  TET_GENERAL_TRACKER = 0;
+  TET_BOX_TRACKER = 1;
+  TET_AEB_TRACKER = 2;
+}
+
+message TrackMeasurementSourceTypeManagerParamProto {
+  optional double min_radar_vel_to_create_track = 1 [default = 5.0];  // m/s
+  repeated LidarModel lidar_model_list =
+      2;  // default = {LIDAR_RS_M1, LIDAR_PANDAR_AT128}
+}
+
+message TrackLifeManagerParamProto {
+  optional double max_distance_to_immediately_promote = 1;  // m
+  optional double min_area_to_immediately_promote = 2;    // m^2, width x length
+  optional double min_length_to_immediately_promote = 3;  // m
+
+  optional double time_duration_e1 = 4;   // s, time duration for meas counting.
+  optional double time_duration_e3 = 5;   // s
+  optional double time_threshold_e1 = 6;  // s, time to last seen threshold.
+
+  optional double max_time_for_init_to_idle = 7 [deprecated = true];  // s
+
+  optional double near_region_max_distance = 8;    // <= 70m
+  optional double middle_region_max_distance = 9;  // 70~100m
+
+  optional double max_allowed_no_update_time_for_osm_only_track = 14
+      [default = 0.1];  // s
+  optional double max_allowed_no_update_time_for_onroad_track = 15
+      [default = 0.35];  // s
+  optional double max_allowed_no_update_time_for_offroad_track = 16
+      [default = 0.35];  // s
+  optional double max_allowed_no_update_time_for_certain_static_track = 17
+      [default = 0.1];  // s
+  optional double max_allowed_no_update_time_for_init_to_idle = 18
+      [default = 0.1];  // s
+  optional double max_allowed_no_update_time_for_traffic_barricades_track = 19
+      [default = 0.65];  // s
+
+  // The minimum number of updates of each track before it is promoted.
+  optional int32 num_updates_to_promote_for_near_region = 10;    // 0~70m
+  optional int32 num_updates_to_promote_for_middle_region = 11;  // 70~100m
+  optional int32 num_updates_to_promote_for_far_region = 12;     // >100m
+  optional TrackerEngineType tracker_engine_type = 13;
+}
+
+message TrackerConfigFileListProto {
+  optional string laser_associator_config_file = 1;
+  optional string radar_associator_config_file = 2;
+  optional string bev_camera_associator_config_file = 3;
+  optional string front_camera_associator_config_file = 4;
+  optional string camera_keypoint_associator_config_file = 5;
+  optional string camera_vidar_associator_config_file = 6;
+  optional string track_life_manager_config_file = 7;
+  optional string track_measurement_source_type_manager_config_file = 8;
+  optional string tracker_updater_config_file = 9;
+  optional string traffic_barricade_camera_associator_config_file = 11;
+}
+
+message TrackerConfigProto {
+  optional TrackerConfigFileListProto file_list_config = 1;
+  enum Module {
+    AEB = 1;
+    TRACKER = 2;
+    UNKNOWN = 3;
+  }
+  optional Module module = 2 [default = TRACKER];
+}
+
+message TrackerUpdaterConfigProto {
+  optional double mono3d_incremental_noise = 1;
+  optional TrackerEngineType tracker_engine_type = 2;
+  optional double mono3d_heading_noise_factor = 3;
+}
+
+enum ShooterStateDebugProto {
+  SSD_IsShooterByHugeSpeed = 0;
+  SSD_IsShooterByMaxAccCheck = 1;
+  SSD_IsShooterByHugeUnknownCheck = 2;
+  SSD_IsShooterByBboxCenterAverageMovingSantityCheck = 3 [deprecated = true];
+  SSD_IsShooterByDetBboxCenterMovingConsistencyCheck = 4;
+  SSD_NoEvidenceAsShooter = 5;
+  SSD_NotInShootRangeOfShooterKiller = 6;
+  SSD_NoJudge = 7;
+  SSD_IsShooterByBboxCenterAverageMovingSantityCheckBev = 8;
+  SSD_IsShooterByBboxCenterAverageMovingSantityCheckLaser = 9;
+  SSD_IsShooterByBboxCenterAverageMovingSantityCheckParkingBev = 10;
+  SSD_IsShooterByKeyPointAverageMovingSantityCheckParkingBev = 11;
+}
+
+// For  prt image IOU matching.
+message ObjectImagePatchInfo {
+  optional CameraId camera_id = 1;
+  optional double timestamp = 2;
+  optional AABox2iProto bbox_2d = 3;
+}
+
+enum ObjectPositionCategory {
+  OPC_OTHER = 0;
+  OPC_CIPV = 1;
+  OPC_SCIPV = 2;
+  OPC_LEFT_NEIGHBOR = 3;
+  OPC_RIGHT_NEIGHBOR = 4;
+  OPC_FRONT_LEFT_NEIGHBOR = 5;
+  OPC_FRONT_RIGHT_NEIGHBOR = 6;
+  OPC_REAR_LEFT_NEIGHBOR = 7;
+  OPC_REAR_RIGHT_NEIGHBOR = 8;
+  OPC_REAR = 9;
+  // Vehicles other than cipv and scipv in front of host lane
+  OPC_FRONT_OTHER_IN_HOST_LANE = 10;
+}
+
+enum MotionFilterInitializationStatus {
+  MFIS_JustInitialized = 0;
+  MFIS_PartiallyInitialized = 1;
+  MFIS_FullyInitialized = 2;
+}
+
+message VehicleStatus {
+  enum RunningMode {
+    RM_UNKNOWN = 0;
+    RM_DRIVING = 1;
+    RM_PARKING = 2;
+    RM_PRIMARY_DRIVING = 3;
+  }
+  enum AssistState {
+    AS_UNKNOWN = 0;
+    AS_NOA_ACTIVE = 1;
+    AS_HPP_ACTIVE = 2;
+    AS_APA_ACTIVE = 3;
+  }
+  optional RunningMode running_mode = 1 [default = RM_DRIVING];
+  optional AssistState assist_state = 2;
+  optional bool door_open_or_mirror_fold = 3 [default = false];
+}
+
+message TrackerConfigParamsProto {
+  enum MainSensorType {
+    BEV = 0;
+    LIDAR = 1;
+  }
+  enum SensorConfig {
+    SENSOR_1L_11V_1R = 0;
+    SENSOR_11V_1R = 1;
+    SENSOR_10V_5R = 2;
+  }
+
+  required TrackerConfigProto tracker_config_proto = 1;
+
+  optional SensorConfig sensor_config = 2;
+  optional MainSensorType main_sensor = 3;
+  optional bool enable_camera_measurement = 4;
+  optional bool enable_radar_measurement = 5;
+  optional bool enable_lidar_measurement = 50;
+  optional bool trigger_tracker_by_lidar = 6;
+  optional bool trigger_tracker_by_bev = 7;
+  optional bool trigger_tracker_by_parking_bev = 8;
+  optional bool active_downsampling_measurements = 9;
+  optional bool update_semantic_map_loader = 10;
+  optional bool use_external_object = 11;
+  optional bool promote_lastest_parking_objects = 12;
+  optional bool tracker_sub_pose_proto = 13;
+  optional bool enable_mini_tracker_benchmark = 14;
+  optional bool judge_localization_service_valid_by_pose_valid = 15;
+
+  optional bool mini_perception = 16;
+  optional bool enable_ace_associator = 17;
+  optional bool enable_radar_roll_back = 18;
+  optional bool enable_merge_split_track = 19;
+  optional bool enable_naive_track_classifier = 20;
+  optional bool use_coordinate_converter = 21;
+  optional bool imm_prioritize_ctrv = 22;
+  optional bool imm_only_ctrv_motion_model = 23;
+
+  optional bool check_gac_special_requirement = 24;
+
+  optional bool filter_abnormal_horizon_measurement = 25;
+
+  optional bool enable_tcn_model = 26;
+
+  optional bool classifier_ro_unknown_vehicle_track_fgt_as_vehicle_unknown = 27;
+
+  optional bool merge_prioritize_bev = 28;
+  optional bool merge_compare_important_score = 29;
+
+  optional bool bev_camera_associated_track_priority = 30;
+
+  optional bool enable_ace_estimator = 31;
+  optional bool enable_ref_point_manager = 51;
+  optional bool use_output_of_speed_filter = 32;
+  optional bool use_only_parking_bev_in_parking_mode = 33;
+  optional bool skip_camera_measurement_if_lidar_update_in_duration = 34;
+  optional bool use_reliable_radar_for_init_vehicle_track = 35;
+  optional bool update_by_radar_pos = 36;
+  optional bool enable_prune_traffic_barricades_pos_by_radar = 37
+      [deprecated = true];
+  optional bool reduce_near_cipv_noise = 38;
+  optional bool enable_trackformer = 39;
+
+  optional bool enable_judge_shooter_by_laser_bbox = 40;
+
+  optional bool enable_motion_static_by_bev = 41;
+  optional bool enable_motion_static_by_heading_cross = 42;
+
+  optional bool refine_large_bbox_vel_ped_to_cyc = 43;
+  optional bool publish_refined_bbox = 44;
+
+  optional bool create_track_by_scipv_radar_not_in_bev_range = 45;
+
+  optional bool add_life_time_buffer_to_protect_no_radar_track = 46;
+
+  optional bool use_cp_model_for_unknown_or_static_obj = 47;
+
+  optional bool estimator_use_transition_offset = 48;
+
+  optional bool shrink_large_vehicle_width = 49;
+
+  optional uint32 max_track_num = 52 [default = 32];
+
+  // next id: 53
+}

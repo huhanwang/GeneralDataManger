@@ -1,0 +1,32 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/lite/vehicle_params_manager/proto/param_service_ack.proto";
+
+enum ImuCanCalibrationMode {
+  kImuCanCalibrationIdle = 0;
+  kImuCanEndOfLine = 1;  // 产线标定
+  kImuCanOnline = 2;     // 在线标定
+}
+
+message ImuCanCalibrationProto {
+  message CanCalibParamsProto {
+    optional double can_speed_scale = 1;
+    optional double can_yawrate_bias = 2;
+    optional double can_speed_rpm_scale = 3;
+  }
+  optional LiteHeader header = 1;
+  optional UpdateParamsSign sign = 2;
+  optional string calibration_time = 3;
+  optional string calibration_engineer = 4;
+  optional CanCalibParamsProto can_calib_params = 5;
+  optional ImuBiasProto imu_bias = 6;
+  optional ImuExtrinsicsProto imu_extrinsics = 7;
+  optional GnssAntennaExtrinsicsProto gnss_extrinsics = 8;
+  optional ImuCanCalibrationMode calibration_mode = 9;
+  optional int32 weight = 10;
+}

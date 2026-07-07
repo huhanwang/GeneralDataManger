@@ -1,0 +1,8 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message LiExteriorLightInfoProto {
+  optional int32 msg_turn_lght_sts_indc = 1 [default = 0];
+}

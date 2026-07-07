@@ -1,0 +1,682 @@
+
+// This code is from apollo and modified by SNoah.
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/vehicle_signal.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/pad_msg.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+enum ADASFuncCtrlMode {
+  CTRL_MODE_NO_REQUEST = 0;
+  L3_LAF_FUNCTION = 1;
+  L2_LAF_FUNCTION = 2;
+  L3_PAF_FUNCTION = 3;
+  L2_PAF_FUNCTION = 4;
+}
+
+enum ADASMainFuncReq {
+  FUNC_REQ_NONE = 0;
+  REQ_DRIVING = 1;
+  REQ_PARKING = 2;
+  REQ_DRIVING_AVP = 3;
+  REQ_PARKING_RPA = 4;
+  REQ_PARKING_AVP = 5;
+}
+
+enum ADASEpbReq {
+  EPB_REQ_NONE = 0;
+  EPB_REQ_PULLING = 1;
+  EPB_REQ_RELEASING = 2;
+}
+
+enum ControlHandShakeRequest {
+  COMPLETE_MANUAL = 0;  // for human drive
+  STEER_ONLY = 1;       // only lateral handshake
+  SPEED_ONLY = 2;       // only longitudinal handshake
+  AUTO_DRIVE = 3;       // lateral and longitudinal handshake
+}
+
+message ControlCommand {
+  optional LiteHeader header = 1;
+  // target throttle in percentage [0, 100]
+  optional double throttle = 3 [(trans_matrix) = true];
+
+  // target brake in percentage [0, 100]
+  optional double brake = 4 [(trans_matrix) = true];
+
+  // target steering angle, in percentage of full scale [-100, 100]
+  optional double steering_target = 7 [(trans_matrix) = true];
+
+  // target steering angle sent to canbus wrt steering angle bias, in percentage
+  // of full scale [-100, 100]. steering_target_wrt_bias = steering_target -
+  // steering_angle_bias / max_steer_angle * 100.0;
+  optional double steering_target_wrt_bias = 37;
+
+  // This is only used in simulation, won't affect real vehicle execution.
+  optional double curvature = 28;
+
+  // parking brake engage. true: engaged
+  optional bool parking_brake = 8 [(trans_matrix) = true];
+
+  // target speed, in m/s
+  optional double speed = 9 [(trans_matrix) = true];
+
+  // target acceleration in m`s^-2
+  optional double acceleration = 10 [(trans_matrix) = true];
+
+  // engine on/off, true: engine on
+  optional bool engine_on_off = 17;
+
+  optional Chassis.GearPosition gear_location = 20
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional Debug debug = 22;
+  optional VehicleSignal signal = 23 [(trans_matrix) = true];
+
+  optional bool door_open = 29 [default = false];
+  optional bool aeb_triggered = 32;
+
+  // Acceleration offset considering road slope.
+  optional double acceleration_offset = 33 [(trans_matrix) = true];
+
+  optional double steer_angle_bias = 34 [(trans_matrix) = true];  // in rad.
+
+  // Acceleration consider offset for calibration
+  optional double acceleration_calibration = 35;
+
+  optional CustomCommand custom_command = 36 [(trans_matrix) = true];
+
+  // steering speed wrt steering target, rad/s.
+  optional double steer_speed_target = 38;
+
+  // For torque interface vehicle only, Nm.
+  optional double torque_target = 39 [(trans_matrix) = true];
+
+  optional SpeedMode speed_mode = 40
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional double longitudinal_jerk = 41 [(trans_matrix) = true];
+
+  optional SteerMode steer_mode = 42
+      [default = ANGLE_MODE, (trans_matrix) = true, (matrix_data_type) = INT8];
+
+  optional double parking_distance = 43 [(trans_matrix) = true];
+
+  // Deprecated
+  optional PadMessage pad_msg = 25;
+
+  optional bool is_full_stop = 44;
+
+  optional bool is_drive_off = 45;
+
+  optional int32 adas_ap_mt_req = 46;
+
+  optional int32 adas_ap_mt_level = 47;
+
+  optional int32 adas_ap_mt_long = 48;
+
+  optional int32 adas_ap_comfort_brake_req = 49;
+
+  optional int32 adas_ap_veh_seq_req = 50;
+
+  optional int32 adas_ap_safe_driver_hand_over = 51;
+
+  optional int32 adas_ap_driver_presence = 52;
+
+  optional int32 adas_main_vmm_avh_req = 53;
+
+  optional int32 adas_ap_dynamic_shift_enable = 54;
+
+  optional double adas_main_vlc_ax_tar_upper_limit = 56;
+
+  optional double adas_main_vlc_ax_tar_lower_limit = 57;
+
+  optional double adas_main_vlc_ax_tar_upper_band = 58;
+
+  optional double adas_main_vlc_ax_tar_lower_band = 59;
+
+  optional ADASFuncCtrlMode adas_func_ctrl_mod = 60;
+
+  optional ADASMainFuncReq adas_main_func_req = 61;
+
+  optional ADASEpbReq adas_main_vehicle_secure_req = 62;
+
+  // 0x0:No req 0x1:High 0x2:Normal 0x3:Low（reserved）0x4:Lower（reserved）
+  optional int32 adas_ap_traj_level = 63;
+
+  optional int32 adas_steer_wheel_angle_req_valid = 64;
+
+  optional int32 adas_fault_status = 65;
+
+  optional int32 adas_steering_angle_ctrl_enable = 66;
+
+  optional int32 adas_main_ax_tar_aim = 67;
+
+  optional int32 adas_main_func_status = 68;
+
+  optional int32 adas_main_vmm_ctrl_req = 69;
+
+  optional int32 adas_main_req_adas_level = 70;
+
+  optional int32 adas_main_ax_ctrl_mode = 71;
+
+  optional int32 adas_ap_dynamic_shift_level = 72;
+
+  optional int32 park_scenario_type = 73;
+
+  optional double next_stop_distance_ref = 74;
+
+  optional int32 adas_ap_blkdtype_in_path = 75;
+
+  optional double adas_ap_traj_level_distance = 76;
+
+  optional ControlHandShakeRequest parking_handshake_req = 77;
+
+  optional double steering_angle = 78 [(trans_matrix) = true];  // in degree.
+
+  optional double steer_front_wheel_degs = 79;  // degs wrt bias.
+
+  optional double motor_torque_request = 80;  // Nms.
+
+  optional double brake_force_request = 81;  // Ns.
+
+  reserved 6, 18, 24, 26, 27, 30, 31, 55;
+}
+
+message CustomCommand {
+  optional bool low_speed_freespace = 1
+      [default = false, (trans_matrix) = true];
+}
+
+enum SteerMode {
+  ANGLE_MODE = 1;   // enable steer angle interface
+  TORQUE_MODE = 2;  // enable steer torque interface
+}
+
+message SimpleMPCDebug {
+  optional double lateral_error = 1;
+  optional double ref_heading = 2;
+  optional double heading_error = 4;
+  optional double heading_error_rate = 5;
+  optional double lateral_error_rate = 6;
+  optional double steer_percentage_feedforward = 9;
+  optional double av_s_projected_on_traj = 70;
+  optional double speed_reference = 20;
+  optional double speed_error = 21;
+  optional double acceleration_reference = 22;
+  optional double jerk_reference = 71;
+  optional double acceleration_cmd_closeloop = 26;
+  optional double acceleration_cmd = 27;
+  optional double calibration_value = 30;
+
+  optional double acceleration_feedback = 45;
+  optional double acceleration_error = 46;
+
+  optional ApolloTrajectoryPointProto lateral_matched_point = 50;
+  optional ApolloTrajectoryPointProto longitudinal_matched_point = 53;
+
+  optional double initial_error_x = 54;
+  optional double initial_error_y = 55;
+  optional double initial_error_theta = 56;
+  optional double initial_error_v = 57;
+
+  // Corresponding to steer_percentage_feedforward.
+  optional double kappa_feedforward = 59;
+
+  optional SteeringProtectionResult steering_protection_result = 69;
+  optional double jerk_cmd = 72;
+
+  reserved 3, 7, 8, 10 to 19, 23 to 25, 28, 29, 31 to 44, 47 to 49, 51 to 52,
+      58, 60 to 68;
+}
+
+message BiasEstimationDebug {
+  optional double steer_bias = 1;    // Steering wheel radians.
+  optional double heading_bias = 2;  // Degree
+  optional bool is_bias_updated = 3;
+  optional bool is_steer_calib_overbound = 4;
+  optional bool is_heading_calib_overbound = 5;
+  optional double steer_delay_online = 6;
+  optional double steer_bias_curr = 7;               // Steering wheel radians.
+  optional double heading_bias_curr = 8;             // Degree
+  optional double laterror_integ_steer_offset = 10;  // rad
+}
+
+message SteerCalibrationDebugProto {
+  optional double deadzone_gain = 1;
+  optional double speed_gain = 2;
+  optional double dynamic_gain = 3;
+  optional double post_process_gain = 4;
+  optional double steer_gap_kappa_compensate = 5;
+  optional double input_steer_kappa = 6;
+  optional double output_steer_kappa = 7;
+  optional double output_steer_percentage = 8;
+  optional double sliding_gain = 9;
+  optional double lat_acc_kappa_compensate = 10;
+  optional double input_steer_kappa_past = 11;
+  optional double roll_compensate_kappa = 12;
+  optional double roll_angle_filted = 13;
+  optional double steer_ratio = 14;
+  optional double pose_kappa_debug = 15;
+  optional double actual_kappa_decay_ratio = 16;
+}
+
+message VehPoseProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double v = 3;
+  optional double heading = 4;
+  optional double kappa = 5;
+  optional double lat_speed = 6;
+  optional double moving_direction = 7;
+}
+
+message ControlError {
+  optional double lateral_error = 1;
+  optional double heading_error = 2;
+  optional double speed_error = 3;
+  optional double station_error = 4;
+  optional double lateral_error_canbus = 5;
+  optional double acceleration_error = 6;
+  optional double steer_pct_error = 7;  // steer pct
+}
+
+message PolePlacementDebug {
+  optional double lateral_err = 1;  // m
+
+  optional double heading_err = 2;  // rad
+
+  optional double pole = 3;
+
+  optional double pole_exp = 4;  // exp(pole * kControlInterval)
+
+  optional double steer_feedback = 5;  // kappa
+
+  optional double steer_forward = 6;  // kappa
+
+  optional double steer_output = 7;  // kappa
+}
+
+message Debug {
+  optional SimpleMPCDebug simple_mpc_debug = 4;
+  optional BiasEstimationDebug bias_estimation_debug = 5;
+  optional ControlError control_error = 7;
+  optional PolePlacementDebug pole_placement_debug = 8;
+  // It is particularly designed for debug steering delay align.
+  optional double timestamp_adding_steering_delay = 9;  // Seconds.
+  optional ControlError predict_pose_control_error = 10;
+  optional double kappa_dynamic_decay = 11;
+  optional double real_fullstop_distance = 12;
+  optional double kappa_decay_ratio = 13;
+  reserved 1 to 3, 6;
+}
+
+// Next ID: 40
+message ControllerDebugProto {
+  optional LiteHeader header = 1;
+  optional MPCDebugProto mpc_debug_proto = 3;
+  optional double acceleration_offset = 4 [deprecated = true];
+  optional Vec3dProto local_normal = 5;
+
+  // The trajectory point's relative time of lateral control's reference point:
+  optional double lat_ref_relative_time = 10;
+  optional SpeedModeDebugProto speed_mode_debug_proto = 12;
+
+  optional CalibrationDebugProto calibration_debug_proto = 15;
+
+  optional bool in_emergency_stop_state = 14;
+  repeated ApolloTrajectoryPointProto emergency_stop_trajectory = 17;
+
+  optional MracDebugProto mrac_debug_proto = 18;
+
+  // Derivative of lateral acceleration, in m/s^3
+  optional double lateral_jerk = 19;
+
+  optional WireControlCheckDebugProto wire_control_check_proto = 21;
+
+  optional VehPoseProto predicted_veh_pose_proto = 22;
+  optional VehPoseProto predicted_veh_lon_pose_proto = 31;
+  optional VehPoseProto predicted_veh_lat_dm_pose_proto = 37;
+
+  optional ControlValidationResultProto validation_result_proto = 24;
+
+  optional SteerCalibrationDebugProto steer_calibration_debug_proto = 25;
+
+  optional TorqueControllerDebugProto torque_controller_debug_proto = 26;
+
+  optional ControlError predicted_error_proto = 27;
+
+  optional string active_lat_controller = 28;
+  optional string active_lon_controller = 29;
+
+  optional DmDebugProto dm_debug_proto = 33;
+  optional LonPostProcessDebugProto lon_post_process_debug_proto = 34;
+  optional VehicleStateDebug vehicle_state_debug = 35;
+  optional double longitudinal_delay = 36;
+  optional ParkingDebug parking_debug = 38;
+  optional LatLQRDebug lat_lqr_debug = 39;
+  optional VehPoseProto predicted_transition_pose_proto = 40;
+  optional double transition_ratio = 41;
+  optional ControlError predicted_dm_error_proto = 42;
+
+  message MPCDebugProto {
+    // It actually represents lat mpc reference/predicted points, don't change
+    // the value name wrt proto campatilibity.
+    repeated Vec2dProto mpc_reference_traj_point = 1;
+    repeated Vec2dProto mpc_predicted_traj_point = 2;
+    optional MpcCostInfo lateral_mpc_costs = 6;
+    repeated double t_control_mpc_result = 7;
+    repeated double s_control_mpc_result = 8;
+    repeated double step_length = 9;
+    repeated double s_control_kappa_ref = 10;
+    optional MpcCostInfo lon_mpc_costs = 11;
+    repeated Vec2dProto lon_mpc_reference_pt = 12;
+    repeated Vec2dProto lon_mpc_predicted_pt = 14;
+    optional bool is_fallback = 15;
+    optional double mpc_kappa_rate = 17;
+
+    reserved 3 to 5, 13, 16, 23, 32;
+  }
+
+  // Dynamic model debug message.
+  message DmDebugProto {
+    optional bool mpc_solved = 1;
+    repeated double front_wheel_rate_vector = 2;
+  }
+
+  message TorqueControllerDebugProto {
+    repeated double feedback_gain = 2;
+    optional double torque_sat = 5;  // torque_angle_pid+torque_speed_pid
+    optional double steer_angle_error = 6;
+    optional double steer_speed_error = 7;
+    optional double torque_angle_p = 19;
+    optional double torque_angle_i = 20;
+    optional double angle_pid_out = 8;      // torque_angle_pid
+    optional double torque_requested = 10;  // torque_sat+torque_forward
+    optional double torque_feedback = 11;   // chassis feedback driver torque
+    optional double torque_speed_p = 12;
+    optional double torque_speed_i = 13;
+    optional double torque_speed_pid = 18;  // torque_speed_pid
+    optional double torque_forward = 17;
+    optional double steer_angle_error_limited = 23;
+    optional double torque_requested_raw = 24;
+    optional double factor_bumpy_road = 25 [default = 1.0];
+    optional double factor_just_autodrive = 26 [default = 1.0];
+    optional double factor_human_intervention = 27 [default = 1.0];
+    optional double human_torque_filter = 28;
+    optional double torque_limit_step = 29;
+    optional double steer_speed_cmd_filter = 30;
+    reserved 1, 3 to 4, 14 to 16, 21 to 22;
+  }
+
+  message LonPostProcessDebugProto {
+    optional double acceleration_offset = 1;
+    optional double acc_limit_wrt_lat_jerk = 2;
+    optional double acc_limit_wrt_steer_execute_ratio = 3;
+    optional double jerk_pose = 4;
+  }
+
+  message VehicleStateDebug {
+    optional SlipDebug slip_debug = 1;
+    optional LocalizeDriftDebug localize_drift_debug = 2;
+
+    message SlipDebug {
+      optional double lateral_speed_filted = 1;
+      optional double yaw_diff_wrt_slip = 2;
+      optional double lateral_speed_raw = 3;
+    }
+
+    message LocalizeDriftDebug {
+      optional double localize_y_drift_rate = 1;
+      optional double localize_y_drift_rate_filtered = 2;
+      optional double localize_y_drift_rate_filteded_capped = 3;
+      optional double yaw_diff_wrt_localize_drift = 4;
+      optional double localize_yaw_drift_rate_filteded = 5;
+    }
+  }
+
+  reserved 2, 6 to 9, 11, 30;
+}
+
+enum SpeedMode {
+  DISABLE = 0;
+  DEC_MODE = 1;
+  ACC_MODE = 2;
+  IDLE_MODE = 3;
+}
+
+message SpeedModeDebugProto {
+  optional SpeedMode curr_speed_mode = 1;
+  optional int32 acc2dec_counter = 2;
+  optional int32 dec2acc_counter = 3;
+  optional double input_acc = 4;
+  optional double output_acc = 5;
+  optional bool standstill = 6;   // vehicle is move or not
+  optional double acc_bound = 7;  // idle acc of the vehcle
+  optional double output_value = 8;
+  optional double diff_acc = 9;
+  optional double diff_acc_last = 10;
+  optional double throttle_last = 11;
+  optional double throttle_integral = 12;
+
+  optional double diff_dec = 13;
+  optional double diff_dec_last = 14;
+  optional double brake_last = 15;
+  optional double brake_integral = 16;
+  optional double delta_value = 17;
+  optional double delta_value_p = 18;
+  optional double delta_value_i = 19;
+  optional double delta_value_d = 20;
+  optional double input_calib_value = 21;
+  optional double calib_value_raw = 24;
+  optional double acc_feedback = 25;
+  optional double acc_cmd_past = 26;
+  optional double hysteresis_upper_limit = 27;
+  optional double hysteresis_lower_limit = 28;
+  optional bool is_full_stop = 29;
+  reserved 22, 23;
+}
+
+message CalibrationDebugProto {
+  optional double acceleration_idle = 1;
+  optional double acceleration_pure = 2;
+}
+
+message CostInfo {
+  optional string name = 1;
+  optional double cost = 2;
+}
+
+message MpcCostInfo {
+  repeated CostInfo costs = 1;
+}
+
+message MracDebugProto {
+  optional double kappa_input = 2;         // kappa_in
+  optional double kappa_target_delay = 3;  // kappa_delay in
+  optional double av_kappa = 4;            // av_kappa
+  optional double kappa_error = 6;         // e
+  optional double input_gain = 8;          // Kr
+  optional double input_delta_gain = 9;    // delta_Kr
+  optional double state_gain = 10;         // Kx
+  optional double state_rate_gain = 11;    // delta_Kx
+  optional double kappa_forward = 12;      // Kr*input + Kx*state
+  optional double kappa_feedback = 13;     // Ke*kappa_error
+  optional double kappa_cmd = 15;          // kappa_out
+  reserved 1, 5, 7, 14;
+}
+
+message WireControlCheckDebugProto {
+  optional double kappa_error = 5;
+  optional double kappa_rate_error = 6;
+  optional double steer_error = 12;  // steer wheel angle error, rad
+  optional double brake_response_rate = 13;
+  optional bool lon_abnormal = 15;
+  optional bool lat_abnormal = 16;
+  optional string auto_steer_state = 17 [default = "NON"];
+  optional string auto_speed_state = 18 [default = "NON"];
+
+  reserved 1 to 4, 7 to 11, 14;
+}
+
+message SteeringProtectionResult {
+  optional double kappa_rate_limit_static = 1;
+  optional double kappa_rate_limit_wrt_lat_jerk = 2;
+  // Ts_pk_mpc lateral controller output constraint, a vector of mpc control
+  // horizon.
+  repeated double kappa_output_upper = 3;
+  repeated double kappa_output_lower = 4;
+  // Tob_ts_pk_mpc lateral controller output constraint, all the same among mpc
+  // control horzion.
+  optional double kappa_rate_upper = 5;
+  optional double kappa_rate_lower = 6;
+
+  optional double kappa_limit_wrt_geometry = 9;
+  optional double kappa_limit_wrt_lat_a = 10;
+  optional double kappa_limit_wrt_steer_angle_max = 13;
+  optional double kappa_limit_wrt_steer_angle_min = 14;
+  optional double kappa_rate_limit_wrt_traj = 15;
+  optional double kappa_limit_wrt_traj = 16;
+  optional double kappa_limit_upper = 17;
+  optional double kappa_limit_lower = 18;
+  reserved 7, 8, 11, 12;
+}
+
+message ControlValidationResultProto {
+  enum ErrorCode {
+    UNKNOWN_ERROR = 0;
+    ACCELERATION_OVER_LIMIT = 1;
+    CALIBRATION_RESULT_OVER_LIMIT = 2;
+    CURVATURE_OVER_LIMIT = 3;
+    STEERING_COMMAND_OVER_LIMIT = 4;
+    MPC_PREDICTION_ABNORMAL = 5;
+  }
+
+  optional ErrorCode error_code = 1;
+  optional string error_message = 2;
+}
+
+message LonControllerOutputProto {
+  optional LiteHeader header = 1;
+  repeated double t_control_acc_vec = 2;
+  optional bool is_standstill = 3;
+}
+
+message HumanDriveTurnLightControlRequest {
+  enum TurnOffLight {
+    TURN_OFF_NONE = 0;
+    TURN_OFF_LEFT_LIGHT = 1;
+    TURN_OFF_RIGHT_LIGHT = 2;
+  }
+  optional TurnOffLight turn_off_light = 1;
+}
+
+// control cmd from hmi, or pnc not care
+message VehicleControlCommand {
+  optional LiteHeader header = 1;
+
+  optional PadMessage pad_msg = 2
+      [(trans_matrix) = true];  // only add api,not needed for now
+
+  optional bool high_beam = 3 [(trans_matrix) = true];
+
+  optional bool hma_state_enable = 4 [(trans_matrix) = true];
+
+  optional bool is_avh_req = 5;
+
+  optional bool emergency_light = 6;
+
+  optional bool is_driver_stand_up = 7;
+
+  optional HumanDriveTurnLightControlRequest
+      human_drive_turn_light_control_request = 8;
+
+  optional bool is_e_call_req = 9;
+}
+
+message ParkingDebug {
+  optional bool is_fullstop = 1;
+  optional bool is_standstill = 2;
+  optional bool is_stationary_steering = 3;
+  optional bool is_reset_lon_controller = 4;
+  optional bool is_reset_lat_controller = 5;
+  optional double stationary_kappa_target = 6;
+  optional double stop_s = 7;
+  optional bool is_path_stop_mode = 8;
+  optional bool is_dynamic_shift_gear = 9;
+  optional double v_pose_abs = 10;  // |m/s|
+  optional int32 steer_back_to_center_stage = 11;
+  optional bool is_steer_back_in_advance = 12;
+}
+
+message LatLQRDebug {
+  optional double lqr_ff_look_ahead_ref_kappa = 1;
+  optional double lqr_ff_preview_length = 2;
+  optional double lqr_ff_steer_angle = 3;  // rad
+
+  optional double steer_angle_latral_error = 4;        // rad
+  optional double steer_angle_lateral_error_rate = 5;  // rad
+  optional double steer_angle_heading_error = 6;       // rad
+  optional double steer_angle_heading_error_rate = 7;  // rad
+  // lqr_fb_steer_angle 8 = 4 + 5 + 6 + 7
+  optional double lqr_fb_steer_angle = 8;               // rad
+  optional double lqr_ff_steer_angle_compensate = 9;    // rad
+  optional double lqr_steer_angle_gap_compensate = 10;  // rad
+  optional double lqr_eps_zero_learning = 11;           // rad
+  // lqr_target_steer_angle 13 = 8 + 9 + 10 + 11
+  optional double lqr_steer_angle_speed = 12;   // rad/s
+  optional double lqr_target_steer_angle = 13;  // rad
+}
+
+message AdControlDebugProto {
+  optional LiteHeader header = 1;
+  optional double fade_in_time = 2;
+  optional int32 control_mode = 3;
+  optional int32 plan_action = 4;
+  optional int32 coordinate_type = 5;
+
+  optional double ego_x = 6;
+  optional double ego_y = 7;
+  optional double ego_theta = 8;
+  optional double vehiclespeed_mps = 9;
+  optional double vehicles_acceleration = 10;
+  optional double yaw_rate = 11;
+  optional double vehicle_steer_angle = 12;
+  optional double lateral_speed = 13;
+  optional double lateral_acceleration = 14;
+  optional int32 gear = 15;
+  optional bool brake_pedal_applied = 16;
+  optional int32 accel_pedal_position = 17;
+  optional double driver_hand_torque = 18;
+  optional double steering_angle_speed = 19;
+  optional AdControlMpcDebugProto mpc_debug = 20;
+
+  message AdControlMpcDebugProto {
+    optional double fb_acc_cmd = 1;
+    optional double ff_acc_cmd = 2;
+    optional double fb_ref_point_y = 3;
+    optional double fb_ref_point_theta = 4;
+    optional double ref_point_a = 5;
+    optional double ref_point_v = 6;
+    optional double speed_error = 7;
+    optional double station_error = 8;
+    optional double lateral_error = 9;
+    optional double lateral_error_rate = 10;
+    optional double heading_error = 11;
+    optional double heading_error_rate = 12;
+    optional double fb_steer_angle = 13;
+    optional double ff_steer_angle = 14;
+    optional double target_steer_angle = 15;
+    optional double ff_curvature = 16;
+    optional double adas_ap_vmax = 17;
+    optional double adas_ap_stop_distance = 18;
+    optional bool lateral_stop_mode_flag = 19;
+    optional double curvature_feedforward_gain_for_stop_mode = 20;
+    optional double remain_distance_th_for_stop_mode = 21;
+  }
+}

@@ -1,0 +1,22 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/system_state.proto";
+
+message ModuleStartupCommandProto {
+  message ModuleInfo {
+    optional string module_name = 1;
+    optional string full_node_name = 2;
+  }
+  optional LiteHeader header = 1;
+  repeated ModuleInfo modules_to_startup = 2;
+  repeated string nodes_graceful_shutdown_notified = 3;
+  enum ExitState {
+    ALL = 0;
+    NOT_BASIC = 1;
+  }
+  optional ExitState exit_state = 4;
+  repeated SystemModuleState ack_module_states = 5;
+}

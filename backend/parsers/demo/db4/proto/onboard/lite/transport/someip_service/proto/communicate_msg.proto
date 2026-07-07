@@ -1,0 +1,20 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message CheckVersionRequest {
+  optional string input_value = 1;
+}
+
+message CheckVersionResponse {
+  optional string version = 1;
+}
+
+message CommMsgWrapper {
+  optional int32 tag_number = 1;
+  oneof someip_msg {
+    CheckVersionRequest check_version_request = 2;
+    CheckVersionResponse check_version_response = 3;
+  }
+}

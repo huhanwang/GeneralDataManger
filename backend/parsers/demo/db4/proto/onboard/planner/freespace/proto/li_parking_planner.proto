@@ -1,0 +1,205 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+message Pose2D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double theta = 3;
+}
+
+message ParkingPathInfo {
+  repeated Pose2D points = 1;
+}
+
+message StateInfo {
+  enum ParkingTurnLight {
+    TURN_LIGHT_NONE = 0;
+    TURN_LIGHT_LEFT = 1;
+    TURN_LIGHT_RIGHT = 2;
+    TURN_LIGHT_BOTH = 3;
+  }
+  enum FinishReason {
+    FINISH_NONE = 0;
+    FINISH_NORMAL_APA = 1;
+    FINISH_NORMAL_AVP = 2;
+    FINISH_TIMEOUT = 10;
+  }
+  enum PlanBehavior {
+    PLAN_BEHABIOR_INIT = 0;
+    PLAN_BEHABIOR_WAIT_FOR_PEDESTRIAN = 1;
+    PLAN_BEHABIOR_WAIT_FOR_VEHICLE = 2;
+    PLAN_BEHABIOR_NUDGE_VEHICLE = 3;
+    PLAN_BEHABIOR_WAIT_FOR_CROSS_VEHICLE = 4;
+    PLAN_BEHABIOR_WAIT_FOR_CROSS_PEDESTRIAN = 5;
+    PLAN_BEHABIOR_THROUGH_JUNCTION = 6;
+    PLAN_BEHABIOR_NUDGE_OTHER = 7;
+  };
+
+  enum ParkPlanBehavior {
+    PLAN_BEHAVIOR_NONE = 0;
+    PLAN_BEHAVIOR_WAIT_FOR_CROSS_PEDESTRIAN = 1;
+    PLAN_BEHAVIOR_WAIT_FOR_CROSS_VEHICLE = 2;
+    PLAN_BEHAVIOR_WAIT_FOR_PEDESTRIAN = 3;
+    PLAN_BEHAVIOR_WAIT_FOR_VEHICLE = 4;
+    PLAN_BEHAVIOR_WAIT_FOR_RAIL = 5;
+    PLAN_BEHAVIOR_NUDGE_VEHICLE_LEFT = 6;
+    PLAN_BEHAVIOR_NUDGE_VEHICLE_RIGHT = 7;
+    PLAN_BEHAVIOR_NUDGE_PEDESTRIAN_LEFT = 8;
+    PLAN_BEHAVIOR_NUDGE_PEDESTRIAN_RIGHT = 9;
+    PLAN_BEHAVIOR_NUDGE_OTHER_LEFT = 10;
+    PLAN_BEHAVIOR_NUDGE_OTHER_RIGHT = 11;
+    PLAN_BEHAVIOR_THROUGH_JUNCTION = 12;
+    PLAN_BEHAVIOR_THROUGH_BUMP = 13;
+    PLAN_BEHAVIOR_THROUGH_GATE = 14;
+    PLAN_BEHAVIOR_STOP_BY_GATE = 15;
+    PLAN_BEHAVIOR_PREPARE_DEAD_END_PARKING = 16;
+    PLAN_BEHAVIOR_RESERVE = 17;
+  };
+
+  optional int32 tar_slot_id = 1;
+  optional ParkingTurnLight turn_light = 2;
+  optional FinishReason finish_reason = 3;
+  optional uint32 apo_direction_planning = 4;
+  optional uint32 apo_direction_recommend = 5;
+  optional uint32 park_offset_recommend = 6;
+  optional uint32 park_offset_middle_status = 7;
+  optional uint32 park_offset_left_status = 8;
+  optional uint32 park_offset_right_status = 9;
+  optional PlanBehavior plan_behavior = 10;
+  optional ParkPlanBehavior park_plan_behavior = 11;
+  optional bool enable_apa_in_avp = 12;
+}
+
+message ParkingPlanningState {
+  enum PlanResult {
+    RESULT_INACTIVE = -1;
+    RESULT_OK = 0;
+    RESULT_FAIL = 1;
+    RESULT_FINISH = 2;
+
+    PLAN_MSG_VEH_STA_TIMEOUT = 10;
+    PLAN_MSG_ODOM_TIMEOUT = 11;
+    PLAN_MSG_BEHAVIOR_TIMEOUT = 12;
+    PLAN_MSG_SLOT_TIMEOUT = 13;
+    PLAN_MSG_ENV_TIMEOUT = 14;
+
+    PLAN_FAIL_NO_REFERENCE_LINE = 20;
+    PLAN_FAIL_NO_DP_PATH_RESULT = 21;
+    PLAN_FAIL_NO_QP_PATH_RESULT = 22;
+    PLAN_FAIL_NO_DP_SPEED_RESULT = 23;
+    PLAN_FAIL_NO_QP_SPEED_RESULT = 24;
+    PLAN_FAIL_AVP_HYBRID_ASTAR = 25;
+  }
+  enum PlanState {
+    PLAN_STATE_IDLE = 0;
+    PLAN_STATE_RUNNING = 1;
+    PLAN_STATE_PAUSE = 2;
+    PLAN_STATE_QUIT = 3;
+  }
+
+  optional PlanResult result = 1;
+  optional uint32 stop_reason = 2;
+  optional uint32 finish_reason = 3;
+  optional StateInfo state_info = 4;
+  optional uint32 error_code = 5;
+  optional float collision_s_offset = 6;
+  optional float step_total_distance = 7;
+  optional float step_remain_distance = 8;
+  optional float total_distance = 9;
+  optional float remain_distance = 10;
+  optional uint32 total_holdsteer_times = 11;
+  optional uint32 remain_holdsteer_times = 12;
+  optional uint32 apo_direction_planning = 13;
+  optional uint32 apo_direction_recommend = 14;
+  optional bool is_final_trajectory = 15;
+  optional bool flag_inner_slot = 16;
+  optional PlanState plan_state = 17;
+}
+
+message ParkingLatDecisionDebug {
+  optional double preview_ds = 1;
+  optional int32 nudge_obstacle_id = 2;
+  optional double path_offset = 3;
+}
+
+message ParkingLonDecisionDebug {
+  optional uint32 failed_reason = 1;
+  optional double safety_length = 2;
+  optional uint32 collision_counter = 3;
+}
+
+message StateMachineInfo {
+  enum ParkingAutoMode {
+    AUTO_NONE = 0;
+    AUTO_APA = 11;
+    AUTO_PARALLEL_OUT = 12;
+    AUTO_AVP_IN = 13;
+    AUTO_AVP_OUT = 14;
+  }
+  enum FunctionState {
+    STATE_IDLE = 0;
+    STATE_STANDBY = 1;
+    STATE_ACTIVE = 2;
+    STATE_PAUSE = 3;
+    STATE_FINISH = 4;
+  }
+
+  optional ParkingAutoMode auto_mode = 1;
+  optional FunctionState function_state = 2;
+}
+
+message ParkingPlanningStateDebug {
+  enum ScenarioPlanState {
+    PLAN_STATE_IDLE = 0;
+    PLAN_STATE_RUNNING = 1;
+    PLAN_STATE_PAUSE = 2;
+    PLAN_STATE_QUIT = 3;
+  }
+  enum PlanScenarioType {
+    SCENARIO_TYPE_UNKOWN = 0;
+    SCENARIO_TYPE_VERTICAL_IN = 1;
+    SCENARIO_TYPE_VERTICAL_OUT = 2;
+    SCENARIO_TYPE_PARALLEL_IN = 3;
+    SCENARIO_TYPE_PARALLEL_OUT = 4;
+    SCENARIO_TYPE_AVP_IN = 5;
+    SCENARIO_TYPE_AVP_OUT = 6;
+  }
+  enum PlannerType {
+    PLANNER_NONE = 0;
+    PLANNER_HYBRID_ASTAR = 1;
+    PLANNER_BEZIER = 2;
+    PLANNER_RECOVER = 3;
+    PLANNER_AVP_DP_QP = 4;
+    PLANNER_AVP_HYBRID_ASTAR = 5;
+    PLANNER_KINEMATIC = 10;
+  }
+
+  optional string debug_info_string = 1;
+  optional StateMachineInfo state_machine_info = 2;
+  optional ScenarioPlanState plan_state = 3;
+  optional PlanScenarioType plan_scenario_type = 4;
+  optional PlannerType planner_type = 5;
+  optional bool is_frame_update = 6;
+  optional bool need_plan_once = 7;
+  optional uint64 count_car_stop = 8;
+  optional uint64 count_plan_fail = 9;
+  optional Pose2D pos_now = 10;
+  optional Pose2D goal_pos = 11;
+  optional Pose2D goal_pos_odom = 12;
+  optional uint64 last_planner_seq = 13;
+  optional uint64 stop_reason = 14;
+}
+
+message ParkingPlanningDebug {
+  optional ParkingLatDecisionDebug lat_decision_debug = 1;
+  optional ParkingLonDecisionDebug lon_decision_debug = 2;
+  optional ParkingPlanningStateDebug parking_planning_debug = 3;
+}
+
+message LiParkingPlanningResultProto {
+  repeated ParkingPathInfo path_sequence = 1;
+  optional ParkingPlanningState state = 2;
+  optional ParkingPlanningDebug debug = 3;
+}

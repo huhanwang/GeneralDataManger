@@ -1,0 +1,635 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Speed_Report_183318d0 {
+  // [km] [0|655]
+  optional double endurance_mileage = 1;
+  // [km/h] [0|250]
+  optional double vehicle_speed = 2;
+}
+
+// Report Message.
+message Driving_Report_183418d0 {
+  enum Auto_Drive_PerfirmType {
+    AUTO_DRIVE_PERFIRM_ENABLE = 0;
+    AUTO_DRIVE_PERFIRM_DISABLE = 1;
+  }
+  enum Gear_PositionType {
+    GEAR_POSITION_N = 0;
+    GEAR_POSITION_D = 1;
+    GEAR_POSITION_R = 2;
+  }
+  enum Drving_StatusType {
+    AUTO_MODE = 0;
+    MANNUAL_MODE = 1;
+    MANNUAL_INTEVENTION_MODE = 2;
+  }
+  // [] [0|0]
+  optional int32 brake_pedal_status = 1;
+  // [] [0|0]
+  optional int32 fire_alarm = 2;
+  // [] [0|0]
+  optional int32 driving_system_error_indicator = 3;
+  // [] [0|0]
+  optional int32 ready_to_run_indicator = 4;
+  // [] [0|0]
+  optional Auto_Drive_PerfirmType auto_drive_perfirm = 5;
+  // [] [0|0]
+  optional int32 high_voltage_status = 6;
+  // [] [0|35]
+  optional Gear_PositionType gear_position = 7;
+  // [%] [0|100]
+  optional int32 brake_pedal_percent = 8;
+  // [%] [0|100]
+  optional int32 accelerator_pedal_position = 9;
+  optional Drving_StatusType driving_status = 10;
+}
+
+// Report Message.
+message Motor_Torque_Report_183518d1 {
+  // [Nm] [-10000|10000]
+  optional int32 motor_real_torque183518d1_1 = 1;
+}
+
+// Report Message.
+message Bms_Report_183718d0 {
+  // [] [0|63]
+  optional int32 battery_error_code = 1;
+  // [] [0|3]
+  optional int32 battery_error_level = 2;
+  // [] [0|35]
+  optional int32 charge_status = 3;
+  // [] [0|35]
+  optional int32 charge_connection = 4;
+  // [] [0|35]
+  optional int32 battery_status = 5;
+  // [%] [0|100]
+  optional double soc = 6;
+  // [A] [-1600|1600]
+  optional double battery_current = 7;
+  // [V] [0|980]
+  optional double battery_voltage = 8;
+}
+
+// Report Message.
+message Dangerlight_Report_18fdcc17 {
+  // [] [0|3]
+  optional int32 vcu_danger_light = 1;
+}
+
+// Report Message.
+message Axle_Speed_Report_18febf0b {
+  // [km/h] [-7.8125|7.8125]
+  optional double rel_speed_rear_axle_right = 1;
+  // [km/h] [-7.8125|7.8125]
+  optional double rel_speed_rear_axle_left = 2;
+  // [km/h] [-7.8125|7.8125]
+  optional double rel_speed_front_axle_right = 3;
+  // [km/h] [-7.8125|7.8125]
+  optional double rel_speed_front_axle_left = 4;
+  // [km/h] [0|250.996]
+  optional double front_axle_speed = 5;
+}
+
+// Control Message.
+message Bcm_Control_18fed927 {
+  enum Auto_CtrType {
+    AUTO_CTR_INVALID = 0;
+    AUTO_CTR_MANUAL = 1;
+    AUTO_CTR_AUTO = 2;
+  }
+  enum Clearance_Lamp_CtrType {
+    CLEARANCE_LAMP_CTR_INVALID = 0;
+    CLEARANCE_LAMP_CTR_CLOSE = 1;
+    CLEARANCE_LAMP_CTR_OPEN = 2;
+  }
+  enum Alarm_CtrType {
+    ALARM_CTR_INVALID = 0;
+    ALARM_CTR_CLOSE = 1;
+    ALARM_CTR_OPEN = 2;
+  }
+  enum Reverse_Light_CtrType {
+    REVERSE_LIGHT_CTR_INVALID = 0;
+    REVERSE_LIGHT_CTR_CLOSE = 1;
+    REVERSE_LIGHT_CTR_OPEN = 2;
+  }
+  enum Low_Beam_CtrType {
+    LOW_BEAM_CTR_INVALID = 0;
+    LOW_BEAM_CTR_CLOSE = 1;
+    LOW_BEAM_CTR_OPEN = 2;
+  }
+  enum Hight_Beam_CtrType {
+    HIGHT_BEAM_CTR_INVALID = 0;
+    HIGHT_BEAM_CTR_CLOSE = 1;
+    HIGHT_BEAM_CTR_OPEN = 2;
+  }
+  enum Braking_Light_CtrType {
+    BRAKING_LIGHT_CTR_INVALID = 0;
+    BRAKING_LIGHT_CTR_CLOSE = 1;
+    BRAKING_LIGHT_CTR_OPEN = 2;
+  }
+  enum Turn_Right_Light_CtrType {
+    TURN_RIGHT_LIGHT_CTR_INVALID = 0;
+    TURN_RIGHT_LIGHT_CTR_CLOSE = 1;
+    TURN_RIGHT_LIGHT_CTR_OPEN = 2;
+  }
+  enum Turn_Left_Light_CtrType {
+    TURN_LEFT_LIGHT_CTR_INVALID = 0;
+    TURN_LEFT_LIGHT_CTR_CLOSE = 1;
+    TURN_LEFT_LIGHT_CTR_OPEN = 2;
+  }
+  enum Middle_Door_CtrType {
+    MIDDLE_DOOR_CTR_INVALID = 0;
+    MIDDLE_DOOR_CTR_CLOSE = 1;
+    MIDDLE_DOOR_CTR_OPEN = 2;
+  }
+  enum Front_Door_CtrType {
+    FRONT_DOOR_CTR_INVALID = 0;
+    FRONT_DOOR_CTR_CLOSE = 1;
+    FRONT_DOOR_CTR_OPEN = 2;
+  }
+  // [] [0|3]
+  optional Auto_CtrType auto_ctr = 1;
+  // [] [0|3]
+  optional Clearance_Lamp_CtrType clearance_lamp_ctr = 2;
+  // [] [0|3]
+  optional Alarm_CtrType alarm_ctr = 3;
+  // [] [0|3]
+  optional Reverse_Light_CtrType reverse_light_ctr = 4;
+  // [] [0|3]
+  optional Low_Beam_CtrType low_beam_ctr = 5;
+  // [] [0|3]
+  optional Hight_Beam_CtrType hight_beam_ctr = 6;
+  // [] [0|3]
+  optional Braking_Light_CtrType braking_light_ctr = 7;
+  // [] [0|3]
+  optional Turn_Right_Light_CtrType turn_right_light_ctr = 8;
+  // [] [0|3]
+  optional Turn_Left_Light_CtrType turn_left_light_ctr = 9;
+  // [] [0|3]
+  optional Middle_Door_CtrType middle_door_ctr = 10;
+  // [] [0|3]
+  optional Front_Door_CtrType front_door_ctr = 11;
+}
+
+// Report Message.
+message Bcm_Report_18fed931 {
+  enum BCM_FaultType {
+    BCM_FAULT_NORMAL = 0;
+    BCM_FAULT_FAULT = 1;
+    BCM_FAULT_RESERVED = 2;
+    BCM_FAULT_INVALID = 3;
+  }
+  enum Alarm_StType {
+    ALARM_ST_CLOSED = 0;
+    ALARM_ST_OPEN = 1;
+    ALARM_ST_FAULT = 2;
+    ALARM_ST_INVALID = 3;
+  }
+  enum Reverse_Light_StType {
+    REVERSE_LIGHT_ST_CLOSED = 0;
+    REVERSE_LIGHT_ST_OPEN = 1;
+    REVERSE_LIGHT_ST_FAULT = 2;
+    REVERSE_LIGHT_ST_INVALID = 3;
+  }
+  enum Low_BeamType {
+    LOW_BEAM_CLOSED = 0;
+    LOW_BEAM_OPEN = 1;
+    LOW_BEAM_FAULT = 2;
+    LOW_BEAM_INVALID = 3;
+  }
+  enum High_BeamType {
+    HIGH_BEAM_CLOSED = 0;
+    HIGH_BEAM_OPEN = 1;
+    HIGH_BEAM_FAULT = 2;
+    HIGH_BEAM_INVALID = 3;
+  }
+  enum Braking_Light_StType {
+    BRAKING_LIGHT_ST_CLOSED = 0;
+    BRAKING_LIGHT_ST_OPEN = 1;
+    BRAKING_LIGHT_ST_FAULT = 2;
+    BRAKING_LIGHT_ST_INVALID = 3;
+  }
+  enum Turn_Right_Light_StType {
+    TURN_RIGHT_LIGHT_ST_CLOSED = 0;
+    TURN_RIGHT_LIGHT_ST_OPEN = 1;
+    TURN_RIGHT_LIGHT_ST_FAULT = 2;
+    TURN_RIGHT_LIGHT_ST_INVALID = 3;
+  }
+  enum Turn_Left_Light_StType {
+    TURN_LEFT_LIGHT_ST_CLOSED = 0;
+    TURN_LEFT_LIGHT_ST_OPEN = 1;
+    TURN_LEFT_LIGHT_ST_FAULT = 2;
+    TURN_LEFT_LIGHT_ST_INVALID = 3;
+  }
+  enum Middle_Door_StType {
+    MIDDLE_DOOR_ST_CLOSED = 0;
+    MIDDLE_DOOR_ST_OPEN = 1;
+    MIDDLE_DOOR_ST_FAULT = 2;
+    MIDDLE_DOOR_ST_INVALID = 3;
+  }
+  enum Front_Door_StType {
+    FRONT_DOOR_ST_CLOSED = 0;
+    FRONT_DOOR_ST_OPEN = 1;
+    FRONT_DOOR_ST_FAULT = 2;
+    FRONT_DOOR_ST_INVALID = 3;
+  }
+  // [] [0|3]
+  optional BCM_FaultType bcm_fault = 1;
+  // [] [0|3]
+  optional Alarm_StType alarm_st = 2;
+  // [] [0|3]
+  optional Reverse_Light_StType reverse_light_st = 3;
+  // [] [0|3]
+  optional Low_BeamType low_beam = 4;
+  // [] [0|3]
+  optional High_BeamType high_beam = 5;
+  // [] [0|3]
+  optional Braking_Light_StType braking_light_st = 6;
+  // [] [0|3]
+  optional Turn_Right_Light_StType turn_right_light_st = 7;
+  // [] [0|3]
+  optional Turn_Left_Light_StType turn_left_light_st = 8;
+  // [] [0|3]
+  optional Middle_Door_StType middle_door_st = 9;
+  // [] [0|3]
+  optional Front_Door_StType front_door_st = 10;
+}
+
+// Report Message.
+message Epb_Report_18fefa50 {
+  enum EPB_Key_StaType {
+    EPB_KEY_STA_NEUTRAL = 0;
+    EPB_KEY_STA_RELEASE = 1;
+    EPB_KEY_STA_APPLY = 2;
+    EPB_KEY_STA_INVALID = 3;
+  }
+  enum Park_LED_StaType {
+    PARK_LED_STA_OFF = 0;
+    PARK_LED_STA_ON = 1;
+    PARK_LED_STA_RESERVED = 2;
+    PARK_LED_STA_UNDEFINED = 3;
+  }
+  enum EPB_Park_Valve_StaType {
+    EPB_PARK_VALVE_STA_RELEASED = 0;
+    EPB_PARK_VALVE_STA_PULLEDUP = 1;
+    EPB_PARK_VALVE_STA_ERROR = 2;
+    EPB_PARK_VALVE_STA_UNDEFINED = 3;
+  }
+  enum EPB_BrakeConditionType {
+    EPB_BRAKECONDITION_MANUAL = 1;
+    EPB_BRAKECONDITION_RESERVED = 0;
+    EPB_BRAKECONDITION_AUTO = 2;
+  }
+  // [] [0|2]
+  optional int32 epb_can_miss4 = 1;
+  // [] [0|2]
+  optional int32 epb_sol_valve_errlnd = 2;
+  // [] [0|2]
+  optional int32 epb_fault_sta = 3;
+  // [] [0|2]
+  optional EPB_Key_StaType epb_key_sta = 4;
+  // [] [0|3]
+  optional int32 epb_can_miss3 = 5;
+  // [] [0|3]
+  optional int32 epb_can_miss2 = 6;
+  // [] [0|3]
+  optional int32 epb_can_miss1 = 7;
+  // [] [0|3]
+  optional int32 epb_psensor_err = 8;
+  // [] [0|3]
+  optional int32 epb_bat_err = 9;
+  // [] [0|3]
+  optional int32 epb_key_err = 10;
+  // [] [0|3]
+  optional Park_LED_StaType park_led_sta = 11;
+  // [] [0|3]
+  optional EPB_Park_Valve_StaType epb_park_valve_sta = 12;
+  // [] [0|3]
+  optional EPB_BrakeConditionType epb_brake_condition = 13;
+}
+
+// Report Message.
+message Door_Status_Report_18ffc817 {
+  enum MiddleDoor_StatusType {
+    MIDDLEDOOR_STATUS_CLOSED = 0;
+    MIDDLEDOOR_STATUS_OPEN = 1;
+  }
+  enum FrontDoor_StatusType {
+    FRONTDOOR_STATUS_CLOSED = 0;
+    FRONTDOOR_STATUS_OPEN = 1;
+  }
+  // [] [0|1]
+  optional MiddleDoor_StatusType middle_door_status = 1;
+  // [] [0|1]
+  optional FrontDoor_StatusType front_door_status = 2;
+}
+
+// Report Message.
+message Fav_Report_1cfd0acb {
+  enum Value_StatusType {
+    VALUE_STATUS_NO_ELECTRIC_CONTROL = 0;
+    VALUE_STATUS_PRESSURE_MAINTAINING = 1;
+    VALUE_STATUS_STEP_UP = 2;
+    VALUE_STATUS_STEP_DOWN = 3;
+  }
+  enum Can_TimeoutType {
+    CAN_TIMEOUT_NORMAL = 0;
+    CAN_TIMEOUT_TIMEOUT = 1;
+  }
+  enum Power_ErrorType {
+    POWER_ERROR_NORMAL = 0;
+    POWER_ERROR_FAULT = 1;
+  }
+  enum Sensor_ErrorType {
+    SENSOR_ERROR_NORMAL = 0;
+    SENSOR_ERROR_FAULT = 1;
+  }
+  enum Value_ErrorType {
+    VALUE_ERROR_NORMAL = 0;
+    VALUE_ERROR_FAULT = 1;
+  }
+  enum Check_SumType {
+    CHECK_SUM_NORMAL = 0;
+    CHECK_SUM_ERROR = 1;
+  }
+  // [KPa/bit] [0|0]
+  optional int32 pressure_status = 1;
+  // [kPa/bit] [0|0]
+  optional int32 request_max = 2;
+  // [] [0|0]
+  optional Value_StatusType value_status = 3;
+  // [] [0|0]
+  optional Can_TimeoutType can_timeout = 4;
+  // [] [0|0]
+  optional Power_ErrorType power_error = 5;
+  // [] [0|0]
+  optional Sensor_ErrorType sensor_error = 6;
+  // [] [0|0]
+  optional Value_ErrorType value_error = 7;
+  // [] [0|0]
+  optional Check_SumType check_sum = 8;
+  // [] [0|0]
+  optional int32 target_address = 9;
+  // [] [0|0]
+  optional int32 source_address = 10;
+}
+
+// Report Message.
+message Rav_Report_1cfd0adb {
+  enum Value_StatusType {
+    VALUE_STATUS_NO_ELECTRIC_CONTROL = 0;
+    VALUE_STATUS_PRESSURE_MAINTAINING = 1;
+    VALUE_STATUS_STEP_UP = 2;
+    VALUE_STATUS_STEP_DOWN = 3;
+  }
+  enum Can_TimeoutType {
+    CAN_TIMEOUT_NORMAL = 0;
+    CAN_TIMEOUT_TIMEOUT = 1;
+  }
+  enum Power_ErrorType {
+    POWER_ERROR_NORMAL = 0;
+    POWER_ERROR_FAULT = 1;
+  }
+  enum Sensor_ErrorType {
+    SENSOR_ERROR_NORMAL = 0;
+    SENSOR_ERROR_FAULT = 1;
+  }
+  enum Value_ErrorType {
+    VALUE_ERROR_NORMAL = 0;
+    VALUE_ERROR_FAULT = 1;
+  }
+  enum Check_SumType {
+    CHECK_SUM_CORRECT = 0;
+    CHECK_SUM_ERROR = 1;
+  }
+  // [KPa/bit] [0|0]
+  optional int32 pressure_status = 1;
+  // [kPa/bit] [0|0]
+  optional int32 request_max = 2;
+  // [] [0|0]
+  optional Value_StatusType value_status = 3;
+  // [] [0|0]
+  optional Can_TimeoutType can_timeout = 4;
+  // [] [0|0]
+  optional Power_ErrorType power_error = 5;
+  // [] [0|0]
+  optional Sensor_ErrorType sensor_error = 6;
+  // [] [0|0]
+  optional Value_ErrorType value_error = 7;
+  // [] [0|0]
+  optional Check_SumType check_sum = 8;
+  // [] [0|0]
+  optional int32 target_address = 9;
+  // [] [0|0]
+  optional int32 source_address = 10;
+}
+
+// Report Message.
+message Eps_State_C02a0a2 {
+  enum EPS_Control_ModeType {
+    EPS_CONTROL_MODE_STANDBY = 0;
+    EPS_CONTROL_MODE_AUTO = 1;
+    EPS_CONTROL_MODE_RESERVED = 2;
+    EPS_CONTROL_MODE_TORQUESUPERPOSITION = 3;
+    EPS_CONTROL_MODE_MANUAL = 4;
+    EPS_CONTROL_MODE_MANUALINTERVENTION = 5;
+    EPS_CONTROL_MODE_CLEARFAULT = 6;
+  }
+  // [Nm] [-12.8|12.7]
+  optional double eps_steering_wheel_torque = 1;
+  // [deg/s] [0|540]
+  optional double eps_steering_wheel_speed = 2;
+  // [Nm] [-5|4.96132]
+  optional double eps_steering_motor_torque = 3;
+  // [deg] [-1575|1575]
+  optional double eps_steering_angle = 4;
+  // [] [0|255]
+  optional int32 life = 5;
+  // [] [0|0]
+  optional EPS_Control_ModeType eps_control_mode = 6;
+}
+
+// Report Message.
+message Eps_Fault_C02a0a3 {
+  enum Fault_LevelType {
+    FAULT_LEVEL_NO_FAULT = 0;
+    FAULT_LEVEL_LEVEL_1 = 1;
+    FAULT_LEVEL_LEVEL_2 = 2;
+    FAULT_LEVEL_INVALID = 3;
+  }
+  // [] [0|0]
+  optional Fault_LevelType fault_level = 1;
+  // [] [0|0]
+  optional int32 fault_code = 2;
+}
+
+// Control Message.
+message Eps_Control_C02a224 {
+  enum Steering_Angle_StateType {
+    STEERING_ANGLE_STATE_UNNORMAL = 0;
+    STEERING_ANGLE_STATE_NORMAL = 1;
+  }
+  enum VCU_StateType {
+    VCU_STATE_NORMAL = 0;
+    VCU_STATE_UNNORMAL = 1;
+  }
+  enum Control_ModeType {
+    CONTROL_MODE_STANDBY = 0;
+    CONTROL_MODE_AUTO = 1;
+    CONTROL_MODE_RESERVED = 2;
+    CONTROL_MODE_TORQUESUPERPOSITION = 3;
+    CONTROL_MODE_MANUAL = 4;
+    CONTROL_MODE_MANUALINTERVENTION = 5;
+    CONTROL_MODE_CLEARFAULT = 6;
+  }
+  // [] [0|0]
+  optional int32 life = 1;
+  // [deg/s] [0|540]
+  optional double steering_wheel_speed_control = 2;
+  // [Nm] [-12.8|12.7]
+  optional double torque_request = 3;
+  // [] [0|1]
+  optional Steering_Angle_StateType steering_angle_state = 4;
+  // [] [0|0]
+  optional VCU_StateType vcu_state = 5;
+  // [] [0|0]
+  optional Control_ModeType control_mode = 6;
+  // [deg] [-1575|1575]
+  optional double target_steering_angle = 7;
+}
+
+// Report Message.
+message Fav_Control_C04cb0a {
+  // [kPa/bit] [0|0]
+  optional int32 pressure_request = 1;
+  // [] [0|0]
+  optional int32 control = 2;
+  // [] [0|0]
+  optional int32 emergency_brake = 3;
+  // [] [0|0]
+  optional int32 target_address = 4;
+  // [] [0|0]
+  optional int32 source_address = 5;
+}
+
+// Report Message.
+message Rav_Control_C04db0a {
+  // [kPa/bit] [0|0]
+  optional int32 pressure_request = 1;
+  // [] [0|0]
+  optional int32 control = 2;
+  // [] [0|0]
+  optional int32 emergency_brake = 3;
+  // [] [0|0]
+  optional int32 target_address = 4;
+  // [] [0|0]
+  optional int32 source_address = 5;
+}
+
+// Control Message.
+message Epb_Control_C215027 {
+  enum Braking_ModeType {
+    BRAKING_MODE_AUTO = 0;
+    BRAKING_MODE_MANUAL = 1;
+  }
+  // [] [0|3]
+  optional bool parking_brake_request = 1;
+  // [] [0|1]
+  optional Braking_ModeType braking_mode = 2;
+}
+
+// Report Message.
+message Vehicle_Fault_Report_C3c18d0 {
+  enum Vehicles_Error_CodeType {
+    VEHICLES_ERROR_CODE_NORMAL = 0;
+    VEHICLES_ERROR_CODE_SELFCHECKINGFAULT = 1;
+    VEHICLES_ERROR_CODE_LOWBATTERYUNDERVOLTAGE = 2;
+    VEHICLES_ERROR_CODE_LOWBATTERYOVERVOLTAGE = 3;
+    VEHICLES_ERROR_CODE_THROTTLEFAULT = 4;
+    VEHICLES_ERROR_CODE_BRAKEFAULT = 5;
+    VEHICLES_ERROR_CODE_MAINCONNECTORFAULT = 16;
+    VEHICLES_ERROR_CODE_BRAKEAIRPRESSURELOW = 17;
+    VEHICLES_ERROR_CODE_INSTRUTMENTCOMMUNICATIONFAULT = 18;
+  }
+  enum Vehicles_ErrorType {
+    VEHICLES_ERROR_NOFAULT = 0;
+    VEHICLES_ERROR_ERROR_LEVEL_1 = 1;
+    VEHICLES_ERROR_ERROR_LEVEL_2 = 2;
+    VEHICLES_ERROR_ERROR_LEVEL_3 = 3;
+  }
+  // [] [0|63]
+  optional Vehicles_Error_CodeType vehicles_error_code = 1;
+  // [] [0|3]
+  optional Vehicles_ErrorType vehicles_error = 2;
+}
+
+// Control Message.
+message Driving_Control_C3dd018 {
+  enum Control_ModeType {
+    CONTROL_MODE_AUTO = 0;
+    CONTROL_MODE_MANUAL = 1;
+  }
+  enum Gear_PositionType {
+    GEAR_POSITION_N = 0;
+    GEAR_POSITION_D = 1;
+    GEAR_POSITION_R = 2;
+  }
+  enum Brake_StatusType {
+    BRAKE_STATUS_NOBRAKE = 0;
+    BRAKE_STATUS_BRAKE = 1;
+  }
+  // [] [0|1]
+  optional Control_ModeType control_mode = 1;
+  // [] [0|15]
+  optional Gear_PositionType gear_position = 2;
+  // [] [0|0]
+  optional Brake_StatusType brake_status = 3;
+  // [%] [0|100]
+  optional int32 pedal_percent = 4;
+}
+
+message Higer65_longzhou_one {
+  // Report message.
+  optional Speed_Report_183318d0 speed_report_183318d0 = 1;
+  // Report message.
+  optional Driving_Report_183418d0 driving_report_183418d0 = 2;
+  // Report message.
+  optional Motor_Torque_Report_183518d1 motor_torque_report_183518d1 = 3;
+  // Report message.
+  optional Bms_Report_183718d0 bms_report_183718d0 = 4;
+  // Report message.
+  optional Dangerlight_Report_18fdcc17 dangerlight_report_18fdcc17 = 5;
+  // Report message.
+  optional Axle_Speed_Report_18febf0b axle_speed_report_18febf0b = 6;
+  // Control message.
+  optional Bcm_Control_18fed927 bcm_control_18fed927 = 7;
+  // Report message.
+  optional Bcm_Report_18fed931 bcm_report_18fed931 = 8;
+  // Report message.
+  optional Epb_Report_18fefa50 epb_report_18fefa50 = 9;
+  // Report message.
+  optional Door_Status_Report_18ffc817 door_status_report_18ffc817 = 10;
+  // Report message.
+  optional Fav_Report_1cfd0acb fav_report_1cfd0acb = 11;
+  // Report message.
+  optional Rav_Report_1cfd0adb rav_report_1cfd0adb = 12;
+  // Report message.
+  optional Eps_State_C02a0a2 eps_state_c02a0a2 = 13;
+  // Report message.
+  optional Eps_Fault_C02a0a3 eps_fault_c02a0a3 = 14;
+  // Control message.
+  optional Eps_Control_C02a224 eps_control_c02a224 = 15;
+  // Report message.
+  optional Fav_Control_C04cb0a fav_control_c04cb0a = 16;
+  // Report message.
+  optional Rav_Control_C04db0a rav_control_c04db0a = 17;
+  // Control message.
+  optional Epb_Control_C215027 epb_control_c215027 = 18;
+  // Report message.
+  optional Vehicle_Fault_Report_C3c18d0 vehicle_fault_report_c3c18d0 = 19;
+  // Control message.
+  optional Driving_Control_C3dd018 driving_control_c3dd018 = 20;
+}

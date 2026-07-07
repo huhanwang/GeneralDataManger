@@ -1,0 +1,61 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+
+message SuspensionProto {
+  enum SuspensionCompressorStatus {
+    DISABLED = 0;
+    AVAILABLE = 1;
+  }
+
+  enum SuspensionHeightControlStatus {
+    DISABLE = 0;
+    ACTIVE = 1;
+    INIT = 2;
+    POSTRUN = 3;
+    RDYTOSLEEP = 4;
+  }
+
+  enum SuspensionActualHeightLevel {
+    LOW_LEVEL_3 = 0;
+    LOW_LEVEL_2 = 1;
+    LOW_LEVEL_1 = 2;
+    NORMAL_LEVEL = 3;
+    HIGH_LEVEL_1 = 4;
+    HIGH_LEVEL_2 = 5;
+    HIGH_LEVEL_3 = 6;
+  }
+
+  enum SuspensionHeightLevelAdjustStatus {
+    NO_CHANGE = 0;
+    GOING_DOWN = 1;
+    GOING_UP = 2;
+    RESERVED = 3;
+  }
+
+  optional LiteHeader header = 1;
+  optional SuspensionCompressorStatus sus_compressor_status = 2;
+  optional SuspensionHeightControlStatus sus_height_control_status = 3;
+  optional SuspensionActualHeightLevel sus_actual_height_level = 4;
+  optional SuspensionHeightLevelAdjustStatus sus_height_level_adjust_status = 5;
+}
+
+message SuspensionHeightLevelSensorProto {
+  enum SusHghtLvlSnsrSts {
+    SUS_HGHT_LVL_SNSR_NOT_AVAILABLE = 0;
+    SUS_HGHT_LVL_SNSR_AVAILABLE = 1;
+  }
+  optional LiteHeader header = 1;
+  optional SusHghtLvlSnsrSts sus_height_lvl_snsr_sts_rr = 2;
+  optional SusHghtLvlSnsrSts sus_height_lvl_snsr_sts_rl = 3;
+  optional SusHghtLvlSnsrSts sus_height_lvl_snsr_sts_fr = 4;
+  optional SusHghtLvlSnsrSts sus_height_lvl_snsr_sts_fl = 5;
+  optional float sus_height_lvl_snsr_rr = 6;
+  optional float sus_height_lvl_snsr_rl = 7;
+  optional float sus_height_lvl_snsr_fr = 8;
+  optional float sus_height_lvl_snsr_fl = 9;
+}

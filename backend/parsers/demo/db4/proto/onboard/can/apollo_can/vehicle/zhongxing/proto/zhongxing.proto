@@ -1,0 +1,567 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Bcm_state_18f15117 {
+  // Report Message
+  enum Ic1_middoorstsType {
+    IC1_MIDDOORSTS_CLOSE = 0;
+    IC1_MIDDOORSTS_OPEN = 1;
+  }
+  // [] [0|0]
+  optional Ic1_middoorstsType ic1_middoorsts = 1;
+}
+
+message Acu_ins_18fb545a {
+  // Control Message
+  // [] [0|255]
+  optional int32 uc4_life = 1;
+  // [] [0|255]
+  optional int32 uc4_hardwarever = 2;
+  // [] [0|255]
+  optional int32 uc4_softwarever = 3;
+  // [] [0|255]
+  optional int32 uc4_verday = 4;
+  // [] [0|255]
+  optional int32 uc4_vermonth = 5;
+  // [] [0|255]
+  optional int32 uc4_veryear = 6;
+}
+
+message Acu_safety_18fb555a {
+  // Control Message
+  // [] [0|255]
+  optional int32 uc5_life = 1;
+  // [] [0|1]
+  optional bool uc5_obssign = 2;
+  // [] [0|100]
+  optional double uc5_obsdistance = 3;
+}
+
+message Abs_vehicle_speed_18fef068 {
+  // Report Message
+  enum Habs1_absactiveType {
+    HABS1_ABSACTIVE_NOT_ACTIVED = 0;
+    HABS1_ABSACTIVE_ACTIVED = 1;
+  }
+  enum Habs1_ebdactiveType {
+    HABS1_EBDACTIVE_NOT_ACTIVED = 0;
+    HABS1_EBDACTIVE_ACTIVED = 1;
+  }
+  enum Habs1_ebdfltType {
+    HABS1_EBDFLT_NO_FAULT = 0;
+    HABS1_EBDFLT_FAULT = 1;
+  }
+  enum Habs1_absfltType {
+    HABS1_ABSFLT_NO_FAULT = 0;
+    HABS1_ABSFLT_FAULT = 1;
+  }
+  enum Habs1_vehspeedeffType {
+    HABS1_VEHSPEEDEFF_INVALID = 0;
+    HABS1_VEHSPEEDEFF_VALID = 1;
+  }
+  // [] [0|0]
+  optional Habs1_absactiveType habs1_absactive = 1;
+  // [] [0|0]
+  optional Habs1_ebdactiveType habs1_ebdactive = 2;
+  // [] [0|0]
+  optional Habs1_ebdfltType habs1_ebdflt = 3;
+  // [] [0|0]
+  optional Habs1_absfltType habs1_absflt = 4;
+  // [] [0|0]
+  optional double habs1_vehspeed = 5;
+  // [] [0|0]
+  optional Habs1_vehspeedeffType habs1_vehspeedeff = 6;
+  // [] [0|0]
+  optional int32 habs1_life = 7;
+  // [] [0|0]
+  optional int32 habs1_check = 8;
+}
+
+message Vcu_qbutton_fb_zx_180182a8 {
+  // Report Message
+  enum Qbutton_alarmType {
+    QBUTTON_ALARM_0 = 0;
+    QBUTTON_ALARM_1 = 1;
+  }
+  // [] [0|0]
+  optional Qbutton_alarmType qbutton_alarm = 1;
+}
+
+message Acu_engage_fb_zx_1801a784 {
+  // Control Message
+  enum Autonomy_estopType {
+    AUTONOMY_ESTOP_0 = 0;
+    AUTONOMY_ESTOP_1 = 1;
+  }
+  // [] [0|0]
+  optional Autonomy_estopType autonomy_estop = 1;
+}
+
+message Abs_front_wheel_speed_18fef168 {
+  // Report Message
+  enum Habs2_leftfrontwheelspdstsType {
+    HABS2_LEFTFRONTWHEELSPDSTS_NO_FAULT = 0;
+    HABS2_LEFTFRONTWHEELSPDSTS_FAULT = 1;
+    HABS2_LEFTFRONTWHEELSPDSTS_INIT = 2;
+    HABS2_LEFTFRONTWHEELSPDSTS_RESERVED = 3;
+  }
+  enum Habs2_rightfrontwheelspdstsType {
+    HABS2_RIGHTFRONTWHEELSPDSTS_NO_FAULT = 0;
+    HABS2_RIGHTFRONTWHEELSPDSTS_FAULT = 1;
+    HABS2_RIGHTFRONTWHEELSPDSTS_INIT = 2;
+    HABS2_RIGHTFRONTWHEELSPDSTS_RESERVED = 3;
+  }
+  // [] [0|0]
+  optional double habs2_leftfrontwheelspeed = 1;
+  // [] [0|0]
+  optional Habs2_leftfrontwheelspdstsType habs2_leftfrontwheelspdsts = 2;
+  // [] [0|0]
+  optional double habs2_rightfrontwheelspeed = 3;
+  // [] [0|0]
+  optional Habs2_rightfrontwheelspdstsType habs2_rightfrontwheelspdsts = 4;
+  // [] [0|0]
+  optional int32 habs2_life = 5;
+  // [] [0|0]
+  optional int32 habs2_check = 6;
+}
+
+message Abs_wheel_pulse_18fef268 {
+  // Report Message
+  enum Habs3_leftfrontwhlnumeffType {
+    HABS3_LEFTFRONTWHLNUMEFF_VALID = 0;
+    HABS3_LEFTFRONTWHLNUMEFF_INVALID = 1;
+  }
+  enum Habs3_rightfrontwhlnumeffType {
+    HABS3_RIGHTFRONTWHLNUMEFF_VALID = 0;
+    HABS3_RIGHTFRONTWHLNUMEFF_INVALID = 1;
+  }
+  enum Habs3_leftbackwhlnumeffType {
+    HABS3_LEFTBACKWHLNUMEFF_VALID = 0;
+    HABS3_LEFTBACKWHLNUMEFF_INVALID = 1;
+  }
+  enum Habs3_rightbackwhlnumeffType {
+    HABS3_RIGHTBACKWHLNUMEFF_VALID = 0;
+    HABS3_RIGHTBACKWHLNUMEFF_INVALID = 1;
+  }
+  // [] [0|0]
+  optional int32 habs3_leftfrontwheelnum = 1;
+  // [] [0|0]
+  optional Habs3_leftfrontwhlnumeffType habs3_leftfrontwhlnumeff = 2;
+  // [] [0|0]
+  optional int32 habs3_rightfrontwheelnum = 3;
+  // [] [0|0]
+  optional Habs3_rightfrontwhlnumeffType habs3_rightfrontwhlnumeff = 4;
+  // [] [0|0]
+  optional int32 habs3_leftbackwheelnum = 5;
+  // [] [0|0]
+  optional Habs3_leftbackwhlnumeffType habs3_leftbackwhlnumeff = 6;
+  // [] [0|0]
+  optional int32 habs3_rightbackwheelnum = 7;
+  // [] [0|0]
+  optional Habs3_rightbackwhlnumeffType habs3_rightbackwhlnumeff = 8;
+  // [] [0|0]
+  optional int32 habs3_life = 9;
+  // [] [0|0]
+  optional int32 habs3_check = 10;
+}
+
+message Abs_rear_wheel_speed_18fef368 {
+  // Report Message
+  enum Habs4_leftbackwheelspdstsType {
+    HABS4_LEFTBACKWHEELSPDSTS_NO_FAULT = 0;
+    HABS4_LEFTBACKWHEELSPDSTS_FAULT = 1;
+    HABS4_LEFTBACKWHEELSPDSTS_INIT = 2;
+    HABS4_LEFTBACKWHEELSPDSTS_RESERVED = 3;
+  }
+  enum Habs4_rightbackwheelspdstsType {
+    HABS4_RIGHTBACKWHEELSPDSTS_NO_FAULT = 0;
+    HABS4_RIGHTBACKWHEELSPDSTS_FAULT = 1;
+    HABS4_RIGHTBACKWHEELSPDSTS_INIT = 2;
+    HABS4_RIGHTBACKWHEELSPDSTS_RESERVED = 3;
+  }
+  // [] [0|0]
+  optional double habs4_leftbackwheelspeed = 1;
+  // [] [0|0]
+  optional Habs4_leftbackwheelspdstsType habs4_leftbackwheelspdsts = 2;
+  // [] [0|0]
+  optional double habs4_rightbackwheelspeed = 3;
+  // [] [0|0]
+  optional Habs4_rightbackwheelspdstsType habs4_rightbackwheelspdsts = 4;
+  // [] [0|0]
+  optional int32 habs4_life = 5;
+  // [] [0|0]
+  optional int32 habs4_check = 6;
+}
+
+message Mcu_state_18ff00ef {
+  // Report Message
+  // [] [0|0]mcu1_motactspd
+  optional double mcu1_motacttrqfb = 1;
+  // [] [0|0]
+  optional int32 mcu1_motactspd = 2;
+  // [] [0|0]
+  optional int32 mcu1_life = 3;
+}
+
+message Vcu_state_cf11ad0 {
+  // Report Message
+  enum Vcu1_gearType {
+    VCU1_GEAR_D = 1;
+    VCU1_GEAR_N = 2;
+    VCU1_GEAR_R = 4;
+    VCU1_GEAR_EMERGENCY = 8;
+  }
+  enum Vcu1_brkpdstsType {
+    VCU1_BRKPDSTS_INVALID = 0;
+    VCU1_BRKPDSTS_VALID = 1;
+  }
+  enum Vcu1_accpdstsType {
+    VCU1_ACCPDSTS_INVALID = 0;
+    VCU1_ACCPDSTS_VALID = 1;
+  }
+  enum Vcu1_vehstsType {
+    VCU1_VEHSTS_MANUAL = 0;
+    VCU1_VEHSTS_AUTO = 1;
+  }
+  enum Vcu1_sysfltType {
+    VCU1_SYSFLT_NORMAL = 0;
+    VCU1_SYSFLT_FAULT = 1;
+  }
+  enum Vcu1_readyType {
+    VCU1_READY_NOTREADY = 0;
+    VCU1_READY_READY = 1;
+  }
+  // [] [0|0]
+  optional Vcu1_gearType vcu1_gear = 1;
+  // [] [0|0]
+  optional int32 vcu1_keysts = 2;
+  // [] [0|0]
+  optional Vcu1_brkpdstsType vcu1_brkpdsts = 3;
+  // [] [0|0]
+  optional Vcu1_accpdstsType vcu1_accpdsts = 4;
+  // [] [0|0]
+  optional double vcu1_accpd = 5;
+  // [] [0|0]
+  optional double vcu1_brkpd = 6;
+  // [] [0|1]
+  optional Vcu1_vehstsType vcu1_vehsts = 7;
+  // [] [0|0]
+  optional Vcu1_sysfltType vcu1_sysflt = 8;
+  // [] [0|0]
+  optional Vcu1_readyType vcu1_ready = 9;
+  // [] [0|0]
+  optional double vcu1_vehspd = 10;
+}
+
+message Acu_vcu_cfb515a {
+  // Control Message
+  enum Uc1_emgystopType {
+    UC1_EMGYSTOP_NO_REQUEST = 0;
+    UC1_EMGYSTOP_REQUEST = 1;
+  }
+  enum Uc1_startreqType {
+    UC1_STARTREQ_NO_REQUEST = 0;
+    UC1_STARTREQ_REQUEST = 1;
+  }
+  enum Uc1_brakereqType {
+    UC1_BRAKEREQ_NO_REQUEST = 0;
+    UC1_BRAKEREQ_REQUEST = 1;
+  }
+  enum Uc1_parkingreqType {
+    UC1_PARKINGREQ_NO_REQUEST = 0;
+    UC1_PARKINGREQ_REQUEST = 1;
+  }
+  enum Uc1_gearreqType {
+    UC1_GEARREQ_D = 1;
+    UC1_GEARREQ_N = 2;
+    UC1_GEARREQ_R = 4;
+    UC1_GEARREQ_EMERGENCY = 8;
+  }
+  // [] [0|3]
+  optional int32 uc1_workmode = 1;
+  // [] [0|3]
+  optional int32 uc1_worksts = 2;
+  // [] [0|1]
+  optional Uc1_emgystopType uc1_emgystop = 3;
+  // [] [0|1]
+  optional Uc1_startreqType uc1_startreq = 4;
+  // [] [0|1]
+  optional Uc1_brakereqType uc1_brakereq = 5;
+  // [] [0|1]
+  optional Uc1_parkingreqType uc1_parkingreq = 6;
+  // [] [0|1]
+  optional bool uc1_automodeswsts = 7;
+  // [] [0|1]
+  optional bool uc1_emgystopswsts = 8;
+  // [] [0|1]
+  optional bool uc1_autoparkingswsts = 9;
+  // [] [0|15]
+  optional Uc1_gearreqType uc1_gearreq = 10;
+  // [] [0|102]
+  optional double uc1_accpdreq = 11;
+  // [] [0|102]
+  optional double uc1_bkpdreq = 12;
+  // [] [0|255]
+  optional int32 uc1_fltcode = 13;
+  // [] [0|15]
+  optional int32 uc1_life = 14;
+  // [] [0|3]
+  optional int32 uc1_fltlevel = 15;
+  // [] [0|255]
+  optional int32 uc1_check = 16;
+}
+
+message Acu_eps_cfb525a {
+  // Report Message
+  enum Uc2_epsctrlreqType {
+    UC2_EPSCTRLREQ_NO_REQUEST = 0;
+    UC2_EPSCTRLREQ_REQUEST = 1;
+  }
+  enum Uc2_epsctrleffType {
+    UC2_EPSCTRLEFF_INVALID = 0;
+    UC2_EPSCTRLEFF_VALID = 1;
+  }
+  // [] [0|1]
+  optional Uc2_epsctrlreqType uc2_epsctrlreq = 1;
+  // [] [0|1]
+  optional Uc2_epsctrleffType uc2_epsctrleff = 2;
+  // [] [-1575|1575]
+  optional double uc2_epsanglereq = 3;
+  // [] [0|1020]
+  optional double uc2_epsangaccreq = 4;
+  // [] [0|15]
+  optional int32 uc2_life = 5;
+  // [] [0|255]
+  optional int32 uc2_check = 6;
+}
+
+message Acu_bcm_cfb535a {
+  // Control Message
+  enum Uc3_workmodectrlType {
+    UC3_WORKMODECTRL_AUTO = 0;
+    UC3_WORKMODECTRL_COOL = 1;
+    UC3_WORKMODECTRL_RESERVED = 2;
+    UC3_WORKMODECTRL_VENTILATION = 3;
+  }
+  enum Uc3_fanspeedctrlType {
+    UC3_FANSPEEDCTRL_STOP = 0;
+    UC3_FANSPEEDCTRL_LOW = 1;
+    UC3_FANSPEEDCTRL_MIDDLE = 2;
+    UC3_FANSPEEDCTRL_HIGH = 3;
+  }
+  enum Uc3_onctrlType {
+    UC3_ONCTRL_OFF = 0;
+    UC3_ONCTRL_ON = 1;
+  }
+  // [] [0|1]
+  optional bool uc3_frontfoglampctrl = 1;
+  // [] [0|1]
+  optional bool uc3_backfoglampctrl = 2;
+  // [] [0|1]
+  optional bool uc3_leftturnlampctrl = 3;
+  // [] [0|1]
+  optional bool uc3_rightturnlampctrl = 4;
+  // [] [0|1]
+  optional bool uc3_farbeanlampctrl = 5;
+  // [] [0|1]
+  optional bool uc3_nearbeanlampctrl = 6;
+  // [] [0|1]
+  optional bool uc3_positionlampctrl = 7;
+  // [] [0|1]
+  optional bool uc3_hornctrl = 8;
+  // [] [0|1]
+  optional bool uc3_doortrimlamp1ctrl = 9;
+  // [] [0|1]
+  optional bool uc3_doortrimlamp2ctrl = 10;
+  // [] [0|1]
+  optional bool uc3_doortrimlamp3ctrl = 11;
+  // [] [0|1]
+  optional bool uc3_dooratsplamp1ctrl = 12;
+  // [] [0|1]
+  optional bool uc3_dooratsplamp2ctrl = 13;
+  // [] [0|1]
+  optional bool uc3_dobflashlampctrl = 14;
+  // [] [0|1]
+  optional bool uc3_middoorctrl = 15;
+  // [] [0|3]
+  optional Uc3_workmodectrlType uc3_workmodectrl = 16;
+  // [] [0|3]
+  optional Uc3_fanspeedctrlType uc3_fanspeedctrl = 17;
+  // [] [0|1]
+  optional Uc3_onctrlType uc3_onctrl = 18;
+  // [] [-40|215]
+  optional int32 uc3_tempctrl = 19;
+  // [] [0|15]
+  optional int32 uc3_life = 20;
+  // [] [0|255]
+  optional int32 uc3_check = 21;
+}
+
+message Ehb_state_cfb615b {
+  // Report Message
+  enum Ehb1_workstsType {
+    EHB1_WORKSTS_INVALID = 0;
+    EHB1_WORKSTS_VALID = 1;
+  }
+  enum Ehb1_parkingreqfbType {
+    EHB1_PARKINGREQFB_NO_REQUEST = 0;
+    EHB1_PARKINGREQFB_REQUEST = 1;
+  }
+  // [] [0|0]
+  optional Ehb1_workstsType ehb1_worksts = 1;
+  // [] [0|0]
+  optional Ehb1_parkingreqfbType ehb1_parkingreqfb = 2;
+  // [] [0|0]
+  optional int32 ehb1_workmode = 3;
+  // [] [0|0]
+  optional double ehb1_hydpressure = 4;
+  // [] [0|0]
+  optional int32 ehb1_life = 5;
+  // [] [0|0]
+  optional int32 ehb1_check = 6;
+}
+
+message Ehb_fault_cfb625b {
+  // Report Message
+  enum Ehb2_fltlevelType {
+    EHB2_FLTLEVEL_NORMAL = 0;
+    EHB2_FLTLEVEL_FAULT_LEVEL_1 = 1;
+    EHB2_FLTLEVEL_FAULT_LEVEL_2 = 2;
+    EHB2_FLTLEVEL_FAULT_LEVEL_3 = 3;
+  }
+  // [] [0|0]
+  optional bool ehb2_bkcmdflt = 1;
+  // [] [0|0]
+  optional bool ehb2_hydpresfollowlightflt = 2;
+  // [] [0|0]
+  optional bool ehb2_tempsensorpartflt = 3;
+  // [] [0|0]
+  optional bool ehb2_tempsensorfullyflt = 4;
+  // [] [0|0]
+  optional bool ehb2_hybsensorflt = 5;
+  // [] [0|0]
+  optional bool ehb2_ctrlovertempflt = 6;
+  // [] [0|0]
+  optional bool ehb2_lowvolusual = 7;
+  // [] [0|0]
+  optional bool ehb2_highvolusual = 8;
+  // [] [0|0]
+  optional bool ehb2_hydpresfollowserisflt = 9;
+  // [] [0|0]
+  optional bool ehb2_loadmismatchflt = 10;
+  // [] [0|0]
+  optional bool ehb2_cancommflt = 11;
+  // [] [0|0]
+  optional bool ehb2_overcurrflt = 12;
+  // [] [0|0]
+  optional bool ehb2_currsensorflt = 13;
+  // [] [0|0]
+  optional bool ehb2_lowvolflt = 14;
+  // [] [0|0]
+  optional bool ehb2_highvolflt = 15;
+  // [] [0|0]
+  optional bool ehb2_powerswflt = 16;
+  // [] [0|0]
+  optional bool ehb2_prechgflt = 17;
+  // [] [0|0]
+  optional bool ehb2_motpositionlostflt = 18;
+  // [] [0|0]
+  optional int32 ehb2_fltcode = 19;
+  // [] [0|0]
+  optional Ehb2_fltlevelType ehb2_fltlevel = 20;
+  // [] [0|0]
+  optional int32 ehb2_life = 21;
+  // [] [0|0]
+  optional int32 ehb2_check = 22;
+}
+
+message Epb_state_cfb715c {
+  // Report Message
+  enum Epb1_parkingstsType {
+    EPB1_PARKINGSTS_INVALID = 0;
+    EPB1_PARKINGSTS_VALID = 1;
+    EPB1_PARKINGSTS_ACTIONING = 2;
+    EPB1_PARKINGSTS_OUT_OF_RANGE = 3;
+  }
+  enum Epb1_workmodefbType {
+    EPB1_WORKMODEFB_INVALID = 0;
+    EPB1_WORKMODEFB_AUTO = 1;
+    EPB1_WORKMODEFB_REPAIR = 2;
+    EPB1_WORKMODEFB_EXIT_REPAIR = 3;
+    EPB1_WORKMODEFB_POWER_OFF = 4;
+  }
+  // [] [0|0]
+  optional Epb1_parkingstsType epb1_parkingsts = 1;
+  // [] [0|0]
+  optional Epb1_workmodefbType epb1_workmodefb = 2;
+  // [] [0|0]
+  optional int32 epb1_fltcode = 3;
+  // [] [0|0]
+  optional int32 epb1_fltlevel = 4;
+  // [] [0|0]
+  optional int32 epb1_life = 5;
+  // [] [0|0]
+  optional int32 epb1_check = 6;
+}
+
+message Eps_state_cfb815d {
+  // Report Message
+  enum Eps1_workstsType {
+    EPS1_WORKSTS_STANDBY = 0;
+    EPS1_WORKSTS_AUTO = 1;
+    EPS1_WORKSTS_RESERVED1 = 2;
+    EPS1_WORKSTS_RESERVED2 = 3;
+    EPS1_WORKSTS_MANUAL = 4;
+    EPS1_WORKSTS_MANUAL_INTERVANTION = 5;
+  }
+  enum Eps1_fltlevelType {
+    EPS1_FLTLEVEL_NORMAL = 0;
+    EPS1_FLTLEVEL_FAULT_LEVEL_1 = 1;
+    EPS1_FLTLEVEL_FAULT_LEVEL_2 = 2;
+    EPS1_FLTLEVEL_FAULT_LEVEL_3 = 3;
+  }
+  // [] [0|0]
+  optional double eps1_steerang = 1;
+  // [] [0|0]
+  optional double eps1_helptrqfb = 2;
+  // [] [0|0]
+  optional double eps1_angacc = 3;
+  // [] [0|0]
+  optional double eps1_steertrqfb = 4;
+  // [] [0|0]
+  optional Eps1_workstsType eps1_worksts = 5;
+  // [] [0|0]
+  optional int32 eps1_life = 6;
+  // [] [0|0]
+  optional int32 eps1_fltcode = 7;
+  // [] [0|0]
+  optional Eps1_fltlevelType eps1_fltlevel = 8;
+}
+
+message Zhongxing {
+  optional Bcm_state_18f15117 bcm_state_18f15117 = 1;    // report message
+  optional Acu_ins_18fb545a acu_ins_18fb545a = 2;        // control message
+  optional Acu_safety_18fb555a acu_safety_18fb555a = 3;  // control message
+  optional Abs_vehicle_speed_18fef068 abs_vehicle_speed_18fef068 =
+      4;  // report message
+  optional Abs_front_wheel_speed_18fef168 abs_front_wheel_speed_18fef168 =
+      5;  // report message
+  optional Abs_wheel_pulse_18fef268 abs_wheel_pulse_18fef268 =
+      6;  // report message
+  optional Abs_rear_wheel_speed_18fef368 abs_rear_wheel_speed_18fef368 =
+      7;                                               // report message
+  optional Mcu_state_18ff00ef mcu_state_18ff00ef = 8;  // report message
+  optional Vcu_state_cf11ad0 vcu_state_cf11ad0 = 9;    // report message
+  optional Acu_vcu_cfb515a acu_vcu_cfb515a = 10;       // control message
+  optional Acu_eps_cfb525a acu_eps_cfb525a = 11;       // report message
+  optional Acu_bcm_cfb535a acu_bcm_cfb535a = 12;       // control message
+  optional Ehb_state_cfb615b ehb_state_cfb615b = 13;   // report message
+  optional Ehb_fault_cfb625b ehb_fault_cfb625b = 14;   // report message
+  optional Epb_state_cfb715c epb_state_cfb715c = 15;   // report message
+  optional Eps_state_cfb815d eps_state_cfb815d = 16;   // report message
+  optional Vcu_qbutton_fb_zx_180182a8 vcu_qbutton_fb_zx_180182a8 =
+      20;  // report message
+  optional Acu_engage_fb_zx_1801a784 acu_engage_fb_zx_1801a784 =
+      21;  // control message
+}

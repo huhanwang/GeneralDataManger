@@ -1,0 +1,26 @@
+syntax = "proto2";
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+message HppMappingStateProto {
+  enum BackGroundMappingState {
+    INVALID_CONDITION = 0;
+    MAPPING_WITHOUT_ANCHOR = 1;
+    MAPPING_WITH_ANCHOR = 2;
+  }
+
+  enum MappingState {
+    INITIAL = 0;
+    BACKGROUND_MAPPING = 1;
+    STARTED = 2;
+    FINISHING = 3;
+    SUCCESSFUL = 4;
+    FAILED = 5;
+  }
+
+  optional LiteHeader header = 1;
+  optional BackGroundMappingState background_mapping_state = 2;
+  optional MappingState mapping_state = 3;
+  optional double trajectory_length = 4 [default = 0];
+  optional double saving_progress_ratio = 5 [default = 0];
+}

@@ -1,0 +1,87 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/qacc";
+
+import "onboard/planner/object/proto/planner_object.proto";
+import "onboard/planner/scheduler/proto/scheduler.proto";
+import "onboard/planner/speed/proto/speed_finder.proto";
+import "onboard/planner/common/proto/planner_status.proto";
+
+enum QACCState {
+  ACC_OFF = 1;
+  ACC_ENABLED = 2;
+  ACC_DISABLED = 3;
+}
+
+message QACCTargetProto {
+  optional string object_id = 1;
+  optional string traj_id = 4;
+  reserved 2, 3;
+}
+
+message QACCTargetsProto {
+  repeated QACCTargetProto leaders = 4;
+  repeated QACCTargetProto potential_targets = 6;
+  optional int64 timestamp = 7;  // Microseconds.
+  optional AccCorridorSource source = 8;
+  reserved 1, 2, 3, 5;
+}
+
+message QACCTaskProto {
+  optional QACCTargetsProto prev_acc_target = 1;
+}
+
+enum AccCorridorSource {
+  ESTIMATED = 1;
+  MAP = 2;
+  COMBINED = 3;
+}
+
+message AccCorridorProto {
+  optional planner.ScheduledPathBoundaryProto path_boundary = 2;
+  optional double credible_length = 4;
+
+  reserved 1, 3;
+}
+
+enum AccSpeedLimitSource {
+  TARGET = 1;
+  TARGET_HARD_BRAKE = 2;
+  CURVATURE = 3;
+  EXTERNAL = 4;
+  COMBINED_LIMIT = 5;
+}
+
+message AccSpeedLimitProto {
+  optional AccSpeedLimitSource source = 1;
+  optional double v = 2;
+  optional double a = 3;  // Accel or brake.
+  optional string info = 4;
+}
+
+// Acc preliminary speed debug.
+message AccPreliminarySpeedDebugProto {
+  optional AccSpeedLimitProto combined_speed_limit = 1;
+  repeated AccSpeedLimitProto speed_limits = 2;
+}
+
+// Debug.
+message QACCDebugProto {
+  optional AccCorridorProto corridor_map = 1 [deprecated = true];
+  optional AccCorridorProto corridor_estimate = 5 [deprecated = true];
+  optional AccCorridorProto corridor_combined = 10 [deprecated = true];
+  optional QACCTargetsProto target_map = 2 [deprecated = true];
+  optional QACCTargetsProto target_estimate = 3 [deprecated = true];
+  optional QACCTargetsProto target_combined = 11 [deprecated = true];
+  optional SpeedFinderDebugProto speed_debug = 4;
+  optional AccCorridorSource active_corridor_source = 6;
+  map<string, planner.PlannerStatusProto> source_status = 9;
+  map<string, AccCorridorProto> source_corridors = 12;
+  map<string, QACCTargetsProto> source_targets = 13;
+  optional AccPreliminarySpeedDebugProto preliminary_speed_debug = 14;
+
+  reserved 7, 8;
+
+  // Next id: 15.
+}

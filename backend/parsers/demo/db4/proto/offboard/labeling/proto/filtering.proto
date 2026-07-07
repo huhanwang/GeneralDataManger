@@ -1,0 +1,110 @@
+syntax = "proto2";
+
+package snoah.filtering;
+
+import "onboard/perception/proto/obstacle.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/fusion/object.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+
+message ClusterFeatureProto {
+  optional int32 num_points = 1;
+  optional float range = 2;
+  optional float has_return_behind_ratio = 3;  // 0.0 ~ 1.0
+  optional float intensity_mean = 4;
+  optional float intensity_dev = 5;  // standard deviation
+  optional float clearance_mean = 6;
+  optional float clearance_dev = 7;  // standard deviation
+  optional float adjacent_scan_gap_mean = 8;
+  optional float adjacent_scan_gap_dev = 9;  // standard deviation
+}
+
+message ClusterDataProto {
+  optional double timestamp = 1;
+  optional ObjectType type_deprecated = 2 [deprecated = true];
+  optional float score = 3;
+  optional int32 num_obstacles = 4;
+  optional int32 num_points = 5;
+  repeated ObstacleProto obstacles = 7;
+  optional ClusterFeatureProto cluster_feature = 8;
+  optional Box2dProto bounding_box = 9;
+  optional VehiclePoseProto vehicle_pose = 10;
+  optional MeasurementType type = 11;
+  repeated RowColProto obstacle_indices = 12;
+}
+
+message ClusterLabelProto {
+  enum Type {
+    MIST = 0;
+    OTHER = 1;
+  }
+  optional Type cluster_type = 1;
+  optional double timestamp = 2;
+}
+
+message ClusterProto {
+  optional ClusterDataProto cluster_data = 1;
+  optional ClusterLabelProto cluster_label = 2;
+}
+
+message ClustersProto {
+  repeated ClusterProto clusters = 1;
+  map<string, Vec3dProto> lidar_extrinsics = 2;
+}
+
+message RowColProto {
+  optional int32 col = 1;
+  optional int32 row = 2;
+  optional int32 index = 3;
+}
+
+message ObstacleWithRowColProto {
+  enum Type {
+    MIST = 0;
+    OTHER = 1;
+    UNKNOWN = 2;
+  }
+  optional Type type = 1;
+  optional RowColProto row_col = 2;
+  optional ObstacleProto obstacle = 3;
+}
+
+message ObstaclesWithRowColProto {
+  repeated ObstacleWithRowColProto obstacles = 1;
+}
+
+message PointDataProto {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+  optional int32 intensity = 4;
+  optional int32 return_index = 5;
+}
+
+message ObstacleDataProto {
+  enum Type {
+    MIST = 0;
+    OTHER = 1;
+  }
+  optional Type type = 1;
+  repeated PointDataProto points = 2;
+  repeated PointDataProto neighbor_points = 3;
+}
+
+message ObstaclesDataProto {
+  repeated ObstacleDataProto obstacles = 1;
+}
+
+message ScenarioAutoGenerationParam {
+  optional string run_name = 1;
+  optional double start_time = 2;
+  optional string file_index = 3;
+  optional bool enable_positioning = 4;
+}
+
+message ScenarioAutoGenerationParams {
+  repeated ScenarioAutoGenerationParam files = 1;
+}

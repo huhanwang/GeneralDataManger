@@ -1,0 +1,347 @@
+
+syntax = "proto2";
+
+package snoah.emergency_brake;
+
+import "onboard/emergency_brake/proto/emergency_brake_object.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception/fusion/fusion_object.proto";
+import "onboard/proto/emergency_brake.proto";
+
+message AebOutputProto {
+  optional bool request = 1;
+  optional double request_time = 2;  // secs
+  optional double target_decel = 3;
+  optional double current_start_time = 4;  // secs
+  optional int32 delayed_exit_frame_count = 5;
+  optional EmergencyBrakeProto.AebActiveType aeb_active_type = 6;
+  optional EmergencyBrakeProto.CrossTrafficActiveType ct_active_type = 7;
+  optional int32 delayed_in_frame_count = 8;
+}
+
+message MaiOutputProto {
+  optional bool request = 1;
+  optional double current_start_time = 2;  // secs
+  optional int32 delayed_exit_frame_count = 3;
+}
+
+message RmaiOutputProto {
+  optional bool request = 1;
+  optional double current_start_time = 2;  // secs
+  optional int32 delayed_exit_frame_count = 3;
+}
+
+message RaebOutputProto {
+  optional bool request = 1;
+  optional double request_time = 2;  // secs
+  optional double target_decel = 3;
+  optional double current_start_time = 4;  // secs
+  optional int32 delayed_exit_frame_count = 5;
+  optional EmergencyBrakeProto.CrossTrafficActiveType ct_active_type = 6;
+  optional int32 delayed_in_frame_count = 7;
+}
+
+message LaebOutputProto {
+  optional bool request = 1;
+  optional double request_time = 2;  // secs
+  optional double target_decel = 3;
+  optional double current_start_time = 4;  // secs
+}
+
+message PreWarnOutputProto {
+  optional bool request = 1;
+  optional double request_time = 2;        // secs
+  optional double current_start_time = 3;  // secs
+  optional int32 delayed_exit_frame_count = 4;
+}
+
+message CrossTrafficAlertOutputProto {
+  optional EmergencyBrakeProto.CrossTrafficActiveType ct_active_type = 1;
+  optional int32 delayed_exit_frame_count = 2;
+  optional int32 delayed_in_frame_count = 3;
+}
+
+message ObjectDecisionProto {
+  optional emergency_brake.OverlapPattern overlap_pattern = 1;
+}
+
+message ObjectMotionStateProto {
+  optional string id = 1;
+  optional double timestamp = 2;
+  optional double heading = 3;
+  optional Vec2dProto accel = 4;
+  optional Vec2dProto vel = 5;
+  optional Vec2dProto pos = 6;
+  optional ObjectDecisionProto decision = 7;
+}
+
+message EmergencyBrakeStateProto {
+  optional LiteHeader header = 1;
+
+  // FCW system state.
+  enum FcwSystemState {
+    FCW_OFF = 0;
+    FCW_ON = 1;
+    FCW_ERROR = 2;
+  }
+  optional FcwSystemState fcw_state = 2;
+
+  // AEB system state.
+  enum AebSystemState {
+    AEBS_OFF = 0;
+    AEBS_ON = 1;
+    AEBS_ERROR = 2;
+  }
+  optional AebSystemState aebs_state = 3;
+
+  // FCTA system state
+  enum FctaSystemState {
+    FCTAS_OFF = 0;
+    FCTAS_ON = 1;
+    FCTAS_ERROR = 2;
+  }
+  optional FctaSystemState fctas_state = 41;
+
+  // RCTA system state
+  enum RctaSystemState {
+    RCTAS_OFF = 0;
+    RCTAS_ON = 1;
+    RCTAS_ERROR = 2;
+  }
+  optional RctaSystemState rctas_state = 59;
+
+  // FCTB system state
+  enum FctbSystemState {
+    FCTBS_OFF = 0;
+    FCTBS_ON = 1;
+    FCTBS_ERROR = 2;
+  }
+  optional FctbSystemState fctbs_state = 42;
+
+  // RCTB system state
+  enum RctbSystemState {
+    RCTBS_OFF = 0;
+    RCTBS_ON = 1;
+    RCTBS_ERROR = 2;
+  }
+  optional RctbSystemState rctbs_state = 60;
+
+  // Pre-warning function state.
+  enum PreWarnState {
+    PREWARN_STANDBY = 0;
+    PREWARN_ACTIVE = 1;
+  }
+  optional PreWarnState prewarn_state = 4;
+
+  // AWB function state.
+  enum AwbState {
+    AWB_STANDBY = 0;
+    AWB_ACTIVE = 1;
+  }
+  optional AwbState awb_state = 5;
+
+  // Prefill function state.
+  enum PreFillState {
+    PREFILL_STANDBY = 0;
+    PREFILL_ACTIVE = 1;
+  }
+  optional PreFillState prefill_state = 6;
+
+  // ABA function state.
+  enum AbaState {
+    ABA_STANDBY = 0;
+    ABA_ACTIVE = 1;
+  }
+  optional AbaState aba_state = 7;
+
+  // AEB function state.
+  enum AebState {
+    AEB_STANDBY = 0;
+    AEB_ACTIVE = 1;
+  }
+  optional AebState aeb_state = 8;
+
+  // EBA function related.
+  enum EbaState {
+    EBA_STANDBY = 0;
+    EBA_ACTIVE = 1;
+  }
+  optional EbaState eba_state = 9;
+
+  // FCTA function state.
+  enum FctaState {
+    FCTA_STANDBY = 0;
+    FCTA_ACTIVE = 1;
+  }
+  optional FctaState fcta_state = 43;
+
+  // RCTA function state.
+  enum RctaState {
+    RCTA_STANDBY = 0;
+    RCTA_ACTIVE = 1;
+  }
+  optional RctaState rcta_state = 61;
+
+  // FCTB function state.
+  enum FctbState {
+    FCTB_STANDBY = 0;
+    FCTB_ACTIVE = 1;
+  }
+  optional FctbState fctb_state = 44;
+
+  // RCTB function state.
+  enum RctbState {
+    RCTB_STANDBY = 0;
+    RCTB_ACTIVE = 1;
+  }
+  optional RctbState rctb_state = 62;
+
+  // RAEB system state.
+  enum RaebSystemState {
+    RAEBS_OFF = 0;
+    RAEBS_ON = 1;
+    RAEBS_ERROR = 2;
+  }
+  optional RaebSystemState raebs_state = 45;
+
+  // RAEB function state.
+  enum RaebState {
+    RAEB_STANDBY = 0;
+    RAEB_ACTIVE = 1;
+  }
+  optional RaebState raeb_state = 46;
+
+  // LAEB system state.
+  enum LaebSystemState {
+    LAEBS_OFF = 0;
+    LAEBS_ON = 1;
+    LAEBS_ERROR = 2;
+  }
+  optional LaebSystemState laebs_state = 68;
+
+  // LAEB function state.
+  enum LaebState {
+    LAEB_STANDBY = 0;
+    LAEB_ACTIVE = 1;
+  }
+  optional LaebState laeb_state = 74;
+
+  // MAI system state.
+  enum MaisSystemState {
+    MAIS_OFF = 0;
+    MAIS_ON = 1;
+    MAIS_ERROR = 2;
+  }
+  optional MaisSystemState mais_state = 75;
+
+  // MAI function state.
+  enum MaiState {
+    MAI_PASSIVE = 0;
+    MAI_STANDBY = 1;
+    MAI_ACTIVE = 2;
+  }
+  optional MaiState mai_state = 76;
+
+  // RMAI system state.
+  enum RmaisSystemState {
+    RMAIS_OFF = 0;
+    RMAIS_ON = 1;
+    RMAIS_ERROR = 2;
+  }
+  optional RmaisSystemState rmais_state = 83;
+
+  // RMAI function state.
+  enum RmaiState {
+    RMAI_PASSIVE = 0;
+    RMAI_STANDBY = 1;
+    RMAI_ACTIVE = 2;
+  }
+  optional RmaiState rmai_state = 84;
+
+  // Common util states.
+  optional double last_esc_active_time = 10;
+  optional double last_tcs_active_time = 11;
+  optional double last_hdc_active_time = 12;
+  optional double last_vdc_active_time = 13;
+
+  // FCW system util states.
+  optional bool prev_prev_prewarn_active = 32;
+  optional bool prev_prev_awb_active = 20;
+  optional double last_prewarn_active_finish_time = 33;
+  optional double last_awb_active_finish_time = 14;
+  optional double last_fcw_fault_time = 35;
+  optional string fcw_system_fault_message = 36;
+
+  // AEB system util states.
+  optional double last_max_steering_wheel_speed_time = 15;
+  optional bool prev_prev_prefill_active = 21;
+  optional bool prev_prev_aeb_active = 23;
+  optional double last_prefill_active_finish_time = 16;
+  optional double last_aeb_active_finish_time = 18;
+  optional double last_aeb_active_standstill_time = 24;
+  optional double last_aebs_fault_time = 37;
+  optional string aebs_system_fault_message = 38;
+  optional double first_fusion_perception_ts = 67;
+  optional double first_perception_ts = 26;
+  optional AebOutputProto prev_aeb_output = 19;
+  optional AebOutputProto prev_fctb_output = 82;
+  optional PreWarnOutputProto prev_prewarn_output = 34;
+  optional double auto_calib_start_time = 27;
+  optional bool triggered_by_teleop = 28;
+  optional double teleop_trigger_time = 29;
+  optional FusionObjectProto virtual_object = 30;
+  optional double throttle_percentage_when_aeb_active = 73;
+  optional double prev_filtered_steer_speed = 81;
+
+  // RAEB system util states.
+  optional double last_raebs_fault_time = 47;
+  optional string raebs_system_fault_message = 48;
+  optional RaebOutputProto prev_raeb_output = 39;
+
+  // LAEB system util states.
+  optional double last_laebs_fault_time = 70;
+  optional string laebs_system_fault_message = 71;
+  optional LaebOutputProto prev_laeb_output = 72;
+
+  // FCTA system util states.
+  optional bool prev_prev_fcta_active = 63;
+  optional double last_fcta_active_finish_time = 49;
+  optional double last_vehicle_starting_time = 69;
+  optional double last_fctas_fault_time = 50;
+  optional string fctas_system_fault_message = 51;
+  optional CrossTrafficAlertOutputProto prev_fcta_output = 64;
+
+  // RCTA system util states.
+  optional bool prev_prev_rcta_active = 66;
+  optional double last_rcta_active_finish_time = 54;
+  optional double last_rctas_fault_time = 55;
+  optional string rctas_system_fault_message = 56;
+  optional CrossTrafficAlertOutputProto prev_rcta_output = 65;
+
+  // FCTB system util states.
+  optional double last_fctbs_fault_time = 52;
+  optional string fctbs_system_fault_message = 53;
+
+  // RCTB system util states.
+  optional double last_rctbs_fault_time = 57;
+  optional string rctbs_system_fault_message = 58;
+
+  // MAI system util states.
+  optional double last_mai_active_finish_time = 77;
+  optional double last_mais_fault_time = 78;
+  optional string mais_system_fault_message = 79;
+  optional MaiOutputProto prev_mai_output = 80;
+
+  // RMAI system util states.
+  optional double last_rmais_fault_time = 85;
+  optional string rmais_system_fault_message = 86;
+  optional RmaiOutputProto prev_rmai_output = 87;
+
+  // Objects history info
+  repeated ObjectMotionStateProto objects_motion_state = 31;
+  repeated ObjectMotionStateProto fusion_objects_motion_state = 40;
+
+  reserved 17, 22, 25;
+  // NEXT ID: 88
+}

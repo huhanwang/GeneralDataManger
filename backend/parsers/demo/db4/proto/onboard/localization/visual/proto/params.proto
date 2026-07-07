@@ -1,0 +1,249 @@
+syntax = "proto2";
+package snoah.localization;
+
+message VisualLocalizatioinMessageParamsProto {
+  optional int32 max_num_no_perception_msg = 1;
+  optional bool subscribe_pose_proto = 9 [default = false];
+  optional bool debug_visualization_vantage = 11 [default = false];
+  optional bool subscribe_lidar_fen = 12 [default = false];
+  optional int32 gnss_f9k_timestamp_offset_ms = 13 [default = 0];
+  optional double message_gnss_max_gap_sec = 14;
+  optional double message_fen_lidar_max_gap_sec = 15;
+  optional double message_pose_max_gap_sec = 16;
+  optional double message_chassis_max_gap_sec = 17;
+  optional double message_bev_max_gap_sec = 18;
+  optional string noa_mode = 19;
+}
+
+message PreprocessMapParamsProto {
+  optional double max_lateral_match_dist = 1;
+  optional double max_front_longitudinal_match_dist = 2;
+  optional double max_back_longitudinal_match_dist = 3;
+  // params for checking left and right map data
+  optional double data_check_max_lateral_dist = 4;
+  optional double data_check_max_longitudinal_dist = 5;
+  optional double max_front_longitudinal_match_dist_init_status = 6;
+}
+
+message PreprocessPerceptionParamsProto {
+  optional double max_divider_length = 1;
+  optional double max_road_edge_sampling_length = 2;
+  optional double sampling_distance = 3;
+  optional double fen_pole_cluster_distance = 4;
+  optional double sampling_start_x = 5;
+  optional double init_sampling_start_x = 6;
+}
+
+message PreprocessCurbParamsProto {
+  optional double max_valid_front_dist = 1;
+  optional double max_valid_back_dist = 2;
+  optional double max_valid_angle_deg = 3;
+  optional double min_valid_sqr_dist = 4;
+  optional double min_valid_slope = 5;
+  optional double min_ego_to_curb_dist = 6;
+}
+
+message PreprocessorGnssParamsProto {
+  optional int32 min_gnss_num_star = 1;
+  optional double max_gnss_sigma_threshold = 2;
+}
+
+message PreprocessorParamsProto {
+  reserved 1;
+  optional PreprocessMapParamsProto map_params = 2;
+  optional PreprocessPerceptionParamsProto perception_params = 3;
+  optional PreprocessCurbParamsProto curb_params = 4;
+  optional PreprocessorGnssParamsProto gnss_params = 5;
+}
+
+message VisualInitializerParamsProto {
+  optional double max_gnss_lat_lon_sigma = 1;
+  optional double max_lateral_search_range_m = 2;
+  optional double lateral_search_step_m = 3;
+  optional double max_yaw_search_range_deg = 4;
+  optional double yaw_search_step_deg = 5;
+  optional double max_supported_road_width_m = 6;
+  optional double max_bev_and_map_relative_dist_m = 7;
+}
+
+message ScenarioStrategyGnssParamsProto {
+  optional int32 window_buffer_size = 1;
+  optional double normal_max_lateral_dist_threshold = 2;
+  optional double gnss_smooth_trip_min_ratio = 3;
+  optional double gnss_smooth_trip_max_ratio = 11;
+  optional double gnss_smooth_vel_min_ratio = 12;
+  optional double gnss_smooth_vel_max_ratio = 13;
+  optional double gnss_static_check_speed = 4;
+  optional double tunnel_exit_sigma_coeff = 5;
+  optional double tunnel_exit_sigma_epsilon = 6;
+  optional double normal_gnss_vheicle_yaw_diff_threshold_deg = 7;
+  optional double tunnel_exit_gnss_vheicle_yaw_diff_threshold_deg = 8;
+  optional double gnss_heading_sigma_deg = 9;
+  optional int32 gnss_quality_buffer_size = 10;
+}
+
+message ScenarioStrategyParamsProto {
+  optional double curb_perception_error_threshold = 1;
+  optional double max_longitudinal_threshold_for_pair = 2;
+  optional double max_longitudinal_threshold_for_pair_in_ramp = 3;
+  optional double min_longitudinal_threshold_for_pair = 4;
+  optional double max_lateral_threshold_for_pair = 5;
+  optional ScenarioStrategyGnssParamsProto gnss_scenario_params = 6;
+  optional double tunnel_min_distance = 7;
+}
+
+message ConstraintBuilderParamsProto {
+  optional double point2point_x_max_threshold = 1;
+  optional double point2point_y_max_threshold = 2;
+  optional double max_front_distance = 4;
+  optional double max_offset_distance = 5;
+
+  optional double init_max_offset_distance = 6;
+  optional double road_edge_max_offset_distance = 7;
+  optional double min_longitudinal_distance = 8;
+  optional double max_target_pair_lateral_dist = 9;
+  optional double max_lateral_dist_to_refmap = 10;
+  optional double max_refmap_longitudinal_dist = 11;
+  optional double min_target_pair_slope = 12;
+  optional ScenarioStrategyParamsProto scenario_strategy_params = 13;
+  reserved 3;
+}
+
+message MatchObservationParamsProto {
+  optional double divider_pair_weight = 1;
+  optional double pole_pair_weight = 2;
+  optional double marking_pair_weight = 3;
+  optional double roadedge_pair_weight = 4;
+  optional double pt2pt_normal_distribution_sigma = 5;
+  optional double pt2line_normal_distribution_sigma = 6;
+}
+
+message EstimatorParticleFilterParamsProto {
+  optional double search_range_x = 1;
+  optional double search_range_y = 2;
+  optional double search_range_yaw = 3;
+  optional double particle_resample_noise_x = 4;
+  optional double particle_resample_noise_y = 5;
+  optional double particle_resample_noise_yaw = 6;
+
+  optional int32 num_latitude_initial_particle = 7;
+  optional int32 num_latitude_resample_particle = 8;
+
+  optional double max_cluster_dist = 11;
+  optional double weighted_mean_radius = 13;
+
+  optional int32 min_divider_pair_size_for_update = 12;
+  optional double nearby_range_threshold = 15;
+  optional int32 min_pairs_num_in_intersection = 16;
+  optional int32 min_divider_pairs_num_ignore_roadedge = 17;
+  optional int32 min_valid_init_num = 18;
+
+  optional MatchObservationParamsProto match_obs_params = 14;
+  reserved 9, 10;
+  // next id: 19
+}
+
+message EstimatorLongitudinalKalmanFilterParamsProto {
+  optional double gnss_noise_coeff = 1;
+  optional double divider_noise_coeff = 2;
+  optional double max_offset_x_coeff = 3;
+  optional double tunnel_exit_max_offset_x_coeff = 4;
+}
+
+message EstimatorProcessorParamsProto {
+  reserved 3;
+  enum Type {
+    PARTICLE_FILTER = 0;
+    UNKNOWN = 1;
+  }
+  optional Type method = 1 [default = PARTICLE_FILTER];
+
+  optional EstimatorParticleFilterParamsProto particle_filter_params = 2;
+  optional EstimatorLongitudinalKalmanFilterParamsProto
+      longitudinal_kalman_filter_params = 4;
+}
+
+message PostProcessorParamsProto {
+  optional bool is_offboard_mode = 1 [default = false];
+}
+
+message LaneLocalizerParamsProto {
+  optional double bev_curb_max_error = 1;
+  optional double bev_curb_road_width_error = 2;
+  optional double bev_curb_wrong_lane_error = 3;
+  optional bool enable_init_check = 4 [default = true];
+}
+
+message DiagnostorParamsProto {
+  optional double max_dis_gnss2loc = 10 [deprecated = true];
+  optional double max_dist_no_longitudinal_match = 1;
+  optional double no_perception_check_dis = 2;
+  optional double no_perception_dis_ratio = 12;
+  optional double max_dis_no_match = 3;
+  optional double max_dis_bad_match = 4;
+  optional double max_dis_no_match_road_edge = 5;
+  optional double max_dis_no_match_road_lane = 6;
+  optional double max_dis_no_match_marking = 7 [deprecated = true];
+  optional double max_dis_match_poor = 8;
+  optional double max_dis_no_map = 9;
+  optional double max_dis_match_lateral_err = 11;
+}
+
+message VisualLocalizerParamsProto {
+  optional int32 init_check_times = 3;
+  optional double init_valid_distance_m = 4;
+  optional int32 init_min_pairs_ratio = 5;
+  optional int32 init_allow_frame_cnt = 6;
+  reserved 1, 2;
+}
+
+message MapCheckerParamsProto {
+  optional double max_lane_width_diff = 1;
+  optional double min_parallel_distance = 2;
+  optional double min_overlap_distance = 3;
+  optional double lane_width_diff_ratio = 4;
+}
+
+message DataManagerParamsProto {
+  optional int32 smooth_buffer_capacity = 1;
+  optional double smooth_buffer_max_interval = 2;
+  optional int32 chassis_buffer_capacity = 3;
+  optional double chassis_buffer_max_interval = 4;
+  optional int32 perception_buffer_capacity = 5;
+  optional double perception_buffer_max_interval = 6;
+  optional int32 lidar_buffer_capacity = 7;
+  optional double lidar_buffer_max_interval = 8;
+  optional int32 gnss_buffer_capacity = 9;
+  optional double gnss_buffer_max_interval = 10;
+}
+
+message GlobalFusionParamsProto {
+  optional double low_precision_max_cov_xy_m = 1;
+  optional double low_precision_max_cov_yaw_deg = 2;
+  optional double normal_max_cov_xy_m = 3;
+  optional double normal_max_cov_yaw_deg = 4;
+  optional double angle_diff_reset_threshold = 6;
+  optional double distance_reset_threshold = 7;
+  reserved 5;
+}
+
+message DecisionMakerParamsProto {
+  optional double low_speed_b1mode_threshold = 1;
+}
+
+message VisualLocalizationParamsProto {
+  optional VisualLocalizatioinMessageParamsProto message_params = 1;
+  optional VisualLocalizerParamsProto localizer_params = 2;
+  optional PreprocessorParamsProto preprocessor_params = 3;
+  optional ConstraintBuilderParamsProto constraint_builder_params = 4;
+  optional EstimatorProcessorParamsProto estimator_params = 5;
+  optional VisualInitializerParamsProto initializer_params = 6;
+  optional DiagnostorParamsProto diagnostor_params = 7;
+  optional PostProcessorParamsProto post_processor_params = 8;
+  optional MapCheckerParamsProto map_checker_params = 9;
+  optional DataManagerParamsProto data_manager_params = 10;
+  optional GlobalFusionParamsProto global_fusion_params = 11;
+  optional LaneLocalizerParamsProto lane_localizer_params = 12;
+  optional string hpp_localizer_params_file = 13;
+  optional DecisionMakerParamsProto loctype_selector_params = 14;
+}

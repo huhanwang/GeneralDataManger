@@ -1,0 +1,32 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message LiLanelineProto {
+  optional LiteHeader header = 1;
+  optional int32 cam_id = 2;
+  optional int32 frame_id = 3;
+  optional int64 timestamp = 4;
+  optional int64 pub_timestamp = 5;
+  repeated LiLines li_lines = 6;
+  message LiLines {
+    optional int32 id = 1;
+    optional float c0 = 2;
+    optional float c1 = 3;
+    optional float c2 = 4;
+    optional float c3 = 5;
+    message LiPoints {
+      optional double x = 1;
+      optional double y = 2;
+      optional double z = 3;
+    }
+    repeated LiPoints end_points = 6;
+    repeated LiPoints start_points = 7;
+    optional int32 type = 8;
+    optional int32 source = 9;
+    optional int32 type_sibling = 10;
+  }
+}

@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah;
+
+// applies to Novatel PP7, should be similar for products from other brands
+message RtkParamProto {
+  optional bytes name = 1;
+  // possible values: NCOM1, NCOM2, NCOM3.
+  optional bytes port = 2;
+  // almost alway uses 'V1', instead of 'V2'? don't know the differences
+  optional bytes protocol = 3;
+  // for Qian Xun (in China): '203.107.45.154:8002'
+  // for smart net: '98.159.149.85:9950',
+  // for snoah's own base: "50.209.170.65:2101",
+  // for unavco: '69.44.86.36:2101'
+  optional bytes end_point = 4;
+  // for Qian Xun (in China): 'RTCM32_GGB'
+  // for smart net: 'RTCM3_IMAX_IGS',
+  // for snoah's own base: 'MNTQ',
+  // for unavco: 'RTCM3_P226'
+  optional bytes mount_point = 5;
+  optional bytes username = 6;
+  optional bytes password = 7;
+}
+
+message RtkParamsProto {
+  repeated RtkParamProto rtk_params = 1;
+}

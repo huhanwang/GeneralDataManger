@@ -1,0 +1,92 @@
+
+// lc data reflow config proto.
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/logging/proto/lite_run.proto";
+
+message ReadyFilesProto {
+  message Files {
+    optional string name = 1;
+    optional LogSegment.LogType type = 2;
+  };
+  optional string base_dir = 1;
+  repeated Files files = 2;
+  optional bool readback = 3;
+  optional int64 save_timestamp = 4;
+}
+
+message FileIdIdMap {
+  optional LogSegment.LogType file_type = 1;
+  optional int32 file_id = 2;
+};
+
+message NodeUploadFiles {
+  optional string node_name = 1;
+  optional string name_space = 2;
+  repeated FileIdIdMap file_id_maps = 3;
+};
+
+message UploadFilesConfig {
+  repeated NodeUploadFiles node_upload_files = 1;
+};
+
+message ReadyToUploadFileProto {
+  optional LiteHeader header = 1;
+  optional int64 trigger_timestamp = 2;
+  optional ReadyFilesProto ready_files = 3;
+  optional bool parking_delay_reflow = 4 [default = false];
+  optional int64 unique_id = 5;
+};
+
+message TriggerSignalProto {
+  optional uint64 timestamp = 1;
+  optional uint64 unique_id = 2;
+  optional int32 scenario_tag = 3;
+  optional string tag_info = 4;
+  optional int32 pre_timespan = 5;
+  optional int32 suffix_timespan = 6;
+  optional string record_send_type = 7;
+  optional string record_save_type = 8;
+  optional string config_version = 9;
+  repeated FileIdIdMap file_id_maps = 10;
+};
+
+message DdsTriggerProto {
+  optional LiteHeader header = 1;
+  // AEB: AEB_VRU/AEB_C2C/EBA_C2C/FCW_VRU/FCW_C2C
+  optional string scenario = 2;
+  optional string tag_info = 3;  // useless, define it to facilitate expansion
+};
+
+message TriggerScenarioProto {
+  map<int32, string> scenarios = 1;
+}
+
+message CombineContextProto {
+  optional string lite_run_path = 1;
+  optional string camere_path = 2;
+  optional string j5_lite_path = 3;
+  optional string s32g_lite_path = 4;
+  optional string runs_dir = 5;
+  optional string scenario = 6;
+}
+
+message FsdTriggerSignalProto {
+  optional int32 tag = 1;
+  optional int32 max_record = 2;
+  optional int32 max_record_day = 3;
+  optional int32 pre_duration = 4;
+  optional int32 after_duration = 5;
+  optional int32 priority = 6;
+  optional string tag_info = 7;
+  optional string trigger_source = 8;
+  repeated string upload_file_type_list = 9;
+  repeated string local_store_file_type_list = 10;
+};
+
+message FsdTriggerSignalListProto {
+  repeated FsdTriggerSignalProto fsd_trigger_signals = 1;
+};

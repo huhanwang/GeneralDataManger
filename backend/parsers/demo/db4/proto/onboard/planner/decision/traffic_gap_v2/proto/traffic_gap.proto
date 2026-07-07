@@ -1,0 +1,53 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+enum TrafficGapRelativePosition {
+  GAP_UNKNOWN = 1;
+  GAP_FRONT = 2;
+  GAP_PARALLEL = 3;
+  GAP_REAR = 4;
+}
+
+message TrafficGapProto {
+  optional string leader_id = 1;
+  optional string follower_id = 2;
+  optional double target_v = 3;
+  optional int32 invalid_frame_count = 4 [default = 0];
+  optional int32 traffic_jam_frame_count = 5 [default = 0];
+  message PoseProto {
+    optional Vec2dProto pos = 1;
+    optional double yaw = 2;
+  }
+  optional PoseProto max_front_pose = 6;
+  optional PoseProto min_rear_pose = 7;
+  optional TrafficGapRelativePosition relative_position = 8;
+}
+
+message TrafficGapDebugProto {
+  message TrafficGapInfo {
+    optional string leader_id = 1;
+    optional string follower_id = 2;
+    optional double total_cost = 3;
+    optional bool is_valid = 4 [default = true];
+    optional string validation_info = 5;
+
+    message CostPair {
+      optional double val = 1;
+      optional double cost = 2;
+    }
+    optional CostPair gap_length = 10;
+    optional CostPair align_time = 11;
+    optional CostPair lon_offset = 12;
+    optional CostPair speed_diff = 13;
+    optional CostPair speed_to_limit = 14;
+    optional CostPair ids_continuity = 15;
+    optional CostPair target_v_continuity = 16;
+    optional TrafficGapRelativePosition relative_position = 17;
+    optional CostPair relative_position_cost = 18;
+  }
+  repeated TrafficGapInfo gap_candidates = 1;
+}

@@ -1,0 +1,44 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_board";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+enum MarkerTypeProto {
+  kMarkerUnKnown = 0;
+  kAruco = 1;
+  kAprilTag = 2;
+  kChessBoard = 3;
+}
+
+message CameraMarkerProto {
+  optional int32 marker_id = 1;
+  optional int32 marker_context = 2;
+  repeated Vec2dProto corners = 3;
+  repeated Vec3dProto corners_3d =
+      4;  // Position from the center of the vehicle's front axle.
+}
+
+message CircleMarkerProto {
+  optional int32 marker_id = 1;
+  optional double radius = 2;
+  optional Vec2dProto center = 3;  // relative pose to board origin
+}
+
+message CalibrationBoardProto {
+  optional int32 board_id = 1;
+  optional MarkerTypeProto board_type = 2 [default = kMarkerUnKnown];
+  optional VehiclePoseProto board_pose = 3;
+  repeated CameraMarkerProto camera_markers = 4;
+  repeated CircleMarkerProto circle_markers = 5;
+  optional double width = 9;
+  optional double height = 10;
+  repeated Vec3dProto board_corners_3d = 11;
+}
+
+message CalibrationBoardsProto {
+  optional string description = 1;
+  repeated CalibrationBoardProto boards = 2;
+  optional double car_wheelbase = 3;
+}

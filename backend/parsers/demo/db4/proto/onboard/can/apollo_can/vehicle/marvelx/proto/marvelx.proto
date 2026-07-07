@@ -1,0 +1,1567 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Acu_acclongreq_6a {
+  // Control Message
+  enum Acc_toq_reqstsType {
+    ACC_TOQ_REQSTS_INACTIVE = 0;
+    ACC_TOQ_REQSTS_ACTIVE = 1;
+  }
+  enum Acc_drvoffType {
+    ACC_DRVOFF_NO_REQUEST = 0;
+    ACC_DRVOFF_REQUEST = 1;
+  }
+  enum Acc_modeType {
+    ACC_MODE_OFF_MODE = 0;
+    ACC_MODE_PASSIVE_MODE = 1;
+    ACC_MODE_STANDBY_MODE = 2;
+    ACC_MODE_ACTIVE_CONTROL_MODE = 3;
+    ACC_MODE_BRAKE_ONLY_MODE = 4;
+    ACC_MODE_OVERRIDE_MODE = 5;
+    ACC_MODE_STANDSTILL_MODE = 6;
+    ACC_MODE_FAILURE_MODE = 7;
+  }
+  enum Acc_decel_reqstsType {
+    ACC_DECEL_REQSTS_NOT_REQUEST = 0;
+    ACC_DECEL_REQSTS_REQUEST = 1;
+  }
+  // [] [-848|1199.5]
+  optional double acc_toq_req = 1;
+  // 0  off 1 active [] [0|1]
+  optional Acc_toq_reqstsType acc_toq_reqsts = 2;
+  // drive off request [] [0|1]
+  optional Acc_drvoffType acc_drvoff = 3;
+  // [] [0|7]
+  optional Acc_modeType acc_mode = 4;
+  // unstable Decel [] [0|1]
+  optional Acc_decel_reqstsType acc_decel_reqsts = 5;
+  // [m/s2] [-7.22|3.015]
+  optional double acc_decel_req = 6;
+  // [] [0|15]
+  optional int32 acc_msgcntr = 7;
+  // [] [0|255]
+  optional int32 acc_crc = 8;
+}
+
+message Acu_gearreq_7d {
+  // Control Message
+  enum Avp_apaparkmodType {
+    AVP_APAPARKMOD_OFF = 0;
+    AVP_APAPARKMOD_SAPA = 1;
+    AVP_APAPARKMOD_VPPS = 2;
+    AVP_APAPARKMOD_NBS = 3;
+    AVP_APAPARKMOD_DESCRIPTION_FOR_THE_VALUE_0X4 = 4;
+    AVP_APAPARKMOD_DESCRIPTION_FOR_THE_VALUE_0X5 = 5;
+    AVP_APAPARKMOD_DESCRIPTION_FOR_THE_VALUE_0X6 = 6;
+    AVP_APAPARKMOD_DESCRIPTION_FOR_THE_VALUE_0X7 = 7;
+  }
+  enum Avp_apastsType {
+    AVP_APASTS_INITIAL = 0;
+    AVP_APASTS_STANDBY = 1;
+    AVP_APASTS_SEARCH = 2;
+    AVP_APASTS_PRE_GUIDENCE = 3;
+    AVP_APASTS_GUIDANCE = 4;
+    AVP_APASTS_RESERVED = 5;
+    AVP_APASTS_ABORT = 6;
+    AVP_APASTS_FAULT = 7;
+    AVP_APASTS_PUB_ROAD = 8;
+    AVP_APASTS_OFFMODE = 9;
+    // AVP_APASTS_RESERVED = 10;
+    // AVP_APASTS_RESERVED = 11;
+    // AVP_APASTS_RESERVED = 12;
+    // VP_APASTS_RESERVED = 13;
+    // AVP_APASTS_RESERVED = 14;
+    // AVP_APASTS_RESERVED = 15;
+  }
+  enum Avp_brkmodstsType {
+    AVP_BRKMODSTS_NO_BRAKE = 0;
+    AVP_BRKMODSTS_COMFORT = 1;
+    AVP_BRKMODSTS_EMERGENCY = 2;
+    AVP_BRKMODSTS_RESERVED = 3;
+  }
+  enum Avp_targearreqType {
+    AVP_TARGEARREQ_NO_GEAR_REQUEST = 0;
+    AVP_TARGEARREQ_D = 1;
+    AVP_TARGEARREQ_R = 2;
+    AVP_TARGEARREQ_N = 3;
+    AVP_TARGEARREQ_P = 4;
+  }
+  enum Avp_crtlmodeType {
+    AVP_CRTLMODE_NO = 0;
+    AVP_CRTLMODE_DIST_CRTL = 1;
+    AVP_CRTLMODE_SPD_CRTL = 2;
+    AVP_CRTLMODE_RES = 3;
+  }
+  // [] [0|7]
+  optional Avp_apaparkmodType avp_apaparkmod = 1;
+  // [] [0|15]
+  optional Avp_apastsType avp_apasts = 2;
+  // 0 No 1 Comfort 2 Emergency 3 Reseved [] [0|7]
+  optional Avp_brkmodstsType avp_brkmodsts = 3;
+  // [] [-3.2|3.1]
+  optional double avp_spdlmt = 4;
+  // [] [0|1]
+  optional bool avp_gearreqactv = 5;
+  // [] [0|15]
+  optional int32 avp_msgcntr = 6;
+  // [] [0|255]
+  optional int32 avp_crc = 7;
+  // [cm] [-4095|4096]
+  optional int32 avp_dstreq = 8;
+  // [] [0|7]
+  optional Avp_targearreqType avp_targearreq = 9;
+  // [] [0|15]
+  optional Avp_crtlmodeType avp_crtlmode = 10;
+}
+
+message Acu_aebreq_6d {
+  // Control Message
+  enum AbareqType {
+    ABAREQ_NO_REQUEST = 0;
+    ABAREQ_REQUEST = 1;
+  }
+  enum AbasnvtylvlType {
+    ABASNVTYLVL_LEVEL_0 = 0;
+    ABASNVTYLVL_LEVEL_1 = 1;
+    ABASNVTYLVL_LEVEL_2 = 2;
+    ABASNVTYLVL_LEVEL_3 = 3;
+  }
+  enum AwbsnvtylvlType {
+    AWBSNVTYLVL_LEVEL_0 = 0;
+    AWBSNVTYLVL_LEVEL_1 = 1;
+    AWBSNVTYLVL_LEVEL_2 = 2;
+    AWBSNVTYLVL_LEVEL_3 = 3;
+  }
+  enum AwbreqType {
+    AWBREQ_NO_REQUEST = 0;
+    AWBREQ_REQUEST = 1;
+  }
+  enum ScmdecelreqType {
+    SCMDECELREQ_NO_REQUEST = 0;
+    SCMDECELREQ_REQUEST = 1;
+  }
+  enum AebdecelreqType {
+    AEBDECELREQ_NO_REQUEST = 0;
+    AEBDECELREQ_REQUEST = 1;
+  }
+  enum EbadecelreqType {
+    EBADECELREQ_NO_REQUEST = 0;
+    EBADECELREQ_REQUEST = 1;
+  }
+  enum AbpreqType {
+    ABPREQ_NO_REQUEST = 0;
+    ABPREQ_REQUEST = 1;
+  }
+  enum PedpdecreqType {
+    PEDPDECREQ_NO_REQUEST = 0;
+    PEDPDECREQ_REQUEST = 1;
+  }
+  // [m/s2] [-16|15.99]
+  optional double aebtardecel = 1;
+  // [] [0|1]
+  optional AbareqType abareq = 2;
+  // [] [0|3]
+  optional AbasnvtylvlType abasnvtylvl = 3;
+  // [] [0|3]
+  optional AwbsnvtylvlType awbsnvtylvl = 4;
+  // [] [0|1]
+  optional AwbreqType awbreq = 5;
+  // [] [0|1]
+  optional ScmdecelreqType scmdecelreq = 6;
+  // [] [0|15]
+  optional int32 aeb_msgcntr = 7;
+  // [] [0|1]
+  optional AebdecelreqType aebdecelreq = 8;
+  // [] [0|1]
+  optional EbadecelreqType ebadecelreq = 9;
+  // [] [0|1]
+  optional AbpreqType abpreq = 10;
+  // [] [0|1]
+  optional PedpdecreqType pedpdecreq = 11;
+  // [] [0|255]
+  optional int32 aeb_crc = 12;
+}
+
+message Scmsts_7b {
+  // Report Message
+  enum ScmfailstsType {
+    SCMFAILSTS_NORMAL = 0;
+    SCMFAILSTS_FAIL = 1;
+    SCMFAILSTS_RESERVED = 2;
+    SCMFAILSTS_INVALID = 3;
+  }
+  enum HilowbeampushswtstsType {
+    HILOWBEAMPUSHSWTSTS_NO_COMMAND_DEFAULT_POSITION = 0;
+    HILOWBEAMPUSHSWTSTS_LOW_BEAM = 1;
+    HILOWBEAMPUSHSWTSTS_HIGH_BEAM = 2;
+    HILOWBEAMPUSHSWTSTS_INVALID = 3;
+  }
+  enum FrntwiprswtstsType {
+    FRNTWIPRSWTSTS_FRONT_WIPER_OFF = 0;
+    FRNTWIPRSWTSTS_FRONT_WIPER_LOW_SPEED = 1;
+    FRNTWIPRSWTSTS_FRONT_WIPER_HIGH_SPEED = 2;
+    FRNTWIPRSWTSTS_FRONT_WIPER_INTERMEDIATE_SPEED = 3;
+    FRNTWIPRSWTSTS_FRONT_WIPER_WIPE_ONE_TIME = 4;
+    FRNTWIPRSWTSTS_RESERVED = 5;
+    // FRNTWIPRSWTSTS_RESERVED = 6;
+    FRNTWIPRSWTSTS_INVALID = 7;
+  }
+  enum TurnindcrswtstsType {
+    TURNINDCRSWTSTS_NO_TURN_INDICATOR = 0;
+    TURNINDCRSWTSTS_TURN_INDICATOR_LEFT = 1;
+    TURNINDCRSWTSTS_TURN_INDICATOR_RIGHT = 2;
+    TURNINDCRSWTSTS_BOTH_INDICATOR = 3;
+  }
+  enum FoglipushswtstsType {
+    FOGLIPUSHSWTSTS_PUSH_SWITCH_NOT_PRESSED = 0;
+    FOGLIPUSHSWTSTS_PUSH_SWITCH_PRESSED = 1;
+    FOGLIPUSHSWTSTS_RESERVED = 2;
+    FOGLIPUSHSWTSTS_INVALID = 3;
+  }
+  enum FrntwiprinterspdType {
+    FRNTWIPRINTERSPD_RESERVED = 0;
+    FRNTWIPRINTERSPD_INTERMEDIATE_SPEED_1 = 1;
+    FRNTWIPRINTERSPD_INTERMEDIATE_SPEED_2 = 2;
+    FRNTWIPRINTERSPD_INTERMEDIATE_SPEED_3 = 3;
+    FRNTWIPRINTERSPD_INTERMEDIATE_SPEED_4 = 4;
+    // FRNTWIPRINTERSPD_RESERVED = 5;
+    // FRNTWIPRINTERSPD_RESERVED = 6;
+    FRNTWIPRINTERSPD_INVALID = 7;
+  }
+  enum MenuorvoldwnpushswtstsType {
+    MENUORVOLDWNPUSHSWTSTS_NOT_PRESSED = 0;
+    MENUORVOLDWNPUSHSWTSTS_PRESSED = 1;
+    MENUORVOLDWNPUSHSWTSTS_RESERVED = 2;
+    MENUORVOLDWNPUSHSWTSTS_INVALID = 3;
+  }
+  enum AccspdincorresuswtstsType {
+    ACCSPDINCORRESUSWTSTS_NOT_PRESSED = 0;
+    ACCSPDINCORRESUSWTSTS_PRESSED = 1;
+    ACCSPDINCORRESUSWTSTS_RESERVED = 2;
+    ACCSPDINCORRESUSWTSTS_INVALID = 3;
+  }
+  enum AcctimegapincswtstsType {
+    ACCTIMEGAPINCSWTSTS_NOT_PRESSED = 0;
+    ACCTIMEGAPINCSWTSTS_PRESSED = 1;
+    ACCTIMEGAPINCSWTSTS_RESERVED = 2;
+    ACCTIMEGAPINCSWTSTS_INVALID = 3;
+  }
+  enum SelnpushswtstsType {
+    SELNPUSHSWTSTS_NOT_PRESSED = 0;
+    SELNPUSHSWTSTS_PRESSED = 1;
+    SELNPUSHSWTSTS_RESERVED = 2;
+    SELNPUSHSWTSTS_INVALID = 3;
+  }
+  enum ModetogdecswtstsType {
+    MODETOGDECSWTSTS_NOT_PRESSED = 0;
+    MODETOGDECSWTSTS_PRESSED = 1;
+    MODETOGDECSWTSTS_RESERVED = 2;
+    MODETOGDECSWTSTS_INVALID = 3;
+  }
+  enum ModetogincswtstsType {
+    MODETOGINCSWTSTS_NOT_PRESSED = 0;
+    MODETOGINCSWTSTS_PRESSED = 1;
+    MODETOGINCSWTSTS_RESERVED = 2;
+    MODETOGINCSWTSTS_INVALID = 3;
+  }
+  enum MenupushswtstsType {
+    MENUPUSHSWTSTS_NOT_PRESSED = 0;
+    MENUPUSHSWTSTS_PRESSED = 1;
+    MENUPUSHSWTSTS_RESERVED = 2;
+    MENUPUSHSWTSTS_INVALID = 3;
+  }
+  enum SwcfailstsType {
+    SWCFAILSTS_NORMAL = 0;
+    SWCFAILSTS_FAIL = 1;
+    SWCFAILSTS_RESERVED = 2;
+    SWCFAILSTS_INVALID = 3;
+  }
+  enum AccspddecswtstsType {
+    ACCSPDDECSWTSTS_NOT_PRESSED = 0;
+    ACCSPDDECSWTSTS_PRESSED = 1;
+    ACCSPDDECSWTSTS_RESERVED = 2;
+    ACCSPDDECSWTSTS_INVALID = 3;
+  }
+  enum MenulepushswtstsType {
+    MENULEPUSHSWTSTS_NOT_PRESSED = 0;
+    MENULEPUSHSWTSTS_PRESSED = 1;
+    MENULEPUSHSWTSTS_RESERVED = 2;
+    MENULEPUSHSWTSTS_INVALID = 3;
+  }
+  enum MenuorvoluppushswtstsType {
+    MENUORVOLUPPUSHSWTSTS_NOT_PRESSED = 0;
+    MENUORVOLUPPUSHSWTSTS_PRESSED = 1;
+    MENUORVOLUPPUSHSWTSTS_RESERVED = 2;
+    MENUORVOLUPPUSHSWTSTS_INVALID = 3;
+  }
+  enum AcctimegapdecswtstsType {
+    ACCTIMEGAPDECSWTSTS_NOT_PRESSED = 0;
+    ACCTIMEGAPDECSWTSTS_PRESSED = 1;
+    ACCTIMEGAPDECSWTSTS_RESERVED = 2;
+    ACCTIMEGAPDECSWTSTS_INVALID = 3;
+  }
+  enum MenuripushswtstsType {
+    MENURIPUSHSWTSTS_NOT_PRESSED = 0;
+    MENURIPUSHSWTSTS_PRESSED = 1;
+    MENURIPUSHSWTSTS_RESERVED = 2;
+    MENURIPUSHSWTSTS_INVALID = 3;
+  }
+  enum AccsetswtstsType {
+    ACCSETSWTSTS_NOT_PRESSED = 0;
+    ACCSETSWTSTS_PRESSED = 1;
+    ACCSETSWTSTS_RESERVED = 2;
+    ACCSETSWTSTS_INVALID = 3;
+  }
+  // [] [0|3]
+  optional ScmfailstsType scmfailsts = 1;
+  // [] [0|3]
+  optional HilowbeampushswtstsType hilowbeampushswtsts = 2;
+  // [] [0|7]
+  optional FrntwiprswtstsType frntwiprswtsts = 3;
+  // [] [0|3]
+  optional TurnindcrswtstsType turnindcrswtsts = 4;
+  // [] [0|3]
+  optional FoglipushswtstsType foglipushswtsts = 5;
+  // [] [0|7]
+  optional FrntwiprinterspdType frntwiprinterspd = 6;
+  // [] [0|3]
+  optional MenuorvoldwnpushswtstsType menuorvoldwnpushswtsts = 7;
+  // [] [0|3]
+  optional AccspdincorresuswtstsType accspdincorresuswtsts = 8;
+  // [] [0|3]
+  optional AcctimegapincswtstsType acctimegapincswtsts = 9;
+  // [] [0|3]
+  optional SelnpushswtstsType selnpushswtsts = 10;
+  // [] [0|3]
+  optional ModetogdecswtstsType modetogdecswtsts = 11;
+  // [] [0|3]
+  optional ModetogincswtstsType modetogincswtsts = 12;
+  // [] [0|3]
+  optional MenupushswtstsType menupushswtsts = 13;
+  // [] [0|3]
+  optional SwcfailstsType swcfailsts = 14;
+  // [] [0|3]
+  optional AccspddecswtstsType accspddecswtsts = 15;
+  // [] [0|255]
+  optional int32 scm_crc = 16;
+  // [] [0|3]
+  optional MenulepushswtstsType menulepushswtsts = 17;
+  // [] [0|3]
+  optional MenuorvoluppushswtstsType menuorvoluppushswtsts = 18;
+  // [] [0|15]
+  optional int32 scm_msgcntr = 19;
+  // [] [0|3]
+  optional AcctimegapdecswtstsType acctimegapdecswtsts = 20;
+  // [] [0|3]
+  optional MenuripushswtstsType menuripushswtsts = 21;
+  // [] [0|3]
+  optional AccsetswtstsType accsetswtsts = 22;
+}
+
+message Whlspdfront_51 {
+  // Report Message
+  enum WhlspdfrstsType {
+    WHLSPDFRSTS_VALID = 0;
+    WHLSPDFRSTS_INVALID = 1;
+    WHLSPDFRSTS_INITIAL = 2;
+    WHLSPDFRSTS_RESERVED = 3;
+  }
+  enum WhlspdfrdirType {
+    WHLSPDFRDIR_STANDSTILL = 0;
+    WHLSPDFRDIR_FORWARD = 1;
+    WHLSPDFRDIR_BACKWARD = 2;
+    WHLSPDFRDIR_INVALID = 3;
+  }
+  enum WhlspdflstsType {
+    WHLSPDFLSTS_VALID = 0;
+    WHLSPDFLSTS_INVALID = 1;
+    WHLSPDFLSTS_INITIAL = 2;
+    WHLSPDFLSTS_RESERVED = 3;
+  }
+  enum WhlspdfldirType {
+    WHLSPDFLDIR_STANDSTILL = 0;
+    WHLSPDFLDIR_FORWARD = 1;
+    WHLSPDFLDIR_BACKWARD = 2;
+    WHLSPDFLDIR_INVALID = 3;
+  }
+  // [] [0|15]
+  optional int32 wf_msgcntr = 1;
+  // [] [0|255]
+  optional int32 wf_crc = 2;
+  // [] [0|3]
+  optional WhlspdfrstsType whlspdfrsts = 3;
+  // [] [0|3]
+  optional WhlspdfrdirType whlspdfrdir = 4;
+  // [km/h] [0|360]
+  optional double whlspdfr = 5;
+  // [] [0|3]
+  optional WhlspdflstsType whlspdflsts = 6;
+  // [] [0|3]
+  optional WhlspdfldirType whlspdfldir = 7;
+  // [km/h] [0|360]
+  optional double whlspdfl = 8;
+}
+
+message Powersts_02_9c {
+  // Report Message
+  enum AccpedelftravelvalidType {
+    ACCPEDELFTRAVELVALID_VALID = 0;
+    ACCPEDELFTRAVELVALID_INVALID = 1;
+  }
+  enum AccpedacttravelvalidType {
+    ACCPEDACTTRAVELVALID_VALID = 0;
+    ACCPEDACTTRAVELVALID_INVALID = 1;
+  }
+  // [] [0|1]
+  optional AccpedelftravelvalidType accpedelftravelvalid = 1;
+  // [] [0|99.96]
+  optional double accpedelftravel = 2;
+  // [] [0|1]
+  optional AccpedacttravelvalidType accpedacttravelvalid = 3;
+  // [] [0|99.96]
+  optional double accpedacttravel = 4;
+  // [] [0|15]
+  optional int32 vcu_4_msgcntr = 5;
+  // [] [0|255]
+  optional int32 vcu_4_crc = 6;
+}
+
+message Acu_lightreq_336 {
+  // Control Message
+  enum DoorlckctrlreqType {
+    DOORLCKCTRLREQ_NO_REQUEST = 0;
+    DOORLCKCTRLREQ_LOCK_REQUEST = 1;
+    DOORLCKCTRLREQ_UNLOCK_REQUEST = 2;
+  }
+  enum BrklireqType {
+    BRKLIREQ_NO_REQUEST = 0;
+    BRKLIREQ_REQUEST = 1;
+    BRKLIREQ_RESERVED = 2;
+    BRKLIREQ_INVALID = 3;
+  }
+  enum FrntwiprreqType {
+    FRNTWIPRREQ_OFF = 0;
+    FRNTWIPRREQ_LOW_SPEED = 1;
+    FRNTWIPRREQ_HIGH_SPEED = 2;
+    FRNTWIPRREQ_RESERVED = 3;
+    // FRNTWIPRREQ_RESERVED = 4;
+    // FRNTWIPRREQ_RESERVED = 5;
+    // FRNTWIPRREQ_RESERVED = 6;
+    FRNTWIPRREQ_INVALID = 7;
+  }
+  enum TurnlightindType {
+    TURNLIGHTIND_NO_TURN = 0;
+    TURNLIGHTIND_TURN_LEFT = 1;
+    TURNLIGHTIND_TURN_RIGHT = 2;
+    TURNLIGHTIND_INVALID = 3;
+  }
+  enum BeamactivestsType {
+    BEAMACTIVESTS_BEAM_STATUS_OFF = 0;
+    BEAMACTIVESTS_BEAM_STATUS_PASSIVE = 1;
+    BEAMACTIVESTS_BEAM_STATUS_ACTIVE = 2;
+    BEAMACTIVESTS_RESERVED = 3;
+    // BEAMACTIVESTS_RESERVED = 4;
+    // BEAMACTIVESTS_RESERVED = 5;
+    // BEAMACTIVESTS_RESERVED = 6;
+    BEAMACTIVESTS_INVALID = 7;
+  }
+  enum BeamlightreqType {
+    BEAMLIGHTREQ_LOW_BEAM_REQUEST = 0;
+    BEAMLIGHTREQ_HIGH_BEAM_REQUEST = 1;
+  }
+  enum EmeglampreqType {
+    EMEGLAMPREQ_OFF = 0;
+    EMEGLAMPREQ_1_25HZ = 1;
+    EMEGLAMPREQ_1HZ = 2;
+    EMEGLAMPREQ_INVALID = 3;
+  }
+  // [] [0|3]
+  optional DoorlckctrlreqType doorlckctrlreq = 1;
+  // [] [0|3]
+  optional BrklireqType brklireq = 2;
+  // [] [0|7]
+  optional FrntwiprreqType frntwiprreq = 3;
+  // [] [0|3]
+  optional TurnlightindType turnlightind = 4;
+  // [] [0|7]
+  optional BeamactivestsType beamactivests = 5;
+  // [] [0|1]
+  optional BeamlightreqType beamlightreq = 6;
+  // [] [0|3]
+  optional EmeglampreqType emeglampreq = 7;
+}
+
+message Bodystatus_9d {
+  // Report Message
+  enum VehlockstsType {
+    VEHLOCKSTS_UNLOCKED = 0;
+    VEHLOCKSTS_ENTRY_UNLOCKED = 1;
+    VEHLOCKSTS_INTERIOR_LOCKED = 2;
+  }
+  enum DoorajarfrntlestsType {
+    DOORAJARFRNTLESTS_CLOSED = 0;
+    DOORAJARFRNTLESTS_OPENED = 1;
+    DOORAJARFRNTLESTS_RESERVED = 2;
+    DOORAJARFRNTLESTS_INVALID = 3;
+  }
+  enum DoorajarfrntristsType {
+    DOORAJARFRNTRISTS_CLOSED = 0;
+    DOORAJARFRNTRISTS_OPENED = 1;
+    DOORAJARFRNTRISTS_RESERVED = 2;
+    DOORAJARFRNTRISTS_INVALID = 3;
+  }
+  enum DoorajarrelestsType {
+    DOORAJARRELESTS_CLOSED = 0;
+    DOORAJARRELESTS_OPENED = 1;
+    DOORAJARRELESTS_RESERVED = 2;
+    DOORAJARRELESTS_INVALID = 3;
+  }
+  enum SeatoccpfrntlefailType {
+    SEATOCCPFRNTLEFAIL_NO_FAILURE = 0;
+    SEATOCCPFRNTLEFAIL_FAILURE = 1;
+    SEATOCCPFRNTLEFAIL_RESERVED = 2;
+    SEATOCCPFRNTLEFAIL_INVALID = 3;
+  }
+  enum SteerwhlheatstsType {
+    STEERWHLHEATSTS_HEATER_OFF = 0;
+    STEERWHLHEATSTS_HEATER_ON = 1;
+    STEERWHLHEATSTS_RESERVED = 2;
+    STEERWHLHEATSTS_INVALID = 3;
+  }
+  enum TrajarstsType {
+    TRAJARSTS_CLOSED = 0;
+    TRAJARSTS_OPENED = 1;
+    TRAJARSTS_RESERVED = 2;
+    TRAJARSTS_INVALID = 3;
+  }
+  enum HoodajarstsType {
+    HOODAJARSTS_CLOSED = 0;
+    HOODAJARSTS_OPENED = 1;
+    HOODAJARSTS_RESERVED = 2;
+    HOODAJARSTS_INVALID = 3;
+  }
+  enum DoorajarreristsType {
+    DOORAJARRERISTS_CLOSED = 0;
+    DOORAJARRERISTS_OPENED = 1;
+    DOORAJARRERISTS_RESERVED = 2;
+    DOORAJARRERISTS_INVALID = 3;
+  }
+  enum SeatoccpfrntlestsType {
+    SEATOCCPFRNTLESTS_NO_OCCUPANT = 0;
+    SEATOCCPFRNTLESTS_OCCUPANT = 1;
+    SEATOCCPFRNTLESTS_RESERVED = 2;
+    SEATOCCPFRNTLESTS_INVALID = 3;
+  }
+  enum CooltlvllowwarnreqType {
+    COOLTLVLLOWWARNREQ_NO_REQUEST = 0;
+    COOLTLVLLOWWARNREQ_REQUEST = 1;
+    COOLTLVLLOWWARNREQ_RESERVED = 2;
+    COOLTLVLLOWWARNREQ_INVALID = 3;
+  }
+  // [] [0|7]
+  optional VehlockstsType vehlocksts = 1;
+  // [] [0|3]
+  optional DoorajarfrntlestsType doorajarfrntlests = 2;
+  // [] [0|3]
+  optional DoorajarfrntristsType doorajarfrntrists = 3;
+  // [] [0|3]
+  optional DoorajarrelestsType doorajarrelests = 4;
+  // [] [0|255]
+  optional int32 bcm_closure_crc = 5;
+  // [] [0|3]
+  optional SeatoccpfrntlefailType seatoccpfrntlefail = 6;
+  // [] [0|3]
+  optional SteerwhlheatstsType steerwhlheatsts = 7;
+  // [] [0|15]
+  optional int32 bcm_closure_msgcntr = 8;
+  // [] [0|3]
+  optional TrajarstsType trajarsts = 9;
+  // [] [0|3]
+  optional HoodajarstsType hoodajarsts = 10;
+  // [] [0|3]
+  optional DoorajarreristsType doorajarrerists = 11;
+  // [] [0|3]
+  optional SeatoccpfrntlestsType seatoccpfrntlests = 12;
+  // [] [0|3]
+  optional CooltlvllowwarnreqType cooltlvllowwarnreq = 13;
+  // [km/h] [0|360]
+  optional double vehspd = 14;
+}
+
+message Motorsts_01_8e {
+  // Report Message
+  enum MottqvalidType {
+    MOTTQVALID_VALID = 0;
+    MOTTQVALID_INVALID = 1;
+  }
+  enum MotspdvalidType {
+    MOTSPDVALID_VALID = 0;
+    MOTSPDVALID_INVALID = 1;
+  }
+  // [] [0|15]
+  optional int32 motor01_msgcntr = 1;
+  // [] [0|255]
+  optional int32 motor01_crc = 2;
+  // [] [0|1]
+  optional MottqvalidType mottqvalid = 3;
+  // [Nm] [-2048|2047.875]
+  optional double mottq = 4;
+  // [] [0|1]
+  optional MotspdvalidType motspdvalid = 5;
+  // [rpm] [-32768|32767]
+  optional int32 motorspd = 6;
+}
+
+message Powersts_01_98 {
+  // Report Message
+  enum VcunbsstsType {
+    VCUNBSSTS_NBS_INITIAL = 0;
+    VCUNBSSTS_NBS_STANDBY = 1;
+    VCUNBSSTS_NBS_ACTIVE = 2;
+    VCUNBSSTS_NBS_OVERRIDE = 3;
+    VCUNBSSTS_NBS_INHIBIT = 4;
+    VCUNBSSTS_OBSTACLE_DETECTED = 5;
+    VCUNBSSTS_GEARSHIFT_ALLOWED = 6;
+    VCUNBSSTS_RES = 7;
+  }
+  enum Tag_gearvalidType {
+    TAG_GEARVALID_VALID = 0;
+    TAG_GEARVALID_INVALID = 1;
+  }
+  enum Actual_gearvalidType {
+    ACTUAL_GEARVALID_VALID = 0;
+    ACTUAL_GEARVALID_INVALID = 1;
+  }
+  enum Actual_gearType {
+    ACTUAL_GEAR_NONE = 0;
+    ACTUAL_GEAR_D = 1;
+    ACTUAL_GEAR_R = 2;
+    ACTUAL_GEAR_N = 3;
+    ACTUAL_GEAR_P = 4;
+  }
+  enum Vcu_epfailType {
+    VCU_EPFAIL_INIT = 0;
+    VCU_EPFAIL_NORMAL = 1;
+    VCU_EPFAIL_FAULT = 2;
+  }
+  enum VcumodindType {
+    VCUMODIND_AUTO = 0;
+    VCUMODIND_ECONOMY = 1;
+    VCUMODIND_COMFORT = 2;
+    VCUMODIND_SPORT = 3;
+    VCUMODIND_RESERVED = 4;
+    // VCUMODIND_RESERVED = 5;
+    // VCUMODIND_RESERVED = 6;
+    VCUMODIND_INVALID = 7;
+  }
+  // [] [0|7]
+  optional VcunbsstsType vcunbssts = 1;
+  // [] [0|4]
+  optional int32 vcu_vlcsts = 2;
+  // [] [0|4]
+  optional int32 vcu_llcsts = 3;
+  // [] [0|1]
+  optional Tag_gearvalidType tag_gearvalid = 4;
+  // [] [0|7]
+  optional int32 tag_gear = 5;
+  // [] [0|1]
+  optional Actual_gearvalidType actual_gearvalid = 6;
+  // [] [0|7]
+  optional Actual_gearType actual_gear = 7;
+  // [] [0|15]
+  optional int32 vcu_17_msgcntr = 8;
+  // [] [0|255]
+  optional int32 vcu_17_crc = 9;
+  // [] [0|1]
+  optional Vcu_epfailType vcu_epfail = 10;
+  // [] [0|3]
+  optional VcumodindType vcumodind = 11;
+}
+
+message Pulsecnt_65 {
+  // Report Message
+  enum WhlplscntrrvldType {
+    WHLPLSCNTRRVLD_VALID = 0;
+    WHLPLSCNTRRVLD_INVALID = 1;
+  }
+  enum WhlplscntrlvldType {
+    WHLPLSCNTRLVLD_VALID = 0;
+    WHLPLSCNTRLVLD_INVALID = 1;
+  }
+  enum WhlplscntfrvldType {
+    WHLPLSCNTFRVLD_VALID = 0;
+    WHLPLSCNTFRVLD_INVALID = 1;
+  }
+  enum WhlplscntflvldType {
+    WHLPLSCNTFLVLD_VALID = 0;
+    WHLPLSCNTFLVLD_INVALID = 1;
+  }
+  // [] [0|1]
+  optional WhlplscntrrvldType whlplscntrrvld = 1;
+  // [pulse] [0|254]
+  optional int32 whlplscntrr = 2;
+  // [] [0|1]
+  optional WhlplscntrlvldType whlplscntrlvld = 3;
+  // [pulse] [0|254]
+  optional int32 whlplscntrl = 4;
+  // [] [0|1]
+  optional WhlplscntfrvldType whlplscntfrvld = 5;
+  // [pulse] [0|254]
+  optional int32 whlplscntfr = 6;
+  // [] [0|1]
+  optional WhlplscntflvldType whlplscntflvld = 7;
+  // [pulse] [0|254]
+  optional int32 whlplscntfl = 8;
+}
+
+message Vehiclelights_80 {
+  // Report Message
+  enum FogfrntlightstsType {
+    FOGFRNTLIGHTSTS_OFF = 0;
+    FOGFRNTLIGHTSTS_ON = 1;
+    FOGFRNTLIGHTSTS_RESERVED = 2;
+    FOGFRNTLIGHTSTS_INVALID = 3;
+  }
+  enum LeftturnlightstsType {
+    LEFTTURNLIGHTSTS_OFF = 0;
+    LEFTTURNLIGHTSTS_ON = 1;
+    LEFTTURNLIGHTSTS_RESERVED = 2;
+    LEFTTURNLIGHTSTS_INVALID = 3;
+  }
+  enum RightturnlightstsType {
+    RIGHTTURNLIGHTSTS_OFF = 0;
+    RIGHTTURNLIGHTSTS_ON = 1;
+    RIGHTTURNLIGHTSTS_RESERVED = 2;
+    RIGHTTURNLIGHTSTS_INVALID = 3;
+  }
+  enum LobeamlightstsType {
+    LOBEAMLIGHTSTS_OFF = 0;
+    LOBEAMLIGHTSTS_ON = 1;
+    LOBEAMLIGHTSTS_RESERVED = 2;
+    LOBEAMLIGHTSTS_INVALID = 3;
+  }
+  enum HibeamlightstsType {
+    HIBEAMLIGHTSTS_OFF = 0;
+    HIBEAMLIGHTSTS_ON = 1;
+    HIBEAMLIGHTSTS_RESERVED = 2;
+    HIBEAMLIGHTSTS_INVALID = 3;
+  }
+  enum EmergcylightstsType {
+    EMERGCYLIGHTSTS_OFF = 0;
+    EMERGCYLIGHTSTS_1_25HZ = 1;
+    EMERGCYLIGHTSTS_1HZ = 2;
+    EMERGCYLIGHTSTS_INVALID = 3;
+  }
+  enum FrntwiperstsType {
+    FRNTWIPERSTS_OFF = 0;
+    FRNTWIPERSTS_INTERMITTENT_MODE = 1;
+    FRNTWIPERSTS_LOW_SPEED = 2;
+    FRNTWIPERSTS_HIGH_SPEED = 3;
+    FRNTWIPERSTS_RESERVED = 4;
+    // FRNTWIPERSTS_RESERVED = 5;
+    // FRNTWIPERSTS_RESERVED = 6;
+    FRNTWIPERSTS_INVALID = 7;
+  }
+  // [] [0|3]
+  optional FogfrntlightstsType fogfrntlightsts = 1;
+  // [] [0|3]
+  optional LeftturnlightstsType leftturnlightsts = 2;
+  // [] [0|3]
+  optional RightturnlightstsType rightturnlightsts = 3;
+  // [] [0|3]
+  optional LobeamlightstsType lobeamlightsts = 4;
+  // [] [0|3]
+  optional HibeamlightstsType hibeamlightsts = 5;
+  // [] [0|3]
+  optional EmergcylightstsType emergcylightsts = 6;
+  // [] [0|7]
+  optional FrntwiperstsType frntwipersts = 7;
+}
+
+message Brksymsts_58 {
+  // Report Message
+  enum TcsactvType {
+    TCSACTV_NOT_ACTIVE = 0;
+    TCSACTV_ACTIVE = 1;
+  }
+  enum ScmavlType {
+    SCMAVL_NOT_AVAILABLE = 0;
+    SCMAVL_AVAILABLE = 1;
+  }
+  enum HfcactvType {
+    HFCACTV_NOT_ACTIVE = 0;
+    HFCACTV_ACTIVE = 1;
+  }
+  enum VdcactvType {
+    VDCACTV_NOT_ACTIVE = 0;
+    VDCACTV_ACTIVE = 1;
+  }
+  enum AvhstsType {
+    AVHSTS_FAILURE_AVH_LAMP_ON_WITH_YELLOW_COLOR = 0;
+    AVHSTS_STANDBY_AVH_LAMP_OFF = 1;
+    AVHSTS_ACTIVE_AVH_LAMP_ON_WITH_GREEN_COLOR = 2;
+    AVHSTS_RESERVED = 3;
+  }
+  enum AutobrkgactvType {
+    AUTOBRKGACTV_NOT_ACTIVE = 0;
+    AUTOBRKGACTV_ACTIVE = 1;
+  }
+  enum VdcdeactvType {
+    VDCDEACTV_NOT_DEACTIVATED = 0;
+    VDCDEACTV_DEACTIVATED = 1;
+  }
+  enum AbaactvType {
+    ABAACTV_NOT_ACTIVE = 0;
+    ABAACTV_ACTIVE = 1;
+  }
+  enum AutobrkgavlType {
+    AUTOBRKGAVL_NOT_AVAILABLE = 0;
+    AUTOBRKGAVL_AVAILABLE = 1;
+  }
+  enum HbaactvType {
+    HBAACTV_NOT_ACTIVE = 0;
+    HBAACTV_ACTIVE = 1;
+  }
+  enum AebavlType {
+    AEBAVL_NOT_AVAILABLE = 0;
+    AEBAVL_AVAILABLE = 1;
+  }
+  enum AebactvType {
+    AEBACTV_NOT_ACTIVE = 0;
+    AEBACTV_ACTIVE = 1;
+  }
+  enum CdpavailType {
+    CDPAVAIL_NOT_AVAILABLE = 0;
+    CDPAVAIL_AVAILABLE = 1;
+  }
+  enum AbaavlType {
+    ABAAVL_NOT_AVAILABLE = 0;
+    ABAAVL_AVAILABLE = 1;
+  }
+  enum HdcstsType {
+    HDCSTS_OFF = 0;
+    HDCSTS_FAILURE = 1;
+    HDCSTS_STANDBY = 2;
+    HDCSTS_ACTIVE = 3;
+  }
+  enum TcsdeactvType {
+    TCSDEACTV_NOT_DEACTIVATED = 0;
+    TCSDEACTV_DEACTIVATED = 1;
+  }
+  enum AwbavlType {
+    AWBAVL_NOT_AVAILABLE = 0;
+    AWBAVL_AVAILABLE = 1;
+  }
+  enum AbpavlType {
+    ABPAVL_NOT_AVAILABLE = 0;
+    ABPAVL_AVAILABLE = 1;
+  }
+  enum AwbactvType {
+    AWBACTV_NOT_ACTIVE = 0;
+    AWBACTV_ACTIVE = 1;
+  }
+  enum EbaavlType {
+    EBAAVL_NOT_AVAILABLE = 0;
+    EBAAVL_AVAILABLE = 1;
+  }
+  enum QdcaccfailType {
+    QDCACCFAIL_NO_ERROR = 0;
+    QDCACCFAIL_ERROR = 1;
+    QDCACCFAIL_RESERVED = 2;
+    // QDCACCFAIL_RESERVED = 3;
+  }
+  enum AbpactvType {
+    ABPACTV_NOT_ACTIVE = 0;
+    ABPACTV_ACTIVE = 1;
+  }
+  enum PedpavlType {
+    PEDPAVL_NOT_AVAILABLE = 0;
+    PEDPAVL_AVAILABLE = 1;
+  }
+  enum CddsavlType {
+    CDDSAVL_NOT_AVAILABLE = 0;
+    CDDSAVL_AVAILABLE = 1;
+  }
+  enum StandstillstsType {
+    STANDSTILLSTS_NON_HOLD = 0;
+    STANDSTILLSTS_SOFT_STOP = 1;
+    STANDSTILLSTS_TEMPORARY_HOLD_BY_SERVICE_BRAKES = 2;
+    STANDSTILLSTS_HOLD_BY_SERVICE_BRAKES = 3;
+    STANDSTILLSTS_TRANSITION_TO_A_NON_HOLD = 4;
+    STANDSTILLSTS_PARKED_VEHICLE_AUTONOMOUS_PARK_BRAKE = 5;
+    STANDSTILLSTS_RESERVED = 6;
+    // STANDSTILLSTS_RESERVED = 7;
+  }
+  enum HhcavailType {
+    HHCAVAIL_NOT_AVAILABLE = 0;
+    HHCAVAIL_AVAILABLE = 1;
+  }
+  enum AbsactvType {
+    ABSACTV_NOT_ACTIVE = 0;
+    ABSACTV_ACTIVE = 1;
+  }
+  enum PedpactvType {
+    PEDPACTV_NOT_ACTIVE = 0;
+    PEDPACTV_ACTIVE = 1;
+  }
+  enum EbaactvType {
+    EBAACTV_NOT_ACTIVE = 0;
+    EBAACTV_ACTIVE = 1;
+  }
+  enum CdpactvType {
+    CDPACTV_NOT_ACTIVE = 0;
+    CDPACTV_ACTIVE = 1;
+  }
+  enum EbdactvType {
+    EBDACTV_NOT_ACTIVE = 0;
+    EBDACTV_ACTIVE = 1;
+  }
+  enum ScmactvType {
+    SCMACTV_NOT_ACTIVE = 0;
+    SCMACTV_ACTIVE = 1;
+  }
+  enum DtcactvType {
+    DTCACTV_NOT_ACTIVE = 0;
+    DTCACTV_ACTIVE = 1;
+  }
+  enum HrbactvType {
+    HRBACTV_NOT_ACTIVE = 0;
+    HRBACTV_ACTIVE = 1;
+  }
+  enum EcdttempoffsType {
+    ECDTTEMPOFFS_TEMPERATURE_NOT_HIGH = 0;
+    ECDTTEMPOFFS_TEMEPRATURE_TOO_HIGH = 1;
+  }
+  enum CddsactvType {
+    CDDSACTV_NOT_ACTIVE = 0;
+    CDDSACTV_ACTIVE = 1;
+  }
+  enum HhcactvType {
+    HHCACTV_NOT_ACTIVE = 0;
+    HHCACTV_ACTIVE = 1;
+  }
+  // [] [0|1]
+  optional TcsactvType tcsactv = 1;
+  // [] [0|1]
+  optional ScmavlType scmavl = 2;
+  // [] [0|1]
+  optional HfcactvType hfcactv = 3;
+  // [] [0|1]
+  optional VdcactvType vdcactv = 4;
+  // [] [0|3]
+  optional AvhstsType avhsts = 5;
+  // [] [0|1]
+  optional AutobrkgactvType autobrkgactv = 6;
+  // [] [0|1]
+  optional VdcdeactvType vdcdeactv = 7;
+  // [] [0|1]
+  optional AbaactvType abaactv = 8;
+  // [] [0|1]
+  optional AutobrkgavlType autobrkgavl = 9;
+  // [] [0|1]
+  optional HbaactvType hbaactv = 10;
+  // Automatic Emergency Braking (AEB) available (Reserved and BCU should send
+  // value 0)  [] [0|1]
+  optional AebavlType aebavl = 11;
+  // Automatic Emergency Braking (AEB) active (Reserved and BCU should send
+  // value 0)   [] [0|1]
+  optional AebactvType aebactv = 12;
+  // Controlled Deceleration for Parking brake (CDP) available       [] [0|1]
+  optional CdpavailType cdpavail = 13;
+  // Adaptive Brake Assist (ABA) available       [] [0|1]
+  optional AbaavlType abaavl = 14;
+  // Hill Descent Control (HDC) status [] [0|3]
+  optional HdcstsType hdcsts = 15;
+  // Traction Control System (TCS) active    [] [0|1]
+  optional TcsdeactvType tcsdeactv = 16;
+  // Automatic Warn Braking (AWB) available       [] [0|1]
+  optional AwbavlType awbavl = 17;
+  // Automatic Brake Prefill (EBP) available    [] [0|1]
+  optional AbpavlType abpavl = 18;
+  // Automatic Warn Braking (AWB) active       [] [0|1]
+  optional AwbactvType awbactv = 19;
+  // Emergency Brake Assist (EBA) available       [] [0|1]
+  optional EbaavlType ebaavl = 20;
+  // Error detected by ESC for MRR (ACC and AEB) in CAN frame information  such
+  // as Timeout, invalid values, CRC or alive counter.   [] [0|3]
+  optional QdcaccfailType qdcaccfail = 21;
+  // Automatic Brake Prefill (EBP) active    [] [0|1]
+  optional AbpactvType abpactv = 22;
+  // Pedestrian Protection (PEDP) available (Reserved and BCU should send value
+  // 0) [] [0|1]
+  optional PedpavlType pedpavl = 23;
+  // Controlled Deceleration for DAS (Driver Assistant System) available      []
+  // [0|1]
+  optional CddsavlType cddsavl = 24;
+  // Styandstill status from Brake (not wheel speed)    [] [0|7]
+  optional StandstillstsType standstillsts = 25;
+  // Hill Hold Control (HHC) available       [] [0|1]
+  optional HhcavailType hhcavail = 26;
+  // Antilock Brake System (ABS) active       [] [0|1]
+  optional AbsactvType absactv = 27;
+  // Pedestrian Protection (PEDP) active (Reserved and BCU should send value 0)
+  // [] [0|1]
+  optional PedpactvType pedpactv = 28;
+  // Emergency Brake Assist (EBA) active       [] [0|1]
+  optional EbaactvType ebaactv = 29;
+  // Controled Deceleration for Parking brake (CDP) active       [] [0|1]
+  optional CdpactvType cdpactv = 30;
+  // Electronic Brake Distribution (EBD) active       [] [0|1]
+  optional EbdactvType ebdactv = 31;
+  // Secondary Colision Mitigation (SCM) active (Reserved and BCU should send
+  // value 0) [] [0|1]
+  optional ScmactvType scmactv = 32;
+  // Drag Torque Control (DTC) active     [] [0|1]
+  optional DtcactvType dtcactv = 33;
+  // Hydraulic Rear wheel Boost (HRB) active       [] [0|1]
+  optional HrbactvType hrbactv = 34;
+  // ECDT temperature offset       [] [0|1]
+  optional EcdttempoffsType ecdttempoffs = 35;
+  // Controlled Deceleration for DAS (Driver Assistant System) active    []
+  // [0|1]
+  optional CddsactvType cddsactv = 36;
+  // Hill Hold Control (HHC) active  [] [0|1]
+  optional HhcactvType hhcactv = 37;
+}
+
+message Acmbody_4a {
+  // Report Message
+  // [0] [0|15]
+  optional int32 acm_msgcntr = 1;
+  // [0] [0|255]
+  optional int32 acm_crc = 2;
+  // [Deg/sec] [-180|180]
+  optional double yawrate = 3;
+  // [] [0|1]
+  optional bool seatoccptfrntlests = 4;
+}
+
+message Acu_epstoqreq_42 {
+  // Control Message
+  enum EpsreqtypType {
+    EPSREQTYP_NO_REQUEST = 0;
+    EPSREQTYP_ANG_STANDBY = 1;
+    EPSREQTYP_TOQ_REQUEST = 2;
+    EPSREQTYP_ANG_REQUEST = 3;
+    EPSREQTYP_HI_1_REQUEST = 5;
+    EPSREQTYP_HI_2_REQUEST = 6;
+    EPSREQTYP_RESERVED_7 = 7;
+    EPSREQTYP_RESERVED_8 = 8;
+    EPSREQTYP_RESERVED_9 = 9;
+    EPSREQTYP_RESERVED_10 = 10;
+    EPSREQTYP_RESERVED_11 = 11;
+    EPSREQTYP_RESERVED_12 = 12;
+    EPSREQTYP_RESERVED_13 = 13;
+    EPSREQTYP_RESERVED_14 = 14;
+    EPSREQTYP_SIGNAL_NOT_AVAILABLE = 15;
+  }
+  enum SysvalidType {
+    SYSVALID_INVALID = 0;
+    SYSVALID_VALID = 1;
+  }
+  // [Deg] [-1638.4|1638.3]
+  optional double eps_ang_req = 1;
+  // [Nm] [-10.24|10.22]
+  optional double eps_toq_req = 2;
+  // [] [0|15]
+  optional EpsreqtypType epsreqtyp = 3;
+  // [] [0|1]
+  optional SysvalidType sysvalid = 4;
+  // [] [0|255]
+  optional int32 eps_crc = 5;
+  // [] [0|15]
+  optional int32 eps_msgcntr = 6;
+}
+
+message Epsstatus01_40 {
+  // Report Message
+  enum EpswarnlampType {
+    EPSWARNLAMP_OFF = 0;
+    EPSWARNLAMP_ON = 1;
+    EPSWARNLAMP_NOT_AVAILABLE = 2;
+    EPSWARNLAMP_RESERVED = 3;
+  }
+  enum Abs_agreqavlType {
+    ABS_AGREQAVL_NOT_AVAILABLE = 0;
+    ABS_AGREQAVL_AVAILABLE = 1;
+  }
+  enum EpsstsType {
+    EPSSTS_INIT = 0;
+    EPSSTS_NORMAL = 1;
+    EPSSTS_DEGRADED_DUE_TO_TEMP_OR_VOL = 2;
+    EPSSTS_TEMPORARY_ERROR = 3;
+    EPSSTS_PERMAMEMT_ERROR = 4;
+    EPSSTS_RESERVED = 5;
+    // EPSSTS_RESERVED = 6;
+    EPSSTS_INVALID = 7;
+  }
+  enum EpsmodType {
+    EPSMOD_NONE = 0;
+    EPSMOD_PAI = 1;
+    EPSMOD_DAI = 2;
+    EPSMOD_TOI = 3;
+    EPSMOD_INVALID = 7;
+  }
+  enum SteeragspddirType {
+    STEERAGSPDDIR_LEFT_PLUS = 0;
+    STEERAGSPDDIR_RIGHT_MINUS = 1;
+  }
+  enum Steer_angledirType {
+    STEER_ANGLEDIR_LEFT_PLUS = 0;
+    STEER_ANGLEDIR_RIGHT_MINUS = 1;
+  }
+  enum Steer_angleandspdvalidType {
+    STEER_ANGLEANDSPDVALID_VALID = 0;
+    STEER_ANGLEANDSPDVALID_INVALID = 1;
+  }
+  // [] [0|3]
+  optional EpswarnlampType epswarnlamp = 1;
+  // [] [0|1]
+  optional Abs_agreqavlType abs_agreqavl = 2;
+  // [Nm] [-10|10]
+  optional double torsbartq = 3;
+  // [] [0|7]
+  optional EpsstsType epssts = 4;
+  // [] [0|7]
+  optional EpsmodType epsmod = 5;
+  // [] [0|1]
+  optional SteeragspddirType steeragspddir = 6;
+  // [Deg/sec] [0|2550]
+  optional double steeragspd = 7;
+  // [] [0|1]
+  optional Steer_angledirType steer_angledir = 8;
+  // [] [0|1]
+  optional Steer_angleandspdvalidType steer_angleandspdvalid = 9;
+  // [Deg] [0|800]
+  optional double steer_angle = 10;
+  // [] [0|15]
+  optional int32 eps_d_msgcntr = 11;
+  // [] [0|255]
+  optional int32 eps_d_crc = 12;
+}
+
+message Whlspdrear_52 {
+  // Report Message
+  enum WhlspdrrstsType {
+    WHLSPDRRSTS_VALID = 0;
+    WHLSPDRRSTS_INVALID = 1;
+    WHLSPDRRSTS_INITIAL = 2;
+    WHLSPDRRSTS_RESERVED = 3;
+  }
+  enum WhlspdrrdirType {
+    WHLSPDRRDIR_STANDSTILL = 0;
+    WHLSPDRRDIR_FORWARD = 1;
+    WHLSPDRRDIR_BACKWARD = 2;
+    WHLSPDRRDIR_INVALID = 3;
+  }
+  enum WhlspdrlstsType {
+    WHLSPDRLSTS_VALID = 0;
+    WHLSPDRLSTS_INVALID = 1;
+    WHLSPDRLSTS_INITIAL = 2;
+    WHLSPDRLSTS_RESERVED = 3;
+  }
+  enum WhlspdrldirType {
+    WHLSPDRLDIR_STANDSTILL = 0;
+    WHLSPDRLDIR_FORWARD = 1;
+    WHLSPDRLDIR_BACKWARD = 2;
+    WHLSPDRLDIR_INVALID = 3;
+  }
+  // [] [0|15]
+  optional int32 wr_crc = 1;
+  // [] [0|15]
+  optional int32 wr_msgcntr = 2;
+  // [] [0|3]
+  optional WhlspdrrstsType whlspdrrsts = 3;
+  // [] [0|3]
+  optional WhlspdrrdirType whlspdrrdir = 4;
+  // [km/h] [0|360]
+  optional double whlspdrr = 5;
+  // [] [0|3]
+  optional WhlspdrlstsType whlspdrlsts = 6;
+  // [] [0|3]
+  optional WhlspdrldirType whlspdrldir = 7;
+  // [km/h] [0|360]
+  optional double whlspdrl = 8;
+}
+
+message Vector__independent_sig_msg_0 {
+  // Report Message
+  enum PilotsymType {
+    PILOTSYM_NO_SYMBOL = 0;
+    PILOTSYM_GRAY_SYMBOL = 1;
+    PILOTSYM_WHITE_SYMBOL = 2;
+    PILOTSYM_RESERVED = 3;
+  }
+  enum Adc_accsymType {
+    ADC_ACCSYM_NO_SYMBOL = 0;
+    ADC_ACCSYM_GRAY_SYMBOL = 1;
+    ADC_ACCSYM_WHITE_SYMBOL = 2;
+    ADC_ACCSYM_RESERVED = 3;
+  }
+  enum Acc_de_stopType {
+    ACC_DE_STOP_NO_REQUEST = 0;
+    ACC_DE_STOP_REQUEST = 1;
+  }
+  enum Avp_nbsstsType {
+    AVP_NBSSTS_NBS_OFF = 0;
+    AVP_NBSSTS_NBS_INITIAL = 1;
+    AVP_NBSSTS_NBS_STANDBY = 2;
+    AVP_NBSSTS_NBS_MOVING = 3;
+    AVP_NBSSTS_NBS_ABORT = 4;
+    AVP_NBSSTS_NBS_FAIL = 5;
+    AVP_NBSSTS_DESCRIPTION_FOR_THE_VALUE_0X6 = 6;
+    AVP_NBSSTS_DESCRIPTION_FOR_THE_VALUE_0X7 = 7;
+  }
+  enum Avp_adcvcunbsstsType {
+    AVP_ADCVCUNBSSTS_NBS_OFF = 0;
+    AVP_ADCVCUNBSSTS_NBS_INTIAL = 1;
+    AVP_ADCVCUNBSSTS_NBS_STANDBY = 2;
+    AVP_ADCVCUNBSSTS_NBS_MOVING = 3;
+    AVP_ADCVCUNBSSTS_NBS_ABORT = 4;
+    AVP_ADCVCUNBSSTS_NBS_FAIL = 5;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0X6 = 6;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0X7 = 7;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0X8 = 8;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0X9 = 9;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XA = 10;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XB = 11;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XC = 12;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XD = 13;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XE = 14;
+    AVP_ADCVCUNBSSTS_DESCRIPTION_FOR_THE_VALUE_0XF = 15;
+  }
+  enum FrntmottqvalidType {
+    FRNTMOTTQVALID_VALID = 0;
+    FRNTMOTTQVALID_INVALID = 1;
+  }
+  enum FrntmotspdvalidType {
+    FRNTMOTSPDVALID_VALID = 0;
+    FRNTMOTSPDVALID_INVALID = 1;
+  }
+  // [Deg] [-1638.4|1638.3]
+  optional double epsdaireq = 1;
+  // [] [0|3]
+  optional PilotsymType pilotsym = 2;
+  // [] [0|3]
+  optional Adc_accsymType adc_accsym = 3;
+  // decelerate to stop [] [0|1]
+  optional Acc_de_stopType acc_de_stop = 4;
+  // [] [0|25.4]
+  optional double acc_maxjerk = 5;
+  // [] [-25.4|0]
+  optional double acc_minjerk = 6;
+  // [m/s2] [-7|5.75]
+  optional double acc_comforlow = 7;
+  // [m/s2] [-7|5.75]
+  optional double acc_comforup = 8;
+  // [] [0|7]
+  optional Avp_nbsstsType avp_nbssts = 9;
+  // [] [0|15]
+  optional Avp_adcvcunbsstsType avp_adcvcunbssts = 10;
+  // [] [0|15]
+  optional int32 motor02_msgcntr = 11;
+  // [] [0|255]
+  optional int32 motor02_crc = 12;
+  // [] [0|1]
+  optional FrntmottqvalidType frntmottqvalid = 13;
+  // [Nm] [-2048|2047.875]
+  optional double frntmottq = 14;
+  // [] [0|1]
+  optional FrntmotspdvalidType frntmotspdvalid = 15;
+  // [rpm] [-32768|32767]
+  optional int32 frntmotspd = 16;
+  // [m/s^2] [-32|31.984]
+  optional double latitudeacc = 17;
+  // [m/s^2] [-15.36|15.33]
+  optional double longaccvalue = 18;
+}
+
+message Scs_hsc2_frp02_185 {
+  // Report Message
+  // [m/s^2] [-32|31.984]
+  optional double vselatacchsc2 = 1;
+  // [] [0|1]
+  optional bool vselataccvhsc2 = 2;
+  // [m/s^2] [15.33|15.36]
+  optional double vselongtacchsc2 = 3;
+  // [] [0|1]
+  optional bool vselongtacccaltdhsc2 = 4;
+  // [] [0|1]
+  optional bool vselongtaccvhsc2 = 5;
+}
+
+message Brkdrvstatus_5e {
+  // Report Message
+  enum BrkpressurestsType {
+    BRKPRESSURESTS_NOT_INIT = 0;
+    BRKPRESSURESTS_NORMAL = 1;
+    BRKPRESSURESTS_FAULT = 2;
+  }
+  enum VehspdstsType {
+    VEHSPDSTS_VALID = 0;
+    VEHSPDSTS_INVALID = 1;
+  }
+  enum VehspddirType {
+    VEHSPDDIR_STANDSTILL = 0;
+    VEHSPDDIR_FORWARD = 1;
+    VEHSPDDIR_BACKWARD = 2;
+    VEHSPDDIR_RESERVED = 3;
+  }
+  enum EpbswstsType {
+    EPBSWSTS_NOT_PRESSED = 0;
+    EPBSWSTS_PRESSED = 1;
+    EPBSWSTS_RESERVED = 2;
+    EPBSWSTS_INVALID = 3;
+  }
+  enum Drv_stateType {
+    DRV_STATE_PARKED = 0;
+    DRV_STATE_READY_FOR_DRVING = 1;
+    DRV_STATE_DRIVING = 2;
+    DRV_STATE_INVALID = 3;
+    DRV_STATE_INVALID_OTHER_VALUES_RESERVED = 15;
+  }
+  enum BrkpedlstsType {
+    BRKPEDLSTS_NOT_PRESSED = 0;
+    BRKPEDLSTS_PRESSED = 1;
+    BRKPEDLSTS_RESERVED = 2;
+    BRKPEDLSTS_INVALID = 3;
+  }
+  enum BrklistsType {
+    BRKLISTS_NO_REQUEST = 0;
+    BRKLISTS_REQUEST = 1;
+    BRKLISTS_RESERVED = 2;
+    BRKLISTS_INVALID = 3;
+  }
+  enum EpbfaillampType {
+    EPBFAILLAMP_OFF = 0;
+    EPBFAILLAMP_ON = 1;
+    EPBFAILLAMP_BLINKING = 2;
+    EPBFAILLAMP_INVALID = 3;
+  }
+  enum EpbwarnlampType {
+    EPBWARNLAMP_ONLY_READY_DURING_FUNCTION = 0;
+    EPBWARNLAMP_DOOR_OPEN_DURING_AUTO = 1;
+    EPBWARNLAMP_SEAT_BELT_UNBUCKLED = 2;
+    EPBWARNLAMP_DOOR_OPEN_AND_BELT_UNBUCKLED = 3;
+  }
+  // [] [0|16]
+  optional int32 brk_msgcntr = 1;
+  // [] [0|3]
+  optional BrkpressurestsType brkpressurests = 2;
+  // [bar] [-30|276.6]
+  optional double brkpressure = 3;
+  // [] [0|1]
+  optional VehspdstsType vehspdsts = 4;
+  // [] [0|3]
+  optional VehspddirType vehspddir = 5;
+  // [km/h] [0|360]
+  optional int32 vehspd = 6;
+  // [] [0|3]
+  optional EpbswstsType epbswsts = 7;
+  // [] [0|15]
+  optional Drv_stateType drv_state = 8;
+  // [] [0|3]
+  optional BrkpedlstsType brkpedlsts = 9;
+  // [] [0|3]
+  optional BrklistsType brklists = 10;
+  // [] [0|3]
+  optional EpbfaillampType epbfaillamp = 11;
+  // [] [0|3]
+  optional EpbwarnlampType epbwarnlamp = 12;
+}
+
+message Driverstatus_5f {
+  // Report Message
+  enum EpbstsType {
+    EPBSTS_UNKNOW = 0;
+    EPBSTS_APPLIED = 1;
+    EPBSTS_RELEASING = 2;
+    EPBSTS_NOT_APPLIED = 3;
+    EPBSTS_APPLYING = 4;
+    EPBSTS_RESERVED = 5;
+    // EPBSTS_RESERVED = 6;
+    // EPBSTS_RESERVED = 7;
+  }
+  enum VcuaccrpedlovrdType {
+    VCUACCRPEDLOVRD_NO_REQUEST = 0;
+    VCUACCRPEDLOVRD_REQUEST = 1;
+  }
+  enum Ibesp2_warningType {
+    IBESP2_WARNING_IBOOSTER_SYSTEM_OK = 0;
+    IBESP2_WARNING_IBOOSTER_IN_REDUCED_PERFORMANCE_YELLOW_LAMP = 1;
+    IBESP2_WARNING_IBOOSTER_DEACTIVATED_YELLOW_LAMP = 2;
+    IBESP2_WARNING_IBOOSTER_IN_DIAGNOSIS_OR_PLANT_MODE = 3;
+  }
+  enum AirbwarnreqType {
+    AIRBWARNREQ_WARNING_LAMP_OFF = 0;
+    AIRBWARNREQ_WARNING_LAMP_ON_FAULT_DETECTED = 1;
+    AIRBWARNREQ_WARNING_LAMP_IS_BLINKING = 2;
+    AIRBWARNREQ_WARNING_LAMP_ON_SYSTEM_INITIALIZATION = 3;
+  }
+  enum SeatbltmidrowristsType {
+    SEATBLTMIDROWRISTS_SEABELT_MIDDLE_ROW_RIGHT_NOT_BUCKLED = 0;
+    SEATBLTMIDROWRISTS_SEATBELT_MIDDLE_ROW_RIGHT_BUCKLED = 1;
+  }
+  enum SeatbltmidrowmidstsType {
+    SEATBLTMIDROWMIDSTS_SEABELT_MIDDLE_ROW_MIDDLE_NOT_BUCKLED = 0;
+    SEATBLTMIDROWMIDSTS_SEATBELT_MIDDLE_ROW_MIDDLE_BUCKLED = 1;
+  }
+  enum SeatbltfrntlestsType {
+    SEATBLTFRNTLESTS_SEABELT_FRONT_LEFT_NOT_BUCKLED = 0;
+    SEATBLTFRNTLESTS_SEATBELT_FRONT_LEFT_BUCKLED = 1;
+  }
+  enum PassairbginhbnlampreqType {
+    PASSAIRBGINHBNLAMPREQ_PASSENGER_AIRBAG_INHIBITION_LAMP_OFF = 0;
+    PASSAIRBGINHBNLAMPREQ_PASSENGER_AIRBAG_INHIBITION_LAMP_ON = 1;
+    PASSAIRBGINHBNLAMPREQ_PASSENGER_AIRBAG_INHIBITION_LAMP_ON_SYSTEM_INITIALIZATION =
+        2;
+    PASSAIRBGINHBNLAMPREQ_RESERVED = 3;
+  }
+  enum SeatoccptfrntristsType {
+    SEATOCCPTFRNTRISTS_NO_OCCUPANT = 0;
+    SEATOCCPTFRNTRISTS_OCCUPANT = 1;
+  }
+  enum CrashdetdType {
+    CRASHDETD_CRASH_NOT_DETECTED = 0;
+    CRASHDETD_CRASH_DETECTED = 1;
+  }
+  enum SeatbltfrntristsType {
+    SEATBLTFRNTRISTS_SEABELT_FRONT_RIGHT_NOT_BUCKLED = 0;
+    SEATBLTFRNTRISTS_SEATBELT_FRONT_RIGHT_BUCKLED = 1;
+  }
+  enum SeatbltmidrowlestsType {
+    SEATBLTMIDROWLESTS_SEABELT_MIDDLE_ROW_LEFT_NOT_BUCKLED = 0;
+    SEATBLTMIDROWLESTS_SEATBELT_MIDDLE_ROW_LEFT_BUCKLED = 1;
+  }
+  // ibooster travel [mm] [-5|47]
+  optional double ibooster_trv = 1;
+  // [] [0|7]
+  optional EpbstsType epbsts = 2;
+  // [] [0|1]
+  optional VcuaccrpedlovrdType vcuaccrpedlovrd = 3;
+  // [] [0|3]
+  optional Ibesp2_warningType ibesp2_warning = 4;
+  // [] [0|3]
+  optional AirbwarnreqType airbwarnreq = 5;
+  // [] [0|15]
+  optional int32 driversts_msgcntr = 6;
+  // [] [0|1]
+  optional SeatbltmidrowristsType seatbltmidrowrists = 7;
+  // [] [0|1]
+  optional SeatbltmidrowmidstsType seatbltmidrowmidsts = 8;
+  // [] [0|1]
+  optional SeatbltfrntlestsType seatbltfrntlests = 9;
+  // [] [0|3]
+  optional PassairbginhbnlampreqType passairbginhbnlampreq = 10;
+  // [] [0|1]
+  optional SeatoccptfrntristsType seatoccptfrntrists = 11;
+  // [] [0|1]
+  optional CrashdetdType crashdetd = 12;
+  // [] [0|1]
+  optional SeatbltfrntristsType seatbltfrntrists = 13;
+  // [] [0|255]
+  optional int32 driversts_crc = 14;
+  // [] [0|1]
+  optional SeatbltmidrowlestsType seatbltmidrowlests = 15;
+  // [] [0|100]
+  optional double bmssoc = 16;
+}
+
+message Hscstatus_169 {
+  // Report Message
+  // [] [0|1]
+  optional bool acavlbly_h2hsc2 = 1;
+  // [] [0|1]
+  optional bool alcmavlbly_h2hsc2 = 2;
+  // [] [0|1]
+  optional bool apaavlbly_h2hsc2 = 3;
+  // [] [0|1]
+  optional bool bcmavlbly_h2hsc2 = 4;
+  // [] [0|1]
+  optional bool bmsavlbly_h2hsc2 = 5;
+  // [] [0|1]
+  optional bool dhlavlbly_h2hsc2 = 6;
+  // [] [0|1]
+  optional bool ecmavlbly_h2hsc2 = 7;
+  // [] [0|1]
+  optional bool ehbsavlbly_h2hsc2 = 8;
+  // [] [0|1]
+  optional bool epbavlbly_h2hsc2 = 9;
+  // [] [0|1]
+  optional bool epsavlbly_h2hsc2 = 10;
+  // [] [0|1]
+  optional bool esclavlbly_h2hsc2 = 11;
+  // [] [0|1]
+  optional bool ficmavlbly_h2hsc2 = 12;
+  // [] [0|1]
+  optional bool fvcmavlbly_h2hsc2 = 13;
+  // [] [0|1]
+  optional bool hcuavlbly_h2hsc2 = 14;
+  // [] [0|1]
+  optional bool hvdcdcavlbly_h2hsc2 = 15;
+  // [] [0|1]
+  optional bool ipcavlbly_h2hsc2 = 16;
+  // [] [0|1]
+  optional bool iscavlbly_h2hsc2 = 17;
+  // [] [0|1]
+  optional bool msmavlbly_h2hsc2 = 18;
+  // [] [0|1]
+  optional bool pacmavlbly_h2hsc2 = 19;
+  // [] [0|1]
+  optional bool pepsavlbly_h2hsc2 = 20;
+  // [] [0|1]
+  optional bool plcmavlbly_h2hsc2 = 21;
+  // [] [0|1]
+  optional bool pmdcavlbly_h2hsc2 = 22;
+  // [] [0|1]
+  optional bool radaravlbly_h2hsc2 = 23;
+  // [] [0|1]
+  optional bool rdaavlbly_h2hsc2 = 24;
+  // [] [0|1]
+  optional bool sasavlbly_h2hsc2 = 25;
+  // [] [0|1]
+  optional bool savmavlbly_h2hsc2 = 26;
+  // [] [0|1]
+  optional bool scsavlbly_h2hsc2 = 27;
+  // [] [0|1]
+  optional bool scuavlbly_h2hsc2 = 28;
+  // [] [0|1]
+  optional bool sdmavlbly_h2hsc2 = 29;
+  // [] [0|1]
+  optional bool tboxavlbly_h2hsc2 = 30;
+  // [] [0|1]
+  optional bool tcavlbly_h2hsc2 = 31;
+  // [] [0|1]
+  optional bool tccmavlbly_h2hsc2 = 32;
+  // [] [0|1]
+  optional bool tcmavlbly_h2hsc2 = 33;
+  // [] [0|1]
+  optional bool tpmavlbly_h2hsc2 = 34;
+}
+
+message Marvelx {
+  optional Acu_acclongreq_6a acu_acclongreq_6a = 1;  // control message
+  optional Acu_gearreq_7d acu_gearreq_7d = 2;        // control message
+  optional Acu_aebreq_6d acu_aebreq_6d = 3;          // control message
+  optional Scmsts_7b scmsts_7b = 4;                  // report message
+  optional Whlspdfront_51 whlspdfront_51 = 5;        // report message
+  optional Powersts_02_9c powersts_02_9c = 6;        // report message
+  optional Acu_lightreq_336 acu_lightreq_336 = 7;    // control message
+  optional Bodystatus_9d bodystatus_9d = 8;          // report message
+  optional Motorsts_01_8e motorsts_01_8e = 9;        // report message
+  optional Powersts_01_98 powersts_01_98 = 10;       // report message
+  optional Pulsecnt_65 pulsecnt_65 = 11;             // report message
+  optional Vehiclelights_80 vehiclelights_80 = 12;   // report message
+  optional Brksymsts_58 brksymsts_58 = 13;           // report message
+  optional Acmbody_4a acmbody_4a = 14;               // report message
+  optional Acu_epstoqreq_42 acu_epstoqreq_42 = 15;   // control message
+  optional Epsstatus01_40 epsstatus01_40 = 16;       // report message
+  optional Whlspdrear_52 whlspdrear_52 = 17;         // report message
+  optional Vector__independent_sig_msg_0 vector__independent_sig_msg_0 =
+      18;                                               // report message
+  optional Scs_hsc2_frp02_185 scs_hsc2_frp02_185 = 19;  // report message
+  optional Brkdrvstatus_5e brkdrvstatus_5e = 20;        // report message
+  optional Driverstatus_5f driverstatus_5f = 21;        // report message
+  optional Hscstatus_169 hscstatus_169 = 22;            // report message
+}

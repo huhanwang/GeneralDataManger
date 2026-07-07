@@ -1,0 +1,775 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Vehicle_signal_ctl_336 {
+  // Control Message
+  enum BrklireqType {
+    BRKLIREQ_NOREQUEST = 0;
+    BRKLIREQ_REQUEST = 1;
+    BRKLIREQ_RESERVED = 2;
+    BRKLIREQ_INVALID = 3;
+  }
+  enum Turn_lightType {
+    TURN_LIGHT_NOTURN = 0;
+    TURN_LIGHT_TURNLEFT = 1;
+    TURN_LIGHT_TURNRIGHT = 2;
+    TURN_LIGHT_INVALID = 3;
+  }
+  enum Beam_activeType {
+    BEAM_ACTIVE_OFF = 0;
+    BEAM_ACTIVE_PASSIVE = 1;
+    BEAM_ACTIVE_ACTIVE = 2;
+    BEAM_ACTIVE_RESERVED1 = 3;
+    BEAM_ACTIVE_RESERVED2 = 4;
+    BEAM_ACTIVE_RESERVED3 = 5;
+    BEAM_ACTIVE_RESERVED4 = 6;
+    BEAM_ACTIVE_INVALID = 7;
+  }
+  enum BeamType {
+    BEAM_LOWBEAM = 0;
+    BEAM_HIGHBEAM = 1;
+  }
+  enum Emergency_enableType {
+    EMERGENCY_ENABLE_OFF = 0;
+    EMERGENCY_ENABLE_SLOW = 1;
+    EMERGENCY_ENABLE_FAST = 2;
+    EMERGENCY_ENABLE_INVALID = 3;
+  }
+  // [] [0|1]
+  optional bool horn = 1;
+  // [] [0|3]
+  optional BrklireqType brklireq = 2;
+  // [] [0|3]
+  optional Turn_lightType turn_light = 3;
+  // [] [0|7]
+  optional Beam_activeType beam_active = 4;
+  // [] [0|1]
+  optional BeamType beam = 5;
+  // [] [0|3]
+  optional Emergency_enableType emergency_enable = 6;
+}
+
+message Body_ctl_346 {
+  // Control Message
+  enum Front_wiperType {
+    FRONT_WIPER_NOREQUEST = 0;
+    FRONT_WIPER_INTERMITTENT = 1;
+    FRONT_WIPER_SLOW = 2;
+    FRONT_WIPER_FAST = 3;
+    FRONT_WIPER_FLICK = 4;
+    FRONT_WIPER_RESERVED1 = 5;
+    FRONT_WIPER_RESERVED2 = 6;
+    FRONT_WIPER_RESERVED3 = 7;
+  }
+  enum Fr_windowType {
+    FR_WINDOW_NOREQUEST = 0;
+    FR_WINDOW_UPREQUEST = 1;
+    FR_WINDOW_DOWNREQUEST = 2;
+    FR_WINDOW_AUTOUPREQUEST = 3;
+    FR_WINDOW_AUTODOWNREQUEST = 4;
+    FR_WINDOW_RESERVED1 = 5;
+    FR_WINDOW_RESERVED2 = 6;
+    FR_WINDOW_RESERVED3 = 7;
+  }
+  enum Wiper_offType {
+    WIPER_OFF_NOREQUEST = 0;
+    WIPER_OFF_OFF = 1;
+  }
+  enum Fl_windowType {
+    FL_WINDOW_NOREQUEST = 0;
+    FL_WINDOW_UPREQUEST = 1;
+    FL_WINDOW_DOWNREQUEST = 2;
+    FL_WINDOW_AUTOUPREQUEST = 3;
+    FL_WINDOW_AUTODOWNREQUEST = 4;
+    FL_WINDOW_RESERVED1 = 5;
+    FL_WINDOW_RESERVED2 = 6;
+    FL_WINDOW_RESERVED3 = 7;
+  }
+  enum Ac_enableType {
+    AC_ENABLE_VALID = 0;
+    AC_ENABLE_INVALID = 1;
+  }
+  enum Ac_temperatureType {
+    AC_TEMPERATURE_LO = 0;
+    AC_TEMPERATURE_DEGC = 1;
+    AC_TEMPERATURE_HIGH = 30;
+    AC_TEMPERATURE_RESERVED = 31;
+  }
+  enum Rr_windowType {
+    RR_WINDOW_NOREQUEST = 0;
+    RR_WINDOW_UPREQUEST = 1;
+    RR_WINDOW_DOWNREQUEST = 2;
+    RR_WINDOW_AUTOUPREQUEST = 3;
+    RR_WINDOW_AUTODOWNREQUEST = 4;
+    RR_WINDOW_RESERVED1 = 5;
+    RR_WINDOW_RESERVED2 = 6;
+    RR_WINDOW_RESERVED3 = 7;
+  }
+  enum Door_lockType {
+    DOOR_LOCK_NO_REQUEST = 0;
+    DOOR_LOCK_LOCK_REQUEST = 1;
+    DOOR_LOCK_UNLOCK_REQUEST = 2;
+    DOOR_LOCK_RESERVED = 3;
+  }
+  enum Rl_windowType {
+    RL_WINDOW_NOREQUEST = 0;
+    RL_WINDOW_UPREQUEST = 1;
+    RL_WINDOW_DOWNREQUEST = 2;
+    RL_WINDOW_AUTOUPREQUEST = 3;
+    RL_WINDOW_AUTODOWNREQUEST = 4;
+    RL_WINDOW_RESERVED1 = 5;
+    RL_WINDOW_RESERVED2 = 6;
+    RL_WINDOW_RESERVED3 = 7;
+  }
+  // [] [0|7]
+  optional Front_wiperType front_wiper = 1;
+  // [] [0|7]
+  optional Fr_windowType fr_window = 2;
+  // [] [0|1]
+  optional Wiper_offType wiper_off = 3;
+  // [] [0|7]
+  optional Fl_windowType fl_window = 4;
+  // [] [0|1]
+  optional Ac_enableType ac_enable = 5;
+  // [degC] [16|30]
+  optional Ac_temperatureType ac_temperature = 6;
+  // [] [0|7]
+  optional Rr_windowType rr_window = 7;
+  // [] [0|3]
+  optional Door_lockType door_lock = 8;
+  // [] [0|7]
+  optional Rl_windowType rl_window = 9;
+}
+
+// Report Message.
+message Body_status_fb_9d {
+  // [] [0|3]
+  optional int32 door_ajar_frnt_le_sts = 1;
+}
+
+message Steer_fb_40 {
+  // Report Message
+  enum EpswarnlampType {
+    EPSWARNLAMP_OFF = 0;
+    EPSWARNLAMP_ON = 1;
+    EPSWARNLAMP_NOTAVAILABLE = 2;
+    EPSWARNLAMP_RESERVED = 3;
+  }
+  enum AbsanglereqavlType {
+    ABSANGLEREQAVL_NOTAVAILABLE = 0;
+    ABSANGLEREQAVL_AVAILABLE = 1;
+  }
+  enum Steer_statusType {
+    STEER_STATUS_INIT = 0;
+    STEER_STATUS_NORMAL = 1;
+    STEER_STATUS_DEGRADED = 2;
+    STEER_STATUS_TEMPORARYERROR = 3;
+    STEER_STATUS_PERMAMEMTERROR = 4;
+    STEER_STATUS_RESERVED1 = 5;
+    STEER_STATUS_RESERVED2 = 6;
+    STEER_STATUS_INVALID = 7;
+  }
+  enum Lat_ctl_mode_fbType {
+    LAT_CTL_MODE_FB_NONE = 0;
+    LAT_CTL_MODE_FB_PAI = 1;
+    LAT_CTL_MODE_FB_DAI = 2;
+    LAT_CTL_MODE_FB_TOI = 3;
+    LAT_CTL_MODE_FB_INVALID = 7;
+  }
+  enum Angle_spd_dirType {
+    ANGLE_SPD_DIR_LEFT = 0;
+    ANGLE_SPD_DIR_RIGHT = 1;
+  }
+  enum Angle_dirType {
+    ANGLE_DIR_LEFT = 0;
+    ANGLE_DIR_RIGHT = 1;
+  }
+  enum Angle_spd_validType {
+    ANGLE_SPD_VALID_VALID = 0;
+    ANGLE_SPD_VALID_INVALID = 1;
+  }
+  // [] [0|3]
+  optional EpswarnlampType epswarnlamp = 1;
+  // [] [0|1]
+  optional AbsanglereqavlType absanglereqavl = 2;
+  // [Nm] [-10|10]
+  optional double driver_steer_torque = 3;
+  // [] [0|7]
+  optional Steer_statusType steer_status = 4;
+  // [] [0|7]
+  optional Lat_ctl_mode_fbType lat_ctl_mode_fb = 5;
+  // [] [0|1]
+  optional Angle_spd_dirType angle_spd_dir = 6;
+  // [Deg/sec] [0|2550]
+  optional double angle_spd = 7;
+  // [] [0|1]
+  optional Angle_dirType angle_dir = 8;
+  // [] [0|1]
+  optional Angle_spd_validType angle_spd_valid = 9;
+  // [Deg] [0|800]
+  optional double angle_fb = 10;
+  // [] [0|15]
+  optional int32 msg_cntr = 11;
+  // [] [0|255]
+  optional int32 crc = 12;
+}
+
+message Steer_ctl_42 {
+  // Control Message
+  enum Lat_ctl_ebableType {
+    LAT_CTL_EBABLE_NOREQUEST = 0;
+    LAT_CTL_EBABLE_ANGSTANDBY = 1;
+    LAT_CTL_EBABLE_TOQREQUEST = 2;
+    LAT_CTL_EBABLE_ANGREQUEST = 3;
+    LAT_CTL_EBABLE_RESERVED_5 = 5;
+    LAT_CTL_EBABLE_RESERVED_6 = 6;
+    LAT_CTL_EBABLE_RESERVED_7 = 7;
+    LAT_CTL_EBABLE_RESERVED_8 = 8;
+    LAT_CTL_EBABLE_RESERVED_9 = 9;
+    LAT_CTL_EBABLE_RESERVED_10 = 10;
+    LAT_CTL_EBABLE_RESERVED_11 = 11;
+    LAT_CTL_EBABLE_RESERVED_12 = 12;
+    LAT_CTL_EBABLE_RESERVED_13 = 13;
+    LAT_CTL_EBABLE_RESERVED_14 = 14;
+    LAT_CTL_EBABLE_SIGNALNOTAVAILABLE = 15;
+  }
+  enum Steer_sys_validType {
+    STEER_SYS_VALID_INVALID = 0;
+    STEER_SYS_VALID_VALID = 1;
+  }
+  // [Deg] [-1638.4|1638.3]
+  optional double steer_angle = 1;
+  // [Nm] [-10.24|10.22]
+  optional double steer_torque = 2;
+  // [] [0|15]
+  optional Lat_ctl_ebableType lat_ctl_ebable = 3;
+  // [] [0|1]
+  optional Steer_sys_validType steer_sys_valid = 4;
+  // [] [0|255]
+  optional int32 crc = 5;
+  // [] [0|15]
+  optional int32 msg_cntr = 6;
+}
+
+message Acu_estop_fb_mr_c6 {
+  // Control Message
+  enum Autonomy_estopType {
+    AUTONOMY_ESTOP_0 = 0;
+    AUTONOMY_ESTOP_1 = 1;
+  }
+  // [] [0|0]
+  optional Autonomy_estopType autonomy_estop = 1;
+}
+
+message Front_wheel_spd_51 {
+  // Report Message
+  enum Fr_validType {
+    FR_VALID_VALID = 0;
+    FR_VALID_INVALID = 1;
+    FR_VALID_INITIAL = 2;
+    FR_VALID_RESERVED = 3;
+  }
+  enum Fr_dircType {
+    FR_DIRC_STANDSTILL = 0;
+    FR_DIRC_FORWARD = 1;
+    FR_DIRC_BACKWARD = 2;
+    FR_DIRC_INVALID = 3;
+  }
+  enum Fl_validType {
+    FL_VALID_VALID = 0;
+    FL_VALID_INVALID = 1;
+    FL_VALID_INITIAL = 2;
+    FL_VALID_RESERVED = 3;
+  }
+  enum Fl_dircType {
+    FL_DIRC_STANDSTILL = 0;
+    FL_DIRC_FORWARD = 1;
+    FL_DIRC_BACKWARD = 2;
+    FL_DIRC_INVALID = 3;
+  }
+  // [] [0|15]
+  optional int32 wf_msg_cntr = 1;
+  // [] [0|255]
+  optional int32 wf_crc = 2;
+  // [] [0|3]
+  optional Fr_validType fr_valid = 3;
+  // [] [0|3]
+  optional Fr_dircType fr_dirc = 4;
+  // [km/h] [0|360]
+  optional double fr_value = 5;
+  // [] [0|3]
+  optional Fl_validType fl_valid = 6;
+  // [] [0|3]
+  optional Fl_dircType fl_dirc = 7;
+  // [km/h] [0|360]
+  optional double front_wheel_spd = 8;
+}
+
+message Rear_wheel_spd_52 {
+  // Report Message
+  enum Rr_validType {
+    RR_VALID_VALID = 0;
+    RR_VALID_INVALID = 1;
+    RR_VALID_INITIAL = 2;
+    RR_VALID_RESERVED = 3;
+  }
+  enum Rr_dircType {
+    RR_DIRC_STANDSTILL = 0;
+    RR_DIRC_FORWARD = 1;
+    RR_DIRC_BACKWARD = 2;
+    RR_DIRC_INVALID = 3;
+  }
+  enum Rl_validType {
+    RL_VALID_VALID = 0;
+    RL_VALID_INVALID = 1;
+    RL_VALID_INITIAL = 2;
+    RL_VALID_RESERVED = 3;
+  }
+  enum Rl_dircType {
+    RL_DIRC_STANDSTILL = 0;
+    RL_DIRC_FORWARD = 1;
+    RL_DIRC_BACKWARD = 2;
+    RL_DIRC_INVALID = 3;
+  }
+  // [] [0|15]
+  optional int32 wr_crc = 1;
+  // [] [0|15]
+  optional int32 wr_msg_cntr = 2;
+  // [] [0|3]
+  optional Rr_validType rr_valid = 3;
+  // [] [0|3]
+  optional Rr_dircType rr_dirc = 4;
+  // [km/h] [0|360]
+  optional double rr_value = 5;
+  // [] [0|3]
+  optional Rl_validType rl_valid = 6;
+  // [] [0|3]
+  optional Rl_dircType rl_dirc = 7;
+  // [km/h] [0|360]
+  optional double rl_value = 8;
+}
+
+message Acc_dec_active_fb_58 {
+  // Report Message
+  enum Active_fbType {
+    ACTIVE_FB_NOTACTIVE = 0;
+    ACTIVE_FB_ACTIVE = 1;
+  }
+  //   [] [0|1]
+  optional Active_fbType active_fb = 1;
+}
+
+message Brake_fb_5e {
+  // Report Message
+  enum Brake_pressure_valid_fbType {
+    BRAKE_PRESSURE_VALID_FB_NOTINIT = 0;
+    BRAKE_PRESSURE_VALID_FB_NORMAL = 1;
+    BRAKE_PRESSURE_VALID_FB_FAULT = 2;
+  }
+  enum Vehicle_spd_validType {
+    VEHICLE_SPD_VALID_VALID = 0;
+    VEHICLE_SPD_VALID_INVALID = 1;
+  }
+  enum Vehicle_spd_directionType {
+    VEHICLE_SPD_DIRECTION_STANDSTILL = 0;
+    VEHICLE_SPD_DIRECTION_FORWARD = 1;
+    VEHICLE_SPD_DIRECTION_BACKWARD = 2;
+    VEHICLE_SPD_DIRECTION_RESERVED = 3;
+  }
+  enum Brake_pdl_pressed_fbType {
+    BRAKE_PDL_PRESSED_FB_NOTPRESSED = 0;
+    BRAKE_PDL_PRESSED_FB_PRESSED = 1;
+    BRAKE_PDL_PRESSED_FB_RESERVED = 2;
+    BRAKE_PDL_PRESSED_FB_INVALID = 3;
+  }
+
+  enum EPB_statusFBType {
+    EPB_NOTPRESSED = 0;
+    EPB_PRESSED = 1;
+    RESERVED = 2;
+    EPB_INVALID = 3;
+  }
+
+  // [] [0|16]
+  optional int32 brk_msg_cntr = 1;
+  // [] [0|3]
+  optional Brake_pressure_valid_fbType brake_pressure_valid_fb = 2;
+  // [bar] [-30|276.6]
+  optional double brake_pressure_fb = 3;
+  // [] [0|1]
+  optional Vehicle_spd_validType vehicle_spd_valid = 4;
+  // [] [0|3]
+  optional Vehicle_spd_directionType vehicle_spd_direction = 5;
+  // [km/h] [0|360]
+  optional int32 vehicle_speed = 6;
+  // [] [0|3]
+  optional Brake_pdl_pressed_fbType brake_pdl_pressed_fb = 7;
+  optional EPB_statusFBType Epb_status_fb = 8;
+}
+
+message Driver_status_fb_5f {
+  // Report Message
+  enum Epb_sts_fbType {
+    EPB_STS_FB_UNKNOW = 0;
+    EPB_STS_FB_APPLIED = 1;
+    EPB_STS_FB_RELEASING = 2;
+    EPB_STS_FB_NOT_APPLIED = 3;
+    EPB_STS_FB_APPLYING = 4;
+    EPB_STS_FB_RESERVED1 = 5;
+    EPB_STS_FB_RESERVED2 = 6;
+    EPB_STS_FB_RESERVED3 = 7;
+  }
+  // [mm] [-5|47]
+  optional double brake_pedal_trvl_fb = 1;
+  // [] [0|7]
+  optional Epb_sts_fbType epb_sts_fb = 2;
+  // [] [0|15]
+  optional int32 driversts_msgcntr = 3;
+  // [] [0|255]
+  optional int32 driversts_crc = 4;
+  // [] [0|100]
+  optional double soc_fb = 5;
+  // [] [0|3]
+  optional bool seat_blt_frnt_le_sts = 6;
+}
+
+message Driving_ctl_6a {
+  // Control Message
+  enum Throttle_enableType {
+    THROTTLE_ENABLE_INACTIVE = 0;
+    THROTTLE_ENABLE_ACTIVE = 1;
+  }
+  enum AccdrvoffType {
+    ACCDRVOFF_NOREQUEST = 0;
+    ACCDRVOFF_REQUEST = 1;
+  }
+  enum Lon_ctl_enableType {
+    LON_CTL_ENABLE_OFF = 0;
+    LON_CTL_ENABLE_PASSIVE = 1;
+    LON_CTL_ENABLE_STANDBY = 2;
+    LON_CTL_ENABLE_ACTIVECONTROL = 3;
+    LON_CTL_ENABLE_BRAKEONLY = 4;
+    LON_CTL_ENABLE_OVERRIDE = 5;
+    LON_CTL_ENABLE_STANDSTILL = 6;
+    LON_CTL_ENABLE_FAILURE = 7;
+  }
+  enum Brake_enableType {
+    BRAKE_ENABLE_NOTREQUEST = 0;
+    BRAKE_ENABLE_REQUEST = 1;
+  }
+  // [] [-848|1199.5]
+  optional double throttle_torque = 1;
+  // [] [0|1]
+  optional Throttle_enableType throttle_enable = 2;
+  // [] [0|1]
+  optional AccdrvoffType accdrvoff = 3;
+  // [] [0|7]
+  optional Lon_ctl_enableType lon_ctl_enable = 4;
+  // [] [0|1]
+  optional Brake_enableType brake_enable = 5;
+  // [m/s2] [-7.22|3.015]
+  optional double brake_value = 6;
+  // [] [0|15]
+  optional int32 acc_msg_cntr = 7;
+  // [] [0|255]
+  optional int32 acc_crc = 8;
+}
+
+message Aeb_ctl_6d {
+  // Control Message
+  // [] [0|15]
+  optional int32 msg_cntr = 1;
+  // [] [0|255]
+  optional int32 aeb_crc = 2;
+}
+
+message Epsbtn_fb_7b {
+  // Report Message
+  enum Call_fbType {
+    CALL_FB_NOTPRESSED = 0;
+    CALL_FB_PRESSED = 1;
+    CALL_FB_RESERVED = 2;
+    CALL_FB_INVALID = 3;
+  }
+  enum Src_fbType {
+    SRC_FB_NOTPRESSED = 0;
+    SRC_FB_PRESSED = 1;
+    SRC_FB_RESERVED = 2;
+    SRC_FB_INVALID = 3;
+  }
+
+  enum Turn_light_fbType {
+    NO_TURN = 0;
+    TURN_LEFT = 1;
+    TURN_RIGHT = 2;
+    BOTH_TURN = 3;
+  }
+
+  // [] [0|3]
+  optional Call_fbType call_fb = 1;
+  // [] [0|3]
+  optional Src_fbType src_fb = 2;
+  optional bool accspdswsts = 3;
+  optional Turn_light_fbType turn_light_fb = 4;
+  optional bool res_push_switch_status = 5;
+  optional bool acc_time_gap_inc_switch = 6;
+  optional bool acc_time_gap_dec_switch = 7;
+}
+
+message Avp_crl_7d {
+  // Control Message
+  enum Avp_apa_park_modeType {
+    AVP_APA_PARK_MODE_OFF = 0;
+    AVP_APA_PARK_MODE_SAPA = 1;
+    AVP_APA_PARK_MODE_VPPS = 2;
+    AVP_APA_PARK_MODE_NBS = 3;
+    AVP_APA_PARK_MODE_RESERVED1 = 4;
+    AVP_APA_PARK_MODE_RESERVED2 = 5;
+    AVP_APA_PARK_MODE_RESERVED3 = 6;
+    AVP_APA_PARK_MODE_RESERVED4 = 7;
+  }
+  enum Avp_apa_stsType {
+    AVP_APA_STS_INITIAL = 0;
+    AVP_APA_STS_STANDBY = 1;
+    AVP_APA_STS_SEARCH = 2;
+    AVP_APA_STS_PRE_GUIDENCE = 3;
+    AVP_APA_STS_GUIDANCE = 4;
+    AVP_APA_STS_RESERVED = 5;
+    AVP_APA_STS_ABORT = 6;
+    AVP_APA_STS_FAULT = 7;
+    AVP_APA_STS_PUB_ROAD = 8;
+    AVP_APA_STS_OFFMODE = 9;
+    AVP_APA_STS_RESERVED1 = 10;
+    AVP_APA_STS_RESERVED2 = 11;
+    AVP_APA_STS_RESERVED3 = 12;
+    AVP_APA_STS_RESERVED4 = 13;
+    AVP_APA_STS_RESERVED5 = 14;
+    AVP_APA_STS_RESERVED6 = 15;
+  }
+  enum Avp_brk_modeType {
+    AVP_BRK_MODE_NOBRAKE = 0;
+    AVP_BRK_MODE_COMFORT = 1;
+    AVP_BRK_MODE_EMERGENCY = 2;
+    AVP_BRK_MODE_RESERVED = 3;
+  }
+  enum GearType {
+    GEAR_NOREQUEST = 0;
+    GEAR_D = 1;
+    GEAR_R = 2;
+    GEAR_N = 3;
+    GEAR_P = 4;
+  }
+  enum Avp_crtl_modeType {
+    AVP_CRTL_MODE_NO = 0;
+    AVP_CRTL_MODE_DISTCRTL = 1;
+    AVP_CRTL_MODE_SPDCRTL = 2;
+    AVP_CRTL_MODE_RES = 3;
+  }
+  // [] [0|7]
+  optional Avp_apa_park_modeType avp_apa_park_mode = 1;
+  // [] [0|15]
+  optional Avp_apa_stsType avp_apa_sts = 2;
+  // [] [0|7]
+  optional Avp_brk_modeType avp_brk_mode = 3;
+  // [] [0|6.3]
+  optional double avp_spd_lmt = 4;
+  // [] [0|1]
+  optional bool gear_enable = 5;
+  // [] [0|15]
+  optional int32 msg_cntr = 6;
+  // [] [0|255]
+  optional int32 avp_crc = 7;
+  // [cm] [-12.7|12.8]
+  optional double avp_del_value = 8;
+  // [] [0|7]
+  optional GearType gear = 9;
+  // [] [0|15]
+  optional Avp_crtl_modeType avp_crtl_mode = 10;
+}
+
+message Vehicle_signal_fb_80 {
+  // Report Message
+  enum FogType {
+    FOG_OFF = 0;
+    FOG_ON = 1;
+    FOG_RESERVED = 2;
+    FOG_INVALID = 3;
+  }
+  enum Left_dircType {
+    LEFT_DIRC_OFF = 0;
+    LEFT_DIRC_ON = 1;
+    LEFT_DIRC_RESERVED = 2;
+    LEFT_DIRC_INVALID = 3;
+  }
+  enum Right_dircType {
+    RIGHT_DIRC_OFF = 0;
+    RIGHT_DIRC_ON = 1;
+    RIGHT_DIRC_RESERVED = 2;
+    RIGHT_DIRC_INVALID = 3;
+  }
+  enum Low_beamType {
+    LOW_BEAM_OFF = 0;
+    LOW_BEAM_ON = 1;
+    LOW_BEAM_RESERVED = 2;
+    LOW_BEAM_INVALID = 3;
+  }
+  enum Main_beamType {
+    MAIN_BEAM_OFF = 0;
+    MAIN_BEAM_ON = 1;
+    MAIN_BEAM_RESERVED = 2;
+    MAIN_BEAM_INVALID = 3;
+  }
+  enum Emergcy_lightType {
+    EMERGCY_LIGHT_OFF = 0;
+    EMERGCY_LIGHT_SLOW = 1;
+    EMERGCY_LIGHT_FAST = 2;
+    EMERGCY_LIGHT_INVALID = 3;
+  }
+  enum WiperType {
+    WIPER_OFF = 0;
+    WIPER_INTERMITTENTMODE = 1;
+    WIPER_LOWSPEED = 2;
+    WIPER_HIGHSPEED = 3;
+    WIPER_RESERVED1 = 4;
+    WIPER_RESERVED2 = 5;
+    WIPER_RESERVED3 = 6;
+    WIPER_INVALID = 7;
+  }
+  // [] [0|3]
+  optional FogType fog = 1;
+  // [] [0|3]
+  optional Left_dircType left_dirc = 2;
+  // [] [0|3]
+  optional Right_dircType right_dirc = 3;
+  // [] [0|3]
+  optional Low_beamType low_beam = 4;
+  // [] [0|3]
+  optional Main_beamType main_beam = 5;
+  // [] [0|3]
+  optional Emergcy_lightType emergcy_light = 6;
+  // [] [0|7]
+  optional WiperType wiper = 7;
+}
+
+message Motor_fb_8e {
+  // Report Message
+  enum Motor_toq_validType {
+    MOTOR_TOQ_VALID_VALID = 0;
+    MOTOR_TOQ_VALID_INVALID = 1;
+  }
+  enum Motor_spd_validType {
+    MOTOR_SPD_VALID_VALID = 0;
+    MOTOR_SPD_VALID_INVALID = 1;
+  }
+  // [] [0|15]
+  optional int32 motor_msg_cntr = 1;
+  // [] [0|255]
+  optional int32 motor_crc = 2;
+  // [] [0|1]
+  optional Motor_toq_validType motor_toq_valid = 3;
+  // [Nm] [-2048|2047.875]
+  optional double motor_toq_value = 4;
+  // [] [0|1]
+  optional Motor_spd_validType motor_spd_valid = 5;
+  // [rpm] [-32768|32767]
+  optional int32 motor_spd_value = 6;
+}
+
+message Power_sts_fb_98 {
+  // Report Message
+  enum Tag_gear_validType {
+    TAG_GEAR_VALID_VALID = 0;
+    TAG_GEAR_VALID_INVALID = 1;
+  }
+  enum Actual_gear_validType {
+    ACTUAL_GEAR_VALID_VALID = 0;
+    ACTUAL_GEAR_VALID_INVALID = 1;
+  }
+  enum Actual_gearType {
+    ACTUAL_GEAR_NONE = 0;
+    ACTUAL_GEAR_D = 1;
+    ACTUAL_GEAR_R = 2;
+    ACTUAL_GEAR_N = 3;
+    ACTUAL_GEAR_P = 4;
+  }
+  // [] [0|4]
+  optional int32 throttle_status_fb = 1;
+  // [] [0|4]
+  optional int32 vcullcsts = 2;
+  // [] [0|1]
+  optional Tag_gear_validType tag_gear_valid = 3;
+  // [] [0|7]
+  optional int32 tag_gear = 4;
+  // [] [0|1]
+  optional Actual_gear_validType actual_gear_valid = 5;
+  // [] [0|7]
+  optional Actual_gearType actual_gear = 6;
+  // [] [0|15]
+  optional int32 vcu_msg_cntr = 7;
+  // [] [0|255]
+  optional int32 vcu_crc = 8;
+}
+
+message Throttle_pdl_pressed_fb_9c {
+  // Report Message
+  enum AccpedelftravelvalidType {
+    ACCPEDELFTRAVELVALID_VALID = 0;
+    ACCPEDELFTRAVELVALID_INVALID = 1;
+  }
+  enum Throttle_pdl_pressed_fb_validType {
+    THROTTLE_PDL_PRESSED_FB_VALID_VALID = 0;
+    THROTTLE_PDL_PRESSED_FB_VALID_INVALID = 1;
+  }
+  // [] [0|1]
+  optional AccpedelftravelvalidType accpedelftravelvalid = 1;
+  // [] [0|99.96]
+  optional double accpedelftravel = 2;
+  // [] [0|1]
+  optional Throttle_pdl_pressed_fb_validType throttle_pdl_pressed_fb_valid = 3;
+  // [] [0|99.96]
+  optional double throttle_pdl_pressed_fb = 4;
+  // [] [0|15]
+  optional int32 msg_cntr = 5;
+  // [] [0|255]
+  optional int32 crc = 6;
+}
+
+message Toqcal_667 {
+  // Report Message
+  // [Deg] [-1638.4|1638.3]
+  optional double epsabsang_cal = 1;
+  // [km/h] [0|360]
+  optional int32 vehspd_cal = 2;
+  // [Nm] [-10.24|10.22]
+  optional double epstoqreq_cal = 3;
+  // [Deg] [-1638.4|1638.3]
+  optional double epsangreq_cal = 4;
+  // [] [0|0]
+  optional bool enable_cal = 5;
+}
+
+message Marvelr {
+  optional Vehicle_signal_ctl_336 vehicle_signal_ctl_336 =
+      2;                                                    // control message
+  optional Body_ctl_346 body_ctl_346 = 3;                   // control message
+  optional Steer_fb_40 steer_fb_40 = 4;                     // report message
+  optional Steer_ctl_42 steer_ctl_42 = 5;                   // control message
+  optional Front_wheel_spd_51 front_wheel_spd_51 = 6;       // report message
+  optional Rear_wheel_spd_52 rear_wheel_spd_52 = 7;         // report message
+  optional Acc_dec_active_fb_58 acc_dec_active_fb_58 = 8;   // report message
+  optional Brake_fb_5e brake_fb_5e = 9;                     // report message
+  optional Driver_status_fb_5f driver_status_fb_5f = 10;    // report message
+  optional Driving_ctl_6a driving_ctl_6a = 11;              // control message
+  optional Aeb_ctl_6d aeb_ctl_6d = 12;                      // control message
+  optional Epsbtn_fb_7b epsbtn_fb_7b = 13;                  // report message
+  optional Avp_crl_7d avp_crl_7d = 14;                      // control message
+  optional Vehicle_signal_fb_80 vehicle_signal_fb_80 = 15;  // report message
+  optional Motor_fb_8e motor_fb_8e = 16;                    // report message
+  optional Power_sts_fb_98 power_sts_fb_98 = 17;            // report message
+  optional Throttle_pdl_pressed_fb_9c throttle_pdl_pressed_fb_9c =
+      18;                                               // report message
+  optional Acu_estop_fb_mr_c6 acu_estop_fb_mr_c6 = 21;  // control message
+  optional Toqcal_667 toqcal_667 = 19;                  // report message
+  optional Body_status_fb_9d body_status_fb_9d = 22;    // report message
+}

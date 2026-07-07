@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package enc;
+
+import "onboard/proto/gnss_recv_send_main.proto";
+
+message Result {
+  enum Status {
+    OK = 0;
+    ERROR = 1;
+  }
+  optional Status status = 1;
+  optional string message = 2;
+}
+
+service Gnss {
+  rpc Data(snoah.GNSSFrame) returns (Result) {}
+}

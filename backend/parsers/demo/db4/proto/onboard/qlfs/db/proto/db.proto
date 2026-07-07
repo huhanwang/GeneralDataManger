@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message CommitProto {
+  required string sha = 1;
+  optional string file_location = 2;
+  optional string description = 3;
+  optional string author = 4;
+  optional string parent_sha = 5;
+  optional string last_update_time = 6;
+  optional int32 depth = 7;
+}
+
+message BranchProto {
+  required string name = 1;
+  required string sha = 2;
+}
+
+message FileVersionProto {
+  required string name = 1;
+  required int32 version = 2;
+}
+
+message FileInfoProto {
+  required string name = 1;
+  optional int32 version = 2;
+  optional string sha = 3;
+  optional string last_update_time = 4;
+  optional string author = 5;
+  optional string description = 6;
+}

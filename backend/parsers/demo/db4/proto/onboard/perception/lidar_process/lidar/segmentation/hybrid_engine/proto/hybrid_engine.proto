@@ -1,0 +1,68 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/segmentation/hybrid_engine/proto/hybrid_engine";
+
+message HybridEngineConfig {
+  optional BgSegmentorConfig bg_seg_conf = 1;
+  optional FgPostFilterConfig fg_filter_conf = 2;
+  optional string roi_filter = 3 [default = "DummyROIFilter"];
+  optional string ground_detector = 4 [default = "DummyGroundDetector"];
+  optional string fg_segmentor = 5 [default = "DummySegmentation"];
+  optional bool return_bg = 6 [default = true];
+  optional float except_bg_near_fg_ratio = 7 [default = 1.2];
+  optional FgRefineConfig fg_refine_conf = 8;
+  optional float crowded_distance_th = 9 [default = 10.0];
+  optional int32 crowded_area_min_object_num = 10 [default = 5];
+}
+
+message BgSegmentorConfig {
+  optional uint32 frame_sequence_size = 1 [default = 5];
+  optional uint32 mst_grid_width = 2 [default = 170];
+  optional uint32 mst_grid_height = 3 [default = 170];
+  optional float frame_mst_range = 4 [default = 75];
+  optional float sequence_mst_resolution = 5 [default = 0.4];
+  optional float mst_c = 6 [default = 6.0];
+  optional int32 mst_radius = 7 [default = 2];
+  optional float mst_max_point_height = 8 [default = 3.0];
+  optional float height_gap = 9 [default = 0.5];
+
+  optional double map_clean_disappear_time = 10 [default = 0.3];
+  optional float map_min_height = 11 [default = 0.1];
+  optional float map_max_height = 12 [default = 1.4];
+  optional float map_cumulated_range = 13 [default = 80.0];
+  optional float map_cumulated_min_height = 14 [default = 0.3];
+  optional float map_ignore_range = 15 [default = 0.0];
+  optional uint32 map_noise_remove_radius = 16 [default = 2];
+  optional float map_noise_intensity_threshold = 17 [default = -1];
+  optional float map_cumulated_min_intensity = 18 [default = 2];
+
+  optional float fg_to_bg_move_threshold = 19 [default = 1.1];
+  optional bool use_sequence_mst = 20 [default = true];
+  optional float mst_dist_back = 21 [default = 4];
+
+  optional int32 min_pts_num_bg = 22 [default = 1];
+}
+
+message FgPostFilterConfig {
+  optional bool remove_ground_points = 1 [default = false];
+  optional bool remove_pure_ground_fg = 2 [default = true];
+  optional float pure_ground_height_thresh = 3 [default = 0.1];
+  optional int32 points_num_thresh = 4 [default = 5];
+}
+
+message FgRefineConfig {
+  optional bool modify_bbox_size_flag = 1 [default = true];
+  optional float large_obj_erode_size_x = 2 [default = 1.0];
+  optional float erode_size_x = 3 [default = 0.2];
+  optional float erode_size_y = 4 [default = 0.2];
+  optional float erode_size_z = 5 [default = 0.0];
+  optional float cut_height_ratio = 6 [default = 0.5];
+  optional bool refine_large_vehicle_flag = 7 [default = true];
+  optional bool refine_erase_dust_flag = 8 [default = true];
+  optional int32 fg_pts_thresh = 9 [default = 5];
+  optional float filter_intensity_thresh = 10 [default = 1.0];
+  optional float semantic_grid_overlap_threshold_vehicle_bicycle = 11
+      [default = 0.3];
+  optional float semantic_grid_overlap_threshold_pedestrian = 12
+      [default = 0.8];
+}

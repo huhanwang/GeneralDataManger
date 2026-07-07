@@ -1,0 +1,49 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/motion_filter_2/proto/bev_stat";
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message BevStatInCell {
+  enum Type {
+    NONE = 0;
+    CAR = 1;
+    TRUCK = 2;
+    // PED = 3;
+    // CYCLIST = 4;
+  }
+  optional Type category = 1;
+  optional uint32 x_index = 2;
+  optional uint32 y_index = 3;
+  optional uint32 occlusion_index = 4;
+  // optional uint32 yaw_index = 5;
+
+  optional Vec2dProto loc_bias = 11;
+  optional Mat2dProto loc_covariance = 12;
+  optional double yaw_bias = 13;
+  optional double yaw_variance = 14;
+  optional double length_bias = 15;
+  optional double length_variance = 16;
+  optional double width_bias = 17;
+  optional double width_variance = 18;
+}
+
+message BevStatConfig {
+  repeated double x_thres = 1;
+  repeated double y_thres = 2;
+  repeated double occluded_score_thres = 3;
+
+  repeated BevStatInCell configs = 11;
+}

@@ -1,0 +1,906 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Scu_18_22f {
+  // Report Message
+  enum Vcu_gaspedalvirtualpstvdType {
+    VCU_GASPEDALVIRTUALPSTVD_NOT_VALID = 0;
+    VCU_GASPEDALVIRTUALPSTVD_VALID = 1;
+  }
+  enum Vcu_brkpedalstvdType {
+    VCU_BRKPEDALSTVD_NOT_VALID = 0;
+    VCU_BRKPEDALSTVD_VALID = 1;
+  }
+  enum Vcu_brkpedalstType {
+    VCU_BRKPEDALST_NOT_PRESSED = 0;
+    VCU_BRKPEDALST_PRESSED = 1;
+  }
+  // Checksum signal for frame [-] [0|255]
+  optional int32 scu_18_checksum = 1;
+  // Virtual position of gas pedal position validity. [] [0|1]
+  optional Vcu_gaspedalvirtualpstvdType vcu_gaspedalvirtualpstvd = 2;
+  // VCU_BrakePedSt valid data [] [0|1]
+  optional Vcu_brkpedalstvdType vcu_brkpedalstvd = 3;
+  // Brake pedal status [] [0|1]
+  optional Vcu_brkpedalstType vcu_brkpedalst = 4;
+  // Message counter signal for frame [-] [0|15]
+  optional int32 scu_18_msgcounter = 5;
+  // Virtual position of gas pedal position. [%] [0|99.96]
+  optional double vcu_gaspedalvirtualpst = 6;
+}
+
+message Scu_17_22d {
+  // Report Message
+  enum Vcu_accelececfailType {
+    VCU_ACCELECECFAIL_NO_FAILURE = 0;
+    VCU_ACCELECECFAIL_FAILURE = 1;
+  }
+  enum Vcu_gaspedalactpstvdType {
+    VCU_GASPEDALACTPSTVD_INVALID = 0;
+    VCU_GASPEDALACTPSTVD_VALID = 1;
+  }
+  enum Vcu_accbuttinfoMasks {
+    VCU_ACCBUTTINFO_MAIN = 0x1;
+    VCU_ACCBUTTINFO_CANCEL = 0x2;
+    VCU_ACCBUTTINFO_SET = 0x4;
+    VCU_ACCBUTTINFO_RESUME = 0x8;
+    VCU_ACCBUTTINFO_DISTANCE = 0x10;
+  }
+  // Checksum signal for frame [-] [0|255]
+  optional int32 scu_17_checksum = 1;
+  // Message counter signal for frame [-] [0|15]
+  optional int32 scu_17_msgcounter = 2;
+  // Actual position of gas pedal. [%] [0|99.96]
+  optional double vcu_gaspedalactpst = 3;
+  // ACC Button Information [] [0|255]
+  optional int32 vcu_accbuttinfo = 4;
+  // Indicate the error state of electronic engine control. [-] [0|1]
+  optional Vcu_accelececfailType vcu_accelececfail = 5;
+  // Actual position of gas pedal validity. [] [0|1]
+  optional Vcu_gaspedalactpstvdType vcu_gaspedalactpstvd = 6;
+  // Actual effective maximum adjustable torque on wheel level [Nm] [0|10000]
+  optional int32 vcu_vehwheeltorqmax = 7;
+}
+
+message Scu_16_22c {
+  // Report Message
+  enum Vcu_lateralassistbtninfovdType {
+    VCU_LATERALASSISTBTNINFOVD_INVALID = 0;
+    VCU_LATERALASSISTBTNINFOVD_VALID = 1;
+  }
+  enum Vcu_lateralassistbtninfoType {
+    VCU_LATERALASSISTBTNINFO_NOT_PRESSED = 0;
+    VCU_LATERALASSISTBTNINFO_PRESSED = 1;
+  }
+  enum Vcu_accmaxrecpdecelvdType {
+    VCU_ACCMAXRECPDECELVD_NOT_VALID = 0;
+    VCU_ACCMAXRECPDECELVD_VALID = 1;
+  }
+  // Message checksum [-] [0|205]
+  optional int32 scu_16_checksum = 1;
+  // The MessageCounter is a 0 ~ 15 counter, increased of one unit on every
+  // message transmission [-] [0|15]
+  optional int32 scu_16_msgcounter = 2;
+  // Actual effective engine torque on wheel level [Nm] [-5000|5000]
+  optional int32 vcu_actvehwheeltorq = 3;
+  // Lateral assist button Information valid data [] [0|1]
+  optional Vcu_lateralassistbtninfovdType vcu_lateralassistbtninfovd = 4;
+  // Lateral assist button Information [] [0|1]
+  optional Vcu_lateralassistbtninfoType vcu_lateralassistbtninfo = 5;
+  // VCU_ACCMaxRecpDecel valid validity [] [0|1]
+  optional Vcu_accmaxrecpdecelvdType vcu_accmaxrecpdecelvd = 6;
+  // Current maximum recuperation deceleration of generator [m/s2] [-5|7.75]
+  optional double vcu_accmaxrecpdecel = 7;
+}
+
+message Scu_15_22b {
+  // Report Message
+  enum Vcu_crntgearlvlType {
+    VCU_CRNTGEARLVL_INVALID = 0;
+    VCU_CRNTGEARLVL_D_DRIVE_GEAR = 1;
+    VCU_CRNTGEARLVL_N_NEUTRAL_GEAR = 2;
+    VCU_CRNTGEARLVL_R_REVERSE_GEAR = 3;
+    VCU_CRNTGEARLVL_P_PARK_GEAR = 4;
+    VCU_CRNTGEARLVL_NOT_USED_0 = 5;
+    VCU_CRNTGEARLVL_NOT_USED_1 = 6;
+    VCU_CRNTGEARLVL_NOT_USED_2 = 7;
+  }
+  enum Vcu_crntgearlvlvdType {
+    VCU_CRNTGEARLVLVD_NOT_VALID = 0;
+    VCU_CRNTGEARLVLVD_VALID = 1;
+  }
+  enum Vcu_actrecptorqstType {
+    VCU_ACTRECPTORQST_NOTINTIALIZED = 0;
+    VCU_ACTRECPTORQST_NORMAL = 1;
+    VCU_ACTRECPTORQST_FAULTY = 2;
+    VCU_ACTRECPTORQST_RESERVED = 3;
+  }
+  // VCU current carry out gear level [] [0|7]
+  optional Vcu_crntgearlvlType vcu_crntgearlvl = 1;
+  // VCU current carry out gear level valid data [] [0|1]
+  optional Vcu_crntgearlvlvdType vcu_crntgearlvlvd = 2;
+  // Current recuperation torque of generator [Nm] [0|2000]
+  optional double vcu_actrecptorq = 3;
+  // Status of recuperation torque of generator [] [0|3]
+  optional Vcu_actrecptorqstType vcu_actrecptorqst = 4;
+}
+
+message Scu_13_22a {
+  // Report Message
+  enum Scu_strngwhlintvType {
+    SCU_STRNGWHLINTV_NO_OVERRIDE = 0;
+    SCU_STRNGWHLINTV_DRIVER_OVERRIDE = 1;
+  }
+  enum Vcu_gearleverintvType {
+    VCU_GEARLEVERINTV_WITHOUT_INTERVENTION = 0;
+    VCU_GEARLEVERINTV_WITH_INTERVENTION = 1;
+  }
+  enum Scu_estopswstvdType {
+    SCU_ESTOPSWSTVD_NOT_VALID = 0;
+    SCU_ESTOPSWSTVD_VALID = 1;
+  }
+  enum Scu_estopswstType {
+    SCU_ESTOPSWST_NOT_PRESSED = 0;
+    SCU_ESTOPSWST_PRESSED = 1;
+  }
+  enum Scu_latctrlmodeType {
+    SCU_LATCTRLMODE_MANUAL = 0;
+    SCU_LATCTRLMODE_QUIT = 1;
+    SCU_LATCTRLMODE_AUTO = 2;
+    SCU_LATCTRLMODE_FAULT = 3;
+  }
+  enum Scu_lngctrlmodeType {
+    SCU_LNGCTRLMODE_MANUAL = 0;
+    SCU_LNGCTRLMODE_QUIT = 1;
+    SCU_LNGCTRLMODE_AUTO = 2;
+    SCU_LNGCTRLMODE_FAULT = 3;
+  }
+  // Message checksum [] [0|255]
+  optional int32 scu_13_checksum = 1;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_13_msgcounter = 2;
+  // Steering wheel intervention [] [0|1]
+  optional Scu_strngwhlintvType scu_strngwhlintv = 3;
+  // Gear intervention [] [0|1]
+  optional Vcu_gearleverintvType vcu_gearleverintv = 4;
+  // Emergency switch status validity [] [0|1]
+  optional Scu_estopswstvdType scu_estopswstvd = 5;
+  // Emergency switch status [] [0|1]
+  optional Scu_estopswstType scu_estopswst = 6;
+  // Lateral control mode [] [0|3]
+  optional Scu_latctrlmodeType scu_latctrlmode = 7;
+  // Longitudinal control mode [] [0|3]
+  optional Scu_lngctrlmodeType scu_lngctrlmode = 8;
+}
+
+message Scu_10_229 {
+  // Report Message
+  enum Eps_steeringanglevdType {
+    EPS_STEERINGANGLEVD_NOT_VALID = 0;
+    EPS_STEERINGANGLEVD_VALID = 1;
+  }
+  enum Eps_thermalstType {
+    EPS_THERMALST_TEMPERATURE_NORMAL = 0;
+    EPS_THERMALST_TEMPERATURE_HIGH = 1;
+    EPS_THERMALST_TEMPERATURE_LOW = 2;
+    EPS_THERMALST_TEMPERATURE_IMPOSSIBLE = 3;
+  }
+  enum Eps_steeringanglespdvdType {
+    EPS_STEERINGANGLESPDVD_NOT_VALID = 0;
+    EPS_STEERINGANGLESPDVD_VALID = 1;
+  }
+  enum Eps_warnlampType {
+    EPS_WARNLAMP_FAIL_NOT_PRESENT = 0;
+    EPS_WARNLAMP_FAIL_PRESENT = 1;
+  }
+  enum Eps_strngwhltorqvdType {
+    EPS_STRNGWHLTORQVD_NOT_VALID = 0;
+    EPS_STRNGWHLTORQVD_VALID = 1;
+  }
+  // Message checksum [] [0|255]
+  optional int32 scu_10_checksum = 1;
+  // Steering wheel Torque [Nm] [-12.5|12.5]
+  optional double eps_strngwhltorq = 2;
+  // steering wheel angle speed [deg/sec] [0|1016]
+  optional double eps_steeringanglespd = 3;
+  // Steering wheel angle valid value [] [0|1]
+  optional Eps_steeringanglevdType eps_steeringanglevd = 4;
+  // System Thermal status [] [0|3]
+  optional Eps_thermalstType eps_thermalst = 5;
+  // Steering wheel angle [deg] [-780|779.9]
+  optional double eps_steeringangle = 6;
+  // Steering wheel angle speed valid value [] [0|1]
+  optional Eps_steeringanglespdvdType eps_steeringanglespdvd = 7;
+  // Check the MessageCounter consistency atleast on every message reception []
+  // [0|15]
+  optional int32 scu_10_msgcounter = 8;
+  // Steering Warning Lamp [] [0|1]
+  optional Eps_warnlampType eps_warnlamp = 9;
+  // Steering Wheel Torque valid value [] [0|1]
+  optional Eps_strngwhltorqvdType eps_strngwhltorqvd = 10;
+}
+
+message Scu_9_228 {
+  // Report Message
+  enum Epb_failstType {
+    EPB_FAILST_NO_ERROR = 0;
+    EPB_FAILST_ERROR = 1;
+  }
+  enum Epb_sysstType {
+    EPB_SYSST_RELEASE_FULLY_RELEASED = 0;
+    EPB_SYSST_APPLY_FULLY_APPLIED = 1;
+    EPB_SYSST_RELEASING = 2;
+    EPB_SYSST_APPLYING = 3;
+    EPB_SYSST_DISENGAGED = 4;
+    EPB_SYSST_NOT_USED_0 = 5;
+    EPB_SYSST_NOT_USED_1 = 6;
+    EPB_SYSST_FAULT_NOT_SURE_POSITION = 7;
+  }
+  enum Epb_switchstvdType {
+    EPB_SWITCHSTVD_NOT_VALID = 0;
+    EPB_SWITCHSTVD_VALID = 1;
+  }
+  enum Epb_switchstType {
+    EPB_SWITCHST_NOT_ACTIVE = 0;
+    EPB_SWITCHST_RELEASED = 1;
+    EPB_SWITCHST_APPLIED = 2;
+    EPB_SWITCHST_NOT_USED = 3;
+  }
+  // Message checksum [] [0|255]
+  optional int32 scu_9_checksum = 1;
+  // EPB fail status,to indicate wether EPB can response to external apply
+  // request or not [] [0|1]
+  optional Epb_failstType epb_failst = 2;
+  // Message counter [] [0|15]
+  optional int32 scu_9_msgcounter = 3;
+  // EPB system status [] [0|7]
+  optional Epb_sysstType epb_sysst = 4;
+  // EPB switch status validity [] [0|1]
+  optional Epb_switchstvdType epb_switchstvd = 5;
+  // EPB switch status [] [0|3]
+  optional Epb_switchstType epb_switchst = 6;
+}
+
+message Scu_8_227 {
+  // Report Message
+  enum Bcs_actvehlaltrlaccelvdType {
+    BCS_ACTVEHLALTRLACCELVD_NOT_VALID = 0;
+    BCS_ACTVEHLALTRLACCELVD_VALID = 1;
+  }
+  enum Bcs_actvehlongaccelvdType {
+    BCS_ACTVEHLONGACCELVD_NOT_VALID = 0;
+    BCS_ACTVEHLONGACCELVD_VALID = 1;
+  }
+  // [] [0|255]
+  optional int32 scu_8_checksum = 1;
+  // Quality/fault information to actual vehicle lateral acceleration [] [0|1]
+  optional Bcs_actvehlaltrlaccelvdType bcs_actvehlaltrlaccelvd = 2;
+  // Quality/fault information to actual vehicle longitudinal acceleration []
+  // [0|1]
+  optional Bcs_actvehlongaccelvdType bcs_actvehlongaccelvd = 3;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_8_msgcounter = 4;
+  // Actual vehicle lateral acceleration offset [m/s^2] [-21.593|21.593]
+  optional double bcs_vehlaltrlacceloffset = 5;
+  // Actual vehicle lateral acceleration [m/s^2] [-21.593|21.593]
+  optional double bcs_actvehlaltrlaccel = 6;
+  // Actual vehicle longitudinal acceleration offset [m/s^2] [-21.593|21.593]
+  optional double bcs_vehlongacceloffset = 7;
+  // Actual vehicle longitudinal acceleration [m/s^2] [-21.593|21.593]
+  optional double bcs_actvehlongaccel = 8;
+}
+
+message Scu_7_226 {
+  // Report Message
+  enum Bcs_rrwheelspdvdType {
+    BCS_RRWHEELSPDVD_NOT_VALID = 0;
+    BCS_RRWHEELSPDVD_VALID = 1;
+  }
+  enum Bcs_rrwheelrotateddirectionType {
+    BCS_RRWHEELROTATEDDIRECTION_FORWARD = 0;
+    BCS_RRWHEELROTATEDDIRECTION_BACKWARD = 1;
+  }
+  enum Bcs_rrwheelrotateddirectionvdType {
+    BCS_RRWHEELROTATEDDIRECTIONVD_NOT_VALID = 0;
+    BCS_RRWHEELROTATEDDIRECTIONVD_VALID = 1;
+  }
+  enum Bcs_rlwheelrotateddirectionvdType {
+    BCS_RLWHEELROTATEDDIRECTIONVD_NOT_VALID = 0;
+    BCS_RLWHEELROTATEDDIRECTIONVD_VALID = 1;
+  }
+  enum Bcs_rlwheelrotateddirectionType {
+    BCS_RLWHEELROTATEDDIRECTION_FORWARD = 0;
+    BCS_RLWHEELROTATEDDIRECTION_BACKWARD = 1;
+  }
+  enum Bcs_rlwheelspdvdType {
+    BCS_RLWHEELSPDVD_NOT_VALID = 0;
+    BCS_RLWHEELSPDVD_VALID = 1;
+  }
+  // [] [0|255]
+  optional int32 scu_7_checksum = 1;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_7_msgcounter = 2;
+  // Current wheel speed information of rear right wheel [km/h] [0|240]
+  optional double bcs_rrwheelspd = 3;
+  // Quality/fault information to current wheel speed of RRont left wheel, be
+  // used for validity of BCS_RRWheelSpd and BCS_RRWheelSpdEdgesSum signal []
+  // [0|1]
+  optional Bcs_rrwheelspdvdType bcs_rrwheelspdvd = 4;
+  // RR wheel rotate direction [] [0|1]
+  optional Bcs_rrwheelrotateddirectionType bcs_rrwheelrotateddirection = 5;
+  // RR wheel rotate direction validity [] [0|1]
+  optional Bcs_rrwheelrotateddirectionvdType bcs_rrwheelrotateddirectionvd = 6;
+  // Current wheel speed information of rear left wheel [km/h] [0|240]
+  optional double bcs_rlwheelspd = 7;
+  // RL wheel rotate direction validity [] [0|1]
+  optional Bcs_rlwheelrotateddirectionvdType bcs_rlwheelrotateddirectionvd = 8;
+  // RL wheel rotate direction [] [0|1]
+  optional Bcs_rlwheelrotateddirectionType bcs_rlwheelrotateddirection = 9;
+  // Quality/fault information to current wheel speed of front left wheel,be
+  // used for validity of BCS_RLWheelSpd and BCS_RLWheelSpdEdgesSum signal []
+  // [0|1]
+  optional Bcs_rlwheelspdvdType bcs_rlwheelspdvd = 10;
+}
+
+message Scu_6_225 {
+  // Report Message
+  enum Bcs_frwheelspdvdType {
+    BCS_FRWHEELSPDVD_NOT_VALID = 0;
+    BCS_FRWHEELSPDVD_VALID = 1;
+  }
+  enum Bcs_frwheelrotateddirectionType {
+    BCS_FRWHEELROTATEDDIRECTION_FORWARD = 0;
+    BCS_FRWHEELROTATEDDIRECTION_BACKWARD = 1;
+  }
+  enum Bcs_frwheelrotateddirectionvdType {
+    BCS_FRWHEELROTATEDDIRECTIONVD_NOT_VALID = 0;
+    BCS_FRWHEELROTATEDDIRECTIONVD_VALID = 1;
+  }
+  enum Bcs_flwheelrotateddirectionvdType {
+    BCS_FLWHEELROTATEDDIRECTIONVD_NOT_VALID = 0;
+    BCS_FLWHEELROTATEDDIRECTIONVD_VALID = 1;
+  }
+  enum Bcs_flwheelrotateddirectionType {
+    BCS_FLWHEELROTATEDDIRECTION_FORWARD = 0;
+    BCS_FLWHEELROTATEDDIRECTION_BACKWARD = 1;
+  }
+  enum Bcs_flwheelspdvdType {
+    BCS_FLWHEELSPDVD_NOT_VALID = 0;
+    BCS_FLWHEELSPDVD_VALID = 1;
+  }
+  // [] [0|255]
+  optional int32 scu_6_checksum = 1;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_6_msgcounter = 2;
+  // Current wheel speed information of front right wheel [km/h] [0|240]
+  optional double bcs_frwheelspd = 3;
+  // Quality/fault information to current wheel speed of front left wheel,be
+  // used for validity of BCS_FRWheelSpd and BCS_FRWheelSpdEdgesSum signal []
+  // [0|1]
+  optional Bcs_frwheelspdvdType bcs_frwheelspdvd = 4;
+  // FR wheel rotate direction [] [0|1]
+  optional Bcs_frwheelrotateddirectionType bcs_frwheelrotateddirection = 5;
+  // FR wheel rotate direction validity [] [0|1]
+  optional Bcs_frwheelrotateddirectionvdType bcs_frwheelrotateddirectionvd = 6;
+  // Current wheel speed information of front left wheel [km/h] [0|240]
+  optional double bcs_flwheelspd = 7;
+  // FL wheel rotate direction validity [] [0|1]
+  optional Bcs_flwheelrotateddirectionvdType bcs_flwheelrotateddirectionvd = 8;
+  // FL wheel rotate direction [] [0|1]
+  optional Bcs_flwheelrotateddirectionType bcs_flwheelrotateddirection = 9;
+  // Quality/fault information to current wheel speed of front left wheel,be
+  // used for validity of BCS_FLWheelSpd and BCS_FLWheelSpdEdgesSum signal []
+  // [0|1]
+  optional Bcs_flwheelspdvdType bcs_flwheelspdvd = 10;
+}
+
+message Scu_4_224 {
+  // Report Message
+  enum Bcs_hdcerrstType {
+    BCS_HDCERRST_NO_ERROR = 0;
+    BCS_HDCERRST_ERROR = 1;
+  }
+  enum Bcs_hdcctrlstType {
+    BCS_HDCCTRLST_OFF = 0;
+    BCS_HDCCTRLST_ON_ACTIVE_BRAKING = 1;
+    BCS_HDCCTRLST_ON_NOT_ACTIVE_BRAKING = 2;
+    BCS_HDCCTRLST_NOT_USED = 3;
+  }
+  // Message checksum [-] [0|255]
+  optional int32 scu_4_checksum = 1;
+  // Message counter [-] [0|15]
+  optional int32 scu_4_msgcounter = 2;
+  // HDC error Status [-] [0|1]
+  optional Bcs_hdcerrstType bcs_hdcerrst = 3;
+  // HDC(Hill Descent Control) Control status [-] [0|3]
+  optional Bcs_hdcctrlstType bcs_hdcctrlst = 4;
+}
+
+message Scu_3_223 {
+  // Report Message
+  enum Bcs_yawratestType {
+    BCS_YAWRATEST_NOT_VALID = 0;
+    BCS_YAWRATEST_VALID = 1;
+  }
+  // Message checksum [] [0|255]
+  optional int32 scu_3_checksum = 1;
+  // Yaw rate offset [rad/s] [-0.13|0.13]
+  optional double bcs_yawrateoffset = 2;
+  // [] [0|15]
+  optional int32 scu_3_msgcounter = 3;
+  // Yaw rate [rad/s] [-2.0943|1.9047234375]
+  optional double bcs_yawrate = 4;
+  // Yaw rate status [] [0|1]
+  optional Bcs_yawratestType bcs_yawratest = 5;
+}
+
+message Scu_2_222 {
+  // Report Message
+  enum Bcs_rrwheelspdedgessumvdType {
+    BCS_RRWHEELSPDEDGESSUMVD_NOT_VALID = 0;
+    BCS_RRWHEELSPDEDGESSUMVD_VALID = 1;
+  }
+  enum Bcs_rlwheelspdedgessumvdType {
+    BCS_RLWHEELSPDEDGESSUMVD_NOT_VALID = 0;
+    BCS_RLWHEELSPDEDGESSUMVD_VALID = 1;
+  }
+  enum Bcs_frwheelspdedgessumvdType {
+    BCS_FRWHEELSPDEDGESSUMVD_NOT_VALID = 0;
+    BCS_FRWHEELSPDEDGESSUMVD_VALID = 1;
+  }
+  enum Bcs_flwheelspdedgessumvdType {
+    BCS_FLWHEELSPDEDGESSUMVD_NOT_VALID = 0;
+    BCS_FLWHEELSPDEDGESSUMVD_VALID = 1;
+  }
+  // [] [0|255]
+  optional int32 scu_2_checksum = 1;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_2_msgcounter = 2;
+  // Quality/fault information to current wheel speed edges sum of rear right
+  // wheel [] [0|1]
+  optional Bcs_rrwheelspdedgessumvdType bcs_rrwheelspdedgessumvd = 3;
+  // Quality/fault information to current wheel speed edges sum of rear left
+  // wheel [] [0|1]
+  optional Bcs_rlwheelspdedgessumvdType bcs_rlwheelspdedgessumvd = 4;
+  // Quality/fault information to current wheel speed edges sum of front right
+  // wheel [] [0|1]
+  optional Bcs_frwheelspdedgessumvdType bcs_frwheelspdedgessumvd = 5;
+  // Quality/fault information to current wheel speed edges sum of front left
+  // wheel [] [0|1]
+  optional Bcs_flwheelspdedgessumvdType bcs_flwheelspdedgessumvd = 6;
+  // Accumulated sum of rising and falling edges of rear right wheel speed
+  // sensor output since IGN ON( the wheel plate have 43 teeth/cycle,the edge
+  // is 86) [] [0|4095]
+  optional int32 bcs_rrwheelspdedgessum = 7;
+  // Accumulated sum of rising and falling edges of rear left wheel speed sensor
+  // output since IGN ON( the wheel plate have 43teeth/cycle,the edge is 86) []
+  // [0|4095]
+  optional int32 bcs_rlwheelspdedgessum = 8;
+  // Accumulated sum of rising and falling edges of front right wheel speed
+  // sensor output since IGN ON( the wheel plate have 43 teeth/cycle,the edge
+  // is 86) [] [0|4095]
+  optional int32 bcs_frwheelspdedgessum = 9;
+  // Accumulated sum of rising and falling edges of front left wheel speed
+  // sensor output since IGN ON( the wheel plate have 43 teeth/cycle,the edge
+  // is 86) [] [0|4095]
+  optional int32 bcs_flwheelspdedgessum = 10;
+}
+
+message Adcu_2_221 {
+  // Control Message
+  enum Adcu_latctrlreqType {
+    ADCU_LATCTRLREQ_MANUAL = 0;
+    ADCU_LATCTRLREQ_AUTO = 1;
+  }
+  // Message checksum [] [0|255]
+  optional int32 adcu_2_checksum = 1;
+  // Message counter of ADCU_2 [] [0|15]
+  optional int32 adcu_2_msgcounter = 2;
+  // Limitation of steering angular speed EPS will not let the angular speed of
+  // steering wheel be over this limitation: only active in automatic driving
+  // mode [deg/s] [0|1080]
+  optional double adcu_steerangspdlimt = 3;
+  // Demand torque of steering wheel((turn left+ turn right-)) [Nm]
+  // [-10.24|10.23]
+  optional double adcu_steerwhltorqreq = 4;
+  // The request steering wheel angle to EPS (turn left+ turn right-): only
+  // active in automatic driving mode. This is not available now. [deg]
+  // [-780|779.9]
+  optional double adcu_steerangreq = 5;
+  // EPS on request [-] [0|1]
+  optional Adcu_latctrlreqType adcu_latctrlreq = 6;
+}
+
+message Adcu_1_220 {
+  // Control Message
+  enum Adcu_gearlvlreqType {
+    ADCU_GEARLVLREQ_NO_REQUEST = 0;
+    ADCU_GEARLVLREQ_PARK = 1;
+    ADCU_GEARLVLREQ_REVERSED = 2;
+    ADCU_GEARLVLREQ_NEUTRAL = 3;
+    ADCU_GEARLVLREQ_DRIVE = 4;
+    ADCU_GEARLVLREQ_RESERVED = 5;
+    ADCU_GEARLVLREQ_RESERVED_1 = 6;
+    ADCU_GEARLVLREQ_RESERVED_2 = 7;
+  }
+  enum Adcu_gearlvlreqvdType {
+    ADCU_GEARLVLREQVD_NO_REQUEST = 0;
+    ADCU_GEARLVLREQVD_REQUEST = 1;
+  }
+  enum Adcu_parkingreqtoepbType {
+    ADCU_PARKINGREQTOEPB_NO_REQUEST = 0;
+    ADCU_PARKINGREQTOEPB_RELEASE_BRAKE_REQUEST = 1;
+  }
+  enum Adcu_parkingreqtoepbvdType {
+    ADCU_PARKINGREQTOEPBVD_NOT_VALID = 0;
+    ADCU_PARKINGREQTOEPBVD_VALID = 1;
+  }
+  enum Adcu_lngctrlreqType {
+    ADCU_LNGCTRLREQ_MANUAL = 0;
+    ADCU_LNGCTRLREQ_AUTO = 1;
+  }
+  // Message checksum [] [0|255]
+  optional int32 adcu_1_checksum = 1;
+  // Message counter of ADCU_1 [] [0|15]
+  optional int32 adcu_1_msgcounter = 2;
+  // Gear lever position request for the vehicle motion control. When the demand
+  // Gear is P, the vehicle will apply EPB automatically. [] [0|7]
+  optional Adcu_gearlvlreqType adcu_gearlvlreq = 3;
+  // Enable flag to control the gear box [] [0|1]
+  optional Adcu_gearlvlreqvdType adcu_gearlvlreqvd = 4;
+  // Release brake request to EPB. [] [0|1]
+  optional Adcu_parkingreqtoepbType adcu_parkingreqtoepb = 5;
+  // SCU request EPB function valid data [] [0|1]
+  optional Adcu_parkingreqtoepbvdType adcu_parkingreqtoepbvd = 6;
+  // Automatic driving driving torque request: only active in automatic driving
+  // mode [Nm] [-5000|5000]
+  optional int32 adcu_autotrqwhlreq = 7;
+  // Longitudinal control request [] [0|3]
+  optional Adcu_lngctrlreqType adcu_lngctrlreq = 8;
+  // Brake request signal: only active in automatic driving mode. [m/s^2]
+  // [-16|16]
+  optional double adcu_brakereq = 9;
+}
+
+message Scu_11_2c0 {
+  // Report Message
+  enum Bcm_ctrlavailableType {
+    BCM_CTRLAVAILABLE_NOT_AVAILABLE = 0;
+    BCM_CTRLAVAILABLE_AVAILABLE = 1;
+  }
+  enum Bcm_hornstType {
+    BCM_HORNST_NOT_ACTIVE = 0;
+    BCM_HORNST_ACTIVE = 1;
+  }
+  enum Bcm_hazardlampstType {
+    BCM_HAZARDLAMPST_NOT_ACTIVE = 0;
+    BCM_HAZARDLAMPST_ACTIVE = 1;
+  }
+  enum Bcm_rightturnlampfaultstType {
+    BCM_RIGHTTURNLAMPFAULTST_NOT_FAULT = 0;
+    BCM_RIGHTTURNLAMPFAULTST_FAULT = 1;
+  }
+  enum Bcm_rightturnlampstType {
+    BCM_RIGHTTURNLAMPST_NOT_ACTIVE = 0;
+    BCM_RIGHTTURNLAMPST_ACTIVE = 1;
+  }
+  enum Bcm_leftturnlampfaultstType {
+    BCM_LEFTTURNLAMPFAULTST_NOT_FAULT = 0;
+    BCM_LEFTTURNLAMPFAULTST_FAULT = 1;
+  }
+  enum Bcm_leftturnlampstType {
+    BCM_LEFTTURNLAMPST_NOT_ACTIVE = 0;
+    BCM_LEFTTURNLAMPST_ACTIVE = 1;
+  }
+  enum Bcm_rrdoorajarstType {
+    BCM_RRDOORAJARST_CLOSED = 0;
+    BCM_RRDOORAJARST_OPEN = 1;
+  }
+  enum Bcm_rldoorajarstType {
+    BCM_RLDOORAJARST_CLOSED = 0;
+    BCM_RLDOORAJARST_OPEN = 1;
+  }
+  enum Bcm_psngrdoorajarstType {
+    BCM_PSNGRDOORAJARST_CLOSED = 0;
+    BCM_PSNGRDOORAJARST_OPEN = 1;
+  }
+  enum Bcm_driverdoorajarstType {
+    BCM_DRIVERDOORAJARST_CLOSED = 0;
+    BCM_DRIVERDOORAJARST_OPEN = 1;
+  }
+  enum Bcm_rearfoglampstType {
+    BCM_REARFOGLAMPST_NOT_ACTIVE = 0;
+    BCM_REARFOGLAMPST_ACTIVE = 1;
+  }
+  enum Bcm_frontfoglampstType {
+    BCM_FRONTFOGLAMPST_NOT_ACTIVE = 0;
+    BCM_FRONTFOGLAMPST_ACTIVE = 1;
+  }
+  enum Bcm_highbeamstType {
+    BCM_HIGHBEAMST_NOT_ACTIVE = 0;
+    BCM_HIGHBEAMST_ACTIVE = 1;
+  }
+  enum Bcm_lowbeamstType {
+    BCM_LOWBEAMST_NOT_ACTIVE = 0;
+    BCM_LOWBEAMST_ACTIVE = 1;
+  }
+  enum Bcm_keystType {
+    BCM_KEYST_OFF = 0;
+    BCM_KEYST_ACC = 1;
+    BCM_KEYST_ON = 2;
+    BCM_KEYST_CRANK = 3;
+  }
+  enum Bcm_frontwiperstType {
+    BCM_FRONTWIPERST_OFF = 0;
+    BCM_FRONTWIPERST_ERROR = 1;
+    BCM_FRONTWIPERST_CONTINUOUS_SLOW = 2;
+    BCM_FRONTWIPERST_CONTINUOUS_FAST = 3;
+  }
+  // [] [0|255]
+  optional int32 scu_11_checksum = 1;
+  // Message counter [] [0|15]
+  optional int32 scu_11_msgcounter = 2;
+  // Body control is available [] [0|1]
+  optional Bcm_ctrlavailableType bcm_ctrlavailable = 3;
+  // Horn status [] [0|1]
+  optional Bcm_hornstType bcm_hornst = 4;
+  // Hazard lamp status [] [0|1]
+  optional Bcm_hazardlampstType bcm_hazardlampst = 5;
+  // Right turn lamp fault status [] [0|1]
+  optional Bcm_rightturnlampfaultstType bcm_rightturnlampfaultst = 6;
+  // Right turn lamp status [] [0|1]
+  optional Bcm_rightturnlampstType bcm_rightturnlampst = 7;
+  // Left turn lamp fault status [] [0|1]
+  optional Bcm_leftturnlampfaultstType bcm_leftturnlampfaultst = 8;
+  // Left turn lamp status [] [0|1]
+  optional Bcm_leftturnlampstType bcm_leftturnlampst = 9;
+  // Rear right door ajar status [] [0|1]
+  optional Bcm_rrdoorajarstType bcm_rrdoorajarst = 10;
+  // Rear left door ajar status [] [0|1]
+  optional Bcm_rldoorajarstType bcm_rldoorajarst = 11;
+  // Passenger door ajar status [] [0|1]
+  optional Bcm_psngrdoorajarstType bcm_psngrdoorajarst = 12;
+  // Driver door ajar status [] [0|1]
+  optional Bcm_driverdoorajarstType bcm_driverdoorajarst = 13;
+  // Rear fog lamp status [] [0|1]
+  optional Bcm_rearfoglampstType bcm_rearfoglampst = 14;
+  // Front fog lamp status [] [0|1]
+  optional Bcm_frontfoglampstType bcm_frontfoglampst = 15;
+  // High beam status [] [0|1]
+  optional Bcm_highbeamstType bcm_highbeamst = 16;
+  // Low beam status [] [0|1]
+  optional Bcm_lowbeamstType bcm_lowbeamst = 17;
+  // Ignition key position status [] [0|3]
+  optional Bcm_keystType bcm_keyst = 18;
+  // Front wiper status [] [0|3]
+  optional Bcm_frontwiperstType bcm_frontwiperst = 19;
+}
+
+message Scu_12_2c1 {
+  // Report Message
+  enum Srs_driverseatbeltstType {
+    SRS_DRIVERSEATBELTST_FASTENED = 0;
+    SRS_DRIVERSEATBELTST_UNFASTENED = 1;
+    SRS_DRIVERSEATBELTST_NOT_USED = 2;
+    SRS_DRIVERSEATBELTST_INVALID = 3;
+  }
+  enum Srs_psngrseatbeltstType {
+    SRS_PSNGRSEATBELTST_FASTENED = 0;
+    SRS_PSNGRSEATBELTST_UNFASTENED = 1;
+    SRS_PSNGRSEATBELTST_NOT_USED = 2;
+    SRS_PSNGRSEATBELTST_INVALID = 3;
+  }
+  // Message checksum [] [0|255]
+  optional int32 scu_12_checksum = 1;
+  // The message counter is a 0-15 counter, increased of one unit on every
+  // message transmission [] [0|15]
+  optional int32 scu_12_msgcounter = 2;
+  // To identify whether Driver Seat Belt is buckled [] [0|3]
+  optional Srs_driverseatbeltstType srs_driverseatbeltst = 3;
+  // To identify whether Passenger Seat Belt is buckled [] [0|3]
+  optional Srs_psngrseatbeltstType srs_psngrseatbeltst = 4;
+}
+
+message Scu_14_2c2 {
+  // Report Message
+  enum Vcu_vehdrvmodType {
+    VCU_VEHDRVMOD_INVALID = 0;
+    VCU_VEHDRVMOD_ECO_MODE = 1;
+    VCU_VEHDRVMOD_ECO_MODE_1 = 2;
+    VCU_VEHDRVMOD_NORMAL_MODE = 3;
+    VCU_VEHDRVMOD_DRIVING_MODE = 4;
+    VCU_VEHDRVMOD_SPORT_MODE = 5;
+    VCU_VEHDRVMOD_I_PEDAL_MODE = 6;
+    VCU_VEHDRVMOD_RESERVED = 7;
+  }
+  enum Vcu_vehrdystType {
+    VCU_VEHRDYST_NOT_READY = 0;
+    VCU_VEHRDYST_READY = 1;
+  }
+  // Total range for display [km] [0|1000]
+  optional int32 vcu_vehrng = 1;
+  // Drive mode for display [-] [0|7]
+  optional Vcu_vehdrvmodType vcu_vehdrvmod = 2;
+  // HEV system ready status [-] [0|1]
+  optional Vcu_vehrdystType vcu_vehrdyst = 3;
+}
+
+message Scu_1_180 {
+  // Report Message
+  enum Bcs_vdcactivestType {
+    BCS_VDCACTIVEST_NOT_ACTIVE = 0;
+    BCS_VDCACTIVEST_ACTIVE = 1;
+  }
+  enum Bcs_vehspdvdType {
+    BCS_VEHSPDVD_NOT_VALID = 0;
+    BCS_VEHSPDVD_VALID = 1;
+  }
+  enum Bcs_vdcfaultstType {
+    BCS_VDCFAULTST_NOT_FAULT = 0;
+    BCS_VDCFAULTST_FAULT = 1;
+  }
+  enum Bcs_absfaultstType {
+    BCS_ABSFAULTST_NOT_FAULT = 0;
+    BCS_ABSFAULTST_FAULT = 1;
+  }
+  enum Bcs_absactivestType {
+    BCS_ABSACTIVEST_NOT_ACTIVE = 0;
+    BCS_ABSACTIVEST_ACTIVE = 1;
+  }
+  // [-] [0|255]
+  optional int32 scu_1_checksum = 1;
+  // Indication that VDC system currently performs a brake/engine intervention
+  // [-] [0|1]
+  optional Bcs_vdcactivestType bcs_vdcactivest = 2;
+  // The MessageCounter is a 0 ~ 15 counter, increased of one unit on every
+  // message transmission [-] [0|15]
+  optional int32 scu_1_msgcounter = 3;
+  // Vehicle speed [km/h] [0|240]
+  optional double bcs_vehspd = 4;
+  // Quality/fault information to vehicle speed [-] [0|1]
+  optional Bcs_vehspdvdType bcs_vehspdvd = 5;
+  // VDC is switched off due to detected failure [-] [0|1]
+  optional Bcs_vdcfaultstType bcs_vdcfaultst = 6;
+  // ABS system has detected a failure which does no allow a reliable ABS
+  // regulation and is therefore switched off [-] [0|1]
+  optional Bcs_absfaultstType bcs_absfaultst = 7;
+  // Indication that ABS system currently performs a brake intervention [-]
+  // [0|1]
+  optional Bcs_absactivestType bcs_absactivest = 8;
+}
+
+message Scu_5_181 {
+  // Report Message
+  enum Bcs_cddfailType {
+    BCS_CDDFAIL_NOT_FAILURE = 0;
+    BCS_CDDFAIL_FAILURE = 1;
+  }
+  enum Bcs_vehiclestandstillstType {
+    BCS_VEHICLESTANDSTILLST_NOT_STANDSTILL = 0;
+    BCS_VEHICLESTANDSTILLST_STANDSTILL = 1;
+    BCS_VEHICLESTANDSTILLST_INVALID_SHORT_UNAVAILABILITY_MAX_3S = 2;
+    BCS_VEHICLESTANDSTILLST_NOT_USED = 3;
+  }
+  enum Bcs_cddavailableType {
+    BCS_CDDAVAILABLE_NOT_AVAILABLE = 0;
+    BCS_CDDAVAILABLE_AVAILABLE = 1;
+  }
+  enum Bcs_cddactiveType {
+    BCS_CDDACTIVE_NOT_ACTIVE = 0;
+    BCS_CDDACTIVE_ACTIVE = 1;
+  }
+  enum Bcs_aebavailableType {
+    BCS_AEBAVAILABLE_NOT_AVAILABLE = 0;
+    BCS_AEBAVAILABLE_AVAILABLE = 1;
+  }
+  enum Bcs_aebactiveType {
+    BCS_AEBACTIVE_NOT_ACTIVE = 0;
+    BCS_AEBACTIVE_ACTIVE = 1;
+  }
+  enum Bcs_mastercylinderproffsetvdType {
+    BCS_MASTERCYLINDERPROFFSETVD_INVALID = 0;
+    BCS_MASTERCYLINDERPROFFSETVD_VALID = 1;
+  }
+  enum Bcs_mastercylinderprvdType {
+    BCS_MASTERCYLINDERPRVD_INVALID = 0;
+    BCS_MASTERCYLINDERPRVD_VALID = 1;
+  }
+  enum Bcs_nobrakeforceType {
+    BCS_NOBRAKEFORCE_EXIST_BRAKE_FORCE = 0;
+    BCS_NOBRAKEFORCE_NO_BRAKE_FORCE = 1;
+  }
+  // [-] [0|255]
+  optional int32 scu_5_checksum = 1;
+  // CDD in failure [] [0|1]
+  optional Bcs_cddfailType bcs_cddfail = 2;
+  // Indicating whether the vehicle is standstill or not; must not be set until
+  // standstill is surely reached. [] [0|3]
+  optional Bcs_vehiclestandstillstType bcs_vehiclestandstillst = 3;
+  // CDD(Controlled Deceleration for Driver) is available [] [0|1]
+  optional Bcs_cddavailableType bcs_cddavailable = 4;
+  // CDD(Controlled Deceleration for Driver) is active [] [0|1]
+  optional Bcs_cddactiveType bcs_cddactive = 5;
+  // AEB(Automatic Emergency Braking) is available [] [0|1]
+  optional Bcs_aebavailableType bcs_aebavailable = 6;
+  // AEB(Automatic Emergency Braking) is active (in deceleration) [] [0|1]
+  optional Bcs_aebactiveType bcs_aebactive = 7;
+  // Master cylinder pressure offset [bar] [-15|15]
+  optional double bcs_mastercylinderproffset = 8;
+  // [] [0|15]
+  optional int32 scu_5_msgcounter = 9;
+  // Master cylinder pressure [bar] [0|250]
+  optional double bcs_mastercylinderpr = 10;
+  // Master cylinder pressure offset valid value [-] [0|1]
+  optional Bcs_mastercylinderproffsetvdType bcs_mastercylinderproffsetvd = 11;
+  // The valid value of BCS_MasterCylinderPr [-] [0|1]
+  optional Bcs_mastercylinderprvdType bcs_mastercylinderprvd = 12;
+  // No brake pressure applied,generally it regards wheel cylinder presure []
+  // [0|1]
+  optional Bcs_nobrakeforceType bcs_nobrakeforce = 13;
+}
+
+message Adcu_3_280 {
+  // Control Message
+  enum Adcu_beamreqType {
+    ADCU_BEAMREQ_NO_REQUEST = 0;
+    ADCU_BEAMREQ_LOW_BEAM_REQUEST = 1;
+    ADCU_BEAMREQ_HIGH_BEAM_REQUEST = 2;
+    ADCU_BEAMREQ_RESERVED = 3;
+  }
+  enum Adcu_hornringreqType {
+    ADCU_HORNRINGREQ_NOT_ACTIVE = 0;
+    ADCU_HORNRINGREQ_ACTIVE = 1;
+  }
+  enum Adcu_turnlightreqType {
+    ADCU_TURNLIGHTREQ_NO_REQUEST = 0;
+    ADCU_TURNLIGHTREQ_TURN_LEFT_LIGHT = 1;
+    ADCU_TURNLIGHTREQ_TURN_RIGHT_LIGHT = 2;
+    ADCU_TURNLIGHTREQ_EMERGENCY_LIGHT = 3;
+  }
+  enum Adcu_bodyctrlreqType {
+    ADCU_BODYCTRLREQ_DISABLE = 0;
+    ADCU_BODYCTRLREQ_ENABLE = 1;
+  }
+  // Message checksum [-] [0|255]
+  optional int32 adcu_3_checksum = 1;
+  // Message counter of ADCU_3 [-] [0|15]
+  optional int32 adcu_3_msgcounter = 2;
+  // Low / High beam control request [-] [0|3]
+  optional Adcu_beamreqType adcu_beamreq = 3;
+  // Horn control request [-] [0|1]
+  optional Adcu_hornringreqType adcu_hornringreq = 4;
+  // Turn light control request [-] [0|3]
+  optional Adcu_turnlightreqType adcu_turnlightreq = 5;
+  // Enable vehicle body control [-] [0|1]
+  optional Adcu_bodyctrlreqType adcu_bodyctrlreq = 6;
+}
+
+message AionLx {
+  optional Scu_18_22f scu_18_22f = 1;   // report message
+  optional Scu_17_22d scu_17_22d = 2;   // report message
+  optional Scu_16_22c scu_16_22c = 3;   // report message
+  optional Scu_15_22b scu_15_22b = 4;   // report message
+  optional Scu_13_22a scu_13_22a = 5;   // report message
+  optional Scu_10_229 scu_10_229 = 6;   // report message
+  optional Scu_9_228 scu_9_228 = 7;     // report message
+  optional Scu_8_227 scu_8_227 = 8;     // report message
+  optional Scu_7_226 scu_7_226 = 9;     // report message
+  optional Scu_6_225 scu_6_225 = 10;    // report message
+  optional Scu_4_224 scu_4_224 = 11;    // report message
+  optional Scu_3_223 scu_3_223 = 12;    // report message
+  optional Scu_2_222 scu_2_222 = 13;    // report message
+  optional Adcu_2_221 adcu_2_221 = 14;  // report message
+  optional Adcu_1_220 adcu_1_220 = 15;  // report message
+  optional Scu_11_2c0 scu_11_2c0 = 16;  // report message
+  optional Scu_12_2c1 scu_12_2c1 = 17;  // report message
+  optional Scu_14_2c2 scu_14_2c2 = 18;  // report message
+  optional Scu_1_180 scu_1_180 = 19;    // report message
+  optional Scu_5_181 scu_5_181 = 20;    // report message
+  optional Adcu_3_280 adcu_3_280 = 21;  // report message
+}

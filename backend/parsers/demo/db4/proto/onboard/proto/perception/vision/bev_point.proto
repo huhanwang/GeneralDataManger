@@ -1,0 +1,28 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/proto/perception/types/vision_lane_type.proto";
+
+message BevPointProto {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3 [default = 0];
+  optional float score = 4;
+  optional float type_score = 5;
+  optional VisionLaneType vision_lane_type = 6;
+  optional bool slowdown = 7;
+  optional float pred_shift = 8;
+}

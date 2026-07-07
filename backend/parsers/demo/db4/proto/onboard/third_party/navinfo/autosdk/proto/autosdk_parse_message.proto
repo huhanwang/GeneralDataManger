@@ -1,0 +1,1802 @@
+syntax = "proto2";
+package navinfo.proto;
+option go_package = "qcraft-proto.ai/third_party/navinfo/autosdk/proto/autosdk_parse_message";
+
+enum Quality {
+  Quality_Unknown = 0;       ///<	未知
+  Quality_NotAvailable = 1;  ///<	无效
+  Quality_Value1 = 2;        ///<	最好
+  Quality_Value2 = 3;        ///<	中等
+  Quality_Value3 = 4;        ///<	Quality_Value3
+  Quality_Value4 = 5;        ///<	Quality_Value4
+  Quality_Value5 = 6;        ///<	最坏
+}
+
+enum YesNoUnknown {
+  YesNoUnknown_Unknown = 0;  ///<	未知
+  YesNoUnknown_Yes = 1;      ///<	有效
+  YesNoUnknown_No = 2;       ///<	无效
+}
+
+enum UnitOfSpeed {
+  UnitOfSpeed_KpH = 0;  ///<	公里制
+  UnitOfSpeed_MpH = 1;  ///<	英里制
+}
+
+enum LateralPosition {
+  LateralPosition_Unknown = 0;  ///<	未知
+  LateralPosition_Right = 1;    ///<	道路右侧
+  LateralPosition_Left = 2;     ///<	道路左侧
+  LateralPosition_Above = 4;    ///<	道路上方
+  LateralPosition_Surface = 8;  ///<	道路面上
+}
+
+enum Weather {
+  Weather_Unknown = 0;     ///<	未知
+  Weather_NoSpecial = 1;   ///<	正常天气
+  Weather_Sunshine = 2;    ///<	阳光灿烂
+  Weather_Rain = 3;        ///<	雨
+  Weather_Fog = 4;         ///<	雾
+  Weather_Snow = 5;        ///<	雪
+  Weather_Ice = 6;         ///<	冰
+  Weather_StrongWind = 7;  ///<	强风
+}
+
+enum FuzzyTime {
+  FuzzyTime_Unknown = 0;  ///<	未知
+  FuzzyTime_Day = 1;      ///<	白天
+  FuzzyTime_Night = 2;    ///<	晚上
+}
+
+enum RelativeDirection {
+  RelativeDirection_None = 0;                  ///<	不可通行
+  RelativeDirection_Both = 1;                  ///<	双方向
+  RelativeDirection_AlongPathDirection = 2;    ///<	沿Path方向
+  RelativeDirection_AgainstPathDirection = 3;  ///<	逆Path方向
+}
+
+enum ProfileType {
+  ProfileType_Node = 0;  ///<	表达脱出道路分支节点。使用 CNodeProfileValue
+                         ///< 存储 @image html node.png
+  ProfileType_float = 1;          ///<	ProfileType_float
+  ProfileType_HeadingChange = 2;  ///<	道路航向。使用 CFloatProfileValue 存储
+  ProfileType_LaneModel = 3;  ///<	车道组的详细信息。使用 CLaneModelValue
+                              ///< 存储
+  ProfileType_LaneConnectivity =
+      4;  ///<	车道组之间的连接关系。使用 CLaneConnectivityValue 存储 @image
+          ///< html laneconnectivity.png
+  ProfileType_LinearObjects = 5;  ///<	车道中心线和车道边界的属性。使用
+                                  ///< CLinearObjectDefinitionValue 存储
+  ProfileType_LanesGeometry = 6;  ///<	车道中心线和车道边线的几何信息。使用
+                                  ///< CLanesGeometryProfileValue 存储
+  ProfileType_LaneWidth =
+      7;  ///<	车道的平均宽度。使用 CUInt32ProfileValue 存储
+  ProfileType_RoadGeometry =
+      8;  ///<	道路参考线的几何信息。使用 CRoadGeometryProfileValue 存储
+  ProfileType_NumberOfLanesPerDirection =
+      9;  ///<	车道组的可通行车道数。使用 CUInt32ProfileValue 存储
+  ProfileType_ComplexIntersection =
+      10;  ///<	道路是否是复杂路口。使用 CBooleanProfileValue 存储
+  ProfileType_LinkIdentifier =
+      11;  ///<	道路对应的编号。使用 CUInt64ProfileValue 存储
+  ProfileType_FunctionalRoadClass =
+      12;  ///<	道路种别。1:高速2:城快3:国道4:省道6:县道7:乡镇村道路8:其他道路。使用
+           ///< CUInt32ProfileValue 存储
+  ProfileType_RouteNumberTypes = 13;  ///<	ProfileType_RouteNumberTypes
+  ProfileType_FormOfWay =
+      14;  ///<	道路的形态特征。使用 CFormOfWayProfileValue 存储
+  ProfileType_RoadAccessibility =
+      15;  ///<	道路是否可通行。使用 CInt32ProfileValue 存储
+  ProfileType_AccessRestriction =
+      16;  ///<	道路和车道的可通行条件和状态。使用
+           ///< CConditionalRestrictionProfileValue 存储
+  ProfileType_OvertakingRestriction =
+      17;  ///<	ProfileType_OvertakingRestriction
+  ProfileType_Tunnel =
+      18;  ///<	道路是否位于隧道内。使用 CBooleanProfileValue 存储
+  ProfileType_Bridge =
+      19;  ///<	道路是否处于桥上。使用 CBooleanProfileValue 存储
+  ProfileType_DividedRoad =
+      20;  ///<	道路左侧是否存在物理隔离。使用 CBooleanProfileValue 存储
+  ProfileType_Curvature =
+      21;  ///<	道路和车道的曲率。使用 COffsetFloatProfileValue 存储
+  ProfileType_Slope =
+      22;  ///<	道路和车道坡度。使用使用 COffsetFloatProfileValue 存储
+  ProfileType_BuiltUpArea =
+      23;  ///<	道路是否位于建城区。使用 CBooleanProfileValue 存储
+  ProfileType_InTown = 24;   ///<	ProfileType_InTown
+  ProfileType_Surface = 25;  ///<	ProfileType_Surface
+  ProfileType_TrafficSign =
+      26;  ///<	道路关联的交通标牌。使用 CTrafficSignValue 存储@image html
+           ///< TrafficSigntype.png
+  ProfileType_TrafficLight =
+      27;  ///<	道路或车道关联的交通灯。使用 CTrafficLightProfileValue 存储
+  ProfileType_SpecialSituation =
+      28;  ///<	表达特殊场景。使用 CSpecialSituationProfileValue 存储
+  ProfileType_EffectiveSpeedLimit =
+      29;  ///<	道路或车道上的最高限速。使用 CEffectiveSpeedLimit 存储
+  ProfileType_ExtendedSpeedLimit =
+      30;  ///<	道路或车道上的条件限速的最高限速。使用
+           ///< CExtendedSpeedLimitValue 存储
+  ProfileType_AverageSpeed = 31;    ///<	ProfileType_AverageSpeed
+  ProfileType_FlowSpeed = 32;       ///<	ProfileType_FlowSpeed
+  ProfileType_RoadCondition = 33;   ///<	ProfileType_RoadCondition
+  ProfileType_Weather = 34;         ///<	ProfileType_Weather
+  ProfileType_LocationObject = 35;  ///<	ProfileType_LocationObject
+  ProfileType_PartOfCalculatedRoute =
+      36;  ///<	道路是否位于导航路径上。使用 CBooleanProfileValue 存储数据
+  ProfileType_CountryCode =
+      37;  ///<	ISO 3166-1标准国家编码。使用 CUInt32ProfileValue 存储
+  ProfileType_RegionCode = 38;  ///<	城市编码。使用 CRegionCodeValue 存储
+  ProfileType_DrivingSide =
+      39;  ///<	通行规制。使用 CDrivingSideProfileValue 存储
+  ProfileType_UnitSystem =
+      40;  ///<	限速的单位，公里制或英里制。使用 CUnitSystemProfileValue 存储
+  ProfileType_VersionProtocol =
+      41;  ///<	协议版本号。使用 CUInt32ProfileValue 存储
+  ProfileType_VersionHardware =
+      42;  ///<	硬件版本号。使用 CUInt32ProfileValue 存储
+  ProfileType_VersionMap =
+      43;  ///<	地图更新版本号。使用 CUInt32ProfileValue 存储
+  ProfileType_MapAge =
+      44;  ///<	当前车辆位置使用的地图的发布日期，自1970-01-01以来的天数。使用
+           ///< CUInt32ProfileValue 存储
+  ProfileType_MapProvider =
+      45;  ///<	地图供应商。使用 CMapProviderProfileValue 存储
+  ProfileType_MapStatus =
+      46;  ///<	车辆位置的地图状态。使用 CMapStatusProfileValue 存储
+  ProfileType_SystemStatus = 47;    ///<	ProfileType_SystemStatus
+  ProfileType_TimeZoneOffset = 48;  ///<	ProfileType_TimeZoneOffset
+  ProfileType_AbsoluteVehiclePosition =
+      49;  ///<	自车绝对位置。使用 CAbsoluteVehiclePositionProfileValue 存储
+  ProfileType_TollStation =
+      601;  ///<	收费站区域，使用 CBooleanProfileValue 存储数据
+  ProfileType_TrafficLightExtend =
+      602;  ///<	使用 CTrafficLightExtendProfileValue 存储数据
+  ProfileType_StopLine = 603;  ///<	使用 CStopLineProfileValue
+                               ///< 存储数据@image html stopline.png
+  ProfileType_EffectiveMinSpeedLimit =
+      604;  ///<	使用 CEffectiveSpeedLimit 存储数据
+  ProfileType_LaneWidthExtend =
+      605;  ///<	使用 CLaneWidthExtendProfileValue
+            ///< 存储数据。车道宽度变化位置的信息提供（当车道开始宽度和结束宽度没有的术后，使用平均宽度）。
+  ProfileType_LaneModelExtend = 606;  ///<	LaneModel扩展信息。使用
+                                      ///< CLaneModelExtendProfileValue 存储数据
+  ProfileType_FormOfWayExtend =
+      608;  ///<	对ProfileType_FormOfWay的补充。使用
+            ///< CFormOfWayExtendProfileValue 存储数据
+  ProfileType_LinearObjectExtend =
+      609;  ///<	对LinearObject信息的补充。使用
+            ///< CLinearObjectExtendProfileValue 存储数据@image html
+            ///< linaerobjecttypeextend.png
+  ProfileType_Superelevation =
+      610;                    ///<	使用 COffsetFloatProfileValue 存储数据
+  ProfileType_Barrier = 611;  ///<	护栏。使用 CBarrierProfileValue
+                              ///< 存储数据障碍物@image html barrier.png
+  ProfileType_Curb = 612;  ///<	路沿。使用 CCurbProfileValue 存储数据@image html
+                           ///< curb.png
+  ProfileType_Wall =
+      613;  ///<	墙。使用 CWallProfileValue 存储数据@image html wall.png
+  ProfileType_FillArea =
+      614;  ///<	导流区。使用 CObjectBoudingBoxProfileValue 存储数据
+  ProfileType_RoadSplitMergeFlag =
+      615;  ///<	Path上上下高速的合流分歧点：0-none；1-道路分歧起点；2-道路分歧起点（直连匝道的主路）；3-道路汇入起点；4-道路分歧终点；5-道路汇入终点。使用
+            ///< CUInt32ProfileValue 存储。
+  ProfileType_TrafficSignExtend = 616;  ///<	TrafficSign的扩展属性，使用
+                                        ///< CTrafficSignExtendValue 存储数据
+  ProfileType_Arrow = 617;  ///<	地面箭头。扩展属性，使用存储
+                            ///< CArrowProfileValue 数据@image html arrow.png
+  ProfileType_Pole = 618;  ///<	杆。扩展属性，使用存储 CPoleProfileValue
+                           ///< 数据@image html pole.png
+  ProfileType_Text =
+      619;  ///<	文字。扩展属性，使用存储 CMarkingProfileValue 数据
+  ProfileType_Symbol =
+      620;  ///<	符号。扩展属性，使用存储 CMarkingProfileValue 数据
+  ProfileType_CrossWalk = 621;  ///<	人行横道。扩展属性，使用存储
+                                ///< CObjectBoudingBoxProfileValue 数据
+  ProfileType_Delineator =
+      622;  ///<	轮廓标。扩展属性，使用存储 CDelineatorProfileValue
+            ///< 数据@image html delineator.png
+  ProfileType_Speedbump = 623;  ///<	减速带。扩展属性，使用存储
+                                ///< CObjectBoudingBoxProfileValue 数据
+  ProfileType_WarningArea =
+      624;  ///<	警示区。扩展属性，使用存储 CWarningAreaProfileValue
+            ///< 数据@image html WarningArea.png
+  ProfileType_PerpendicularWall =
+      625;  ///<	垂直墙。使用 CObjectGeometryProfileValue 存储数据
+  ProfileType_BusStop = 626;  ///<	busStop。使用 CBusStopProfileValue
+                              ///< 存储数据@image html busstop.png
+  ProfileType_OverheadStructure =
+      627;  ///<	上方障碍物面。使用 CObjectGeometryProfileValue 存储数据
+  ProfileType_CrossBike = 628;  ///<	路口内自行车道。使用
+                                ///< CObjectBoudingBoxProfileValue 存储数据
+  ProfileType_NoParkingArea =
+      629;  ///<	禁停区。使用 CObjectBoudingBoxProfileValue 存储数据
+  ProfileType_SideWalk =
+      630;  ///<	人行道。使用 CObjectBoudingBoxProfileValue 存储数据
+  ProfileType_StationInfo =
+      631;  ///<	检查站。使用 CStationInfoProfileValue 存储数据
+  ProfileType_TransitionArea =
+      632;  ///<	交换区。使用 CBooleanProfileValue 存储数据
+  ProfileType_EntranceExitNodeRange =
+      633;  ///<	使用 CEntranceExitNodeRangeProfileValue 存储。
+  ProfileType_MergePoint = 634;  ///<	MergePoint。使用 CMergePointProfileValue
+                                 ///< 进行存储@image html mergepoint.png
+  ProfileType_DetailedMPP = 635;  ///<	DetailMPP。使用 CDetailedMPPProfileValue
+                                  ///< 存储。此信息为GlobalMessage中信息
+  ProfileType_HeadingExtend =
+      636;  ///<	Heading。使用 COffsetFloatProfileValue
+            ///< 存储。区分于标准协议的ProfileType_HeadingChange单点存储
+  ProfileType_LeftInfrastructureSeparation =
+      637;  ///<	道路左侧设施分离。 CInfrastructureSeparationProfileValue
+  ProfileType_RightInfrastructureSeparation =
+      638;  ///<	道路右侧设施分离。通过
+            ///< CInfrastructureSeparationProfileValue 存储
+  ProfileType_LeftMedian =
+      639;  ///<	道路左侧中央分离。通过 CMedianProfileValue 存储
+  ProfileType_RightMedian =
+      640;  ///<	道路右侧中央分离。通过 CMedianProfileValue 存储
+  ProfileType_TollLaneInfo =
+      641;  ///<	tolllLane。通过 CTollLaneProfileValue 存储
+  ProfileType_CenaTrafficFlow =
+      642;  ///<	交通流。通过 CTrafficFlowProfileValue 存储
+  ProfileType_CenaTrafficEvent_Accident =
+      643;  ///<	事故。属于动态交通事件。通过 CTrafficEventProfileValue
+            ///< 存储
+  ProfileType_CenaTrafficEvent_Roadworks =
+      644;  ///<	施工。属于动态交通事件。通过 CTrafficEventProfileValue
+            ///< 存储
+  ProfileType_CenaTrafficEvent_Impassibility =
+      645;  ///<	封路。属于动态交通事件。通过 CTrafficEventProfileValue
+            ///< 存储
+  ProfileType_CenaTrafficEvent_Control =
+      646;  ///<	交通管制。属于动态交通事件。通过
+            ///< CTrafficEventProfileValue 存储
+  ProfileType_CenaTrafficEvent_MajorEvent =
+      647;  ///<	重大活动。属于动态交通事件。通过
+            ///< CTrafficEventProfileValue 存储
+  ProfileType_CenaTrafficEventOthers =
+      648;  ///<	其它动态交通事件。通过 CTrafficEventProfileValue 存储
+  ProfileType_CenaRealtimeWeather =
+      649;  ///<	实时天气。通过 CRealtimeWeatherProfileValue 存储
+  ProfileType_CenaExtremeWeather =
+      650;  ///<	极端天气。通过 CExtremeWeatherProfileValue 存储
+  ProfileType_RoadEdge =
+      651;  ///<	左右侧道路边缘。通过 CRoadEdgeProfileValue 存储
+  ProfileType_IntersectionAreaId =
+      652;                   ///<	路口id，使用 CUInt64ProfileValue 存储
+  ProfileType_ZLevel = 653;  ///<	ZLevel，使用 CUInt32ProfileValue 存储
+  ProfileType_UnderConstruction =
+      654;  ///<	道路和车道的在建信息，使用 CUnderConstructionValue 存储
+}
+
+enum Availability {
+  Availability_NotAvailable = 0;  ///<	无效
+  Availability_Valid = 1;         ///<	有效
+}
+
+enum ChangeMode {
+  ChangeMode_Create = 0;  ///<	新建
+  ChangeMode_Update = 1;  ///<	更新
+  ChangeMode_Delete = 2;  ///<	删除
+}
+
+enum MessageType {
+  MessageType_Position = 0;        ///<	位置消息
+  MessageType_Profile = 1;         ///<	属性消息
+  MessageType_GlobalData = 2;      ///<	全局消息
+  MessageType_ProfileControl = 3;  ///<	属性管理消息
+  MessageType_PathControl = 4;     ///<	路径管理消息
+}
+
+enum FormOfWay {
+  FormOfWay_Unknown = 0;                     ///<	FormOfWay_Unknown
+  FormOfWay_ControlledAccess = 1;            ///<	全封闭道路
+  FormOfWay_MultipleCarriageWay = 2;         ///<	暂不提供。
+  FormOfWay_SingleCarriageWay = 3;           ///<	暂不提供。
+  FormOfWay_RoundaboutCircle = 4;            ///<	环岛。
+  FormOfWay_SpecialTrafficFigure = 5;        ///<	暂不提供。
+  FormOfWay_ReservedA = 6;                   ///<	暂不提供。
+  FormOfWay_ReservedB = 7;                   ///<	暂不提供。
+  FormOfWay_ParallelRoad = 8;                ///<	暂不提供。
+  FormOfWay_RampOnControlledAccess = 9;      ///<	高速连接匝道。
+  FormOfWay_RampNotOnControlledAccess = 10;  ///<	高速出入口匝道。
+  FormOfWay_FrontageRoad = 11;               ///<	暂不提供。
+  FormOfWay_CarPark = 12;                    ///<	暂不提供。
+  FormOfWay_Service = 13;                    ///<	休息区
+  FormOfWay_PedestrianZone = 14;  ///<	VRU包含行人，自行车等弱势道路使用者。
+  FormOfWay_NotAvailable = 15;  ///<	暂不提供。
+}
+
+enum RoadAccessFlags {
+  RoadAccessFlags_PassengerCars = 1;    ///<	乘用车
+  RoadAccessFlags_Pedestrians = 2;      ///<	行人
+  RoadAccessFlags_Bus = 4;              ///<	公交车
+  RoadAccessFlags_Delivery = 8;         ///<	运输车辆
+  RoadAccessFlags_Emergency = 16;       ///<	救护车
+  RoadAccessFlags_Taxi = 32;            ///<	出租车
+  RoadAccessFlags_ThroughTraffic = 64;  ///<	直达运输车，不支持
+  RoadAccessFlags_Trucks = 128;         ///<	卡车
+}
+
+enum DrivingSide {
+  DrivingSide_RightHandDriving = 0;  ///<	右侧通行
+  DrivingSide_LeftHandDriving = 1;   ///<	左侧通行
+}
+
+enum SpecialSituationType {
+  SpecialSituationType_DeadEnd = 248;             ///<	道路终端
+  SpecialSituationType_FerryTerminal = 249;       ///<	航道终端
+  SpecialSituationType_TollBooth = 250;           ///<	收费站区域
+  SpecialSituationType_RailroadCrossing = 251;    ///<	铁道路口
+  SpecialSituationType_PedestrianCrossing = 252;  ///<	人行横道
+  SpecialSituationType_SpeedBump = 253;           ///<	减速带
+}
+
+enum RoadCondition {
+  RoadCondition_Unknown = 0;   ///<	未知
+  RoadCondition_Clear = 1;     ///<	干净
+  RoadCondition_Wet = 2;       ///<	潮湿
+  RoadCondition_Snowy = 3;     ///<	积雪
+  RoadCondition_Icy = 4;       ///<	结冰
+  RoadCondition_Slippery = 5;  ///<	滑
+  RoadCondition_Dirt = 6;      ///<	脏污
+}
+
+enum MapProvider {
+  MapProvider_Unknown = 0;   ///<	MapProvider_Unknown
+  MapProvider_AND = 1;       ///<	MapProvider_AND
+  MapProvider_AutoNavi = 2;  ///<	MapProvider_AutoNavi
+  MapProvider_HERE = 3;      ///<	MapProvider_HERE
+  MapProvider_Hyundai = 4;   ///<	MapProvider_Hyundai
+  MapProvider_Navinfo = 5;   ///<	MapProvider_Navinfo
+  MapProvider_TomTom = 6;    ///<	MapProvider_TomTom
+  MapProvider_Zenrin = 7;    ///<	MapProvider_Zenrin
+}
+
+enum MapStatus {
+  MapStatus_NotAvailable = 0;  ///<	无效
+  MapStatus_Loading = 1;       ///<	加载中
+  MapStatus_Available = 2;     ///<	有效
+}
+
+enum RightOfWay {
+  RightOfWay_Unknown = 0;        ///<	未知
+  RightOfWay_MustYield = 1;      ///<	RightOfWay_MustYield
+  RightOfWay_HasRightOfWay = 2;  ///<	RightOfWay_HasRightOfWay
+}
+
+enum GuidanceMode {
+  GuidanceMode_Inactive = 0;   ///<	未沿任何路径行驶
+  GuidanceMode_ForUser = 1;    ///<	存在导航路径引导
+  GuidanceMode_Automatic = 2;  ///<	沿自主推荐mpp引导
+}
+
+enum SurfaceCondition {
+  SurfaceCondition_Unknown = 0;        ///<	SurfaceCondition_Unknown
+  SurfaceCondition_PavedRigid = 1;     ///<	SurfaceCondition_PavedRigid
+  SurfaceCondition_PavedFlexible = 2;  ///<	SurfaceCondition_PavedFlexible
+  SurfaceCondition_Blocks = 3;         ///<	SurfaceCondition_Blocks
+  SurfaceCondition_Gravel = 4;         ///<	SurfaceCondition_Gravel
+  SurfaceCondition_Dirt = 5;           ///<	SurfaceCondition_Dirt
+}
+
+enum LaneArrowMarking {
+  LaneArrowMarking_None = 0;          ///<	LaneArrowMarking_None
+  LaneArrowMarking_Straight = 1;      ///<	直行
+  LaneArrowMarking_SlightRight = 2;   ///<	右前方
+  LaneArrowMarking_Right = 4;         ///<	右转
+  LaneArrowMarking_HardRight = 8;     ///<	大角度右转>90度
+  LaneArrowMarking_UTurn = 16;        ///<	掉头
+  LaneArrowMarking_HardLeft = 32;     ///<	大角度左转 >90度
+  LaneArrowMarking_Left = 64;         ///<	左转
+  LaneArrowMarking_SlightLeft = 128;  ///<	左前方行驶
+  LaneArrowMarking_NA = -1;           ///<	无
+}
+
+enum LaneType {
+  LaneType_Unknown = 0;               ///<	未知
+  LaneType_Normal = 1;                ///<	常规车道
+  LaneType_Exit = 2;                  ///<	减速车道
+  LaneType_Entry = 4;                 ///<	加速车道
+  LaneType_Auxiliary = 8;             ///<	不支持
+  LaneType_Emergency = 16;            ///<	应急车道
+  LaneType_RestrictedForbidden = 32;  ///<	不支持
+  LaneType_RestrictedUsable = 64;     ///<	不支持
+  LaneType_HOV = 128;                 ///<	HOV车道（多乘员车道）
+  LaneType_Express = 256;             ///<	不支持
+  LaneType_Reversible = 512;          ///<	双向车道、潮汐车道
+  LaneType_Slow = 1024;               ///<	爬坡车道
+  LaneType_DrivableShoulder = 2048;   ///<	可行驶路肩车道
+  LaneType_TurnOrSuicide = 4096;      ///<	不支持
+}
+
+enum LaneTransition {
+  LaneTransition_None = 0;  ///<	不应用，即非交换车道.
+  LaneTransition_Opening =
+      1;  ///<	车道形成，车道从无到有，即宽度从0开始形成一条车道。
+  LaneTransition_Closing =
+      2;  ///<	车道结束，车道从有到无，即正常车道逐渐消失，直至宽度为0。
+  LaneTransition_Merging =
+      3;  ///<	车道合流，两个方向车道进入同一方向车道时，没有车道标线或趋势表达车道的形成或结束，两条车道的通行权是一样的。
+  LaneTransition_Splitting =
+      4;  ///<	车道分流，一个方向车道分别进入两个方向车道时，没有车道标线或趋势表达车道的形成或结束，两条车道的通行权是一样的。
+}
+
+enum LinearObjectType {
+  LinearObjectType_Centerline = 0;   ///<	车道中心线
+  LinearObjectType_LaneMarking = 1;  ///<	车道标线
+  LinearObjectType_Guardrail = 2;    ///<	护栏或道路面铺设边缘
+  LinearObjectType_Fence = 3;        ///<	不支持
+  LinearObjectType_Kerb = 4;         ///<	路牙
+  LinearObjectType_Wall = 5;         ///<	墙
+}
+
+enum LineMarking {
+  LineMarking_Unknown = 0;               ///<	其他类型
+  LineMarking_None = 1;                  ///<	无可区分边界
+  LineMarking_SolidLine = 2;             ///<	单实线
+  LineMarking_DashedLine = 3;            ///<	单虚线
+  LineMarking_DoubleSolidLine = 4;       ///<	双实线
+  LineMarking_DoubleDashedLine = 5;      ///<	双虚线
+  LineMarking_LeftSolidRightDashed = 6;  ///<	左实右虚线
+  LineMarking_RightSolidLeftDashed = 7;  ///<	左虚右实线
+  LineMarking_DashedBlocks = 8;          ///<	特殊虚线
+  LineMarking_ShadedArea = 9;            ///<	三角岛
+  LineMarking_PhysicalDivider = 10;      ///<	不支持
+}
+
+enum LineMarkingColour {
+  LineMarkingColour_None = 0;    ///<	无颜色
+  LineMarkingColour_Other = 1;   ///<	其他
+  LineMarkingColour_Green = 2;   ///<	绿色
+  LineMarkingColour_White = 3;   ///<	白色
+  LineMarkingColour_Yellow = 4;  ///<	黄色
+  LineMarkingColour_Orange = 5;  ///<	橘色
+  LineMarkingColour_Red = 6;     ///<	红色
+  LineMarkingColour_Blue = 7;    ///<	蓝色
+}
+
+enum CurveType {
+  CurveType_NotPresent = 0;    ///<	未体现
+  CurveType_Polyline = 1;      ///<	折线
+  CurveType_BezierSpline = 2;  ///<	贝塞尔曲线
+}
+
+enum TrafficLightLongitudinalPosition {
+  TrafficLightLongitudinalPosition_Unknown = 0;             ///<	未知
+  TrafficLightLongitudinalPosition_BeforeIntersection = 1;  ///<	在路口前
+  TrafficLightLongitudinalPosition_AfterIntersection = 2;   ///<	在路口后
+}
+
+enum TrafficLightState {
+  TrafficLightState_Unknown = 0;  ///<	未知
+  TrafficLightState_Invalid = 1;  ///<	无效
+  TrafficLightState_Off = 2;      ///<	灯不亮
+  TrafficLightState_Green = 3;    ///<	红灯
+  TrafficLightState_Yellow = 4;   ///<	黄灯
+  TrafficLightState_Red = 5;      ///<	红灯
+}
+
+enum EffectiveSpeedLimitType {
+  EffectiveSpeedLimitType_Unknown = 0;  ///<	未知
+  EffectiveSpeedLimitType_Implicit = 1;  ///<	隐式的限速，理论推断的限速值
+  EffectiveSpeedLimitType_ExplicitOnTrafficSign = 2;  ///<	来源于限速牌
+  EffectiveSpeedLimitType_ExplicitNight = 3;      ///<	夜间限速。不支持
+  EffectiveSpeedLimitType_ExplicitDay = 4;        ///<	日间限速。不支持
+  EffectiveSpeedLimitType_ExplicitTimeOrDay = 5;  ///<	不支持
+  EffectiveSpeedLimitType_ExplicitRain = 6;       ///<	不支持
+  EffectiveSpeedLimitType_ExplicitSnow = 7;       ///<	不支持
+  EffectiveSpeedLimitType_ExplicitFog = 8;        ///<	不支持
+}
+
+enum LocationObjectType {
+  LocationObjectType_GuidePost = 0;  ///<	LocationObjectType_GuidePost
+}
+
+enum ConditionType {
+  ConditionType_Unknown = 0;        ///<	未知条件
+  ConditionType_Vehicle = 1;        ///<	车辆类型限制
+  ConditionType_Load = 2;           ///<	车辆载重限制
+  ConditionType_TimeOfDay = 3;      ///<	一天内时间限制
+  ConditionType_DaysOfWeek = 4;     ///<	一星期内周几限制
+  ConditionType_Weight = 5;         ///<	车辆重量限制
+  ConditionType_TurnDirection = 6;  ///<	转弯方向限制
+  ConditionType_Weather = 7;        ///<	天气限制
+  ConditionType_FuzzyTime = 8;      ///<	模糊时间限制
+}
+
+enum Load {
+  Load_WaterPolluting = 0;    ///<	Load_WaterPolluting
+  Load_Explosive = 1;         ///<	Load_Explosive
+  Load_OtherDangerous = 2;    ///<	Load_OtherDangerous
+  Load_Empty = 3;             ///<	Load_Empty
+  Load_Special = 4;           ///<	Load_Special
+  Load_Gasses = 5;            ///<	Load_Gasses
+  Load_FlammableLiquids = 6;  ///<	Load_FlammableLiquids
+  Load_FlammableSolids = 7;   ///<	Load_FlammableSolids
+  Load_Oxidizing = 8;         ///<	Load_Oxidizing
+  Load_ToxicInfectious = 9;   ///<	Load_ToxicInfectious
+  Load_Radioactive = 10;      ///<	Load_Radioactive
+  Load_Corrosive = 11;        ///<	Load_Corrosive
+}
+
+enum SpeedLimitSource {
+  SpeedLimitSource_Unknown = 0;   ///<	未知
+  SpeedLimitSource_Implicit = 1;  ///<	隐式的限速，理论推断的限速值
+  SpeedLimitSource_Explicit = 2;  ///<	真实的限速值，一般来源于限速牌
+}
+
+enum SignType {
+  SignType_Unknown = 255;                 ///<	未知
+  SignType_LeftBend = 10;                 ///<	向左急转弯
+  SignType_RightBend = 9;                 ///<	向右急转弯
+  SignType_DoubleBendLeftFirst = 14;      ///<	左反向弯路
+  SignType_DoubleBendRightFirst = 13;     ///<	右反向弯路
+  SignType_CurvyRoad = 17;                ///<	连续弯路
+  SignType_SteepDescent = 68;             ///<	下陡坡
+  SignType_SteepAscent = 67;              ///<	上陡坡
+  SignType_CarriageWayNarrows = 40;       ///<	道路变窄
+  SignType_CarriageWayNarrowsLeft = 42;   ///<	左侧变窄
+  SignType_CarriageWayNarrowsRight = 41;  ///<	右侧变窄
+  SignType_SwingBridge = 89;              ///<	可移动摆桥
+  SignType_RiverBank = 29;                ///<	左侧堤坝路
+  SignType_RiverBankLeft = 30;            ///<	右侧堤坝路
+  SignType_UnevenRoad = 69;               ///<	路面不平
+  SignType_Hump = 70;                     ///<	路面高突
+  SignType_Dip = 71;                      ///<	路面低洼
+  SignType_SlipperyRoad = 66;             ///<	警示路滑
+  SignType_FallingRocksRight = 62;        ///<	右侧落石
+  SignType_FallingRocksLeft = 61;         ///<	左侧落石
+  SignType_Pedestrians = 50;  ///<	注意行人（3.2中添加的enum，直接添加了）
+  SignType_PedestrianCrossing = 51;                  ///<	人行横道
+  SignType_Children = 52;                            ///<	注意儿童
+  SignType_SchoolZone = 53;                          ///<	学校区域
+  SignType_Cyclists = 54;                            ///<	注意非机动车
+  SignType_DomesticAnimalsCrossing = 4;              ///<	注意牲畜
+  SignType_WildAnimalsCrossing = 5;                  ///<	注意野生动物
+  SignType_RoadWorks = 6;                            ///<	注意施工路段
+  SignType_LightSignals = 31;                        ///<	灯光信号
+  SignType_DangerousIntersection = 22;               ///<	危险路口
+  SignType_Intersection = 35;                        ///<	路口
+  SignType_IntersectionWithPriorityToTheRight = 37;  ///<	为右侧来车让行
+  SignType_IntersectionWithMinorRoad = 36;           ///<	小路让大路
+  SignType_TwoWayTraffic = 55;                ///<	前方双向行驶道路
+  SignType_TafficCongestion = 75;             ///<	道路拥堵
+  SignType_RailwayCrossingWithGates = 56;     ///<	有杆的铁道路口
+  SignType_RailwayCrossingWithoutGates = 57;  ///<	无杆的铁道路口
+  SignType_TramWay = 59;                      ///<	有轨电车交叉口
+  SignType_RailwayCrossing = 58;              ///<	铁道路口
+  SignType_Danger = 0;                        ///<	注意危险
+  SignType_GiveWay = 32;                      ///<	减速让行
+  SignType_Stop = 33;                         ///<	停车让行
+  SignType_PriorityRoad = 34;                 ///<	优先道路
+  SignType_PriorityForOncomingTraffic = 82;   ///<	为对向车辆让行
+  SignType_PriorityOverOncomingTraffic = 81;  ///<	优先于对向车辆
+  SignType_OvertakingProhibited = 46;         ///<	禁止超车
+  SignType_OvertakingByGoodsVehiclesProhibited = 20;  ///<	卡车禁止超车
+  SignType_SpeedLimit = 87;                           ///<	限速牌
+  SignType_EndOfAllProhibitions = 79;                 ///<	终止所有限制
+  SignType_EndOfSpeedLimit = 88;                      ///<	终止限速
+  SignType_EndOfProhibitionOnOvertaking = 47;         ///<	终止禁止超车
+  SignType_EndOfProhibitionOnOvertakingForGoodsVehicles =
+      21;                                ///<	终止禁止卡车超车
+  SignType_DirectionToTheRight = 38;     ///<	右行
+  SignType_DirectionToTheLeft = 39;      ///<	左行
+  SignType_PassRightSide = 3;            ///<	右侧通过障碍物
+  SignType_PassLeftOrRightSide = 1;      ///<	左侧或右侧通过障碍物
+  SignType_PassLeftSide = 2;             ///<	左侧通过障碍物
+  SignType_BeginningOfBuiltUpArea = 77;  ///<	build up area起点
+  SignType_EndOfBuiltUpArea = 83;        ///<	build up area终点
+  SignType_Tunnel = 24;                  ///<	前方隧道
+  SignType_ResidentialArea = 7;          ///<	前方进入生活区
+  SignType_EndOfResidentialArea = 8;     ///<	前方离开生活区
+  SignType_LaneMergeRight = 44;          ///<	右侧车线汇入
+  SignType_LaneMergeLeft = 43;           ///<	左侧车线汇入
+  SignType_ProtectedPassingEnd = 48;     ///<	被保护路段结束
+  SignType_HumpbackBridge = 28;          ///<	拱桥
+  SignType_VariableSignMechanicElements = 65;  ///<	可变交通标志，机械牌
+  SignType_VariableSignLightElements = 80;     ///<	可变交通标志，灯牌
+  SignType_FerryTerminal = 25;                 ///<	ferry码头终端
+  SignType_NarrowBridge = 26;                  ///<	窄桥
+  SignType_IcyRoad = 73;                       ///<	结冰路面
+  SignType_SteepDropLeft = 63;                 ///<	左侧悬崖陡坡
+  SignType_SteepDropRight = 64;                ///<	右侧悬崖陡坡
+  SignType_RoadFloods = 72;                    ///<	积水路段
+  SignType_SideWinds = 74;                     ///<	大风路段
+  SignType_LaneMergeCenter = 45;               ///<	向中间变线
+  SignType_HighAccidentArea = 76;              ///<	事故多发
+  SignType_AudibleWarning = 78;                ///<	鸣笛警告
+  SignType_Motorway = 123;  ///<	高速开始（3.2中添加的enum，直接添加了）
+  SignType_MotorwayEnd = 124;  ///<	高速结束（3.2中添加的enum，直接添加了）
+  SignType_DoNotEnter = 139;  ///<	禁止驶入（3.2中添加的enum，直接添加了）
+  SignType_NoMotorVehicles =
+      134;  ///<	禁止机动车通行（3.2中添加的enum，直接添加了）
+  SignType_AdvisorySpeedLimit =
+      104;  ///<	建议限速（3.2中添加的enum，直接添加了）
+  SignType_VariableSign =
+      108;  ///<	可变交通信息（3.2中添加的enum，直接添加了）
+  SignType_VariableSpeedLimit =
+      107;  ///<	可变限速（3.2中添加的enum，直接添加了）
+}
+
+enum TrafficLightType {
+  TRAFFIC_LIGHT_UNKOWN = 0;  ///<	TRAFFIC_LIGHT_UNKOWN
+  TRAFFIC_LIGHT_INTERSECTION_TRAFFIC_FLOW_CONTROL =
+      1;                           ///<	路口交通流控制信号灯
+  TRAFFIC_LIGHT_RAMP_CONTROL = 2;  ///<	匝道控制信号灯
+  TRAFFIC_LIGHT_TOLL_BOOTH = 3;    ///<	收费站区域通行信号灯
+  TRAFFIC_LIGHT_LANE_STATUS = 4;   ///<	车道状态信号灯
+  TRAFFIC_LIGHT_TIMER = 5;         ///<	计时器
+  TRAFFIC_LIGHT_OTHER = 6;         ///<	其它
+}
+
+enum FormOfWayExtend {
+  FormOfWay_Custom_other = 0;              ///<	FormOfWay_Custom_other
+  FormOfWay_Custom_Ramp_Entrance = 1;      ///<	高速入口匝道
+  FormOfWay_Custom_Ramp_Exit = 2;          ///<	高速出口匝道
+  FormOfWay_Custom_Ramp_JCT = 4;           ///<	高速连接匝道
+  FormOfWay_Custom_TollArea = 8;           ///<	收费站区道路
+  FormOfWay_Custom_RoundAbout = 16;        ///<	环岛
+  FormOfWay_Custom_ControlledAccess = 64;  ///<	全封闭道路
+  FormOfWay_Custom_Service = 128;          ///<	休息区
+  FormOfWay_Custom_SideRoad = 256;         ///<	辅路
+  FormOfWay_Custom_Ramp = 512;             ///<	普通的匝道
+  FormOfWay_Custom_LeftTurn = 1024;        ///<	提前左转
+  FormOfWay_Custom_RightTurn = 2048;       ///<	提前右转
+  FormOfWay_Custom_UTurn = 4096;           ///<	掉头
+  FormOfWay_Custom_MultiDigitized = 8192;  ///<	上下行分离
+  FormOfWay_Custom_PedestrianZone =
+      16384;  ///<	VRU包含行人，自行车等弱势道路使用者
+  FormOfWay_Custom_MainSideAccess = 32768;    ///<	主辅路出入口
+  FormOfWay_Custom_Viaduct = 65536;           ///<	高架桥
+  FormOfWay_Custom_OverlineFlyover = 131072;  ///<	跨线立交桥
+}
+
+enum LinearObjectExtendType {
+  LinearObject_Type_Guardrail_Barrier = 0;        ///<	护栏
+  LinearObject_Type_Guardrail_Pavement_Edge = 1;  ///<	道路面铺设边缘
+  LinearObject_Type_Guardrail_Pole_Obstacle = 2;  ///<	杆状障碍物
+  LinearObject_Type_Custom_Unkown = 3;            ///<	未知
+}
+
+enum LineMarkingExtendType {
+  LineMarking_Type_Extend_Unkown = 0;                   ///<	未知
+  LineMarking_Type_Extend_FishBone = 1;                 ///<	鱼骨线
+  LineMarking_Type_Extend_DiamondDecelarationLine = 2;  ///<	菱形减速标线
+  LineMarking_Type_Extend_ReversibleLaneLine = 3;       ///<	可变导向标线
+  LineMarking_Type_Extend_ShortDashedLine = 4;          ///<	短粗虚线
+}
+
+enum LaneExtendType {
+  LaneType_Unknown2 = 0;                      ///<	LaneType_Unknown2
+  LaneType_BusLane = 8192;                    ///<	公交车道
+  LaneType_Regulated_Access_Lane = 16384;     ///<	管制车道
+  LaneType_Parking = 32768;                   ///<	停车车道
+  LaneType_Drivable_Parking = 65536;          ///<	可行驶停车车道
+  LaneType_Emergency_Parking_Strip = 131072;  ///<	紧急停车带
+  LaneType_Variable_Driving = 262144;         ///<	可变车道
+  LaneType_Turn = 524288;                     ///<	转向车道
+  LaneType_Bicycle = 1048576;                 ///<	自行车道
+  LaneType_Escape = 2097152;                  ///<	避险车道
+  LaneType_Autonomous_Driving = 4194304;      ///<	自动驾驶车道
+  LaneType_DirectionalLane = 8388608;         ///<	定向车道
+}
+
+enum SignShape {
+  SignShape_Unknown = 0;          ///<	未知
+  SignShape_Other = 1;            ///<	其它不规则形状
+  SignShape_TriangleTipUp = 2;    ///<	三角形
+  SignShape_TriangleTipDown = 3;  ///<	反向三角形
+  SignShape_Rectangle = 4;        ///<	矩形
+  SignShape_Diamond = 5;          ///<	菱形
+  SignShape_Octagon = 6;          ///<	八角形
+  SignShape_Round = 7;            ///<	圆形
+  SignShape_Ellipse = 8;          ///<	椭圆形
+  SignShape_Crossbuck = 9;        ///<	十字交叉
+}
+
+enum SignColor {
+  SignColor_Unknown = 0;  ///<	未知
+  SignColor_White = 1;    ///<	白色
+  SignColor_Yellow = 2;   ///<	黄色
+  SignColor_Red = 3;      ///<	红色
+  SignColor_Brown = 4;    ///<	棕色
+  SignColor_Blue = 5;     ///<	蓝色
+  SignColor_Green = 6;    ///<	绿色
+  SignColor_Black = 7;    ///<	黑色
+  SignColor_other = 9;    ///<	其他
+}
+
+enum StopLineType {
+  STOP_LINE_UNKOWN = 0;  ///<	停止线
+  STOP_LINE = 1;         ///<	停止线
+  YIELD_STOP = 2;        ///<	停车让行线
+  YIELD_SLOW = 3;        ///<	减速让行线
+  VISUAL_STOP_LINE = 4;  ///<	虚拟停止线
+}
+
+enum PoleType {
+  POLE_UNCLASSIFIED = 0;  ///<	未分类的杆状物
+  POLE_TREETRUNK = 1;     ///<	树干
+}
+
+enum BarrierType {
+  BARRIER_UNKNOWN = 0;    ///<	其他
+  BARRIER_JERSEY = 1;     ///<	新泽西护栏
+  BARRIER_GUARDRAIL = 2;  ///<	安全护栏
+  BARRIER_OTHER = 3;      ///<	其它护栏
+}
+
+enum DelineatorType {
+  DELINEATOR_UNKOWN = 0;  ///<	未知，不应用
+  REFLECTOR_POST = 1;     ///<	反射标
+  DELINEATOR_POST = 2;    ///<	轮廓标
+}
+
+enum BusStopType {
+  BUS_STOP_UNKOWN = 0;  ///<	公交车站
+  BUS_STOP_BUS = 1;     ///<	公交车站
+  BUS_STOP_TRAM = 2;    ///<	电车车站
+}
+
+enum WallType {
+  WALL_TUNNEL = 0;  ///<	隧道墙
+  WALL_SOUND = 1;   ///<	隔音墙
+  WALL_OTHER = 2;   ///<	未分类的墙
+}
+
+enum ArrowType {
+  ARROW_OTHERS = 0;             ///<	箭头：其它
+  ARROW_FORWARD = 1;            ///<	箭头：直行
+  ARROW_RIGHT = 2;              ///<	箭头：右转
+  ARROW_RIGHT_AND_FORWARD = 3;  ///<	箭头：右转+直行
+  ARROW_LEFT = 4;               ///<	箭头：左转
+  ARROW_LEFT_AND_FORWARD = 5;   ///<	箭头：左转+直行
+  ARROW_LEFT_AND_RIGHT = 6;     ///<	箭头：左转+右转
+  ARROW_UTURN = 8;              ///<	U turn
+  ARROW_FORWARD_AND_UTURN = 9;  ///<	直行+U Turn
+  ARROW_LEFT_AND_UTURN = 12;    ///<	左转+掉头
+  ARROW_LEFT_CONFLUENCE = 16;   ///<	左侧汇流
+  ARROW_RIGHT_CONFLUENCE = 32;  ///<	右侧汇流
+}
+
+enum StationInfoType {
+  STATION_UNKOWN = 0;  ///<	未知，不应用
+  STATION_CHECKPOINT =
+      1;  ///<	检查站 ，固定物理、关卡式检查点，一般是公安检查的。
+  STATION_TOLLSTATION = 2;  ///<	收费站
+  STATION_PORTER = 3;       ///<	守卫区的入口处
+}
+
+enum LineMarkingMaterial {
+  LineMarkingMaterial_UNKNOWN = 0;             ///<	未知
+  LineMarkingMaterial_VIBRATION_MARKINGS = 1;  ///<	突起铺设路面标线。
+  LineMarkingMaterial_PAINTED_VIBRATION_DIVIDER =
+      2;                            ///<	油漆和突起铺设路面标线
+  LineMarkingMaterial_PAINTED = 3;  ///<	油漆
+}
+
+enum InfrastructureSeparationType {
+  NO_DIVIDER = 0;     ///<	不存在护栏
+  HAS_SOLID = 1;      ///<	存在坚固护栏
+  HAS_NON_SOLID = 2;  ///<	存在非坚固护栏
+}
+
+enum MedianSurfaceType {
+  SURFACE_UNKNOWN = 0;  ///<	中央带表面铺设情况不明
+  SURFACE_PAVED = 1;    ///<	中央带表面被铺设
+  SURFACE_UNPAVED = 2;  ///<	中央带表面没有被铺设
+}
+
+enum PayMethodType {
+  METHOD_NOT_INVESTIGATED = 0;         ///<	未调查
+  METHOD_ETC = 1;                      ///<	ETC
+  METHOD_CASH = 2;                     ///<	现金
+  METHOD_DEBIT_CARD = 4;               ///<	银行卡(借记卡)
+  METHOD_CREDIT_CARD = 8;              ///<	信用卡
+  METHOD_IC_CARD = 16;                 ///<	IC卡
+  METHOD_PREPAID_CARD = 32;            ///<	预付卡(年票、月票)
+  METHOD_RESERVED = 64;                ///<	预留
+  METHOD_NOT_APPLICABLE = 1073741824;  ///<	未使用
+}
+
+enum CardType {
+  CARD_NOT_INVESTIGATED = 0;  ///<	未调查
+  CARD_CARD_ETC = 1;          ///<	ETC
+  CARD_STAFF_SERVICE = 2;     ///<	人工
+  CARD_SELF_SERVICE = 3;      ///<	自助
+  CARD_NOT_APPLICABLE = 9;    ///<	未使用
+}
+
+enum EntranceExitNodeType {
+  ENTANCE_EXIT_NODE_UNKNOWN = 0;        ///<	未知
+  ENTANCE_EXIT_NODE_RAMP_EXIT = 1;      ///<	匝道出口
+  ENTANCE_EXIT_NODE_RAMP_ENTRANCE = 2;  ///<	匝道入口
+  ENTANCE_EXIT_NODE_SPLIT = 3;          ///<	分叉路
+  ENTANCE_EXIT_NODE_MERGE = 4;          ///<	汇合路
+}
+
+enum TrafficFlowType {
+  TRAFFIC_FLOW_TYPE_UNKNOWN = 0;              ///<	未知
+  TRAFFIC_FLOW_TYPE_UNBLOCKED = 1;            ///<	畅通
+  TRAFFIC_FLOW_TYPE_SLOW = 3;                 ///<	缓慢
+  TRAFFIC_FLOW_TYPE_CONGESTED = 4;            ///<	拥堵
+  TRAFFIC_FLOW_TYPE_EXTREME_CONGESTED = 5;    ///<	极度拥堵
+  TRAFFIC_FLOW_TYPE_NO_TRAFFICE_FLOW = 6;     ///<	无交通流
+  TRAFFIC_FLOW_TYPE_EXTREMELY_UNBLOCKED = 7;  ///<	极度畅通
+}
+
+enum TrafficEventRestrictType {
+  TMC_RESTRICT_TYPE_NONE = 0;            ///<	无限制
+  TMC_RESTRICT_TYPE_PASSAGE = 1;         ///<	TMC_RESTRICT_TYPE_PASSAGE
+  TMC_RESTRICT_TYPE_TURN = 2;            ///<	转弯限制
+  TMC_RESTRICT_TYPE_ENTERRAMP = 4;       ///<	入口匝道限制
+  TMC_RESTRICT_TYPE_EXITRAMP = 5;        ///<	出口匝道限制
+  TMC_RESTRICT_TYPE_UNIDIRECTIONAL = 6;  ///<	双向道路单侧通行
+  TMC_RESTRICT_TYPE_VEHICLETYPE = 7;     ///<	车辆类型限制
+  TMC_RESTRICT_TYPE_LANE1 = 8;           ///<	车道通行限制
+}
+
+enum TrafficEventRestrict {
+  TMC_RESTRICT_NONE_NONE = 0;              ///<	无限制:无
+  TMC_RESTRICT_PASSAGE_NOPASSAGE = 65537;  ///<	通行限制:禁止通行
+  TMC_RESTRICT_TURN_NOTURNRIGHT = 131073;  ///<	转弯限制:禁止右转
+  TMC_RESTRICT_TURN_NOTURNLEFT = 131074;   ///<	转弯限制:禁止左转
+  TMC_RESTRICT_TURN_NODIRECT = 131075;     ///<	转弯限制:禁止直行
+  TMC_RESTRICT_TURN_NOUTURN = 131077;      ///<	转弯限制:禁止掉头
+  TMC_RESTRICT_ENTERRAMP_CLOSE = 262145;  ///<	入口匝道限制:入口匝道关闭
+  TMC_RESTRICT_ENTERRAMP_RESTRICT = 262146;  //	入口匝道限制:入口匝道限制
+  TMC_RESTRICT_EXITRAMP_CLOSE = 327681;  ///<	出口匝道限制:出口匝道关闭
+  TMC_RESTRICT_UNIDIRECTIONAL_UNIDIRECTIONAL =
+      393218;  ///<	双向道路单侧通行:单侧通行
+  TMC_RESTRICT_UNIDIRECTIONAL_BIDIRECTIONAL =
+      393219;  ///<	双向道路单侧通行:双向通行
+  TMC_UNIDIRECTIONAL_INTERACTIVE =
+      393217;  ///<	双向道路单侧通行限制:单侧交互通行
+  TMC_RESTRICT_VEHICLETYPE_BUSINESS =
+      458754;  ///<	车辆类型限制:运营车辆限制
+  TMC_RESTRICT_VEHICLETYPE_SPECIAL =
+      458760;                        ///<	车辆类型限制:特种车辆限制
+  TMC_RESTRICT_LANE_LANE1 = 524289;  ///<	车道通行限制:车道限制
+  TMC_RESTRICT_LANE_LANE2 = 524290;  ///<	车道通行限制:车道限制
+  TMC_RESTRICT_LANE_LANE3 = 524291;  ///<	车道通行限制:车道限制
+  TMC_RESTRICT_LANE_LANE4 = 524292;  ///<	车道通行限制:车道限制
+}
+
+enum TrafficEventReasonType {
+  TMC_REASON_TYPE_NONE = 0;           ///<	无原因现象
+  TMC_REASON_TYPE_ACCIDENT = 1;       ///<	交通事故
+  TMC_REASON_TYPE_FIRE = 2;           ///<	火灾
+  TMC_REASON_TYPE_OBSTACLE = 3;       ///<	路上障碍物
+  TMC_REASON_TYPE_CONSTRUCTION = 4;   ///<	道路施工
+  TMC_REASON_TYPE_OPERATION = 5;      ///<	道路作业
+  TMC_REASON_TYPE_EVENT = 6;          ///<	事件
+  TMC_REASON_TYPE_WEATHER = 7;        ///<	气象
+  TMC_REASON_TYPE_DISASTER = 8;       ///<	灾害
+  TMC_MREASON_TYPE_MALFUNCTION = 12;  ///<	设备故障
+  TMC_REASON_TYPE_RULECHANGE = 15;    ///<	交通规则改变
+}
+
+enum TrafficEventReason {
+  TMC_EASON_NONE_NONE = 0;                    ///<	无原因现象:无
+  TMC_REASON_ACCIDENT_ALL = 65536;            ///<	交通事故:所有
+  TMC_REASON_ACCIDENT_VEHICLE = 65537;        ///<	交通事故:车辆事故
+  TMC_REASON_ACCIDENT_PEOPLE = 65538;         ///<	交通事故:人身事故
+  TMC_REASON_ACCIDENT_MATERIAL = 65539;       ///<	交通事故:物品事故
+  TMC_REASON_ACCIDENT_ROLLOVER = 65540;       ///<	交通事故:翻车事故
+  TMC_REASON_ACCIDENT_CRASH = 65541;          ///<	交通事故:撞车事故
+  TMC_REASON_ACCIDENT_REAR = 65542;           ///<	交通事故:追尾事故
+  TMC_REASON_ACCIDENT_FALLING = 65543;        ///<	交通事故:坠车事故
+  TMC_REASON_ACCIDENT_SERIOUS = 65544;        ///<	交通事故:严重事故
+  TMC_REASON_FIRE_ALL = 131072;               ///<	火灾:所有
+  TMC_REASON_FIRE_VEHICLE = 131073;           ///<	火灾:车辆火灾
+  TMC_REASON_OBSTACLE_ALL = 196608;           ///<	路上障碍物:所有
+  TMC_REASON_OBSTACLE_SCATTERED = 196609;     ///<	路上障碍物:散乱物体
+  TMC_REASON_OBSTACLE_OILLEAKAGE = 196611;    ///<	路上障碍物:机油泄露
+  TMC_REASON_OBSTACLE_ONROAD = 196612;        ///<	路上障碍物:道路障碍
+  TMC_REASON_OBSTACLE_PEOPLE = 196613;        ///<	路上障碍物:人
+  TMC_REASON_OBSTACLE_FAULTY = 196615;        ///<	路上障碍物:故障车
+  TMC_REASON_CONSTRUCTION_ALL = 262144;       ///<	道路施工:所有
+  TMC_REASON_CONSTRUCTION_CIRCUIT = 262145;   ///<	道路施工:电路施工
+  TMC_REASON_CONSTRUCTION_GAS = 262146;       ///<	道路施工:天然气施工
+  TMC_REASON_CONSTRUCTION_PIPE = 262147;      ///<	道路施工:水管施工
+  TMC_REASON_CONSTRUCTION_TELECOM = 262148;   ///<	道路施工:电信施工
+  TMC_REASON_CONSTRUCTION_SUBWAY = 262149;    ///<	道路施工:地铁施工
+  TMC_REASON_CONSTRUCTION_SEWER = 262150;     ///<	道路施工:下水道施工
+  TMC_REASON_CONSTRUCTION_PAVEMENT = 262151;  ///<	道路施工:路面施工
+  TMC_REASON_CONSTRUCTION_BRIDGE = 262152;    ///<	道路施工:桥梁施工
+  TMC_REASON_CONSTRUCTION_MARKING = 262153;  ///<	道路施工:路面标识施工
+  TMC_REASON_CONSTRUCTION_CULVERT = 262154;   ///<	道路施工:涵洞施工
+  TMC_REASON_CONSTRUCTION_GREENING = 262155;  ///<	道路施工:绿化施工
+  TMC_REASON_CONSTRUCTION_FACILITY = 262156;  ///<	道路施工:道路设施施工
+  TMC_REASON_CONSTRUCTION_LIGHTING = 262157;  // 道路施工:道路照明设备施工
+  TMC_REASON_CONSTRUCTION_OCCUPATION = 262158;    ///<	道路施工:占路施工
+  TMC_REASON_CONSTRUCTION_BREAKER = 262159;       ///<	道路施工:断路施工
+  TMC_REASON_CONSTRUCTION_CONSTRUCTING = 262160;  ///<	道路施工:在建道路
+  TMC_REASON_CONSTRUCTION_UNCLEAR = 262399;       ///<	道路施工:不明确
+  TMC_REASON_OPERATION_ALL = 327680;              ///<	道路作业:所有
+  TMC_REASON_OPERATION_FACILITY = 327681;  ///<	道路作业:道路设施清扫
+  TMC_REASON_OPERATION_GREENING = 327682;  ///<	道路作业:绿化作业
+  TMC_REASON_OPERATION_SNOW = 327683;      ///<	道路作业:除雪作业
+  TMC_REASON_OPERATION_INSPECTION = 327686;  ///<	道路作业:道路检测作业
+  TMC_REASON_EVENT_ALL = 393216;             ///<	事件:所有
+  TMC_REASON_EVENT_EXPO = 393217;            ///<	事件:博览会
+  TMC_REASON_EVENT_RELIGIOUS = 393226;       ///<	事件:宗教活动
+  TMC_REASON_EVENT_HOLIDAYS = 393227;        ///<	事件:节假日
+  TMC_REASON_EVENT_LITERARY = 393228;        ///<	事件:文艺活动
+  TMC_REASON_EVENT_POLITICAL = 393220;       ///<	事件:政治活动
+  TMC_REASON_EVENT_ASSEMBLY = 393222;        ///<	事件:集会
+  TMC_REASON_EVENT_CONFERENCE = 393223;      ///<	事件:大型会议
+  TMC_REASON_EVENT_SPORT = 393224;           ///<	事件:体育活动
+  TMC_REASON_EVENT_PUBLIC = 393225;          ///<	事件:公益活动
+  TMC_REASON_WEATHER_ALL = 458752;           ///<	气象:所有
+  TMC_REASON_WEATHER_SNOW = 458753;          ///<	气象:雪
+  TMC_REASON_WEATHER_HEAVYSNOW = 458754;     ///<	气象:大雪
+  TMC_REASON_WEATHER_BLIZZARD = 458755;      ///<	气象:暴雪
+  TMC_REASON_WEATHER_SNOWACCUMULATION = 458756;  ///<	气象:积雪
+  TMC_REASON_WEATHER_RAINSNOW = 458757;          ///<	气象:雨夹雪
+  TMC_REASON_WEATHER_WINDRAIN = 458758;          ///<	气象:风雨
+  TMC_REASON_WEATHER_RAIN = 458759;              ///<	气象:雨
+  TMC_REASON_WEATHER_HEAVYRAIN = 458760;         ///<	气象:大雨
+  TMC_REASON_WEATHER_THUNDERSTORM = 458761;      ///<	气象:雷雨
+  TMC_REASON_WEATHER_RAINSTORM = 458762;         ///<	气象:暴雨
+  TMC_REASON_WEATHER_GALE = 458763;              ///<	气象:大风
+  TMC_REASON_WEATHER_TYPHOON = 458764;           ///<	气象:台风
+  TMC_REASON_WEATHER_HURRICANE = 458765;         ///<	气象:飓风
+  TMC_REASON_WEATHER_FLOODS = 458766;            ///<	气象:洪水
+  TMC_REASON_WEATHER_FOG = 458771;               ///<	气象:雾
+  TMC_REASON_WEATHER_ICING = 458773;             ///<	气象:路面结冰
+  TMC_REASON_WEATHER_LANDSLIDE = 458774;         ///<	气象:山体滑坡
+  TMC_REASON_WEATHER_VISIBILITY = 458779;        ///<	气象:能见度低
+  TMC_REASON_DISASTER_ALL = 524288;              ///<	灾害:所有
+  TMC_REASON_DISASTER_SIDENCE = 524289;          ///<	灾害:路面陷落
+  TMC_REASON_DISASTER_DAMAGE = 524290;           ///<	灾害:路面损坏
+  TMC_REASON_DISASTER_HAIL = 524294;             ///<	灾害:冰雹
+  TMC_REASON_DISASTER_WATER = 524299;            ///<	灾害:道路积水
+  TMC_REASON_DISASTER_STONE = 524300;            ///<	灾害:落石
+  TMC_REASON_MALFUNCTION_ALL = 786432;           ///<	设备故障:所有
+  TMC_REASON_MALFUNCTION_SIGNAL = 786433;  ///<	设备故障:交通信号故障
+  TMC_REASON_MALFUNCTION_TUNNEL = 786434;  ///<	设备故障:隧道内设施故障
+  TMC_REASON_MALFUNCTION_ETC = 786435;     ///<	设备故障:ETC设备故障
+  TMC_REASON_MALFUNCTION_LIGHT = 786436;  ///<	设备故障:路灯故障
+  TMC_REASON_MALFUNCTION_HEIGHT = 786437;  ///<	设备故障:道路限高类设备故障
+  TMC_REASON_RULECHANGE_ALL = 983040;        ///<	交通规则改变:所有
+  TMC_REASON_RULECHANGE_DIVERSION = 983041;  ///<	交通规则改变:拥堵分流
+  TMC_REASON_RULECHANGE_LONGTERM = 983042;  ///<	交通规则改变:长期规划
+  TMC_REASON_RULECHANGE_TEMPORARY = 983043;  //	交通规则改变:临时交通管制
+}
+
+enum RealtimeWeatherType {
+  WEATHER_TYPE_SUNNY_DAY = 0;                      ///<	晴天
+  WEATHER_TYPE_CLOUDY = 1;                         ///<	多云
+  WEATHER_TYPE_OVERCAST = 2;                       ///<	阴天
+  WEATHER_TYPE_SHOWERY_RAIN = 3;                   ///<	阵雨
+  WEATHER_TYPE_THUNDER_ARRAY = 4;                  ///<	雷阵雨
+  WEATHER_TYPE_ACCOMPANIED_BY_HAIL = 5;            ///<	伴有冰雹
+  WEATHER_TYPE_SLEET = 6;                          ///<	雨夹雪
+  WEATHER_TYPE_LIGHT_RAIN = 7;                     ///<	小雨
+  WEATHER_TYPE_MEDIUM_RAIN = 8;                    ///<	中雨
+  WEATHER_TYPE_HEAVY_RAIN = 9;                     ///<	大雨
+  WEATHER_TYPE_RAINSTORM = 10;                     ///<	暴雨
+  WEATHER_TYPE_HEAVY_RAINSTORM = 11;               ///<	大暴雨
+  WEATHER_TYPE_EXTREME_RAINSTORM = 12;             ///<	特大暴雨
+  WEATHER_TYPE_SHOWERY_SNOW = 13;                  ///<	阵雪
+  WEATHER_TYPE_LIGHT_SNOW = 14;                    ///<	小雪
+  WEATHER_TYPE_MODERATE_SNOW = 15;                 ///<	中雪
+  WEATHER_TYPE_HEAVY_SNOW = 16;                    ///<	大雪
+  WEATHER_TYPE_BLIZZARD = 17;                      ///<	暴雪
+  WEATHER_TYPE_FOG = 18;                           ///<	雾
+  WEATHER_TYPE_FROZEN_RAIN = 19;                   ///<	冻雨
+  WEATHER_TYPE_SANDSTORM = 20;                     ///<	沙尘暴
+  WEATHER_TYPE_LIGHT_TO_MODERATE_RAIN = 21;        ///<	小到中雨
+  WEATHER_TYPE_MODERATE_TO_HEAVY_RAIN = 22;        ///<	中到大雨
+  WEATHER_TYPE_HEAVY_TO_RAINSTORM = 23;            ///<	大到暴雨
+  WEATHER_TYPE_RAINSTORM_TO_HEAVY_RAINSTORM = 24;  ///<	暴雨到大暴雨
+  WEATHER_TYPE_HEAVY_TO_EXTREME_RAINSTORM = 25;    ///<	大暴雨到特大暴雨
+  WEATHER_TYPE_LIGHT_TO_MODERATE_SNOW = 26;        ///<	小到中雪
+  WEATHER_TYPE_MODERATE_TO_HEAVY_SNOW = 27;        ///<	中到大雪
+  WEATHER_TYPE_HEAVY_TO_BLIZZARD = 28;             ///<	大到暴雪
+  WEATHER_TYPE_FLOATING_DUST = 29;                 ///<	浮尘
+  WEATHER_TYPE_BLOWING_SAND = 30;                  ///<	扬沙
+  WEATHER_TYPE_STRONG_SANDSTORMS = 31;             ///<	强沙尘暴
+  WEATHER_TYPE_THICK_FOG = 32;                     ///<	浓雾
+  WEATHER_TYPE_STRONG_FOG = 49;                    ///<	强浓雾
+  WEATHER_TYPE_HAZE = 53;                          ///<	霾
+  WEATHER_TYPE_MODERATE_HAZE = 54;                 ///<	中度霾
+  WEATHER_TYPE_HEAVY_SEVERE_HAZE = 55;             ///<	重度霾
+  WEATHER_TYPE_SEVERE_HAZE = 56;                   ///<	严重霾
+  WEATHER_TYPE_HEAVY_FOG = 57;                     ///<	大雾
+  WEATHER_TYPE_STRONG_DENSE_FOG = 58;              ///<	特强浓雾
+  WEATHER_TYPE_RAIN = 97;                          ///<	雨
+  WEATHER_TYPE_SNOW = 98;                          ///<	雪
+  WEATHER_TYPE_NONE = 99;                          ///<	无
+}
+
+enum RealtimeWeatherWindLevel {
+  WEATHER_WIND_LEVEL_0 = 0;      ///<	无风；风速：0.0-0.2
+  WEATHER_WIND_LEVEL_1 = 1;      ///<	软风；风速：0.3-1.5
+  WEATHER_WIND_LEVEL_2 = 2;      ///<	轻风；风速：1.6-3.3
+  WEATHER_WIND_LEVEL_3 = 3;      ///<	微风；风速：3.4-5.4
+  WEATHER_WIND_LEVEL_4 = 4;      ///<	和风；风速：5.5-7.9
+  WEATHER_WIND_LEVEL_5 = 5;      ///<	劲风；风速：8.0-10.7
+  WEATHER_WIND_LEVEL_6 = 6;      ///<	强风；风速：10.8-13.8
+  WEATHER_WIND_LEVEL_7 = 7;      ///<	疾风；风速：13.9-17.1
+  WEATHER_WIND_LEVEL_8 = 8;      ///<	大风；风速：17.2-20.7
+  WEATHER_WIND_LEVEL_9 = 9;      ///<	烈风；风速：20.8-24.4
+  WEATHER_WIND_LEVEL_110 = 110;  ///<	狂风；风速：24.5-28.4
+  WEATHER_WIND_LEVEL_111 = 111;  ///<	暴风；风速：28.5-32.6
+  WEATHER_WIND_LEVEL_112 = 112;  ///<	飓风；风速：32.7
+}
+
+enum ExtremeWeatherType {
+  EXTREME_WEATHER_TYPE_UNKNOWN = 0;            ///<	常规预警
+  EXTREME_WEATHER_TYPE_TYPHOON = 1;            ///<	台风
+  EXTREME_WEATHER_TYPE_STORMS = 2;             ///<	暴雪
+  EXTREME_WEATHER_TYPE_BLIZZARD = 3;           ///<	暴雪
+  EXTREME_WEATHER_TYPE_COLD_WAVE = 4;          ///<	寒潮
+  EXTREME_WEATHER_TYPE_STRONG_WIND = 5;        ///<	大风
+  EXTREME_WEATHER_TYPE_SANDSTORMS = 6;         ///<	沙尘暴
+  EXTREME_WEATHER_TYPE_HIGH_TEMPERATURE = 7;   ///<	高温
+  EXTREME_WEATHER_TYPE_DROUGHT = 8;            ///<	干旱
+  EXTREME_WEATHER_TYPE_THUNDERBOLT = 9;        ///<	雷电
+  EXTREME_WEATHER_TYPE_HAIL = 10;              ///<	雷电
+  EXTREME_WEATHER_TYPE_FROST = 11;             ///<	霜冻
+  EXTREME_WEATHER_TYPE_HEAVY_FOG = 12;         ///<	大雾
+  EXTREME_WEATHER_TYPE_HAZE = 13;              ///<	霾
+  EXTREME_WEATHER_TYPE_ROAD_ICING = 14;        ///<	道路结冰
+  EXTREME_WEATHER_TYPE_FOREST_INSURANCE = 94;  ///<	森林火险
+}
+
+enum ExtremeWeatherLevel {
+  EXTREME_WEATHER_LEVEL_UNKNOWN = 0;  ///<	未知
+  EXTREME_WEATHER_LEVEL_BLUE = 1;     ///<	蓝色
+  EXTREME_WEATHER_LEVEL_YELLOW = 2;   ///<	黄色
+  EXTREME_WEATHER_LEVEL_ORANGE = 3;   ///<	橙色
+  EXTREME_WEATHER_LEVEL_RED = 4;      ///<	红色
+}
+
+enum LaneAssociationType {
+  Association_Same = 0;      ///<	同向
+  Association_Opposite = 1;  ///<	反向
+}
+
+message CDataTime {
+  optional uint32 year = 1;
+  optional uint32 month = 2;
+  optional uint32 day = 3;
+  optional uint32 hour = 4;
+  optional uint32 minute = 5;
+  optional uint32 second = 6;
+}
+
+message CDateRangeOfYear {
+  optional CDataTime start_time = 1;
+  optional CDataTime end_time = 2;
+}
+
+message CUnderConstructionValue {
+  optional uint32 under_construction = 1;
+  repeated CDateRangeOfYear time_range = 2;
+}
+
+message CProfilePathPosistion {
+  optional uint64 path_start_offset = 1;
+  optional uint64 path_end_offset = 2;
+}
+
+message CAssociatedLaneModelExtend {
+  optional LaneAssociationType associated_type = 1;
+  optional uint64 associated_lane_model_id = 2;
+  optional uint64 length = 3;
+  repeated CLaneInfo lane_info = 4;
+  repeated uint64 lane_extend_type = 5;
+  repeated CAssociatedLaneConnectivityPair lane_connect = 6;
+  repeated CAssociatedLinearObject linear_object = 7;
+  repeated CLineGeometry line_geometry = 8;
+}
+
+message CAssociatedLinearObject {
+  optional LinearObjectType type = 1;
+  optional LineMarkingExtendType extend_type = 2;
+  optional LineMarking marking = 3;
+  optional LineMarkingColour colour = 4;
+  optional uint64 id = 5;
+  optional uint64 startoffset = 6;
+  optional uint64 endoffset = 7;
+}
+
+message CAssociatedLaneConnectivityPair {
+  optional uint64 new_lane_modelid = 1;
+  optional uint32 initial_lane_number = 2;
+  optional uint32 new_lane_number = 3;
+}
+
+message CRoadEdgeProfileValue {
+  optional uint64 left_boundaryid = 1;
+  optional uint64 right_boundaryid = 2;
+}
+
+message CExtremeWeatherProfileValue {
+  repeated CExtremeWeatherInfo weather_info = 1;
+}
+
+message CRealtimeWeatherProfileValue {
+  optional RealtimeWeatherType type = 1;
+  optional RealtimeWeatherWindLevel wind_level = 2;
+  optional double precipitation = 3;
+  optional double wind = 4;
+  optional double wind_angle = 5;
+  optional double visibility = 6;
+  optional int64 temperature = 7;
+  optional int64 pressure = 8;
+  optional uint32 humidity = 9;
+}
+
+message CEntranceExitNodeRangeProfileValue {
+  optional EntranceExitNodeType type = 1;
+  optional uint64 associated_link = 2;
+}
+
+message CTollLaneProfileValue {
+  repeated CTollLaneInfo toll_lanes = 1;
+}
+
+message CExtremeWeatherInfo {
+  optional ExtremeWeatherType type = 1;
+  optional ExtremeWeatherLevel signal_level = 2;
+}
+
+message CTollLaneInfo {
+  optional CardType card_type = 1;
+  optional uint64 pay_method = 2;
+  optional uint32 laneid = 3;
+}
+
+message CMedianProfileValue {
+  optional MedianSurfaceType surface = 1;
+  optional uint32 width = 2;
+}
+
+message CInfrastructureSeparationProfileValue {
+  optional InfrastructureSeparationType type = 1;
+}
+
+message CTrafficEventProfileValue {
+  optional string event_i_d = 1;
+  optional string sub_event_i_d = 2;
+  optional TrafficEventRestrictType event_restrict_type = 3;
+  optional TrafficEventRestrict event_restrict = 4;
+  optional TrafficEventReasonType event_reason_type = 5;
+  optional TrafficEventReason event_reason = 6;
+  optional CDateRangeOfYear schedule_date = 7;
+  repeated CDateRangeOfYear date = 8;
+}
+
+message CTrafficFlowProfileValue {
+  optional TrafficFlowType flow_type = 1;
+  optional int64 average_speed = 2;
+}
+
+message CLinearObjectExtendParallelElement {
+  optional LineMarking line_marking_kind = 1;
+  optional LineMarkingExtendType line_marking_exend = 2;
+  optional LinearObjectType paralletype = 3;
+  optional LineMarkingColour marking_color = 4;
+  optional LineMarkingMaterial marking_material = 5;
+  optional uint64 marking_width = 6;
+  optional int64 lateral_offset = 7;
+}
+
+message CMergePointProfileValue {
+  optional uint64 other_path_id = 1;
+  optional uint64 other_offset = 2;
+  optional bool is_master = 3;
+}
+
+message CDetailedMPPProfileValue {
+  repeated CDetailedMPP detailed_mpp = 1;
+}
+
+message CDetailedMPP {
+  repeated uint64 path_id = 1;
+}
+
+message CCCoord3DList {
+  repeated CWGS84Point c_coord3_d_list = 1;
+}
+
+message CStationInfoProfileValue {
+  optional StationInfoType type = 1;
+}
+
+message CCurveList {
+  optional CurveType type = 1;
+  repeated CCCoord3DList points = 2;
+}
+
+message CWallProfileValue {
+  optional WallType type = 1;
+  optional CCurveList geometry = 2;
+  optional uint64 object_id = 3;
+}
+
+message CCurve {
+  optional CurveType type = 1;
+  repeated CWGS84Point points = 2;
+}
+
+message CBusStopProfileValue {
+  optional BusStopType type = 1;
+  optional CCurve bounding_box = 2;
+  optional uint64 object_id = 3;
+}
+
+message CWarningAreaProfileValue {
+  optional SignColor color = 1;
+  optional CCurve bounding_box = 2;
+  optional uint64 object_id = 3;
+}
+
+message CDelineatorProfileValue {
+  optional DelineatorType type = 1;
+  optional uint64 object_id = 2;
+  optional uint32 top_diameter = 3;
+  optional uint32 bottom_diameter = 4;
+  repeated CWGS84Point geometry = 5;
+}
+
+message CPoleProfileValue {
+  optional PoleType type = 1;
+  optional uint64 object_id = 2;
+  optional uint32 top_diameter = 3;
+  optional uint32 bottom_diameter = 4;
+  repeated CWGS84Point geometry = 5;
+}
+
+message CCurbProfileValue {
+  optional CCurveList geometries = 1;
+  optional uint64 object_id = 2;
+}
+
+message CBarrierProfileValue {
+  optional BarrierType barrier_type = 1;
+  optional CCurveList geometries = 2;
+  optional uint64 object_id = 3;
+}
+
+message CWGS84Point {
+  optional int64 latitude = 1;
+  optional int64 longitude = 2;
+  optional int64 altitude = 3;
+}
+
+message CMarkingProfileValue {
+  optional SignColor color = 1;
+  optional CWGS84Point center_point = 2;
+  optional uint64 object_id = 3;
+  repeated CWGS84Point bounding_box_points = 4;
+}
+
+message CArrowProfileValue {
+  optional SignColor color = 1;
+  optional ArrowType arrowclass = 2;
+  optional CWGS84Point center_point = 3;
+  optional uint64 object_id = 4;
+  repeated CWGS84Point bounding_box_points = 5;
+}
+
+message CStopLineProfileValue {
+  optional SignColor color = 1;
+  optional StopLineType stop_line_type = 2;
+  optional CCurve center_line = 3;
+  optional uint64 object_id = 4;
+}
+
+message CLaneExtendInfo {
+  optional uint64 lane_extend_type = 1;
+  optional uint64 lane_index = 2;
+  optional uint64 lane_marking = 3;
+  optional uint32 lane_number = 4;
+  optional bool has_turn_waiting = 5;
+  repeated CProfilePathPosistion turn_waiting_path_pos = 6;
+}
+
+message CLaneModelExtendProfileValue {
+  optional int64 lane_model_identifier = 1;
+  optional uint64 link_geo_identifier = 2;
+  repeated CLaneExtendInfo lane_infos = 3;
+  repeated CAssociatedLaneModelExtend associated_lane_mode = 4;
+}
+
+message CObjectBoudingBoxProfileValue {
+  optional uint64 object_id = 1;
+  repeated CWGS84Point bounding_box = 2;
+}
+
+message CObjectGeometryProfileValue {
+  optional CCurve object_geometries = 1;
+  optional uint64 object_id = 2;
+}
+
+message CLinearObjectExtendProfileValue {
+  optional LinearObjectExtendType object_type = 1;
+  optional LineMarkingExtendType line_marking_extend = 2;
+  optional uint64 object_id = 3;
+  optional uint64 line_marking_width = 4;
+  optional bool change_to_left = 5;
+  optional bool change_to_right = 6;
+  repeated CLinearObjectExtendParallelElement parallel_element_group = 7;
+}
+
+message CFormOfWayExtendProfileValue {
+  optional uint64 value = 1;
+}
+
+message CTrafficLightExtendProfileValue {
+  optional TrafficLightType current_type = 1;
+  optional CCurve geometries = 2;
+  optional uint64 object_id = 3;
+  optional float heading = 4;
+  optional uint32 orientation = 5;
+  optional uint32 row = 6;
+  optional uint32 column = 7;
+}
+
+message CLaneWidthExtend {
+  optional uint64 lane_width_min = 1;
+  optional uint64 lane_width_max = 2;
+  optional uint64 sart_width = 3;
+  optional uint64 end_width = 4;
+  optional uint64 trans_width = 5;
+  optional uint64 trans_width_start_offset = 6;
+  optional uint64 trans_width_endoffset = 7;
+}
+
+message CLaneWidthExtendProfileValue {
+  optional CLaneWidthExtend value = 1;
+}
+
+message CVector {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+}
+
+message CTrafficSignExtendValue {
+  optional SignType type = 1;
+  optional SignShape shape = 2;
+  optional SignColor color = 3;
+  optional CWGS84Point position = 4;
+  optional CVector bounding_box = 5;
+  optional uint64 object_id = 6;
+  optional float heading = 7;
+  repeated CWGS84Point bounding_box_point = 8;
+}
+
+message CConditionalRestrictionProfileValue {
+  optional int32 allowed = 1;
+  repeated CCondition conditions = 2;
+}
+
+message CTrafficSignValue {
+  optional SignType type = 1;
+  optional YesNoUnknown vms = 2;
+  optional uint64 value = 3;
+  optional int64 shift = 4;
+  optional uint64 distance = 5;
+  optional uint64 length = 6;
+  optional uint32 location = 7;
+  repeated CCondition panels = 8;
+}
+
+message CSpeed {
+  optional UnitOfSpeed unit = 1;
+  optional uint32 value = 2;
+}
+
+message CExtendedSpeedLimitValue {
+  optional CSpeed value = 1;
+  optional SpeedLimitSource source = 2;
+  repeated CCondition conditions = 3;
+}
+
+message CConditionTurnDirection {
+  optional LaneArrowMarking direction = 1;
+}
+
+message CConditionFuzzyTime {
+  optional FuzzyTime fuzzy_time = 1;
+}
+
+message CConditionWeather {
+  optional Weather weather = 1;
+}
+
+message CConditionTimeOfDay {
+  optional uint32 start_minutes = 1;
+  optional uint32 end_minutes = 2;
+}
+
+message CConditionLoad {
+  optional Load value = 1;
+}
+
+message CConditionVehicleType {
+  optional uint64 vehicle_type_mask = 1;
+}
+
+message CConditionNumeric {
+  optional uint64 value = 1;
+}
+
+message CConditionBase {
+  optional ConditionType type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+}
+
+message CCondition {
+  optional CConditionBase condition_base = 1;
+  optional CConditionUnion condition_union = 2;
+}
+
+message CRegionCodeValue {
+  repeated uint32 values = 1;
+}
+
+message CLocationObject {
+  optional LocationObjectType type = 1;
+  optional CWGS84Point absolute_position = 2;
+  optional int64 lateral_offset = 3;
+}
+
+message CEffectiveSpeedLimit {
+  optional CSpeed value = 1;
+  optional EffectiveSpeedLimitType type = 2;
+}
+
+message CTrafficLightProfileValue {
+  optional TrafficLightLongitudinalPosition longitudinal_position = 1;
+  optional LateralPosition lateral_position = 2;
+  optional TrafficLightState current_state = 3;
+  optional YesNoUnknown turn_on_red_allowed = 4;
+  optional CVector position = 5;
+  optional CVector bounding_box = 6;
+  optional double cycle_time = 7;
+}
+
+message CRoadGeometryProfileValue {
+  optional CCurve road_centerline = 1;
+}
+
+message CLanesGeometryProfileValue {
+  repeated CLineGeometry geometries = 1;
+}
+
+message CLineGeometry {
+  optional CCurve geometry = 1;
+  optional uint64 id_line = 2;
+}
+
+message CLinearObjectDefinitionValue {
+  repeated CLinearObject linear_objects = 1;
+}
+
+message CLinearObject {
+  optional LinearObjectType type = 1;
+  optional LineMarking marking = 2;
+  optional LineMarkingColour colour = 3;
+  optional uint64 id = 4;
+}
+
+message CLaneConnectivityValue {
+  repeated CLaneConnectivityPair connectivity_pairs = 1;
+}
+
+message CLaneConnectivityPair {
+  optional uint64 initial_path = 1;
+  optional uint64 new_path = 2;
+  optional uint32 initial_lane_number = 3;
+  optional uint32 new_lane_number = 4;
+}
+
+message CLaneModelValue {
+  optional uint32 total_number_of_lanes = 1;
+  repeated CLaneInfo lane_infos = 2;
+}
+
+message CLaneInfo {
+  optional RelativeDirection direction = 1;
+  optional LaneTransition transition = 2;
+  optional uint64 type = 3;
+  optional uint64 centerline = 4;
+  optional uint64 left_boundary = 5;
+  optional uint64 right_boundary = 6;
+  optional uint32 lane_number = 7;
+}
+
+message CSpeedProfileValue {
+  optional CSpeed value = 1;
+}
+
+message CSurfaceConditionProfileValue {
+  optional Quality general = 1;
+  optional SurfaceCondition surface = 2;
+}
+
+message CVehiclePosition {
+  optional CWGS84Point w_g_s84_point = 1;
+  optional uint64 timestamp = 2;
+  optional float heading = 3;
+}
+
+message CAbsoluteVehiclePositionProfileValue {
+  optional CVehiclePosition position = 1;
+}
+
+message CSystemStatusProfileValue {
+  optional GuidanceMode guidance = 1;
+  optional int32 simulating = 2;
+}
+
+message CNodeProfileValue {
+  repeated CNodeArm arms = 1;
+}
+
+message CNodeArm {
+  optional RightOfWay right_of_way = 1;
+  optional uint64 sub_path = 2;
+  optional float probability = 3;
+  optional float turn_angle = 4;
+  optional int32 is_complex_intersection = 5;
+}
+
+message COffsetFloatProfileValue {
+  repeated COffsetFloatEntry entries = 1;
+}
+
+message COffsetFloatEntry {
+  optional uint64 offset = 1;
+  optional float value = 2;
+}
+
+message CMapStatusProfileValue {
+  optional MapStatus value = 1;
+}
+
+message CMapProviderProfileValue {
+  optional MapProvider value = 1;
+}
+
+message CWeatherProfileValue {
+  optional Weather value = 1;
+}
+
+message CRoadConditionProfileValue {
+  optional RoadCondition value = 1;
+}
+
+message CSpecialSituationProfileValue {
+  optional SpecialSituationType value = 1;
+}
+
+message CUnitSystemProfileValue {
+  optional UnitOfSpeed value = 1;
+}
+
+message CDrivingSideProfileValue {
+  optional DrivingSide value = 1;
+}
+
+message CFormOfWayProfileValue {
+  optional FormOfWay value = 1;
+}
+
+message CYesNoUnknownProfileValue {
+  optional YesNoUnknown value = 1;
+}
+
+message CBooleanProfileValue {
+  optional int32 value = 1;
+}
+
+message CFloatProfileValue {
+  optional float value = 1;
+}
+
+message CUInt64ProfileValue {
+  optional uint64 value = 1;
+}
+
+message CInt32ProfileValue {
+  optional int64 value = 1;
+}
+
+message CUInt32ProfileValue {
+  optional uint64 value = 1;
+}
+
+message CProfileValueBase {
+  optional uint32 reserved = 1;
+}
+
+message CProfileValue {
+  optional CProfileValueBase profile_value_base = 1;
+  optional CProfileValueUnion profile_value_union = 2;
+}
+
+message CAdasisMessageBase {
+  optional uint32 reserved = 1;
+}
+
+message CPositionMessage {
+  optional uint64 timestamp = 1;
+  optional uint64 position_age = 2;
+  repeated CPosition positions = 3;
+}
+
+message CProfileMessage {
+  repeated CProfileEntry profiles = 1;
+}
+
+message CGlobalDataMessage {
+  repeated CGlobalData data = 1;
+}
+
+message CProfileControlMessage {
+  repeated CProfileControl values = 1;
+}
+
+message CPathControlMessage {
+  optional uint64 id_first = 1;
+  optional uint64 id_last = 2;
+  repeated CPathControl values = 3;
+}
+
+message CAdasisMessage {
+  optional CAdasisMessageBase adasis_message_base = 1;
+  optional CAdasisMessageUnion adasis_message_union = 2;
+}
+
+message CMessageOnBus {
+  optional MessageType type = 1;
+  optional CAdasisMessage message = 2;
+  optional uint32 cyclic_counter = 3;
+}
+
+message CPathControl {
+  optional uint64 id = 1;
+  optional uint64 parent_id = 2;
+  optional uint64 offset = 3;
+}
+
+message CProfileControl {
+  optional uint64 path_id = 1;
+  optional uint64 offset = 2;
+}
+
+message CGlobalData {
+  optional ProfileType type = 1;
+  optional Availability available = 2;
+  optional CProfileValue value = 3;
+}
+
+message CProfileEntry {
+  optional ChangeMode change = 1;
+  optional RelativeDirection direction = 2;
+  optional ProfileType type = 3;
+  optional Availability available = 4;
+  optional CProfileValue value = 5;
+  optional uint64 instance_id = 6;
+  optional float confidence = 7;
+  optional uint64 path_id = 8;
+  optional uint64 offset = 9;
+  optional uint64 end_offset = 10;
+  optional int32 is_retransmission = 11;
+  optional int32 end_offset_final = 12;
+  repeated uint32 lane_numbers = 13;
+}
+
+message CPosition {
+  optional uint64 path_id = 1;
+  optional uint64 offset = 2;
+  optional uint64 accuracy = 3;
+  optional int64 lateral_offset = 4;
+  optional float speed = 5;
+  optional float relative_heading = 6;
+  optional float probability = 7;
+  optional uint64 preferred_path = 8;
+  optional uint32 current_lane = 9;
+}
+
+message CConditionUnion {
+  oneof c_condition_union_value {
+    CConditionNumeric condition_numeric = 1;
+    CConditionVehicleType condition_vehicle_type = 2;
+    CConditionLoad condition_load = 3;
+    CConditionTimeOfDay condition_time_of_day = 4;
+    CConditionWeather condition_weather = 5;
+    CConditionFuzzyTime condition_fuzzy_time = 6;
+    CConditionTurnDirection condition_turn_direction = 7;
+  }
+}
+
+message CProfileValueUnion {
+  oneof c_profile_value_union_value {
+    CUInt32ProfileValue u_int32_profile_value = 1;
+    CInt32ProfileValue int32_profile_value = 2;
+    CUInt64ProfileValue u_int64_profile_value = 3;
+    CFloatProfileValue float_profile_value = 4;
+    CBooleanProfileValue boolean_profile_value = 5;
+    CYesNoUnknownProfileValue yes_no_unknown_profile_value = 6;
+    CFormOfWayProfileValue form_of_way_profile_value = 7;
+    CDrivingSideProfileValue driving_side_profile_value = 8;
+    CUnitSystemProfileValue unit_system_profile_value = 9;
+    CSpecialSituationProfileValue special_situation_profile_value = 10;
+    CRoadConditionProfileValue road_condition_profile_value = 11;
+    CWeatherProfileValue weather_profile_value = 12;
+    CMapProviderProfileValue map_provider_profile_value = 13;
+    CMapStatusProfileValue map_status_profile_value = 14;
+    COffsetFloatProfileValue offset_float_profile_value = 15;
+    CNodeProfileValue node_profile_value = 16;
+    CSystemStatusProfileValue system_status_profile_value = 17;
+    CAbsoluteVehiclePositionProfileValue
+        absolute_vehicle_position_profile_value = 18;
+    CSurfaceConditionProfileValue surface_condition_profile_value = 19;
+    CSpeedProfileValue speed_profile_value = 20;
+    CLaneModelValue lane_model_value = 21;
+    CLaneConnectivityValue lane_connectivity_value = 22;
+    CLinearObjectDefinitionValue linear_object_definition_value = 23;
+    CLanesGeometryProfileValue lanes_geometry_profile_value = 24;
+    CRoadGeometryProfileValue road_geometry_profile_value = 25;
+    CTrafficLightProfileValue traffic_light_profile_value = 26;
+    CEffectiveSpeedLimit effective_speed_limit = 27;
+    CLocationObject location_object = 28;
+    CRegionCodeValue region_code_value = 29;
+    CExtendedSpeedLimitValue extended_speed_limit_value = 30;
+    CTrafficSignValue traffic_sign_value = 31;
+    CConditionalRestrictionProfileValue conditional_restriction_profile_value =
+        32;
+    CLaneWidthExtendProfileValue lane_width_extend = 33;
+    CTrafficLightExtendProfileValue traffic_light_extend_value = 34;
+    CLaneModelExtendProfileValue lane_model_extend_value = 35;
+    CFormOfWayExtendProfileValue form_of_way_extend_profile_value = 36;
+    CLinearObjectExtendProfileValue linear_object_extend_profile_value = 37;
+    CObjectGeometryProfileValue object_geo_profile_value = 38;
+    CTrafficSignExtendValue traffic_sign_extend_profile = 39;
+    CStopLineProfileValue stop_line_value = 40;
+    CArrowProfileValue arrow_value = 41;
+    CPoleProfileValue pole_value = 42;
+    CMarkingProfileValue marking_value = 43;
+    CBarrierProfileValue barrier_value = 44;
+    CCurbProfileValue curb_value = 45;
+    CObjectBoudingBoxProfileValue object_bound_box_value = 46;
+    CDelineatorProfileValue delineator_value = 47;
+    CBusStopProfileValue bus_stop_value = 48;
+    CWarningAreaProfileValue warning_area_value = 49;
+    CWallProfileValue wall_value = 50;
+    CStationInfoProfileValue station_info_value = 51;
+    CMergePointProfileValue merge_point_value = 52;
+    CDetailedMPPProfileValue detail_mpp_value = 53;
+    CInfrastructureSeparationProfileValue divider_value = 54;
+    CMedianProfileValue median_value = 55;
+    CTollLaneProfileValue toll_lane_value = 56;
+    CEntranceExitNodeRangeProfileValue entrance_exit_value = 57;
+    CTrafficFlowProfileValue traffic_flow_value = 58;
+    CTrafficEventProfileValue traffic_event_value = 59;
+    CRealtimeWeatherProfileValue realtime_value = 60;
+    CExtremeWeatherProfileValue extreme_value = 61;
+    CRoadEdgeProfileValue road_edge_value = 62;
+    CUnderConstructionValue under_con_value = 63;
+  }
+}
+
+message CAdasisMessageUnion {
+  oneof c_adasis_message_union_value {
+    CPositionMessage position_message = 1;
+    CProfileMessage profile_message = 2;
+    CGlobalDataMessage global_data_message = 3;
+    CProfileControlMessage profile_control_message = 4;
+    CPathControlMessage path_control_message = 5;
+  }
+}

@@ -1,0 +1,181 @@
+syntax = "proto2";
+
+package snoah;
+
+enum Bosch_OperationMode {
+  BOSCH_OPERATION_ON = 0;
+  SENSOR_COVERED = 1;
+  BOSCH_OPERATION_MODE_RESERVE_1 = 2;
+  BOSCH_OPERATION_MODE_RESERVE_2 = 3;
+  BOSCH_OPERATION_MODE_RESERVE_3 = 4;
+  BOSCH_OPERATION_MODE_RESERVE_4 = 5;
+  BOSCH_OPERATION_MODE_RESERVE_5 = 6;
+  BOSCH_OPERATION_MODE_RESERVE_6 = 7;
+};
+enum Bosch_SensorType {
+  BOSCH_A02_UNKNOWN = 0;
+  BOSCH_A02_FRONT_RADAR = 1;
+  BOSCH_A02_REAR_RADAR = 2;
+  BOSCH_A02_FRONT_LEFT_RADAR = 3;
+  BOSCH_A02_FRONT_RIGHT_RADAR = 4;
+  BOSCH_A02_REAR_LEFT_RADAR = 5;
+  BOSCH_A02_REAR_RIGHT_RADAR = 6;
+  BOSCH_A02_RESERVED_SENSOR_TYPE = 7;
+}
+
+enum Bosch_SGUFail {
+  BOSCH_SGU_NO_FAIL = 0;
+  BOSCH_SGU_FAILED = 1;
+  BOSCH_SGU_FAIL_RESERVE_1 = 2;
+  BOSCH_SGU_FAIL_RESERVE_2 = 3;
+  BOSCH_SGU_FAIL_RESERVE_3 = 4;
+  BOSCH_SGU_FAIL_RESERVE_4 = 5;
+  BOSCH_SGU_FAIL_RESERVE_5 = 6;
+  BOSCH_SGU_FAIL_RESERVE_6 = 7;
+};
+
+enum Bosch_Signal_Operation_State {
+  INITIAL_STATE = 0;
+  MAIN_STATE = 1;
+  REDUNDANCE_STATE = 2;
+  FAILED_STATE = 3;
+
+  BOSCH_SINGLE_OPERATION_STATE_RESERVE_1 = 4;
+  BOSCH_SINGLE_OPERATION_STATE_RESERVE_2 = 5;
+  BOSCH_SINGLE_OPERATION_STATE_RESERVE_3 = 6;
+  BOSCH_SINGLE_OPERATION_STATE_RESERVE_4 = 7;
+};
+
+enum Bosch_TimeSync_Operation_State {
+  TIME_SYNC_INITIAL_STATE = 0;
+  TIME_SYNC_MAIN_STATE = 1;
+  TIME_SYNC_REDUNDANCE_STATE = 2;
+  TIME_SYNC_FAILED_STATE = 3;
+  BOSCH_TIME_SYNC_RESERVE_1 = 4;
+  BOSCH_TIME_SYNC_RESERVE_2 = 5;
+  BOSCH_TIME_SYNC_RESERVE_3 = 6;
+  BOSCH_TIME_SYNC_RESERVE_4 = 7;
+};
+
+enum Bosch_Signal_Operatation_Channel {
+  SIG_NO_OPERATION = 0;
+  SIG_SOC_CHANNEL = 1;
+  SIG_MCU_CHANNEL = 2;
+  SIG_IFC_CHANNEL = 3;
+}
+
+enum Bosch_TimeSync_Operatation_Channel {
+  TIMESYN_NO_OPERATION = 0;
+  TIMESYN_SOC_CHANNEL = 1;
+  TIMESYN_MCU_CHANNEL = 2;
+}
+
+enum Bosch_Moudulation_State {
+  MODULATION_OFF = 0;
+  MODULATION_ON = 1;
+  BOSCH_MODULATION_RESERVE_1 = 2;
+  BOSCH_MODULATION_RESERVE_2 = 3;
+  BOSCH_MODULATION_RESERVE_3 = 4;
+  BOSCH_MODULATION_RESERVE_4 = 5;
+  BOSCH_MODULATION_RESERVE_5 = 6;
+  BOSCH_MODULATION_RESERVE_6 = 7;
+};
+
+message BOSCH_SENSORSTATE {
+  optional uint32 bosch_msg_checksum = 1;
+  optional uint32 bosch_msg_alivecounter = 2;
+  optional uint32 bosch_blockcounter = 3;
+  optional Bosch_OperationMode bosch_operationmode = 4;
+  optional Bosch_SensorType bosch_sensortype = 5;
+  optional uint32 bosch_num_of_objects = 6;
+  optional Bosch_SGUFail bosch_sgufail = 7;
+  optional uint32 bosch_timerstampstatus = 8;
+  optional uint64 bosch_object_mea_timestamp_1 = 9;
+  optional uint32 bosch_object_mea_timestamp_2 = 10;
+  optional uint32 bosch_sda_horzdeviationangle_can03 = 11;
+  optional uint32 bosch_sda_vertdeviationangle_can03 = 12;
+  optional Bosch_Signal_Operation_State bosch_signal_operation_state = 13;
+  optional Bosch_TimeSync_Operation_State bosch_timesync_operation_state = 14;
+  optional Bosch_Signal_Operatation_Channel bosch_signal_operatation_channel =
+      15;
+  optional Bosch_TimeSync_Operatation_Channel
+      bosch_timesync_operatation_channel = 16;
+  optional Bosch_Moudulation_State bosch_moudulation_state = 17;
+}
+
+enum Bosch_Object_Type {
+  UNKNOWN_TYPE = 0;
+  BOSCH_A02_FOUR_WHEELER = 1;
+  BOSCH_A02_TWO_WHEELER = 2;
+  BOSCH_A02_PEDESTRIAN = 3;
+  BOSCH_OBJECT_TYPE_RESERVE_1 = 4;
+  BOSCH_OBJECT_TYPE_RESERVE_2 = 5;
+  BOSCH_OBJECT_TYPE_RESERVE_3 = 6;
+  BOSCH_OBJECT_TYPE_RESERVE_4 = 7;
+};
+
+enum Bosch_Object_Motion_Pattern {
+  UNKNOWN_MOTION = 0;
+  BOSCH_A02_STATIONARY = 1;
+  BOSCH_A02_STOPPED = 2;
+  BOSCH_A02_MOVING = 3;
+  BOSCH_OBJECT_MOTION_RESERVE_1 = 4;
+  BOSCH_OBJECT_MOTION_RESERVE_2 = 5;
+  BOSCH_OBJECT_MOTION_RESERVE_3 = 6;
+  BOSCH_OBJECT_MOTION_RESERVE_4 = 7;
+};
+
+enum Bosch_Object_DetStatus {
+  BOSCH_A02_DELETED = 0;
+  BOSCH_A02_NEW = 1;
+  BOSCH_A02_MEASURED = 2;
+  BOSCH_A02_PREDICTED = 3;
+  BOSCH_A02_DELETED_FOR_MERGE = 4;
+  BOSCH_A02_NEW_FROM_MERGE = 5;
+  BOSCH_OBJECT_DETSTATUS_RESERVE_1 = 6;
+  BOSCH_OBJECT_DETSTATUS_RESERVE_2 = 7;
+};
+
+message BOSCH_OBJ {
+  optional uint32 sgu1_msg_checksum = 1;
+  optional uint32 sgu1_msg_alivecounter = 2;
+  optional uint32 sgu1_blockcounter = 3;
+  optional uint64 sgu1_object_id = 4;
+  optional float sgu1_object_wexist = 5;  // Existence probability of the object
+  optional Bosch_Object_Type sgu1_object_type = 6;
+  optional Bosch_Object_Motion_Pattern sgu1_object_motion_pattern = 7;
+  optional float sgu1_object_wobstacle =
+      8;  // Consider resolution & offset in application layer
+  optional float sgu1_object_dx =
+      9;  // Consider resolution & offset in application layer
+  optional float sgu1_object_dy =
+      10;  // Consider resolution & offset in application layer
+  optional float sgu1_object_distlong_rms =
+      11;  // Consider resolution & offset in application layer
+  optional float sgu1_obj_distlat_rms =
+      12;  // Consider resolution & offset in application layer
+  optional float sgu1_object_vx =
+      13;  // Consider resolution & offset in application layer
+  optional float sgu1_object_vy =
+      14;  // Consider resolution & offset in application layer
+  optional float sgu1_obj_vrellong_rms =
+      15;  // Consider resolution & offset in application layer
+  optional float sgu1_obj_vrelat_rms =
+      16;  // Consider resolution & offset in application layer
+  optional float sgu1_object_ax =
+      17;  // Consider resolution & offset in application layer
+  optional float sgu1_object_ay =
+      18;  // Consider resolution & offset in application layer
+  optional Bosch_Object_DetStatus sgu1_object_detstatus = 19;
+  optional uint32 sgu1_lifecycles_obj = 20;
+  optional float sgu1_objrcs_01 =
+      21;  // Consider resolution & offset in application layer
+}
+
+// RadarType
+message BOSCHA02 {
+  optional uint32 frame_id = 1;
+  optional double timestamp = 2;
+  optional BOSCH_SENSORSTATE sensor_state = 3;
+  optional BOSCH_OBJ obj = 4;
+}

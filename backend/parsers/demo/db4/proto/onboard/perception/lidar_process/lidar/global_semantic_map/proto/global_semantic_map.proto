@@ -1,0 +1,11 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/global_semantic_map/proto/global_semantic_map";
+
+message GlobalSemanticMapConfig {
+  optional float resolution = 1 [default = 0.25];
+  optional float map_local_center_x = 2 [default = 60.0];
+  optional float map_local_center_y = 3 [default = 0.0];
+  optional int32 map_side_length = 4 [default = 480];
+  optional int32 book_chapter_num = 5 [default = 10];
+}

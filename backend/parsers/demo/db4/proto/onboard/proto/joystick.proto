@@ -1,0 +1,41 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message JoyStickProto {
+  optional LiteHeader header = 1;
+  optional JoyStickCmd joy_stick_cmd = 2;
+}
+
+message JoyStickCmd {
+  optional double brake_joy = 1;
+  optional double throttle_joy = 2;
+  optional double steering_joy = 3;
+  optional bool steering_mult = 4;
+  optional bool joy_throttle_valid = 5;
+  optional bool joy_brake_valid = 6;
+  // only avaiable in logitech joystick
+  optional bool btn_rsb = 7;
+  optional bool btn_lsb = 8;
+  optional bool btn_power = 9;
+  optional bool btn_back = 14;
+  optional bool btn_x = 10;
+  optional bool btn_a = 11;
+  optional bool btn_y = 12;
+  optional bool btn_b = 13;
+
+  enum GearPosition {
+    GEAR_NONE = 0;
+    GEAR_FRONT = 1;
+    GEAR_FRONT_LEFT = 2;
+    GEAR_FRONT_RIGHT = 3;
+    GEAR_BACK = 4;
+    GEAR_BACK_LEFT = 5;
+    GEAR_BACK_RIGHT = 6;
+  }
+
+  optional GearPosition gear_position = 15;
+}

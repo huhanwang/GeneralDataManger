@@ -1,0 +1,16 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message MultiTimerReportProto {
+  optional int64 start_ts = 1;
+  message MarkProto {
+    optional string message = 1;
+    optional double duration = 2;
+    optional int64 end_ts = 3;
+    optional int64 id = 4;
+  }
+  repeated MarkProto marks = 2;
+  optional double total_duration = 3;
+}

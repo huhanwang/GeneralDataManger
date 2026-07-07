@@ -1,0 +1,72 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+// import "google/protobuf/descriptor.proto";
+
+// NEXT ID: 19
+enum ObjectType {
+  OT_UNKNOWN_STATIC = 0;
+  OT_VEHICLE = 1;
+  OT_MOTORCYCLIST = 2;
+  OT_PEDESTRIAN = 3;
+  OT_CYCLIST = 4;
+  OT_FOD = 5;
+  OT_UNKNOWN_MOVABLE = 6;
+  OT_VEGETATION = 7;
+  OT_BARRIER = 8;
+  OT_CONE = 10;
+  OT_WARNING_TRIANGLE = 13;
+  OT_TRICYCLIST = 14;
+  // NOTE(leihao): We will split LAEGE VEHICLE from VEHICLE object type soon.
+  // LAEGE VEHICLE currently defines vehicles with a length larger than 6m,
+  // width larger than 2.2m,and height greater than 2.2m.
+  // TODO(leihao): Now we just pre-provided the large vehicle object type,
+  // modify above comments when large vehicle type is ready.
+  OT_LARGE_VEHICLE = 15;
+  // Reserve OT_ROAD, OT_MIST, OT_BIRD respectively.
+  // Use old-fashioned reserved to avoid warning.
+  OT_BARRIER_ANTI_COLLISION_BUCKET = 16;
+  OT_BARRIER_ANTI_COLLISION_POST = 17;
+  OT_BARRIER_CEMENT_PILLAR = 18;
+  reserved 9, 11, 12;
+}
+
+enum VehicleLampType {
+  VEHLAMP_UNKNOWN = 0;
+  VEHLAMP_TURN_LEFT = 1;
+  VEHLAMP_TURN_RIGHT = 2;
+  VEHLAMP_STOP = 3;
+  VEHLAMP_FLASHERS = 4;
+}
+
+message ObjectAttribute {
+  repeated VehicleLampType vehicle_lamp_types = 1;
+  message VehicleLightInfo {
+    enum VehicleLightType {
+      VLT_INVALID = 0;
+      VLT_TURN_LEFT = 1;
+      VLT_TURN_RIGHT = 2;
+      VLT_BRAKE = 3;
+      VLT_HIGH_MOUNTED_BRAKE = 4;
+    }
+    optional VehicleLightType vehicle_light_type = 1;
+    enum VehicleLightStatus {
+      VLS_INVALID = 0;
+      VLS_ON = 1;
+      VLS_OFF = 2;
+      VLS_UNKNOWN = 3;
+    }
+    optional VehicleLightStatus vehicle_light_status = 2;
+    optional float confidence_score = 3;
+  }
+  repeated VehicleLightInfo vehicle_light = 2;
+}
+
+enum Density {
+  UNKNOWN_SCENE = 0;
+  DENSE_SCENE = 1;
+  SPARSE_SCENE = 2;
+}

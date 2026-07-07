@@ -1,0 +1,80 @@
+
+syntax = "proto2";
+
+package snoah.planner.ml;
+
+message TrajectoryFeatureProto {
+  // Positions ([horizon, 2]).
+  repeated float pos = 1 [packed = true];
+  // Position diff from last point to current point ([horizon, 2]).
+  repeated float pos_diff = 2 [packed = true];
+  // Speed along heading ([horizon, 1]).
+  repeated float speed = 3 [packed = true];
+  // Sin and cos of yaw ([horizon, 2]).
+  repeated float yaw = 4 [packed = true];
+  // Timestamps in seconds ([horizon, 1]).
+  repeated float ts = 6 [packed = true];
+}
+
+message LineSegmentsFeatureProto {
+  // Node([horizon, 2]).
+  repeated float node = 6 [packed = true];
+}
+
+message PathBoundaryFeatureProto {
+  optional LineSegmentsFeatureProto left_path_boundary = 1;
+  optional LineSegmentsFeatureProto right_path_boundary = 2;
+  optional LineSegmentsFeatureProto smooth_ref_center_line = 3;
+}
+
+message ConditionProto {
+  enum TargetLaneConditionType {
+    CURRENT_LANE = 0;
+    LEFT_LANE = 1;
+    RIGHT_LANE = 2;
+  }
+  // For three vehicle case, there would be four gaps.
+  // GAP_0 is the one with the least longitudinal distance.
+  enum LaneChangeConditionType {
+    NO_LANE_CHANGE_OBS = 0;
+    GAP_0 = 1;
+    GAP_1 = 2;
+    GAP_2 = 3;
+    GAP_3 = 4;
+  }
+  enum FrontObjectConditionType {
+    NO_FRONT_OBS = 0;
+    FOLLOWING = 1;
+    LEFT_NUDGE = 2;
+    RIGHT_NUDGE = 3;
+  }
+  enum CutInConditionType {
+    NO_CUTIN_OBS = 0;
+    YIELDING = 1;
+    OVERTAKING = 2;
+  }
+
+  message Gap {
+    optional string front_object_id = 1;
+    optional string back_object_id = 2;
+  }
+
+  message LaneChangeCondition {
+    optional LaneChangeConditionType type = 1;
+    optional Gap gap = 2;
+  }
+
+  message LaneFollowCondition {
+    optional FrontObjectConditionType front_object_condition = 1;
+    optional CutInConditionType cut_int_condition = 2;
+    optional string front_object_id = 3;
+    optional string cutin_object_id = 4;
+  }
+
+  optional TargetLaneConditionType target_lane_condition = 1;
+  oneof InteractionType {
+    LaneChangeCondition lane_change_interaction_condition = 2;
+    LaneFollowCondition lane_follow_interaction_condition = 3;
+  }
+  optional float stop_s = 5;
+}

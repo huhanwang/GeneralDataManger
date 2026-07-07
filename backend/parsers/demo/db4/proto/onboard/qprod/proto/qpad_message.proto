@@ -1,0 +1,10 @@
+syntax = "proto2";
+package snoah.qprod;
+
+import "onboard/proto/parking_spot_finder.proto";
+
+message QPadMessage {
+  message Apa {
+    optional ParkingSpotFinderInfo.ParkableType selected_park_able_type = 1;
+  }
+}

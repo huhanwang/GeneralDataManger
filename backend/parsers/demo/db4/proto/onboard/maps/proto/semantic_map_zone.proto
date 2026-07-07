@@ -1,0 +1,48 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/maps/proto/map_internal.proto";
+
+message CrossingIslandProto {
+  optional sfixed64 id = 1;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Primary fields:
+  optional GeoPolygonProto polygon = 2;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Derived fields: created by postprocessing the map.
+  // TODO: add belonging_levels and skip_records in postprocessing.
+  repeated int32 belonging_levels = 3;
+  repeated ValidationRecord skip_records = 4;
+}
+
+message NotForLabelZoneProto {
+  optional sfixed64 id = 1;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Primary fields:
+  optional GeoPolygonProto polygon = 2;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Derived fields: created by postprocessing the map.
+  // TODO: add belonging_levels and skip_records in postprocessing.
+  repeated int32 belonging_levels = 3;
+  repeated ValidationRecord skip_records = 4;
+}
+
+message LabelZoneProto {
+  optional sfixed64 id = 1;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Primary fields:
+  optional GeoPolygonProto polygon = 2;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Derived fields: created by postprocessing the map.
+  // TODO: add belonging_levels and skip_records in postprocessing.
+  repeated int32 belonging_levels = 3;
+  repeated ValidationRecord skip_records = 4;
+}

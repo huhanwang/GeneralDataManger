@@ -1,0 +1,35 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+message RcwDeciderParamsProto {
+  optional PiecewiseLinearFunctionDoubleProto ttc_thres_plf = 1;
+  optional double exit_ttc_buffer = 2;
+  optional int32 delayed_exit_frame_count_thres = 3;
+  optional int32 delayed_in_frame_count_thres = 4;
+}
+
+message RcwPassiveParamsProto {
+  optional double min_speed_kph = 1;        // km / h.
+  optional double max_speed_kph = 2;        // km / h.
+  optional double min_active_interval = 3;  // s.
+}
+
+message RcwExitParamsProto {
+  optional double min_speed_kph = 1;  // km / h.
+  optional double max_speed_kph = 2;  // km / h.
+}
+
+message RcwFilterParamsProto {
+  optional double rear_object_max_distance = 1;  // m.
+}
+
+message RearCollisionWarningParamsProto {
+  optional RcwDeciderParamsProto decider_params = 1;
+  optional RcwPassiveParamsProto passive_params = 2;
+  optional RcwExitParamsProto exit_params = 3;
+  optional RcwFilterParamsProto filter_params = 4;
+}

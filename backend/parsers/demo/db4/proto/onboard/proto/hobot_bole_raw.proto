@@ -1,0 +1,23 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message BoleMsgBody {
+  optional bytes meta = 1;
+  optional bytes data = 2;
+  optional int64 gen_ts = 3 [default = 0];
+  optional int64 done_ts = 4 [default = 0];
+}
+
+message BoleMsgFrame {
+  repeated BoleMsgBody body = 1;
+  optional string topic = 2;
+}
+
+message HobotBoleRawProto {
+  optional LiteHeader header = 1;
+  optional uint32 index = 2;
+  repeated BoleMsgFrame frame = 3;
+}

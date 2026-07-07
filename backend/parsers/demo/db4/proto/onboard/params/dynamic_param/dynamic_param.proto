@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package snoah;
+
+message DynamicParamProto {
+  optional double steering_angle_bias = 1;
+}

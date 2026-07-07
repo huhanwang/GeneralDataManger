@@ -1,0 +1,37 @@
+
+syntax = "proto2";
+package snoah.planner;
+
+import "onboard/common/proto/lane_point.proto";
+import "onboard/maps/proto/lane_path.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+
+message ScheduledPathBoundaryProto {
+  repeated Vec2dProto left_boundary = 1;
+  repeated Vec2dProto right_boundary = 2;
+  repeated Vec2dProto reference_center = 3;
+  repeated Vec2dProto target_left_boundary = 4;
+  repeated Vec2dProto target_right_boundary = 5;
+}
+
+message SchedulerOutputProto {
+  optional ScheduledPathBoundaryProto path_boundary = 3;
+  optional LaneChangeStateProto lc_state = 6;
+  optional mapping.LanePathProto target_lane_path = 7;
+  optional double length_along_route = 8;
+  optional bool borrow_lane = 9;
+  optional mapping.LanePathProto lane_path_before_lc = 10;
+  optional double max_reach_length = 11;
+  optional bool should_smooth = 12;
+  optional mapping.LanePathProto backward_extended_lane_path = 13;
+  optional mapping.LanePointProto anchor_point = 14;
+  optional bool request_help_lane_change_by_route = 16;
+  optional bool is_solid_lane_change = 19;
+  optional bool is_fallback = 20;
+  optional bool miss_ramp_warning = 21;
+  optional int32 lc_num_to_non_construction_lane = 22;
+
+  reserved 1, 2, 4, 5, 15, 17, 18;
+  // Next id: 23.
+}

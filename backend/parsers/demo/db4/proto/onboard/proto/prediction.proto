@@ -1,0 +1,236 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/prediction/proto/prediction_common.proto";
+import "onboard/prediction/proto/prophnet.proto";
+import "onboard/prediction/proto/conflict_resolver.proto";
+import "onboard/prediction/proto/cutin.proto";
+import "onboard/prediction/proto/act_net.proto";
+import "onboard/prediction/proto/vehicle_tnt.proto";
+import "onboard/prediction/proto/prediction_cutin_sl.proto";
+import "onboard/prediction/proto/prediction_lane_selection.proto";
+import "onboard/prediction/proto/quest_net.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+
+enum PredictionType {
+  PT_VOID = 0;
+  PT_STATIONARY = 1;
+  PT_PED_KINEMATIC = 4;
+  PT_CYCV = 8;
+  PT_CTRA = 9;
+  PT_PROPHNET = 10;
+  PT_REVERSE_CYCV = 11;
+  PT_BIKE_LANE_FOLLOW = 12;
+  PT_VEHICLE_LANE_FOLLOW = 13;
+  PT_VEHICLE_TNT = 14;
+  PT_ACTNET = 16;
+  PT_ACTNET_J5 = 18;
+  PT_CUTIN_SL_NET = 19;
+  PT_LANE_SELECTION_NET = 20;
+  PT_ACTNET_LOCAL_J5 = 21;
+  PT_L2_LANE_FOLLOW = 22;
+  PT_INSTANT_NEW = 23;
+  PT_QUESTNET = 24;
+  PT_QUESTNET_J6 = 25;
+  PT_ORACLE = 99;
+  PT_ORACLE_INVALID = 100;
+  reserved 2, 3, 5, 6, 7, 15, 17;
+}
+
+message EgoPrediction {
+  optional CompressedPredictedTrajectoryPointsProto points = 1;
+  optional bool is_selected = 2;
+  optional float model_prob = 3;
+  optional float total_cost = 4;
+  optional int32 plan_id = 5;
+  optional double timestamp = 6;
+  optional int32 plan_traj_id = 7;
+  optional CompressedPredictedTrajectoryPointsProto synced_points = 8;
+}
+
+message EgoPredictions {
+  repeated EgoPrediction predictions = 1;
+  // next id: 2.
+}
+
+message CompressedPredictedTrajectoryPointsProto {
+  // Spatial quantities.
+  repeated float x = 1 [packed = true];
+  repeated float y = 2 [packed = true];
+  repeated float s = 3
+      [packed = true];  // Arc length (starting from first point).
+  repeated float theta = 4 [packed = true];  // Facing orientation.
+  repeated float kappa = 5 [packed = true];  // dtheta/ds.
+
+  // Temporal quantities.
+  repeated float t = 6 [packed = true];  // Time (relative to first point).
+  repeated float v = 7 [packed = true];  // Speed. Can not be negative.
+  repeated float a = 8 [packed = true];  // dv/dt.
+
+  // Nll uncertainty.
+  repeated float nll_cov_x = 9 [packed = true];
+  repeated float nll_cov_y = 10 [packed = true];
+  repeated float nll_angle = 11 [packed = true];
+}
+
+message ObjectLongTermBehaviorProto {
+  // average speed of an object during the observed duration.
+  optional double average_speed = 1;
+  // duration of observation for this object.
+  optional double observation_duration = 2;
+  repeated double accel_history = 3;  // signed history acceleration.
+  optional bool is_slow_front_vehicle = 4;
+}
+
+// If anything changed in this proto, remember to update function
+// `prediction_util.h:AlignPredictionTime()`.
+message PredictedTrajectoryProto {
+  enum CompressType {
+    CT_NONE = 0;
+    CT_DOWNSAMPLE = 1;
+  };
+  enum LaneSelectionTrajType {
+    LSTT_VOID = 0;
+    LSTT_LANE_KEEPING = 1;
+    LSTT_LANE_CHANGING = 2;
+  };
+  message ObjectRelationProb {
+    optional double pass = 1;
+    optional double yield = 2;
+    optional double no_relation = 3;
+  }
+  optional double probability = 1;
+  repeated PredictedTrajectoryPointProto points = 2;
+  optional string annotation = 3;
+  optional PredictionType type = 9;
+  optional int32 index = 10;  // Trajectory index in all trajectories.
+  optional bool is_reversed =
+      11;  // if speed direction is opposite to obj heading.
+  optional ObjectRelation av_relation =
+      12;  // if trajectory yields or takes over av.
+  optional ObjectRelationProb av_relation_prob = 13;
+  optional ObjectRelationProto relation_info = 14;
+  optional double rot_rad = 15;
+  oneof compress {
+    CompressedPredictedTrajectoryPointsProto compressed_points = 16;
+  }
+  repeated double channel_probs = 17 [packed = true];
+  optional int32 predicted_channel = 18;
+  optional int32 cur_channel = 19;
+  optional LaneSelectionTrajType lane_selection_traj_type = 20;
+  optional bool is_hard_braking = 21;
+  optional int32 last_confident_index = 22;
+  reserved 4, 5, 6, 7, 8;
+}
+
+message PredictedPathProto {
+  optional double probability = 1;
+
+  // Spatial quantities.
+  repeated float x = 2 [packed = true];
+  repeated float y = 3 [packed = true];
+  repeated float s = 4
+      [packed = true];  // Arc length (starting from first point).
+  repeated float theta = 5 [packed = true];  // Facing orientation.
+  repeated float kappa = 6 [packed = true];  // dtheta/ds.
+
+  // Nll uncertainty.
+  repeated float nll_cov_x = 7 [packed = true];
+  repeated float nll_cov_y = 8 [packed = true];
+  repeated float nll_angle = 9 [packed = true];
+}
+
+message ObjectStopTimeProto {
+  // If object is stationary, the variable is valid and record the stop time
+  // duration since lastest stop. Otherwise, the value is 0.0.
+  optional double time_duration_since_stop = 1;
+  // Record the previous stop time duration, only refresh when object's motion
+  // state changes from stationary to moving. Otherwise, remains constant.
+  optional double previous_stop_time_duration = 2;
+  // Record the time duration for last move. If object is stationary, the value
+  // remains constant. Otherwise, increases as time progresses.
+  optional double last_move_time_duration = 3;
+}
+
+message ObjectPredictionProto {
+  optional string id = 1;
+  // Trajs removed low prob ones. Their prob sum is less than or equal to 1.
+  repeated PredictedTrajectoryProto trajectories = 2;
+  // The corresponding perception object of this prediction.
+  optional ObjectProto perception_object = 6;
+  // Record object stop time info
+  optional ObjectStopTimeProto stop_time = 7;
+  optional ObjectLongTermBehaviorProto long_term_behavior = 8;
+  optional ObjectRoadStatus road_status = 9;
+  optional ObjectIntersectionStatus intersection_status = 10;
+  // Future predicted objects shape, only filled when message published in
+  // oracle mode.
+  repeated Box2dProto future_boxes = 11;
+  optional ObjectPredictionPriority priority = 12;
+  // The probability that the object will move from static in 3s.
+  optional double static_to_moving_prob = 13;
+  repeated PredictedTrajectoryProto startup_trajs = 14;
+  optional ObjectMapStatus map_status = 15;
+  repeated PredictedPathProto predicted_paths = 16;
+  optional string priority_annotation = 17;
+  optional int64 iid = 18;  // Idenctical to id
+  // Model raw trajectories without rectify for evaluation.
+  repeated PredictedTrajectoryProto internal_trajs = 19;
+  optional ObjectRelativeAvIntention relative_av_intention = 20;
+  optional ObjectOppositeLaneStatus opposite_lane_status = 21;
+  optional bool is_high_risk_object = 22;
+  // Only fill this for av's oracle prediction in oracle module.
+  repeated AvStateLabelsProto av_states = 23;
+  optional int32 prediction_intention_count = 24;
+  optional bool is_stable_pedestrian = 25;
+  optional int32 continuously_approaching_count = 26;
+  optional bool is_quick_lane_change_not_enter = 27;
+  reserved 3, 4, 5;
+  // next id: 27
+}
+
+message ObjectsPredictionProto {
+  optional LiteHeader header = 1;
+  repeated ObjectPredictionProto objects = 2;
+  optional bool post_process_in_planner = 3 [default = false];
+  optional ObjectPredictionProto av_prediction = 4;
+  optional double timestamp = 5;  // Real prediction start time.
+  repeated EgoPredictions ego_predictions = 6;
+  // next id: 7.
+}
+
+message PredictionFeaturesProto {
+  optional ProphnetDumpedFeatureProto prophnet_data = 1;
+  repeated VehicleTNTDumpedFeatureProto vehicle_tnt_data = 2;
+  repeated ActNetDumpedFeatureProto act_net_data = 7;
+  repeated ActNetDumpedFeatureProto tracker_act_net_data = 9;
+  repeated CutinDumpedFeatureProto cut_in_data = 10;
+  repeated CutinSLDumpedFeatureProto cutin_sl_data = 11;
+  repeated LaneSelectionDumpedFeatureProto lane_selection_data = 13;
+  repeated QuestNetDumpedFeatureProto quest_net_data = 14;
+  reserved 3, 4, 5, 6, 8, 12;
+}
+
+message PredictionDebugProto {
+  message DrivePassage {
+    repeated Vec2dProto xy = 1;
+    repeated sfixed64 lane_ids = 2;
+  }
+  enum PredictionMapType {
+    UNKNOWN_MAP = 0;
+    HD_MAP = 1;
+    PERCEPTION_MAP = 2;
+    FUSION_MAP = 3;
+  };
+  optional LiteHeader header = 1;
+  optional PredictionFeaturesProto features = 4;
+  optional ConflictResolverDebugProto conflict_resolver_debug = 5;
+  repeated DrivePassage dps = 6;
+  optional PredictionMapType map_type = 7;
+  reserved 2, 3;
+  // next id: 8.
+}

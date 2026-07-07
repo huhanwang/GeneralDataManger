@@ -1,0 +1,113 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/crash_log.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/q_state_manager_info.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/uss.proto";
+
+message SystemModuleState {
+  enum State {
+    UNKNOWN = 0;
+    UNINITIALIZED = 1;
+    READY = 2;
+    PUBLISHING = 3;
+    DYING = 4;
+    OK = 5;
+    INITIALIZING = 6;
+    FINISH = 7;
+    IDLE = 8;
+  }
+  optional string module_name = 1;
+  optional State state = 2;
+  optional string full_node_name = 3;  // like: '/omc/main_node'
+}
+
+message SensorState {
+  enum State {
+    NONE = 0;
+    OFF = 1;
+    ON = 2;
+  }
+  optional State state = 1;
+}
+
+// Per module state event
+message SystemStateProto {
+  message SubChannel {
+    optional string channel = 1;
+    optional int64 number = 2;
+  }
+
+  message ModuleSubscriptionMeta {
+    repeated string channels = 1 [deprecated = true];
+    repeated SubChannel sub_channels = 2;
+  }
+
+  message ModuleMeta {
+    optional ModuleSubscriptionMeta subscription = 1;
+  }
+
+  message ModuleState {
+    optional string module_name = 1;
+    optional SystemModuleState.State state = 2;
+    optional ModuleMeta meta = 3;
+    optional CrashLogProto crash_log = 4;
+    optional int64 timestamp = 5;
+  }
+
+  message CameraState {
+    optional CameraId camera_id = 1;
+    optional SensorState.State state = 2;
+  }
+  message LidarState {
+    optional LidarId lidar_id = 1;
+    optional SensorState.State state = 2;
+  }
+  message RadarState {
+    optional RadarId radar_id = 1;
+    optional SensorState.State state = 2;
+  }
+  message UssRadarState {
+    optional UssRadarId uss_radar_id = 1;
+    optional SensorState.State state = 2;
+  }
+
+  message NetState {
+    repeated QSmNetInfo net_info = 1;
+  }
+
+  message ModuleHeartBeat {
+    optional string module_name = 1;
+    optional int64 steady_timestamp = 2;
+  }
+
+  message AllModulesOk {
+    optional bool value = 1;
+  }
+
+  message ModuleCriticalMsgOk {
+    optional string module_name = 1;
+    optional int64 timestamp = 2;
+  }
+
+  optional LiteHeader header = 1;
+
+  oneof msg {
+    ModuleState module_state = 2;
+    ModuleHeartBeat module_heart_beat = 3;
+    AllModulesOk all_modules_ok = 5 [deprecated = true];
+    ModuleCriticalMsgOk module_critical_msg_ok = 6;
+    CameraState camera_state = 7;
+    LidarState lidar_state = 8;
+    RadarState radar_state = 9;
+    UssRadarState uss_radar_state = 10;
+    NetState net_state = 11;
+  }
+
+  reserved 4;
+}

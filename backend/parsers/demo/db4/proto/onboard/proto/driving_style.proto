@@ -1,0 +1,10 @@
+
+syntax = "proto2";
+
+package snoah;
+
+enum LaneChangeStyle {
+  LC_STYLE_NORMAL = 1;
+  LC_STYLE_RADICAL = 2;
+  LC_STYLE_CONSERVATIVE = 3;
+}

@@ -1,0 +1,52 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/online_map.proto";
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/maps/proto/sd_map.proto";
+
+
+message HppGarageMapMeta {
+  // Unique id of one map in a garage, monotonically increasing
+  optional uint32 id = 1;
+  optional uint32 garage_id = 2;
+  optional mapping.GeoPointProto anchor_point = 3;
+  optional double create_timestamp = 4;  // unix seconds
+  // TODO(luzou): Add more meta info, e.g. length, size, etc.
+  optional sfixed64 target_parking_spot_id = 5;
+}
+
+message HppMapProto {
+  optional OnlineMapProto online_map = 1;
+  optional HppGarageMapMeta meta_info = 2;
+  repeated mapping.SdLinkProto topology_links = 3;
+  repeated mapping.SdNodeProto topology_nodes = 4;
+  message LinkLaneAssociation {
+    optional sfixed64 link_id = 1;
+    repeated sfixed64 lane_ids = 2;
+    optional sfixed64 incoming_link_id = 3;
+    optional sfixed64 outgoing_link_id = 4;
+  }
+  // For parking cruise, the route is composed of sequential links which may be
+  // associated with lanes.
+  repeated LinkLaneAssociation ParkingInCruiseRoute = 5;
+  repeated LinkLaneAssociation ParkingOutCruiseRoute = 6;
+}
+
+message HppGarageMapsMeta {
+  // Unique id of garage, monotonically increasing
+  optional uint32 id = 1;
+  repeated HppGarageMapMeta maps_meta = 2;
+}
+
+// This message is published at fixed frequency, the 'garage_meta_infos'
+// contains the meta info of all maps, with out actual map data. 'hpp_maps'
+// is available only when ego pos is near a garage.
+message HppOnlineMapProto {
+  optional LiteHeader header = 1;
+  repeated HppGarageMapsMeta garage_meta_infos = 4;
+  optional uint64 total_num_maps = 5;
+  repeated HppMapProto hpp_maps = 6;
+  reserved 2, 3;
+}

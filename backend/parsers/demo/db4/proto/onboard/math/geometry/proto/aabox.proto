@@ -1,0 +1,11 @@
+
+syntax = "proto2";
+package snoah;
+
+
+message AABox2iProto {
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+}

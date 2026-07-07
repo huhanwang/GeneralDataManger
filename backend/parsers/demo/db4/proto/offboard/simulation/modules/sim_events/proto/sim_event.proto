@@ -1,0 +1,24 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/modules/sim_events/proto/trigger.proto";
+import "offboard/simulation/modules/sim_events/proto/actions.proto";
+
+message SimEventProto {
+  optional SimTriggerProto trigger = 1;
+  optional SimActionListProto action_list = 2;
+  optional string name = 4;
+  reserved 3;
+}

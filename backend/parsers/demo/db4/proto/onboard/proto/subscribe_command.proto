@@ -1,0 +1,61 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/module_config.proto";
+
+message SubscribeCommandProto {
+  enum Command {
+    UNKNOWN_CMD = 0;
+    UNSUBSCRIBE = 1;
+    SUBSCRIBE = 2;
+  }
+
+  message ModuleCommand {
+    optional string module_name = 1;
+    optional Command command = 2;
+    optional string name_space = 3;
+    optional string node_name = 4;
+    optional string domain = 5;
+    optional string channel = 6;
+    optional string field_name = 7;
+  }
+  optional LiteHeader header = 1;
+  oneof msg {
+    ModuleCommand module_command = 2;
+  }
+}
+
+message DynamicSubscribeProtos {
+  enum Command {
+    UNKNOWN_CMD = 0;
+    UNSUBSCRIBE = 1;
+    SUBSCRIBE = 2;
+  }
+  optional LiteHeader header = 1;
+  optional NodeConfig node_config = 2;
+  optional string target_name_space = 3;
+  optional string target_node_name = 4;
+  optional Command command = 5;
+  message SubscribeItem {
+    optional string channel = 1;
+    optional string domain = 2;
+    optional string field_name = 3;
+  }
+  repeated SubscribeItem items = 6;
+}
+
+message DynamicNodeConfigProto {
+  optional LiteHeader header = 1;
+  optional NodeConfig node_config = 2;
+  optional string target_name_space = 3;
+  optional string target_node_name = 4;
+}
+
+message DynamicNodeConfigAckProto {
+  optional LiteHeader header = 1;
+  optional NodeConfig node_config = 2;
+  optional string target_name_space = 3;
+  optional string target_node_name = 4;
+}

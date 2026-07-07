@@ -1,0 +1,123 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message ActiveSafetyMToAProto {
+  enum SafetyObjectType {
+    OBJECT_TYPE_DEFAULT = 0;     // 默认对象类型
+    OBJECT_TYPE_BICYCLE = 1;     // 自行车
+    OBJECT_TYPE_VEHICLE = 2;     // 车辆
+    OBJECT_TYPE_PEDESTRIAN = 3;  // 行人
+  }
+
+  enum WrnngColor {
+    WARNING_COLOR_DEFAULT = 0;  // 默认警告颜色
+    WARNING_COLOR_YELLOW = 1;   // 黄色警告
+    WARNING_COLOR_RED = 2;      // 红色警告
+  }
+
+  enum AebInhibitReason {
+    AEB_INHIBIT_REASON_NOT_INHIBIT = 0;        // 未抑制
+    AEB_INHIBIT_REASON_SAFEBELT_NOT_TIED = 1;  // 安全带未系
+    AEB_INHIBIT_REASON_PESSENGER_EXCEED = 2;   // 超员
+    AEB_INHIBIT_REASON_RESERVED = 3;           // 保留
+  }
+
+  message SafetyFuncInfo {
+    optional uint64 object_id = 1;              // 对象ID
+    optional SafetyObjectType object_type = 2;  // 对象类型
+    optional float object_pos_x = 3;            // 对象位置X
+    optional float object_pos_y = 4;            // 对象位置Y
+    optional WrnngColor wrnng_color = 5;        // 警告颜色
+  }
+
+  message McuNetOut {
+    optional bool safety_fcw_wrnng_active = 1;         // FCW警告激活
+    optional bool safety_fcw_error_status = 2;         // FCW错误状态
+    optional bool safety_aeb_function_enable = 3;      // AEB功能使能
+    optional bool safety_aes_function_enable = 4;      // AES功能使能
+    optional bool aeb_func_inhibit_flag = 5;           // AEB功能抑制标志
+    optional AebInhibitReason aeb_inhibit_reason = 6;  // AEB抑制原因
+    optional uint32 safety_fcw_function_feedback = 7;  // FCW功能反馈
+    optional uint32 safety_aeb_function_status = 8;    // AEB功能状态
+    optional uint32 safety_aes_function_status = 9;    // AES功能状态
+    optional uint32 safety_aes_function_direction = 10;  // AES功能方向
+    optional SafetyFuncInfo aeb_fcw_object = 11;         // AEB/FCW对象
+    optional SafetyFuncInfo aes_object = 12;             // AES对象
+  }
+
+  message McuTriggerOut {
+    optional bool safety_fcw_vru_trigger = 1;        // FCW VRU触发
+    optional bool safety_fcw_c2c_trigger = 2;        // FCW C2C触发
+    optional bool safety_aeb_radar_c2c_trigger = 3;  // AEB雷达C2C触发
+    optional bool safety_aeb_vru_trigger = 4;        // AEB VRU触发
+    optional bool safety_aeb_c2c_trigger = 5;        // AEB C2C触发
+    optional bool safety_aeb_test_vru_trigger = 6;   // AEB测试VRU触发
+    optional bool safety_aeb_test_c2c_trigger = 7;   // AEB测试C2C触发
+    optional bool safety_eba_radar_trigger = 8;      // EBA雷达触发
+    optional bool safety_eba_c2c_trigger = 9;        // EBA C2C触发
+    optional bool safety_aes_test_trigger = 10;      // AES测试触发
+  }
+
+  message FCWCommandOut {
+    optional float caution = 1;               // 小心
+    optional float lead_accel = 2;            // 前车加速度
+    optional uint32 fca_warning_state = 3;    // FCA警告状态
+    optional uint32 fca_target_id = 4;        // FCA目标ID
+    optional bool chime_suppress = 5;         // 蜂鸣器抑制
+    optional bool brake_supper_out = 6;       // 制动抑制输出
+    optional uint32 acute_warning_state = 7;  // 急性警告状态
+    optional uint32 acute_target_id = 8;      // 急性目标ID
+  }
+
+  message AEBCommandOut {
+    optional bool aeb_trigger_alert = 1;                // AEB触发警报
+    optional bool aeb_brk_prf_req = 2;                  // AEB制动预请求
+    optional bool aba_req_active = 3;                   // ABA请求激活
+    optional bool aba2_req_active = 4;                  // ABA2请求激活
+    optional float aeb_ctrl_acc = 5;                    // AEB控制加速度
+    optional bool aeb_minus_decel_active = 6;           // AEB减速激活
+    optional bool aeb_autobrk_with_prefill_active = 7;  // AEB自动制动预填充激活
+    optional uint32 aeb_autobrk_req_type = 8;  // AEB自动制动请求类型
+    optional bool vru_brake_active = 9;        // VRU制动激活
+    optional bool vru_alert_request = 10;      // VRU警报请求
+  }
+
+  message CIBCommandOut {
+    optional uint64 aeb_object_fusion_id = 1;        // AEB对象融合ID
+    optional float aeb_debug_time_to_collision = 2;  // AEB调试时间到碰撞
+    optional float aeb_debug_flt_vehicle_speed = 3;  // AEB调试FLT车辆速度
+    optional uint32 aeb_debug_drv_engage = 4;        // AEB调试DRV参与
+    optional float aeb_debug_low_brake_thres = 5;    // AEB调试低制动阈值
+    optional uint32 aeb_debug_low_brake_flag = 6;    // AEB调试低制动标志
+    optional float aeb_debug_reduction_factor = 7;   // AEB调试降低因子
+    optional uint32 aeb_debug_release_brake = 8;     // AEB调试释放制动
+    optional uint32 aeb_debug_override = 9;          // AEB调试覆盖
+    optional bool aeb_debug_big_road_grade = 10;     // AEB调试大路坡度
+    optional uint64 aeb_debug_inhibit_reason_code = 11;  // AEB调试抑制原因代码
+    optional bool fcw_debug_chime_suppress = 12;  // FCW调试蜂鸣器抑制
+    optional uint32 fcw_debug_fcw_drv_inhibit_flag =
+        13;  // FCW调试FCWDRV抑制标志
+    optional float fcw_debug_stat_warn_range = 14;  // FCW调试状态警告范围
+    optional float fcw_debug_mov_warn_range = 15;  // FCW调试移动警告范围
+    optional uint32 fcw_debug_mov_component = 16;   // FCW调试移动组件
+    optional uint32 fcw_debug_stat_component = 17;  // FCW调试状态组件
+    optional float fcw_debug_stat_reduction_factor = 18;  // FCW调试状态降低因子
+    optional float fcw_debug_move_reduction_factor = 19;  // FCW调试移动降低因子
+  }
+
+  message ActiveSafetyMtoA {
+    optional uint64 time_stamp = 2;              // 时间戳
+    optional FCWCommandOut fcw_command_out = 3;  // FCW命令输出
+    optional AEBCommandOut aeb_command_out = 4;  // AEB命令输出
+    optional McuNetOut mcu_net_out = 5;          // MCU网络输出
+    optional McuTriggerOut mcu_trigger_out = 6;  // MCU触发输出
+    optional CIBCommandOut cib_command_out = 7;  // CIB命令输出
+  }
+
+  optional LiteHeader header = 1;
+  optional ActiveSafetyMtoA active_safety_m_to_a_proto = 2;
+}

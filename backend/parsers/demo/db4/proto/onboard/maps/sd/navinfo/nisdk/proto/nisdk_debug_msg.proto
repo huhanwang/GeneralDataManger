@@ -1,0 +1,57 @@
+syntax = "proto2";
+
+package snoah;
+
+message Coord2DDouble {
+  optional double lon = 1;  // 经度
+  optional double lat = 2;  // 纬度
+}
+
+message PoseMessage {
+  message Gnss {
+    optional int64 time_stamp = 1;         // GNSS 数据时间戳
+    optional int32 data_type = 2;          // 数据类型
+    optional int32 sour_type = 3;          // 来源类型
+    optional int32 mode = 4;               // 模式
+    optional int32 status = 5;             // 状态
+    optional bool is_encrypted = 6;        // 是否加密
+    optional int32 is_ns = 7;              // 北南方向
+    optional int32 is_ew = 8;              // 东西方向
+    optional Coord2DDouble point_enc = 9;  // 加密位置
+    optional Coord2DDouble point = 10;     // 位置
+    optional double speed = 11;            // 速度
+    optional double course = 12;           // 航向
+    optional int32 num_sat = 13;           // 卫星数量
+    optional double hdop = 14;             // 水平精度
+    optional double vdop = 15;             // 垂直精度
+    optional double pdop = 16;             // 总体精度
+    optional double accuracy = 17;         // 精度
+  }
+
+  message Gpgsv {
+    optional int32 data_type = 1;
+    optional int32 sat_count = 2;
+    repeated int32 prn = 3;
+    repeated int32 elevation = 4;
+    repeated int32 azimuth = 5;
+    repeated int32 snr = 6;
+  }
+
+  message Nema {
+    optional int32 data_type = 1;
+    optional string tick_time = 2;
+    optional string local_tick_time = 3;
+    optional string nema_info = 4;
+  }
+
+  optional Gnss gnss = 1;
+  optional Gpgsv gpgsv = 2;
+  optional bool is_external_signal = 3;
+  optional Nema nema = 4;
+}
+
+message NiSdkDebugMessage {
+  optional string version = 1;
+  repeated Coord2DDouble input_points = 2;
+  optional PoseMessage pose_msg = 3;
+}

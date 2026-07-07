@@ -1,0 +1,118 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/blind_spot_assist.proto";
+import "onboard/proto/assist_driving_system_state.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+message AssistStateProto {
+  enum AssistDriveSystemState {
+    ASSIST_OFF = 0;
+
+    ASSIST_NOT_READY = 2;
+
+    ASSIST_ACC_READY = 3;
+    ASSIST_LCC_READY = 4;
+    ASSIST_NOA_READY = 5;
+
+    ASSIST_ACC_ACTIVE = 6;
+    ASSIST_LCC_ACTIVE = 7;
+    ASSIST_NOA_ACTIVE = 8;
+
+    ASSIST_APA_ACTIVE = 18;
+
+    ASSIST_NOA_SLIENT_ACTIVE = 19;
+
+    ASSIST_HPP_ACTIVE = 20;
+
+    reserved 9 to 17;
+  }
+  optional AssistDriveSystemState assist_drive_system_state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+
+  message AssistDriveSystemEnable {
+    optional bool acc_enable = 1 [(trans_matrix) = true];
+    optional bool lcc_enable = 2 [(trans_matrix) = true];
+    optional bool plc_enable = 3 [(trans_matrix) = true];
+    optional bool noa_enable = 4 [(trans_matrix) = true];
+    optional bool apa_enable = 5;
+    optional bool hpp_enable = 6;
+  }
+  optional AssistDriveSystemEnable assist_drive_system_enable = 2
+      [(trans_matrix) = true];
+
+  message TrafficSignRecognitionEnable {
+    optional bool tsr_enable = 1 [(trans_matrix) = true];
+    optional bool sla_enable = 2 [(trans_matrix) = true];
+  }
+  optional TrafficSignRecognitionEnable traffic_sign_recognition_enable = 7
+      [(trans_matrix) = true];
+
+  enum TSRState {
+    TSR_STATE_OFF = 0;
+    TSR_STATE_FAILURE = 1;
+    TSR_STATE_NAVIGATION = 3;
+    TSR_STATE_VISION = 4;
+    TSR_STATE_ACTIVE = 5;
+    TSR_STATE_STANDBY = 6;
+  }
+  optional TSRState tsr_state = 8
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional TSRState sla_state = 9 [
+    (trans_matrix) = true,
+    (matrix_data_type) = UINT8
+  ];  // speed limit assist: off, failure, active, standby
+
+  message HmaStateEnable {
+    optional bool hma_enable = 1 [(trans_matrix) = true];
+  }
+  optional HmaStateEnable hma_state_enable = 10 [(trans_matrix) = true];
+
+  enum HmaState {
+    HMA_STATE_OFF = 0;
+    HMA_STATE_PASSIVE = 1;
+    HMA_STATE_KEEP = 2;
+    HMA_STATE_ACTIVE = 3;
+    HMA_STATE_FAILURE = 4;
+  }
+  optional HmaState hma_state = 11
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+
+  optional AssistLssStateProto ldw_lka_state = 12 [(trans_matrix) = true];
+
+  optional AssistLssStateProto elk_state = 13 [(trans_matrix) = true];
+
+  optional bool acc_standwait = 14;
+
+  optional AssistFcwStateProto assist_fcw_state = 15 [(trans_matrix) = true];
+
+  optional AssistAebStateProto assist_aeb_state = 16 [(trans_matrix) = true];
+
+  optional BlindSpotAssistProto bsa_state = 17 [(trans_matrix) = true];
+
+  optional AssistAccStateProto assist_acc_state = 18 [(trans_matrix) = true];
+  optional AssistLccStateProto assist_lcc_state = 19 [(trans_matrix) = true];
+  optional AssistNoaStateProto assist_noa_state = 20 [(trans_matrix) = true];
+
+  optional AssistApaStateProto assist_apa_state = 21 [(trans_matrix) = true];
+
+  optional AssistMrmStateProto assist_mrm_state = 22;
+
+  optional DrivingParkingModeProto driving_parking_mode = 23;
+
+  optional AssistSummonChartStateProto assist_summon_state = 24;
+
+  optional AssistLcaInfoProto assist_lca_info = 25;
+
+  optional bool acc_tmp_switch = 26;
+
+  optional AssistHppStateProto assist_hpp_state = 27;
+
+  optional bool human_drive_lane_change_state = 28;
+
+  optional AssistAesStateProto assist_aes_state = 29 [(trans_matrix) = true];
+
+  reserved 3 to 6;
+}

@@ -1,0 +1,18 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/pointcloud_preprocessor/proto/pointcloud_preprocessor_config";
+message PointCloudPreprocessorConfig {
+  optional bool filter_naninf_points = 1 [default = true];
+  optional bool filter_nearby_box_points = 2 [default = false];
+  optional float box_forward_x = 3 [default = 0];
+  optional float box_backward_x = 4 [default = 0];
+  optional float box_forward_y = 5 [default = 0];
+  optional float box_backward_y = 6 [default = 0];
+  optional string semantic_parser = 7 [default = "DummySemanticParser"];
+  optional bool dump_pcd_flag = 8 [default = false];
+  optional bool transforms_pcd_flag = 9 [default = true];
+  optional bool compensate_pcd_flag = 10 [default = true];
+  optional float resolution_horizon = 11 [default = 0.1];
+  optional float fov_horizon = 12 [default = 120.0];
+  optional bool enable_point_attr = 13 [default = true];
+}

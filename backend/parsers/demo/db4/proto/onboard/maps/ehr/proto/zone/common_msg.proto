@@ -1,0 +1,35 @@
+syntax = "proto2";
+
+package snoah.zone_data.common;
+
+// 定义 Time 消息类型
+message Time {
+  optional int32 sec = 1;      // 秒
+  optional int32 nanosec = 2;  // 纳秒
+}
+
+// 定义包含 stamp、frame_id 和 seq 的消息
+message ComHeader {
+  optional Time stamp = 1;      // 时间戳
+  optional bytes frame_id = 2;  // 转换后的帧ID，最大长度 32
+  optional uint32 seq = 3;      // 序列号
+}
+
+// 定义 PointLocationInfoES39 消息类型（占位）
+message PointLocationInfoES39 {
+  // Define the fields for PointLocationInfoES39 here
+  optional double longitude = 1;  // 经度
+  optional double latitude = 2;   // 纬度
+}
+
+// 定义包含所有字段的消息
+message LocationStructES39 {
+  optional PointLocationInfoES39 pos_of_vehicle = 1;  // 车辆位置信息
+  optional float navi_head_angle = 2;                 // 导航航向角
+  optional uint64 dr_timestamp = 3;                   // DR 时间戳
+  optional uint32 dr_status = 4;                      // DR 状态
+  optional uint32 is_off_way = 5;                     // 是否偏离路径
+  optional uint64 sd_link_id = 6;                     // SDLink ID
+  optional uint32 offset_to_link_start = 7;  // 到SDLink起点的偏移量
+  optional uint32 exp_spd_lmt = 8;           // 经验速度限制
+}

@@ -1,0 +1,13 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message NetworkInterface {
+  optional string name = 1;
+  optional string type = 2;
+  optional string address = 3;
+  optional string netmask = 4;
+  optional string gateway = 5;
+  optional string nameserver = 6;
+}

@@ -1,0 +1,181 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Eps_state_c01a5a7 {
+  // Report Message
+  enum Eps_controlmodeType {
+    EPS_CONTROLMODE_STANDBY = 0;
+    EPS_CONTROLMODE_AUTO = 1;
+    EPS_CONTROLMODE_RESERVED = 2;
+    EPS_CONTROLMODE_MANUAL = 4;
+    EPS_CONTROLMODE_MANUALINTERVENTION = 5;
+    EPS_CONTROLMODE_WARNING = 6;
+    EPS_CONTROLMODE_FAULT = 7;
+    EPS_CONTROLMODE_TORQUESUPERPOSITION = 8;
+  }
+  // [Nm] [-12.8|5.05]
+  optional double eps_steeringwheeltorque = 1;
+  // [deg/s] [0|540]
+  optional double eps_steeringwheelspeed = 2;
+  // [Nm] [-5|4.96132]
+  optional double eps_steeringmotortorque = 3;
+  // [deg] [-1575|1575]
+  optional double eps_steeringangle = 4;
+  // [] [0|0]
+  optional Eps_controlmodeType eps_controlmode = 5;
+}
+
+message Acu_eps_control_c01a7a5 {
+  // Control Message
+  // [] [0|0]
+  optional int32 life = 1;
+  // [deg/s] [0|540]
+  optional double steeringwheelspeed_control = 2;
+  // [Nm] [-12.8|12.7]
+  optional double torque_request = 3;
+  // [] [0|1]
+  optional bool steering_angle_state = 4;
+  // [] [0|1]
+  optional bool vcu_state = 5;
+  // [] [0|15]
+  optional int32 control_mode = 6;
+  // [deg] [-1575|1575]
+  optional double targetsteeringangle = 7;
+}
+
+message Vcu_driving_info_c02a5a7 {
+  // Report Message
+  enum Vehicle_state_1Type {
+    VEHICLE_STATE_1_NORMAL = 0;
+    VEHICLE_STATE_1_FAULT = 1;
+  }
+  enum Ebs_stateType {
+    EBS_STATE_NORMAL = 0;
+    EBS_STATE_FAULT = 1;
+  }
+  enum Vehicle_stateType {
+    VEHICLE_STATE_NORMAL = 0;
+    VEHICLE_STATE_FAULT = 1;
+  }
+  enum Parking_stType {
+    PARKING_ST_PULLED = 0;
+    PARKING_ST_RELEASED = 1;
+  }
+  enum Driving_mode_requestType {
+    DRIVING_MODE_REQUEST_MANUAL = 0;
+    DRIVING_MODE_REQUEST_AUTO_REQUEST = 1;
+    DRIVING_MODE_REQUEST_ASIST_REQUEST = 2;
+  }
+  enum GearpositionType {
+    GEARPOSITION_N = 0;
+    GEARPOSITION_D = 1;
+    GEARPOSITION_R = 2;
+  }
+  // [nm] [-5000|60535]
+  optional int32 actual_torque = 1;
+  // [] [0|3]
+  optional Vehicle_state_1Type vehicle_state_1 = 2;
+  // [] [0|3]
+  optional Ebs_stateType ebs_state = 3;
+  // [] [0|3]
+  optional Vehicle_stateType vehicle_state = 4;
+  // [] [-2|1]
+  optional Parking_stType parking_st = 5;
+  // [%] [0|100]
+  optional double throttlepedalpercent = 6;
+  // [km/h] [0|127.5]
+  optional double vehicle_speed = 7;
+  // [] [0|3]
+  optional Driving_mode_requestType driving_mode_request = 8;
+  // [] [0|3]
+  optional GearpositionType gearposition = 9;
+  // [%] [0|100]
+  optional double brakepedalpercent = 10;
+}
+
+message Acu_vcu_driving_control_c02a7a5 {
+  // Control Message
+  // [] [0|255]
+  optional int32 acu_fault = 1;
+  // [] [0|255]
+  optional int32 gearposition = 2;
+  // [nm] [-5000|60535]
+  optional int32 target_torque = 3;
+  // [] [0|1]
+  optional int32 drive_disable = 4;
+}
+
+message Bcm_status_c03a5a7 {
+  // Report Message
+  // [] [0|1]
+  optional bool alarm_st = 1;
+  // [] [0|255]
+  optional int32 horn_st = 2;
+  // [] [0|3]
+  optional int32 turn_light_st = 3;
+  // [] [0|3] 0:close, 1:open
+  optional int32 middle_door_st = 4;
+  // [] [0|3] 0:close, 1:open
+  optional int32 front_door_st = 5;
+}
+
+message Acu_ebsepb_control_c03a7a5 {
+  // Control Message
+  // [s/m^2] [-10|10]
+  optional double target_dec = 1;
+  // [] [0|255]
+  optional int32 parkingbrakerequest = 2;
+  // [] [0|1]
+  optional int32 brakingmode = 3;
+}
+
+message Abs_wheelspeed_c04a5a7 {
+  // Report Message
+  // [] [-7.8125|8.125]
+  optional double rl_relative_speed = 1;
+  // [] [-7.8125|8.125]
+  optional double rr_relative_speed = 2;
+  // [] [0|255.99609375]
+  optional double front_axle_speed = 3;
+  // [] [-7.8125|8.125]
+  optional double fr_relative_speed = 4;
+  // [] [-7.8125|8.125]
+  optional double fl_relative_speed = 5;
+}
+
+message Acu_bcm_control_c04a7a5 {
+  // Control Message
+  // [] [0|255]
+  optional int32 horn_ctr = 1;
+  // [] [0|3]
+  optional int32 middle_door_ctr = 2;
+  // [] [0|3]
+  optional int32 turn_light_ctr = 3;
+  // [] [0|255]
+  optional int32 wiper_ctr = 4;
+  // [] [0|127]
+  optional int32 auto_ctr = 5;
+  // [] [0|1]
+  optional bool alarm_ctr = 6;
+  // [] [0|1]
+  optional bool reverse_light_ctr = 7;
+  // [] [0|3]
+  optional int32 front_door_ctr = 8;
+}
+
+message Zhongtong {
+  optional Eps_state_c01a5a7 eps_state_c01a5a7 = 1;  // report message
+  optional Acu_eps_control_c01a7a5 acu_eps_control_c01a7a5 =
+      2;  // control message
+  optional Vcu_driving_info_c02a5a7 vcu_driving_info_c02a5a7 =
+      3;  // report message
+  optional Acu_vcu_driving_control_c02a7a5 acu_vcu_driving_control_c02a7a5 =
+      4;                                               // control message
+  optional Bcm_status_c03a5a7 bcm_status_c03a5a7 = 5;  // report message
+  optional Acu_ebsepb_control_c03a7a5 acu_ebsepb_control_c03a7a5 =
+      6;  // control message
+  optional Abs_wheelspeed_c04a5a7 abs_wheelspeed_c04a5a7 = 7;  // report message
+  optional Acu_bcm_control_c04a7a5 acu_bcm_control_c04a7a5 =
+      8;  // control message
+}

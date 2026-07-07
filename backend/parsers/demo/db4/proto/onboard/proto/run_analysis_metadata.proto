@@ -1,0 +1,23 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/geo/geolocation.proto";
+
+message RunAnalysisMetadata {
+  enum Source {
+    UNKNOWN = 0;
+    MANUAL = 1;
+    METRIC_EVALUATOR = 2;
+    RUN_PROCESSOR = 3;
+  }
+  optional string id = 1;
+  optional string run_name = 2;
+  optional string session_id = 3;
+  optional Coordinate coordinate = 4;
+  optional string user = 5;
+  optional Source source = 6;
+  // lite msg header timestamp
+  optional int64 timestamp = 7;
+}

@@ -1,0 +1,32 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/proto_field_option.proto";
+
+message DriverHandOffSteerWarning {
+  enum DriverHandoffSteerWarningLevel {
+    DRIVERHANDOFFSTEER_NORMAL = 0;
+    DRIVERHANDOFFSTEER_WARNINNG_LEVEL_1 = 1;
+    DRIVERHANDOFFSTEER_WARNINNG_LEVEL_2 = 2;
+    DRIVERHANDOFFSTEER_WARNINNG_LEVEL_3 = 3;
+    UNASSISTED_DRIVERHANDOFFSTEER_WARNINNG_LEVEL_0 = 4;
+  }
+  optional DriverHandoffSteerWarningLevel driver_handoff_steer_warning_level = 1
+      [
+        default = DRIVERHANDOFFSTEER_NORMAL,
+        (trans_matrix) = true,
+        (matrix_data_type) = UINT8
+      ];
+
+  enum ACTIVE_INFO {
+    NONE = 0;
+    LKA_ACTIVE = 1;
+    ELK_ACTIVE = 2;
+    LCC_ACTIVE = 3;
+    NOA_ACTIVE = 4;
+  }
+  optional ACTIVE_INFO active_info = 2
+      [default = NONE, (trans_matrix) = true, (matrix_data_type) = UINT8];
+}

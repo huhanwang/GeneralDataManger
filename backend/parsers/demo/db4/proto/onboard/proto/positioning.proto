@@ -1,0 +1,473 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/proto/imu_can_calibration.proto";
+import "onboard/positioning/proto/integrated_nav.proto";
+
+enum SmoothPoseStatus {
+  POSE_INVALID = 0;
+  POSE_LOW_PRECISION = 1;
+  POSE_NORMAL = 2;
+}
+
+// Next ID: 16
+message PoseProto {
+  optional LiteHeader header = 1;
+
+  optional Vec3dProto pos_smooth = 2;  // RAC position in smooth frame.
+  optional RotationProto attitude =
+      4;  // Attitude (From Body Frame to Smooth Frame rotation).
+
+  optional double yaw = 15;    // Yaw in smooth frame (heading) in radians.
+  optional double pitch = 16;  // Pitch in smooth frame in radians.
+  optional double roll = 17;   // Roll in smooth frame in radians.
+
+  // Velocity in body frame. vel_body.x represent vehicle forward speed.
+  optional Vec3dProto vel_body = 5;
+
+  optional Vec3dProto ar_body = 6;     // Angular rate in body frame.
+  optional Vec3dProto accel_body = 7;  // Acceleration in body frame.
+
+  optional Vec3dProto vel_smooth = 8;     // Velocity in smooth frame.
+  optional Vec3dProto ar_smooth = 9;      // Angular rate in smooth frame.
+  optional Vec3dProto accel_smooth = 10;  // Acceleration in smooth frame.
+
+  optional Mat3dProto pos_smooth_cov = 11;       // RAC position covariance.
+  optional Mat3dProto attitude_smooth_cov = 12;  // Attitude covariance.
+  optional Mat3dProto vel_smooth_cov = 13;       // Velocity covariance.
+
+  optional double timestamp = 14;             // Seconds.
+  optional double gnss_time_correction = 18;  // Seconds.
+  // speed = vel_smooth.norm(). Always positive. Meters per second.
+  optional double speed = 20;
+  optional double trip_distance = 21;  // Meters.
+  // init global pos for the sim
+  optional mapping.GeoPointProto pos_global = 22;
+
+  optional double curvature = 23;
+  optional bool is_smooth_coordinate_drifted_slow = 24;
+  optional SmoothPoseStatus status = 25;
+  optional double chassis_speed = 26;
+  reserved 3, 19;
+}
+
+// Copy from apollo localization.proto
+message Uncertainty {
+  // Standard deviation of position, east/north/up in meters.
+  optional Vec3dProto position_std_dev = 1;
+
+  // Standard deviation of quaternion qx/qy/qz, unitless.
+  optional Vec3dProto orientation_std_dev = 2;
+
+  // Standard deviation of linear velocity, east/north/up in meters per second.
+  optional Vec3dProto linear_velocity_std_dev = 3;
+
+  // Standard deviation of linear acceleration, right/forward/up in meters per
+  // square second.
+  optional Vec3dProto linear_acceleration_std_dev = 4;
+
+  // Standard deviation of angular velocity, right/forward/up in radians per
+  // second.
+  optional Vec3dProto angular_velocity_std_dev = 5;
+
+  // TODO: Define covariance items when needed.
+}
+
+message LocalizationEstimate {
+  // TODO(kun): Make it as real lite msg.
+  optional LiteHeader header = 1;
+  optional PoseProto pose = 2;
+  // optional Uncertainty uncertainty = 3;
+  // TODO(kun): Set latest imu reading.
+  optional ImuRawReadingProto imu_reading = 3;
+  optional Mat3dProto vel_smooth_cov = 13;  // Velocity covariance.
+}
+
+message ImuRawReadingProto {
+  optional LiteHeader header = 1;
+
+  optional double accel_x = 2;  // Acceleration in body frame, front of vehicle.
+  optional double accel_y = 3;  // Left of vehicle.
+  optional double accel_z = 4;  // Up of the vehicle.
+  optional double omega_x = 5;  // Angular velocity in body frame.
+  optional double omega_y = 6;
+  optional double omega_z = 7;
+
+  optional double timestamp = 8;
+
+  // timestamp imu data arrives
+  optional double arrival_ts = 9;
+  // timestamp imu data publishs
+  optional double publish_ts = 10;
+  // timestamp raw data receives before calling read function
+  optional double raw_receive_before_ts = 11;
+  // timestamp raw data arrives
+  optional double raw_arrival_ts = 12;
+  // timestamp raw data publishs
+  optional double raw_publish_ts = 13;
+  // timestamp imu data sampling
+  optional double sampling_ts = 14;
+  // Temperature in degree Celsius
+  optional float temperature = 15;
+}
+
+enum CoordinateReferenceSystem {
+  WGS84 = 0;
+  GCJ02 = 1;
+}
+
+message GnssRawReadingProto {
+  optional LiteHeader header = 1;
+
+  optional double longitude = 2;
+  optional double latitude = 3;
+  optional double altitude = 4;
+  optional double yaw = 6;
+  optional double pitch = 12;
+  optional double roll = 13;
+  optional double vel_x = 14;
+  optional double vel_y = 15;
+  optional double vel_z = 16;
+
+  optional float longitude_sigma = 7;
+  optional float latitude_sigma = 8;
+  optional float altitude_sigma = 9;
+  optional float yaw_sigma = 10;
+  optional float pitch_sigma = 17;
+  optional float roll_sigma = 18;
+  optional float vel_x_sigma = 19;
+  optional float vel_y_sigma = 20;
+  optional float vel_z_sigma = 21;
+
+  optional int32 num_utilized_sat = 22;
+  // horizontal dilution of precision, used by smooth coordinate algorithm
+  optional float hdop = 23;
+  optional float altitude_ref = 24;
+
+  optional string status_info = 11;
+  enum Type {
+    // It is recommended not using the GNSS solution if solution type is INVALID
+    // or PROPAGATED.
+    INVALID = 0;     // Invalid solution due to insufficient observations,
+                     // integrity warning, etc.
+    PROPAGATED = 1;  // Propagated by a Kalman filter without new observations.
+
+    // It is recommended using the following types of solution.
+    SINGLE = 2;       // Standard GNSS solution without any corrections.
+    PSRDIFF = 3;      // Pseudorange differential solution, including WAAS/SBAS
+                      // solution.
+    PPP = 4;          // Precise Point Positioning (PPP) solution.
+    RTK_FLOAT = 5;    // Real Time Kinematic (RTK) float solution.
+    RTK_INTEGER = 6;  // RTK integer solution.
+  }
+  optional Type type = 25;
+
+  // The GPS reference time. This timestamp may differ from the timestamp from
+  // Lite header. Use the latter as the message time. The former can be used to
+  // calibrate the onboard clock.
+  optional double timestamp = 5;
+
+  // timestamp gnss data arrives
+  optional double arrival_ts = 26;
+  // timestamp gnss data publishs
+  optional double publish_ts = 27;
+  // timestamp raw data receives before calling read function
+  optional double raw_receive_before_ts = 28;
+  // timestamp raw data arrives
+  optional double raw_arrival_ts = 29;
+  // timestamp raw data publishs
+  optional double raw_publish_ts = 30;
+  // timestamp gnss data sampling
+  optional double sampling_ts = 31;
+
+  // c.f. https://docs.novatel.com/OEM7/Content/Logs/GPGGA.htm
+  // NOTE(luzou): This field is specific to Novatel PP7, but could be more
+  // general, since it's almost the de-facto of the GPS industry.
+  enum GpsQuality {
+    FIX_NOT_AVAIL_OR_INVALID = 0;
+    SINGLE_POINT = 1;
+    PSEUDORANGE_DIFFERENTIAL = 2;
+    RTK_FIXED = 4;
+    RTK_FLOATING = 5;
+    DEAD_RECKONING = 6;
+    MANUAL_INPUT = 7;  // manual input mode (fixed position)
+    SIMULATOR_MODE = 8;
+    WAAS_SBAS = 9;
+  }
+  optional GpsQuality gps_quality = 32;
+
+  // empty when no differential data is present
+  optional int32 correction_age = 33;
+
+  enum INSStatusType {
+    INS_STATUS_TYPE_INACTIVE = 0;
+    INS_STATUS_TYPE_ALIGNING = 1;
+    INS_STATUS_TYPE_HIGH_VARIANCE = 2;
+    INS_STATUS_TYPE_SOLUTION_GOOD = 3;
+    INS_STATUS_TYPE_SOLUTION_FREE = 4;
+    INS_STATUS_TYPE_ALIGNMENT_COMPLETE = 5;
+    INS_STATUS_TYPE_DETERMINING_ORIENTATION = 6;
+    INS_STATUS_TYPE_WAITING_INITIALPOS = 7;
+    INS_STATUS_TYPE_WAITING_AZIMUTH = 8;
+    INS_STATUS_TYPE_INITIALIZING_BIASES = 9;
+    INS_STATUS_TYPE_MOTION_DETECT = 10;
+  }
+  optional INSStatusType ins_status_type = 40;
+  optional string ins_status_info = 41;
+
+  // number of satellites in antenna 1
+  optional int32 num_v1_sat = 42;
+  // number of satellites in antenna 2
+  optional int32 num_v2_sat = 43;
+  optional CoordinateReferenceSystem coordinate_reference_system = 44;
+}
+
+// Direct dump of raw gnss messages, in binary or ascii
+message GnssRawMessageProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional bytes data = 3;
+
+  // timestamp before calling read function
+  optional double raw_receive_before_ts = 4;
+  // timestamp raw data arrives
+  optional double raw_arrival_ts = 5;
+  // timestamp raw data publishs
+  optional double raw_publish_ts = 6;
+}
+
+message PwrPak7DDebugProto {
+  message LogMessage {
+    optional string name = 1;
+    repeated string instances = 2;
+  }
+  repeated LogMessage log_messages = 1;
+}
+
+message GnssImuDriverDebugProto {
+  optional LiteHeader header = 1;
+
+  optional PwrPak7DDebugProto pwrpak7d = 2;
+}
+
+message PoseEstimatorDebugProto {
+  optional LiteHeader header = 1;
+  optional double raw_accel_x = 2;
+  optional double raw_accel_y = 3;
+  optional double raw_accel_z = 4;
+  optional double raw_omega_x = 5;
+  optional double raw_omega_y = 6;
+  optional double raw_omega_z = 7;
+  optional double r_x = 14;
+  optional double r_y = 15;
+  optional double r_z = 16;
+  optional double v_x = 17;
+  optional double v_y = 18;
+  optional double v_z = 19;
+  optional double v_speed = 26;
+  optional double heading = 27;
+  optional double accel_bias_x = 8;
+  optional double accel_bias_y = 9;
+  optional double accel_bias_z = 10;
+  optional double omega_bias_x = 11;
+  optional double omega_bias_y = 12;
+  optional double omega_bias_z = 13;
+  optional double corrected_accel_x = 20;
+  optional double corrected_accel_y = 21;
+  optional double corrected_accel_z = 22;
+  optional double corrected_omega_x = 23;
+  optional double corrected_omega_y = 24;
+  optional double corrected_omega_z = 25;
+  repeated double p = 28;  // 15x15 matrix, row-major.
+
+  optional Vec3dProto rpy_variance = 29;
+  optional Vec3dProto vel_variance = 30;
+  optional Vec3dProto pos_variance = 31;
+  optional Vec3dProto acc_bias_variance = 32;
+  optional Vec3dProto gyro_bias_variance = 33;
+
+  optional double wheel_speed_innovation = 34;
+  optional double nhc_y_innovation = 35;
+  optional double nhc_z_innovation = 36;
+  optional Vec3dProto zupt_omega_innovation = 37;
+  optional Vec3dProto zupt_accel_innovation = 38;
+  optional double latest_stationary_bias_timestamp = 39;
+  optional double latest_stationary_gyro_z_bias = 40;
+}
+
+message EskfFilterStateProto {
+  repeated double nominal_state = 1;     // size must be 16.
+  repeated double error_state = 2;       // size must be 15.
+  repeated double error_covariance = 3;  // size 225 for 15x15 symmetric matrix.
+}
+
+message PositioningFilterStateProto {
+  optional LiteHeader header = 1;
+  optional string pose_estimator = 2;
+  optional EskfFilterStateProto eskf = 3;
+}
+
+// TODO(luzou): move timesync messages to dedicated .proto file
+message GpsdStatusProto {
+  optional LiteHeader header = 1;
+  optional string gprmc_message = 2;
+  // in HHMMSS.SS format
+  optional string gprmc_clock = 3;
+  optional double gprmc_recv_timestamp = 4;
+
+  optional double pps_real_time = 5;
+  optional double pps_system_time = 6;
+  optional double pps_recv_time = 7;
+  optional int64 pps_diff_nanoseconds = 8;
+  // NTP style precision: https://datatracker.ietf.org/doc/html/rfc958
+  // "16-bit signed integer indicating the precision of the
+  // local clock, in seconds to the nearest power of two"
+  // We convert this exponential value to unit of seconds
+  optional double pps_precision_seconds = 9;
+  optional string gpgga_message = 10;
+  optional double gpgga_recv_timestamp = 11;
+}
+
+message PositioningDebugProto {
+  optional LiteHeader header = 1;
+  optional double wheel_speed = 2;
+  optional double motor_rpm_speed = 3;
+  optional double speed_timestamp = 4;
+  optional PoseEstimatorDebugProto pose_estimator_debug_info = 5;
+  optional bool is_stationary_start = 6;
+  optional double current_filter_time = 7;
+  optional bool is_stationary = 8;
+  optional CalibrationParamsProto calibration_params = 9;
+  optional ImuCanCalibrationProto calibration_result = 10;
+  optional double latest_stationary_time = 11;
+}
+
+message PositioningErrorCode {
+  enum Type {
+    NO_ERROR = 0;
+
+    ERROR_CAN_LOST = 1001;
+    ERROR_CAN_MISSING_REQUIRED_FILED = 1002;
+    ERROR_CAN_TIME_ASYNC = 1003;
+    ERROR_CAN_SPEED_INSANITY = 1004;
+    ERROR_CAN_YAWRATE_INSANITY = 1005;
+    ERROR_CAN_WHEEL_SPEED_INVALID = 1006;
+
+    ERROR_IMU_LOST = 2001;
+    ERROR_IMU_TIME_ASYNC = 2002;
+    ERROR_IMU_ACC_INSANITY = 2003;
+    ERROR_IMU_GYRO_INSANITY = 2004;
+
+    ERROR_POSE_VELOCITY_INSANITY = 3001;
+    ERROR_POSE_ATTITUDE_INSANITY = 3002;
+    ERROR_POSE_ANGULAR_RATE_INSANITY = 3003;
+    ERROR_IMU_GYRO_BIAS_INSANITY = 3004;
+    ERROR_IMU_ACC_BIAS_INSANITY = 3005;
+    ERROR_CAN_SPEED_SCALE_INSANITY = 3006;
+    ERROR_CAN_YAWRATE_BIAS_INSANITY = 3007;
+
+    ERROR_IMU_EXTRINSIC_ABNORMAL = 4001;
+  }
+  optional Type type = 1;
+}
+
+message NominalStateProto {
+  optional Vec4dProto attitude = 1;
+  optional Vec3dProto velocity = 2;
+  optional Vec3dProto position = 3;
+  optional Vec3dProto accel_bias = 4;
+  optional Vec3dProto omega_bias = 5;
+}
+
+message FilterStateProto {
+  optional double timestamp = 1;
+  optional NominalStateProto nominal_state = 2;
+  repeated double covariance = 3;
+}
+
+message PositioningStateProto {
+  optional LiteHeader header = 1;
+  optional FilterStateProto current_filter_state = 2;
+  repeated FilterStateProto stored_filter_states = 3;
+  repeated ImuRawReadingProto stationary_measurements = 4;
+  repeated uint64 imu_data_frame_count = 5;
+  repeated Vec3dProto imu_omega = 6;
+}
+
+message CalibrationParamsProto {
+  optional double wheel_radius = 1;
+  optional double speed_scale = 2;
+  optional double vehicle_right_edge_to_center = 3;
+  // leverarm from imu to vehicle in imu frame
+  optional Vec3dProto imu_leverarm_bv_b = 4;
+  // passive rotation from vehicle to body, i.e.
+  // p_imu = imu_ext_rotation_bv * p_veh.
+  optional QuaternionProto imu_ext_rotation_bv = 5;
+  // leverarm from gnss to vehicle in gnss frame
+  optional Vec3dProto gnss_leverarm_bv_b = 6;
+  // passive rotation from vehicle to ins output(by default device frame), i.e.
+  // p_ins = gnss_ext_rotation_bv * p_veh.
+  optional QuaternionProto gnss_ext_rotation_bv = 7;
+  optional double rpm_scale = 8;
+}
+
+message SoaInsDebugProto {
+  optional double global_fusion_smooth_x = 2;    // m
+  optional double global_fusion_smooth_y = 3;    // m
+  optional double global_fusion_smooth_yaw = 4;  // deg
+  optional double rtk_longitude = 5;             // deg
+  optional double rtk_latitude = 6;              // deg
+  optional double rtk_yaw = 7;                   // deg
+  optional double yaw_diff = 8;                  // deg
+  optional double rtk_smooth_x = 9;              // m
+  optional double rtk_smooth_y = 10;             // m
+  optional double yawrate_bias = 11;             // rad/s
+  optional double speed_scale = 12;              // m/s
+}
+
+message SoaInsProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;  // ms
+  optional double longitude = 3;  // deg
+  optional double latitude = 4;   // deg
+  optional double height = 5;     // m
+  optional double speed = 6;      // m/s
+  optional double heading = 7;    // deg
+  optional int32 num_sv = 8;
+  enum GnssAntStatus {
+    NORMAL = 0;
+    OPEN_CIRCUIT = 1;
+    SHORT_CIRCUIT = 2;
+  }
+  optional GnssAntStatus gnss_ant_status = 9;
+  enum Status {
+    S_NONE = 0;
+    NON_INIT = 1;
+    INS = 2;
+  }
+  optional Status status = 10;
+  enum GpsQuality {
+    Q_NONE = 0;
+    SINGLE = 3;
+    FLOAT = 8;
+    FIXED = 9;
+  }
+  optional GpsQuality gps_quality = 11;
+  enum FusionSignal {
+    FS_NONE = 0;
+    DR = 1;
+    GNSS_DR = 3;
+  }
+  optional FusionSignal fusion_signal = 12;
+  optional SoaInsDebugProto debug_info = 13;
+}
+
+message IntegratedNavigationDebugProto {
+  optional LiteHeader header = 1;
+  optional integrated_nav.IntegratedNavigationStateProto nav_state = 2;
+}

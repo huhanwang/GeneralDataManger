@@ -1,0 +1,166 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+import "onboard/proto/trajectory_point.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/remote_assist.proto";
+import "onboard/proto/prediction.proto";
+import "onboard/planner/proto/est_planner_debug.proto";
+import "onboard/planner/selector/proto/selector_debug.proto";
+import "onboard/planner/scene/proto/scene_understanding.proto";
+import "onboard/proto/turn_signal.proto";
+
+import "onboard/planner/decision/proto/traffic_light_info.proto";
+import "onboard/planner/freespace/proto/freespace_planner.proto";
+import "onboard/planner/freespace/proto/li_parking_planner.proto";
+import "onboard/planner/scheduler/proto/lane_graph.proto";
+
+import "onboard/proto/timer_report.proto";
+import "onboard/planner/common/proto/planner_status.proto";
+
+import "onboard/common/proto/qacc.proto";
+
+import "onboard/proto/positioning.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/localization.proto";
+// import "onboard/proto/perception.proto";
+import "onboard/prediction/proto/conflict_resolver.proto";
+
+import "onboard/planner/ml/context_groundtruth_extractor/proto/context_groundtruth.proto";
+import "onboard/planner/ml/context_feature_extractor/proto/context_feature.proto";
+import "onboard/planner/assist/proto/plc_result.proto";
+
+import "onboard/proto/perception/fusion/objects.proto";
+
+
+enum PrecedenceLevel {
+  PRECEDENCE_AGENT = 0;  // We have lower precedence.
+  PRECEDENCE_EQUAL = 1;  // We have equal precedence.
+  PRECEDENCE_AV = 2;     // We have higher precedence.
+}
+
+enum PlannerType {
+  PREV_TRAJ_PLANNER = 4;
+  AEB_PLANNER = 6;
+  EST_PLANNER = 7;
+  FREESPACE_PLANNER = 8;
+  FALLBACK_PLANNER = 9;
+  LI_PARK_PLANNER = 10;
+
+  reserved 1, 2, 3, 5;
+}
+
+message MissionStageProto {
+  enum MissionStage {
+    ON_ROAD = 1;
+    OFF_ROAD_DEPART = 2;
+    OFF_ROAD_STOP = 3;
+  }
+  optional MissionStage stage = 1 [default = ON_ROAD];
+}
+
+message ResetReasonProto {
+  enum Reason {
+    NONE = 0;
+    PREV_PLAN_POINT_NOT_FOUND = 1;
+    PREV_NOW_POINT_NOT_FOUND = 2;
+    LON_ERROR_TOO_LARGE = 3;
+    LAT_ERROR_TOO_LARGE = 4;
+    NON_AUTONOMY = 6;
+    FIRST_ENGAGE = 7;
+    FULL_STOP = 8;
+    PREVIOUS_AEB = 15;
+    NEW_FREESPACE_PATH = 10;
+    STEER_ONLY_ENGAGE = 11;
+    STEER_ONLY = 12;
+    SPEED_ONLY = 13;
+    SPEED_ONLY_ENGAGE = 14;
+    PREV_PATH_EMPTY = 16;
+    USE_TRUNCATED_GLOBAL_PATH = 17;
+
+    reserved 5, 9;
+  }
+}
+
+message PlannerDebugProto {
+  optional LiteHeader header = 1;
+
+  optional PlannerType active_planner = 24;
+  optional planner.PlannerStatusProto planner_status = 41;
+
+  optional bool reset = 23;
+  optional ResetReasonProto.Reason reset_reason = 55;
+
+  optional TurnSignalReason turn_signal_reason_enum = 43;
+
+  optional MultiTimerReportProto current_frame_multitimer_report = 12;
+
+  message ObjectInfo {
+    optional string id = 1;
+    optional Vec2dProto pos = 2;
+    optional double heading = 3;
+  }
+  repeated ObjectInfo stalled_objects = 37;
+
+  repeated ObjectInfo traffic_waiting_objects = 49;
+
+  optional planner.TrafficLightInfoProto selected_traffic_light_info = 36;
+  repeated planner.TrafficLightInfoProto candidate_traffic_light_info = 50;
+
+  optional planner.PlannerStatusProto est_planner_status = 57;
+  repeated planner.EstPlannerDebugProto est_planner_debugs = 44;
+  optional planner.EstPlannerDebugProto async_high_freq_debug = 59;
+  optional planner.SelectorDebugProto selector_debug = 45;
+  optional planner.FreespacePlannerDebugProto freespace_planner_debug = 42;
+  optional planner.LiParkingPlanningResultProto li_parking_planner_result = 69;
+
+  optional planner.SceneOutputProto scene_understanding_debug = 48;
+
+  optional ObjectsPredictionProto speed_considered_objects_prediction = 51;
+
+  optional int32 planner_frame_seq_num = 52;  // Used to match the state.
+  optional int32 path_start_relative_index = 54;
+
+  optional double planning_horizon = 60;
+
+  // Debug only
+  message InputInfo {
+    optional PoseProto pose = 1;
+    optional Chassis chassis = 2;
+    optional LocalizationTransformProto loc_transform = 3;
+    optional ObjectsProto real_objects = 4;
+    optional ObjectsPredictionProto prediction = 5;
+  }
+  optional InputInfo planner_input = 53;
+
+  // Data Dumping only
+  message DumpedData {
+    optional planner.ml.ContextFeatureProto context_feature = 10;
+    optional planner.ml.ContextGroundTruth context_groundtruth = 11;
+    reserved 1, 2;
+  }
+  optional DumpedData dumped_data = 56;
+
+  optional QACCDebugProto acc_debug = 62;
+  repeated PathPoint st_path_points_global_including_past = 63;
+
+  optional planner.PlcInternalStatus plc_status = 66;
+  optional ConflictResolverDebugProto prediction_post_process = 67;
+  optional planner.LanePathFilterDebugProto lane_path_filter_debug = 68;
+
+  optional bool enable_hd_vision_center_line_fusion = 70;
+
+  // Next ID: 71.
+
+  reserved 2 to 11, 13 to 21, 22, 25 to 31, 32 to 35, 38 to 40, 46, 47, 58, 61,
+      64, 65, 100;
+}
+
+message InjectedTeleopProto {
+  repeated int64 frames = 1;
+  repeated RemoteAssistToCarProto contents = 2;
+}

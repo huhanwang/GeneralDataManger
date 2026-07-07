@@ -1,0 +1,27 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+// import "onboard/maps/proto/sd_map.proto";
+
+message MapFusionDiffMetric {
+  message DiffConfig {
+    optional bool compare_center_line = 1 [default = false];
+    optional bool identical_navi_info = 2 [default = false];
+    optional double navi_info_error_threshold = 3 [default = 0.1];
+  }
+  // Compare with another sim job result
+  optional DiffConfig sim_diff_config = 1;
+  // Compare with run result
+  optional DiffConfig run_diff_config = 2;
+}
+
+message RouteInfoMetric {
+  message RouteInfoTruth {
+    optional TimeWindow time_window = 1;
+    // repeated mapping.SdMapProto.NaviRouteInfo route_info_protos = 2;
+  }
+  repeated RouteInfoTruth route_info_truths = 1;
+}

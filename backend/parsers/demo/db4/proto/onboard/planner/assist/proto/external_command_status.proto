@@ -1,0 +1,120 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/q_run_event.proto";
+import "onboard/proto/driving_style.proto";
+import "onboard/planner/router/proto/route_external_command.proto";
+
+import "onboard/common/proto/qalc.proto";
+import "onboard/common/proto/qlcc.proto";
+import "onboard/common/proto/qacc.proto";
+
+import "google/protobuf/timestamp.proto";
+
+import "onboard/proto/parking_spot_finder.proto";
+import "onboard/proto/q_assist_settings.proto";
+import "onboard/proto/lane_change_type.proto";
+
+message BlinkerOverrideStatusProto {
+  optional bool on = 1;
+}
+
+message EnableFeatureStatusProto {
+  optional bool traffic_light_stopping_is_enabled = 3;
+  optional bool lc_objects_is_enabled = 4;
+  optional bool pull_over_is_enabled = 5;
+
+  reserved 1, 2;
+}
+
+// Inherited from PlannerTeleopStatusProto
+message PlannerExternalCommandStatusProto {
+  optional LiteHeader header = 1;
+
+  optional BlinkerOverrideStatusProto left_blinker_override_status = 3;
+  optional BlinkerOverrideStatusProto right_blinker_override_status = 4;
+  optional BlinkerOverrideStatusProto emergency_blinker_override_status = 10;
+  optional EnableFeatureStatusProto enable_feature_status = 6;
+  optional double brake_to_stop = 12;
+  optional double requested_stop_point_route_s = 7 [deprecated = true];
+  optional double requested_forced_brake = 9 [deprecated = true];
+  optional bool override_door_open = 13;
+  optional bool enable_stop_polyline_stopping = 28;
+
+  optional QLCCState lcc_state = 14;
+  optional QALCState alc_state = 15;
+  optional QACCState acc_state = 21;
+
+  optional DriverAction.LaneChangeCommand lane_change_cmd = 22;
+  optional LaneChangeType lane_change_type = 54;
+  optional google.protobuf.Timestamp plc_prepare_start_time = 34;
+  optional google.protobuf.Timestamp auto_lc_inhibition_start_time = 55;
+  optional bool lc_allow_solid_cross = 56;
+  optional bool lc_prefer_lane_change = 57;
+
+  optional QRunEvent.LccFollowingDistanceLevel following_distance_level = 17;
+  optional float cruising_speed_limit = 18;
+  optional LaneChangeStyle lane_change_style = 20;
+
+  optional double current_lane_width = 23;
+  optional double current_lane_length = 36;
+  optional double current_lane_average_curvature_radius = 35;
+  optional double distance_to_toll = 29;
+  optional double distance_to_traffic_light = 30;
+  optional bool is_av_overlap_boundary = 25;
+  optional bool is_valid_both_side_boundary = 26;
+  optional bool is_av_in_emergency_lane = 40;
+  optional bool is_route_lane_change_fail = 27;
+  optional bool lane_path_lost = 39;
+
+  optional planner.ExternalRouterCommand planner_to_router_command = 33;
+  optional bool noa_need_lane_change_confirmation = 37;
+  optional bool alc_confirmation = 38;
+
+  optional string apa_parking_spot_id = 41;
+  optional bool is_acc_engage_only = 42;
+
+  optional bool exist_valid_hd_map = 43;
+
+  optional ParkingOutDirection apa_parking_out_direction = 44;
+  optional ParkingSpotFinderInfo.ParkableType apa_parking_in_type = 45;
+  optional QDrivingStyle driving_style = 46;
+  optional bool disable_lateral_evasion = 48;
+
+  // Ref: semantic_map.proto, LaneProto::Type.
+  enum EgoLaneType {
+    NORMAL = 1;  // GENERAL, RAMP, ENTRANCE,  etc.
+    BICYCLE_ONLY = 2;
+    BUS_ONLY = 3;
+    EMERGENCY = 4;
+    UNKNOWN = 5;
+  }
+  optional EgoLaneType ego_lane_type = 47;
+  optional bool is_lca_error = 49;
+
+  message TrafficLightRequest {
+    optional bool deceleration = 1;
+    optional double dist_to_stopline = 2;
+  }
+  optional TrafficLightRequest traffic_light_deceleration_request = 50;
+  optional bool left_close_curb_warning = 51;
+  optional bool right_close_curb_warning = 52;
+
+  // For assist turn signal off.
+  enum HumanDriveLaneChangeCompletedStatus {
+    NONE = 0;
+    LANE_CHANGE_COMPLETED = 1;
+    ABNORMAL_INTERRUPT = 2;
+  }
+  optional HumanDriveLaneChangeCompletedStatus
+      human_drive_lane_change_completed_status = 53;
+
+  // Next id: 58.
+  reserved 2, 5, 8, 11, 16, 19, 24, 31, 32;
+}

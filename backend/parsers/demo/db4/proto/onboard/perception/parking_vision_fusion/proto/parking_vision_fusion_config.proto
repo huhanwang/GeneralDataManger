@@ -1,0 +1,289 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.perception.parking_vision_fusion;
+option go_package = "qcraft-proto.ai/onboard/perception/parking_vision_fusion/proto/parking_vision_fusion_config";
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Note about param loading here: Due to the para loading method which is
+// designed to be backward compatible as the param set evolves, special care
+// must be taken when adding certain types of params.
+//
+// * When adding repeated fields into an existing proto: usually you'll need to
+//   wrap it in a proto. Directly adding a repeated field into an existing proto
+//   will cause the field to have zero elements when loading the params of an
+//   old log, regardless of the default params, which is typically not what you
+//   want. This is because the old log's param file has zero elements, and
+//   having zero elements is not considered missing (unlike scalar fields where
+//   has_XXX() can be used to decide if the field is missing in old logs, for
+//   repeated fields, having zero elements is a valid and meaningful state).
+//   Wrapping it in a proto will solve this problem because the field becomes a
+//   scalar field of the proto type and param loading will recognize that the
+//   old log does not have this field, thus loading the default.
+//
+//   A common example is PiecewiseLinearFunctionXXXProto which wraps repeated
+//   fields.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+message AvmslotFreespaceFusionConfigProto {
+  optional float extend_slot_distance = 1 [default = 1.0];
+  optional float shrink_slot_distance = 2 [default = 0.2];
+
+  optional int32 other_pts_num_threshold = 3 [default = 20];
+  optional int32 vehicle_pts_num_threshold = 4 [default = 10];
+  optional int32 cone_pts_num_threshold = 5 [default = 4];
+  optional int32 parklock_pts_num_threshold = 6 [default = 4];
+  optional int32 pillar_pts_num_threshold = 7 [default = 5];
+  optional int32 person_pts_num_threshold = 8 [default = 4];
+  optional int32 bicycle_pts_num_threshold = 9 [default = 3];
+  optional int32 wall_pts_num_threshold = 10 [default = 10];
+
+  optional float other_pts_confidence = 11 [default = 0.7];
+  optional float cone_pts_confidence = 12 [default = 0.6];
+  optional float parklock_pts_confidence = 13 [default = 0.7];
+  optional float pillar_pts_confidence = 14 [default = 0.75];
+  optional float person_pts_confidence = 15 [default = 0.7];
+  optional float bicycle_pts_confidence = 16 [default = 0.7];
+  optional float vehicle_pts_confidence = 17 [default = 0.65];
+  optional float wall_pts_confidence = 18 [default = 0.75];
+
+  optional float fov_l2_distance = 19 [default = 10.0];
+  optional int32 status_window_size = 20 [default = 16];
+  optional float min_confidence = 21 [default = 0.45];
+}
+
+message LimiterFusionConfigProto {
+  optional double limiter_pts_num_threshold = 1 [default = 8.0];
+  optional double summon_ego_slot_width = 2 [default = 2.5];
+  optional double summon_ego_slot_depth = 3 [default = 5.3];
+  optional double summon_split_threshold = 4 [default = 1.0];
+  optional double summon_update_alpha = 5 [default = 0.3];
+  optional double summon_limiter_pts_num_threshold = 6 [default = 4.0];
+
+  optional int32 limiters_output_max_size = 7 [default = 200];
+}
+
+message LockFusionConfigProto {
+  optional float fisheye_valid_distance_sqr = 1 [default = 225.0];
+  optional float near_occ_valid_distance_sqr = 2 [default = 225.0];
+  optional float far_occ_valid_distance_sqr = 3 [default = 225.0];
+  optional int32 min_cluster_points_size = 4 [default = 6];
+  optional float min_cluster_distance_sqr = 5 [default = 1.21];
+  optional float association_distance_sqr = 6 [default = 4.0];
+  optional int32 center_history_size = 7 [default = 3];
+  optional float max_distance_to_delete_sqr = 8 [default = 400.0];
+  optional int32 release_age = 9 [default = 8];
+}
+
+message PillarFusionConfigProto {
+  optional int32 cluster_count = 1 [default = 16];
+  optional float pillar_length = 2 [default = 0.6];
+  optional float pillar_pts_confidence = 3 [default = 0.75];
+  optional int32 min_pillar_pts = 4 [default = 3];
+  optional float dist_thresh = 5 [default = 1.0];
+  optional float center_diff_threshold = 6 [default = 2.3];
+  optional int32 frequency_threshold = 7 [default = 4];
+  optional int32 track_count_threshold = 8 [default = 3];
+  optional float pillar_filter_distance = 9 [default = 7.5];
+  optional float pillar_memory_distance = 10 [default = 7.0];
+  optional float pillar_stable_distance = 11 [default = 7.0];
+  optional float origin_shift_distance = 12 [default = 0.5];
+  optional float pillar_memory_delete_distance = 13 [default = 10.0];
+  optional float release_memory_distance = 14 [default = 1.0];
+  optional int32 max_age = 15 [default = 10];
+  optional int32 status_window_size = 16 [default = 50];
+  optional int32 status_window_memory_size = 17 [default = 20];
+}
+
+message SlotFusionConfigProto {
+  optional bool enable = 1 [default = true];
+  optional uint32 mature_frames = 2 [default = 2];
+  optional float max_distance_longitude = 3 [default = 12.0];
+  optional float max_distance_lateral = 4 [default = 8.0];
+  optional float distance_threshold = 5 [default = 1.8];
+  optional int32 max_age = 6 [default = 100000];
+  optional int32 max_fit_num = 7 [default = 5];
+  optional float outlier_threshold = 8 [default = 0.1];
+  optional uint32 max_points_num = 9 [default = 1];
+  optional float origin_shift_distance = 10 [default = 0.5];
+  optional int32 valid_age_threshold = 11 [default = 20];
+  optional int32 valid_count_threshold = 12 [default = 5];
+  optional float min_confidence = 13 [default = 0.45];
+}
+
+message SlotTrackerMotionModelProto {
+  optional string name = 1 [default = "CTRAParkingSpotMotionModel"];
+  optional float sigma_va = 2 [default = 0.1];
+  optional float sigma_wa = 3 [default = 0.1];
+}
+
+message SlotTrackerMeasurementModelProto {
+  optional float position_std = 1 [default = 0.025];
+  optional float angle_std = 2 [default = 0.01];
+  optional float speed_std = 3 [default = 0.1];
+  optional float yaw_rate_std = 4 [default = 0.01];
+  optional float acc_std = 5 [default = 0.1];
+}
+
+message SlotTrackerFusionerConfigProto {
+  optional SlotTrackerMotionModelProto motion_model = 1;
+  optional SlotTrackerMeasurementModelProto measurement_model = 2;
+}
+
+message SlotTrackerConfigProto {
+  optional int32 max_age = 1 [default = 10];
+  optional double distance_threshold = 2 [default = 1.2];
+  optional float vertical_intersection_threshold = 3 [default = 1.8];
+  optional float parallel_intersection_threshold = 4 [default = 4.5];
+  optional float other_intersection_threshold = 5 [default = 1.8];
+  optional int32 output_age_threshold = 6 [default = 3];
+  optional int32 output_det_count = 7 [default = 4];
+  optional int32 status_window_size = 8 [default = 16];
+  optional SlotTrackerFusionerConfigProto fusioner = 9;
+}
+
+message SpeedBumpFusionConfigProto {
+  optional int32 cluster_count = 1 [default = 35];
+  optional float dist_thresh = 2 [default = 4.0];
+  optional float speed_bump_square_length_thresh = 3 [default = 9.0];
+  optional float filter_dist_thresh = 4 [default = 7.0];
+  optional int32 min_speedbump_pts = 5 [default = 15];
+  optional float speedbump_pts_confidence = 6 [default = 0.7];
+  optional float center_diff_square_threshold = 7 [default = 25.0];
+  optional int32 track_count_threshold = 8 [default = 3];
+  optional int32 age_threshold = 9 [default = 2];
+}
+
+message FreespaceFusionConfigProto {
+  optional float max_distance_x = 1 [default = 30.0];
+  optional float max_distance_y = 2 [default = 15.0];
+  optional bool use_interpolate = 3 [default = true];
+
+  optional float x_len = 4 [default = 30.0];
+  optional float y_len = 5 [default = 30.0];
+  optional float resolution = 6 [default = 0.1];
+  optional float low_resolution = 7 [default = 0.2];
+  optional float x_max = 8 [default = 30.0];
+  optional float y_max = 9 [default = 15.0];
+
+  optional bool use_bevdet = 10 [default = true];
+  optional bool use_near_occ = 11 [default = true];
+  optional bool use_far_occ = 12 [default = true];
+  optional bool use_lidar = 13 [default = true];
+
+  optional float lidar_log_occu_vehicle = 14 [default = 1.0];
+  optional float lidar_log_occu_default = 15 [default = 1.0];
+  optional float lidar_log_free_vehicle = 16 [default = 1.0];
+  optional float lidar_log_free_default = 17 [default = 1.0];
+  optional float lidar_log_decay = 18 [default = 0.1];
+
+  optional float log_wall_decay = 19 [default = 0.1];
+  optional float log_pillar_decay = 20 [default = 0.1];
+  optional float log_vehicle_decay = 21 [default = 0.1];
+
+  optional float log_free_default = 22 [default = 1.0];
+  optional float log_occu_default = 23 [default = 1.0];
+  optional float log_free_curb = 24 [default = 1.0];
+  optional float log_occu_curb = 25 [default = 1.0];
+  optional float log_free_pillar = 26 [default = 1.0];
+  optional float log_occu_pillar = 27 [default = 1.0];
+  optional float log_free_vehicle = 28 [default = 1.0];
+  optional float log_occu_vehicle = 29 [default = 1.0];
+  optional float log_decay = 30 [default = 0.1];
+  optional float log_max = 31 [default = 100.0];
+  optional float log_min = 32 [default = -100.0];
+  optional float img_log_max = 33 [default = 100.0];
+  optional float img_log_min = 34 [default = -100.0];
+  optional float log_unknown = 35 [default = 0.0];
+
+  optional float default_interpolation_distance = 36 [default = 1.0];
+  optional float curb_interpolation_distance = 37 [default = 1.0];
+
+  optional uint32 binary_threshold = 38 [default = 128];
+  optional uint32 near_binary_threshold_searching = 39 [default = 128];
+  optional uint32 far_binary_threshold_searching = 40 [default = 128];
+
+  optional int32 contour_mode = 41 [default = 1];
+  optional int32 contour_method = 42 [default = 2];
+  optional bool plot_img = 43 [default = false];
+  optional bool plot_grid_map = 44 [default = false];
+  optional double start_plot_grid_map_timestamp = 45 [default = 0.0];
+
+  optional uint32 frame_id = 46 [default = 0];
+  optional bool is_refine = 47 [default = true];
+  optional bool is_dp = 48 [default = true];
+  optional int32 refine_size = 49 [default = 5];
+  optional float dp_epsilon = 50 [default = 0.01];
+  optional int32 curb_kp_threshold = 51 [default = 10];
+  optional float curb_in_front_slot_dis = 52 [default = 1.0];
+  optional float curb_length_threshold = 53 [default = 2.0];
+  optional float set_curb_point_threshold = 54 [default = 5.0];
+  optional bool enable_blur = 55 [default = true];
+  optional int32 blur_size = 56 [default = 3];
+  optional float blur_sigma = 57 [default = 0.5];
+
+  optional float show_x_range_front = 58 [default = 10.0];
+  optional float show_x_range_rear = 59 [default = 10.0];
+  optional float show_y_range_side = 60 [default = 10.0];
+  optional float ego_center_vcs_x = 61 [default = 0.0];
+  optional float veh_dilate_distance = 62 [default = 0.5];
+  optional float veh_shrink_distance = 63 [default = 0.2];
+  optional float veh_dilate_fov = 64 [default = 45.0];
+
+  optional float dynamic_freespace_clear_interval = 65 [default = 1.0];
+  optional float dynamic_freespace_expand_distance = 66 [default = 0.5];
+  optional string img_path = 67 [default = ""];
+
+  optional int32 freespace_output_max_size = 68 [default = 400];
+}
+
+message OccGeometryConfigProto {
+  optional int32 occ_grid_width = 1 [default = 100];
+  optional int32 occ_grid_height = 2 [default = 100];
+  optional float occ_grid_start_x = 3 [default = -10.0];
+  optional float occ_grid_start_y = 4 [default = -10.0];
+  optional float occ_grid_diameter = 5 [default = 0.2];
+  optional int32 height_layer_num = 6 [default = 8];
+}
+message OccConfigProto {
+  optional OccGeometryConfigProto near_occ_geometry_config = 1;
+  optional OccGeometryConfigProto far_occ_geometry_config = 2;
+
+  optional float near_occ_log_occu_default = 3 [default = 1.0];
+  optional float near_occ_log_occu_unmovable_object = 4 [default = 1.0];
+  optional float near_occ_log_occu_movable_object = 5 [default = 1.0];
+  optional float near_occ_log_occu_drivable_surface = 6 [default = 1.0];
+  optional float near_occ_log_decay = 7 [default = 0.1];
+  optional float far_occ_log_decay = 8 [default = 0.1];
+  optional float log_occu_occ_acceleration = 9 [default = 9.0];
+}
+
+message BevdetConfigProto {
+  optional float max_distance_square = 1 [default = 225.0];
+}
+
+message ParkingVisionFusionConfigProto {
+  optional AvmslotFreespaceFusionConfigProto avmslot_freespace_fusion_config =
+      1;
+  optional LimiterFusionConfigProto limiter_fusion_config = 2;
+  optional LockFusionConfigProto lock_fusion_config = 3;
+  optional PillarFusionConfigProto pillar_fusion_config = 4;
+  optional SlotFusionConfigProto slot_fusion_config = 5;
+  optional SlotTrackerConfigProto slot_tracker_config = 6;
+  optional SpeedBumpFusionConfigProto speed_bump_fusion_config = 7;
+  optional BevdetConfigProto bevdet_config = 8;
+  optional FreespaceFusionConfigProto freespace_fusion_config = 9;
+  optional OccConfigProto occ_config = 10;
+}

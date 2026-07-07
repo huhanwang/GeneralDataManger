@@ -1,0 +1,1120 @@
+syntax = "proto2";
+
+package snoah;
+
+message Radarstate_201 {
+  enum Radarstate_voltage_errorType {
+    RADARSTATE_VOLTAGE_ERROR_NO_ERROR = 0;
+    RADARSTATE_VOLTAGE_ERROR_ERROR_ACTIVE = 1;
+  }
+  enum Radarstate_temporary_errorType {
+    RADARSTATE_TEMPORARY_ERROR_NO_ERROR = 0;
+    RADARSTATE_TEMPORARY_ERROR_ERROR_ACTIVE = 1;
+  }
+  enum Radarstate_temperature_errorType {
+    RADARSTATE_TEMPERATURE_ERROR_NO_ERROR = 0;
+    RADARSTATE_TEMPERATURE_ERROR_ERROR_ACTIVE = 1;
+  }
+  enum Radarstate_interferenceType {
+    RADARSTATE_INTERFERENCE_NO_INTERFERENCE = 0;
+    RADARSTATE_INTERFERENCE_INTERFERENCE_PRESENT = 1;
+  }
+  enum Radarstate_persistent_errorType {
+    RADARSTATE_PERSISTENT_ERROR_NO_ERROR = 0;
+    RADARSTATE_PERSISTENT_ERROR_ERROR_ACTIVE = 1;
+  }
+  enum Radarstate_rcs_thresholdType {
+    RADARSTATE_RCS_THRESHOLD_STANDARD = 0;
+    RADARSTATE_RCS_THRESHOLD_HIGH_SENSITIVITY = 1;
+    RADARSTATE_RCS_THRESHOLD_ERROR = 2;
+    RADARSTATE_RCS_THRESHOLD_RESERVED0 = 3;
+    RADARSTATE_RCS_THRESHOLD_RESERVED1 = 4;
+    RADARSTATE_RCS_THRESHOLD_RESERVED2 = 5;
+    RADARSTATE_RCS_THRESHOLD_RESERVED3 = 6;
+    RADARSTATE_RCS_THRESHOLD_RESERVED4 = 7;
+  }
+  enum Radarstate_ctrlrelaycfgType {
+    RADARSTATE_CTRLRELAYCFG_INACTIVE = 0;
+    RADARSTATE_CTRLRELAYCFG_ACTIVE = 1;
+  }
+  enum Radarstate_sendqualitycfgType {
+    RADARSTATE_SENDQUALITYCFG_INACTIVE = 0;
+    RADARSTATE_SENDQUALITYCFG_ACTIVE = 1;
+  }
+  enum Radarstate_sendextinfocfgType {
+    RADARSTATE_SENDEXTINFOCFG_INACTIVE = 0;
+    RADARSTATE_SENDEXTINFOCFG_ACTIVE = 1;
+  }
+  enum Radarstate_motionrxstateType {
+    RADARSTATE_MOTIONRXSTATE_INPUT_OK = 0;
+    RADARSTATE_MOTIONRXSTATE_SPEED_MISSING = 1;
+    RADARSTATE_MOTIONRXSTATE_YAW_RATE_MISSING = 2;
+    RADARSTATE_MOTIONRXSTATE_SPEED_AND_YAW_RATE_MISSING = 3;
+  }
+  enum Radarstate_outputtypecfgType {
+    RADARSTATE_OUTPUTTYPECFG_NONE = 0;
+    RADARSTATE_OUTPUTTYPECFG_SENDOBJECTS = 1;
+    RADARSTATE_OUTPUTTYPECFG_SENDCLUSTERS = 2;
+    RADARSTATE_OUTPUTTYPECFG_RESERVED_2 = 3;
+  }
+  enum Radarstate_radarpowercfgType {
+    RADARSTATE_RADARPOWERCFG_STANDARD = 0;
+    RADARSTATE_RADARPOWERCFG_3_DB_TX_GAIN = 1;
+    RADARSTATE_RADARPOWERCFG_6_DB_TX_GAIN = 2;
+    RADARSTATE_RADARPOWERCFG_9_DB_TX_GAIN = 3;
+    RADARSTATE_RADARPOWERCFG_RESERVED0 = 4;
+    RADARSTATE_RADARPOWERCFG_RESERVED1 = 5;
+    RADARSTATE_RADARPOWERCFG_RESERVED2 = 6;
+    RADARSTATE_RADARPOWERCFG_RESERVED3 = 7;
+  }
+  enum Radarstate_nvmreadstatusType {
+    RADARSTATE_NVMREADSTATUS_PENDING = 0;
+    RADARSTATE_NVMREADSTATUS_SUCCESSFUL = 1;
+  }
+  enum Radarstate_nvmwritestatusType {
+    RADARSTATE_NVMWRITESTATUS_FAILED = 0;
+    RADARSTATE_NVMWRITESTATUS_SUCCESSFUL = 1;
+  }
+  // [] [0|0]
+  optional Radarstate_voltage_errorType radarstate_voltage_error = 1;
+  // [] [0|0]
+  optional Radarstate_temporary_errorType radarstate_temporary_error = 2;
+  // [] [0|0]
+  optional Radarstate_temperature_errorType radarstate_temperature_error = 3;
+  // [] [0|0]
+  optional Radarstate_interferenceType radarstate_interference = 4;
+  // [] [0|0]
+  optional Radarstate_persistent_errorType radarstate_persistent_error = 5;
+  // Current sorting of object list [] [0|0]
+  optional int32 radarstate_sortindex = 6;
+  // Current sensitivity mode [] [0|7]
+  optional Radarstate_rcs_thresholdType radarstate_rcs_threshold = 7;
+  // Status of control relay message output [] [0|1]
+  optional Radarstate_ctrlrelaycfgType radarstate_ctrlrelaycfg = 8;
+  // Status of quality information output [] [0|1]
+  optional Radarstate_sendqualitycfgType radarstate_sendqualitycfg = 9;
+  // Status of extended information output [] [0|1]
+  optional Radarstate_sendextinfocfgType radarstate_sendextinfocfg = 10;
+  // Status of motion input signals [] [0|3]
+  optional Radarstate_motionrxstateType radarstate_motionrxstate = 11;
+  // Sensor ID (0 to 7) [] [0|7]
+  optional int32 radarstate_sensorid = 12;
+  // Current output list type [] [0|3]
+  optional Radarstate_outputtypecfgType radarstate_outputtypecfg = 13;
+  // Radar Tx output level (Tx attenuation) [] [0|7]
+  optional Radarstate_radarpowercfgType radarstate_radarpowercfg = 14;
+  // Gives the status of reading the radar configuration from EEPROM [] [0|1]
+  optional Radarstate_nvmreadstatusType radarstate_nvmreadstatus = 15;
+  // Gives the status of writing the radar configuration from EEPROM [] [0|1]
+  optional Radarstate_nvmwritestatusType radarstate_nvmwritestatus = 16;
+  // Currently configured maximum distance of far scan [] [0|2046]
+  optional double radarstate_maxdistancecfg = 17;
+}
+
+message Radarconfiguration_200 {
+  enum Radarcfg_rcs_threshold_validType {
+    RADARCFG_RCS_THRESHOLD_VALID_INVALID = 0;
+    RADARCFG_RCS_THRESHOLD_VALID_VALID = 1;
+  }
+  enum Radarcfg_rcs_thresholdType {
+    RADARCFG_RCS_THRESHOLD_STANDARD = 0;
+    RADARCFG_RCS_THRESHOLD_HIGH_SENSITIVITY = 1;
+    RADARCFG_RCS_THRESHOLD_RESERVED0 = 2;
+    RADARCFG_RCS_THRESHOLD_RESERVED1 = 3;
+    RADARCFG_RCS_THRESHOLD_RESERVED2 = 4;
+    RADARCFG_RCS_THRESHOLD_RESERVED3 = 5;
+    RADARCFG_RCS_THRESHOLD_RESERVED4 = 6;
+    RADARCFG_RCS_THRESHOLD_RESERVED5 = 7;
+  }
+  enum Radarcfg_storeinnvm_validType {
+    RADARCFG_STOREINNVM_VALID_INVALID = 0;
+    RADARCFG_STOREINNVM_VALID_VALID = 1;
+  }
+  enum Radarcfg_sortindex_validType {
+    RADARCFG_SORTINDEX_VALID_INVALID = 0;
+    RADARCFG_SORTINDEX_VALID_VALID = 1;
+  }
+  enum Radarcfg_sortindexType {
+    RADARCFG_SORTINDEX_NO_SORTING = 0;
+    RADARCFG_SORTINDEX_SORTED_BY_RANGE = 1;
+    RADARCFG_SORTINDEX_SORTED_BY_RCS = 2;
+  }
+  enum Radarcfg_storeinnvmType {
+    RADARCFG_STOREINNVM_INACTIVE = 0;
+    RADARCFG_STOREINNVM_ACTIVE = 1;
+  }
+  enum Radarcfg_sendextinfo_validType {
+    RADARCFG_SENDEXTINFO_VALID_INVALID = 0;
+    RADARCFG_SENDEXTINFO_VALID_VALID = 1;
+  }
+  enum Radarcfg_sendextinfoType {
+    RADARCFG_SENDEXTINFO_INACTIVE = 0;
+    RADARCFG_SENDEXTINFO_ACTIVE = 1;
+  }
+  enum Radarcfg_ctrlrelay_validType {
+    RADARCFG_CTRLRELAY_VALID_INVALID = 0;
+    RADARCFG_CTRLRELAY_VALID_VALID = 1;
+  }
+  enum Radarcfg_ctrlrelayType {
+    RADARCFG_CTRLRELAY_INACTIVE = 0;
+    RADARCFG_CTRLRELAY_ACTIVE = 1;
+  }
+  enum Radarcfg_sendquality_validType {
+    RADARCFG_SENDQUALITY_VALID_INVALID = 0;
+    RADARCFG_SENDQUALITY_VALID_VALID = 1;
+  }
+  enum Radarcfg_sendqualityType {
+    RADARCFG_SENDQUALITY_INACTIVE = 0;
+    RADARCFG_SENDQUALITY_ACTIVE = 1;
+  }
+  enum Radarcfg_maxdistance_validType {
+    RADARCFG_MAXDISTANCE_VALID_INVALID = 0;
+    RADARCFG_MAXDISTANCE_VALID_VALID = 1;
+  }
+  enum Radarcfg_radarpower_validType {
+    RADARCFG_RADARPOWER_VALID_INVALID = 0;
+    RADARCFG_RADARPOWER_VALID_VALID = 1;
+  }
+  enum Radarcfg_outputtype_validType {
+    RADARCFG_OUTPUTTYPE_VALID_INVALID = 0;
+    RADARCFG_OUTPUTTYPE_VALID_VALID = 1;
+  }
+  enum Radarcfg_sensorid_validType {
+    RADARCFG_SENSORID_VALID_INVALID = 0;
+    RADARCFG_SENSORID_VALID_VALID = 1;
+  }
+  enum Radarcfg_radarpowerType {
+    RADARCFG_RADARPOWER_STANDARD = 0;
+    RADARCFG_RADARPOWER_3_DB_TX_GAIN = 1;
+    RADARCFG_RADARPOWER_6_DB_TX_GAIN = 2;
+    RADARCFG_RADARPOWER_9_DB_TX_GAIN = 3;
+    RADARCFG_RADARPOWER_RESERVED0 = 4;
+    RADARCFG_RADARPOWER_RESERVED1 = 5;
+    RADARCFG_RADARPOWER_RESERVED2 = 6;
+    RADARCFG_RADARPOWER_RESERVED3 = 7;
+  }
+  enum Radarcfg_outputtypeType {
+    RADARCFG_OUTPUTTYPE_NONE = 0;
+    RADARCFG_OUTPUTTYPE_SENDOBJECTS = 1;
+    RADARCFG_OUTPUTTYPE_SENDCLUSTERS = 2;
+    RADARCFG_OUTPUTTYPE_RESERVED_2 = 3;
+  }
+  // Allows changing the RCS_Threshold parameter [] [0|1]
+  optional Radarcfg_rcs_threshold_validType radarcfg_rcs_threshold_valid = 1;
+  // Standard or high sensitivity for cluster list output [] [0|7]
+  optional Radarcfg_rcs_thresholdType radarcfg_rcs_threshold = 2;
+  // Allows changing the StoreInNvm parameter [] [0|1]
+  optional Radarcfg_storeinnvm_validType radarcfg_storeinnvm_valid = 3;
+  // Allows changing the SortIndex parameter [] [0|1]
+  optional Radarcfg_sortindex_validType radarcfg_sortindex_valid = 4;
+  // Object sort index [] [0|7]
+  optional Radarcfg_sortindexType radarcfg_sortindex = 5;
+  // Store configuration in Nvm [] [0|1]
+  optional Radarcfg_storeinnvmType radarcfg_storeinnvm = 6;
+  // Allows changing the SendExtInfo parameter [] [0|1]
+  optional Radarcfg_sendextinfo_validType radarcfg_sendextinfo_valid = 7;
+  // Enables output of extended message [] [0|1]
+  optional Radarcfg_sendextinfoType radarcfg_sendextinfo = 8;
+  // Allows changing the CtrlRelay parameter [] [0|1]
+  optional Radarcfg_ctrlrelay_validType radarcfg_ctrlrelay_valid = 9;
+  // Enables output of CtrlRelay message if CollDet is active [] [0|1]
+  optional Radarcfg_ctrlrelayType radarcfg_ctrlrelay = 10;
+  // Allows changing the SendQuality parameter [] [0|1]
+  optional Radarcfg_sendquality_validType radarcfg_sendquality_valid = 11;
+  // Enables output of quality message [] [0|1]
+  optional Radarcfg_sendqualityType radarcfg_sendquality = 12;
+  // Allows changing the MaxDistance parameter [] [0|1]
+  optional Radarcfg_maxdistance_validType radarcfg_maxdistance_valid = 13;
+  // Allows changing the RadarPower parameter [] [0|1]
+  optional Radarcfg_radarpower_validType radarcfg_radarpower_valid = 14;
+  // Allows changing the OutputType parameter [] [0|1]
+  optional Radarcfg_outputtype_validType radarcfg_outputtype_valid = 15;
+  // Allows changing the SensorId parameter [] [0|1]
+  optional Radarcfg_sensorid_validType radarcfg_sensorid_valid = 16;
+  // Maximum distance of far scan [m] [0|2046]
+  optional double radarcfg_maxdistance = 17;
+  // Radar Tx output power reduction (Tx attenuation) [] [0|7]
+  optional Radarcfg_radarpowerType radarcfg_radarpower = 18;
+  // Data output type [] [0|2]
+  optional Radarcfg_outputtypeType radarcfg_outputtype = 19;
+  // Sensor ID (0 to 7) [] [0|7]
+  optional int32 radarcfg_sensorid = 20;
+}
+
+message Filterstate_header_203 {
+  // [] [0|31]
+  optional int32 filterstate_nofobjectfiltercfg = 1;
+  // [] [0|31]
+  optional int32 filterstate_nofclusterfiltercfg = 2;
+}
+
+message Filtercfg_202 {
+  enum Filtercfg_validType {
+    FILTERCFG_VALID_INVALID = 0;
+    FILTERCFG_VALID_VALID = 1;
+  }
+  enum Filtercfg_activeType {
+    FILTERCFG_ACTIVE_INACTIVE = 0;
+    FILTERCFG_ACTIVE_ACTIVE = 1;
+  }
+  enum Filtercfg_typeType {
+    FILTERCFG_TYPE_CLUSTER_FILTER = 0;
+    FILTERCFG_TYPE_OBJECT_FILTER = 1;
+  }
+  // [] [0|1]
+  optional Filtercfg_validType filtercfg_valid = 1;
+  // [] [0|1]
+  optional Filtercfg_activeType filtercfg_active = 2;
+  // [] [0|1]
+  optional Filtercfg_typeType filtercfg_type = 3;
+}
+
+message Filterstate_cfg_204 {
+  enum Filterstate_typeType {
+    FILTERSTATE_TYPE_CLUSTER_FILTER = 0;
+    FILTERSTATE_TYPE_OBJECT_FILTER = 1;
+  }
+  enum Filterstate_activeType {
+    FILTERSTATE_ACTIVE_INACTIVE = 0;
+    FILTERSTATE_ACTIVE_ACTIVE = 1;
+  }
+  // [] [0|1]
+  optional Filterstate_typeType filterstate_type = 1;
+  // [] [0|1]
+  optional Filterstate_activeType filterstate_active = 2;
+}
+
+message Speedinformation_300 {
+  enum Radardevice_speeddirectionType {
+    RADARDEVICE_SPEEDDIRECTION_STANDSTILL = 0;
+    RADARDEVICE_SPEEDDIRECTION_FORWARD = 1;
+    RADARDEVICE_SPEEDDIRECTION_REVERSE = 2;
+    RADARDEVICE_SPEEDDIRECTION_RESERVED = 3;
+  }
+  // Speed of the radar unit [m/s] [0|163.8]
+  optional double radardevice_speed = 1;
+  // Speed direction of the radar unit [] [0|2]
+  optional Radardevice_speeddirectionType radardevice_speeddirection = 2;
+}
+
+message Yawrateinformation_301 {
+  // Yaw rate of the radar unit [\B0/s] [-327.68|327.66]
+  optional double radardevice_yawrate = 1;
+}
+
+message Versionid_700 {
+  enum Version_extendedrangeType {
+    VERSION_EXTENDEDRANGE_STANDARD_RANGE = 0;
+    VERSION_EXTENDEDRANGE_EXTENDED_RANGE = 1;
+  }
+  enum Version_countrycodeType {
+    VERSION_COUNTRYCODE_INTERNATIONAL_VERSION = 0;
+    VERSION_COUNTRYCODE_SOUTH_KOREA_JAPAN = 1;
+  }
+  // [] [0|0]
+  optional Version_extendedrangeType version_extendedrange = 1;
+  // [] [0|0]
+  optional Version_countrycodeType version_countrycode = 2;
+  // Major Release Number [] [0|256]
+  optional int32 version_majorrelease = 3;
+  // Minor Release Number [] [0|256]
+  optional int32 version_minorrelease = 4;
+  // Patch Level [] [0|256]
+  optional int32 version_patchlevel = 5;
+}
+
+message Cluster_1_general_701 {
+  enum Cluster_dynpropType {
+    CLUSTER_DYNPROP_MOVING = 0;
+    CLUSTER_DYNPROP_STATIONARY = 1;
+    CLUSTER_DYNPROP_ONCOMING = 2;
+    CLUSTER_DYNPROP_STATIONARY_CANDIDATE = 3;
+    CLUSTER_DYNPROP_UNKNOWN = 4;
+    CLUSTER_DYNPROP_CROSSING_STATIONARY = 5;
+    CLUSTER_DYNPROP_CROSSING_MOVING = 6;
+    CLUSTER_DYNPROP_STOPPED = 7;
+  }
+  // Cluster dynamic property [1] [0|7]
+  optional Cluster_dynpropType cluster_dynprop = 1;
+  // Cluster relative lateral velocity [m/s] [-64|63.75]
+  optional double cluster_vrellat = 2;
+  // Cluster RCS value (Radar cross section) [dBm\B2] [-64|63.5]
+  optional double cluster_rcs = 3;
+  // Cluster longitudinal distance [m] [-500|1138.2]
+  optional double cluster_distlong = 4;
+  // Cluster number [1] [0|255]
+  optional int32 cluster_id = 5;
+  // Cluster relative longitudinal velocity [m/s] [-128|127.75]
+  optional double cluster_vrellong = 6;
+  // Cluster lateral distance [m] [-102.3|102.3]
+  optional double cluster_distlat = 7;
+}
+
+message Cluster_2_quality_702_308 {
+  enum Cluster_pdh0Type {
+    CLUSTER_PDH0_INVALID = 0;
+    CLUSTER_PDH0_25 = 1;
+    CLUSTER_PDH0_50 = 2;
+    CLUSTER_PDH0_75 = 3;
+    CLUSTER_PDH0_90 = 4;
+    CLUSTER_PDH0_99 = 5;
+    CLUSTER_PDH0_99_9 = 6;
+    CLUSTER_PDH0_100 = 7;
+  }
+  enum ClusterPropertiesType {
+    CLUSTER_UNDEFINED_PROPERTY = 0;
+    CLUSTER_STATIC = 1;
+    CLUSTER_DYNAMIC = 2;
+    CLUSTER_AMBIGUOUS = 4;
+    CLUSTER_FROM_NEAR_SCAN = 16;
+    CLUSTER_BEHIND_GUARD_RAIL = 64;
+  }
+  enum ClusterInvalidReasonType {
+    CLUSTER_VALID = 0;
+    CLUSTER_DYNAMIC_WITH_LOW_RCS = 2;
+    CLUSTER_STATIC_WITH_LOW_RCS = 4;
+    CLUSTER_RANGE_RATE_IMPROBABLE = 8;
+    CLUSTER_RANGE_IMPROBABLE = 16;
+    CLUSTER_IS_A_REFLECTION_OF_EGO = 32;
+  }
+  // Cluster number [1] [0|255]
+  optional int32 cluster_id = 1;
+  // Cluster false alarm probability [] [0|7]
+  optional Cluster_pdh0Type cluster_pdh0 = 2;
+  // Bit field indicating various properties of Cluster [] [0|255]
+  optional ClusterPropertiesType cluster_properties = 3;
+  // Bit field indicating reason for invalid cluster [] [0|63]
+  optional ClusterInvalidReasonType cluster_invalid_reason = 4;
+}
+
+message Cluster_2_quality_702 {
+  enum Cluster_vrellat_rmsType {
+    CLUSTER_VRELLAT_RMS_0_005_M_S = 0;
+    CLUSTER_VRELLAT_RMS_0_006_M_S = 1;
+    CLUSTER_VRELLAT_RMS_0_008_M_S = 2;
+    CLUSTER_VRELLAT_RMS_0_011_M_S = 3;
+    CLUSTER_VRELLAT_RMS_0_014_M_S = 4;
+    CLUSTER_VRELLAT_RMS_0_018_M_S = 5;
+    CLUSTER_VRELLAT_RMS_0_023_M_S = 6;
+    CLUSTER_VRELLAT_RMS_0_029_M_S = 7;
+    CLUSTER_VRELLAT_RMS_0_038_M_S = 8;
+    CLUSTER_VRELLAT_RMS_0_049_M_S = 9;
+    CLUSTER_VRELLAT_RMS_0_063_M_S = 10;
+    CLUSTER_VRELLAT_RMS_0_081_M_S = 11;
+    CLUSTER_VRELLAT_RMS_0_105_M_S = 12;
+    CLUSTER_VRELLAT_RMS_0_135_M_S = 13;
+    CLUSTER_VRELLAT_RMS_0_174_M_S = 14;
+    CLUSTER_VRELLAT_RMS_0_224_M_S = 15;
+    CLUSTER_VRELLAT_RMS_0_288_M_S = 16;
+    CLUSTER_VRELLAT_RMS_0_371_M_S = 17;
+    CLUSTER_VRELLAT_RMS_0_478_M_S = 18;
+    CLUSTER_VRELLAT_RMS_0_616_M_S = 19;
+    CLUSTER_VRELLAT_RMS_0_794_M_S = 20;
+    CLUSTER_VRELLAT_RMS_1_023_M_S = 21;
+    CLUSTER_VRELLAT_RMS_1_317_M_S = 22;
+    CLUSTER_VRELLAT_RMS_1_697_M_S = 23;
+    CLUSTER_VRELLAT_RMS_2_187_M_S = 24;
+    CLUSTER_VRELLAT_RMS_2_817_M_S = 25;
+    CLUSTER_VRELLAT_RMS_3_630_M_S = 26;
+    CLUSTER_VRELLAT_RMS_4_676_M_S = 27;
+    CLUSTER_VRELLAT_RMS_6_025_M_S = 28;
+    CLUSTER_VRELLAT_RMS_7_762_M_S = 29;
+    CLUSTER_VRELLAT_RMS_10_000_M_S = 30;
+    CLUSTER_VRELLAT_RMS_INVALID = 31;
+  }
+  enum Cluster_invalidstateType {
+    CLUSTER_INVALIDSTATE_VALID = 0;
+    CLUSTER_INVALIDSTATE_INVALID_WITH_TOO_LOW_RCS = 1;
+    CLUSTER_INVALIDSTATE_INVALID_NEARFIELD = 2;
+    CLUSTER_INVALIDSTATE_INVALID_FAR_NOT_CONFIRMED = 3;
+    CLUSTER_INVALIDSTATE_VALID_WITH_LOW_RCS = 4;
+    CLUSTER_INVALIDSTATE_RESERVED0 = 5;
+    CLUSTER_INVALIDSTATE_INVALID_MIRROR = 6;
+    CLUSTER_INVALIDSTATE_INVALID_OUTSIDE_FIELD_OF_VIEW = 7;
+    CLUSTER_INVALIDSTATE_VALID_WITH_ELEVATION = 8;
+    CLUSTER_INVALIDSTATE_VALID_CHILD = 9;
+    CLUSTER_INVALIDSTATE_VALID_50_DEG_ARTEFACT = 10;
+    CLUSTER_INVALIDSTATE_VALID_BUT_NO_LOCAL_MAXIMUM = 11;
+    CLUSTER_INVALIDSTATE_VALID_ARTEFACT = 12;
+    CLUSTER_INVALIDSTATE_RESERVED1 = 13;
+    CLUSTER_INVALIDSTATE_INVALID_HARMONICS = 14;
+    CLUSTER_INVALIDSTATE_VALID_NEAR_ABOVE_95_M = 15;
+    CLUSTER_INVALIDSTATE_VALID_MULTI_TARGET = 16;
+    CLUSTER_INVALIDSTATE_VALID_SUSPICIOUS_ANGLE = 17;
+  }
+  enum Cluster_distlat_rmsType {
+    CLUSTER_DISTLAT_RMS_0_005_M = 0;
+    CLUSTER_DISTLAT_RMS_0_006_M = 1;
+    CLUSTER_DISTLAT_RMS_0_008_M = 2;
+    CLUSTER_DISTLAT_RMS_0_011_M = 3;
+    CLUSTER_DISTLAT_RMS_0_014_M = 4;
+    CLUSTER_DISTLAT_RMS_0_018_M = 5;
+    CLUSTER_DISTLAT_RMS_0_023_M = 6;
+    CLUSTER_DISTLAT_RMS_0_029_M = 7;
+    CLUSTER_DISTLAT_RMS_0_038_M = 8;
+    CLUSTER_DISTLAT_RMS_0_049_M = 9;
+    CLUSTER_DISTLAT_RMS_0_063_M = 10;
+    CLUSTER_DISTLAT_RMS_0_081_M = 11;
+    CLUSTER_DISTLAT_RMS_0_105_M = 12;
+    CLUSTER_DISTLAT_RMS_0_135_M = 13;
+    CLUSTER_DISTLAT_RMS_0_174_M = 14;
+    CLUSTER_DISTLAT_RMS_0_224_M = 15;
+    CLUSTER_DISTLAT_RMS_0_288_M = 16;
+    CLUSTER_DISTLAT_RMS_0_371_M = 17;
+    CLUSTER_DISTLAT_RMS_0_478_M = 18;
+    CLUSTER_DISTLAT_RMS_0_616_M = 19;
+    CLUSTER_DISTLAT_RMS_0_794_M = 20;
+    CLUSTER_DISTLAT_RMS_1_023_M = 21;
+    CLUSTER_DISTLAT_RMS_1_317_M = 22;
+    CLUSTER_DISTLAT_RMS_1_697_M = 23;
+    CLUSTER_DISTLAT_RMS_2_187_M = 24;
+    CLUSTER_DISTLAT_RMS_2_817_M = 25;
+    CLUSTER_DISTLAT_RMS_3_630_M = 26;
+    CLUSTER_DISTLAT_RMS_4_676_M = 27;
+    CLUSTER_DISTLAT_RMS_6_025_M = 28;
+    CLUSTER_DISTLAT_RMS_7_762_M = 29;
+    CLUSTER_DISTLAT_RMS_10_000_M = 30;
+    CLUSTER_DISTLAT_RMS_INVALID = 31;
+  }
+  enum Cluster_distlong_rmsType {
+    CLUSTER_DISTLONG_RMS_0_005_M = 0;
+    CLUSTER_DISTLONG_RMS_0_006_M = 1;
+    CLUSTER_DISTLONG_RMS_0_008_M = 2;
+    CLUSTER_DISTLONG_RMS_0_011_M = 3;
+    CLUSTER_DISTLONG_RMS_0_014_M = 4;
+    CLUSTER_DISTLONG_RMS_0_018_M = 5;
+    CLUSTER_DISTLONG_RMS_0_023_M = 6;
+    CLUSTER_DISTLONG_RMS_0_029_M = 7;
+    CLUSTER_DISTLONG_RMS_0_038_M = 8;
+    CLUSTER_DISTLONG_RMS_0_049_M = 9;
+    CLUSTER_DISTLONG_RMS_0_063_M = 10;
+    CLUSTER_DISTLONG_RMS_0_081_M = 11;
+    CLUSTER_DISTLONG_RMS_0_105_M = 12;
+    CLUSTER_DISTLONG_RMS_0_135_M = 13;
+    CLUSTER_DISTLONG_RMS_0_174_M = 14;
+    CLUSTER_DISTLONG_RMS_0_224_M = 15;
+    CLUSTER_DISTLONG_RMS_0_288_M = 16;
+    CLUSTER_DISTLONG_RMS_0_371_M = 17;
+    CLUSTER_DISTLONG_RMS_0_478_M = 18;
+    CLUSTER_DISTLONG_RMS_0_616_M = 19;
+    CLUSTER_DISTLONG_RMS_0_794_M = 20;
+    CLUSTER_DISTLONG_RMS_1_023_M = 21;
+    CLUSTER_DISTLONG_RMS_1_317_M = 22;
+    CLUSTER_DISTLONG_RMS_1_697_M = 23;
+    CLUSTER_DISTLONG_RMS_2_187_M = 24;
+    CLUSTER_DISTLONG_RMS_2_817_M = 25;
+    CLUSTER_DISTLONG_RMS_3_630_M = 26;
+    CLUSTER_DISTLONG_RMS_4_676_M = 27;
+    CLUSTER_DISTLONG_RMS_6_025_M = 28;
+    CLUSTER_DISTLONG_RMS_7_762_M = 29;
+    CLUSTER_DISTLONG_RMS_10_000_M = 30;
+    CLUSTER_DISTLONG_RMS_INVALID = 31;
+  }
+  enum Cluster_vrellong_rmsType {
+    CLUSTER_VRELLONG_RMS_0_005_M_S = 0;
+    CLUSTER_VRELLONG_RMS_0_006_M_S = 1;
+    CLUSTER_VRELLONG_RMS_0_008_M_S = 2;
+    CLUSTER_VRELLONG_RMS_0_011_M_S = 3;
+    CLUSTER_VRELLONG_RMS_0_014_M_S = 4;
+    CLUSTER_VRELLONG_RMS_0_018_M_S = 5;
+    CLUSTER_VRELLONG_RMS_0_023_M_S = 6;
+    CLUSTER_VRELLONG_RMS_0_029_M_S = 7;
+    CLUSTER_VRELLONG_RMS_0_038_M_S = 8;
+    CLUSTER_VRELLONG_RMS_0_049_M_S = 9;
+    CLUSTER_VRELLONG_RMS_0_063_M_S = 10;
+    CLUSTER_VRELLONG_RMS_0_081_M_S = 11;
+    CLUSTER_VRELLONG_RMS_0_105_M_S = 12;
+    CLUSTER_VRELLONG_RMS_0_135_M_S = 13;
+    CLUSTER_VRELLONG_RMS_0_174_M_S = 14;
+    CLUSTER_VRELLONG_RMS_0_224_M_S = 15;
+    CLUSTER_VRELLONG_RMS_0_288_M_S = 16;
+    CLUSTER_VRELLONG_RMS_0_371_M_S = 17;
+    CLUSTER_VRELLONG_RMS_0_478_M_S = 18;
+    CLUSTER_VRELLONG_RMS_0_616_M_S = 19;
+    CLUSTER_VRELLONG_RMS_0_794_M_S = 20;
+    CLUSTER_VRELLONG_RMS_1_023_M_S = 21;
+    CLUSTER_VRELLONG_RMS_1_317_M_S = 22;
+    CLUSTER_VRELLONG_RMS_1_697_M_S = 23;
+    CLUSTER_VRELLONG_RMS_2_187_M_S = 24;
+    CLUSTER_VRELLONG_RMS_2_817_M_S = 25;
+    CLUSTER_VRELLONG_RMS_3_630_M_S = 26;
+    CLUSTER_VRELLONG_RMS_4_676_M_S = 27;
+    CLUSTER_VRELLONG_RMS_6_025_M_S = 28;
+    CLUSTER_VRELLONG_RMS_7_762_M_S = 29;
+    CLUSTER_VRELLONG_RMS_10_000_M_S = 30;
+    CLUSTER_VRELLONG_RMS_INVALID = 31;
+  }
+  enum Cluster_pdh0Type {
+    CLUSTER_PDH0_INVALID = 0;
+    CLUSTER_PDH0_25 = 1;
+    CLUSTER_PDH0_50 = 2;
+    CLUSTER_PDH0_75 = 3;
+    CLUSTER_PDH0_90 = 4;
+    CLUSTER_PDH0_99 = 5;
+    CLUSTER_PDH0_99_9 = 6;
+    CLUSTER_PDH0_100 = 7;
+  }
+  enum Cluster_ambigstateType {
+    CLUSTER_AMBIGSTATE_INVALID = 0;
+    CLUSTER_AMBIGSTATE_AMBIGUOUS = 1;
+    CLUSTER_AMBIGSTATE_STAGGERED_RAMP = 2;
+    CLUSTER_AMBIGSTATE_UNAMBIGUOUS = 3;
+    CLUSTER_AMBIGSTATE_STATIONARY_CANDIDATE = 4;
+  }
+  // Cluster number [1] [0|255]
+  optional int32 cluster_id = 1;
+  // Cluster relative lateral velocity standard deviation [m/s] [0|31]
+  optional Cluster_vrellat_rmsType cluster_vrellat_rms = 2;
+  // Cluster invalid state [] [0|31]
+  optional Cluster_invalidstateType cluster_invalidstate = 3;
+  // Cluster lateral distance standard deviation [m] [0|31]
+  optional Cluster_distlat_rmsType cluster_distlat_rms = 4;
+  // Cluster longitudinal distance standard deviation [m] [0|31]
+  optional Cluster_distlong_rmsType cluster_distlong_rms = 5;
+  // Cluster relative longitudinal velocity standard deviation [m/s] [0|31]
+  optional Cluster_vrellong_rmsType cluster_vrellong_rms = 6;
+  // Cluster false alarm probability [] [0|7]
+  optional Cluster_pdh0Type cluster_pdh0 = 7;
+  // Cluster Doppler ambiguity status [1] [0|7]
+  optional Cluster_ambigstateType cluster_ambigstate = 8;
+}
+
+message Obj_4_warning_60e {
+  // Region bit field with collision detection [] [0|255]
+  optional int32 obj_colldetregionbitfield = 1;
+  // Object ID [] [0|255]
+  optional int32 obj_id = 2;
+}
+
+message Obj_3_extended_60d {
+  enum Obj_classType {
+    OBJ_CLASS_POINT = 0;
+    OBJ_CLASS_CAR = 1;
+    OBJ_CLASS_TRUCK = 2;
+    OBJ_CLASS_PEDESTRIAN = 3;
+    OBJ_CLASS_MOTORCYCLE = 4;
+    OBJ_CLASS_BICYCLE = 5;
+    OBJ_CLASS_WIDE = 6;
+    OBJ_CLASS_DESCRIPTION_FOR_THE_VALUE_0X7 = 7;
+  }
+  // Object classification [] [0|7]
+  optional Obj_classType obj_class = 1;
+  // Object relative lateral acceleration [m/s\B2] [-2.5|2.61]
+  optional double obj_arellat = 2;
+  // Object ID [] [0|255]
+  optional int32 obj_id = 3;
+  // Object orientation angle [deg] [-180|229.2]
+  optional double obj_orientationangle = 4;
+  // Object width [m] [0|51]
+  optional double obj_width = 5;
+  // Object length [m] [0|51]
+  optional double obj_length = 6;
+  // Object relative longitudinal acceleration [m/s\B2] [-10|10.47]
+  optional double obj_arellong = 7;
+}
+
+message Obj_0_status_60a {
+  // Number of Objects sent [1] [0|255]
+  optional int32 obj_nofobjects = 1;
+  // Measurement Counter [] [0|65535]
+  optional int32 obj_meascounter = 2;
+  // Object CAN Interface Version Number [] [0|16]
+  optional int32 obj_interfaceversion = 3;
+}
+
+message Obj_2_quality_60c {
+  enum Obj_probofexistType {
+    OBJ_PROBOFEXIST_INVALID = 0;
+    OBJ_PROBOFEXIST_25 = 1;
+    OBJ_PROBOFEXIST_50 = 2;
+    OBJ_PROBOFEXIST_75 = 3;
+    OBJ_PROBOFEXIST_90 = 4;
+    OBJ_PROBOFEXIST_99 = 5;
+    OBJ_PROBOFEXIST_99_9 = 6;
+    OBJ_PROBOFEXIST_100 = 7;
+  }
+  enum Obj_measstateType {
+    OBJ_MEASSTATE_DELETED = 0;
+    OBJ_MEASSTATE_NEW = 1;
+    OBJ_MEASSTATE_MEASURED = 2;
+    OBJ_MEASSTATE_PREDICTED = 3;
+    OBJ_MEASSTATE_DELETED_FOR_MERGE = 4;
+    OBJ_MEASSTATE_NEW_FROM_MERGE = 5;
+  }
+  enum Obj_arellong_rmsType {
+    OBJ_ARELLONG_RMS_0_005_M_S = 0;
+    OBJ_ARELLONG_RMS_0_006_M_S = 1;
+    OBJ_ARELLONG_RMS_0_008_M_S = 2;
+    OBJ_ARELLONG_RMS_0_011_M_S = 3;
+    OBJ_ARELLONG_RMS_0_014_M_S = 4;
+    OBJ_ARELLONG_RMS_0_018_M_S = 5;
+    OBJ_ARELLONG_RMS_0_023_M_S = 6;
+    OBJ_ARELLONG_RMS_0_029_M_S = 7;
+    OBJ_ARELLONG_RMS_0_038_M_S = 8;
+    OBJ_ARELLONG_RMS_0_049_M_S = 9;
+    OBJ_ARELLONG_RMS_0_063_M_S = 10;
+    OBJ_ARELLONG_RMS_0_081_M_S = 11;
+    OBJ_ARELLONG_RMS_0_105_M_S = 12;
+    OBJ_ARELLONG_RMS_0_135_M_S = 13;
+    OBJ_ARELLONG_RMS_0_174_M_S = 14;
+    OBJ_ARELLONG_RMS_0_224_M_S = 15;
+    OBJ_ARELLONG_RMS_0_288_M_S = 16;
+    OBJ_ARELLONG_RMS_0_371_M_S = 17;
+    OBJ_ARELLONG_RMS_0_478_M_S = 18;
+    OBJ_ARELLONG_RMS_0_616_M_S = 19;
+    OBJ_ARELLONG_RMS_0_794_M_S = 20;
+    OBJ_ARELLONG_RMS_1_023_M_S = 21;
+    OBJ_ARELLONG_RMS_1_317_M_S = 22;
+    OBJ_ARELLONG_RMS_1_697_M_S = 23;
+    OBJ_ARELLONG_RMS_2_187_M_S = 24;
+    OBJ_ARELLONG_RMS_2_817_M_S = 25;
+    OBJ_ARELLONG_RMS_3_630_M_S = 26;
+    OBJ_ARELLONG_RMS_4_676_M_S = 27;
+    OBJ_ARELLONG_RMS_6_025_M_S = 28;
+    OBJ_ARELLONG_RMS_7_762_M_S = 29;
+    OBJ_ARELLONG_RMS_10_000_M_S = 30;
+    OBJ_ARELLONG_RMS_INVALID = 31;
+  }
+  enum Obj_arellat_rmsType {
+    OBJ_ARELLAT_RMS_0_005_M_S = 0;
+    OBJ_ARELLAT_RMS_0_006_M_S = 1;
+    OBJ_ARELLAT_RMS_0_008_M_S = 2;
+    OBJ_ARELLAT_RMS_0_011_M_S = 3;
+    OBJ_ARELLAT_RMS_0_014_M_S = 4;
+    OBJ_ARELLAT_RMS_0_018_M_S = 5;
+    OBJ_ARELLAT_RMS_0_023_M_S = 6;
+    OBJ_ARELLAT_RMS_0_029_M_S = 7;
+    OBJ_ARELLAT_RMS_0_038_M_S = 8;
+    OBJ_ARELLAT_RMS_0_049_M_S = 9;
+    OBJ_ARELLAT_RMS_0_063_M_S = 10;
+    OBJ_ARELLAT_RMS_0_081_M_S = 11;
+    OBJ_ARELLAT_RMS_0_105_M_S = 12;
+    OBJ_ARELLAT_RMS_0_135_M_S = 13;
+    OBJ_ARELLAT_RMS_0_174_M_S = 14;
+    OBJ_ARELLAT_RMS_0_224_M_S = 15;
+    OBJ_ARELLAT_RMS_0_288_M_S = 16;
+    OBJ_ARELLAT_RMS_0_371_M_S = 17;
+    OBJ_ARELLAT_RMS_0_478_M_S = 18;
+    OBJ_ARELLAT_RMS_0_616_M_S = 19;
+    OBJ_ARELLAT_RMS_0_794_M_S = 20;
+    OBJ_ARELLAT_RMS_1_023_M_S = 21;
+    OBJ_ARELLAT_RMS_1_317_M_S = 22;
+    OBJ_ARELLAT_RMS_1_697_M_S = 23;
+    OBJ_ARELLAT_RMS_2_187_M_S = 24;
+    OBJ_ARELLAT_RMS_2_817_M_S = 25;
+    OBJ_ARELLAT_RMS_3_630_M_S = 26;
+    OBJ_ARELLAT_RMS_4_676_M_S = 27;
+    OBJ_ARELLAT_RMS_6_025_M_S = 28;
+    OBJ_ARELLAT_RMS_7_762_M_S = 29;
+    OBJ_ARELLAT_RMS_10_000_M_S = 30;
+    OBJ_ARELLAT_RMS_INVALID = 31;
+  }
+  enum Obj_vrellong_rmsType {
+    OBJ_VRELLONG_RMS_0_005_M_S = 0;
+    OBJ_VRELLONG_RMS_0_006_M_S = 1;
+    OBJ_VRELLONG_RMS_0_008_M_S = 2;
+    OBJ_VRELLONG_RMS_0_011_M_S = 3;
+    OBJ_VRELLONG_RMS_0_014_M_S = 4;
+    OBJ_VRELLONG_RMS_0_018_M_S = 5;
+    OBJ_VRELLONG_RMS_0_023_M_S = 6;
+    OBJ_VRELLONG_RMS_0_029_M_S = 7;
+    OBJ_VRELLONG_RMS_0_038_M_S = 8;
+    OBJ_VRELLONG_RMS_0_049_M_S = 9;
+    OBJ_VRELLONG_RMS_0_063_M_S = 10;
+    OBJ_VRELLONG_RMS_0_081_M_S = 11;
+    OBJ_VRELLONG_RMS_0_105_M_S = 12;
+    OBJ_VRELLONG_RMS_0_135_M_S = 13;
+    OBJ_VRELLONG_RMS_0_174_M_S = 14;
+    OBJ_VRELLONG_RMS_0_224_M_S = 15;
+    OBJ_VRELLONG_RMS_0_288_M_S = 16;
+    OBJ_VRELLONG_RMS_0_371_M_S = 17;
+    OBJ_VRELLONG_RMS_0_478_M_S = 18;
+    OBJ_VRELLONG_RMS_0_616_M_S = 19;
+    OBJ_VRELLONG_RMS_0_794_M_S = 20;
+    OBJ_VRELLONG_RMS_1_023_M_S = 21;
+    OBJ_VRELLONG_RMS_1_317_M_S = 22;
+    OBJ_VRELLONG_RMS_1_697_M_S = 23;
+    OBJ_VRELLONG_RMS_2_187_M_S = 24;
+    OBJ_VRELLONG_RMS_2_817_M_S = 25;
+    OBJ_VRELLONG_RMS_3_630_M_S = 26;
+    OBJ_VRELLONG_RMS_4_676_M_S = 27;
+    OBJ_VRELLONG_RMS_6_025_M_S = 28;
+    OBJ_VRELLONG_RMS_7_762_M_S = 29;
+    OBJ_VRELLONG_RMS_10_000_M_S = 30;
+    OBJ_VRELLONG_RMS_INVALID = 31;
+  }
+  enum Obj_vrellat_rmsType {
+    OBJ_VRELLAT_RMS_0_005_M_S = 0;
+    OBJ_VRELLAT_RMS_0_006_M_S = 1;
+    OBJ_VRELLAT_RMS_0_008_M_S = 2;
+    OBJ_VRELLAT_RMS_0_011_M_S = 3;
+    OBJ_VRELLAT_RMS_0_014_M_S = 4;
+    OBJ_VRELLAT_RMS_0_018_M_S = 5;
+    OBJ_VRELLAT_RMS_0_023_M_S = 6;
+    OBJ_VRELLAT_RMS_0_029_M_S = 7;
+    OBJ_VRELLAT_RMS_0_038_M_S = 8;
+    OBJ_VRELLAT_RMS_0_049_M_S = 9;
+    OBJ_VRELLAT_RMS_0_063_M_S = 10;
+    OBJ_VRELLAT_RMS_0_081_M_S = 11;
+    OBJ_VRELLAT_RMS_0_105_M_S = 12;
+    OBJ_VRELLAT_RMS_0_135_M_S = 13;
+    OBJ_VRELLAT_RMS_0_174_M_S = 14;
+    OBJ_VRELLAT_RMS_0_224_M_S = 15;
+    OBJ_VRELLAT_RMS_0_288_M_S = 16;
+    OBJ_VRELLAT_RMS_0_371_M_S = 17;
+    OBJ_VRELLAT_RMS_0_478_M_S = 18;
+    OBJ_VRELLAT_RMS_0_616_M_S = 19;
+    OBJ_VRELLAT_RMS_0_794_M_S = 20;
+    OBJ_VRELLAT_RMS_1_023_M_S = 21;
+    OBJ_VRELLAT_RMS_1_317_M_S = 22;
+    OBJ_VRELLAT_RMS_1_697_M_S = 23;
+    OBJ_VRELLAT_RMS_2_187_M_S = 24;
+    OBJ_VRELLAT_RMS_2_817_M_S = 25;
+    OBJ_VRELLAT_RMS_3_630_M_S = 26;
+    OBJ_VRELLAT_RMS_4_676_M_S = 27;
+    OBJ_VRELLAT_RMS_6_025_M_S = 28;
+    OBJ_VRELLAT_RMS_7_762_M_S = 29;
+    OBJ_VRELLAT_RMS_10_000_M_S = 30;
+    OBJ_VRELLAT_RMS_INVALID = 31;
+  }
+  enum Obj_orientation_rmsType {
+    OBJ_ORIENTATION_RMS_0_005_DEG = 0;
+    OBJ_ORIENTATION_RMS_0_007_DEG = 1;
+    OBJ_ORIENTATION_RMS_0_010_DEG = 2;
+    OBJ_ORIENTATION_RMS_0_014_DEG = 3;
+    OBJ_ORIENTATION_RMS_0_020_DEG = 4;
+    OBJ_ORIENTATION_RMS_0_029_DEG = 5;
+    OBJ_ORIENTATION_RMS_0_041_DEG = 6;
+    OBJ_ORIENTATION_RMS_0_058_DEG = 7;
+    OBJ_ORIENTATION_RMS_0_082_DEG = 8;
+    OBJ_ORIENTATION_RMS_0_116_DEG = 9;
+    OBJ_ORIENTATION_RMS_0_165_DEG = 10;
+    OBJ_ORIENTATION_RMS_0_234_DEG = 11;
+    OBJ_ORIENTATION_RMS_0_332_DEG = 12;
+    OBJ_ORIENTATION_RMS_0_471_DEG = 13;
+    OBJ_ORIENTATION_RMS_0_669_DEG = 14;
+    OBJ_ORIENTATION_RMS_0_949_DEG = 15;
+    OBJ_ORIENTATION_RMS_1_346_DEG = 16;
+    OBJ_ORIENTATION_RMS_1_909_DEG = 17;
+    OBJ_ORIENTATION_RMS_2_709_DEG = 18;
+    OBJ_ORIENTATION_RMS_3_843_DEG = 19;
+    OBJ_ORIENTATION_RMS_5_451_DEG = 20;
+    OBJ_ORIENTATION_RMS_7_734_DEG = 21;
+    OBJ_ORIENTATION_RMS_10_971_DEG = 22;
+    OBJ_ORIENTATION_RMS_15_565_DEG = 23;
+    OBJ_ORIENTATION_RMS_22_081_DEG = 24;
+    OBJ_ORIENTATION_RMS_31_325_DEG = 25;
+    OBJ_ORIENTATION_RMS_44_439_DEG = 26;
+    OBJ_ORIENTATION_RMS_63_044_DEG = 27;
+    OBJ_ORIENTATION_RMS_89_437_DEG = 28;
+    OBJ_ORIENTATION_RMS_126_881_DEG = 29;
+    OBJ_ORIENTATION_RMS_180_000_DEG = 30;
+    OBJ_ORIENTATION_RMS_INVALID = 31;
+  }
+  enum Obj_distlong_rmsType {
+    OBJ_DISTLONG_RMS_0_005_M = 0;
+    OBJ_DISTLONG_RMS_0_006_M = 1;
+    OBJ_DISTLONG_RMS_0_008_M = 2;
+    OBJ_DISTLONG_RMS_0_011_M = 3;
+    OBJ_DISTLONG_RMS_0_014_M = 4;
+    OBJ_DISTLONG_RMS_0_018_M = 5;
+    OBJ_DISTLONG_RMS_0_023_M = 6;
+    OBJ_DISTLONG_RMS_0_029_M = 7;
+    OBJ_DISTLONG_RMS_0_038_M = 8;
+    OBJ_DISTLONG_RMS_0_049_M = 9;
+    OBJ_DISTLONG_RMS_0_063_M = 10;
+    OBJ_DISTLONG_RMS_0_081_M = 11;
+    OBJ_DISTLONG_RMS_0_105_M = 12;
+    OBJ_DISTLONG_RMS_0_135_M = 13;
+    OBJ_DISTLONG_RMS_0_174_M = 14;
+    OBJ_DISTLONG_RMS_0_224_M = 15;
+    OBJ_DISTLONG_RMS_0_288_M = 16;
+    OBJ_DISTLONG_RMS_0_371_M = 17;
+    OBJ_DISTLONG_RMS_0_478_M = 18;
+    OBJ_DISTLONG_RMS_0_616_M = 19;
+    OBJ_DISTLONG_RMS_0_794_M = 20;
+    OBJ_DISTLONG_RMS_1_023_M = 21;
+    OBJ_DISTLONG_RMS_1_317_M = 22;
+    OBJ_DISTLONG_RMS_1_697_M = 23;
+    OBJ_DISTLONG_RMS_2_187_M = 24;
+    OBJ_DISTLONG_RMS_2_817_M = 25;
+    OBJ_DISTLONG_RMS_3_630_M = 26;
+    OBJ_DISTLONG_RMS_4_676_M = 27;
+    OBJ_DISTLONG_RMS_6_025_M = 28;
+    OBJ_DISTLONG_RMS_7_762_M = 29;
+    OBJ_DISTLONG_RMS_10_000_M = 30;
+    OBJ_DISTLONG_RMS_INVALID = 31;
+  }
+  enum Obj_distlat_rmsType {
+    OBJ_DISTLAT_RMS_0_005_M = 0;
+    OBJ_DISTLAT_RMS_0_006_M = 1;
+    OBJ_DISTLAT_RMS_0_008_M = 2;
+    OBJ_DISTLAT_RMS_0_011_M = 3;
+    OBJ_DISTLAT_RMS_0_014_M = 4;
+    OBJ_DISTLAT_RMS_0_018_M = 5;
+    OBJ_DISTLAT_RMS_0_023_M = 6;
+    OBJ_DISTLAT_RMS_0_029_M = 7;
+    OBJ_DISTLAT_RMS_0_038_M = 8;
+    OBJ_DISTLAT_RMS_0_049_M = 9;
+    OBJ_DISTLAT_RMS_0_063_M = 10;
+    OBJ_DISTLAT_RMS_0_081_M = 11;
+    OBJ_DISTLAT_RMS_0_105_M = 12;
+    OBJ_DISTLAT_RMS_0_135_M = 13;
+    OBJ_DISTLAT_RMS_0_174_M = 14;
+    OBJ_DISTLAT_RMS_0_224_M = 15;
+    OBJ_DISTLAT_RMS_0_288_M = 16;
+    OBJ_DISTLAT_RMS_0_371_M = 17;
+    OBJ_DISTLAT_RMS_0_478_M = 18;
+    OBJ_DISTLAT_RMS_0_616_M = 19;
+    OBJ_DISTLAT_RMS_0_794_M = 20;
+    OBJ_DISTLAT_RMS_1_023_M = 21;
+    OBJ_DISTLAT_RMS_1_317_M = 22;
+    OBJ_DISTLAT_RMS_1_697_M = 23;
+    OBJ_DISTLAT_RMS_2_187_M = 24;
+    OBJ_DISTLAT_RMS_2_817_M = 25;
+    OBJ_DISTLAT_RMS_3_630_M = 26;
+    OBJ_DISTLAT_RMS_4_676_M = 27;
+    OBJ_DISTLAT_RMS_6_025_M = 28;
+    OBJ_DISTLAT_RMS_7_762_M = 29;
+    OBJ_DISTLAT_RMS_10_000_M = 30;
+    OBJ_DISTLAT_RMS_INVALID = 31;
+  }
+  // Object probability of existence [] [0|7]
+  optional Obj_probofexistType obj_probofexist = 1;
+  // Object measurement status [] [0|7]
+  optional Obj_measstateType obj_measstate = 2;
+  // Object relative longitudinal acceleration standard deviation [] [0|31]
+  optional Obj_arellong_rmsType obj_arellong_rms = 3;
+  // Object relative lateral acceleration standard deviation [] [0|31]
+  optional Obj_arellat_rmsType obj_arellat_rms = 4;
+  // Object relative longitudinal velocity standard deviation [] [0|31]
+  optional Obj_vrellong_rmsType obj_vrellong_rms = 5;
+  // Object relative lateral velocity standard deviation [] [0|31]
+  optional Obj_vrellat_rmsType obj_vrellat_rms = 6;
+  // Object orientation angle [] [0|31]
+  optional Obj_orientation_rmsType obj_orientation_rms = 7;
+  // Object longitudinal distance standard deviation [] [0|31]
+  optional Obj_distlong_rmsType obj_distlong_rms = 8;
+  // Object lateral distance standard deviation [] [0|31]
+  optional Obj_distlat_rmsType obj_distlat_rms = 9;
+  // Object ID [] [0|255]
+  optional int32 obj_id = 10;
+}
+
+message Obj_1_general_60b {
+  enum Obj_dynpropType {
+    OBJ_DYNPROP_MOVING = 0;
+    OBJ_DYNPROP_STATIONARY = 1;
+    OBJ_DYNPROP_ONCOMING = 2;
+    OBJ_DYNPROP_STATIONARY_CANDIDATE = 3;
+    OBJ_DYNPROP_UNKNOWN = 4;
+    OBJ_DYNPROP_CROSSING_STATIONARY = 5;
+    OBJ_DYNPROP_CROSSING_MOVING = 6;
+    OBJ_DYNPROP_STOPPED = 7;
+  }
+  // Object dynamic property [] [0|7]
+  optional Obj_dynpropType obj_dynprop = 1;
+  // Object RCS value (radar cross section) [dBm\B2] [-64|63.5]
+  optional double obj_rcs = 2;
+  // Object relative lateral velocity [m/s] [-64|63.75]
+  optional double obj_vrellat = 3;
+  // Object ID [] [0|255]
+  optional int32 obj_id = 4;
+  // Object longitudinal displacement [m] [-500|1138.2]
+  optional double obj_distlong = 5;
+  // Object relative longitudinal velocity [m/s] [-128|127.75]
+  optional double obj_vrellong = 6;
+  // Object lateral displacement [m] [-204.6|204.8]
+  optional double obj_distlat = 7;
+}
+
+message Cluster_0_status_600 {
+  // Measurement counter [] [0|65535]
+  optional int32 cluster_meascounter = 1;
+  // Number of valid Clusters in near range scan [] [0|255]
+  optional int32 cluster_nofclustersnear = 2;
+  // Number of valid Clusters in far range scan [] [0|255]
+  optional int32 cluster_nofclustersfar = 3;
+  // Cluster CAN Interface Version Number [] [0|15]
+  optional int32 cluster_interfaceversion = 4;
+}
+
+message Colldetregionstate_402 {
+  enum Colldetregstate_warninglevelType {
+    COLLDETREGSTATE_WARNINGLEVEL_NO_WARNING = 0;
+    COLLDETREGSTATE_WARNINGLEVEL_OBJECT_WARNING = 1;
+    COLLDETREGSTATE_WARNINGLEVEL_PRELIMINARY_WARNING = 2;
+    COLLDETREGSTATE_WARNINGLEVEL_WARNING_DEACTIVATED = 3;
+  }
+  // [] [0|3]
+  optional Colldetregstate_warninglevelType colldetregstate_warninglevel = 1;
+  // [] [0|255]
+  optional int32 colldetregstate_nofobjects = 2;
+  // [] [0|7]
+  optional int32 colldetregstate_regionid = 3;
+  // [m] [-204.6|204.8]
+  optional double colldetregstate_point2y = 4;
+  // [m] [-500|1138.2]
+  optional double colldetregstate_point2x = 5;
+  // [m] [-204.6|204.8]
+  optional double colldetregstate_point1y = 6;
+  // [m] [-500|1138.2]
+  optional double colldetregstate_point1x = 7;
+}
+
+message Colldetregioncfg_401 {
+  enum Colldetregcfg_activateType {
+    COLLDETREGCFG_ACTIVATE_INACTIVE = 0;
+    COLLDETREGCFG_ACTIVATE_ACTIVE = 1;
+  }
+  enum Colldetregcfg_coordinates_validType {
+    COLLDETREGCFG_COORDINATES_VALID_INVALID = 0;
+    COLLDETREGCFG_COORDINATES_VALID_VALID = 1;
+  }
+  // [] [0|1]
+  optional Colldetregcfg_activateType colldetregcfg_activate = 1;
+  // [] [0|1]
+  optional Colldetregcfg_coordinates_validType colldetregcfg_coordinates_valid =
+      2;
+  // [] [0|7]
+  optional int32 colldetregcfg_regionid = 3;
+  // [m] [-500|1138.2]
+  optional double colldetregcfg_point1x = 4;
+  // [m] [-204.6|204.8]
+  optional double colldetregcfg_point1y = 5;
+  // [m] [-500|1138.2]
+  optional double colldetregcfg_point2x = 6;
+  // [m] [-204.6|204.8]
+  optional double colldetregcfg_point2y = 7;
+}
+
+message Colldetcfg_400 {
+  enum Colldetcfg_clearregionsType {
+    COLLDETCFG_CLEARREGIONS_IDLE = 0;
+    COLLDETCFG_CLEARREGIONS_CLEAR_ALL_DEFINED_REGIONS = 1;
+  }
+  enum Colldetcfg_warningresetType {
+    COLLDETCFG_WARNINGRESET_IDLE = 0;
+    COLLDETCFG_WARNINGRESET_WARN_RESET = 1;
+  }
+  enum Colldetcfg_activateType {
+    COLLDETCFG_ACTIVATE_INACTIVE = 0;
+    COLLDETCFG_ACTIVATE_ACTIVE = 1;
+  }
+  enum Colldetcfg_mintime_validType {
+    COLLDETCFG_MINTIME_VALID_INVALID = 0;
+    COLLDETCFG_MINTIME_VALID_VALID = 1;
+  }
+  // [] [0|1]
+  optional Colldetcfg_clearregionsType colldetcfg_clearregions = 1;
+  // [] [0|1]
+  optional Colldetcfg_warningresetType colldetcfg_warningreset = 2;
+  // [] [0|1]
+  optional Colldetcfg_activateType colldetcfg_activate = 3;
+  // [] [0|1]
+  optional Colldetcfg_mintime_validType colldetcfg_mintime_valid = 4;
+  // [s] [0|25.5]
+  optional double colldetcfg_mindetecttime = 5;
+}
+
+message Colldetrelayctrl_8 {
+  // Region bit field for control relay [] [0|255]
+  optional int32 colldetrelayctrl_param = 1;
+}
+
+message Colldetstate_408 {
+  enum Colldetstate_activeType {
+    COLLDETSTATE_ACTIVE_INACTIVE = 0;
+    COLLDETSTATE_ACTIVE_ACTIVE = 1;
+  }
+  // [] [0|65535]
+  optional int32 colldetstate_meascounter = 1;
+  // [] [0|1]
+  optional Colldetstate_activeType colldetstate_active = 2;
+  // [] [0|15]
+  optional int32 colldetstate_nofregions = 3;
+  // [s] [0|25.5]
+  optional double colldetstate_mindetecttime = 4;
+}
+
+message Radar {
+  optional Radarstate_201 radarstate_201 = 1;                  // report message
+  optional Radarconfiguration_200 radarconfiguration_200 = 2;  // report message
+  optional Filterstate_header_203 filterstate_header_203 = 3;  // report message
+  optional Filtercfg_202 filtercfg_202 = 4;                    // report message
+  optional Filterstate_cfg_204 filterstate_cfg_204 = 5;        // report message
+  optional Speedinformation_300 speedinformation_300 = 6;      // report message
+  optional Yawrateinformation_301 yawrateinformation_301 = 7;  // report message
+  optional Versionid_700 versionid_700 = 8;                    // report message
+  optional Cluster_1_general_701 cluster_1_general_701 = 9;    // report message
+  optional Cluster_2_quality_702 cluster_2_quality_702 = 10;   // report message
+  optional Obj_4_warning_60e obj_4_warning_60e = 11;           // report message
+  optional Obj_3_extended_60d obj_3_extended_60d = 12;         // report message
+  optional Obj_0_status_60a obj_0_status_60a = 13;             // report message
+  optional Obj_2_quality_60c obj_2_quality_60c = 14;           // report message
+  optional Obj_1_general_60b obj_1_general_60b = 15;           // report message
+  optional Cluster_0_status_600 cluster_0_status_600 = 16;     // report message
+  optional Colldetregionstate_402 colldetregionstate_402 =
+      17;                                                   // report message
+  optional Colldetregioncfg_401 colldetregioncfg_401 = 18;  // report message
+  optional Colldetcfg_400 colldetcfg_400 = 19;              // report message
+  optional Colldetrelayctrl_8 colldetrelayctrl_8 = 20;      // report message
+  optional Colldetstate_408 colldetstate_408 = 21;          // report message
+  optional int32 frame_id = 22;
+  optional double timestamp = 23;
+}
+
+message Conti408 {
+  optional Radarstate_201 radarstate_201 = 1;                  // report message
+  optional Radarconfiguration_200 radarconfiguration_200 = 2;  // report message
+  optional Filterstate_header_203 filterstate_header_203 = 3;  // report message
+  optional Filtercfg_202 filtercfg_202 = 4;                    // report message
+  optional Filterstate_cfg_204 filterstate_cfg_204 = 5;        // report message
+  optional Speedinformation_300 speedinformation_300 = 6;      // report message
+  optional Yawrateinformation_301 yawrateinformation_301 = 7;  // report message
+  optional Versionid_700 versionid_700 = 8;                    // report message
+  optional Cluster_1_general_701 cluster_1_general_701 = 9;    // report message
+  optional Cluster_2_quality_702 cluster_2_quality_702 = 10;   // report message
+  optional Obj_4_warning_60e obj_4_warning_60e = 11;           // report message
+  optional Obj_3_extended_60d obj_3_extended_60d = 12;         // report message
+  optional Obj_0_status_60a obj_0_status_60a = 13;             // report message
+  optional Obj_2_quality_60c obj_2_quality_60c = 14;           // report message
+  optional Obj_1_general_60b obj_1_general_60b = 15;           // report message
+  optional Cluster_0_status_600 cluster_0_status_600 = 16;     // report message
+  optional Colldetregionstate_402 colldetregionstate_402 =
+      17;                                                   // report message
+  optional Colldetregioncfg_401 colldetregioncfg_401 = 18;  // report message
+  optional Colldetcfg_400 colldetcfg_400 = 19;              // report message
+  optional Colldetrelayctrl_8 colldetrelayctrl_8 = 20;      // report message
+  optional Colldetstate_408 colldetstate_408 = 21;          // report message
+  optional int32 frame_id = 22;
+  optional double timestamp = 23;
+}
+
+message Conti308 {
+  optional Radarstate_201 radarstate_201 = 1;                  // report message
+  optional Radarconfiguration_200 radarconfiguration_200 = 2;  // report message
+  optional Filterstate_header_203 filterstate_header_203 = 3;  // report message
+  optional Filtercfg_202 filtercfg_202 = 4;                    // report message
+  optional Filterstate_cfg_204 filterstate_cfg_204 = 5;        // report message
+  optional Speedinformation_300 speedinformation_300 = 6;      // report message
+  optional Yawrateinformation_301 yawrateinformation_301 = 7;  // report message
+  optional Versionid_700 versionid_700 = 8;                    // report message
+  optional Cluster_1_general_701 cluster_1_general_701 = 9;    // report message
+  optional Cluster_2_quality_702_308 cluster_2_quality_702 =
+      10;                                                   // report message
+  optional Obj_4_warning_60e obj_4_warning_60e = 11;        // report message
+  optional Obj_3_extended_60d obj_3_extended_60d = 12;      // report message
+  optional Obj_0_status_60a obj_0_status_60a = 13;          // report message
+  optional Obj_2_quality_60c obj_2_quality_60c = 14;        // report message
+  optional Obj_1_general_60b obj_1_general_60b = 15;        // report message
+  optional Cluster_0_status_600 cluster_0_status_600 = 16;  // report message
+  optional Colldetregionstate_402 colldetregionstate_402 =
+      17;                                                   // report message
+  optional Colldetregioncfg_401 colldetregioncfg_401 = 18;  // report message
+  optional Colldetcfg_400 colldetcfg_400 = 19;              // report message
+  optional Colldetrelayctrl_8 colldetrelayctrl_8 = 20;      // report message
+  optional Colldetstate_408 colldetstate_408 = 21;          // report message
+  optional int32 frame_id = 22;
+  optional double timestamp = 23;
+}

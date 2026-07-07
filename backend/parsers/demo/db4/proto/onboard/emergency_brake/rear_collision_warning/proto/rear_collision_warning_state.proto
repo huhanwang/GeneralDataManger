@@ -1,0 +1,38 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message RcwOutputProto {
+  optional bool request = 1;
+  optional int32 delayed_exit_frame_count = 2;
+  optional int32 delayed_in_frame_count = 3;
+};
+
+message RearCollisionWarningStateProto {
+  optional LiteHeader header = 1;
+
+  // RCW system state.
+  enum RcwSystemState {
+    RCW_OFF = 0;
+    RCW_ON = 1;
+    RCW_ERROR = 2;
+  }
+  optional RcwSystemState system_state = 2;
+
+  // RCW function state.
+  enum RcwFunctionState {
+    RCW_STANDBY = 0;
+    RCW_ACTIVE = 1;
+  }
+  optional RcwFunctionState function_state = 3;
+
+  // RCW system util states.
+  optional bool prev_rcw_active = 4;
+  optional double last_rcw_active_finish_time = 5;
+  optional RcwOutputProto prev_rcw_output = 6;
+  optional double last_fault_time = 7;
+  optional string system_fault_message = 8;
+}

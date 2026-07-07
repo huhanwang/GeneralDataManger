@@ -1,0 +1,206 @@
+syntax = "proto2";
+
+package snoah.onbsim.perf;
+
+import "offboard/onb_sim/perf_service/server/db/proto/db.proto";
+import "offboard/onb_sim/common/proto/sim.proto";
+
+message GrpcHeader {
+  optional bool success = 1 [default = true];
+  optional string error_msg = 2;
+}
+
+message SubmitTaskRequestProto {
+  optional string run = 1;
+  optional int64 start_offset_in_seconds = 2;
+  optional int64 run_length_in_seconds = 3;
+  optional snoah.onbsim.SimType simulate_type = 15;
+  optional string branch_and_commit = 5;
+  optional string author = 7;
+  optional int64 priority = 8;
+  optional int64 engage_offset_in_seconds = 9 [default = 0];
+  optional int64 use_tb = 10;
+  optional string collect_ftrace_offset_in_seconds = 11;
+  optional string release_tag = 12 [default = "NULL"];
+  optional int64 base_task_id = 13 [default = 0];
+  optional string commit_message = 14;
+  optional string fdo_option = 16 [default = "NULL"];
+  optional string launch_plan_name = 17 [default = "NULL"];
+  optional string gflags_override = 18 [default = "NULL"];
+  optional string is_new_perf_version = 19 [default = "NULL"];
+  optional State state = 20 [default = QUEUE_FOR_RUNNING];
+  optional string enable_modules = 21 [default = "NULL"];
+  optional string disable_modules = 22 [default = "NULL"];
+  optional int64 is_upload = 23 [default = 0];
+  optional string task_flags = 24 [default = "NULL"];
+
+  reserved 4, 6;
+}
+
+message SubmitTaskResponseProto {
+  optional GrpcHeader header = 1;
+  optional int64 task_id = 2;
+}
+
+message SelectTaskRequestProto {
+  optional string name = 3;
+  optional string group = 4;
+  optional string specify_type = 5;
+  optional string specify_device = 6;
+  reserved 1, 2;
+}
+message SelectTaskResponseProto {
+  optional GrpcHeader header = 1;
+  optional bool not_find = 2;
+  optional TaskProto task = 3;
+  optional DeviceProto device = 4;
+  optional DeviceProto curr_device = 5;
+}
+
+message UpdateTaskRequestProto {
+  optional TaskProto task = 1;
+}
+
+message UpdateTaskResponseProto {
+  optional GrpcHeader header = 1;
+  optional int64 task_id = 2;
+}
+
+message AddTaskToQueueRequestProto {
+  optional TaskProto task = 1;
+}
+
+message AddTaskToQueueResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message FinishTaskRequestProto {
+  optional TaskProto task = 1;
+  optional string device_name = 2;
+}
+message FinishTaskResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message QueryTaskRequestProto {
+  optional int64 task_id = 1;
+}
+message QueryTaskResponseProto {
+  optional GrpcHeader header = 1;
+  optional TaskProto task = 2;
+}
+
+message UploadFileRequestProto {
+  optional string file_name = 1;
+  optional string file_sha = 2;
+  optional bytes buffer = 4;
+
+  reserved 3;
+}
+message UploadFileResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message UploadDeploySummaryRequestProto {
+  repeated DeploySummaryProto deploy_summary = 1;
+}
+message UploadDeploySummaryResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message UpdateBumpRequestProto {
+  optional string name = 1;
+  optional string key = 2;
+  optional int32 cost = 3;
+  optional int32 file_num = 4;
+  optional int32 file_size_in_kb = 5;
+  optional string error_info = 6;
+}
+
+message UpdateBumpResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message UpdateDeviceRequestProto {
+  optional DeviceProto device = 1;
+  optional string type = 2;
+  optional string device_group = 3;
+}
+
+message UpdateDeviceResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message QueryFileShaRequestProto {
+  optional string file_name = 1;
+}
+
+message QueryFileShaResponseProto {
+  optional GrpcHeader header = 1;
+  optional string file_sha = 2;
+}
+
+message DownloadFileRequestProto {
+  optional string file_name = 1;
+}
+
+message DownloadFileResponseProto {
+  optional bytes buffer = 1;
+}
+
+message CancelTaskRequestProto {
+  optional int64 task_id = 1;
+  optional string author = 2;
+}
+
+message CancelTaskResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message RerunTaskRequestProto {
+  optional int64 task_id = 1;
+  optional string author = 2;
+}
+
+message RerunTaskResponseProto {
+  optional GrpcHeader header = 1;
+}
+
+message CancelTaskPair {
+  optional int64 task_id = 1;
+  optional string playback_device = 2;
+}
+
+message GetCancelTaskRequestProto {
+  optional GrpcHeader header = 1;
+}
+
+message GetCancelTaskResponseProto {
+  optional GrpcHeader header = 1;
+  repeated CancelTaskPair cancel_list = 2;
+}
+
+service RsimPerfService {
+  rpc SubmitTask(SubmitTaskRequestProto) returns (SubmitTaskResponseProto);
+  rpc SelectTask(SelectTaskRequestProto) returns (SelectTaskResponseProto);
+  rpc FinishTask(FinishTaskRequestProto) returns (FinishTaskResponseProto);
+  rpc UpdateTask(UpdateTaskRequestProto) returns (UpdateTaskResponseProto);
+  rpc AddTaskToQueue(AddTaskToQueueRequestProto)
+      returns (AddTaskToQueueResponseProto);
+  rpc QueryTask(QueryTaskRequestProto) returns (QueryTaskResponseProto);
+  rpc UploadFile(stream UploadFileRequestProto)
+      returns (UploadFileResponseProto);
+  rpc UploadDeploySummary(UploadDeploySummaryRequestProto)
+      returns (UploadDeploySummaryResponseProto);
+  rpc UpdateBumpInfo(UpdateBumpRequestProto) returns (UpdateBumpResponseProto);
+  rpc UpdateDeviceInfo(UpdateDeviceRequestProto)
+      returns (UpdateDeviceResponseProto);
+  rpc QueryFileSha(QueryFileShaRequestProto)
+      returns (QueryFileShaResponseProto);
+  rpc DownloadFile(DownloadFileRequestProto)
+      returns (stream DownloadFileResponseProto);
+  rpc CancelTask(CancelTaskRequestProto) returns (CancelTaskResponseProto);
+  rpc RerunTask(RerunTaskRequestProto) returns (RerunTaskResponseProto);
+  rpc GetCancelTask(GetCancelTaskRequestProto)
+      returns (GetCancelTaskResponseProto);
+}

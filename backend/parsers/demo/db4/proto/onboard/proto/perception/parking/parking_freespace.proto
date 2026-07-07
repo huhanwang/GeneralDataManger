@@ -1,0 +1,93 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception/parking/parking_base.proto";
+
+// Next id： 4
+message BoundaryPointProto {
+  optional FreespaceType type = 1;
+  optional Vec2iProto loc_in_img_coord = 2;
+  optional Vec3dProto location = 3;
+}
+
+// Next id： 7
+// Boundary clusters are static.
+message BoundaryClusterProto {
+  enum SourceType {
+    ST_NONE = 0;
+    ST_VISION = 1;
+    ST_USS = 2;
+    ST_FUSION = 3;
+    ST_USS_FUSION = 4;
+    ST_LIDAR_FUSION = 5;
+    ST_USS_DE = 6;
+    ST_OCC = 7;
+    ST_LIDAR = 8;
+    ST_OCC_LIDAR = 9;
+    ST_FISHEYE_LIDAR = 10;
+    ST_FISHEYE_OCC_LIDAR = 11;
+  }
+  enum GeometryType {
+    GT_UNKNOWN = 0;
+    GT_SCATTER = 1;
+    GT_POLYLINE = 2;
+    GT_POLYGON = 3;
+  }
+  enum ObjectType {
+    OT_UNKNOWN = 0;
+    OT_GENERAL_BOUND = 1;
+    OT_VEHICLE = 2;
+    OT_CYCLIST = 3;
+    OT_PEDESTRIAN = 4;
+    // adapt lixiang
+    OT_CURB = 5;
+    OT_WALL = 6;
+    OT_PILLAR = 7;
+    OT_ANIMAL = 8;
+    OT_TRICYCLE = 9;
+    OT_RAILING = 10;
+    OT_CONE = 11;
+    OT_PARKING_LOCK_OPEN = 12;
+    OT_SPACE_LIMITER = 13;
+    OT_SPEED_BUMP = 14;
+    OT_STICK = 15;
+    OT_PARKING_LOCK_CLOSED = 16;
+    OT_VEGETATION = 17;
+    OT_ROADBARRIER_GATE = 18; 
+  }
+  optional uint32 id = 1;
+  optional SourceType source_type = 2;
+  optional GeometryType geometry_type = 3;
+  optional ObjectType object_type = 4;
+  optional float confidence = 5;
+  repeated Vec3dProto points = 6;
+  optional bool is_suspended = 7;
+  enum MovingState {
+    MOVING_STATE_STATIC = 0;
+    MOVING_STATE_MOVING = 1;
+  }
+  optional MovingState moving_state = 8;
+}
+
+// Next id： 7
+message ParkingFreespaceProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  optional CoordinateType coordinate_type = 4;
+  repeated WheelStopperPointProto wheel_stopper_points = 5;
+  repeated BoundaryPointProto boundary_points = 6;
+}
+
+// Next id： 5
+message FusionParkingFreespaceProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  repeated BoundaryClusterProto boundary_cluster = 4;
+}

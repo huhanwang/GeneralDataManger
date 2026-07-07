@@ -1,0 +1,83 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+message Time {
+  optional int64 sec = 1;
+  optional uint64 nanosec = 2;
+}
+
+message HeaderLC {
+  optional Time stamp = 1;
+  optional string frame_id = 2;
+  optional uint64 _sequence = 3;
+  optional string come_from = 4;
+  optional double interval = 5;
+  optional double mutex_duation = 6;
+  optional double pub_duation = 7;
+}
+
+message Point2D {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+message Point3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message Pose2D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double heading = 3;
+}
+message Vector3 {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message Box2D {
+  optional Pose2D pose = 1;
+  optional double length = 2;
+  optional double width = 3;
+};
+message QuaternionLC {
+  optional double w = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 4;
+}
+message Pose3D {
+  optional Vector3 translation = 1;
+  optional QuaternionLC quaternion = 2;
+};
+
+message EgoLocation {
+  enum LocalizationAvailableLevel {
+    LOCALIZATION_UNAVAILABLE = 0;
+    LOCALIZATION_CONTROL_LEVEL = 1;
+    LOCALIZATION_LANE_LEVEL = 2;
+    LOCALIZATION_NAVIGATION_LEVEL = 3;
+  }
+
+  optional double stamp = 1;  // ms
+  optional uint32 map_version = 2;
+  optional LocalizationAvailableLevel localization_available_level = 3;
+  optional double latitude = 4;   // deg
+  optional double longitude = 5;  // deg
+  optional double height = 6;     // m
+  optional double heading = 7;    // rad, east/north/up coordinates
+  optional float speed = 8;       // m/s
+  repeated double cov = 9;
+  optional int32 current_lane_idx = 10;  //  0 - Leftmost Lane; 255 - Invalid;
+  optional float ci0 = 11;               // Lane GEO Info confidence interval
+}
+
+enum ParkGear {
+  GEAR_R = 1;
+  GEAR_N = 2;
+  GEAR_D = 3;
+  GEAR_P = 4;
+}

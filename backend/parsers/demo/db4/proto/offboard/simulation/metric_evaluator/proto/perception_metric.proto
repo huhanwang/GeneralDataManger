@@ -1,0 +1,2354 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/simulation/metric_evaluator/proto/metric_common.proto";
+// not used import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+import "onboard/proto/perception/types/fine_grained_type.proto";
+import "onboard/proto/perception/types/vision_lane_type.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+import "onboard/proto/perception/fusion/fused_bev_road_geometry.proto";
+import "onboard/proto/perception/types/traffic_light_shape.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception/parking/parking_base.proto";
+import "onboard/proto/perception/parking/li_parking_base.proto";
+import "onboard/proto/perception/parking/parking_freespace.proto";
+import "onboard/proto/perception/vision/intelligent_speed_limit.proto";
+import "offboard/labeling/proto/road_geometry_label.proto";
+import "onboard/proto/perception/vision/traffic_light_state.proto";
+import "onboard/proto/perception.proto";
+import "onboard/proto/perception/vision/bev_road_geometry.proto";
+// not used import "onboard/proto/perception/vision/bev_point.proto";
+// not used import "onboard/proto/perception/measurements/measurement.proto";
+import "onboard/proto/perception/measurements/det2d_measurement.proto";
+import "onboard/proto/perception/vision/traffic_sign.proto";
+import "onboard/proto/perception/lidar/lidar_perception_net_result.proto";
+import "onboard/proto/perception/fusion/object.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+// not found import "offboard/ml/auto_labeling/proto/occupancy.proto";
+
+enum ModeChannelSource {
+  VISION_BEV_ROAD_GEOMETRY_PROTO = 0;
+  MAPFORMER_BEV_ROAD_GEOMETRY_PROTO = 1;
+}
+
+enum FusedChannelSource {
+  FUSED_BEV_ROAD_GEOMETRY_PROTO = 0;
+  FUSED_MAPFORMER_BEV_ROAD_GEOMETRY_PROTO = 1;
+}
+
+message RoadGeometryLabelsProto {
+  message RoadGeometryTruthProto {
+    optional int64 timestamp = 1;
+    optional road_geometry_label.RoadGeometryLabelProto road_geo_label = 2;
+  }
+  optional string run_name = 1;
+  repeated RoadGeometryTruthProto road_geo_truths = 2;
+}
+
+// ============================================================================
+// AebMono metrics
+// ============================================================================
+
+message AebMonoClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovFifteenFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovFifteenOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovFifteenUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovThirtyFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovThirtyOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message AebMonoFovThirtyUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// Bev metrics
+// ============================================================================
+
+message BevCenterlineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCenterlineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCrosswalkFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCrosswalkFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCrosswalkStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional uint32 allow_error_count = 2;  // default 3 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneBrokenLineMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    optional int64 truth_count = 2 [default = 1];
+    repeated VisionLaneType selected_lane_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+  optional ModeChannelSource channel_source = 2 [deprecated = true];
+}
+
+message MapformerBevLaneFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+  optional ModeChannelSource channel_source = 2 [deprecated = true];
+}
+
+message MapformerBevLaneFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneLateralErrorMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    optional double lateral_error_threshold = 2 [default = 0.2];  // meters
+  }
+  repeated GroundTruth truths = 1;
+  optional ModeChannelSource channel_source = 2;
+}
+
+message BevLaneMisclassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType bev_lane_types = 2;
+    optional bool strict_classification = 3 [default = true];
+  }
+  repeated GroundTruth truths = 1;
+  optional ModeChannelSource channel_source = 2 [deprecated = true];
+}
+
+message MapformerBevLaneMisclassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    repeated VisionLaneType bev_lane_types = 2;
+    optional bool strict_classification = 3 [default = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevSlotClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double det_rate_threshold = 2 [default = 0.8];
+    optional SpotType spot_type = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevSlotDetectionMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto polygon = 2;
+    optional SpotType spot_type = 3;
+    optional SpotState spot_state = 4;
+    optional OccupiedReason occupied_reason = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevSlotFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double det_rate_threshold = 2 [default = 0.8];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevSlotFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double iou_rate_threshold = 2 [default = 0.5];
+    optional double error_frame_rate_threshold = 3 [default = 0.1];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevSlotSpotStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double det_rate_threshold = 2 [default = 0.8];
+    optional SpotState spot_state = 3;
+    optional OccupiedReason occupied_reason = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevStoplineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+  optional ModeChannelSource channel_source = 2 [deprecated = true];
+}
+
+message MapformerBevStoplineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevStoplineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevStoplineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevStoplineLateralErrorMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // default allow_error_time:0.2 in c++ code
+    optional double lateral_error_threshold = 2 [default = 0.2];  // meters
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// Camera metrics
+// ============================================================================
+
+message CameraFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional ObjectFilter bev_object_filter = 2;    // smooth coordinates
+    optional ObjectFilter image_object_filter = 3;  // image pixel coordinates
+    optional int32 camear_id = 4 [deprecated = true];
+    optional int32 camera_id = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional ObjectFilter bev_object_filter = 2;    // smooth coordinates
+    optional ObjectFilter image_object_filter = 3;  // image pixel coordinates
+    optional int32 camera_id = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraOverSegmentMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional ObjectFilter bev_object_filter = 2;    // smooth coordinates
+    optional ObjectFilter image_object_filter = 3;  // image pixel coordinates
+    optional int32 camear_id = 4 [deprecated = true];
+    optional int32 camera_id = 6;
+    optional int32 truth_object_count = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraUnderSegmentMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional ObjectFilter bev_object_filter = 2;    // smooth coordinates
+    optional ObjectFilter image_object_filter = 3;  // image pixel coordinates
+    optional int32 camear_id = 4 [deprecated = true];
+    optional int32 camera_id = 6;
+    optional int32 truth_object_count = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FilteredTrafficLightTwoDimFalseNegativeMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 2;
+    optional ObjectFilter image_object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FilteredTrafficLightTwoDimFalsePositiveMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 2;
+    optional ObjectFilter image_object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FilteredTrafficLightTwoDimMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 1;
+    optional ObjectFilter image_object_filter = 2;  // image pixel coordinates
+    repeated TrafficLightColor color = 3;
+    repeated mapping.TrafficLightShape shape = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FisheyeBevTracker metrics
+// ============================================================================
+
+message FisheyeBevTrackerClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 3;
+    repeated MeasurementType rejected_object_types = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FisheyeBevTrackerFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FisheyeBevTrackerFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FisheyeBevTrackerGateStatusMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated Camera3dMeasurementProto.GateStatus expected_gate_status = 3;
+    repeated Camera3dMeasurementProto.GateStatus rejected_gate_status = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FisheyeBevTrackerOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FisheyeBevTrackerUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StaticFusedMeasurementsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StaticFusedMeasurementsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StaticFusedMeasurementsOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StaticFusedMeasurementsUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StaticFusedClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FreespaceClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated BoundaryClusterProto.ObjectType expected_object_types = 3;
+    repeated BoundaryClusterProto.ObjectType rejected_object_types = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FreespaceFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated BoundaryClusterProto.ObjectType filter_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FreespaceFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FrontCamera metrics
+// ============================================================================
+
+message FrontCameraClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraExistenceConfidenceMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double existence_confidence_threshold = 2 [default = 0.1];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontCameraVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 7;
+    optional double max_acc = 8;
+    optional double min_relative_speed = 9;
+    optional double max_relative_speed = 10;
+    optional double min_relative_acc = 11;
+    optional double max_relative_acc = 12;
+    optional double heading_radian = 3;
+    optional double min_lateral_speed = 13;
+    optional double max_lateral_speed = 14;
+    optional double min_longitudinal_speed = 15;
+    optional double max_longitudinal_speed = 16;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FrontMono metrics
+// ============================================================================
+
+message FrontMonoClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMonoFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMonoFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMonoOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMonoUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated ObjectType expected_object_types = 2;
+    repeated ObjectType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionObjectsVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 7;
+    optional double max_acc = 8;
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMonoVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 7;
+    optional double max_acc = 8;
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FrontMovableFusion metrics
+// ============================================================================
+
+message FrontMovableFusionFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMovableFusionFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMovableFusionVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 7;
+    optional double max_acc = 8;
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMovableFusionOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMovableFusionUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FusedBev metrics
+// ============================================================================
+
+message FusedBevCenterlineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevCenterlineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLaneBrokenLineMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int64 truth_count = 2 [default = 1];
+    repeated VisionLaneType selected_lane_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLaneFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+  optional FusedChannelSource channel_source = 2 [deprecated = true];
+}
+
+message FusedMapformerBevLaneFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedLaneFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedLaneUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional double min_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedLaneOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional double max_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 max_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 min_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLaneFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+  optional FusedChannelSource channel_source = 2 [deprecated = true];
+}
+
+message FusedBevLaneOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 max_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevLaneOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 max_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLaneUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 min_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevLaneUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional int32 min_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedLaneFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevLaneFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevLaneUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional double min_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevLaneOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType selected_lane_types = 2;
+    optional double max_object_count = 3;  // C++ defaults to 0
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLaneLateralErrorMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double lateral_error_threshold = 2 [default = 0.2];  // meters
+  }
+  repeated GroundTruth truths = 1;
+  optional FusedChannelSource channel_source = 2;
+}
+
+message FusedBevLaneMisclassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType bev_lane_types = 2;
+    optional bool strict_classification = 3 [default = true];
+  }
+  repeated GroundTruth truths = 1;
+  optional FusedChannelSource channel_source = 2 [deprecated = true];
+}
+
+message ExternalFusedLaneMisclassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType bev_lane_types = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevLaneMisclassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated VisionLaneType bev_lane_types = 2;
+    optional bool strict_classification = 3 [default = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevLanePositionIndexMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional double lateral_devitation_threshold = 2 [default = 1.0];  // meters
+    optional FusedBevRoadGeometryProto.ParameterizedLaneInfo.PositionIndex
+        truth_position_index = 3;
+    optional PointListProto truth_smooth_points = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevStoplineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+  optional FusedChannelSource channel_source = 2 [deprecated = true];
+}
+
+message ExternalFusedStoplineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedStoplineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevStoplineFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevStoplineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevStoplineFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevStoplineLateralErrorMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional double lateral_error_threshold = 2 [default = 0.2];  // meters
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevDriveBoundaryFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedBevDriveBoundaryFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevDriveBoundaryFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevDriveBoundaryFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// FusionParkingSpots metrics
+// ============================================================================
+
+message FusionParkingSpotsBothSidesMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter_point_zero_three = 1;  // for points 03
+    optional ObjectFilter object_filter_point_one_two = 2;     // for points 12
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsEntranceMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated SpotDecorationType filter_decoration_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsIdContinuityMetric {
+  optional TimeWindow time_window = 1 [deprecated = true];
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 2;
+}
+
+message FusionParkingSpotsOccupiedReasonMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1 [deprecated = true];
+    optional PointListProto polygon = 2 [deprecated = true];
+    optional OccupiedReason occupied_reason = 3;
+    optional ObjectFilter object_filter = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsRearCenterSlotMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto real_spot_polygon = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsSpotStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1 [deprecated = true];
+    optional PointListProto polygon = 2 [deprecated = true];
+    optional SpotState spot_state = 3;
+    optional ObjectFilter object_filter = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsSpotTypeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1 [deprecated = true];
+    optional PointListProto polygon = 2 [deprecated = true];
+    optional SpotType spot_type = 3;
+    optional SpotDecorationType spot_decoration_type = 5;
+    optional ObjectFilter object_filter = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionParkingSpotsWheelStopperMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto polygon = 2;
+    repeated Vec2dProto wheel_stopper_points = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ImageAnomalyCameraFalseNegativeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional int32 camera_id = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ImageAnomalyCameraFalsePositiveMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional int32 camera_id = 2;
+    optional int32 level_th = 3 [default = 3];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ImgFailFalsePositiveMetric {
+  message GroundTruth {
+    optional double det_rate_threshold = 1;
+    optional TimeWindow time_window = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ImgFailFalseNegativeMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 1;
+    optional double det_rate_threshold = 2;
+    optional TimeWindow time_window = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ImageAnomalyFalseNegativeMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated IntelligentSpeedLimitProto.Category expect_categories = 2;
+    repeated IntelligentSpeedLimitProto.Category rejected_categories = 3;
+    repeated IntelligentSpeedLimitProto.SpeedLimitNumber
+        expect_speed_limit_numbers = 4;
+    repeated IntelligentSpeedLimitProto.SpeedLimitNumber
+        rejected_speed_limit_numbers = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// Lidar metrics
+// ============================================================================
+
+message LidarClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 3;
+    repeated MeasurementType rejected_object_types = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// LidarPerceptionNetResult metrics
+// ============================================================================
+
+message LidarPerceptionNetResultFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarPerceptionNetResultFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarPerceptionNetResultOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarPerceptionNetResultUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarPerceptionNetResultClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated LidarPerceptionNetResultProto.DetectionResultProto.DetectionType
+        expected_object_types = 2;
+    repeated LidarPerceptionNetResultProto.DetectionResultProto.DetectionType
+        rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LidarVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double min_acc = 7;
+    optional double max_acc = 8;
+    optional double heading_radian = 3;
+    optional double min_lateral_speed = 9;
+    optional double max_lateral_speed = 10;
+    optional double min_longitudinal_speed = 11;
+    optional double max_longitudinal_speed = 12;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ObjectCountTruth {
+  optional int32 ext_object_count = 1;
+  optional int32 min_object_count = 2;
+  optional int32 max_object_count = 3;
+}
+
+message ObjectFilter {
+  enum PolygonFilterMethod {
+    INVALID = 0;
+    OVERLAP = 1;
+    CONTAIN_CONTOUR = 2;
+    CONTAIN_POS = 3;  // use object_proto.pos()
+    OVERLAP_BY_RATIO = 4;
+    LINE_OVERLAP = 5;
+    LINE_CONTAIN = 6;
+    OVERLAP_BY_IOU = 7;
+  }
+
+  enum MsgType {
+    OBJECT_PROTO = 0;
+    FUSION_OBJECT_PROTO = 1;
+    RADAR_MEASUREMENT_PROTO = 2;
+    FRONT_CAMERA_MEASUREMENT_PROTO = 3;
+    FUSION_OUTPUS_PROTO = 4;
+    TRAFFIC_LIGHT_STATES_PROTO = 5;
+    LSAEB_FREESPACE_PROTO = 6;
+    FUSION_FREESAPCE_PROTO = 7;
+    FUSION_PARKING_SPOTS_PROTO = 8;
+    OCCUPANCY_PARKING_PROTO = 9;
+    LIDAR_MEASUREMENT_PROTO = 10;
+    LI_PARKING_LIMITERS_PROTO = 11;
+    FRONT_MONO_MEASUREMENT_PROTO = 12;
+    AEB_MONO_MEASUREMENT_PROTO = 13;
+    LIDAR_PERCEPTION_NET_RESULT_PTORO = 14;
+    FISHEYE_BEV_TRACKER_PROTO = 15;
+    VISION_BEV_ROAD_GEOMETRY_PROTO = 16;
+    FRONT_MOVABLE_FUSION_MEASUREMENTS = 17;
+    TRAFFIC_SIGN_AND_INTELLIGENT_SPEED_PROTO = 18;
+    FUSION_OCC_OBJECTS_PROTO = 19;
+    STATIC_FUSED_MEASUREMENTS = 20;
+    VISION_BEV_RESULTS_PROTO = 21;
+  }
+
+  optional PointListProto polygon = 1;
+  optional PolygonFilterMethod polygon_filter_method = 2 [default = OVERLAP];
+  optional TimeWindow time_window = 3;
+  optional double allow_error_time = 6 [default = 0.0];  // default:0.0 seconds
+  optional MsgType msg_type = 4;
+  optional double overlap_by_ratio = 5;  // default:0.8 in c++ code
+  optional double overlap_by_iou = 7 [
+    deprecated = true
+  ];  // deprecated: use overlap_by_ratio instead, default:0.7 in c++ code
+}
+
+message OccupancyDrivingClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // repeated auto_labeling.Voxel.LXVoxelType expected_object_types = 2;
+    // repeated auto_labeling.Voxel.LXVoxelType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message OccupancyDrivingFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // overlap_by_ratio default 0.5 in c++ code
+    // depth_threshold_ratio: Depth deviation tolerance ratio for distance
+    // filtering
+    //   C++ default: 0.1 (10%)
+    optional double depth_threshold_ratio = 2;
+    // error_frame_rate_threshold: Maximum allowed failed frame ratio
+    // If failed frame ratio exceeds this threshold, the evaluation fails
+    //   C++ default: 0.05 (5%)
+    optional double error_frame_rate_threshold = 3 [default = 0.05];
+  }
+  repeated GroundTruth truths = 1;
+
+  // Depth-aware evaluation mode configuration
+  // C++ default: true (enabled by default)
+  optional bool enable_depth_aware = 2;
+  // Distance threshold in meters for enabling depth-aware logic
+  // C++ default: 30.0
+  optional double depth_aware_distance_threshold = 3;
+}
+
+message OccupancyDrivingFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // overlap_by_ratio default 0.4 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message OccupancyParkingClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated int32 expected_object_types = 2;
+    repeated int32 rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message OccupancyParkingFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message OccupancyParkingFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// Perception metrics
+// ============================================================================
+
+message PerceptionClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectType object_type = 2 [deprecated = true];
+    repeated ObjectType expected_object_types = 3;
+    repeated ObjectType rejected_object_types = 4;
+    repeated FineGrainedType expected_fine_grained_types = 5;
+    repeated FineGrainedType rejected_fine_grained_types = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3 [deprecated = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionGroundTruthMetric {
+  message GroundTruth {
+    optional PointListProto region = 1;
+    optional ObjectType object_type = 2;
+    // If set to true, any type of object will be considered as matched.
+    optional bool ignore_object_type = 7 [default = false];
+    optional double start_offset_secs = 3;
+    optional double duration_secs = 4;
+    optional string tag = 5;
+    // If set to true, fail if there are objects matched in the region.
+    // Otherwise, fail if there are not the number of objects matched in the
+    // region.
+    optional bool fail_if_matched = 6 [default = false];
+    optional int32 num_objects = 8 [default = 1];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionMissingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3 [deprecated = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionObjectHeadingMetric {
+  message GroundTruth {
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionOverSegmentMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionRedundantMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3 [deprecated = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionUnderSegmentMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionValidationMetric {}
+
+message PerceptionFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectCountTruth object_count_truth = 2 [deprecated = true];
+    optional int32 truth_object_count = 3 [deprecated = true];
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message PerceptionVelocityMetric {
+  message GroundTruth {
+    optional PointListProto region = 1 [deprecated = true];
+    optional double start_offset_secs = 2 [deprecated = true];
+    optional double duration_secs = 3 [deprecated = true];
+    optional double min_speed = 4;
+    optional double max_speed = 5;
+    optional double min_acc = 11;
+    optional double max_acc = 12;
+    optional double heading_radian = 6;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 7;
+      double heading_buffer_radian = 8;
+    }
+    optional ObjectFilter object_filter = 10;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// Radar metrics
+// ============================================================================
+
+message RadarClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated RadarObjectType expected_object_types = 3;
+    repeated RadarObjectType rejected_object_types = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarIdConsistanceMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 10;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message RadarVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      // Use Degree instead of Radian on buffer, for easy labeling.
+      // The valid number should be [0, 180)
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message SlotEntranceCenterMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto polygon = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+// ============================================================================
+// TrafficLight metrics
+// ============================================================================
+
+message TrafficFormerStateMetric {
+  // TrafficFormerStatesProto has no direction enum
+  enum Shape {
+    CIRCLE = 0;
+    UP = 1;
+    LEFT = 2;
+    RIGHT = 3;
+    UTURN = 4;
+  }
+
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional Shape shape = 2;
+    optional TrafficFormerColor color = 3;
+    optional double allow_error_time = 4;
+    optional bool blink = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficLightGroundTruthMetric {
+  message GroundTruth {
+    optional int64 traffic_light_id = 1;
+    optional CameraId camera_id = 2 [deprecated = true];
+    optional TrafficLightColor color = 3;
+    optional double start_offset_secs = 4;
+    optional double duration_secs = 5;
+    optional string tag = 6;
+    optional bool fail_if_matched = 7;
+    optional bool flashing = 8;
+    // NOTE(wanzeng): There is a delay in the traffic light hmm algorithm, and
+    // two frame buffers are reserved.
+    optional double delay_buffer_secs = 9 [default = 0.2];
+    optional TimeWindow time_window = 10;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficLightStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional TrafficLightStateProto.Direction direction = 2;
+    optional TrafficLightColor color = 3;
+    optional double allow_error_time = 4;  // default:0.0s in c++ code
+    optional bool flashing = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficLightOccludeMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional TrafficLightStateProto.Direction direction = 2;
+    optional bool occlude = 3;
+    optional double allow_error_time = 4;  // default:0.0s in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficLightTwoDimMetric {
+  message GroundTruth {
+    optional CameraId camera_id = 1;
+    optional ObjectFilter image_object_filter = 2;  // image pixel coordinates
+    optional TrafficLightColor color = 3;
+    optional TrafficLightShape shape = 4;
+    optional bool flashing = 5;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedSemanticClassificationMetric {
+  message IntelligentSpeedSign {
+    optional IntelligentSpeedLimitProto.Category category = 1;
+    optional IntelligentSpeedLimitProto.SpeedLimitNumber speed_limit_number = 2;
+  }
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    repeated IntelligentSpeedSign speed_signs = 2;
+    optional double allow_error_time = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IntelligentSpeedZoneExactNumMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional PointListProto destination = 2;  // should only two points
+    optional int32 expected_num = 3;
+    optional double allow_error_time = 4;  // default:0.0 seconds
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedBevCenterlineDegreeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 incoming_lane_count = 2;
+    optional int32 outgoing_lane_count = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevCenterlineDegreeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 incoming_lane_count = 2;
+    optional int32 outgoing_lane_count = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevCenterlineClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.0
+    repeated BevCenterLineProto.CenterLineType centerline_type_excepted = 2;
+    repeated BevCenterLineProto.CenterLineType centerline_type_rejected = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevCenterlineFineTypeClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        excepted_centerline_finetypes = 2;
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        rejected_centerline_finetypes = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.0
+    repeated BevCenterLineProto.CenterLineType centerline_type_excepted = 2;
+    repeated BevCenterLineProto.CenterLineType centerline_type_rejected = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineFineTypeClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.0
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        excepted_centerline_finetypes = 2;
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        rejected_centerline_finetypes = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCenterlineClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.2
+    repeated BevCenterLineProto.CenterLineType centerline_type_excepted = 2;
+    repeated BevCenterLineProto.CenterLineType centerline_type_rejected = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCenterlineFineTypeClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.2
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        excepted_centerline_finetypes = 2;
+    repeated BevCenterLineProto.CenterLineType // CenterLineFineType
+        rejected_centerline_finetypes = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionOccObjectsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionOccObjectsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevCenterlineDirectionMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.2
+    repeated BevCenterLineProto.Direction centerline_directions = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevCenterlineDirectionMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.0
+    repeated BevCenterLineProto.Direction centerline_directions = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineDirectionMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // C++ default allow_error_time: 0.0
+    repeated BevCenterLineProto.Direction centerline_directions = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadGeometryHeadingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional PointListProto truth_smooth_points = 2;
+    optional double heading_radian_buffer = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevCenterlineOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerCenterlineOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevCenterlineUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerCenterlineUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionOccObjectsClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated ObjectPolylineProto.ObjectType expected_object_types = 3;
+    repeated ObjectPolylineProto.ObjectType rejected_object_types = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionOccObjectsOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusionOccObjectsUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighwayAutoGateStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional Det2dMeasurementProto.HighwayAutoGateStatus gate_status = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message IhbcDecisionStateMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    optional bool ihbc_decision = 2;
+    optional double allow_error_time = 3;  // default 0.0 in c++ code
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevCenterlineOrderingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // "heading_indicator" is deprecated, please use "polyline" instead.
+    optional PointListProto heading_indicator = 2 [deprecated = true];
+    optional double yaw_allowed = 3;  // Using RAD, C++ defaults to 0.523599.
+    optional PointListProto polyline = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerCenterlineOrderingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // "heading_indicator" is deprecated, please use "polyline" instead.
+    optional PointListProto heading_indicator = 2 [deprecated = true];
+    optional double yaw_allowed = 3;  // Using RAD, C++ defaults to 0.523599.
+    optional PointListProto polyline = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedCenterlineOrderingMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // "heading_indicator" is deprecated, please use "polyline" instead.
+    optional PointListProto heading_indicator = 2 [deprecated = true];
+    optional double yaw_allowed = 3;  // Using RAD, C++ defaults to 0.523599.
+    optional PointListProto polyline = 4;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighwayAutoGateFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighwayAutoGateFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficSignFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficSignFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficSignClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated TrafficSignProto.Category expected_categories = 2;
+    repeated TrafficSignProto.Category rejected_categories = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FusedMapformerBevYShapeSemanticTypeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // allow_error_time defaults to 0.0 in C++
+    optional FusedBevRoadGeometryProto.ParameterizedLaneInfo.YShapeSemanticType
+        exact_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ExternalFusedYShapeSemanticTypeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter =
+        1;  // allow_error_time defaults to 0.0 in C++
+    optional FusedBevRoadGeometryProto.ParameterizedLaneInfo.YShapeSemanticType
+        exact_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message TrafficSignSemanticClassificationMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    repeated TrafficSignProto.Category traffic_sign_category = 2;
+    optional double allow_error_time = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingObstaclesLockFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingObstaclesLockFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevGroundMarkingFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevGroundMarkingFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevGroundMarkingClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional BevGroundMarkingProto.BevGroundMarkingType exact_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingObstaclesLockTypeMetric {
+  enum ObjectType {
+    PARKING_LOCK_OPEN = 1;
+    PARKING_LOCK_CLOSED = 2;
+  }
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional ObjectType object_type = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevStaticPerceptionEgoTrajectoryFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevStaticPerceptionEgoTrajectoryFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraMeasurementsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraMeasurementsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraMeasurementsOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message CameraMeasurementsUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ObjectsMovingStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // repeated MovingStateProto expected_object_types = 2;
+    // repeated MovingStateProto rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+message VisionBevResultsFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsUnderSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StopPointFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message StopPointFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsVelocityMetric {
+  message GroundTruth {
+    optional double min_speed = 1;
+    optional double max_speed = 2;
+    optional double heading_radian = 3;
+    oneof heading_buffer_type {
+      double heading_buffer_degree = 4;
+      double heading_buffer_radian = 5;
+    }
+    optional ObjectFilter object_filter = 6;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevResultsFollowingStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // optional ObjectFollowingState following_state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadBarrierGateInfoFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadBarrierGateInfoFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LiParkingRoadBarrierGateInfoGateStatusMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated RoadBarrierGateInfoProto.GateStatus expected_gate_status = 2;
+    repeated RoadBarrierGateInfoProto.GateStatus rejected_gate_status = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevRoadGeometryFalseNegativeMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevRoadGeometryFalsePositiveMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message VisionBevRoadGeometryOverSegMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    optional int32 truth_object_count = 2;
+  }  //
+  repeated GroundTruth truths = 1;
+}
+
+message ObjectsFollowingStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // optional ObjectFollowingState following_state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+message IntelligentDirectionSignsSeqClassificationMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+    repeated TrafficSignProto.Category category = 2;
+    optional double allow_error_time = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message ObjectsCrossingLineStateMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // optional ObjectCrossingLineState crossing_line_state = 2;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighBeamToLowBeamPerceptionMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LowBeamToHighBeamPerceptionMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message HighBeamNotToLowBeamPerceptionMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message LowBeamNotToHighBeamPerceptionMetric {
+  message GroundTruth {
+    optional TimeWindow time_window = 1;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message FrontMovableFusionClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    repeated MeasurementType expected_object_types = 2;
+    repeated MeasurementType rejected_object_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message MapformerBevLaneExtraTypeClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // repeated VisionLinePointExtraType expected_extra_types = 2;
+    // repeated VisionLinePointExtraType rejected_extra_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}
+
+message BevLaneExtraTypeClassificationMetric {
+  message GroundTruth {
+    optional ObjectFilter object_filter = 1;
+    // repeated VisionLinePointExtraType expected_extra_types = 2;
+    // repeated VisionLinePointExtraType rejected_extra_types = 3;
+  }
+  repeated GroundTruth truths = 1;
+}

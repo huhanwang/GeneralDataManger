@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+import "onboard/proto/chassis.proto";
+import "onboard/proto/vehicle.proto";
+
+message VehicleParameter {
+  optional snoah.VehicleInfoProto.VehicleInterface brand = 1;
+  optional double max_engine_pedal = 2;
+  optional int32 max_enable_fail_attempt = 3;
+  optional snoah.Chassis.DrivingMode driving_mode = 4;
+}

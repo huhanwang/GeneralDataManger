@@ -1,0 +1,802 @@
+syntax = "proto2";
+
+package navinfo.nisdk;
+
+enum CallbackType {
+  UpdateNaviInfo = 1;
+  ShowNaviLaneInfo = 2;
+  HideNaviLaneInfo = 3;
+  ShowNaviManeuver = 4;
+  ShowNaviCameraExt = 5;
+  UpdateIntervalCameraDynamicInfo = 6;
+  UpdateSAPA = 7;
+  ShowTollGateLane = 8;
+  CurrentRoadSpeed = 9;
+  NewRoute = 10;
+  NewRouteError = 11;
+  NewExploreRoute = 12;
+  EhpV2 = 13;
+}
+
+message TimeAndDist {
+  optional int32 time = 1;  // 时间 (单位秒)
+  optional int32 dist = 2;  // 距离 (单位米)
+}
+
+message Coord2DDouble {
+  optional double lon = 1;  // 经度
+  optional double lat = 2;  // 纬度
+}
+
+message ManeuverIcons {
+  optional int32 turn_icons_cnt = 1;  // 转向图标的叠加图片个数，最多16个图标
+  repeated int32 turn_icons_section =
+      2;  // 转向图标ID数组，最多16个图标 (参照TurnIconId)
+}
+
+message CrossNaviInfo {
+  optional int64 path_id = 1;      // path唯一id
+  optional int32 seg_idx = 2;      // 当前所在segment段，从0开始
+  optional int32 main_action = 3;  // 导航动作 (main_action1 equivalent)
+  optional int32 assist_action =
+      4;  // 导航辅助动作 (assistant_action1 equivalent)
+  optional int32 maneuver_id =
+      5;  // 满足顺行展示距离时为顺行图标，否则同cross_maneuver_id
+  optional int32 cross_maneuver_id = 6;  // 路口转向ID
+
+  optional ManeuverIcons maneuver_icon = 7;  // 路口转向标图片
+  optional string next_road_name =
+      8;  // 下条道路名称，途经点为途经点或者目的地名称，UTF16
+
+  optional int32 cur_to_segment_dist =
+      9;  // 当前车位所在导航段终点到seg_idx终点的距离 (单位米)
+  optional int32 cur_to_segment_time =
+      10;  // 当前车位所在导航段终点到seg_idx终点的时间 (单位秒)
+
+  optional int32 out_cnt = 11;  // 进入环岛时为环岛出口数；隧道内分叉为分叉个数
+  optional int32 via_num = 12;  // 途经点、充电站编号
+  optional int32 dest_direction =
+      13;  // 途经点、充电站、目的地相对路径的位置关系 (1: left; 2: right)
+
+  optional int32 reversed = 14;  // 保留字段
+  optional int32 rev = 15;       // 保留字段
+}
+
+message NaviInfo {
+  optional int64 path_id = 1;  // path唯一id
+  optional int32 type = 2;     // 更新类型 (navi_type1 equivalent)
+
+  optional TimeAndDist route_remain = 3;  // 路径剩余距离和时间
+  repeated TimeAndDist via_remain = 4;  // 自车到途经点的距离和时间
+  optional int32 route_remain_light_count = 5;  // 自车到充电站的距离和时间
+
+  optional int32 link_remain_dist = 6;  // 当前自车所在link剩余的距离
+  optional int32 cur_seg_idx = 7;       // 当前自车所在segment段
+  optional int32 cur_link_idx = 8;      // 当前自车所在Link
+  optional int32 cur_point_idx = 9;  // 当前车位在当前导航段上link中点索引
+
+  optional Coord2DDouble cur_car_position = 10;  // 当前车辆位置
+  optional float cur_car_ori = 11;               // 当前车辆方向
+  optional int32 cur_road_class =
+      12;  // 当前自车所在道路等级 (road_class1 equivalent)
+  optional string cur_route_name = 13;  // 当前道路名称，UTF16
+
+  optional int32 ring_out_cnt = 14;       // 环岛出口序号
+  optional int32 drive_time = 15;         // 实际的行驶用时
+  optional int32 drive_dist = 16;         // 实际的行驶里程
+  optional int32 city_code = 17;          // 行政区编码
+  optional int32 cross_maneuver_id = 18;  // 路口转向ID
+
+  optional ManeuverIcons cross_maneuver_icon = 19;  // 路口转向图标
+  repeated CrossNaviInfo next_cross_info = 20;      // 下一路口信息
+  optional int32 navi_info_flag = 21;          // 标签板显示信息标记
+  repeated NaviInfoPanel navi_info_data = 22;  // navi_info标签板显示内容
+}
+
+message NaviInfoPanel {
+  optional int32 maneuver_id =
+      1;  // 动态转向ID,
+          // 满足顺行展示距离时为顺行图标，过了顺行距离同cross_maneuver_id
+  optional ManeuverIcons maneuver_icon = 2;  // 路口转向标图片
+  optional TimeAndDist segment_remain =
+      3;  // 当前导航段剩余距离（单位米）和剩余时间（单位秒）
+  optional string next_route_name = 4;        // 下条道路名称，UTF16
+  optional int32 next_road_name_seg_idx = 5;  // 下条道路名称所在的SegIdx
+  optional int32 next_road_name_link_idx = 6;  // 下条道路名称所在的linkIdx
+}
+
+message LightBarItem {
+  // 交通状态
+  optional int32 status = 1;
+
+  // 一个LightBarItem中所有link的总里程 单位：米
+  optional int32 length = 2;
+
+  // 一个LightBarItem中所有link的总通行时间 单位：秒
+  optional int64 time_of_seconds = 3;
+
+  // 同路况状态光柱的起始seg索引
+  optional int32 start_segment_idx = 4;
+
+  // 同路况状态光柱的起始link索引
+  optional int32 start_link_idx = 5;
+
+  // 同路况状态光柱的结束seg索引
+  optional int32 end_segment_idx = 6;
+
+  // 同路况状态光柱的结束link索引
+  optional int32 end_link_index = 7;
+}
+
+message PathInfo {
+  optional bool is_recycled = 1;                  // 是否已被回收
+  optional bool is_valid = 2;                     // 是否有效
+  optional int64 path_id = 3;                     // 路线ID
+  optional int64 length = 4;                      // 路线长度
+  optional int64 strategy = 5;                    // 路线计算策略
+  optional int64 travel_time = 6;                 // 当前Path旅行时间
+  optional int32 toll_cost = 7;                   // 路线总收费金额
+  optional int64 traffic_light_count = 8;         // 路线总红绿灯个数
+  repeated Coord2DDouble all_traffic_lights = 9;  // 路线上所有红绿灯信息
+  repeated LightBarItem light_bar_items = 10;     // 路线光柱信息
+  optional string navi_id = 11;                   // 路线导航会话ID
+  optional bool is_online = 12;                   // 是否为在线算路结果
+  optional int64 segment_count = 13;              // 导航段个数
+  repeated SegmentInfo segment_info = 14;         // 导航段数据访问对象
+  optional int32 label_info_count = 15;  // 正向路径标签信息个数
+  repeated LabelInfo label_info = 16;    // 正向路径标签信息
+  optional int32 reverse_label_info_count = 17;  // 负向路径标签信息个数
+  repeated LabelInfo reverse_label_info = 18;    // 负向路径标签信息
+  optional int32 traffic_jam_count = 19;         // 拥堵段信息个数
+  repeated TrafficJamInfo traffic_jam_info = 20;   // 拥堵信息
+  optional int64 group_segment_count = 21;         // 聚合段个数
+  repeated GroupSegment group_segment = 22;        // 聚合段信息
+  optional int32 traffic_incident_count = 23;      // 交通事件信息个数
+  repeated TrafficIncident traffic_incident = 24;  // 路径交通事件信息
+  optional POIInfo start_poi = 25;                 // 起点POI信息
+  optional POIInfo end_poi = 26;                   // 终点POI信息
+  optional int32 end_direction = 27;               // 终点位置信息
+  optional bool is_holiday_free = 28;    // 是否节假日导致的免费
+  optional int32 avoid_limit_road = 29;  // 是否规避限行路段
+  optional bool is_truck_path = 30;      // 是否货车导航路线
+  optional int64 data_version = 31;      // 数据版本号
+  optional int32 priority = 32;          // 导航路线优先级
+  optional int64 path_index = 33;        // 当前路线为本批次第几条
+  optional int32 route_type = 34;        // 当前路线算路类型
+  repeated JamSegment jam_segment = 35;  // 路线上拥堵段信息
+  repeated LineIconPoint line_icon_points = 36;  // 路径扎点坐标
+  repeated int64 along_road_ids = 37;            // 沿途道路ID列表
+  optional RectDouble bound = 38;                // 路径矩形框
+  repeated RestAreaInfo rest_areas = 39;  // 指定位置后的剩余服务区
+  repeated Coord3DDouble seg_end_point_list = 40;  // 所有导航段的最后一个点
+  repeated int64 city_adcode_list = 41;  // 路径途经城市的adcode列表
+  repeated ViaPointInfo via_point_info = 42;     // 途经点信息
+  repeated ViaRoadInfo path_via_road_info = 43;  // 途经路聚合信息
+  repeated PathCameraExt all_cameras = 44;  // 路线上所有电子眼信息
+  optional bool avoid_result = 45;  // 本次算路规避路段是否成功
+  repeated Coord2DDouble points = 46;  // 当前路径上所有二维形状点坐标
+  optional bool charging_warning = 47;     // 是否有充电警告
+  optional int32 charging_count = 48;      // 续航算路充电桩个数
+  repeated ChargeInfo charging_data = 49;  // 指定index的充电站
+  optional bool has_highway = 50;          // 路线是否包含高速公路
+  optional int32 path_type = 51;           // 路径类型
+  optional int64 static_travel_time = 52;  // 静态旅行时间
+  repeated DifferentPoint different_points = 53;      // 分歧点数据
+  repeated DifferentSection different_sections = 54;  // 分歧段数据
+  repeated RestTollGateInfo rest_toll_gate = 55;      // 剩余收费站信息
+  optional int64 remain_toll_cost = 56;             // 当前路线剩余费用
+  optional int64 main_route_remain_toll_cost = 57;  // 主路线剩余费用
+}
+
+message SegmentInfo {
+  optional bool is_recycled = 1;       // 是否已被回收
+  optional bool is_valid = 2;          // 是否有效
+  optional int64 related_path_id = 3;  // 相关的路线ID
+  optional int32 segment_index = 4;  // 导航段在相关路线内的索引位置
+  optional int32 main_action = 5;    // 导航主动作
+  optional int32 slope = 6;          // 导航段坡度信息
+  optional int64 length = 7;         // 导航段长度
+  optional int32 toll_cost = 8;      // 收费金额
+  optional int64 toll_dist = 9;      // 收费距离
+  repeated Coord2DDouble points = 10;  // 导航段所有二维形状点坐标
+  optional int64 travel_time = 11;     // 当前Segment的旅行时间
+  optional int64 traffic_light_num = 12;   // 总红绿灯个数
+  optional int64 link_count = 13;          // 当前导航的Link段个数
+  repeated LinkInfo link_info = 14;        // Link数据访问对象
+  optional bool has_cross_image = 15;      // 是否有路口大图
+  optional bool is_req_vector_cross = 16;  // 是否请求矢量路口大图
+  optional bool is_right_pass_area = 17;   // 是否右侧通行区域
+  optional bool is_end_of_road = 18;       // 是否是道路尽头
+  optional string toll_road_name = 19;     // 主要收费道路名称
+  optional string exit_name = 20;          // 出口编号
+  optional string guideboard_name = 21;    // 路牌名称
+  optional int64 play_point_count = 22;    // 当前导航段播报点个数
+  optional int32 assistant_action = 23;    // 导航段辅助动作
+}
+
+message LinkInfo {
+  optional bool is_recycled = 1;             // 是否已回收
+  optional bool is_valid = 2;                // 是否有效
+  optional int64 related_path_id = 3;        // 相关的路线ID
+  optional int32 related_segment_index = 4;  // 相关导航路段在路内的索引
+  optional int32 link_index = 5;  // link段在相关导航段内的索引位置
+  optional int32 length = 6;      // link段长度
+  optional int64 travel_time = 7;         // 当前Link旅行时间
+  optional int64 static_travel_time = 8;  // 当前Link静态的旅行时间
+  repeated Coord2DDouble points = 9;   // 当前Link所有二维形状点坐标
+  optional string road_name = 10;      // Link道路名称
+  optional int32 urid = 11;            // Link所在城市ID
+  optional int32 link_direction = 12;  // Link的方向
+  optional int32 main_action = 13;     // Link段的导航主动作
+  optional int64 adcode = 14;          // Link所在行政区域编码
+  optional int32 link_type = 15;       // Link类型
+  optional int32 formway = 16;         // Link formway值
+  optional int32 road_class = 17;      // Link道路等级
+  optional int32 road_direction = 18;  // 当前Link的通行方向信息
+  optional bool is_toll = 19;          // 是否是收费道路
+  optional bool is_overhead = 20;      // 是否是高架路
+  optional bool has_traffic_light = 21;         // 路口是否有交通灯
+  optional bool is_at_service = 22;             // 是否在服务区
+  optional int32 speed_limit = 23;              // 限速信息
+  optional int32 speed = 24;                    // 通行速度
+  optional int32 status = 25;                   // 交通状态
+  optional RoadSlopeInfo road_slope_info = 26;  // Link的坡度信息
+  optional bool inner_road = 27;                // 是否是小区内部路
+  optional bool is_parking_road = 28;        // 是否是停车场内部道路
+  optional int32 lane_num = 29;              // Link的车道数
+  optional int32 road_facility_count = 30;   // 道路设施个数
+  repeated RoadFacility road_facility = 31;  // 当前Link道路设施信息
+  repeated CameraExt camera_ext = 32;        // 电子眼信息
+  optional int64 topo_id = 33;               // 路网ID
+}
+
+message RoadSlopeInfo {
+  optional int32 slope_type = 1;  // 坡度类别: 0=未采集坡度, 1=坡度在[0,0.5),
+                                  // 2=存储了坡度数据, 3=异常坡度
+  repeated SlopePoint slope_point = 2;  // 坡度点数据
+}
+
+message SlopePoint {
+  optional int32 lon = 1;    // 经度
+  optional int32 lat = 2;    // 纬度
+  optional int32 angle = 3;  // 坡度值，单位：0.1度
+}
+
+message RoadFacility {
+  optional int32 type = 1;         // 类型信息
+  optional int32 lon = 2;          // 位置点经度
+  optional int32 lat = 3;          // 位置点纬度
+  repeated int32 speed_limit = 4;  // 限速值，单位为 km/h，分车道速度
+  optional int32 dist_to_end = 5;  // 位置点到终点距离
+}
+
+enum CameraExtFeaturesFlag {
+  none = 0;                         // Default: no specific type
+  speed = 1;                        // 限速摄像头
+  light = 2;                        // 红绿灯照相
+  road_condition = 3;               // 路况监控摄像头
+  radar = 4;                        // 雷达测速摄像头 (deprecated)
+  oneway_street = 5;                // 单行线摄像头
+  bicycle = 6;                      // 非机动车道摄像头
+  exitrance = 7;                    // 出入口摄像头
+  bus = 8;                          // 公交车道摄像头
+  turn_forbidden = 9;               // 禁止左/右转标志
+  mobile = 10;                      // 移动式测速摄像头 (deprecated)
+  red_light = 11;                   // 红绿灯照相 (deprecated)
+  monitor = 12;                     // 电子监控
+  area_speeding_begin = 13;         // 区间测速起点
+  area_speeding_end = 14;           // 区间测速终点
+  emergency_vehicle = 15;           // 应急车道摄像头
+  illegal_parking = 16;             // 违章停车摄像头
+  plate_restriction = 17;           // 限行限号摄像头
+  traffic_marking = 18;             // 交通标线摄像头
+  variable_speed = 19;              // 可变限速
+  tooting_forbidden = 20;           // 禁止鸣笛
+  truck_overloaded = 21;            // 卡车超限电子眼
+  time_limit_parking = 22;          // 限时长停车电子眼
+  truck_forbidden_lane = 23;        // 货车禁行车道电子眼
+  watch_out_for_pedestrians2 = 24;  // 注意行人电子眼
+  safety_belt = 25;                 // 不系安全带
+  use_mobile_phone = 26;            // 开车时打手机
+  u_turn_forbidden = 27;            // 禁止掉头
+  exhaust_exceeds_standard = 28;    // 车辆尾气超标
+  camera_end = 29;                  // 摄像头类结束
+}
+
+message CameraExt {
+  optional int32 dist_to_end = 1;  // 电子眼到link终端距离
+  optional Coord2DDouble pos = 2;  // 电子眼坐标位置: 千分之一秒
+  optional int64 features =
+      3;  // 电子眼特征信息: bit flags of CameraExtFeaturesFlag
+}
+
+message LabelInfo {
+  optional int32 type = 1;      // 标签类型, 暂时没有使用
+  optional string poiid = 2;    // POI ID, 暂时没有使用
+  optional string content = 3;  // 标签内容
+}
+
+message TrafficJamInfo {
+  optional Coord2DDouble pos = 1;  // 拥堵点
+  optional int32 speed = 2;        // 车速 km/h
+}
+
+message GroupSegment {
+  optional int64 length = 1;               // 聚合段长度
+  optional int64 toll_cost = 2;            // 总费用
+  optional string road_name = 3;           // 路名
+  optional int32 start_segment_index = 4;  // 起始的路段index
+  optional int32 segment_count = 5;        // 聚合的路段数量
+  optional int32 speed = 6;                // 通行速度
+  optional bool is_via_point = 7;          // 是否是途经点
+  optional bool is_crucial = 8;            // 是否为关键聚合段
+}
+
+message TrafficIncident {
+  optional Coord2DDouble pos = 1;  // 坐标
+  optional string title = 2;       // 标题
+  optional int64 event_type = 3;   // 原始类型, 由服务端定义
+  optional int32 seg_index = 4;    // 路段index
+  optional int32 link_index = 5;   // link index
+
+  enum EventType {
+    NONE = 0;
+    ROAD_CLOSURE = 1;      // 一般封路事件
+    TRAFFIC_JAM = 2;       // 交通拥堵 (实际数据中不会出现)
+    TRAFFIC_ACCIDENT = 3;  // 交通事故
+    CONSTRUCTION = 4;      // 施工
+    FOG = 5;               // 雾
+    SNOW = 6;              // 雪
+    RAIN = 7;              // 雨
+    HAIL = 8;              // 冰雹
+    OTHER = 9;             // 其他
+    WATERLOGGING = 10;     // 路面积水
+  }
+}
+
+message POIInfo {
+  optional Coord2DDouble real_pos =
+      1;  // 实际位置坐标(realPos/naviPos必须填写一个)
+  optional Coord2DDouble navi_pos = 2;  // 导航位置坐标
+  optional float sig_shelter = 3;  // GPS卫星信号强度，负数表示无效
+  optional int32 type =
+      4;  // 行程点类型: 0默认 当前GPS位置, 1手动选择, 2POI方式
+  optional int64 road_id = 5;                  // 道路ID
+  optional string poi_id = 6;                  // POI ID
+  optional string name = 7;                    // POI名称
+  optional string floor_name = 8;              // 楼层名称
+  optional string parent_name = 9;             // 父节点名称
+  optional string parent_simple_name = 10;     // 父节点短名称
+  optional string angel = 11;                  // 角度指针
+  repeated Coord2DDouble points = 12;          // 按经纬度排列的坐标
+  optional string parent_id = 13;              // 父节点ID
+  optional string parent_rel = 14;             // 父节点Rel
+  optional string type_code = 15;              // POI typecode字符串
+  optional int32 from_jump = 16;               // 是否第三方跳转行程点
+  optional int32 overhead = 17;                // 高架标识
+  optional int64 check_point_link_id = 18;     // 检测点所在link id
+  optional float overhead_back_alt_diff = 19;  // 高架回传高度差
+  optional int32 floor = 20;                   // 建筑楼层ID
+  optional string extend_info_flag = 21;       // 扩展标识
+  optional string src_app = 22;                // 第三方应用名称
+  optional string address = 23;                // 地址
+  optional ChargingArgumentsInfo charge_info = 24;  // 充电桩信息（占位符）
+}
+
+message ChargingArgumentsInfo {
+  optional int32 type = 1;  // 0非法值 1充电站 2非充电站 3自定义充电站
+  optional int32 min_arrival_percent = 2;  // 到达途经点最低电量百分比
+  optional int64 power = 3;                // 充电站功率，单位kW
+  optional int64 voltage = 4;              // 充电站电压，单位V
+  optional int64 amperage = 5;             // 充电站电流，单位A
+}
+
+message JamSegment {
+  optional int32 start_seg_index = 1;   // 拥堵路段起始SegmentIndex
+  optional int32 start_link_index = 2;  // 拥堵路段起始LinkIndex
+  optional int32 end_seg_index = 3;     // 拥堵路段结束SegmentIndex
+  optional int32 end_link_index = 4;    // 拥堵路段结束LinkIndex
+  optional int64 jam_len = 5;           // 拥堵路段长度 单位米
+  optional int64 jam_eta = 6;           // 拥堵路段通行时间 单位S
+}
+
+message LineIconPoint {
+  optional Coord2DDouble point = 1;  // 坐标
+  optional int32 type = 2;           // 类型
+}
+
+message RectDouble {
+  optional double left = 1;
+  optional double right = 2;
+  optional double top = 3;
+  optional double bottom = 4;
+}
+
+message RestAreaInfo {
+  // 剩余距离
+  optional int64 remain_dist = 1;
+
+  // 剩余时间
+  optional int64 remain_time = 2;
+
+  // 服务区的名字
+  optional string service_name = 3;
+}
+
+message Coord3DDouble {
+  optional double lon = 1;  // 经度
+  optional double lat = 2;  // 纬度
+  optional double z = 3;    // 高度
+}
+
+message ViaPointInfo {
+  // 导航段索引
+  optional int32 segment_idx = 1;
+
+  // 途经点所在道路方向(0:未知, 1:左侧, 2:右侧)
+  optional int32 direction = 2;
+
+  // 显示坐标
+  optional Coord2DDouble show = 3;
+
+  // 显示坐标的投影点坐标
+  optional Coord2DDouble projective = 4;
+
+  // POI名称
+  optional string poi_name = 5;
+}
+
+message ViaRoadInfo {
+  // 聚合路名
+  optional string road_name = 1;
+
+  // 最小车道数 255代表无效
+  optional int32 min_lane_num = 2;
+
+  // 最大车道数 0代表无效
+  optional int32 max_lane_num = 3;
+
+  // 最小限速
+  optional int32 min_limit_speed = 4;
+
+  // 最大限速
+  optional int32 max_limit_speed = 5;
+
+  // 聚合段长度
+  optional int32 aggregate_length = 6;
+
+  // 道路级别 参考RoadPriority
+  optional int32 road_class = 7;
+
+  // 保留字段
+  optional int32 reserved = 8;
+
+  // 2D坐标，单位：经度/纬度
+  optional Coord2DDouble point = 9;
+}
+
+message PathCameraExt {
+  // 电子眼数组
+  optional CameraExt camera = 1;
+
+  // 电子眼对应的segment索引
+  optional int64 segment_index = 2;
+
+  // 电子眼对应的link索引
+  optional int64 link_index = 3;
+}
+
+message ChargeInfo {
+  // 电桩位置信息
+  optional Coord2DDouble pos = 1;
+
+  // 空闲充电桩数量
+  optional int64 free_num = 2;
+
+  // 总充电桩数量
+  optional int64 total_num = 3;
+
+  // 交流电空闲充电桩数量
+  optional int64 ac_free_num = 4;
+
+  // 交流电总充电桩数量
+  optional int64 ac_total_num = 5;
+
+  // 直流电空闲充电桩数量
+  optional int64 dc_free_num = 6;
+
+  // 直流电总充电桩数量
+  optional int64 dc_total_num = 7;
+
+  // 充电桩名称
+  optional string name = 8 [default = ""];
+
+  // 充电桩地址信息
+  optional string address = 9 [default = ""];
+
+  // 电话信息
+  optional string phone = 10 [default = ""];
+}
+
+message DifferentPoint {
+  // 第一条路线ID
+  optional int64 first_path_id = 1;
+
+  // 第二条路线ID
+  optional int64 second_path_id = 2;
+
+  // 第一条路线与第二条路线出现差异的Link索引序列；
+  // 当分歧点在起点初时，该值为0xFFFFFFFF
+  repeated int64 first_path_diverge_indexs = 3;
+
+  // 第一条路线与第二条路线再次相同的Link索引序列；
+  // 当分歧点在起点初时，该值为0xFFFFFFFF
+  repeated int64 first_path_merge_indexs = 4;
+
+  // 第二条路线与第一条路线出现差异的Link索引序列；
+  // 当分歧点在起点初时，该值为0xFFFFFFFF
+  repeated int64 second_path_diverge_indexs = 5;
+
+  // 第二条路线与第一条路线再次相同的Link索引序列；
+  // 当分歧点在起点初时，该值为0xFFFFFFFF
+  repeated int64 second_path_merge_indexs = 6;
+}
+
+message DifferentSection {
+  // 独立段所属路线ID
+  optional int64 path_id = 1;
+
+  // 独立段起始的索引，低2Byte为导航段索引，高2Byte为Link在导航段中的索引
+  optional int64 start_link_index = 2;
+
+  // 独立段结束的索引，低2Byte为导航段索引，高2Byte为Link在导航段中的索引
+  optional int64 end_link_index = 3;
+}
+
+message RestTollGateInfo {
+  // 收费站到终点的距离, 单位：米
+  optional int64 remain_dist = 1;
+
+  // 收费站到终点的耗时, 单位：秒
+  optional int64 remain_time = 2;
+
+  // 收费站名称
+  optional string toll_gate_name = 3;
+
+  // 收费站位置
+  optional Coord2DDouble pos = 4;
+}
+
+message PathResultData {
+  // 算路id
+  optional int64 request_id = 1;
+
+  // 算路请求应答类型：合并应答或分次应答
+  optional int32 calc_route_resptype = 2;
+
+  // 算路模式（RouteMode）
+  optional int32 mode = 3;
+
+  // 算路类型
+  optional int32 type = 4;
+
+  // 是否本地规划 false:在线算路；true:离线算路
+  optional bool is_local = 5;
+
+  // 算路错误码。请参照routeErrorCode
+  optional int32 error_code = 6;
+
+  // 详细错误码以及详细错误描述，可能存在多个参数错误问题，一并给出具体错误信息，一次性修改完整
+  repeated BLSubErrorDetail vec_detail = 7;
+
+  // [OnNewRouteError] 是否进行网络到本地规划的切换
+  optional bool is_change = 8;
+
+  // 针对当前requestId的算路请求，是否已应答结束（是否已经是最后一次算路结果回调）
+  optional bool resp_done = 9;
+
+  // 是否是被优先级碰撞，导致该算路请求被abort
+  optional bool is_priority_collision_abort = 10;
+
+  // 在线转离线信息
+  optional Online2OfflineInfo online2_offline_info = 11;
+
+  // 二次算路结果的二进制数据集合，回调结束后该内存回被SDK释放，接收侧在使用时，需要自行对数据内容进行Copy后使用，Copy后的对象由使用者自行释放
+  optional CalcRouteResultData calc_route_result_data = 12;
+
+  // 设备Id，用于标识算路结果是在哪个设备上计算得出。多屏一致性功能相关。
+  optional string plan_channel_id = 13;
+}
+
+message BLSubErrorDetail {
+  // 子错误码
+  optional int32 n_sub_error_code = 1;
+
+  // 错误详细描述
+  optional string str_error_detail = 2;
+}
+
+message Online2OfflineInfo {
+  // 本次算路结果是否是组件内部在线请求失败转离线请求之后得到
+  optional bool is_produced_by_online_to_offline = 1;
+
+  // 上一次请求失败的requestId（不管是离线还是在线）
+  optional int64 last_request_id = 2;
+
+  // 算路失败的情况下，组件内部是否重新发起离线算路
+  optional bool is_retrying_request = 3;
+
+  // 当前新发起的requestId
+  optional int64 cur_request_id = 4;
+}
+
+message CalcRouteResultData {
+  // 第一次算路结果的驾车路径二进制数据
+  optional bytes drive_plan_data = 1;
+
+  // 第二次算路结果二进制数据，与第一次算路结果不同内存区
+  optional bytes drive_guide_data = 2;
+
+  // odd应答结果中odd的二进制数据，与第一次、第二次算路结果不同内存区
+  optional bytes odd_data = 3;
+}
+
+message LaneInfo {
+  // 背景车道，类别详见@LaneAction
+  repeated int32 back_lane = 1;
+
+  // 前景车道，类别详见@LaneAction
+  repeated int32 front_lane = 2;
+
+  // 建议车道，类别详见@LaneAction
+  repeated int32 optimal_lane = 3;
+
+  // 扩展车道信息（0：普通，即无扩展车道 1：左扩展 2：右扩展）
+  // 如果有扩展信息时，extern_lane.size > 0, extern_lane里面的成员用1或2标记出
+  // back_lane对应该车道是否是扩展车道 ，0为不是扩展车道。
+  // 扩展标示（车道之间的竖线）由HMI设计并绘制
+  repeated int32 extern_lane = 4;
+
+  // 背景扩展车道信息（0：普通，即无扩展车道 1：左扩展 2：右扩展）
+  // 如果有扩展信息时，back_exten_lane.size = back_lane.size,
+  // back_exten_lane里面的成员用1或2标记出back_lane对应该车道是否是扩展车道
+  // ，0为不是扩展车道。 扩展标示（车道之间的竖线）由HMI设计并绘制
+  repeated int32 back_exten_lane = 5;
+
+  // 前景扩展车道信息（0：普通，即无扩展车道 1：左扩展 2：右扩展）
+  // 如果有扩展信息时，front_exten_lane.size = front_lane.size,
+  // front_exten_lane里面的成员用1或2标记出front_lane对应该车道是否是扩展车道
+  // ，0为不是扩展车道。 扩展标示（车道之间的竖线）由HMI设计并绘制
+  repeated int32 front_exten_lane = 6;
+
+  // 车道坐标点，仅巡航场景有效
+  optional Coord2DDouble point = 7;
+
+  // 所在导航段索引 只有导航有效
+  optional int32 segment_idx = 8;
+
+  // 所在link索引 只有导航有效
+  optional int32 link_idx = 9;
+}
+
+message ManeuverInfo {
+  // 转向图标类型：栅格，矢量
+  optional int32 type = 1;
+
+  // 路径id
+  optional int64 path_id = 2;
+
+  // 所在segment段，从0开始
+  optional int64 segment_index = 3;
+
+  // 所在segment段上的linkIndex
+  optional int64 link_index = 4;
+
+  // 废弃，后续删除。转向动作ID,参见:ManeuverIconID
+  optional int64 maneuver_id = 5;
+
+  // 转向图标
+  optional ManeuverIcons maneuver_icon = 6;
+
+  // 图片buffer 不支持
+  optional BinaryStream data_buf = 7;
+}
+
+message BinaryStream {
+  // GetBuffer method: 获取缓冲区内容
+  optional bytes buffer = 1;
+
+  // GetData method: 获取数据内容
+  optional bytes data = 2;
+
+  // GetLength method: 获取数据长度
+  optional int32 length = 3;
+}
+
+message NaviCameraExt {
+  // 大类电子眼id
+  optional int64 camera_id = 1;
+
+  // 电子眼坐标2d
+  optional Coord2DDouble coord2d = 2;
+
+  // 车距电子眼距离 单位:米
+  optional int32 distance = 3;
+
+  // 电子眼所在segment索引
+  optional int32 segment_index = 4;
+
+  // 电子眼所在link索引
+  optional int32 link_index = 5;
+
+  // 电子眼到Link终点的距离 单位:米
+  optional int32 distance_to_end = 6;
+
+  // 电子眼所在道路的道路等级
+  optional int32 road_class = 7;
+
+  // 电子眼类型
+  optional int32 type = 8;
+}
+
+message NaviIntervalCameraDynamicInfo {
+  // 区间测速电子眼限速，单位：公里/小时
+  repeated int32 speed = 1;
+
+  // 区间测速电子眼长度，单位：米
+  optional int32 distance = 2;
+
+  // 进入区间测速路段后实时的区间路段剩余距离，单位：米
+  optional int32 remain_distance = 3;
+
+  // 进入区间测速路段后的实时平均车速，单位：公里/小时
+  optional int32 average_speed = 4;
+
+  // 进入区间测速路段后的剩余路段的合理车速 单位：公里/小时
+  optional int32 reasonable_speed_in_remain_dist = 5;
+}
+
+message NaviFacility {
+  // 到当前车位的剩余距离（单位米）
+  optional int32 remain_dist = 1;
+
+  // 类型
+  optional int32 type = 2;
+
+  // 名称，Unicode编码方式
+  optional string name = 3;
+
+  // 位置
+  optional Coord2DDouble pos = 4;
+
+  // 服务区详细信息：按位标识（0-没有，1-有），第0~6位分别表示加油站,餐饮,卫生间,汽修,购物,住宿，充电站
+  optional int64 sapa_detail = 5;
+
+  // 支持的付款方式 按位标示, 默认：0x00， 支付宝: 0x01
+  optional int32 pay_tip = 6;
+
+  // 当前车位距离到sapa的剩余时间（单位秒） 默认0
+  optional int64 remain_time = 7;
+}
+
+message TollGateInfo {
+  // 收费口车道类型 TollLaneType
+  repeated int32 lane_types = 1;
+}
+
+message Callback {
+  optional double timestamp = 1;
+  optional CallbackType type = 2;
+  optional PathResultData path_result_data = 3;
+  repeated PathInfo path_info = 4;
+  repeated NaviInfo navi_info = 5;
+  optional LaneInfo lane_info = 6;
+  optional ManeuverInfo maneuver_info = 7;
+  repeated NaviCameraExt navi_camera_ext = 8;
+  repeated NaviIntervalCameraDynamicInfo navi_interval_camera_dynamic_info = 9;
+  repeated NaviFacility navi_facility = 10;
+  optional TollGateInfo toll_gate_info = 11;
+  // speed==0:隐藏/不显示限速,speed!=	0 显示当前路线限速。单位：公里/小时
+  optional int32 speed = 12;
+  optional BinaryStream ehp_v2 = 13;
+}

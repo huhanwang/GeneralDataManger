@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message QueryFileCachePathRequestProto {
+  optional string file = 1;
+  optional string sha = 2;
+}
+
+message QueryFileCachePathResponseProto {
+  optional bool success = 1 [default = true];
+  optional string error_msg_or_path = 2;
+}
+
+message TransferFileRequestProto {
+  optional string path = 1;
+}
+message TransferFileResponseProto {
+  optional bytes buffer = 1;
+}
+
+service QlfsCacheService {
+  rpc QueryFilePath(QueryFileCachePathRequestProto)
+      returns (QueryFileCachePathResponseProto);
+
+  rpc Download(TransferFileRequestProto)
+      returns (stream TransferFileResponseProto);
+}

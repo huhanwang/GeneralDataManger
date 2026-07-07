@@ -1,0 +1,115 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/release_run_error_code.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message SystemCheckResultProto {
+  required LiteHeader header = 1;
+  required ReleaseRunErrorCode check_error_code = 2;
+  optional string check_error_msg = 3;
+}
+
+enum SystemCheckerType {
+  SC_MAP = 1;
+  SC_DISK = 2;
+  SC_PROCESS = 3;
+  SC_PORT = 4;
+  SC_PTP4L = 5;
+  SC_NODE = 6;
+  SC_CAN = 7;
+  SC_LIDAR = 8;
+  SC_CAMERA = 9;
+  SC_NETIF = 10;
+  SC_TIME = 11;
+  SC_GPU = 12;
+  SC_RAM = 13;
+  SC_GPSD = 14;
+  SC_CPU = 15;
+  SC_DEVICE = 16;
+  SC_SERIAL = 17;
+  SC_CHRONYD = 18;
+  SC_ETHIF = 19;
+  SC_MONITOR = 20;
+  SC_CAMERA_TRIGGER = 21;
+  SC_GNSS_IMU = 22;
+  SC_BPU = 23;
+  SC_MIPI = 24;
+  SC_PCIE = 25;
+  SC_RADAR = 26;
+  SC_CHASSIS = 27;
+  SC_CONTROLLER = 28;
+  SC_GPTPD = 29;
+};
+
+enum CheckDevice {
+  UNKNOWN_Device = 0;
+  IPC = 1;
+  ORIN = 2;
+  J5 = 3;  // X9U
+  SINGLE_J5 = 4;
+}
+
+enum CheckMode {
+  L4 = 1;
+  MASS_PRODUCTION = 2;
+  VEHICLE_CHECK = 3;
+  L2_PLUS_PLUS = 4;
+};
+
+message DeviceAndNodeName {
+  optional CheckDevice check_device = 1;
+  optional string node_name = 2;
+}
+
+message SystemCheckItemAttr {
+  optional int32 check_priority = 1;
+  optional bool main_node_only = 2;
+  repeated DeviceAndNodeName supported_nodes = 3;
+  optional string description = 4;
+}
+
+message SystemCheckItems {
+  map<string, SystemCheckItemAttr> attribute_map = 1;
+}
+
+enum HardwareCheckType {
+  RADAR = 1;
+  LIDAR = 2;
+  GNSS = 3;
+  CHASSIS = 4;
+  CAMERA = 5;
+}
+
+enum HardwareCheckStatus {
+  WAITING_FOR_CHECK = 0;
+  CHECK_IN_PROGRESS = 1;
+  CHECK_COMPLETE = 2;
+  CHECK_FAILED = 3;
+}
+
+message CheckResult {
+  optional HardwareCheckType hardware = 1;
+  map<string, HardwareCheckStatus> sub_item_result = 2;
+}
+
+message NodeNameAndIP {
+  optional string node_name = 1;
+  optional string node_ip = 2;
+}
+
+message DeviceToSensorConfig {
+  map<string, NodeNameAndIP> sensor_to_node = 1;
+}
+
+message SubCheckItems {
+  repeated string sub_check_items = 1;
+}
+
+message VehicleCheckConfig {
+  map<string, string> qtt_to_autonomy = 1;
+  map<string, DeviceToSensorConfig> device_to_sensor_config = 2;
+  map<string, SubCheckItems> hardware_to_sub_check_items = 3;
+}

@@ -1,0 +1,30 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/liauto/li_as_seq_debug.proto";
+import "onboard/proto/liauto/li_aeb_function_debug.proto";
+import "onboard/proto/liauto/li_lateral_function_debug.proto";
+import "onboard/proto/liauto/li_cornor_function_debug.proto";
+import "onboard/proto/liauto/li_active_safety_control.proto";
+import "onboard/proto/liauto/li_as_function_internal.proto";
+import "onboard/proto/liauto/li_common_function_debug.proto";
+
+message AsDebugHeader {
+  optional uint64 time_stamp = 1;
+  optional uint32 frame_id = 2;
+  repeated AsSeqDebug as_seq_debug = 3;
+}
+
+message AsFunctionDebugProto {
+  optional LiteHeader header = 1;
+  optional AsDebugHeader as_debug_header = 2;
+  optional AebFcwFunctionDebug aeb_function_debug = 3;
+  optional LateralFunctionDebug lateral_function_debug = 4;
+  optional CornorFunctionDebug cornor_function_debug = 5;
+  optional AsControlCommand as_control_debug = 6;
+  optional AsFunctionInternal as_function_internal_debug = 7;
+  optional CommonFunctionDebug common_function_debug = 8;
+}

@@ -1,0 +1,98 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/motion_filter_2/proto/meas_model";
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message Vec5dProto {
+  // Length of m must be 5.
+  repeated double m = 1;
+}
+
+message Vec6dProto {
+  // Length of m must be 6.
+  repeated double m = 1;
+}
+
+message Mat5dProto {
+  // Size of m must be 5x5.
+  repeated double m = 1;
+}
+
+message Mat6dProto {
+  // Size of m must be 6x6.
+  repeated double m = 1;
+}
+
+message MeasModel1D {
+  optional double measurement = 1;
+  optional double meas_noise = 2;
+}
+
+message MeasModel2D {
+  optional Vec2dProto measurement = 1;
+  optional Mat2dProto meas_noise = 2;
+}
+
+message MeasModel3D {
+  optional Vec3dProto measurement = 1;
+  optional Mat3dProto meas_noise = 2;
+}
+
+message MeasModel4D {
+  optional Vec4dProto measurement = 1;
+  optional Mat4dProto meas_noise = 2;
+}
+
+message MeasModel5D {
+  optional Vec5dProto measurement = 1;
+  optional Mat5dProto meas_noise = 2;
+}
+
+message MeasModel6D {
+  optional Vec6dProto measurement = 1;
+  optional Mat6dProto meas_noise = 2;
+}
+
+message MeasModelProto {
+  enum Type {
+    NONE = 0;
+    POSITION = 1;
+    HEADING = 2;
+    SPEED = 3;
+    VELOCITY = 4;
+    POS_SPEED = 5;
+    POS_VELOCITY = 6;
+    POS_HEADING = 7;
+    POS_HEADING_VELOCITY = 8;
+    HEADING_VELOCITY = 9;
+    SPEED_ACC = 13;
+    VELOCITY_ACC = 14;
+    POS_SPEED_ACC = 15;
+    POS_VELOCITY_ACC = 16;
+    BBOX = 10;
+    RESET = 11;
+    PREDICT = 12;
+  }
+  optional Type meas_type = 1;
+  oneof MeasModel {
+    MeasModel1D meas_model_1d = 2;
+    MeasModel2D meas_model_2d = 3;
+    MeasModel3D meas_model_3d = 4;
+    MeasModel4D meas_model_4d = 5;
+    MeasModel5D meas_model_5d = 6;
+    MeasModel6D meas_model_6d = 7;
+  }
+}

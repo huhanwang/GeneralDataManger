@@ -1,0 +1,33 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.tcn_model;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/track_classifier/proto/tcn_model";
+
+enum TcnType {
+  TCN_VEHICLE = 0;
+  TCN_PEDESTRIAN = 1;
+  TCN_CYCLIST = 2;
+  TCN_TRICYCLIST = 3;
+  TCN_VEGETATION = 4;
+  TCN_BARRIER = 5;
+  TCN_UNKNOWN = 6;
+}
+
+enum TcnVehLampType {
+  TCN_VEHLAMP_LIGHTOFF = 0;
+  TCN_VEHLAMP_STOP = 1;
+  TCN_VEHLAMP_TURNLEFT = 2;
+  TCN_VEHLAMP_TURNRIGHT = 3;
+  TCN_VEHLAMP_OTHERS = 4;
+}

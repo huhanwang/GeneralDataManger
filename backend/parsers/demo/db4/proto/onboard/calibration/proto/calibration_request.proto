@@ -1,0 +1,16 @@
+syntax = "proto2";
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_request";
+
+import "onboard/calibration/proto/calibration_workflow.proto";
+import "onboard/calibration/proto/calibration_param.proto";
+import "onboard/calibration/proto/calibration_board.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message CalibrationRequest {
+  optional LiteHeader header = 1;
+  optional string car_id = 2;
+  optional CalibrationWorkflowProto work_flow = 3;
+  optional CalibrationParam param = 4;
+  optional CalibrationBoardsProto calibration_boards = 5;  // only for EOL mode
+}

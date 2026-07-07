@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/maps/dynamic_layer/proto/non_odd.proto";
+import "onboard/maps/dynamic_layer/proto/map_modifier.proto";
+
+message DynamicLayerProto {
+  optional string version = 1;
+  repeated MapModifierProto map_modifiers = 2;
+  repeated non_odd.NonODDProto non_odds = 3;
+}

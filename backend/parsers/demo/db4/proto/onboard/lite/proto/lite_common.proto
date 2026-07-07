@@ -1,0 +1,291 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/trans_phase_timestamp.proto";
+
+// The header of a lite message, all lite message should contain this message
+// as first field of message.
+message LiteHeader {
+  // Timestamp in microseconds.
+  optional int64 timestamp = 1;
+  // The domain of lite message lives in, empty means default namespace.
+  optional string domain = 2;
+  // The increasing sequence number published by a client.
+  optional uint64 seq_number = 3;
+  // The integer format of LiteModuleName, not use LiteModuleName directly here
+  // to decouple with the message definition.
+  optional int32 module_id = 4;
+  // Empty means using the Proto's lower case with underscore form.
+  // Eg: TrajectoryProto -> trajectory_proto. If non empty, use this field
+  // instead.
+  optional string channel = 5;
+
+  // If it's a share memory message.
+  optional bool is_shm_msg = 6;
+
+  // The tag number in LiteMsgWrapper proto.
+  optional int32 tag_number = 7;
+
+  // The timestamp that msg reach the logger.
+  // Note: This field will be set on the LoggingModule.
+  // Other modules should not read this field (since it is not set).
+  optional int64 log_timestamp = 8;
+
+  optional string full_node_name = 9;
+
+  // The increasing sequence number of per channel published by a client.
+  optional uint64 channel_seq_number = 10;
+
+  optional string source_node_name = 11;
+
+  optional bool cs_mode = 12;
+
+  optional int32 priority = 13 [default = 0];
+
+  optional int64 sensor_time = 14;
+
+  optional int32 sensor_id = 15;
+
+  repeated TransPhaseTimestamp trans_timestamp = 16;
+
+  optional int64 raw_timestamp = 17;
+
+  // The domain of lite message lives in, empty means default namespace.
+  // TODO(kun): Maybe add pid.
+  extensions 10000 to max;
+}
+
+// In lite system every client should be published from a Module name.
+enum LiteModuleName {
+  UNSPECIFIED_MODULE = 0;
+  // Onboard modules start from 1 to 50000
+  PLANNER_MODULE = 1;
+  PERCEPTION_MODULE = 2;
+  SPIN_PUBLISHER_MODULE = 3;
+  LOGGING_MODULE = 4;
+  PCAP_FILE_PUBLISHER_MODULE = 5;
+  VANTAGE_FORWARDING_MODULE = 6;
+  GNSS_IMU_DRIVER_MODULE = 7;
+  POSITIONING_MODULE = 8;
+  VEHICLE_ENGINE_MODULE = 9;
+  VIRTUAL_WORLD_MODULE = 10;
+  VEHICLE_CONTROL_MODULE = 11;
+  IMAGE_PUBLISHER_MODULE = 12;
+  CAN_BUS_MODULE = 13;
+  AUTONOMY_STATE_MODULE = 15;
+  PREDICTION_MODULE = 16;
+  ONLINE_SIMULATION_MODULE = 17;
+  REMOTE_ASSIST_MODULE = 18;
+  VISION_MODULE = 19;
+  ROUTING_MODULE = 20;
+  ROUTE_RECORDER_MODULE = 21;
+  QVIEW_PUBLISHER_MODULE = 22;
+  AUTONOMY_MODULE = 23;
+  V2X_MODULE = 24;
+  LOCALIZATION_MODULE = 25;
+  RADAR_PUBLISHER_MODULE = 26;
+  QSHOW_PUBLISHER_MODULE = 27;
+  IMAGE_FORWARDING_MODULE = 28;
+  NODE_MODULE = 29;
+  NODE_STATE_MODULE = 30;
+  IMAGE_SENDER_MODULE = 31;
+  RADAR_PROCESS_MODULE = 32;
+  TRACKER_MODULE = 33;
+  AUTONOMY_HMI_MODULE = 34;
+  OCC_MODULE = 35;
+  EMERGENCY_BRAKE_MODULE = 36;
+  // Prepare the environment and system self-check
+  SYSTEM_CHECK_MODULE = 37;
+  CONTROL_CALIBRATION_MODULE = 38;
+  VISUAL_LOCALIZATION_MODULE = 39;
+  AUTONOMY_SERVICE_MODULE = 40;
+  OMNINET_MODULE = 41;
+  ONLINE_MAP_PUBLISHER_MODULE = 42;
+  LANE_SUPPORT_MODULE = 43;
+  AEB_TRACKER_MODULE = 44;
+  OMNINET_FEATURE_MODULE = 45;
+  CALIBRATION_MODULE = 46;
+  HMA_FUSION_MODULE = 47;
+  TSR_MODULE = 48;
+  FIERYEYENET_MODULE = 49;
+  CHASSIS_MODULE = 50;
+  GAC_NODE_MODULE = 51;
+  BOLE_ADAPTER_MODULE = 52;
+  PARKING_SPOT_FINDER_MODULE = 53;
+  DIAG_MODULE = 54;
+  EX_PROTO_TRANS_MODULE = 55;
+  PARKING_FUSION_MODULE = 56;
+  AVM_MODULE = 57;
+  ML_PLANNER_MODULE = 58;
+  SD_LOCALIZATION_MODULE = 59;
+  GAC_DIAG_MODULE = 60;
+  MAP_FUSION_MODULE = 61;
+  ADAPTER_MODULE = 62;
+  PARAM_SERVICE_MODULE = 63;
+  SD_MAP_PUBLISHER_MODULE = 64;
+  MCU_FORWARDING_MODULE = 65;
+  ACTIVE_SAFETY_FUSION_MODULE = 66;
+  ACTIVE_SAFETY_MODULE = 67;
+  ACTIVE_SAFETY_MCU_MODULE = 68;
+  ENCODING_DECODING_MODULE = 69;
+  IMAGE_ANONYMIZATION_MODULE = 70;
+  VISION_MAP_PUBLISHER_MODULE = 71;
+  LSAEB_MODULE = 72;
+  AROUND_VIEW_MODULE = 73;
+  PARKING_VISION_FUSION_MODULE = 74;
+  HPP_MAPPING_MODULE = 75;
+  VISION_FUSION_MODULE = 76;
+  INTEGRATED_NAVIGATION_MODULE = 77;
+  ADAPTER_AD4_MODULE = 78;
+  HPP_ONLINE_MAP_PUBLISHER_MODULE = 79;
+  AD_CONTROL_MODULE = 80;
+  TRIGGER_MODULE = 81;
+  AD4_ASFUNC_MODULE = 82;
+  PARKING_PLANNER_MODULE = 83;
+  AD4_FUSION_MODULE = 84;
+  LI_SYSMGR_LOADER_MODULE = 85;
+  LIDAR_MODULE = 86;
+  LIDAR_PROCESS_MODULE = 87;
+  SD_MAP_ADAPTER_MODULE = 88;
+  HPP_LOCALIZATION_MODULE = 89;
+  VHR_MODULE = 90;
+  DATA_FORWARDING_MODULE = 91;
+  // containers, start from 10000
+  IMAGE_PIPELINE_CONTAINER = 10001;
+  LIDAR_PIPELINE_CONTAINER = 10002;
+  RADAR_PIPELINE_CONTAINER = 10003;
+  NODE_CONTAINER = 10004;
+  GAC_NODE_DIAG_CONTAINER = 10005;
+  LOCALIZATION_AND_MAP_CONTAINER = 10006;
+  SYSTEM_STATE_CONTAINER = 10007;
+  LOGGING_CONTAINER = 10008;
+  DATA_FORWARD_CONTAINER = 10009;
+  MAP_PIPELINE_CONTAINER = 10010;
+  IMAGE_ANONYMIZATION_CONTAINER = 10011;
+  POSITIONING_PIPELINE_CONTAINER = 10012;
+  VISION_CONTAINER = 10013;
+  TRACKER_CONTAINER = 10014;
+  PARKING_VISION_CONTAINER = 10015;
+  CONTROL_CONTAINER = 10016;
+  SD_MAP_MODULE_CONTAINER = 10017;
+
+  INDICATOR_SIDECAR = 15000;
+  INDICATOR_GRPC_LOOP = 15001;
+
+  // Offline modules start from  50000 to 99999
+  SIM_RUN_PLAYBACK_MODULE = 50000;
+  REAL_TIME_PLAYBACK_MODULE = 50001;
+  INTERACTIVE_PLAYBACK_MODULE = 50002;
+  DATA_ANALYSIS_MODULE = 50003;
+  SIMULATION_VEHICLE_MODULE = 50004;
+  VIRTUAL_OBJECT_MODULE = 50005;
+  CREATE_SIM_MESSAGES_MODULE = 50006;
+  JOYSTICK_CONTROL_MODULE = 50007;
+  SYNTHESIZED_TRAFFIC_FLOW_MODULE = 50008;
+  RSIM_MODULE = 50009;
+  SENSOR_LIVE_MODULE = 50010;
+  MOCK_LOCALIZATION_MODULE = 50011;
+  LITE_CYBER_MODULE = 50012;
+  ORACLE_MODULE = 50013;
+  CYBER_FORWARDING_MODULE = 50014;
+  OFFBOARD_PREDICTION_MODULE = 50015;
+  SIM_EVENTS_MODULE = 50016;
+  ACC_LCC_J3_GEN_MODULE = 50017;
+  HUMAN_DRIVING_MODULE = 50018;
+  OFFBOARD_ROAD_GEOMETRY_TRACKER_MODULE = 50019;
+  OFFBOARD_SD_LOCALIZATION_MODULE = 50020;
+
+  OFFBOARD_LIDAR_POSE_FUSION_MODULE = 50021;
+  OFFBOARD_PLANNER_MODULE = 50022;
+  OFFBOARD_ONLINE_MAP_PUBLISHER_MODULE = 50023;
+
+  MOCK_ONLINE_MAP_PUBLISHER_MODULE = 50024;
+  MOCK_HMI_MODULE = 50025;
+  OFFBOARD_CONTROLLER_MODULE = 50026;
+
+  // Test only modules, start from 100000
+  TEST_LITE_MODULE_1 = 100000;
+  TEST_LITE_MODULE_2 = 100001;
+  TEST_LITE_MODULE_3 = 100002;
+  TEST_LITE_MODULE_4 = 100003;
+  TEST_LITE_MODULE_5 = 100004;
+  TEST_LITE_MODULE_6 = 100005;
+
+  MOCK_GNSS_IMU_DRIVER_MODULE = 100010;
+  MOCK_POSITIONING_MODULE = 100011;
+  MOCK_PERCEPTION_MODULE = 100012;
+  MOCK_SPIN_PUBLISHER_MODULE = 100013;
+  MOCK_PLANNER_MODULE = 100014;
+  MOCK_LOGGING_MODULE = 100015;
+  TEST_MODULE_STATE_MODULE = 100016;
+  MOCK_IMAGE_PUBLISH_MODULE = 100017;
+  MOCK_SELF_DESTRUCT_MODULE = 100018;
+  MOCK_LITE_PRESSURE_TEST_MODULE = 100019;
+
+  RSIM_PLAYBACK_MODULE = 100020;
+  RSIM_VEHICLE_MODULE = 100021;
+  MOCK_MINILITE_MODULE = 100022;
+  RSIM_STATE_MONITOR_MODULE = 100023;
+  MOCK_PUB_SUB_MODULE = 100024;
+
+  // QIssue module
+  QISSUE_TRANS = 100025;
+
+  // lite perfomance test moudle
+  LITE_PERF_TEST_PUB_SUB_MODULE = 100026;
+  LITE_PERF_TEST_SUB_MODULE = 100027;
+
+  ONB_RUN_SIM_PLAYBACK_MODULE = 100028;
+
+  // QRunEvents module
+  QRUNEVENTS_TRANS = 100029;
+  DEBUG_TOOL = 100030;
+
+  // run sim playback module
+  RUN_SIM_PLAYBACK_MODULE = 100031;
+  MOCK_PUB_SUB_MODULE_1 = 100032;
+  MOCK_PUB_SUB_MODULE_2 = 100033;
+  MOCK_PUB_SUB_MODULE_3 = 100034;
+
+  // Trigger module
+  DDS_TRIGGER = 100035;
+
+  // Extension modules
+  EXTENSION_MODULES = 110000;
+  EXTENSION_SAMPLE_PUB_MODULE = 110001;
+  EXTENSION_SAMPLE_SUB_MODULE = 110002;
+  EXTENSION_MONO_MODULE = 110003;
+  EXTENSION_FUSION_MODULE = 110004;
+  EXTENSION_EHR_MODULE = 110005;
+  EXTENSION_FAPA_MODULE = 110006;
+  EXTENSION_APA_MODULE = 110007;
+  EXTENSION_ODOMETRY_MODULE = 110008;
+  EXTENSION_VEHICLE_IO_MODULE = 110009;
+  EXTENSION_PARKING_PLANNING_MODULE = 110010;
+  EXTENSION_AD_CONTROL_MODULE = 110011;
+
+  // Reserved for oneoff usage > 200000
+
+  // Reserved for jefleet > 500000
+  MAPFORMER_MODULE = 500000;
+  REMOTE_DRIVE_MODULE = 500001;
+
+  // Remote drive cockpit > 600000
+  SAMPLE_MODULE = 600000;
+  COCKPIT_HMI_MODULE = 600001;
+  COCKPIT_CLOUD_MODULE = 600002;
+  COCKPIT_CONTROL_MODULE = 600003;
+
+  reserved 14;
+}
+
+// An configuration can be specified in simulation per module.
+message SimModuleConf {
+  extensions 10000 to max;
+}
+
+// Module state channel pairs for state message forwarding
+message ModuleStateChannelPair {
+  optional string source_channel = 1;
+  optional string target_channel = 2;
+}

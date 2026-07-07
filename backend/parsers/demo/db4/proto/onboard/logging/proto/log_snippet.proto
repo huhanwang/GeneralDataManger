@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package snoah.logging;
+
+message LogSnippetMetaProto {
+  optional string src_file_path = 1;
+  optional int64 src_file_start_offset_bytes = 2;
+  optional int64 src_file_end_offset_bytes = 3;
+  optional bytes crafted_meta_block_content = 4;
+  optional bytes crafted_index_block_content = 5;
+  optional bytes related_message = 6;
+  // when event happened
+  optional int64 event_offset_us = 7;
+  // to clip snippet, [start from, end to]
+  optional int64 start_offset_us = 8;
+  optional int64 end_offset_us = 9;
+  optional bool run_has_finished = 10 [default = false, deprecated = true];
+}

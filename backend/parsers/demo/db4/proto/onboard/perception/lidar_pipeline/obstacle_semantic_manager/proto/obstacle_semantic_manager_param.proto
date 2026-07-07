@@ -1,0 +1,102 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_pipeline/obstacle_semantic_manager/proto/obstacle_semantic_manager_param";
+
+import "onboard/perception/proto/obstacle.proto";
+import "onboard/perception/proto/detection_range.proto";
+
+// Hit measurements if we consider an obstacle semantic grid is hit
+message ObstacleSemanticGridHitProb {
+  optional ObstacleProto.Type obstacle_type = 1;
+  optional float hit_prob = 2;
+}
+
+// Miss measurements if we consider an obstacle semantic grid is missing
+message ObstacleSemanticGridMissProb {
+  optional ObstacleProto.Type obstacle_type = 1;
+  optional float miss_prob = 2;
+}
+
+// Occlusion measurements if we consider an obstacle semantic grid is occluded
+message ObstacleSemanticGridOcclusionProb {
+  optional ObstacleProto.Type obstacle_type = 1;
+  optional float occlusion_prob = 2;
+}
+
+// Promotion prob if we consider an obstacle semantic grid result can be
+// promoted or not
+message ObstacleSemanticGridPromotionProb {
+  optional ObstacleProto.Type obstacle_type = 1;
+  optional float promotion_prob = 2;
+}
+
+// Occupy/observe related log odds threshold
+message ObstacleSemanticGridOccupancyProbs {
+  optional float min_occupied_prob = 1;
+  optional float min_occupied_prob_promotion = 2;
+  optional float min_occupied_observable_prob = 3;
+  optional float max_occupied_observable_prob = 4;
+  optional float miss_occupancy_prob = 5;
+  optional float miss_occlusion_prob = 6;
+}
+
+// Promotion/Ignorance related probability
+message ObstacleSemanticGridProbThresholds {
+  optional float min_prob_single_vec = 1;
+  optional float min_prob_to_log_odd = 2;
+  optional float max_prob_to_log_odd = 3;
+}
+
+// Neighborhood smoothing setting
+message NeighborSmoothingSetting {
+  optional int32 half_neighbor_search_range_x = 1;
+  optional int32 half_neighbor_search_range_y = 2;
+  optional float neighbor_info_weight = 3;
+}
+
+// Obstacle semantic source weight
+message ObstacleSemanticSourceWeight {
+  optional float pillar_semantic_weight = 1;
+  optional float range_image_weight = 2;
+  optional float object_detection_weight = 3;
+}
+
+// Semantic source default prob
+message SemanticSourceDefaultProb {
+  optional float pillar_semantic_default_prob = 1;
+  optional float range_image_default_prob = 2;
+  optional float object_detection_default_prob = 3;
+}
+
+message ObstacleSemanticManagerParams {
+  optional DetectionRangeProto obstacle_semantic_grid_range = 1;
+  optional double obstacle_semantic_grid_diameter = 2;
+  repeated ObstacleSemanticGridHitProb obstacle_semantic_grid_hit_prob = 4;
+  repeated ObstacleSemanticGridMissProb obstacle_semantic_grid_miss_prob = 5;
+  repeated ObstacleSemanticGridPromotionProb
+      obstacle_semantic_grid_promotion_prob = 6;
+  repeated ObstacleSemanticGridOcclusionProb
+      obstacle_semantic_grid_occlusion_prob = 7;
+  optional ObstacleSemanticGridOccupancyProbs
+      obstacle_semantic_grid_occupancy_probs = 8;
+  optional ObstacleSemanticGridProbThresholds
+      obstacle_semantic_grid_prob_thresholds = 9;
+  optional NeighborSmoothingSetting neighbor_smoothing_setting = 10;
+  optional ObstacleSemanticSourceWeight obstacle_semantic_source_weight = 11;
+  optional SemanticSourceDefaultProb semantic_source_default_prob = 12;
+
+  // Reserved for semantic type
+  reserved 3;
+}

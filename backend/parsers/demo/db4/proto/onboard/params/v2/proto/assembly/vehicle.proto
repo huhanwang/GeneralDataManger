@@ -1,0 +1,170 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "snoah-proto.ai/onboard/params/v2/proto/assembly/vehicle";
+
+import "onboard/params/v2/proto/camera/common.proto";
+import "onboard/params/v2/proto/camera/inherent.proto";
+import "onboard/params/v2/proto/camera/installation.proto";
+import "onboard/params/v2/proto/gnss/common.proto";
+import "onboard/params/v2/proto/gnss/inherent.proto";
+import "onboard/params/v2/proto/gnss/installation.proto";
+import "onboard/params/v2/proto/led/common.proto";
+import "onboard/params/v2/proto/led/inherent.proto";
+import "onboard/params/v2/proto/led/installation.proto";
+import "onboard/params/v2/proto/lidar/common.proto";
+import "onboard/params/v2/proto/lidar/inherent.proto";
+import "onboard/params/v2/proto/lidar/installation.proto";
+import "onboard/params/v2/proto/obc/common.proto";
+import "onboard/params/v2/proto/obc/inherent.proto";
+import "onboard/params/v2/proto/obc/installation.proto";
+import "onboard/params/v2/proto/omc/common.proto";
+import "onboard/params/v2/proto/omc/inherent.proto";
+import "onboard/params/v2/proto/omc/installation.proto";
+import "onboard/params/v2/proto/radar/common.proto";
+import "onboard/params/v2/proto/radar/inherent.proto";
+import "onboard/params/v2/proto/radar/installation.proto";
+import "onboard/params/v2/proto/uss/common.proto";
+import "onboard/params/v2/proto/uss/inherent.proto";
+import "onboard/params/v2/proto/uss/installation.proto";
+import "onboard/params/v2/proto/v2x/common.proto";
+import "onboard/params/v2/proto/v2x/inherent.proto";
+import "onboard/params/v2/proto/v2x/installation.proto";
+import "onboard/params/v2/proto/vehicle/common.proto";
+import "onboard/params/v2/proto/vehicle/inherent.proto";
+import "onboard/params/v2/proto/vehicle/installation.proto";
+import "onboard/params/v2/proto/occ/common.proto";
+import "onboard/params/v2/proto/occ/inherent.proto";
+import "onboard/params/v2/proto/occ/installation.proto";
+
+enum HardwareType {
+  HARDWARE_CAMERA = 0;
+  HARDWARE_GNSS = 1;
+  HARDWARE_LIDAR = 2;
+  HARDWARE_OBC = 3;
+  HARDWARE_OMC = 4;
+  HARDWARE_RADAR = 5;
+  HARDWARE_V2X = 6;
+  HARDWARE_VEHICLE = 7;
+  HARDWARE_OCC = 8;
+  HARDWARE_LED = 9;
+  HARDWARE_USS = 10;
+}
+
+message HardwareEntityConfigProto {
+  // The 'model' specifies the 'common' parameters.
+  optional string model = 1;
+  // The 'key' specifies the 'inherent' and 'installation' parameters
+  optional string key = 2;
+
+  optional HardwareType type = 3;
+}
+
+message HardwareConfigProto {
+  optional string car_id = 1;
+  repeated HardwareEntityConfigProto hardwares = 2;
+}
+
+message CameraParametersProto {
+  optional CameraModel model = 1;
+  optional string key = 2;
+  optional CameraCommonProto common = 3;
+  optional CameraInherentProto inherent = 4;
+  optional CameraInstallationProto installation = 5;
+}
+
+message GnssImuParametersProto {
+  optional GnssImuModel model = 1;
+  optional string key = 2;
+  optional GnssImuCommonProto common = 3;
+  optional GnssImuInherentProto inherent = 4;
+  optional GnssImuInstallationProto installation = 5;
+}
+
+message LidarParametersProto {
+  optional LidarModel model = 1;
+  optional string key = 2;
+  optional LidarCommonProto common = 3;
+  optional LidarInherentProto inherent = 4;
+  optional LidarInstallationProto installation = 5;
+}
+
+message ObcParametersProto {
+  optional ObcModel model = 1;
+  optional string key = 2;
+  optional ObcCommonProto common = 3;
+  optional ObcInherentProto inherent = 4;
+  optional ObcInstallationProto installation = 5;
+}
+
+message OmcParametersProto {
+  optional OmcModel model = 1;
+  optional string key = 2;
+  optional OmcCommonProto common = 3;
+  optional OmcInherentProto inherent = 4;
+  optional OmcInstallationProto installation = 5;
+  optional string modelstr = 6;
+}
+
+message RadarParametersProto {
+  optional RadarModel model = 1;
+  optional string key = 2;
+  optional RadarCommonProto common = 3;
+  optional RadarInherentProto inherent = 4;
+  optional RadarInstallationProto installation = 5;
+}
+
+message UssParametersProto {
+  optional UssModel model = 1;
+  optional string key = 2;
+  optional UssCommonProto common = 3;
+  optional UssInherentProto inherent = 4;
+  optional UssInstallationProto installation = 5;
+}
+
+message V2xParametersProto {
+  optional V2xModel model = 1;
+  optional string key = 2;
+  optional V2xCommonProto common = 3;
+  optional V2xInherentProto inherent = 4;
+  optional V2xInstallationProto installation = 5;
+}
+
+message VehicleParametersProto {
+  optional VehicleModel model = 1;
+  optional string key = 2;
+  optional VehicleCommonProto common = 3;
+  optional VehicleInherentProto inherent = 4;
+  optional VehicleInstallationProto installation = 5;
+}
+
+message OccParametersProto {
+  optional OccModel model = 1;
+  optional string key = 2;
+  optional OccCommonProto common = 3;
+  optional OccInherentProto inherent = 4;
+  optional OccInstallationProto installation = 5;
+}
+
+message LedParametersProto {
+  optional LedModel model = 1;
+  optional string key = 2;
+  optional LedCommonProto common = 3;
+  optional LedInherentProto inherent = 4;
+  optional LedInstallationProto installation = 5;
+}
+
+message HardwareParametersProto {
+  optional string car_id = 1;
+  repeated CameraParametersProto cameras = 2;
+  optional GnssImuParametersProto gnss = 3;
+  repeated LidarParametersProto lidars = 4;
+  repeated ObcParametersProto obcs = 5;
+  repeated OmcParametersProto omcs = 6;
+  repeated RadarParametersProto radars = 7;
+  optional V2xParametersProto v2x = 8;
+  optional VehicleParametersProto vehicle = 9;
+  repeated OccParametersProto occs = 10;
+  repeated LedParametersProto leds = 11;
+  repeated UssParametersProto uss = 12;
+}

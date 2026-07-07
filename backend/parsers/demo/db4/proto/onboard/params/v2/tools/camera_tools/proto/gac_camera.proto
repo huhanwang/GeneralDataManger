@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_camera.proto";
+
+message GacCameraToV2Camera {
+  optional string gac_sensor_name = 1;
+  optional CameraId v2_camera_id = 2;
+  optional int32 original_width = 3;
+  optional int32 original_height = 4;
+  message ImageResize {
+    optional int32 width = 1;
+    optional int32 height = 2;
+  }
+  optional ImageResize image_resize = 5;
+  message ROI {
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 width = 3;
+    optional int32 height = 4;
+  }
+  optional ROI downscale_roi = 6;
+  optional string camera_model = 7;
+}
+
+message GacCameras {
+  repeated GacCameraToV2Camera gac_cameras = 1;
+}

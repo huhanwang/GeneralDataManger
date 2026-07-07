@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+
+message GeoBoxProto {
+  optional GeoPointProto min_corner = 1;
+  optional GeoPointProto max_corner = 2;
+}
+
+message GeoLineSegmentProto {
+  optional GeoPointProto start_point = 1;
+  optional GeoPointProto end_point = 2;
+}

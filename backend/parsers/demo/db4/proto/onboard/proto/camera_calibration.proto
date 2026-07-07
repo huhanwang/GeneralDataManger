@@ -1,0 +1,39 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/lite/vehicle_params_manager/proto/param_service_ack.proto";
+import "onboard/calibration/proto/calibration_workflow.proto";
+
+message OneCameraCalibInfo {
+  optional CameraId camera_id = 1;
+  optional CameraToVehicleExtrinsicsProto extrinsics = 2;
+}
+
+message CameraCalibrationProto {
+  optional LiteHeader header = 1;
+  optional UpdateParamsSign sign = 2;
+  repeated OneCameraCalibInfo calibrated_extrinsics = 3;
+  optional CalibrationMode calibration_mode = 4;
+}
+
+// Note: We put lidar-related elems in the camera_calibration.proto file,
+// because in mass-production projects, the camera is the main sensor,
+// while lidar is optional and the quantity is generally 0 or 1.
+message OneLidarCalibInfo {
+  optional LidarId lidar_id = 1;
+  optional LidarExtrinsicsProto extrinsics = 2;
+}
+
+message CameraLidarCalibrationProto {
+  optional LiteHeader header = 1;
+  optional UpdateParamsSign sign = 2;
+  repeated OneCameraCalibInfo camera_calibrated_extrinsics = 3;
+  repeated OneLidarCalibInfo lidar_calibrated_extrinsics = 4;
+  optional CalibrationMode calibration_mode = 5;
+}

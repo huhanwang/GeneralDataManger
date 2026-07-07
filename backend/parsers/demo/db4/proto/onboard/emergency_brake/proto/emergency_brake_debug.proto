@@ -1,0 +1,362 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/emergency_brake/proto/emergency_brake_object.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message EmergencyBrakeInputSeqNum {
+  optional uint64 pose = 1;
+  optional uint64 autonomy = 2;
+  optional uint64 fusion_objects = 3;
+  optional uint64 chassis = 4;
+  optional uint64 execution_issue = 5;
+  optional uint64 online_map = 6;
+}
+
+message AebTargetDebugProto {
+  optional double target_object_ttc = 1;
+  optional emergency_brake.OverlapPattern target_object_overlap_pattern = 2;
+  optional double target_object_s = 3;
+  optional double target_object_overlap_ratio = 4;
+  optional double target_object_projection_speed = 5;
+}
+
+message AebDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    STEER_ANGLE_LARGE = 1;
+    STEER_SPEED_HIGH = 2;
+    THROTTLE_PERCENTAGE_LARGE = 3;
+    THROTTLE_RATE_HIGH = 4;
+    GEAR_NOT_IN_DRIVE = 5;
+    ESC_ACTIVE = 7;
+    TCS_ACTIVE = 8;
+    HDC_ACTIVE = 9;
+    VDC_ACTIVE = 10;
+    FRONT_LEFT_DOOR_OPEN = 11;
+    FRONT_RIGHT_DOOR_OPEN = 12;
+    REAR_LEFT_DOOR_OPEN = 13;
+    REAR_RIGHT_DOOR_OPEN = 14;
+    HOOD_OPEN = 15;
+    TRUNK_OPEN = 16;
+    DRIVER_SEAT_BELT_UNBUCKLED = 17;
+    ESC_OFF = 18;
+    CURVATURE_LARGE = 19;
+    SPEED_NOT_IN_RANGE = 20;
+    BRAKE_PEDAL_APPLIED = 21;
+    BRAKE_PEDAL_APPLIED_HARD = 22;
+    BRAKE_PEDAL_NOT_APPLIED = 23;
+    ACCEL_NOT_LOW = 24;
+    PREFILL_NOT_AVAILABLE = 25;
+    PREFILL_JUST_ACTIVE = 26;
+    ABA_NOT_AVAILABLE = 27;
+    AEB_NOT_AVAILABLE = 29;
+    AEB_JUST_ACTIVE = 30;
+    ESC_FAULT = 31;
+    STEER_WHEEL_ANGLE_SENSOR_CAL_STAT_FAIL = 32;
+    VMM_FAULT = 33;
+    BRAKE_LIGHT_FAILURE = 34;
+    REAR_LOAD = 35;
+    VEHICLE_MODE_INVALID = 36;
+    DRIVER_OVERRIDE = 37;
+    ACC_IS_DECELERATING = 38;
+    ACTIVATION_PRIORITY = 39;
+
+    reserved 6, 28;
+  }
+
+  enum BrakeDistanceDecayReason {
+    REASON_NONE = 1;
+    REASON_DRIVER_ACCELERATION = 2;
+    REASON_DRIVER_DECELERATION = 3;
+    REASON_DRIVER_STEERING = 4;
+    REASON_IN_PARING_AREA = 5;
+    REASON_ON_BIG_SLOPE = 6;
+    REASON_MEDIUM_CONF = 7;
+  }
+
+  optional PassiveReason prefill_passive_reason = 1;
+  optional PassiveReason aba_passive_reason = 2;
+  optional PassiveReason aeb_passive_reason = 3;
+  optional PassiveReason eba_passive_reason = 4;
+  optional AebTargetDebugProto aeb_target_debug = 5;
+  optional AebTargetDebugProto prefill_target_debug = 10;
+  optional AebTargetDebugProto eba_target_debug = 11;
+  optional double enter_desired_decel = 6;
+  optional double exit_desired_decel = 7;
+  optional double aeb_ttc_thres = 8;
+  optional double desired_brake_distance = 9;
+  repeated BrakeDistanceDecayReason brake_distance_decay_reasons = 12;
+  optional double brake_distance_decay_factor = 13;
+  // next 14
+}
+
+message FcwDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    STEER_ANGLE_LARGE = 1;
+    STEER_SPEED_HIGH = 2;
+    THROTTLE_PERCENTAGE_LARGE = 3;
+    THROTTLE_RATE_HIGH = 4;
+    GEAR_NOT_IN_DRIVE = 5;
+    SPEED_NOT_IN_RANGE = 6;
+    ESC_ACTIVE = 7;
+    TCS_ACTIVE = 8;
+    HDC_ACTIVE = 9;
+    VDC_ACTIVE = 10;
+    AWB_NOT_AVAILABLE = 11;
+    AWB_JUST_ACTIVE = 12;
+    PREWARN_JUST_ACTIVE = 13;
+    BRAKE_PEDAL_APPLIED_HARD = 14;
+  }
+  optional PassiveReason prewarn_passive_reason = 1;
+  optional PassiveReason awb_passive_reason = 2;
+  optional double target_object_ttc = 3;
+  optional double prewarn_ttc_thres = 4;
+  optional double awb_ttc_thres = 5;
+  optional double prewarn_enter_desired_decel = 6;
+}
+
+message RaebDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    STEER_SPEED_HIGH = 1;
+    THROTTLE_PERCENTAGE_LARGE = 2;
+    GEAR_NOT_IN_REVERSE = 3;
+    FRONT_LEFT_DOOR_OPEN = 4;
+    FRONT_RIGHT_DOOR_OPEN = 5;
+    REAR_LEFT_DOOR_OPEN = 6;
+    REAR_RIGHT_DOOR_OPEN = 7;
+    HOOD_OPEN = 8;
+    TRUNK_OPEN = 9;
+    DRIVER_SEAT_BELT_UNBUCKLED = 10;
+    ESC_OFF = 11;
+    SPEED_NOT_IN_RANGE = 12;
+    AEB_NOT_AVAILABLE = 13;
+    AEB_JUST_ACTIVE = 14;
+  }
+  optional PassiveReason raeb_passive_reason = 1;
+  optional AebTargetDebugProto raeb_target_debug = 2;
+  optional double aeb_ttc_thres = 3;
+  optional double desired_brake_distance = 4;
+}
+
+message CrossTrafficTargetDebugProto {
+  optional double left_target_desired_decel = 2;
+  optional double right_target_desired_decel = 4;
+  reserved 1, 3;
+}
+
+message FctaDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    STEER_ANGLE_LARGE = 1;
+    STEER_SPEED_HIGH = 2;
+    THROTTLE_PERCENTAGE_LARGE = 3;
+    THROTTLE_RATE_HIGH = 4;
+    GEAR_NOT_IN_DRIVE = 5;
+    SPEED_NOT_IN_RANGE = 6;
+    BRAKE_PEDAL_APPLIED_HARD = 14;
+    FCTA_JUST_ACTIVE = 15;
+    STARTING_TIME_TOO_LONG = 16;
+    AD_ACTIVE = 17;
+
+    reserved 7 to 13;
+  }
+  optional PassiveReason passive_reason = 1;
+}
+
+message FctbDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    STEER_ANGLE_LARGE = 1;
+    STEER_SPEED_HIGH = 2;
+    THROTTLE_PERCENTAGE_LARGE = 3;
+    THROTTLE_RATE_HIGH = 4;
+    GEAR_NOT_IN_DRIVE = 5;
+    ESC_ACTIVE = 6;
+    TCS_ACTIVE = 7;
+    HDC_ACTIVE = 8;
+    VDC_ACTIVE = 9;
+    FRONT_LEFT_DOOR_OPEN = 10;
+    FRONT_RIGHT_DOOR_OPEN = 11;
+    REAR_LEFT_DOOR_OPEN = 12;
+    REAR_RIGHT_DOOR_OPEN = 13;
+    HOOD_OPEN = 14;
+    TRUNK_OPEN = 15;
+    DRIVER_SEAT_BELT_UNBUCKLED = 16;
+    ESC_OFF = 17;
+    SPEED_NOT_IN_RANGE = 19;
+    BRAKE_PEDAL_APPLIED = 20;
+    BRAKE_PEDAL_APPLIED_HARD = 21;
+    AEB_JUST_ACTIVE = 25;
+    FCTB_NOT_AVAILABLE = 26;
+    PASSENGER_SEAT_BELT_UNBUCKLED = 27;
+    ABS_ACTIVE = 28;
+    BRAKE_INVALID = 29;
+    STARTING_TIME_TOO_LONG = 30;
+    AD_ACTIVE = 31;
+
+    reserved 18, 22, 23, 24;
+  }
+  optional PassiveReason passive_reason = 1;
+}
+
+message RctaDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    GEAR_NOT_IN_REVERSE = 1;
+    SPEED_NOT_IN_RANGE = 2;
+    RCTA_JUST_ACTIVE = 3;
+  }
+  optional PassiveReason passive_reason = 1;
+}
+
+message RctbDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    GEAR_NOT_IN_REVERSE = 1;
+    FRONT_LEFT_DOOR_OPEN = 2;
+    FRONT_RIGHT_DOOR_OPEN = 3;
+    REAR_LEFT_DOOR_OPEN = 4;
+    REAR_RIGHT_DOOR_OPEN = 5;
+    HOOD_OPEN = 6;
+    TRUNK_OPEN = 7;
+    DRIVER_SEAT_BELT_UNBUCKLED = 8;
+    ESC_OFF = 9;
+    SPEED_NOT_IN_RANGE = 10;
+    RAEB_JUST_ACTIVE = 11;
+    RCTB_NOT_AVAILABLE = 12;
+    PASSENGER_SEAT_BELT_UNBUCKLED = 13;
+    ABS_ACTIVE = 14;
+    TCS_ACTIVE = 15;
+    VDC_ACTIVE = 16;
+    VEHICLE_STATUS_ABNORMAL = 17;
+    REAR_LOAD_ACTIVE = 18;
+    TRACTION_ACTIVE = 19;
+    BRAKE_INVALID = 20;
+  }
+  optional PassiveReason passive_reason = 1;
+}
+
+message LaebDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    GEAR_PARKING = 1;
+    FRONT_LEFT_DOOR_OPEN = 2;
+    FRONT_RIGHT_DOOR_OPEN = 3;
+    REAR_LEFT_DOOR_OPEN = 4;
+    REAR_RIGHT_DOOR_OPEN = 5;
+    HOOD_OPEN = 6;
+    TRUNK_OPEN = 7;
+    DRIVER_SEAT_BELT_UNBUCKLED = 8;
+    PASSENGER_SEAT_BELT_UNBUCKLED = 9;
+    SPEED_NOT_IN_RANGE = 10;
+    AD_ACTIVE = 11;
+    ABS_ACTIVE = 12;
+    TCS_ACTIVE = 13;
+    VDC_ACTIVE = 14;
+    VEHICLE_STATUS_ABNORMAL = 15;
+    REAR_LOAD_ACTIVE = 16;
+    TRACTION_ACTIVE = 17;
+    BRAKE_INVALID = 18;
+    LAEB_NOT_AVAILABLE = 19;
+    REAR_MIRROR_FOLD = 20;
+    SLOPE_OUT_OF_LIMIT = 21;
+    LAEB_JUST_ACTIVE = 22;
+    LOW_SPEED_LARGE_STEERING_ANGLE = 23;
+    LOW_SPEED_LARGE_STEERING_SPEED = 24;
+  }
+  optional PassiveReason passive_reason = 1;
+  optional AebTargetDebugProto laeb_target_debug = 2;
+  optional double aeb_ttc_thres = 3;
+
+  reserved 4 to 6;
+}
+
+message MaiDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    SPEED_NOT_IN_RANGE = 1;
+    GEAR_NOT_IN_DRIVE = 2;
+    MAI_JUST_ACTIVE = 3;
+    BIG_ROAD_SLOPE = 4;
+    DRIVER_PRESSING_BRAKE_PEDAL = 5;
+  }
+  optional PassiveReason passive_reason = 1;
+  optional AebTargetDebugProto mai_target_debug = 2;
+  optional double mai_ttc_thres = 3;
+  optional double enter_desired_decel = 4;
+  optional double exit_desired_decel = 5;
+  optional double long_accel_delay_factor = 6;
+}
+
+message RmaiDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    SPEED_NOT_IN_RANGE = 1;
+    GEAR_NOT_IN_REVERSE = 2;
+    RMAI_JUST_ACTIVE = 3;
+    BIG_ROAD_SLOPE = 4;
+  }
+  optional PassiveReason passive_reason = 1;
+  optional AebTargetDebugProto rmai_target_debug = 2;
+  optional double rmai_ttc_thres = 3;
+}
+
+message EmergencyBrakePath {
+  repeated PathPoint path_points = 3;
+}
+
+message EmergencyBrakeCommonDebugProto {
+  optional EmergencyBrakeInputSeqNum input_seq_num = 1;
+  // Emergency brake fusion objects.
+  repeated emergency_brake.EmergencyBrakeFusionObjectProto fusion_objects = 8;
+  // Emergency brake objects.
+  repeated emergency_brake.EmergencyBrakeObjectProto objects = 2;
+  // Emergency brake cluster objects.
+  repeated emergency_brake.EmergencyBrakeClusterObjectProto cluster_objects =
+      10;
+  // Cross traffic target objects.
+  optional CrossTrafficTargetDebugProto ct_target_objects = 9;
+  // Ego vehicle's path.
+  repeated PathPoint path_points = 3;
+  optional bool is_map_path = 4;
+  repeated EmergencyBrakePath backup_paths = 6;
+  optional double start_time = 7;  // In sec.
+  optional double front_brake_t_delay = 11;
+  optional double rear_brake_t_delay = 12;
+
+  reserved 5;
+  // Next id: 13.
+}
+
+message EmergencyBrakeDebugProto {
+  optional LiteHeader header = 1;
+
+  // Common debug.
+  optional EmergencyBrakeCommonDebugProto common_debug = 2;
+  // AEB debug.
+  optional AebDebugProto aeb_debug = 3;
+  // FCW debug.
+  optional FcwDebugProto fcw_debug = 4;
+  // RAEB debug.
+  optional RaebDebugProto raeb_debug = 5;
+  // FCTA debug.
+  optional FctaDebugProto fcta_debug = 6;
+  // FCTB debug.
+  optional FctbDebugProto fctb_debug = 7;
+  // RCTA debug.
+  optional RctaDebugProto rcta_debug = 8;
+  // RCTB debug.
+  optional RctbDebugProto rctb_debug = 9;
+  // LAEB debug.
+  optional LaebDebugProto laeb_debug = 10;
+  // MAI debug.
+  optional MaiDebugProto mai_debug = 11;
+  // RMAI debug.
+  optional RmaiDebugProto rmai_debug = 12;
+}

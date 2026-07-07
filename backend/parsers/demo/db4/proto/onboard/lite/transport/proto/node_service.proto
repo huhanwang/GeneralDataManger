@@ -1,0 +1,76 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/lite_msg.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/shm_message.proto";
+import "onboard/params/v2/proto/assembly/vehicle.proto";
+
+message TransmitLiteMsgRequests {
+  repeated TransmitLiteMsgRequest transmit_request = 1;
+}
+
+message TransmitLiteMsgRequest {
+  optional LiteHeader header = 1;
+  optional LiteMsgWrapper lite_message = 2;
+  optional int64 timestamp = 3;
+  optional bytes raw_shm_header = 4;
+  optional bytes raw_data = 5;
+}
+
+message TransmitLiteMsgResponse {
+  optional bool success = 1;
+}
+
+message TransmitShmMsgRequest {
+  optional LiteHeader header = 1;
+  optional ShmMsgType shm_msg_type = 2;
+  optional bytes data = 3;
+  optional EncodedImageMetadata encoded_image_meta = 5;
+  optional DecodedImageMetadata decoded_image_meta = 6;
+  optional SpinMetadata spin_meta = 7;
+  optional EncodedLidarFrameMetaData encoded_lidar_frame_meta = 8;
+  optional LidarParametersProto lidar_parameters = 9;
+  reserved 4;
+}
+
+message TransmitShmMsgResponse {
+  optional bool success = 1;
+}
+
+message QueryRemoteNodeRequest {                           // deprecated
+  optional string full_node_name = 1 [deprecated = true];  // query node
+
+  enum QueryType {
+    QUERY_NODE_INPUTS = 1;
+  }
+  optional QueryType query_type = 2;
+}
+
+message QueryRemoteNodeResponse {  // deprecated
+  optional bool success = 1;
+  optional string full_node_name = 2;  // response node
+
+  message NodeInput {
+    optional string field_name = 1;
+    optional string channel = 2;
+    optional string domain = 3;
+  }
+  repeated NodeInput node_inputs = 3;
+}
+
+service NodeService {
+  rpc TransmitLiteMsg(TransmitLiteMsgRequest) returns (TransmitLiteMsgResponse);
+  rpc TransmitShmMsg(TransmitShmMsgRequest) returns (TransmitShmMsgResponse);
+  rpc QueryRemoteNode(QueryRemoteNodeRequest)
+      returns (QueryRemoteNodeResponse);  // deprecated
+  rpc TransmitLiteMsgStreamed(stream TransmitLiteMsgRequest)
+      returns (stream TransmitLiteMsgResponse);
+  rpc TransmitShmMsgStreamed(stream TransmitShmMsgRequest)
+      returns (stream TransmitShmMsgResponse);
+  rpc TransmitLiteMsgPackStreamed(stream TransmitLiteMsgRequests)
+      returns (stream TransmitLiteMsgResponse);
+}

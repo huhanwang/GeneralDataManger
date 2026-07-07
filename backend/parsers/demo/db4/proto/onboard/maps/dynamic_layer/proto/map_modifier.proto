@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/maps/proto/semantic_map.proto";
+
+message MapElementMatcherProto {
+  optional int64 unique_identifier_id = 1;
+  repeated GeoPointProto geometry = 2;
+  enum GeometryMatchingStrategy {
+    START_END_POINT = 1;
+    WHOLE_GEOMETRY = 2;
+    FALL_INSIDE = 3;
+  }
+  optional GeometryMatchingStrategy geometry_matching_strategy = 3;
+}
+
+message MapModifierProto {
+  enum ElementType {
+    LANE = 1;
+    LANE_BOUNDARY = 2;
+    TRAFFIC_LIGHT = 3;  // TODO(luzou): deprecate this one
+  }
+  optional ElementType modified_type = 1;
+  optional MapElementMatcherProto matcher = 2;
+  enum Action {
+    DELETE = 1;
+    REPLACE_GEOMETRY = 2;
+    // NOTE(luzou): excluding topology and id, may include geometry
+    REPLACE_PROPERTIES = 4;
+    ADD = 5;
+  }
+  optional Action action = 3;
+  repeated GeoPointProto new_geometry = 4;  // TODO(luzou): deprecate
+  optional string new_protobuf_string = 5;  // TODO(luzou): deprecate
+  oneof replacement {
+    LaneProto lane = 6;
+    LaneBoundaryProto lane_boundary = 7;
+    TrafficLightProto traffic_light = 9;
+  }
+  repeated TrafficLightProto lane_associated_traffic_lights = 8;
+}
+
+message MapModifiersProto {
+  repeated MapModifierProto map_modifiers = 1;
+}

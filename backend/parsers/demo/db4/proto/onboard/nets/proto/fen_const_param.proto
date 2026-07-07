@@ -1,0 +1,242 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/nets/proto/net_param.proto";
+
+message DetectionRegionRange {
+  optional float detection_region_left = 1;
+  optional float detection_region_right = 2;
+  optional float detection_region_front = 3;
+  optional float detection_region_behind = 4;
+  optional float detection_region_z = 5;
+}
+
+message PersOutputTRTName {
+  optional string pers_output_feature_trt_name = 1;
+  optional string pers_seg_label_trt_name = 2;
+  optional string pers_seg_score_trt_name = 3;
+}
+
+message VoxelNetOutputTRTName {
+  optional string voxel_ped_output_trt_name = 1;
+  optional string voxel_car_output_trt_name = 2;
+  optional string voxel_cyc_output_trt_name = 3;
+  optional string voxel_tricyc_output_trt_name = 13;
+  optional string voxel_pole_output_trt_name = 4;
+  optional string output_rnn_hidden_one_trt_name = 5;
+  optional string output_rnn_hidden_two_trt_name = 6;
+  optional string output_rnn_hidden_three_trt_name = 7;
+  optional string output_rnn_hidden_four_trt_name = 8;
+
+  optional string voxel_seg_score_trt_name = 9;
+  optional string voxel_seg_label_trt_name = 10;
+  optional string voxel_instance_seg_trt_name = 11;
+  optional string voxel_motion_seg_trt_name = 12;
+  optional string voxel_occupancy_map_trt_name = 14;
+}
+
+message FENOutputFeatureName {
+  optional PersOutputTRTName pers_net_output_trt_name = 1;
+  optional string point_net_output_trt_name = 2;
+  optional string sparse_net_output_trt_name = 3;
+  optional VoxelNetOutputTRTName voxel_net_output_name = 4;
+}
+
+message FENInputFeatureName {
+  optional string pers_input_trt_name = 1;
+  optional string point_input_trt_name = 2;
+  optional string sparse_input_trt_name = 3;
+  optional string voxel_input_trt_name = 4;
+
+  optional string input_rnn_hidden_one_trt_name = 5;
+  optional string input_rnn_hidden_two_trt_name = 6;
+  optional string input_rnn_hidden_three_trt_name = 7;
+  optional string input_rnn_hidden_four_trt_name = 8;
+}
+
+message VoxelSize {
+  optional float length = 1;
+  optional float width = 2;
+  optional float height = 3;
+}
+
+message VoxelDims {
+  optional int32 length = 1;
+  optional int32 width = 2;
+  optional int32 height = 3;
+}
+
+message VoxelRange {
+  optional float length = 1;
+  optional float width = 2;
+  optional float height = 3;
+}
+
+message VelocityNormBase {
+  optional float car = 1;
+  optional float ped = 2;
+  optional float cyc = 3;
+  optional float pole = 4;
+  optional float tricyc = 5;
+}
+
+message AnchorNormBias {
+  optional float norm_bias_class_car = 1;
+  optional float norm_bias_class_ped = 2;
+  optional float norm_bias_class_cyc = 3;
+  optional float norm_bias_class_pole = 4;
+  optional float norm_bias_class_tricyc = 5;
+}
+
+message CarLengthAnchorNormBias {
+  optional float car_length_norm_bias_1 = 1;
+  optional float car_length_norm_bias_2 = 2;
+  optional float car_length_norm_bias_3 = 3;
+  optional float car_length_norm_bias_4 = 4;
+}
+
+message OutputSplitNums {
+  optional int32 splits_len = 1;
+  optional int32 heading_cls_onehot_logits = 2;
+  optional int32 car_length_cls_onehot_logits = 3;
+  optional int32 box_cls_onehot_logits = 4;
+  optional int32 box_fronts = 5;
+  optional int32 box_backs = 6;
+  optional int32 box_left = 7;
+  optional int32 box_right = 8;
+  optional int32 box_headings = 9;
+  // Threshold to filter positive bbox for (car, ped, cyc, pole)
+  optional int32 confidence_onehot_logits = 10;
+  optional int32 box_length_uncertainty_front = 11;
+  optional int32 box_length_uncertainty_back = 12;
+  optional int32 box_length_uncertainty_left = 13;
+  optional int32 box_length_uncertainty_right = 14;
+  optional int32 velocity_xy_res_center_pred_x = 15;
+  optional int32 velocity_xy_res_center_pred_y = 16;
+
+  optional int32 velocity_uncertainty_x = 17;
+  optional int32 velocity_uncertainty_y = 18;
+  optional int32 heading_uncertainty = 19;
+
+  optional int32 motion_state = 20;
+  optional int32 box_z = 21;
+  optional int32 box_height = 22;
+}
+
+message ModelStructureConstParam {
+  // Used to pre-malloc mem
+  optional int32 max_points_count = 1;
+  optional int32 max_voxels_count = 2;
+  // Shape/range of perspective view for perspective model
+  optional int32 perspective_rows = 3;
+  optional int32 perspective_cols = 4;
+  optional float horizontal_max = 5;
+  optional float horizontal_min = 6;
+  optional float vertical_max = 7;
+  optional float vertical_min = 8;
+  // Channel num of perspective model input
+  optional int32 perspective_channels = 9;
+  optional int32 perspective_segmentation_label_output_index = 10;
+  optional int32 perspective_segmentation_score_output_index = 11;
+  optional int32 perspective_feature_output_index = 12;
+  // Channel num of perspective model output
+  optional int32 perspective_out_channels = 13;
+  // Channel num of perspective segmentation result
+  optional int32 perspective_seg_out_channels = 14;
+  // Channel num of Manual construct point features
+  optional int32 point_channels = 15;
+  // Channel num of point model input
+  optional int32 point_in_channels = 16;
+  // Channel num of voxel model input for one sequence
+  optional int32 voxel_channels = 17;
+  // Channel num of rnn hidden states;
+  optional int32 rnn_hidden_1_channels = 18;
+  optional int32 rnn_hidden_2_channels = 19;
+  optional int32 rnn_hidden_3_channels = 20;
+  optional int32 rnn_hidden_4_channels = 21;
+  // Sequence num
+  optional int32 sequence_num = 22;
+
+  optional VoxelSize voxel_size = 23;
+  optional VoxelDims voxel_dims = 24;
+  optional VoxelDims voxel_dims_hidden_3 = 25;
+  optional VoxelDims voxel_dims_hidden_4 = 26;
+  optional VoxelDims crop_voxel_dims = 27;
+  // Threshold to filter positive bbox for (car, ped, cyc, pole)
+  optional float confidence_thresholds = 28;
+  // Channel num of sparse voxel model input
+  optional float sparse_voxel_channel = 29;
+  // Fen only support batch size = 1
+  optional int32 fen_batch_size = 30;
+  // For pFen mask, car, ped, cyc, animal, cone,
+  // barrier, static object, vegetation
+  optional int32 semantic_labels_num = 31;
+
+  // Voxel model output
+  optional int32 dense_voxel_num = 32;
+  optional int32 dense_voxel_half = 33;
+  optional int32 dense_voxel_quarter = 34;
+
+  optional int32 car_output_channel = 35;
+  optional int32 ped_output_channel = 36;
+  optional int32 cyc_output_channel = 37;
+  optional int32 tricyc_output_channel = 51;
+  optional int32 pole_output_channel = 38;
+  optional int32 bev_seg_out_channels = 39;
+  optional VelocityNormBase velocity_norm_base = 40;
+
+  // Nums output of car and other branch.
+  optional int32 output_non_car_length = 41;
+  optional int32 output_car_length = 42;
+  // Detection range normalize
+  optional VoxelRange point_normalize_range = 43;
+  optional float heading_norm_bias = 44;
+  // Anchor size of car/ped/cyc length
+  optional AnchorNormBias anchor_length_norm_bias = 45;
+  // Anchor size of car/ped/cyc width
+  optional AnchorNormBias anchor_width_norm_bias = 46;
+  // Anchor size of car length
+  optional CarLengthAnchorNormBias car_length_anchor_norm_bias = 47;
+  // Channels of voxel model output
+  optional OutputSplitNums car_output_splitnums = 48;
+  optional OutputSplitNums non_car_output_splitnums = 49;
+  optional float rnn_hidden_decay_coefficient = 50;
+
+}
+
+message FENConfidenceMinScore {
+  optional float all_class = 1;
+  optional float car = 2;
+  optional float ped = 3;
+  optional float cycle = 4;
+  optional float pole = 5;
+  optional float tricyc = 6;
+}
+
+message FENNetParam {
+  optional DetectionRegionRange origin_detection_region_range = 1;
+  optional DetectionRegionRange clip_detection_region_range = 2;
+  optional int32 blind_points_sampling_rate_inverse = 3;
+
+  optional FENInputFeatureName input_feature_name = 4;
+  optional FENOutputFeatureName output_feature_name = 5;
+
+  optional double pillar_resolution = 6;
+  optional float xcyclist_max_length = 7;
+  optional float xcyclist_max_width = 8;
+  optional float segmentation_threshold = 9;
+  optional ModelStructureConstParam model_structure_const_param = 10;
+  // fen model path
+  optional string fen_model_path = 11;
+  // fen CPU model path
+  optional string fen_cpu_model_path = 12;
+  // fen path to trt model.
+  optional string fen_trt_model_path = 13;
+  // model precision
+  optional string precision = 14;
+  // Confidence Score
+  optional FENConfidenceMinScore fen_confidence_min_score = 15;
+  // QNN model param
+  optional NetParam net_param = 16;
+}

@@ -1,0 +1,78 @@
+
+syntax = "proto2";
+
+package snoah.li.aeb;
+
+import "onboard/proto/liauto/li_as_common.proto";
+
+message LateralDebug {
+  optional double lateral_error = 1;
+  optional double ref_heading = 2;
+  optional double heading = 3;
+  optional double heading_error = 4;
+  optional double heading_error_rate = 5;
+  optional double lateral_error_rate = 6;
+  optional double curvature = 7;
+  optional double steer_angle = 8;
+  optional double steer_angle_feedforward = 9;
+  optional double steer_angle_lateral_contribution = 10;
+  optional double steer_angle_lateral_rate_contribution = 11;
+  optional double steer_angle_heading_contribution = 12;
+  optional double steer_angle_heading_rate_contribution = 13;
+  optional double steer_angle_feedback = 14;
+  optional double steer_jerk = 15;
+  optional double steering_position = 16;
+  optional double ref_heading_rate = 17;
+  optional double heading_rate = 18;
+  optional TrajectoryPoint current_target_point =
+      19;  // Assuming TrajectoryPoint is defined elsewhere
+}
+
+message LongitudinalDebug {
+  optional double station_reference = 1;
+  optional double station_error = 2;
+  optional double speed_reference = 3;
+  optional double speed_error = 4;
+  optional double acceleration_cmd_closeloop = 5;
+  optional double acceleration_cmd = 6;
+  optional double current_station = 7;
+  optional double path_remain = 8;
+  optional double speed_offset = 9;
+  optional double current_speed = 10;
+  optional double acceleration_reference = 11;
+  optional double current_acceleration = 12;
+  optional double acceleration_error = 13;
+  optional double jerk_reference = 14;
+  optional double current_jerk = 15;
+  optional double jerk_error = 16;
+}
+
+enum ControlState {
+  CONTROL_STATE_ACTIVE = 0;
+  CONTROL_STATE_INVALID_INPUT = 1;
+  CONTROL_STATE_INVALID_TRAJECTORY = 2;
+  CONTROL_STATE_INVALID_STATE_ERR = 3;
+  CONTROL_STATE_COMPUTE_FAILED = 4;
+}
+
+message Debug {
+  optional LongitudinalDebug lon_debug = 1;
+  optional LateralDebug lat_debug = 2;
+  optional ControlState control_state = 3;
+  optional int32 controller_status = 4;  // Using int32 instead of octet
+}
+
+message ControlDebug {
+  optional LongitudinalDebug lon_debug = 1;
+  optional LateralDebug lat_debug = 2;
+  optional ControlState control_state = 3;
+  optional int32 controller_status = 4;  // Using int32 instead of octet
+}
+
+message ControlCommand {
+  optional double steering_rate = 1;
+  optional double steering_target = 2;
+  optional double acceleration = 3;
+  optional Debug debug = 4;
+  optional ControlDebug control_debug = 5;
+}

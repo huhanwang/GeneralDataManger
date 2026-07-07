@@ -1,0 +1,260 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/perception/parking/parking_spots.proto";
+
+// Next id： 7
+message LiSpotPointProto {
+  enum ObservationStatus {
+    PARKING_POINT_TYPE_UNKNOWN = 0;
+    PARKING_POINT_TYPE_VISIBLE = 1;
+    PARKING_POINT_TYPE_INVISIBLE = 2;
+    PARKING_POINT_TYPE_TRUNCATED = 3;
+  }
+  optional Vec2dProto pts_img = 1;
+  optional Vec2dProto pts_vcs = 2;
+  optional Vec2dProto pts_odo = 3;
+  optional ObservationStatus pts_type = 4;
+  optional Vec2dProto raw_pts_img = 5;
+  optional Vec2dProto raw_pts_vcs = 6;
+}
+
+// Next id： 7
+message LiBoundaryClusterProto {
+  optional uint32 id = 1;
+  enum ObjectType {
+    OBJECT_TYPE_CURB = 0;
+    OBJECT_TYPE_WALL = 1;
+    OBJECT_TYPE_PILLAR = 2;
+    OBJECT_TYPE_VEHICHLE = 3;
+    OBJECT_TYPE_PEDESTRIAN = 4;
+    OBJECT_TYPE_ANIMAL = 5;
+    OBJECT_TYPE_TRICYCLE = 6;
+    OBJECT_TYPE_BICYCLE = 7;
+    OBJECT_TYPE_RAILING = 8;
+    OBJECT_TYPE_CONE = 9;
+    OBJECT_TYPE_PARKING_LOCK_OPEN = 10;
+    OBJECT_TYPE_SPACE_LIMITER = 11;
+    OBJECT_TYPE_SPEED_BUMP = 12;
+    OBJECT_TYPE_STICK = 13;
+    OBJECT_TYPE_UNKNOWN = 14;
+    OBJECT_TYPE_PARKING_LOCK_CLOSED = 15;
+    OBJECT_TYPE_VEGETATION = 16;
+    OBJECT_TYPE_ROADBARRIER_GATE = 17;
+  }
+  optional ObjectType type = 2;
+  optional float confidence = 3;
+  repeated Vec2dProto pts_img = 4;
+  repeated Vec2dProto pts_vcs = 5;
+  repeated Vec2dProto pts_odo = 6;
+  optional bool is_suspended = 7;
+  enum ObjectSourceType {
+    SOURCE_TYPE_UNKNOWN = 0;
+    SOURCE_TYPE_FISHEYE = 1;
+    SOURCE_TYPE_OCC = 2;
+    SOURCE_TYPE_FISHEYE_OCC = 3;  // FISHEYE_OCC
+    SOURCE_TYPE_LIDAR = 4;
+    SOURCE_TYPE_FISHEYE_LIDAR = 5;
+    SOURCE_TYPE_OCC_LIDAR = 6;
+    SOURCE_TYPE_FISHEYE_OCC_LIDAR = 7;
+  }
+  optional ObjectSourceType source_type = 8;
+  enum MovingState {
+    MOVING_STATE_STATIC = 0;
+    MOVING_STATE_MOVING = 1;
+  }
+  optional MovingState moving_state = 9;
+  repeated double height = 10;  // object height in vcs
+}
+
+message LiParkingRoadGeometryProto {
+  optional Box2dProto bbox = 1;
+  optional ParkingRoadGeometryProto.RoadGeometryType road_geometry_type = 2;
+  optional ParkingRoadGeometryProto.ArrowType arrow_type = 3
+      [default = STRAIGHT];
+  optional float score = 4;
+  optional int32 id = 5;
+}
+
+// Next id： 5
+message LiParkingFreespaceProto {
+  optional LiteHeader header = 1;
+  optional int32 cam_id = 2;
+  optional double timestamp = 3;
+  repeated LiBoundaryClusterProto obstacles = 4;
+  optional VehiclePoseProto vehicle_pose = 5;
+}
+
+// Next id： 13
+message LiParkingSpotProto {
+  optional uint32 id = 1;
+  optional uint32 age = 2;
+  optional float confidence = 3;
+
+  enum SpotDirection {
+    SLOT_DIR_NODISPLAY = 0;
+    SLOT_DIR_LEFT = 1;
+    SLOT_DIR_RIGHT = 2;
+    SLOT_DIR_Both = 3;
+  }
+  optional SpotDirection direction = 4;
+
+  enum SpotType {
+    SLOT_TYPE_UNKNOWN = 0;
+    SLOT_TYPE_VERTICAL = 1;
+    SLOT_TYPE_PARALLEL = 2;
+    SLOT_TYPE_ANGLED = 3;
+  }
+  optional SpotType type = 5;
+
+  enum SpotStatus {
+    SLOT_STATUS_UNKNOWN = 0;
+    SLOT_STATUS_AVAILABLE = 1;
+    SLOT_STATUS_VEHICLE_OCCUPIED = 2;
+    SLOT_STATUS_PED_OCCUPIED = 3;
+    SLOT_STATUS_TWO_WHEELER_OCCUPIED = 4;
+    SLOT_STATUS_PRK_LOCK_OCCUPIED = 5;
+    SLOT_STATUS_CONE_OCCUPIED = 6;
+    SLOT_STATUS_OTHER_OCCUPIED = 7;
+    SLOT_STATUS_VEHICLE_INVASION = 8;
+    SLOT_STATUS_SONAR_OBJECT = 9;
+  }
+  optional SpotStatus status = 6;
+
+  enum SpotAngle {
+    SLOT_ANGLE_NONE = 0;
+    SLOT_ANGLE_30 = 1;
+    SLOT_ANGLE_45 = 2;
+    SLOT_ANGLE_60 = 3;
+    SLOT_ANGLE_30_INVERSE = 4;
+    SLOT_ANGLE_45_INVERSE = 5;
+    SLOT_ANGLE_60_INVERSE = 6;
+  }
+  optional SpotAngle spot_angle = 7;
+  optional float yaw = 8;
+  optional float width = 9;
+  optional float depth = 10;
+  repeated LiSpotPointProto spot_points = 11;
+  optional bool has_limiter = 12;
+}
+
+// Next id： 8
+message LiParkingSpotsProto {
+  optional LiteHeader header = 1;
+  optional int32 cam_id = 2;
+  optional double timestamp = 3;
+  repeated LiParkingSpotProto spots = 4;
+  optional uint32 frame_id = 5;
+  optional int32 raw_image_width = 6;
+  optional int32 raw_image_height = 7;
+}
+
+// Next id： 7
+message LiParkingLimitersProto {
+  optional LiteHeader header = 1;
+  optional int32 cam_id = 2;
+  optional double timestamp = 3;
+  repeated LiBoundaryClusterProto obstacles = 4;
+  optional VehiclePoseProto vehicle_pose = 5;
+  repeated LiParkingRoadGeometryProto road_geometries = 6;
+  repeated RoadBarrierGateInfoProto road_barrier_gates = 7;
+}
+
+message RoadBarrierGateInfoProto {
+  optional uint32 id = 1;
+  // 3D center pos and heading in odom.
+  optional Vec3dProto center = 2;
+  optional double heading = 3;
+  // 3D Size.
+  optional double width = 4;
+  optional double length = 5;
+  optional double height = 6;
+  // gate status
+  enum GateStatus {
+    kClosed = 0;
+    kOpened = 1;
+    kOpening = 2;
+  }
+  optional GateStatus gate_status = 7;
+}
+
+message Polar2dProto {
+  optional float radius = 1;
+  optional float angle = 2;
+}
+// Next id：13
+message FreeSpacePoint {
+  optional uint32 id = 1;
+  optional bool is_valid = 2;
+  enum FisheyeObstacleGrounded {
+    Fisheye_OBJECT_NOT_GROUNDED = 0;
+    Fisheye_OBJECT_REAL_GROUNDED = 1;
+  }
+  optional FisheyeObstacleGrounded grounded = 3;
+  optional float confidence = 4;
+  optional float fov = 5;
+  optional Vec2dProto pixel_coord_pos = 6;
+  optional Vec2dProto vehicle_coord_pos = 7;
+  optional Polar2dProto polar_coord_pos = 8;
+  optional Vec2dProto odo_coord_pos = 9;
+  enum FisheyeObstacleCategory {
+    Fisheye_OBJECT_CURB = 0;
+    Fisheye_OBJECT_WALL = 1;
+    Fisheye_OBJECT_PILLAR = 2;
+    Fisheye_OBJECT_VEHICHLE_HEAD = 3;
+    Fisheye_OBJECT_VEHICHLE_REAR = 4;
+    Fisheye_OBJECT_VEHICHLE_SIDE = 5;
+    Fisheye_OBJECT_VEHICHLE_IGNORE = 6;
+    Fisheye_OBJECT_PEDESTRIAN = 7;
+    Fisheye_OBJECT_ANIMAL = 8;
+    Fisheye_OBJECT_TRICYCLE = 9;
+    Fisheye_OBJECT_BICYCLE = 10;
+    Fisheye_OBJECT_RAILING = 11;
+    Fisheye_OBJECT_CONE = 12;
+    Fisheye_OBJECT_SUSPENSION = 13;
+    Fisheye_OBJECT_PARKING_LOCK_OPEN = 14;
+    Fisheye_OBJECT_PARKING_LOCK_CLOSED = 15;
+    Fisheye_OBJECT_SPACE_LIMITER = 16;
+    Fisheye_OBJECT_SPEED_BUMP = 17;
+    Fisheye_OBJECT_STICK = 18;
+    Fisheye_OBJECT_OTHERS = 19;
+    Fisheye_OBJECT_IGNORE = 20;
+  }
+  optional FisheyeObstacleCategory category = 10;
+  enum FisheyeFreeSpacePointFeatureMapType {
+    FisheyeFREESPACE_POINT_FEATURE_MAP_UNKNOWN = 0;
+    FisheyeFREESPACE_POINT_FEATURE_MAP_LEFT = 1;
+    FisheyeFREESPACE_POINT_FEATURE_MAP_RIGHT = 2;
+    FisheyeFREESPACE_POINT_FEATURE_MAP_FRONT = 3;
+    FisheyeFREESPACE_POINT_FEATURE_MAP_REAR = 4;
+  }
+  optional FisheyeFreeSpacePointFeatureMapType feature_map = 11;
+}
+message LiParkingFisheyeFreespaceProto {
+  optional uint32 camera_id = 1;
+  repeated FreeSpacePoint freespace_points = 2;
+}
+
+// Next id: 7
+message LiParkingFreespaceMsgProto {
+  optional LiteHeader header = 1;
+  optional uint32 frame_id = 2;
+  optional int32 raw_image_width = 3;
+  optional int32 raw_image_height = 4;
+  repeated LiParkingFisheyeFreespaceProto fisheyefreespace = 5;
+  optional double timestamp = 6;
+}
+message LiSummonStateProto {
+  optional LiteHeader header = 1;
+  optional uint32 state = 2;
+}
+message LiApaoStateProto {
+  optional LiteHeader header = 1;
+  optional uint32 state = 2;
+}

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package snoah.mapping;
+option go_package = "qcraft-proto.ai/common/proto/lane_point";
+
+message LanePointProto {
+  optional sfixed64 lane_id = 1;
+  optional double fraction = 2;
+}

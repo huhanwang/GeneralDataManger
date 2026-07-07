@@ -1,0 +1,9 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message PiecewiseConstFunctionDoubleProto {
+  repeated double x = 1;
+  repeated double y = 2;
+}

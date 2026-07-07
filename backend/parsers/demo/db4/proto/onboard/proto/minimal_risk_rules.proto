@@ -1,0 +1,390 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/proto_field_option.proto";
+import "onboard/proto/chassis.proto";
+
+// MRC: minimal risk condition
+// MRM: minimal risk method
+
+// minimal risk method
+enum MinimalRiskMethodType {
+  MINIMAL_RISK_METHOD_NONE = 0;
+  MINIMAL_RISK_METHOD_IMMEDIATE_STOP = 1;  // to fault, immediately exit
+  MINIMAL_RISK_METHOD_SHORT_BRAKE =
+      2;  // safety stop, stop the vehicle by braking within the current lane
+  MINIMAL_RISK_METHOD_EXIT = 3;
+  MINIMAL_RISK_METHOD_TO_ACC = 4;
+  MINIMAL_RISK_METHOD_TO_LCC = 5;
+  MINIMAL_RISK_METHOD_WARNING = 6;
+  MINIMAL_RISK_METHOD_SUPPRESSION = 7;
+  MINIMAL_RISK_METHOD_LAT_TEMP_EXIT = 8;
+}
+
+// minimal risk condition type
+enum MinimalRiskConditionType {
+  MRC_TYPE_NONE = 0;
+  MRC_TYPE_ACC = 1;
+  MRC_TYPE_LCC = 2;
+  MRC_TYPE_NOA = 3;
+  MRC_TYPE_L4 = 4;
+  MRC_TYPE_HMA = 5;
+  MRC_TYPE_APA = 6;
+  MRC_TYPE_TSR = 7;
+  MRC_TYPE_RPA = 8;
+  MRC_TYPE_LCA = 9;
+  MRC_TYPE_HPP = 10;
+}
+
+// MRC-ODC : operational design condition for L1,L2,L2++,L4
+message OperationalConditionProto {
+  message SpotParkAbleInfo {
+    optional string id = 1;
+    optional bool is_park_able = 2;
+  }
+
+  optional double current_speed = 2;  // x, m/s
+
+  optional bool is_vehicle_ready = 3;
+
+  optional bool is_gear_position_d = 4;
+
+  optional bool is_epb_release = 5;
+
+  repeated bool is_doors_close = 6;  // FL,FR,RL,RR
+  optional bool is_hood_close = 7;
+  optional bool is_tailgate_close = 8;
+
+  optional bool is_vehicle_not_slip = 9;
+
+  optional bool is_avh_inactive = 10;
+  optional bool is_aeb_inactive = 11;
+  optional bool is_abs_inactive = 12;
+  optional bool is_tcs_inactive = 13;
+  optional bool is_vdc_inactive = 14;
+  optional bool is_hdc_inactive = 15;
+  optional bool is_cdp_inactive = 16;
+
+  optional bool is_vcu_available = 17;
+
+  optional bool is_driver_seat_belt_buckled = 18;
+  optional bool is_passenger_seat_belt_buckled = 19;
+
+  optional bool is_esc_turn_on = 20;
+
+  optional bool is_not_brake_pedal_pressed =
+      21;  // not standstill & press brake
+
+  optional double steering_angle = 22;
+
+  optional bool is_eps_ready = 23;
+
+  optional double lane_width = 30 [(trans_matrix) = true];
+  optional double lane_curvature_radius = 31 [(trans_matrix) = true];
+  optional bool is_emergency_light_close = 32;
+  optional bool is_lane_center_line_valid = 34 [(trans_matrix) = true];
+  optional bool is_fcw_inactive = 35 [(trans_matrix) = true];
+  optional double lane_center_line_length = 36 [(trans_matrix) = true];
+  optional bool is_acc_engage_only = 37 [(trans_matrix) = true];
+  optional bool is_acc_follow_target = 38;
+
+  optional bool is_route_valid = 50 [(trans_matrix) = true];
+  optional bool is_hdmap_valid = 51;
+  optional bool is_route_lane_change_fail = 52 [(trans_matrix) = true];
+  optional bool is_loc_status_invalid = 53 [(trans_matrix) = true];
+  optional double distance_to_toll = 54 [(trans_matrix) = true];
+  optional double distance_to_traffic_light = 55 [(trans_matrix) = true];
+  optional double distance_to_end_station = 56 [(trans_matrix) = true];
+
+  optional bool is_wiper_high_speed_mode = 57;
+  optional bool is_fog_lights_active = 58;
+  optional bool is_front_camerae_dazzling = 59 [(trans_matrix) = true];
+  optional bool is_moving_target = 60 [(trans_matrix) = true];
+  optional bool is_outgoing_car = 61 [(trans_matrix) = true];
+  optional double ambient_brightness = 62 [(trans_matrix) = true];
+  optional bool is_left_turnlamp_active = 63;
+  optional bool is_right_turnlamp_active = 64;
+  optional double vehicle_lateral_acceleration = 65;
+  optional double steer_wheel_speed = 66;
+  optional double vehicle_yawrate = 67;
+  optional bool is_esp_inactive = 68;
+  optional bool is_dtc_inactive = 69;
+  optional bool front_camera_self_dazzle = 70 [(trans_matrix) = true];
+
+  optional bool is_not_in_emergency_lane = 80 [(trans_matrix) = true];
+
+  optional double distance_out_of_map = 81 [(trans_matrix) = true];
+
+  optional bool is_driver_control_steer_wheel = 82;
+
+  optional double lcc_hold_time = 83;
+
+  optional bool is_valid_both_side_boundary = 84 [(trans_matrix) = true];
+
+  optional bool is_in_selected_parking_spot = 85;
+
+  optional bool has_obstacle_on_parking_path = 86;
+
+  optional bool is_avm_annotated = 87;
+
+  optional bool is_user_learned_apa = 88;
+
+  optional bool is_parking_spot_restriction = 89;
+
+  optional bool is_standstill = 91;
+
+  optional bool is_gear_position_p = 93;
+
+  optional bool is_parking_route_planning_faild = 94;
+
+  optional bool is_rearview_mirror_open = 95;
+
+  optional bool is_fuel_cap_closed = 96;
+
+  optional bool is_charge_cap_closed = 97;
+
+  optional bool is_throttle_pressed = 98;
+
+  optional bool esc_did_not_detects_parking_exit_conditions = 99;
+
+  optional bool eps_did_not_detects_parking_exit_conditions = 100;
+
+  optional bool is_airbag_open = 101;
+
+  optional bool is_brake_pressed = 102;
+
+  optional bool parking_spot_is_parallel = 103;
+
+  optional Chassis.GearPosition gear_location = 104;
+
+  optional bool is_tpms_fl_normal = 105;
+
+  optional bool is_tpms_fr_normal = 106;
+
+  optional bool is_tpms_rl_normal = 107;
+
+  optional bool is_tpms_rr_normal = 108;
+
+  optional bool is_hhc_active = 109;
+
+  optional bool is_charge_cap_open = 111;
+
+  optional bool is_fuel_tap_open = 112;
+
+  optional bool is_plc_inactive_turnlamp_active = 113;
+
+  optional bool is_steering_angle_current_speed_too_large = 114;
+
+  optional bool is_midleft_passenger_seat_belt_buckled = 115;
+
+  optional bool is_midmiddle_passenger_seat_belt_buckled = 116;
+
+  optional bool is_midright_passenger_seat_belt_buckled = 117;
+
+  optional bool is_rearleft_passenger_seat_belt_buckled = 118;
+
+  optional bool is_rearright_passenger_seat_belt_buckled = 119;
+
+  optional bool is_parking_auto_drive_mode = 120;
+
+  optional bool is_switch_to_passive = 121;
+
+  optional double vehicle_slope = 122;
+
+  optional double distance_forking_tunnel = 123;
+
+  optional bool is_not_lane_line_low_conf = 124;
+
+  optional double distance_insensitive_degrade_area = 125;
+
+  optional double distance_position_fail_area = 126;
+
+  optional double distance_dynamic_construction_event = 127;
+
+  optional double distance_under_construction = 128;
+
+  optional double distance_e_under_construction = 129;
+
+  optional Chassis.BcmPepsPowerModeType power_mode = 130;
+
+  optional bool is_parking_spot_out_unavailable = 131;
+
+  optional bool is_noa_tmp_switch = 132;
+
+  optional double distance_to_tollbooth = 133;
+
+  optional bool is_busy_traffic = 134;
+
+  optional bool ihbc_decision = 135;
+
+  optional bool is_loc_status_valid_for_hma = 136;
+
+  optional bool is_vehicle_blocked = 137;
+
+  optional bool is_vmm_status_invalid = 138;
+
+  optional Chassis.EpbStateType epb_state = 139;
+
+  optional double distance_to_ramp = 140;
+
+  optional double distance_road_level_not_satisfied = 141;
+
+  optional Chassis.AuxiliaryLeverType phy_gear_lever = 142;
+
+  optional bool is_apa_inactive = 143;
+
+  optional bool is_noa_tmp_disable_and_lcc_not_active = 144;
+
+  optional bool is_ble_connected = 145;
+
+  optional bool is_driver_seat_occupied = 146;
+  optional bool is_fr_seat_occupied = 147;
+  optional bool is_ml_seat_occupied = 148;
+  optional bool is_mm_seat_occupied = 149;
+  optional bool is_mr_seat_occupied = 150;
+  optional bool is_rl_seat_occupied = 151;
+  optional bool is_rm_seat_occupied = 152;
+  optional bool is_rr_seat_occupied = 153;
+
+  optional bool is_power_mode_adas_on = 154;
+
+  optional bool is_park_button_pressed = 155;
+
+  optional bool dia_acc_error_status = 156;
+
+  optional bool dia_lcc_error_status = 157;
+
+  optional bool dia_noa_error_status = 158;
+
+  optional double last_rpa_app_rolling_counter_update_time = 159;
+
+  optional double distance_to_toll_for_mrm = 160;
+
+  optional bool dia_apa_error_status = 161;
+
+  optional bool dia_rpa_error_status = 162;
+
+  optional bool is_summon_active = 163;
+
+  optional bool exist_valid_hd_map = 164;
+
+  optional bool is_power_mode_local_on = 165;
+
+  optional bool is_move_vehicle_or_lamp_on_vehicle = 166;
+
+  optional bool is_ego_lane_normal = 167;
+
+  optional int32 trajectory_park_action = 168;
+
+  repeated SpotParkAbleInfo spot_park_able_info = 169;
+
+  optional bool request_rear_mirror_fold = 170;
+
+  optional bool exit_parking_auto_drive_mode = 171;
+
+  optional bool is_not_lane_change = 172;
+
+  optional double drive_to_ramp_slient_exit_to_lcc = 173;
+
+  optional double actual_speed = 174;
+
+  optional bool is_assist_active_and_standstill = 175;
+
+  optional bool handshake_fail_engage_fallback = 176;
+
+  optional bool is_eps_stop_feedback_driver_override = 177;
+
+  optional bool is_eps_stop_feedback_failture = 178;
+
+  optional bool is_steer_override_for_parking = 179;
+
+  optional bool is_acc_switch_active = 180;
+
+  optional bool is_cdd_available = 181;
+
+  optional bool is_trajectory_timeout = 182;
+
+  optional double navi_info_remain_distance = 183;
+
+  optional bool is_gear_p_long_pressed = 184;
+
+  optional bool is_lcc_noa_forbidden = 185;
+
+  optional bool is_steering_angle_too_large_and_lcc_noa_lat_temp_exit = 186;
+
+  optional bool is_route_enough_distance_to_upgrade = 187;
+
+  optional bool is_lc_route_lane_change_fail = 188;
+
+  optional bool is_distance_out_of_map = 189;
+
+  optional bool is_navi_info_remain_distance_exit = 190;
+
+  optional bool is_toll_gate_for_mrm = 191;
+
+  optional double noa_slient_dist_to_path_fork = 192;
+
+  optional bool is_not_in_tunnel = 193;
+
+  optional bool is_vloc_slient_exit_to_lcc = 194;
+
+  optional bool is_driver_stand_up = 195;
+
+  optional bool is_fl_door_handle_button_pressed = 196;
+
+  optional bool rpa_has_valid_phy_key = 197;
+
+  optional bool rpa_phy_key_button_pressed = 198;
+
+  optional Chassis.RpaBtnSts rpa_app_button_status = 199;
+
+  optional bool is_dow_driver_seat_belt_buckled = 200;
+
+  optional int32 apa_state = 201;
+
+  optional bool gps_miss = 202;
+
+  optional int32 total_num_map = 203;
+
+  optional int32 garage_state = 204;
+
+  optional int32 target_map_id = 205;
+
+  optional bool has_parking_spot_id = 206;
+
+  optional int32 background_mapping_state = 207;
+
+  optional double saving_progress_ratio = 208;
+
+  optional double hpp_trajectory_length = 209;
+
+  optional int32 mapping_state = 210;
+
+  optional bool hpp_localization_success = 211;
+
+  optional bool is_start_learning = 212;
+
+  optional bool is_hpp_active = 213;
+
+  optional bool hpp_task_finished = 214;
+
+  optional bool is_dms_trigger_mrm = 215;
+
+  optional bool parking_spot_is_unparkable = 216;
+
+  optional bool is_parking_searching_mode = 217;
+
+  optional int32 hpp_state = 218;
+
+  optional bool is_parking_out_file_available = 219;
+
+  optional bool is_complete_auto_drive_mode = 220;
+
+  optional bool is_personalized_slot_set_display = 221;
+
+  optional bool is_exist_target_parking_spot_apa = 222;
+
+  reserved 33;
+}

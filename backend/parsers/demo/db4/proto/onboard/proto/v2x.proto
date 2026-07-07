@@ -1,0 +1,397 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message GreenLightOptimalSpeedAdvisoryItemProto {
+  enum GlosaState {
+    UNKNOWN = 0;
+    YELLOW_FLASH = 1;
+    RED = 3;
+    GREEN = 6;
+    YELLOW = 7;
+  }
+  message GlosaInfo {
+    optional int32 state_active = 1;
+    optional GlosaState state = 2;
+    optional int32 timing = 3;
+    optional int32 maneuvers = 4;
+    optional int32 advisory_active = 5;
+    optional int32 max_speed = 6;
+    optional int32 min_speed = 7;
+  }
+  optional double latitude = 1;
+  optional double longitude = 2;
+  repeated GlosaInfo glosa_info = 3;
+}
+message GreenLightOptimalSpeedAdvisoryProto {
+  optional LiteHeader header = 1;
+  optional GreenLightOptimalSpeedAdvisoryItemProto glosa = 2;
+}
+
+message ForwardCollisionWarningItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional double distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+message IntersectionCollisionWarningItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional double distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+message BlindSpotWarningItemProto {
+  optional int32 vehicle_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+  optional int32 alarm_level = 5;
+  optional int32 direction = 6;
+}
+message LaneChangeWarningItemProto {
+  optional int32 vehicle_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+  optional int32 alarm_level = 5;
+  optional int32 direction = 6;
+}
+message DoNotPassWarningItemProto {}
+message EmergencyBrakeWarningItemProto {
+  optional int32 vehicle_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+  optional int32 alarm_level = 5;
+  optional int32 direction = 6;
+}
+message AbnormalVehicleWarningItemProto {
+  optional int64 vehicleID = 1;
+  optional int32 position = 2;
+  optional double distance = 3;
+  optional int32 alarm_class = 4;
+  optional double longitude = 5;
+  optional double latitude = 6;
+}
+message AbnormalVehicleWarningProto {
+  optional LiteHeader header = 1;
+  optional AbnormalVehicleWarningItemProto avw = 2;
+}
+message ControlLostWarningItemProto {}
+message OutOfControlVehicleWarning {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional float distance = 3;
+}
+message EmergencyVehicleWarningItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional float distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+message LeftTurnAssistantItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional float distance = 3;
+}
+message InVehicleSignageItemProto {
+  optional int32 id = 1;
+  optional int32 sign_type = 2;
+  optional double distance = 3;
+  optional double latitude = 4;
+  optional double longitude = 5;
+  optional string description = 6;
+  optional int32 data = 7;
+}
+message InVehicleSignageProto {
+  optional LiteHeader header = 1;
+  repeated InVehicleSignageItemProto ivs = 2;
+}
+message SpeedLimitWarningItemProto {
+  optional int32 speed = 1;
+  optional double latitude = 2;
+  optional double longitude = 3;
+  optional double min_speed = 4;
+  optional double max_speed = 5;
+  optional string description = 6;
+}
+message SpeedLimitWarningProto {
+  optional LiteHeader header = 1;
+  optional SpeedLimitWarningItemProto slw = 2;
+}
+message PreemptItemProto {}
+message TrafficJamWarningItemProto {
+  optional uint32 id = 1;
+  repeated uint32 lane_id = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+}
+message ConstructionProto {
+  optional uint32 id = 1;
+  repeated uint32 lane_id = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+  optional int32 distance =
+      5;  // distance between construction and host vehicle
+}
+message RedLightViolationWarningItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional double distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+message VulnerableRoadUserCollisionWarningItemProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional float distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+  optional int32 type = 7;  // 1.pedestrian 2.bicycle 3.electric bicycle
+}
+
+// V2V/V2I scene
+message SceneProto {
+  optional LiteHeader header = 1;
+  optional ForwardCollisionWarningItemProto fcw = 2;
+  optional IntersectionCollisionWarningItemProto icw = 3;
+  optional BlindSpotWarningItemProto bsw = 4;
+  optional LaneChangeWarningItemProto lcw = 5;
+  optional DoNotPassWarningItemProto dnpw = 6;
+  optional EmergencyBrakeWarningItemProto ebw = 7;
+  optional AbnormalVehicleWarningItemProto avw = 8;
+  optional ControlLostWarningItemProto clw = 9;
+  optional EmergencyVehicleWarningItemProto evw = 10;
+  optional LeftTurnAssistantItemProto lta = 11;
+  optional InVehicleSignageItemProto ivs = 12;
+  optional SpeedLimitWarningItemProto slw = 13;
+  optional PreemptItemProto preempt = 14;  // Light control status (?)
+  optional GreenLightOptimalSpeedAdvisoryItemProto glosa = 15;
+  optional TrafficJamWarningItemProto tjw = 16;
+  optional RedLightViolationWarningItemProto rlvw = 17;
+  optional VulnerableRoadUserCollisionWarningItemProto vrucw = 18;
+}
+
+// host vehicle proto
+message HostVehicleItemProto {
+  message Attribute {
+    optional int32 gps = 1;
+    optional int32 v2x = 2;
+    optional string os_version = 3;
+    optional string app_version = 4;
+    optional int32 light = 5;
+    optional int32 type = 6;
+    optional int32 status = 7;
+    optional int32 brake = 8;
+    optional int32 length = 9;
+    optional int32 width = 10;
+    optional int32 height = 11;
+  }
+  message Process {
+    enum Status {
+      NORMAL = 0;
+      ABNORMAL = 1;
+    }
+    optional Status cv2x_stack = 1;
+    optional Status cv2x_app = 2;
+    optional Status cv2x_hub = 3;
+    optional Status gpsd = 4;
+    optional Status chronyd = 5;
+    optional int32 runtime = 6;
+  }
+  optional int64 vehicleID = 2;
+  optional int32 speed = 3;
+  optional double heading = 4;
+  optional double latitude = 5;
+  optional double longitude = 6;
+  optional Attribute attribute = 7;
+  optional Process process = 8;
+}
+message HostVehicleProto {
+  optional LiteHeader header = 1;
+  optional HostVehicleItemProto hv = 2;
+}
+// remote vehicles proto
+message RemoteVehicleProto {
+  optional int64 vehicleID = 1;
+  optional double latitude = 2;
+  optional double longitude = 3;
+  optional double heading = 4;
+  optional int32 type = 5;
+  optional int32 status = 6;
+}
+message RemoteVehiclesProto {
+  optional LiteHeader header = 1;
+  repeated RemoteVehicleProto rvs = 2;
+}
+// traffic participants proto
+message TrafficParticipantsItemProto {
+  optional int64 timestamp = 1;
+  optional int32 ptcpID = 2;
+  optional double speed = 3;
+  optional double heading = 4;
+  optional double latitude = 5;
+  optional int32 type = 6;
+  optional double longitude = 7;
+  optional int32 length = 8;
+  optional int32 width = 9;
+  optional int32 height = 10;
+  optional int32 v2xtype = 11;
+}
+message TrafficParticipantsProto {
+  optional LiteHeader header = 1;
+  repeated TrafficParticipantsItemProto ptcp = 2;
+}
+// remote control
+message RemoteControlProto {
+  optional string request_id = 1;
+  optional int32 command = 2;
+  optional int32 lane = 3;
+  optional int32 local_target_longitude = 4;
+  optional int32 local_target_latitude = 5;
+  optional int32 local_target_direction = 6;
+  optional int32 local_target_min_speed = 7;
+  optional int32 local_target_max_speed = 8;
+  optional int32 max_speed_in_process = 9;
+  optional int32 target_heading = 10;
+}
+// destination proto
+message DestinationProto {
+  optional int32 longitude = 1;
+  optional int32 latitude = 2;
+  optional int32 min_speed = 3;
+  optional int32 max_speed = 4;
+  optional int32 task_id = 5;
+  optional string request_id = 6;
+}
+// SpeedLimitProto
+message SpeedLimitProto {
+  optional double endpoint_longitude = 1;
+  optional double endpoint_latitude = 2;
+  optional double endpoint_elevation = 3;
+  optional int32 max_speed_limit = 4;
+  optional int32 min_speed_limit = 5;
+  optional string description = 6;
+}
+// lane info proto
+message LaneInfoProto {
+  optional double endpoint_longitude = 1;
+  optional double endpoint_latitude = 2;
+  optional double endpoint_elevation = 3;
+  optional int32 lane_id = 4;
+  optional int32 lane_direction = 5;
+}
+// speeding proto
+message SpeedingProto {
+  optional int32 vehicle_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+}
+// wrong way proto
+message WrongWayProto {
+  optional int32 vehicle_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+}
+// pedestrian on motor-way
+message PedestrianOnMotorWayProto {
+  optional int32 pedestrian_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+}
+// non-motor on motor-way
+message NonMotorOnMotorWayProto {
+  optional int32 non_motor_id = 1;
+  optional double heading = 2;
+  optional double latitude = 3;
+  optional double longitude = 4;
+}
+message ObstacleCollisionWarningProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional double distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+// bus first proto
+message BusFirstProto {
+  optional int32 type = 1;
+  optional float time = 2;
+}
+message IllegalVehicleProto {
+  optional int32 level = 1;
+  optional int32 direction = 2;
+  optional float distance = 3;
+  optional double longitude = 4;
+  optional double latitude = 5;
+  optional double elevation = 6;
+}
+// speed advisory
+message SpeedAdvisory {
+  optional int32 type = 1;
+  optional int32 advisory_speed = 2;
+  optional int32 min_speed = 3;
+  optional int32 max_speed = 4;
+}
+// V2xProto
+message V2xProto {
+  optional LiteHeader header = 1;
+  optional ForwardCollisionWarningItemProto forward_collision_warning_proto = 2;
+  optional IntersectionCollisionWarningItemProto
+      intersection_collision_warning_proto = 3;
+  optional BlindSpotWarningItemProto blind_spot_warning_proto = 4;
+  optional LaneChangeWarningItemProto lane_change_warning_proto = 5;
+  optional EmergencyBrakeWarningItemProto emergency_brake_warning_proto = 7;
+  optional LeftTurnAssistantItemProto left_turn_assistant_proto = 11;
+  repeated InVehicleSignageItemProto in_vehicle_signage_proto = 12;
+  optional SpeedLimitWarningItemProto speed_limit_warning_proto = 13;
+  optional PreemptItemProto preempt_proto = 14;
+  optional GreenLightOptimalSpeedAdvisoryItemProto
+      green_light_optimal_speed_advisory = 15;
+  optional TrafficJamWarningItemProto traffic_jam_warning_proto = 16;
+  optional RedLightViolationWarningItemProto red_light_violation_warning_proto =
+      17;
+  optional VulnerableRoadUserCollisionWarningItemProto
+      vulnerable_road_user_collision_warning_proto = 18;
+  repeated TrafficParticipantsItemProto traffic_participants_proto = 19;
+  repeated RemoteVehicleProto remote_vehicle_proto = 20;
+  repeated AbnormalVehicleWarningItemProto
+      abnormal_vehicle_warning_proto_array = 21;
+  optional RemoteControlProto remote_control_proto = 22;
+  optional DestinationProto destination_proto = 23;
+  optional SpeedLimitProto speed_limit_proto = 24;
+  optional LaneInfoProto lane_info_proto = 25;
+  repeated ConstructionProto construction_proto = 26;
+  repeated SpeedingProto speeding_proto = 27;
+  repeated WrongWayProto wrong_way_proto = 28;
+  repeated PedestrianOnMotorWayProto pedestrian_on_motorway_proto = 29;
+  repeated NonMotorOnMotorWayProto non_motor_on_motorway_proto = 30;
+  repeated ObstacleCollisionWarningProto obstacle_collision_proto = 31;
+  optional BusFirstProto bus_first_proto = 32;
+  repeated IllegalVehicleProto illegal_vehicle_proto = 33;
+  repeated EmergencyVehicleWarningItemProto emergency_vehicles_proto = 34;
+  repeated OutOfControlVehicleWarning out_of_control_vehicle = 35;
+  optional SpeedAdvisory speed_advisory = 36;
+  reserved 6, 8, 9, 10;
+}
+
+message V2xRawInputProto {
+  optional LiteHeader header = 1;
+  optional bytes raw_input = 2;
+  optional int64 timestamp = 3;
+}

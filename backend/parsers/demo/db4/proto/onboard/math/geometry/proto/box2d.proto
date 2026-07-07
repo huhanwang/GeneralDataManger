@@ -1,0 +1,11 @@
+
+syntax = "proto2";
+package snoah;
+
+message Box2dProto {
+  optional double x = 1;
+  optional double y = 2;
+  optional double heading = 3;
+  optional double width = 4;
+  optional double length = 5;
+}

@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/semantic_filter/proto/semantic_filter_config";
+
+message SemanticFilterConfig {
+  repeated int32 bg_filter_label = 1;
+  repeated int32 fg_filter_label = 2;
+  optional float bg_point_filter_th = 3 [default = 0.5];
+  optional float fg_point_filter_th = 4 [default = 0.5];
+  optional float bg_grid_filter_th = 5 [default = 0.7];
+  optional float fg_grid_filter_th = 6 [default = 0.7];
+  optional float privilege_bg_point_filter_th = 7 [default = 0.35];
+  optional float privilege_fg_point_filter_th = 8 [default = 0.35];
+  optional float privilege_bg_grid_filter_th = 9 [default = 0.5];
+  optional float privilege_fg_grid_filter_th = 10 [default = 0.5];
+  optional float bg_grid_force_filter_prob_th = 11 [default = 0.70];
+  optional float fg_grid_force_filter_prob_th = 12 [default = 0.70];
+  optional float bg_point_force_filter_prob_th = 13 [default = 0.65];
+  optional float fg_point_force_filter_prob_th = 14 [default = 0.65];
+}

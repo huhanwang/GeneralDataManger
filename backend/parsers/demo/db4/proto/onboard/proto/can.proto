@@ -1,0 +1,20 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message CanFrameProto {
+  optional int64 channel = 1;
+  optional int64 id = 2;
+  optional int64 dlc = 3;
+  optional bytes data = 4;
+  optional int64 timestamp = 5;
+}
+
+message CanDriverDebugProto {
+  optional LiteHeader header = 1;
+  repeated CanFrameProto received_messages = 2;
+  repeated CanFrameProto sent_messages = 3;
+}

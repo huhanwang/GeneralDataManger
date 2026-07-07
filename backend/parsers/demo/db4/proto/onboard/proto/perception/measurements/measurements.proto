@@ -1,0 +1,45 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/perception/measurements/measurement.proto";
+
+message MeasurementsProto {
+  optional LiteHeader header = 1;
+  repeated MeasurementProto measurements = 2;
+  optional double min_timestamp = 3 [default = -1.0];
+  optional double max_timestamp = 4 [default = -1.0];
+  enum GroupType {
+    LIDAR = 0;
+    CAMERA = 1;
+    RADAR = 2;
+    ALL = 3;
+  }
+  // Default to ALL to accommodate for runs before adding group types.
+  optional GroupType group_type = 5 [default = ALL];
+
+  // For the compability of Horizon PerceptionObstacle.
+  optional int32 cipv_id = 6;
+  enum CoordinateType {
+    COORD_VCS = 0;
+    COORD_SMOOTH = 1;
+    COORD_GLOB = 2;
+  }
+  optional CoordinateType coordinate_type = 7 [default = COORD_SMOOTH];
+  optional VehiclePoseProto vehicle_pose = 8;
+  optional double perception_capture_timestamp = 9 [default = -1.0];
+}

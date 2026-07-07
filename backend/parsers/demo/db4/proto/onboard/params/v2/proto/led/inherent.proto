@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package snoah;
+
+message LedInherentProto {
+  optional string serial_no = 1;
+}

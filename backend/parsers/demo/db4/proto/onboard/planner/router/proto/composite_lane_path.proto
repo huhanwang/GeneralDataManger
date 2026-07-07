@@ -1,0 +1,30 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/maps/proto/lane_path.proto";
+
+message CompositeLanePathProto {
+  repeated mapping.LanePathProto lane_paths = 1;
+
+  message TransitionProto {
+    optional double overlap_length = 1;
+    optional double transition_point_fraction = 2;
+    optional bool lc_left = 3;
+
+    optional bool optimized = 4;
+    optional int64 lc_section_id = 5;
+  }
+  repeated TransitionProto transitions = 2;
+
+  message CompositeIndexProto {
+    optional int32 lane_path_index = 1;
+    optional int32 lane_index = 2;
+  }
+
+  message LaneIndexPointProto {
+    optional CompositeIndexProto index = 1;
+    optional double lane_fraction = 2;
+  }
+}

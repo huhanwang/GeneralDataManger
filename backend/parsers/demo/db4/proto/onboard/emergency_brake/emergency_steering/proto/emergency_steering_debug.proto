@@ -1,0 +1,132 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/proto/control_cmd.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/emergency_brake/proto/emergency_brake_debug.proto";
+import "onboard/emergency_brake/emergency_steering/proto/emergency_steering_object.proto";
+import "onboard/emergency_brake/emergency_steering/proto/emergency_steering_state.proto";
+
+message EmergencySteeringInputSeqNum {
+  optional uint64 pose = 1;
+  optional uint64 fusion_objects = 2;
+  optional uint64 objects = 3;
+  optional uint64 chassis = 4;
+  optional uint64 execution_issue = 5;
+  optional uint64 online_map = 6;
+}
+
+message EmergencyBrakeResultProto {
+  optional bool aeb_request = 1;
+  optional double current_start_time = 2;
+  optional double front_brake_t_delay = 3;
+  optional string aeb_target_object_id = 4;
+  optional AebTargetDebugProto aeb_target_info = 5;
+  optional double max_decel = 6;
+}
+
+message EmergencySteeringTargetDebugProto {
+  optional double rel_collision_speed = 1;
+  optional emergency_steering.EmergencySteeringObjectProto target_object = 2;
+}
+
+message AesDebugProto {
+  enum PassiveReason {
+    NONE = 0;
+    SPEED_NOT_IN_RANGE = 1;
+    AES_JUST_ACTIVE = 2;
+  }
+
+  optional PassiveReason esa_passive_reason = 1;
+  optional PassiveReason aes_passive_reason = 2;
+  optional emergency_steering.EmergencySteeringStateProto.EsaState esa_state =
+      3;
+  optional emergency_steering.EmergencySteeringStateProto.AesState aes_state =
+      4;
+}
+
+message EmergencySteeringPathProto {
+  repeated PathPoint path_points = 1;
+
+  enum CollisionCheckResult {
+    COLLISION_NOT_CHECKED = 0;
+    COLLISION_CHECK_PASSED = 1;
+    COLLISION_WITH_OBSTACLE = 2;
+    COLLISION_WITH_CURB = 3;
+  };
+  optional CollisionCheckResult collision_check_result = 2;
+
+  message PathCost {
+    optional double total_cost = 1;
+    optional double lat_offset_cost = 2;
+    optional double lat_accel_cost = 3;
+    optional double lat_jerk_cost = 4;
+    optional double total_accel_cost = 5;
+    optional double obj_dist_cost = 6;
+  }
+  optional PathCost path_cost = 3;
+
+  message ExtremumInfo {
+    optional double value = 1;
+    optional double corresponding_s = 2;
+  }
+
+  message MotionInfo {
+    optional ExtremumInfo max_lat_a = 1;
+    optional ExtremumInfo max_lat_j = 2;
+    optional ExtremumInfo max_total_a = 3;
+    optional ExtremumInfo min_obj_dist = 4;
+  }
+  optional MotionInfo motion_info = 4;
+}
+
+message EmergencySteeringPathPlannerDebugProto {
+  repeated PathPoint path_points = 1;
+  repeated EmergencySteeringPathProto left_path_candidates = 2;
+  repeated EmergencySteeringPathProto right_path_candidates = 3;
+}
+
+message EmergencySteeringLaneChangeDeciderDebugProto {
+  repeated Vec2dProto right_drive_passage = 1;
+  repeated Vec2dProto left_drive_passage = 2;
+  repeated Vec2dProto current_drive_passage = 3;
+}
+
+message EmergencySteeringCommonDebugProto {
+  optional EmergencySteeringInputSeqNum input_seq_num = 1;
+  optional double start_time = 2;
+  optional EmergencyBrakeResultProto emergency_brake_result = 3;
+}
+
+message EmergencySteeringPlannerDebugProto {
+  optional EmergencySteeringTargetDebugProto target_debug = 1;
+
+  enum ResetReason {
+    NO_RESET = 0;
+    PATH_EMPTY = 1;
+    LAT_ERROR_TOO_LARGE = 2;
+  }
+  optional ResetReason reset_reason = 2;
+
+  optional EmergencySteeringPathPlannerDebugProto path_planner_debug = 3;
+  optional EmergencySteeringLaneChangeDeciderDebugProto lc_decider_debug = 4;
+  optional bool planning_succeeded = 5;
+  optional string planning_failed_msg = 6;
+}
+
+message EmergencySteeringDebugProto {
+  optional LiteHeader header = 1;
+
+  // Common debug.
+  optional EmergencySteeringCommonDebugProto common_debug = 2;
+  // AES debug.
+  optional AesDebugProto aes_debug = 3;
+  // Planner debug.
+  optional EmergencySteeringPlannerDebugProto planner_debug = 4;
+  // Controller debug.
+  optional ControllerDebugProto control_debug = 5;
+}

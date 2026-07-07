@@ -1,0 +1,22 @@
+syntax = "proto2";
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_result_analyze_data";
+
+import "onboard/calibration/proto/calibration_response.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+enum CalibrationResultSource {
+  PARAM_GIT_REPO = 0;
+  RUN_LOG = 1;
+  DUMPED_HISTORY_RESULT = 2;
+}
+
+message CalibrationResultInternal {
+  optional LiteHeader header = 1;
+  optional CalibrationResultSource data_source = 2;
+  optional int64 timestamp_second = 3;  // Seconds
+  repeated CameraExtrinsicMap camera_calibrated_param = 4;
+  optional string commit_id = 5;  // Corresponding to PARAM_GIT_REPO
+  optional string run_name = 6;   // Corresponding to RUN_LOG
+  repeated LidarExtrinsicMap lidar_calibrated_param = 7;
+}

@@ -1,0 +1,15 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message ReferenceLineModeStateProto {
+  optional int32 update_id = 1;
+  optional int32 exit_counter = 2;
+  optional bool planner_use_reference_line = 3;
+
+  repeated Vec2dProto prev_center_line = 4;
+  // Next id: 5.
+}

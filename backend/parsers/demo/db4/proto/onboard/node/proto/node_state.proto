@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message NodeStateProto {
+  optional LiteHeader header = 1;
+  optional int64 t1 = 2;  // rtt: t1
+  optional int64 t2 = 3;  // rtt: t2
+}

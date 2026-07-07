@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+enum ObstacleType {
+  OTHER = 0;
+  UNMOVEABLE_OBJECT = 1;
+  FENCE = 2;
+}
+
+message VoxelCell {
+  optional uint32 x =
+      1;  // 栅格center_point的X向编码位置，以右后下点作为三维坐标系的原点
+  optional uint32 y =
+      2;  // 栅格center_point的Y向编码位置，以右后下点作为三维坐标系的原点
+  optional uint32 z =
+      3;  // 栅格center_point的Z向编码位置，以右后下点作为三维坐标系的原点
+}
+
+message OccupancyObject {
+  optional uint32 id = 1;
+  optional ObstacleType type = 2;
+  repeated VoxelCell voxel = 3;
+}
+
+message BevOccuapncy {
+  message Vector3d {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+  }
+
+  optional Vector3d position_right_downside =
+      1;  // Occupancy右后下点的3D坐标，用以表征Occupancy范围
+  optional Vector3d position_left_upside =
+      2;  // Occupancy左前上点的3D坐标，用以表征Occupancy范围
+  optional Vector3d voxel_size = 3;  // Occupancy栅格尺寸
+  repeated OccupancyObject occupancy_objects = 4;
+}

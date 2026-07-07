@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package snoah;
+
+// Represents a param which is a protobuf.
+message ProtoParamValue {
+  // Name of the protobuf. Only serves as a documentation.
+  optional string proto_name = 1;
+  // Path to the actual text proto file.
+  optional string proto_file_path = 2;
+}
+
+// Represents a param value, which can only be one of the following types.
+message ParamValue {
+  oneof value {
+    bool bool_value = 1;
+    int32 int32_value = 2;
+    int64 int64_value = 3;
+    double double_value = 4;
+    string str_value = 5;
+    ProtoParamValue proto_value = 6;
+  }
+}
+
+// The main param file which contains all key-value param pairs.
+message ParamFile {
+  // A mapping from param key to value.
+  map<string, ParamValue> params = 1;
+}

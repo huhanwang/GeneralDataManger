@@ -1,0 +1,527 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/calibration/proto/calibration_param";
+
+import "onboard/proto/lite_camera.proto";
+import "onboard/calibration/proto/calibration_data.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+enum RollStrategy {
+  SKIP_ROLL_CALIB = 1;
+  SMART_ROLL_CALIB = 2;
+  FORCE_ROLL_CALIB = 3;
+}
+
+message ModuleParam {
+  optional int32 image_buffer_size = 1 [default = 10];
+  optional int32 lidar_buffer_size = 2 [default = 10];
+  optional double speed_into_idle = 3 [default = 11.0];  // Meters per second.
+  optional double speed_into_running = 4
+      [default = 13.5];  // Meters per second.
+  optional bool allow_online_calib_at_night = 5 [default = false];
+  optional string time_zone_name = 6 [default = "Asia/Shanghai"];
+  optional int32 time_zone_key = 7 [default = 8];
+  optional double max_acceleration = 8
+      [default = 2.0];  // Meters per square second.
+  optional double freezing_time_for_large_acceleration = 9
+      [default = 2.0];  // Second.
+  optional bool check_suspension = 10 [default = true];
+}
+message DataPreprocessorParam {
+  message EndOfLinePreprocessorParam {
+    optional double max_lidar_range = 2;
+    optional double min_lidar_range = 3;
+    optional bool full_fov = 4;
+    optional double min_frame_distance = 5 [default = -1.];
+    optional double min_frame_time_gap = 6 [default = 0.5];
+  }
+  optional EndOfLinePreprocessorParam end_of_line_param = 1;
+
+  message OnRoadPreprocessorParam {
+    optional double max_lidar_range = 2;
+    optional double min_lidar_range = 3;
+    optional bool full_fov = 4;
+    optional double min_frame_distance = 5 [default = 5.];
+    optional double min_frame_time_gap = 6 [default = 0.5];
+    optional double min_frame_distance_dual_frames = 7 [default = 10.0];
+    optional double min_frame_time_gap_dual_frames = 8 [default = 1];
+  }
+  optional OnRoadPreprocessorParam on_road_param = 2;
+  message RotationTablePreprocessorParam {
+    // Used params, will be removed.
+    optional CameraId main_camera = 1 [default = CAM_PBQ_FRONT_WIDE];
+  }
+  optional RotationTablePreprocessorParam rotation_table_param = 3;
+  optional CameraId main_camera = 4 [default = CAM_PBQ_FRONT_WIDE];
+}
+
+message DetectorParam {
+  message EndOfLineDetectorParam {
+    optional bool use_crop_region = 1 [default = true];
+    optional bool use_pose_deviation = 2 [default = true];
+    optional double deviation_angle = 3 [default = 3.0];
+    optional int32 crop_expand = 4 [default = 0];
+  }
+  optional EndOfLineDetectorParam end_of_line_param = 1;
+
+  message OnRoadDetectorParam {
+    message ModelRoi {
+      optional int32 x = 1;
+      optional int32 y = 2;
+      optional int32 width = 3;
+      optional int32 height = 4;
+    }
+    // meaning see opencv documentation cv::InterpolationFlags.
+    // Such as for opencv4.0.0-rc :
+    // https://docs.opencv.org/4.0.0-rc/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121
+    optional int32 format_image_interpolation_flag = 1 [default = 1];
+    optional int32 find_seg_instance_downscale_search_step = 2 [default = 1];
+    optional int32 find_seg_instance_deep_first_search_range = 3
+        [deprecated = true];
+    optional int32 find_seg_instance_cluster_min_pixel_num = 4 [default = 15];
+    // For monitoring and online calibration.
+    optional int32 min_detection_gap = 5 [default = 100];  // MiliSeconds.
+    optional bool use_crop_for_fvp = 6 [default = false];
+    optional ModelRoi fvp_front_wide_roi = 7;
+    optional ModelRoi fvp_rear_roi = 8;
+    optional ModelRoi fvp_side_roi = 9;
+  }
+  optional OnRoadDetectorParam on_road_param = 2;
+
+  message EdgeFeatureDetectorParam {
+    // TODO(@mingbo): Move some constant kXX in cc file here.
+  }
+  optional EdgeFeatureDetectorParam edge_feature_param = 3;
+
+  message LidarSemanticDetectorParam {
+    message NearestGroundErea {
+      optional double x_min = 1 [default = 0.0];
+      optional double x_max = 2 [default = 15.0];
+      optional double y_min = 3 [default = -3.0];
+      optional double y_max = 4 [default = 3.0];
+    }
+    optional int32 point_num_after_downsample = 1 [default = 5000];
+    optional int32 min_ground_point_num_after_downsample = 2 [default = 200];
+    optional NearestGroundErea nearest_ground_erea = 3;
+  }
+  optional LidarSemanticDetectorParam lidar_semantic_detector_param = 4;
+}
+
+message FittingLineParam {
+  optional double fit_lane_max_vcs_x = 1 [default = 40.0];  // m.
+  optional int32 fit_lane_min_point_num = 2 [default = 10];
+  optional double fit_lane_min_length = 3 [default = 5.0];  // m.
+  optional double fit_lane_min_inlier_ratio = 4 [default = 0.85];
+  optional double fit_lane_inlier_vcs_distance = 5 [default = 0.4];  // m.
+  optional LinePosType fit_lane_max_pos_type = 6 [default = kL2];
+  optional LinePosType fit_lane_min_pos_type = 7 [default = kR2];
+  optional double pos_type_filter_distance = 8 [default = 0.6];
+  optional double fit_lane_inlier_uv_distance = 9 [default = 15.0];  // pixel
+  optional bool project_bev_line_to_image = 10 [default = false];
+  // If ransac_iteration_num less than or equal to 0, use brute froce ransac.
+  optional int32 ransac_iteration_num = 11 [default = -1];
+}
+
+message OptimizerParam {
+  message FrontWideTeleRigidParams {
+    optional Vec3dProto translation_from_tele_to_wide = 1;
+    optional bool joint_optimization = 2 [default = true];
+    optional double rigid_sqrt_info = 3 [default = 1000.0];
+  }
+
+  message EndOfLineOptimizerParam {
+    optional double reproject_error_threshold = 1;
+    optional double max_roll_diff = 2 [default = 0.0035];   // rad; 0.2 degree
+    optional double max_pitch_diff = 3 [default = 0.0035];  // rad; 0.2 degree
+    optional double max_yaw_diff = 4 [default = 0.0052];    // rad; 0.3 degree
+    optional bool enable_xyz_optimization = 5 [default = true];
+    optional int32 min_valid_frame = 6 [default = 1];
+    optional int32 need_good_count = 7 [default = 2];
+    optional Vec3dProto delta_translation_lower_bound = 8;
+    optional Vec3dProto delta_translation_upper_bound = 9;
+    optional FrontWideTeleRigidParams front_camera_params = 10;
+    optional double ceres_function_tolerance = 11 [default = 0.0001];
+  }
+  optional EndOfLineOptimizerParam end_of_line_param = 1;
+
+  message OnRoadOptimizerParam {
+    message BevLaneMatcherParam {
+      message PointSegmentMatcherParam {
+        optional InstanceType instance_type = 1
+            [default = kUnknownInstanceType];
+        optional double max_match_distance = 2 [default = 1.0];
+        optional double min_xy_slope = 3 [default = 0.0];
+        optional double max_abs_x = 4 [default = 50.0];
+        optional double max_abs_y = 5 [default = 15.0];
+        optional double weight = 6 [default = 1.0];
+        optional double pos1_lane_max_abs_x = 7 [default = 60.0];
+        optional double pos1_lane_min_abs_x = 8 [default = 0.0];
+      }
+      repeated PointSegmentMatcherParam point_segment_matcher_param = 1;
+      optional int32 optimization_loop_n = 2 [default = 3];
+      message EndPointMatcherParam {
+        optional InstanceType instance_type = 1
+            [default = kUnknownInstanceType];
+        optional double endpoint_max_abs_x = 2 [default = 60.0];  // m.
+        optional double endpoint_max_abs_y = 3 [default = 10.0];  // m.
+        optional double endpoint_min_abs_x = 4 [default = 7.0];
+        optional double linearity_range_start_distance = 5
+            [default = 25.0];  // m.
+        optional double linearity_range_end_distance = 6
+            [default = 50.0];                                      // m.
+        optional double min_instance_length = 7 [default = 2.25];  // m.
+        optional double max_instance_length = 8 [default = 9.0];   // m.
+        optional double max_search_distance = 9 [default = 3.5];   // m.
+        optional double min_search_distance = 10 [default = 1.5];  // m.
+        optional double min_xy_slope = 11 [default = 0.25];        // m.
+        optional double dir_x_weight = 12 [default = 10.0];
+        optional double dir_y_weight = 13 [default = 0.0];
+        optional double check_xy_slope_min_y_diff = 14 [default = 2.0];  // m.
+      }
+      repeated EndPointMatcherParam endpoint_matcher_param = 4;
+      optional FittingLineParam rg_fitting_line_param = 5;
+      optional double check_bev_lane_match_angle_diff_threshold = 6
+          [default = 3.0];  // degree.
+      optional double check_bev_lane_match_ratio_threshold = 7 [default = 0.85];
+      optional double check_bev_lane_match_dist_diff_threshold = 8
+          [default = 1.0];  // m.
+      optional double point_to_fitting_line_max_distance = 9
+          [default = 30.0];  // m.
+      message NearFrameMatchParam {
+        optional double min_distance = 1;
+        optional double max_distance = 2;
+      }
+      optional NearFrameMatchParam near_frame_match_param = 10;
+      repeated PointSegmentMatcherParam near_frame_point_segment_matcher_param =
+          11;
+      repeated EndPointMatcherParam near_frame_endpoint_matcher_param = 12;
+      message RoadGeometryPointToLineMatchParam {
+        optional double max_abs_x = 1 [default = 60.0];
+        optional double max_abs_y = 2 [default = 15.0];
+        optional double max_match_distance = 3 [default = 1.0];
+        optional double weight = 4 [default = 1.0];
+        optional double pos1_lane_max_abs_x = 5 [default = 60.0];
+        optional double pos1_lane_min_abs_x = 6 [default = 0.0];
+        optional bool enable = 7 [default = false];
+      }
+      optional RoadGeometryPointToLineMatchParam rg_point_to_line_match_param =
+          13;
+      optional RoadGeometryPointToLineMatchParam
+          near_frame_rg_point_to_line_match_param = 14;
+      optional int32 min_point_to_segment_match_pairs_num = 15 [default = 0];
+      optional double seg_point_to_segment_loss_function_scalar = 25
+          [default = 1.0];
+      optional double rg_point_to_line_loss_function_scalar = 26
+          [default = 1.0];
+      optional double endpoint_to_endpoint_loss_function_scalar = 27
+          [default = 1.0];
+      optional double point_to_image_fitting_line_loss_function_scalar = 28
+          [default = 1.0];
+      optional double point_to_bev_fitting_line_loss_function_scalar = 29
+          [default = 1.0];
+    }
+    message FisheyeParkingMatcherParam {
+      optional int32 optimization_loop_n = 1 [default = 0];
+    }
+    optional double cost_error_threshold = 1;
+    optional int32 min_vanish_point_inlier_line_num_side = 2 [default = 2];
+    optional double vanish_point_constraint_weight = 3 [default = 1.0];
+    optional double lane_to_lane_constraint_weight = 4 [default = 1.0];
+    optional int32 min_valid_frame = 5 [default = 50];
+    optional double max_roll_diff = 6 [default = 0.3];   // degree
+    optional double max_pitch_diff = 7 [default = 0.3];  // degree
+    optional double max_yaw_diff = 8 [default = 0.3];    // degree
+    optional int32 thread_num_lidar_on_road = 9 [default = 3];
+    // If it is set true, after camera-lidar calibrated, this lidar will be set
+    // as the ref-lidar of this camera, and the camera-lidar-extrinsics of the
+    // camera will be updated.
+    optional bool set_as_ref_lidar = 10 [default = true];
+    optional BevLaneMatcherParam bev_lane_matcher_param = 11;
+    // This is used to set the residual weight of the dash divider endpoints.
+    // Because the endpoints have different extraction precision in horizontal
+    // and vertical, so we use different weights in different directions of the
+    // bev plane.
+    // Declare the min number of good calibration to converge.
+    optional int32 need_good_count = 15 [default = 1];
+    optional double point_to_fitting_lane_constraint_weight = 16
+        [default = 1.0];
+    optional int32 min_vanish_point_num_for_optimization = 17 [default = 10];
+    optional int32 min_dual_frame_pair_num_for_optimization = 18 [default = 15];
+    optional double bev_lane_match_ceres_function_tolerance = 19
+        [default = 0.001];
+    optional double bev_lane_match_ceres_function_tolerance_attenuation_ratio =
+        20 [default = -0.3333];
+
+    optional double misalign_roll_diff = 21 [default = 0.6];   // degree
+    optional double misalign_pitch_diff = 22 [default = 0.6];  // degree
+    optional double misalign_yaw_diff = 23 [default = 0.6];    // degree
+    optional int32 continuous_good_count = 24 [default = 2];
+    optional int32 min_valid_frame_for_lidar = 25 [default = 30];
+    optional FisheyeParkingMatcherParam fisheye_parking_matcher_param = 26;
+  }
+  optional OnRoadOptimizerParam on_road_param = 2;
+  optional VehiclePoseProto max_installation_error = 3;
+  optional int32 ceres_solver_thread_num = 6 [default = 1];
+  optional int32 ceres_solver_max_iteration_num = 7 [default = 50];
+  optional double max_angle_standard_deviation = 8
+      [default = 0.026];  // In rad; 1.5 degree
+
+  message MonitoringOptimizerParam {
+    optional double max_roll_diff = 1 [default = 0.5];     // degree
+    optional double max_pitch_diff = 2 [default = 0.5];    // degree
+    optional double max_yaw_diff = 3 [default = 0.5];      // degree
+    optional double max_lateral_diff = 4 [default = 0.1];  // meter
+    optional int32 max_check_frame = 5 [default = 6];
+    optional int32 continuous_failed_count = 6 [default = 2];
+    optional int32 dual_frame_min_valid_frame = 7 [default = 30];
+    optional int32 bev_min_valid_frame = 8 [default = 90];
+    optional double misalign_roll_diff = 9 [default = 3.0];    // degree
+    optional double misalign_pitch_diff = 10 [default = 3.0];  // degree
+    optional double misalign_yaw_diff = 11 [default = 3.0];    // degree
+    optional int32 continuous_error_count = 12 [default = 2];
+  }
+  optional MonitoringOptimizerParam monitor_param = 9;
+
+  message OnlineOptimizerParam {
+    optional int32 min_valid_frame = 1 [default = 30];
+    optional double max_roll_diff = 2 [default = 0.2];        // degree
+    optional double max_pitch_diff = 3 [default = 0.2];       // degree
+    optional double max_yaw_diff = 4 [default = 0.2];         // degree
+    optional double misalign_roll_diff = 5 [default = 0.3];   // degree
+    optional double misalign_pitch_diff = 6 [default = 0.3];  // degree
+    optional double misalign_yaw_diff = 7 [default = 0.3];    // degree
+    optional int32 need_good_count = 8 [default = 3];
+    optional int32 continuous_good_count = 9 [default = 2];
+    optional double max_yaw_diff_for_front_camera = 10
+        [default = 0.1];  // Degrees.
+    optional int32 min_valid_frame_for_front_camera = 11 [default = 60];
+    optional double previous_front_camera_yaw_weight = 12
+        [default = 0.5];  // Range from 0 ~ 1;
+    optional int32 min_valid_frame_for_lidar = 13 [default = 40];
+  }
+  optional OnlineOptimizerParam online_param = 10;
+  optional double bev_lane_match_ceres_function_tolerance = 11
+      [default = 0.001];
+  optional double bev_lane_match_ceres_function_tolerance_attenuation_ratio = 12
+      [default = -0.3333];
+  optional double bev_lane_coarse_match_ceres_function_tolerance = 13
+      [default = 0.00001];
+  // TODO(@caochang) : Dynamic adjustment based on cpu usage.
+  optional int32 online_optimization_ceres_sleep_us = 14 [default = 10000];
+  optional int32 online_optimization_ceres_sleep_every_n_residual = 15
+      [default = 10];
+  optional int32 online_optimization_match_sleep_us_every_frmae = 16
+      [default = 5000];
+  optional double bev_lane_match_optimization_loop_delta_ypr_threshold = 17
+      [default = 0.005];  // deg.
+  message HistogramParam {
+    optional double hist_bin_unit = 1 [default = 0.3];  // degree
+  }
+  optional HistogramParam histogram_param = 18;
+  optional double front_rear_roll_stddev_factor = 19 [default = 1.3];
+  optional double front_rear_pitch_stddev_factor = 20 [default = 1.7];
+  optional double front_rear_yaw_stddev_factor = 21 [default = 1.7];
+  optional RollStrategy roll_strategy = 22 [default = SMART_ROLL_CALIB];
+  optional double min_data_num_for_smart_roll_est = 23 [default = 20];
+  optional CameraId main_camera = 24 [default = CAM_PBQ_FRONT_WIDE];
+  optional double front_rear_roll_max_stddev = 25 [default = 0.4];   // degree
+  optional double front_rear_pitch_max_stddev = 26 [default = 0.3];  // degree
+  optional double front_rear_yaw_max_stddev = 27 [default = 0.2];    // degree
+  optional double front_rear_max_roll_diff_with_eol = 28
+      [default = 0.3];  // degree
+  optional string li_eol_json_path = 29;
+  optional double front_camera_yaw_offset_deg = 30 [default = 0.0];  // degree
+  optional double lidar_roll_max_stddev = 31 [default = 0.4];        // degree
+  optional double lidar_pitch_max_stddev = 32 [default = 0.3];       // degree
+  optional double lidar_yaw_max_stddev = 33 [default = 0.2];         // degree
+  optional double lidar_roll_stddev_factor = 34 [default = 1.8];
+  optional double lidar_pitch_stddev_factor = 35 [default = 1.8];
+  optional double lidar_yaw_stddev_factor = 36 [default = 1.8];
+  optional bool enable_joint_optimization_for_left_right_fisheyes = 37
+      [default = false];
+  optional double fisheye_parking_match_ceres_function_tolerance = 38
+      [default = 0.001];
+  optional double
+      fisheye_parking_match_ceres_function_tolerance_attenuation_ratio = 39
+      [default = -0.3333];
+  optional double fisheye_parking_coarse_match_ceres_function_tolerance = 40
+      [default = 0.00001];
+  optional double fisheye_parking_match_optimization_loop_delta_ypr_threshold =
+      41 [default = 0.005];  // deg.
+}
+
+message CameraParamsQissueChecks {
+  optional CameraId camera_id = 1;
+  optional VehiclePoseProto extrinsic_diff = 2;
+}
+
+message ProcessParam {
+  optional int32 max_eol_failed_num = 1 [default = 10];
+  optional double max_eol_cost_time = 2 [default = 45.0];           // seconds
+  optional double max_on_road_cost_time = 3 [default = 1200.0];     // seconds
+  optional double max_on_road_distance = 4 [default = 20000.0];     // meter
+  optional double max_time_to_wait_for_signal = 5 [default = 5.0];  // seconds
+  optional bool enable_save_frame_file = 6 [default = false];
+  optional bool enable_load_frame_file_from_local = 7 [default = false];
+  optional bool enable_sim_disturb_test = 8 [default = false];
+  optional double max_sim_disturb_angle = 9 [default = 3.0];    // Degrees.
+  optional double sim_disturb_angle_step = 10 [default = 3.0];  // Degrees.
+  optional bool running_in_cloud = 11 [default = false];
+  optional double max_online_cost_time = 12 [default = 1800.0];  // seconds
+  optional double min_duratin_in_hours_to_save_online_result = 13
+      [default = 48];  // Hours
+  message QissueParams {
+    // Do not check translation difference at now.
+    // qissue definition see :
+    // https://qcraft.feishu.cn/sheets/ETyXsAjAghFhVrt6L87cTCObnPc?sheet=1rzDgY&range=ODI6ODI%3D
+    // https://qcraft.feishu.cn/sheets/Kfv8s4uvvhBMV2tvO2ecVyH3n6f?sheet=b3qi11&range=NTM6NTM%3D
+    repeated CameraParamsQissueChecks online_misalignment_q_issue_params =
+        1;  // Diff with current params, rotation in dgree, translation in
+            // meter.
+    repeated CameraParamsQissueChecks online_out_of_range_q_issue_params =
+        2;  // Same as above.
+    optional int32 need_check_num_to_publish_out_of_range_in_optimizer = 3
+        [default = 3];
+  }
+  optional QissueParams qissue_params = 14;
+}
+
+message EvaluatorParam {
+  optional double on_road_lane_start_x = 1 [default = 10.];         // Meter.
+  optional double on_road_lane_end_x = 2 [default = 60.];           // Meter.
+  optional double on_road_max_lane_width_diff = 3 [default = 1.0];  // Meter.
+  optional double on_road_max_divider_angle = 4 [default = 0.3];    // Degree.
+  optional double on_road_max_lateral_diff = 5
+      [default = 0.005];  // Similar to radian.
+  optional double on_road_max_end_point_dist = 6
+      [default = 0.005];  // Similar to radian.
+  optional double on_road_lateral_diff_search_radius = 7
+      [default = 2.0];  // Meters.
+  optional double on_road_end_point_search_radius = 8 [default = 5.0];
+}
+
+message PostProcessorParam {
+  // TODO(caochang): to add more params
+  message BevLaneMatchPostProcessingParam {
+    optional double source_seg_points_bev_voxel_filter_resolution = 1
+        [default = 0.5];                                            // m.
+    optional double min_dashed_divider_length = 2 [default = 1.5];  // m.
+    optional double max_dashed_divider_length = 3 [default = 9.0];  // m.
+    optional FittingLineParam rg_fitting_line_param = 4;
+    optional int32 min_rg_points_num = 5 [default = 3];
+    optional int32 min_seg_points_num = 6 [default = 3];
+    optional int32 max_needed_pos_type_num = 7 [default = 4];
+    optional double ref_seg_points_bev_voxel_filter_resolution = 8
+        [default = 0.25];
+    optional double source_rg_points_bev_voxel_filter_resolution = 9
+        [default = 0.5];
+    optional double ref_rg_points_bev_voxel_filter_resolution = 10
+        [default = 0.25];
+    optional bool check_calibrated_camera_pos_type = 11 [default = false];
+    optional double rg_convex_hull_expand_distance = 12 [default = 0.75];
+    optional double fitting_line_verticality_degree_threshold = 13
+        [default = 3.0];
+    message NeedCoverageArea {
+      optional double min_abs_x = 1 [default = -1000.0];
+      optional double max_abs_x = 2 [default = 1000.0];
+      optional double min_abs_y = 3 [default = -1000.0];
+      optional double max_abs_y = 4 [default = 1000.0];
+    }
+    repeated NeedCoverageArea ref_camera_need_coverage_area = 14;
+    repeated NeedCoverageArea source_camera_need_coverage_area = 15;
+    optional double max_smooth_pose_z_slope = 16 [default = 90.0];  // degree.
+  }
+  message EndOfLinePostProcessingParam {
+    optional double marker_moving_threshold = 1 [default = 10.0];  // pixel.
+    optional int32 marker_moving_max_count = 2 [default = 1];
+    optional int32 valid_stable_count = 3 [default = 2];
+    optional double marker_matching_threshold = 4 [default = 150.0];  // pixel.
+    optional double marker_matching_length_tolerate_ratio = 5
+        [default = 0.08];  // ratio.
+    optional int32 max_lost_count = 6 [default = 4];
+    optional bool allow_board_lost = 7 [default = false];
+    optional double sum_optimize_count = 8 [default = 5];
+    optional double min_border_distance = 9 [default = 4.0];
+    optional int32 min_tags_for_valid_detection = 10 [default = 6];
+    optional double max_subpixel_sqr_distance = 11 [default = 1.5];
+  }
+  message RoadGeometryPostProcessingParam {
+    optional bool use_parallel_check = 1 [default = false];
+  }
+  message VanishPointPostProcessingParam {
+    optional double max_nearst_frame_vanish_point_distance = 1
+        [default = 10.0];  // pixels
+    optional double max_nearst_frame_center_line_angle_difference = 2
+        [default = 0.02618];  // In rad; 1.5 degree
+    optional double max_car_to_lane_center_difference = 3
+        [default = 0.07];                               // 7cm
+    optional double min_bev_x_dis = 4 [default = 4.0];  // m.
+  }
+  message EdgeFeaturePostProcessingParam {
+    optional double min_height_in_vcs = 1 [default = 0.5];
+  }
+  message DualFramesPostProcessingParam {
+    optional double max_match_mse = 1 [default = 0.05];
+    optional double max_left_right_roll_deg_gap = 2 [default = 1.5];
+    optional double strict_left_right_roll_deg_gap = 3 [default = 0.5];
+    optional RollStrategy roll_strategy = 4 [default = SMART_ROLL_CALIB];
+  }
+  message LidarHandeyePostProcessingParam {
+    optional double min_relative_distance = 1 [default = 9.5];
+    optional double max_relative_distance = 2 [default = 15.0];
+    optional double max_move_y = 3 [default = 0.15];
+    optional double max_move_z = 4 [default = 0.15];
+    optional double max_match_dist = 5 [default = 0.5];
+    optional int32 max_num_iters = 6 [default = 5];
+    optional double max_sqr_mse = 7 [default = 0.01];
+    optional int32 max_num_points = 8 [default = 5002];
+    optional double min_front_dist_for_last_points = 9 [default = 10.0];
+    optional double max_diff_of_pitch_deg = 10 [default = 0.3];
+    optional double min_src_match_radio = 11 [default = 0.4];
+    optional double max_dist_match_mse_radio = 12 [default = 0.5];
+    optional int32 min_points_for_icp = 13 [default = 400];
+  }
+  message ParkingMatchPostProcessingParam {
+    optional double source_seg_points_bev_voxel_filter_resolution = 1
+        [default = 0.5];  // meter.
+    optional double ref_seg_points_bev_voxel_filter_resolution = 2
+        [default = 0.5];  // meter.
+    optional double source_skeleton_points_bev_voxel_filter_resolution = 3
+        [default = 0.5];  // meter.
+    optional double ref_skeleton_points_bev_voxel_filter_resolution = 4
+        [default = 0.5];                                             // meter.
+    optional double max_smooth_pose_z_slope = 5 [default = 90.0];    // degree.
+    optional double matching_area_side_length = 6 [default = 15.0];  // meter.
+    optional double min_x_scope_in_matching_area = 7 [default = 5.0];  // meter.
+    optional double min_y_scope_in_matching_area = 8 [default = 2.5];  // meter.
+    optional int32 min_point_num_in_matching_area = 9 [default = 20];
+  }
+  optional BevLaneMatchPostProcessingParam bev_lane_match_param = 1;
+  optional RoadGeometryPostProcessingParam road_geometry_param = 2;
+  optional EndOfLinePostProcessingParam eol_param = 3;
+  optional VanishPointPostProcessingParam vanish_point_param = 4;
+  optional EdgeFeaturePostProcessingParam edge_feature_param = 5;
+  optional DualFramesPostProcessingParam dual_frames_param = 6;
+  optional CameraId main_camera = 7 [default = CAM_PBQ_FRONT_WIDE];
+  optional LidarHandeyePostProcessingParam lidar_handeye_param = 8;
+  optional ParkingMatchPostProcessingParam parking_match_param = 9;
+}
+
+message CalibrationRestartManagerParam {
+  optional string store_directory = 1;
+  optional string file_name = 2;
+  optional double max_usable_data_age_in_hours = 3 [default = 72.0];
+}
+
+message CalibrationParam {
+  optional DataPreprocessorParam data_preprocessor_param = 1;
+  optional DetectorParam detector_param = 2;
+  optional OptimizerParam optimizer_param = 3;
+  optional ProcessParam process_param = 5;
+  optional EvaluatorParam evaluator_param = 6;
+  optional ModuleParam module_param = 7;
+  optional PostProcessorParam post_processor_param = 8;
+  optional CalibrationRestartManagerParam calibration_restart_manager_param = 9;
+}

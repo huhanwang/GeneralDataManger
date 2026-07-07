@@ -1,0 +1,56 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+// Every proto (except SemanticMapProto) should have these three fields:
+// `optional sfixed64 id`, `repeated int32 belonging_levels` and `repeated
+// ValidationRecord skip_records`
+
+enum ValidationRule {
+  LANE_TO_CURB_DIST = 1;
+  LANE_MAX_LENGTH = 2;
+  TL_BIND = 3;
+  LANE_TOPOLOGICAL_CONNECTION = 4;
+  LANE_CURVATURE = 5;
+  LANE_DIRECTION = 6;
+  CURB_CONNECTION = 7;
+  LANE_INTERSECT_IN_INTERSECTION = 8;
+  SECTION_VALIDITY = 9;
+  TL_HEADING = 10;
+  REPEATING_FEATURE = 11;
+  LANE_INTERSECTION_INFO = 12;
+}
+
+message ValidationRecord {
+  optional ValidationRule rule = 1;
+  optional string note = 2;
+}
+
+// this field is inherited from Autonavi's definition
+enum Confidence {
+  GENERAL = 1;   // fully visible
+  BLOCKING = 2;  // partially blocking
+  UNCLEAR = 3;
+  MISALIGNED = 4;
+  INTERFERING = 5;  // interfered by electric wire, etc
+  OVERLAP = 6;
+  CURRENCY = 7;
+  RETREADING = 8;
+}
+
+message Interval {
+  // When representing time interval,
+  // the start and end time is in floating point hours,
+  // e.g. 7:30 => 7.5, 18:15 => 18.25
+  optional double start = 1;
+  optional double end = 2;
+  // Many time specific traffic rules only apply when it's working day.
+  // So we can have 3 different choies here:
+  // - None: (e.g. day_interval.has_is_working_day() == false),
+  //         apply to every day
+  // - true: apply to working days only
+  // - false: apply to non-working days only
+  optional bool is_working_day = 3;
+  repeated int32 belonging_levels = 4;
+  repeated ValidationRecord skip_records = 5;
+}

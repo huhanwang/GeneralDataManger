@@ -1,0 +1,134 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lidar.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/calibration.proto";
+
+message CameraInstallationProto {
+  optional CameraId camera_id = 1;
+  optional CameraToLidarExtrinsicsProto extrinsics = 2;
+  optional CameraToVehicleExtrinsicsProto camera_to_vehicle_extrinsics = 16;
+  optional CameraToVehicleExtrinsicsProto avm_camera_to_vehicle_extrinsics = 28;
+  optional LidarId ref_lidar_id = 3 [default = LDR_CENTER];
+
+  // If camera is gmsl direct link, not via USB, we have to provide /dev/video*
+  // instead of serial_no.
+  optional string device_path = 4;
+  optional bool hardware_trigger = 5 [default = false];
+
+  // Whether to rotate image counterclockwise by 90-degree.
+  optional bool rotate_90_ccw = 6 [default = false];
+
+  optional bool auto_exposure = 7 [default = true];
+
+  // ROI maybe after rotate_90_ccw, full_undistort_fov or warp_perspective.
+  // ROI must be adapted to the size of the processed image.
+  message ROI {
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 width = 3;
+    optional int32 height = 4;
+  }
+  optional ROI roi = 8;
+  optional double expected_fps = 9 [default = 10];
+
+  optional bool hardware_encoder = 10 [default = true];
+
+  optional bool flip_x = 11 [default = false];
+
+  // The used run when calibration
+  optional string used_run = 12;
+
+  optional bool full_undistort_fov = 13 [default = false];
+
+  optional bool warp_perspective = 14 [default = false];
+
+  // WarpedSize must be set when warp_perspective is true.
+  message WarpedSize {
+    optional int32 width = 1 [default = 2304];
+    optional int32 height = 2 [default = 1536];
+  }
+  optional WarpedSize warped_size = 15;
+
+  optional EncodeType encode_type = 17 [default = ENCODE_TYPE_JPEG];
+
+  message ImageResize {
+    optional int32 width = 1;
+    optional int32 height = 2;
+  }
+
+  optional ImageResize image_resize = 18;
+
+  optional uint32 pipeline_id = 19;
+
+  optional bool set_virtual_camera = 21 [default = false];
+
+  message VirtualCamera {
+    optional CameraId camera_id = 1;
+
+    enum Type {
+      NONE = 0;
+      RESET_OPTICAL = 1;
+      CROP_IMAGE = 2;
+      RAW_IMAGE = 3;
+    }
+    optional Type type = 2;
+
+    message Intrinsics {
+      optional double fx = 1;
+      optional double fy = 2;
+      optional double cx = 3;
+      optional double cy = 4;
+    }
+    optional Intrinsics intrinsics = 3;
+
+    optional int32 width = 4;
+    optional int32 height = 5;
+
+    message VirtualToBaseCameraRotation {
+      optional double yaw = 1;
+      optional double pitch = 2;
+      optional double roll = 3;
+    }
+    optional VirtualToBaseCameraRotation rotation = 6;
+    // The roi is only valid for non-fisheye camera.
+    optional ROI roi = 7;
+
+    optional uint32 pipeline_id = 8;
+
+    optional CameraToVehicleExtrinsicsProto extrinsics = 9;
+
+    repeated CameraToVehicleExtrinsicsProto calib_extrinsics = 10;
+  }
+  repeated VirtualCamera virtual_cameras = 22;
+
+  optional bool use_downscale_image = 23;
+
+  optional ROI downscale_roi = 24;
+
+  optional WarpedSize downscale_warped_size = 25;
+
+  optional bool calibration_full_undistort_fov = 26 [default = false];
+
+  // this camera is installed on this node.
+  optional string destination_node_name = 27;
+
+  optional double full_fov_scale = 29;
+
+  message UndistortSize {
+    optional int32 width = 1;
+    optional int32 height = 2;
+  }
+
+  optional UndistortSize undistort_size = 30;
+
+  optional bool need_padding = 31;
+
+  optional bool is_calibration = 32 [default = false];
+
+  optional bool do_image_undistort = 33 [default = true];
+
+  reserved 20;
+}

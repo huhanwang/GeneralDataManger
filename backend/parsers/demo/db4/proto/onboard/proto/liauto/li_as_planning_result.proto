@@ -1,0 +1,73 @@
+
+syntax = "proto2";
+
+package snoah.li.aeb;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/liauto/li_as_seq_debug.proto";
+import "onboard/proto/liauto/li_as_common.proto";
+import "onboard/proto/liauto/li_as_planning_debug.proto";
+
+message SLPoint {
+  optional double s = 1;
+  optional double l = 2;
+}
+
+message FrenetFramePoint {
+  optional double s = 1;
+  optional double l = 2;
+  optional double dl = 3;
+  optional double ddl = 4;
+}
+
+message SpeedPoint {
+  optional double s = 1;
+  optional double t = 2;
+  optional double v = 3;
+  optional double a = 4;
+  optional double da = 5;
+}
+
+message Path {
+  optional string name = 1;
+  repeated PathPoint path_point = 2;
+}
+
+message Trajectory {
+  optional string name = 1;
+  optional double timestamp = 2;
+  optional int32 coordinate_type = 3;  // octet -> int32
+  repeated TrajectoryPoint trajectory_point = 4;
+}
+
+message VehicleMotionPoint {
+  optional TrajectoryPoint trajectory_point = 1;
+  optional double steer = 2;
+}
+
+message VehicleMotion {
+  optional string name = 1;
+  repeated VehicleMotionPoint vehicle_motion_point = 2;
+}
+
+message LssDebug {
+  optional double lss_target_offset = 1;
+  optional int32 lss_planning_status = 2;
+  optional Trajectory lss_trajectory = 3;
+  optional string lss_lane_id = 4;
+  optional StateInfo init_s = 5;
+  optional StateInfo init_l = 6;
+  repeated MotionBoundsPoint lat_info = 7;
+  repeated MotionBoundsPoint lon_info = 8;
+};
+
+message PlanningResultProto {
+  optional LiteHeader header = 1;
+  optional LiHeader li_header = 2;
+  optional Trajectory trajectory = 3;
+  optional PlanningState state = 4;
+  optional Path reference_line = 5;
+  optional PlanningDebug debug = 6;
+  repeated AsSeqDebug aes_planning_seq_debug = 7;
+  optional LssDebug lss_debug = 8;
+}

@@ -1,0 +1,20 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message Arc2dHRProto {
+  optional Vec2dProto circle_center = 1;
+  optional double radius = 2;
+  optional Vec2dProto start_unit = 3;
+  optional Vec2dProto end_unit = 4;
+}
+
+message Arc2dARProto {
+  optional Vec2dProto circle_center = 1;
+  optional double radius = 2;
+  optional double start_angle = 3;
+  optional double angle_span = 4;
+  optional bool use_fast_math = 5;
+}

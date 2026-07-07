@@ -1,0 +1,268 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/proto/drive_mission.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/execution_issue.proto";
+import "onboard/proto/q_run_events.proto";
+import "onboard/proto/q_run_event_states.proto";
+import "offboard/simulation/proto/modifier.proto";
+import "onboard/proto/human_driving.proto";
+import "onboard/maps/dynamic_layer/proto/non_odd_events.proto";
+import "onboard/maps/sd/turn_by_turn/proto/turn_by_turn.proto";
+import "onboard/proto/positioning.proto";
+import "onboard/proto/remote_assist.proto";
+import "onboard/maps/ehr/proto/dynamic_event.proto";
+import "onboard/proto/liauto/li_mcu_to_soa_failsafe.proto";
+import "onboard/proto/lite_msg.proto";
+
+message SimActionListProto {
+  repeated SimActionProto actions = 1;
+}
+
+message SimActionProto {
+  optional string name = 1;
+  oneof type {
+    bool default_action = 2;
+    TerminateSimulationActionProto terminate_simulation_action = 3;
+    SimDriverActionProto sim_driver_action = 4;
+    ChangeTrafficLightActionProto change_traffic_light_action = 5;
+    ModifyChassisActionProto modify_chassis_action = 8;
+    StopSignalActionProto stop_signal_action = 9;
+    SimQRunEventsActionProto sim_q_run_events_action = 10 [deprecated = true];
+    SimQRunEventStatesActionProto sim_q_run_event_states_action = 11
+        [deprecated = true];
+    ThrottleOverrideActionProto throttle_override_action = 12;
+    RoutingRequestActionProto routing_request_action = 13 [deprecated = true];
+    HumanDrivingSpeedActionProto human_driving_speed_action = 14
+        [deprecated = true];
+    HumanDrivingConfigChangeActionProto human_driving_config_change_action = 15
+        [deprecated = true];
+    SimExecutionIssueActionProto sim_execution_issue_action = 16;
+    ModifyMsgActionProto modify_msg_action = 17;
+    SimExecutionIssueRulesActionProto sim_execution_issue_rules_action = 18
+        [deprecated = true];
+    GnssFromPoseActionProto gnss_from_pose_action = 19;
+    NonOddEventsActionProto non_odd_events_action = 20 [deprecated = true];
+    TurnByTurnActionProto turn_by_turn_action = 21 [deprecated = true];
+    PoseActionProto pose_action = 22 [deprecated = true];
+    PublishMsgActionProto publish_msg_action = 23;
+    DropMsgActionProto drop_msg_action = 25;
+  }
+  optional double delay = 6 [default = 0.0];
+  optional double duration = 7 [default = 0.0];
+  // Override module_id in the message header.
+  // If not set, defaults to SIM_EVENTS_MODULE.
+  optional int32 module_id = 24;
+}
+
+message TerminateSimulationActionProto {
+  optional string name = 1;
+}
+
+message SimDriverActionProto {
+  optional string name = 1;
+  oneof type {
+    bool press_engage_button = 2;
+    bool press_disengage_button = 3;
+    bool press_res_button = 4;
+    snoah.DriverAction.LaneChangeCommand lane_change_command = 5;
+    snoah.DriverAction.ALCSwitcher alc_switcher = 6;
+    snoah.DriverAction.LCCSwitcher lcc_switcher = 7;
+    ExternalACCActionProto.ACCSwitcher external_acc_switcher = 8;
+    bool press_acc_engage_button = 9;
+    ExternalLaneChangeProto external_lane_change = 10;
+    bool press_human_driving_engage_button = 11;
+    ExternalStateMachine external_state_machine_action = 12;
+    ExternalPilotChassis external_pilot_chassis = 13;
+  }
+}
+
+message SimQRunEventsActionProto {
+  optional string name = 1;
+  optional snoah.QRunEventsProto sim_q_run_events = 2;
+}
+
+message SimQRunEventStatesActionProto {
+  optional string name = 1;
+  optional snoah.QRunEventStatesProto sim_q_run_event_states = 2;
+}
+
+message SimExecutionIssueActionProto {
+  optional string name = 1;
+  optional snoah.ExecutionIssueProto sim_execution_issue = 2;
+}
+
+message SimExecutionIssueRulesActionProto {
+  optional string name = 1;
+  optional snoah.ExecutionIssueRulesProto sim_execution_issue_rules = 2;
+}
+
+message ChangeTrafficLightActionProto {
+  optional string name = 1;
+  optional ChangeTrafficLightsModifier modifier = 2;
+}
+
+message ModifyChassisActionProto {
+  optional string name = 1;
+  optional ChassisModifier chassis_modifier = 2;
+}
+
+message ModifyMsgActionProto {
+  optional string name = 1;
+  optional GeneralMsgModifier general_msg_modifier = 2;
+}
+
+message ThrottleOverrideActionProto {
+  optional string name = 1;
+}
+
+message StopSignalActionProto {
+  optional string name = 1;
+  enum SignalType {
+    UNKNOWN = 0;
+    LOCALIZATION = 1;
+    PLANNING = 2;
+    CONTROL = 3;
+    PNC_UPSTREAM = 4;
+  }
+  optional SignalType signal_type = 2;
+}
+
+message RoutingRequestActionProto {
+  optional string name = 1;
+  optional RoutingRequestProto routing_request = 2;
+}
+
+message NonOddEventsActionProto {
+  optional string name = 1;
+  optional mapping.non_odd.NonOddEventsProto non_odd_events = 2;
+}
+
+message TurnByTurnActionProto {
+  optional string name = 1;
+  optional TurnByTurnProto turn_by_turn = 2;
+}
+
+message PoseActionProto {
+  optional string name = 1;
+  optional PoseProto pose = 2;
+}
+// external message
+message ExternalStateMachine {
+  // The target acc/lcc/noa speed selected by driver.
+  // Unit: km/h
+  optional uint32 driver_selected_target_speed_kph = 1;
+
+  // Pilot driver selected distance level
+  optional uint32 driver_selected_distance_level = 2;
+}
+
+message ExternalPilotChassis {
+  // This enum is only used in pilot chassis.
+  // E3: VCCD_ADDCANFD_0x202 SwtIndcr
+  // Map {0, 1, 2, 3, 4}
+  enum SwitchIndicator {
+    SWITCH_INDICATOR_UNSPECIFIED = 0;
+    SWITCH_INDICATOR_SHOT_FLASH_LEFT = 1;
+    SWITCH_INDICATOR_NORMAL_FLASH_LEFT = 2;
+    SWITCH_INDICATOR_SHOT_FLASH_RIGHT = 3;
+    SWITCH_INDICATOR_NORMAL_FLASH_RIGHT = 4;
+  }
+
+  // Left button status on steer wheel
+  // 0x0 no pressed, 0x1 pressed, 0x2 error, 0x3 reserved.
+  // E3: LZCU_ADDCANFD_0x1C7 LeMFctActSgLe
+  optional uint32 left_button_status = 1;
+
+  // Right button status on steer wheel
+  // 0x0 no pressed, 0x1 pressed, 0x2 error, 0x3 reserved.
+  // E3: LZCU_ADDCANFD_0x1C7 LeMFctActSgRi
+  optional uint32 right_button_status = 2;
+
+  // Button singals group
+  // Roller counter on steer wheel
+  // E3: LZCU_ADDCANFD_0x1C7 LeKnobCounter
+  optional uint32 roller_counter = 3;
+  // Roller direction on steer wheel
+  // 0x0 idle, 0x1 up, 0x2 down.
+  // E3: LZCU_ADDCANFD_0x1C7 LeKnobRotDir
+  optional uint32 roller_direction = 4;
+
+  // Light signals group
+  // Turn light indicator
+  // E3: VCCD_ADDCANFD_0x202 SwtIndcr
+  optional SwitchIndicator switch_indicator = 5;
+}
+
+message ExternalACCActionProto {
+  enum ACCSwitcher {
+    ACC_ON_BUTTON = 1;
+    ACC_OFF_BUTTON = 2;
+    ACC_ON_OFF_BUTTON = 3;
+    ACC_RESUME_BUTTON = 4;
+    ACC_CANCEL_BUTTON = 5;
+    ACC_RESUME_CANCEL_BUTTON = 6;
+    ACC_INCREMENT_BUTTON = 7;
+    ACC_DECREMENT_BUTTON = 8;
+  }
+  optional ACCSwitcher acc_switcher = 1;
+}
+
+enum ExternalLaneChangePhase {
+  LANE_CHANEG_PHASE_UNSPECIFIED = 0;
+  LANE_CHANEG_PHASE_WAITING = 1;
+  LANE_CHANEG_PHASE_MOVEMENT = 2;
+  LANE_CHANEG_PHASE_MANOEUVRE = 3;
+  LANE_CHANEG_PHASE_RETURNING = 4;
+  LANE_CHANEG_PHASE_TAKEOVER = 5;
+  LANE_CHANEG_PHASE_FINISH = 6;
+  LANE_CHANGE_PHASE_CANCEL_MANOUEVER = 7;
+}
+
+message ExternalLaneChangeProto {
+  optional bool left_turn_switch_short = 1;
+  optional bool right_turn_switch_short = 2;
+  optional bool left_turn_switch_long = 3;
+  optional bool right_turn_switch_long = 4;
+  optional ExternalLaneChangePhase lane_change_phase = 5;
+}
+
+message HumanDrivingSpeedActionProto {
+  optional HumanDrivingSpeedConfigProto human_driving_speed_config = 1
+      [deprecated = true];
+}
+
+message HumanDrivingConfigChangeActionProto {
+  optional HumanDrivingConfigProto human_driving_config = 1;
+}
+
+message GnssFromPoseActionProto {
+  optional string name = 1;
+}
+
+message PublishMsgActionProto {
+  optional string name = 1;
+  oneof type {
+    RemoteAssistToCarProto remote_assist_to_car = 2;
+    TurnByTurnProto turn_by_turn = 3;
+    QRunEventsProto sim_q_run_events = 4;
+    QRunEventStatesProto sim_q_run_event_states = 5;
+    ExecutionIssueRulesProto sim_execution_issue_rules = 6;
+    RoutingRequestProto routing_request = 7;
+    PoseProto pose = 8;
+    mapping.non_odd.NonOddEventsProto non_odd_events = 9;
+    HumanDrivingConfigProto human_driving_config = 10;
+    mapping.LaneTrafficEventsProto lane_traffic_events = 11;
+    mapping.RoadTrafficEventsProto road_traffic_events = 12;
+    LiMcuToSoaFailsafeProto li_mcu_to_soa_failsafe_proto = 13;
+  }
+  optional LiteMsgWrapper publish_lite_msg = 14;
+}
+
+message DropMsgActionProto {
+  optional string name = 1;
+  optional DropMsgModifier drop_msg_modifier = 2;
+}

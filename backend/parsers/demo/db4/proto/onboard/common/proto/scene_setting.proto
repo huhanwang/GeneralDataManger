@@ -1,0 +1,142 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/scene_setting";
+
+message SceneSettingProto {
+  enum SceneType {
+    SCENE_TYPE_UNKNOWN = 0;
+    // v2x
+    SCENE_TYPE_RED_LIGHT_VIOLATION_WARNING = 1;  // 闯红灯预警（标准场景）
+    SCENE_TYPE_BUS_FIRST = 2;                    // 公交信号优先
+    SCENE_TYPE_SPEED_ADVISORY = 3;      // 绿波车速引导（标准场景）
+    SCENE_TYPE_OBSTACLE_COLLISION = 4;  // 障碍物感知
+    SCENE_TYPE_VULNERABLE_ROAD_USER_COLLISION_WARNING =
+        5;  // 弱势交通参与者碰撞预警
+    SCENE_TYPE_ILLEGAL_VEHICLE_WARNING = 6;  // 违章车辆预警
+    SCENE_TYPE_SPEED_LIMIT_WARNING = 7;      // 限速预警（标准场景）
+    SCENE_TYPE_SPEED_LIMIT_INFO = 8;  // 限速信息提醒（提醒最大和最小限速）
+    SCENE_TYPE_IN_VEHICLE_SIGNAGE = 9;          // 车辆标牌信息
+    SCENE_TYPE_CONSTRUCTION = 10;               // 施工占道
+    SCENE_TYPE_WRONG_WAY_WARNING = 11;          // 逆行车辆提醒
+    SCENE_TYPE_FORWARD_COLLISION_WARNING = 12;  // 前向碰撞预警（标准场景）
+    SCENE_TYPE_INTERSECTION_COLLISION_WARNING =
+        13;  // 交叉口碰撞预警（标准场景）
+    SCENE_TYPE_LEFT_TURN_ASSISTANT_WARNING = 14;  // 左转辅助（标准场景）
+    SCENE_TYPE_BLIND_SPOT_WARNING = 15;   // 盲区预警（标准场景）
+    SCENE_TYPE_LANE_CHANGE_WARNING = 16;  // 变道预警（标准场景）
+    SCENE_TYPE_EMERGENCY_BRAKE_WARNING = 17;  // 紧急制动预警（标准场景）
+    SCENE_TYPE_ABNORMAL_VEHIVLE_WARNING = 18;  // 异常车辆提醒（标准场景）
+    SCENE_TYPE_OUT_OF_CONTROL_WARNING = 19;  // 车辆失控预警（标准场景）
+    SCENE_TYPE_EMERGENCY_VEHICLE_WARNING = 20;  // 紧急车辆提醒（标准场景）
+    SCENE_TYPE_TRAFFIC_JAM_WARNING = 21;              // 前方拥堵
+    SCENE_TYPE_ACCIDENT_FRONT_WARNING = 22;           // 前方事故提醒
+    SCENE_TYPE_SPEEDING_WARNING = 24;                 // 超速预警(他车)
+    SCENE_TYPE_PEDESTRIANS_ON_MOTORWAY_WARNING = 25;  // 行人闯入机动车道
+    SCENE_TYPE_NON_MOTOR_ON_MOTORWAY_WARNING = 26;  // 非机动车闯入机动车道
+
+    // system
+    SCENE_TYPE_ALERT = 10000;
+    SCENE_TYPE_TAKEOVER = 10001;
+    SCENE_TYPE_AUTO_DRIVE = 10002;
+    SCENE_TYPE_READY_TO_AUTO_DRIVE = 10003;
+    SCENE_TYPE_EMERGENCY_TO_STOP = 10004;
+    SCENE_TYPE_SYSTEM_UPDATE = 10005;
+    SCENE_TYPE_START_SOON = 10006;
+    SCENE_TYPE_STOP_SOON = 10007;
+    SCENE_TYPE_TOLL_POINT = 10008;
+    SCENE_TYPE_LEFT_TURN = 10009;
+    SCENE_TYPE_RIGHT_TURN = 10010;
+  }
+
+  enum BusFirstSubType {
+    BUS_FIRST_SUB_TRAFFIC_LIGHT_HOLDING = 1;    // 红绿灯保持
+    BUS_FIRST_SUB_STREET_LIGHT_EXTENSION = 2;   // 绿灯延长
+    BUS_FIRST_SUB_RED_LIGHT_CUT = 3;            // 红灯截断
+    BUS_FIRST_SUB_SIGNAL_LIGHT_INSERT = 4;      // 信号灯插入
+    BUS_FIRST_SUB_SIGNAL_LIGHT_INSERT_SEC = 5;  // 信号灯插入
+    BUS_FIRST_SUB_UNPROCESSED_FIRST = 6;        // 优先未处理
+  }
+  enum SpeedAdvisorySubType {
+    SPEED_ADVISORY_SUB_SPECIFIC_SPEED = 0;  // 建议具体车速
+    SPEED_ADVISORY_SUB_SPEED_RANGE = 1;     // 建议车速范围
+    SPEED_ADVISORY_SUB_SPEED_HOLDING = 2;   // 保持当前车速
+    SPEED_ADVISORY_SUB_SPEED_LOWER = 3;     // 建议车速较低
+  }
+  enum VulnerableUserSubType {
+    VULNERABLE_USER_SUB_PEDESTRIAN = 1;  // 行人
+    VULNERABLE_USER_SUB_BICYCLE = 2;     // 自行车
+    VULNERABLE_USER_SUB_ELECTRIC = 3;    // 电动自行车等
+  }
+  enum InVehicleSignageSubType {
+    IN_VEHICLE_SIGNAGE_SUB_MERGE_INTERSECTION = 3;  // 汇入路口提醒
+    IN_VEHICLE_SIGNAGE_SUB_NO_PARKING = 4;          // 道路禁停标识提示
+    IN_VEHICLE_SIGNAGE_SUB_LANE_NARROW = 5;         // 车道变窄提醒
+    IN_VEHICLE_SIGNAGE_SUB_SLOW = 6;                // 减速
+    IN_VEHICLE_SIGNAGE_SUB_STOP = 7;                // 停车
+    IN_VEHICLE_SIGNAGE_SUB_SLOPE_DOWN = 101;        // 急下坡
+    IN_VEHICLE_SIGNAGE_SUB_SLOPE_UP = 102;          // 急上坡
+    IN_VEHICLE_SIGNAGE_SUB_SLOPE_ANY = 103;         // 无区分
+    IN_VEHICLE_SIGNAGE_SUB_ROAD_SLIPPERY_WITH_DISTANCE =
+        201;  // 道路湿滑提醒,包含距离前方道路湿滑的距离
+    IN_VEHICLE_SIGNAGE_SUB_ROAD_SLIPPERY_WITHOUT_DISTANCE =
+        202;  // 道路湿滑提醒,不包含距离前方道路湿滑的距离
+  }
+  enum ConstructionSubType {
+    CONSTRUCTION_SUB_NO_LANE = 1;  // 无车道
+    CONSTRUCTION_SUB_LANE = 2;     // 有车道
+  }
+  enum SceneDistanceSubType {
+    SCENE_DISTANCE_SUB_YES = 1;  // 有distance
+    SCENE_DISTANCE_SUB_NO = 2;   // 无distance
+  }
+  // v2x 方向:  1：前方 2：左前方 3：右前方 4：后方 5：左后方 6：右后方 7：左方
+  // 8：右方
+  enum SceneDirectionSubType {
+    SCENE_DIRECTION_SUB_UNKNOWN = 0;      // 未知
+    SCENE_DIRECTION_SUB_FRONT = 1;        // 前方
+    SCENE_DIRECTION_SUB_LEFT_FRONT = 2;   // 左前方
+    SCENE_DIRECTION_SUB_RIGHT_FRONT = 3;  // 右前方
+    SCENE_DIRECTION_SUB_REAE = 4;         // 后方
+    SCENE_DIRECTION_SUB_LEFT_REAE = 5;    // 左后方
+    SCENE_DIRECTION_SUB_RIGHT_REAE = 6;   // 右后方
+    SCENE_DIRECTION_SUB_LEFT = 7;         // 左方
+    SCENE_DIRECTION_SUB_RIGHT = 8;        // 右方
+  }
+
+  optional SceneType scene = 1;
+
+  oneof sub_type {
+    BusFirstSubType bus_first_sub = 3;
+    SpeedAdvisorySubType speed_advisory_sub = 4;
+    VulnerableUserSubType vulnerable_user_sub = 5;
+    InVehicleSignageSubType in_vehicle_signage_sub = 6;
+    ConstructionSubType construction_sub = 7;
+    SceneDistanceSubType scene_distance_sub = 8;
+    SceneDirectionSubType scene_direction_sub = 9;
+  }
+
+  message AudioSetting {
+    optional bool enable = 1;  // 语音播报开关; 是否支持语音播报
+    optional bool is_play_once = 2;  // 是否只播报一次
+    optional string audio_file = 3;  // 语音文件名称
+
+    message FileDefineDynamic {
+      optional int32 min = 1;
+      optional int32 max = 2;
+      repeated int32 values = 3;
+    }
+    optional FileDefineDynamic file_define_dynamic =
+        4;  // 文件名称: 动态生成, 仅支持替换audio_file中?字符
+  }
+  optional AudioSetting audio_setting = 10;
+
+  message TextDisplaySetting {
+    optional bool enable = 1;  // 前端弹窗显示开关; 是否支持前端弹窗
+  }
+  optional TextDisplaySetting text_display_setting = 11;
+}
+
+message SceneSettingsProto {
+  repeated SceneSettingProto scene_settings = 1;
+}

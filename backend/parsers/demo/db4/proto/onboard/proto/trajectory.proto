@@ -1,0 +1,180 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/proto/lane_path.proto";
+
+import "onboard/proto/chassis.proto";
+
+import "onboard/planner/proto/trajectory_validation.proto";
+
+import "onboard/proto/turn_signal.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+
+import "onboard/proto/trajectory_point.proto";
+import "onboard/planner/freespace/proto/freespace_planner.proto";
+
+message DoorDecision {
+  enum DoorState {
+    DOOR_CLOSE = 1;
+    DOOR_OPEN = 2;
+  }
+  enum Reason {
+    DEFAULT_CLOSE = 1;
+    ARRIVED_AT_STATION = 2;
+    NOT_STOPPED_AT_STATION = 3;
+    TELEOP_OVERRIDE_DOOR_STATE = 4;
+  }
+  optional DoorState door_state = 1;
+  optional Reason reason = 2;
+}
+
+message DrivingStateProto {
+  enum Type {
+    UNKNOWN = 0;
+    STOPPED_AT_END_OF_ROUTE = 1;
+    // Planner enter standby mode when no routing received.
+    STANDBY = 2;
+    // Stopped on road exclude stop at end of route.
+    STOPPED_ON_ROAD = 3;
+
+    // Driving state in freespace task.
+    STOPPED_WHEN_PARKING = 100;
+    STOPPED_IN_PARKING_SPOT = 101;
+  }
+  optional Type type = 4;
+
+  reserved 1 to 3;
+}
+
+message TrajectoryProto {
+  optional LiteHeader header = 1;
+
+  // The planner's trajectory start timestamp in seconds.
+  optional double trajectory_start_timestamp = 23;
+
+  optional uint64 planner_state_seq_num = 26;
+
+  // TODO(lidong): Migrate trajectory points from `ApolloTrajectoryPointProto`
+  // to `TrajectoryPointProto`.
+  repeated ApolloTrajectoryPointProto trajectory_point = 3;
+
+  // Freespace planner
+  optional Chassis.GearPosition gear = 4;
+  optional bool low_speed_freespace = 28;
+  optional bool enable_stationary_steering = 29;
+  optional bool enable_dynamic_switching = 39;
+  enum StopPrecisionLevel {
+    STOP_PRECISION_LEVEL_NONE = 0;
+    STOP_PRECISION_LEVEL_HIGH = 1;
+    STOP_PRECISION_LEVEL_NORMAL = 2;
+    STOP_PRECISION_LEVEL_LOW = 3;
+    STOP_PRECISION_LEVEL_LOWER = 4;
+  }
+  optional StopPrecisionLevel stop_precision_level = 41;
+  optional planner.DirectionalPathProto directional_path = 33;
+  repeated PathPoint past_directional_path_points = 38;
+  // Expected stop s on directional path. Only meaningful if freespace
+  // planner is running in path-stop mode.
+  optional double stop_s = 36;
+
+  optional mapping.LanePathProto target_lane_path_from_current = 6;
+
+  optional TurnSignal turn_signal = 8;
+
+  // Traj points in the past, ascending in relative time (all negative).
+  repeated ApolloTrajectoryPointProto past_points = 9;
+
+  optional DoorDecision door_decision = 22;
+
+  optional LaneChangeStage lane_change_stage = 17;
+  optional bool lane_change_left = 18;
+  optional bool entered_target_lane = 30;
+
+  optional planner.TrajectoryValidationResultProto traj_validation_result = 19;
+
+  // AEB
+  optional bool aeb_triggered = 20;
+
+  optional DrivingStateProto driving_state = 27;
+
+  // APA
+  optional bool apa_parking_task_finished = 32;
+  optional bool apa_plan_failed = 34;
+  optional bool apa_path_blocked = 35;
+
+  // OBU
+  enum CollisionRisk {
+    NO_COLLISION_RISK = 0;
+    POTENTIAL_COLLISION_RISK = 1;
+    COLLISION_OCCURRED = 2;
+  }
+  optional CollisionRisk collision_risk = 37;
+  optional bool selected_parking_offset_not_recommended = 40;
+  enum RearMirrorFoldReq {
+    NO_REQ = 0;
+    FOLD_REQ = 1;
+    UNFOLD_REQ = 2;
+  }
+  optional RearMirrorFoldReq rear_mirror_fold_req = 46;
+  optional bool is_final_trajectory = 43;
+  optional bool flag_inner_slot = 44;
+  enum ParkAction {
+    PARK_ACTION_FORWARD = 0;
+    PARK_ACTION_BACKWARD = 1;
+    PARK_ACTION_STOP = 2;
+    PARK_ACTION_FINISH = 3;
+    PARK_ACTION_SOFT_STOP = 4;
+    PARK_ACTION_STEER_CENTER = 5;
+  }
+  optional ParkAction park_action = 45;
+  enum ApoaDirection {
+    APOA_DIRECTION_INVALID = 0;
+    APOA_DIRECTION_RIGHT = 1;
+    APOA_DIRECTION_LEFT = 2;
+    APOA_DIRECTION_BOTH = 3;
+  }
+  optional ApoaDirection apoa_direction_planning = 47;
+  optional ApoaDirection apoa_direction_recommend = 48;
+
+  optional double collision_s_offset = 49;
+  optional double remain_distance = 50;
+  optional bool is_valid_turn_signal = 51;
+  optional double trajectory_safe_distance = 52;
+  optional bool hard_brake = 53;
+  optional double max_velocity = 54;
+
+  enum ParkScenarioType {
+    SCENARIO_TYPE_UNKOWN = 0;
+    SCENARIO_TYPE_PERPENDICULAR_IN = 1;
+    SCENARIO_TYPE_PERPENDICULAR_OUT = 2;
+    SCENARIO_TYPE_PARALLEL_IN = 3;
+    SCENARIO_TYPE_PARALLEL_OUT = 4;
+    SCENARIO_TYPE_AVP_IN = 5;
+    SCENARIO_TYPE_AVP_OUT = 6;
+  }
+
+  optional ParkScenarioType park_scenario_type = 56;
+
+  enum ApoaSpotType {
+    APOA_SPOT_TYPE_INVALID = 0;
+    APOA_SPOT_TYPE_PERPENDICULAR = 1;
+    APOA_SPOT_TYPE_PARALLEL = 2;
+    APOA_SPOT_TYPE_ANGLED = 3;
+  }
+  optional ApoaSpotType apoa_spot_type = 57;
+
+  // For Hpp.
+  optional bool is_hpp_task_finished = 58;
+  optional bool is_stop_timeout = 61;
+  optional bool recovery_required = 62;
+
+  // R2 for control parking brake.
+  optional bool stopped_at_route_end = 59;
+  optional bool enable_pull_over = 60;
+
+  // Next ID: 63.
+  reserved 2, 5, 7, 10 to 16, 21, 24, 25, 31, 42, 55;
+}

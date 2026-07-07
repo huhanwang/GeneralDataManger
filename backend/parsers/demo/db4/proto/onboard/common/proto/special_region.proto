@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/special_region";
+
+import "onboard/common/proto/map_geometry.proto";
+
+message SpecialRegionProto {
+  message SafetyAlertProto {
+    repeated sfixed64 lane_id = 1;
+    repeated mapping.GeoPolygonProto region = 2;
+  }
+  optional SafetyAlertProto safety_alert = 1;
+}

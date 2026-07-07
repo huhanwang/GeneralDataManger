@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message CanLogHeader {
+  optional uint32 can_log_magic_head = 1;
+  optional uint32 frame_len = 2;
+  optional uint32 error_code = 3;
+  optional uint32 msg_type = 4;
+  optional uint32 min_version = 5;
+  optional uint32 max_version = 6;
+}
+
+message CanLogFrame {
+  optional uint32 frame_size = 1;
+  optional uint32 can_id = 2;
+  optional uint32 channel_type = 3;
+  optional uint32 channel_id = 4;
+  optional bytes can_data = 5;
+};
+
+message Payload {
+  repeated CanLogFrame frames = 1;
+};
+
+message CanLogProto {
+  optional LiteHeader header = 1;
+  optional CanLogHeader can_log_header = 2;
+  optional Payload payload = 3;
+}
+
+message SysLogProto {
+  optional LiteHeader header = 1;
+  optional string raw = 2;
+}

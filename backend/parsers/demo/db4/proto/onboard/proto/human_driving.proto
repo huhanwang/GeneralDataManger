@@ -1,0 +1,42 @@
+
+syntax = "proto2";
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/control_cmd.proto";
+import "onboard/proto/sim_trajectory.proto";
+
+message HumanDrivingControlCmdProto {
+  optional LiteHeader header = 1;
+  optional ControlCommand control_cmd = 2;
+  optional Chassis.DrivingMode driving_mode = 3;
+}
+
+message HumanDrivingSpeedConfigProto {
+  optional double vel_body = 1;
+  optional double accel_body = 2;
+  optional double vel_body_max = 3;
+  optional double vel_body_min = 4 [default = 0.0];
+}
+
+message ConstantAccelerationConfigProto {
+  optional double vel_body = 1;
+  optional double accel_body = 2;
+  optional double vel_body_max = 3;
+  optional double vel_body_min = 4 [default = 0.0];
+}
+
+message HumanDrivingConfigProto {
+  optional LiteHeader header = 1;
+  optional ConstantAccelerationConfigProto const_acc_config = 2;
+  optional SimControlConfigProto sim_control_config = 3;
+  optional PathModeConfigProto path_config = 4;
+}
+
+message SimControlConfigProto {
+  optional double steering_speed = 1;
+  optional double target_steering_percentage = 2;
+  optional double throttle_percentage_rate = 3;
+  optional double target_throttle_percentage = 4;
+  optional double brake_percentage = 5;
+}

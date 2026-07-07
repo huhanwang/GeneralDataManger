@@ -1,0 +1,98 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+enum CoordinateType {
+  CT_VEHICLE_COORDINATE = 0;
+  CT_SMOOTH_COORDINATE = 1;
+}
+
+enum SpotType {
+  ST_UNKNOWN = 0;
+  ST_PARALLEL = 1;
+  ST_PERPENDICULAR = 2;
+  ST_ANGLED = 3;
+}
+
+enum SpotDirection {
+  SLOT_DIR_LEFT = 0;
+  SLOT_DIR_RIGHT = 1;
+  SLOT_DIR_UNKNOWN = 2;
+}
+
+enum FreespaceType {
+  FST_UNKNOWN = 0;
+  FST_FOV_BOUNDARY = 1;
+  FST_FREESPACE_BOUNDARY = 2;
+}
+
+enum SpotState {
+  SS_UNKNOW = 0;
+  SS_EMPTY = 1;
+  SS_OCCUPANCY = 2;
+}
+
+enum SpotDecorationType {
+  SDT_LINE = 0;     // draw line spot.
+  SDT_BRICK = 1;    // brick spot.
+  SDT_MACHINE = 2;  // machine spot.
+  SDT_SPACE = 3;    // space spot.
+  SDT_FUSION = 4;   // fusion spot.
+  SDT_OTHER = 5;
+}
+
+enum OccupiedReason {
+  OR_LOCK_OPEN = 0;
+  OR_CAR_OCCUPIED = 1;
+  OR_CONE_OCCUPIED = 2;
+  OR_NO_PARKING_SIGN_OCCUPIED = 3;
+  OR_PEDESTRIAN_OCCUPIED = 4;
+  OR_FREESPACE_OCCUPIED = 5;
+  OR_OTHER_OCCUPIED = 6;
+  OR_TWO_WHEELER_OCCUPIED = 7;
+}
+
+// Next id： 4
+message SpotPointProto {
+  enum ObservationStatus {
+    VISIBLE = 0;
+    OCCUPIED = 1;
+    IMAGINARY = 2;
+    USS_VISIBLE = 3;
+    USS_IMAGINARY = 4;
+  }
+  optional ObservationStatus observation_status = 1;
+  optional Vec2iProto loc_in_img_coord = 2;
+  optional Vec3dProto location = 3;
+}
+
+// Next id： 4
+message WheelStopperPointProto {
+  enum ObservationStatus {
+    VISIBLE = 0;
+    IMAGINARY = 1;
+  }
+  optional ObservationStatus observation_status = 1;
+  optional Vec2iProto loc_in_img_coord = 2;
+  optional Vec3dProto location = 3;
+}
+
+// Next id： 4
+message BoundaryObstacleProto {
+  enum SourceType {
+    NONE = 0;
+    FREESPACE = 1;
+    VEHICLE = 2;
+    VRU = 3;
+    LOW_OBSTACLE = 4;
+    HIGH_OBSTALCE = 5;
+    UNKNOW = 6;
+  }
+  optional SourceType source_type = 1;
+  optional Vec3dProto obstacle_point0 = 2;
+  optional Vec3dProto obstacle_point1 = 3;
+}

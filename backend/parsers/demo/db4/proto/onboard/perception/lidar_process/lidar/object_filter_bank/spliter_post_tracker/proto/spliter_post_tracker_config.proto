@@ -1,0 +1,16 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/spliter_post_tracker/proto/spliter_post_tracker_config";
+
+message LightTrackMatcherConfig {
+  optional string iou_score_method = 1 [default = "loose"];
+  optional string matcher_method = 2 [default = "GnnBipartiteGraphMatcher"];
+  optional int32 max_visit_frames = 3 [default = 10];
+  optional float iou_score_thresh = 4 [default = 0.3];
+  optional float iou_decay_ratio = 5 [default = 0.9];
+  optional bool is_enable_cross_track = 6 [default = false];
+}
+
+message SpliterPostTrackerConfig {
+  optional int32 max_consecutive_invisible_count = 1 [default = 20];
+}

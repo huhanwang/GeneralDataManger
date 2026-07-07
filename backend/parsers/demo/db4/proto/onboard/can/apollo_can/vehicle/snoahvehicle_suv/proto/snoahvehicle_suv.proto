@@ -1,0 +1,1427 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Control Message.
+message Snoah_aeb_command_73 {
+  enum Mrr_abaLevelType {
+    MRR_ABALEVEL_LEVEL_0 = 0;
+    MRR_ABALEVEL_LEVEL_1 = 1;
+    MRR_ABALEVEL_LEVEL_2 = 2;
+    MRR_ABALEVEL_LEVEL_3 = 3;
+  }
+  enum Mrr_awbLevelType {
+    MRR_AWBLEVEL_NO_LEVEL = 0;
+    MRR_AWBLEVEL_LEVEL_1 = 1;
+    MRR_AWBLEVEL_LEVEL_2 = 2;
+    MRR_AWBLEVEL_LEVEL_3 = 3;
+    MRR_AWBLEVEL_LEVEL_4 = 4;
+    MRR_AWBLEVEL_RESERVED_1 = 5;
+    MRR_AWBLEVEL_RESERVED_2 = 6;
+    MRR_AWBLEVEL_RESERVED_3 = 7;
+  }
+  enum Mrr_aebOnOffStatusType {
+    MRR_AEBONOFFSTATUS_OFF = 0;
+    MRR_AEBONOFFSTATUS_ON = 1;
+    MRR_AEBONOFFSTATUS_RESERVED = 2;
+    MRR_AEBONOFFSTATUS_FAILURE = 3;
+  }
+  enum Mrr_PEBSWarningType {
+    MRR_PEBSWARNING_NO_WARNING = 0;
+    MRR_PEBSWARNING_PREWARNING = 1;
+    MRR_PEBSWARNING_RESERVED_1 = 2;
+    MRR_PEBSWARNING_RESERVED_2 = 3;
+    MRR_PEBSWARNING_RESERVED_3 = 4;
+    MRR_PEBSWARNING_RESERVED_4 = 5;
+    MRR_PEBSWARNING_RESERVED_5 = 6;
+    MRR_PEBSWARNING_RESERVED_6 = 7;
+  }
+  enum Mrr_pcwOnOffStatusType {
+    MRR_PCWONOFFSTATUS_OFF = 0;
+    MRR_PCWONOFFSTATUS_ON = 1;
+    MRR_PCWONOFFSTATUS_RESERVED = 2;
+    MRR_PCWONOFFSTATUS_INVALID = 3;
+  }
+  // targetdecelerationvaluefromAEB/EBA/AEB-VRU [m/s2] [-16|16]
+  optional double mrr_aeb_target_ax = 1;
+  // mrr_EBAReq [] [0|1]
+  optional bool mrr_ebareq = 2;
+  // RequestoftheAEBtoPedestrianvehiclecontrol [] [0|1]
+  optional bool mrr_aeb_req = 3;
+  // ABAleveltotheESPHBA [] [0|3]
+  optional Mrr_abaLevelType mrr_aba_level = 4;
+  // RequestoftheABAsupportfromESP [] [0|1]
+  optional bool mrr_aba_req = 5;
+  // RequestofthebrakejerkwarningtoESP [] [0|1]
+  optional bool mrr_awb_req = 6;
+  // Differentlevelrequestofthebrakejerk [] [0|7]
+  optional Mrr_awbLevelType mrr_awb_level = 7;
+  // RequestofthePrefilltoESP [] [0|1]
+  optional bool mrr_abp_req = 8;
+  // AEBONOFFstatus [] [0|3]
+  optional Mrr_aebOnOffStatusType mrr_aeb_on_off_status = 9;
+  // PEBSWarning£¬includePreWarningandemergencyWarning [] [0|7]
+  optional Mrr_PEBSWarningType mrr_pebswarning = 10;
+  // IndicatingAEBWarningfunctionOnOffstatus [] [0|3]
+  optional Mrr_pcwOnOffStatusType mrr_pcw_on_off_status = 11;
+  // mrr_239_RollingCounter [] [0|15]
+  optional int32 mrr_239_rolling_counter = 12;
+  // mrr_239_CheckSum [N/A] [0|255]
+  optional int32 mrr_239_check_sum = 13;
+}
+
+// Report Message.
+message Snoah_gw_esc_state2_75 {
+  enum Esc_cddActiveType {
+    ESC_CDDACTIVE_INACTIVE = 0;
+    ESC_CDDACTIVE_ACTIVE = 1;
+  }
+  enum Esc_cddAvailableType {
+    ESC_CDDAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_CDDAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_cddErrorType {
+    ESC_CDDERROR_NORMAL = 0;
+    ESC_CDDERROR_FAULT = 1;
+  }
+  enum Esc_cddTempOffType {
+    ESC_CDDTEMPOFF_NORMAL = 0;
+    ESC_CDDTEMPOFF_FAULT = 1;
+  }
+  enum Esc_abaActiveType {
+    ESC_ABAACTIVE_INACTIVE = 0;
+    ESC_ABAACTIVE_ACTIVE = 1;
+  }
+  enum Esc_abaAvailableType {
+    ESC_ABAAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_ABAAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_abpActiveType {
+    ESC_ABPACTIVE_INACTIVE = 0;
+    ESC_ABPACTIVE_ACTIVE = 1;
+  }
+  enum Esc_abpAvailableType {
+    ESC_ABPAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_ABPAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_aebActiveType {
+    ESC_AEBACTIVE_INACTIVE = 0;
+    ESC_AEBACTIVE_ACTIVE = 1;
+  }
+  enum Esc_aebAvailableType {
+    ESC_AEBAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_AEBAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_awbActiveType {
+    ESC_AWBACTIVE_INACTIVE = 0;
+    ESC_AWBACTIVE_ACTIVE = 1;
+  }
+  enum Esc_awbAvailableType {
+    ESC_AWBAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_AWBAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_vehicleStandstillType {
+    ESC_VEHICLESTANDSTILL_NOT_STANDSTILL = 0;
+    ESC_VEHICLESTANDSTILL_STANDSTILL = 1;
+    ESC_VEHICLESTANDSTILL_RESERVED = 2;
+  }
+  enum Esc_vehicleStandstillValidType {
+    ESC_VEHICLESTANDSTILLVALID_INVALID = 0;
+    ESC_VEHICLESTANDSTILLVALID_VALID = 1;
+  }
+  enum Esc_brakelightIlluminateType {
+    ESC_BRAKELIGHTILLUMINATE_NOT_ILLUMINATE = 0;
+    ESC_BRAKELIGHTILLUMINATE_ILLUMINATE = 1;
+  }
+  enum Esc_hmiWarningOnType {
+    ESC_HMIWARNINGON_NO_REQUEST = 0;
+    ESC_HMIWARNINGON_YELLOW = 1;
+    ESC_HMIWARNINGON_RED = 2;
+    ESC_HMIWARNINGON_NOT_AVAILABLE = 3;
+  }
+  enum Esc_hmiWarningOn_QType {
+    ESC_HMIWARNINGON_Q_NOT_INITIALIZED = 0;
+    ESC_HMIWARNINGON_Q_NORMAL = 1;
+    ESC_HMIWARNINGON_Q_FAULTY = 2;
+  }
+  enum ESC_BrakeSystemStatusType {
+    ESC_BRAKESYSTEMSTATUS_NORMAL = 0;
+    ESC_BRAKESYSTEMSTATUS_LEVEL1 = 1;
+    ESC_BRAKESYSTEMSTATUS_LEVEL2 = 2;
+    ESC_BRAKESYSTEMSTATUS_LEVEL3 = 3;
+  }
+  enum Esc_hbbStatusType {
+    ESC_HBBSTATUS_NORMAL_MODE = 0;
+    ESC_HBBSTATUS_FAILED_BOOST = 1;
+    ESC_HBBSTATUS_FAILED_BOOST_BACKUP = 2;
+    ESC_HBBSTATUS_DISABLED = 3;
+  }
+  enum Esc_hbbActiveType {
+    ESC_HBBACTIVE_INACTIVE = 0;
+    ESC_HBBACTIVE_ACTIVE = 1;
+  }
+  enum Apa_Long_Ctl_Fault_Sts {
+    NO_ERROR = 0;
+    VEHICLE_BLOCKED = 1;
+    UNEXPECTED_GEAR_POSITON = 2;
+    UNEXPECTED_EPB_ACTION = 3;
+    UNEXPECTED_GEAR_INTERVENTION = 4;
+    // APA_LONG_CTL_FAULT_STS_RESERVED_0 = 5;
+    // APA_LONG_CTL_FAULT_STS_RESERVED_1 = 6;
+    ERROR = 7;
+  }
+  // IndicateCDDisactiveornot [] [0|1]
+  optional Esc_cddActiveType esc_cdd_active = 1;
+  // IndicateCDDisavailableornot [] [0|1]
+  optional Esc_cddAvailableType esc_cdd_available = 2;
+  // MeansnotabletoexecuteACCcommands [] [0|1]
+  optional Esc_cddErrorType esc_cdd_error = 3;
+  // Indicatingbraketemperaturetoohighornot [] [0|1]
+  optional Esc_cddTempOffType esc_cdd_temp_off = 4;
+  // IndicateHBAABAisactiveornot [] [0|1]
+  optional Esc_abaActiveType esc_aba_active = 5;
+  // IndicateHBAABAisavailableornot [] [0|1]
+  optional Esc_abaAvailableType esc_aba_available = 6;
+  // PrefillABPisactiveornot [] [0|1]
+  optional Esc_abpActiveType esc_abp_active = 7;
+  // PrefillABPisavailableornot [] [0|1]
+  optional Esc_abpAvailableType esc_abp_available = 8;
+  // ESPisexcutingAEB/EBA/AEB-VRUbrakingfunction [] [0|1]
+  optional Esc_aebActiveType esc_aeb_active = 9;
+  // AEB/EBA/AEB-VRUisavailable [] [0|1]
+  optional Esc_aebAvailableType esc_aeb_available = 10;
+  // IndicateAWBisactiveornot [] [0|1]
+  optional Esc_awbActiveType esc_awb_active = 11;
+  // IndicateAWBisavailableornot [] [0|1]
+  optional Esc_awbAvailableType esc_awb_available = 12;
+  // Indicatingwhetherthevehicleisstandstillornot;Cannotbesetuntilstandstillissurelyreached
+  // [] [0|3]
+  optional Esc_vehicleStandstillType esc_vehicle_standstill = 13;
+  // VehicleStandstillstatevalidsignal [] [0|1]
+  optional Esc_vehicleStandstillValidType esc_vehicle_standstill_valid = 14;
+  // LDMrequirestoilluminatebrakelight [] [0|1]
+  optional Esc_brakelightIlluminateType esc_brakelight_illuminate = 15;
+  // WiththissignalESCrequeststhewarninglampinthedashboard [] [0|3]
+  optional Esc_hmiWarningOnType esc_hmi_warning_on = 16;
+  // Qualifierofesc_hmiWarningOn [] [0|3]
+  optional Esc_hmiWarningOn_QType esc_hmi_warning_on_q = 17;
+  // BrakeSystemStatus [] [0|3]
+  optional ESC_BrakeSystemStatusType esc_brake_system_status = 18;
+  // ThissignalindicatesthestatusofHBB [] [0|3]
+  optional Esc_hbbStatusType esc_hbb_status = 19;
+  // ThissignalindicatesifHBBisactiveornot [] [0|1]
+  optional Esc_hbbActiveType esc_hbb_active = 20;
+  // esc_2A2_rollingCounter [] [0|15]
+  optional int32 esc_2a2_rolling_counter = 21;
+  // esc_2A2_checksum [] [0|255]
+  optional int32 esc_2a2_checksum = 22;
+  optional bool apa_active = 23;
+  optional Apa_Long_Ctl_Fault_Sts apa_long_ctl_fault_sts = 24;
+  optional bool long_avl = 25;
+}
+
+// Report Message.
+message Snoah_gw_esc_state1_74 {
+  enum Esc_vehicleSpeedValidType {
+    ESC_VEHICLESPEEDVALID_INVALID = 0;
+    ESC_VEHICLESPEEDVALID_VALID = 1;
+  }
+  enum Esc_absFaultType {
+    ESC_ABSFAULT_NORMAL = 0;
+    ESC_ABSFAULT_FAULT = 1;
+  }
+  enum Esc_absActiveType {
+    ESC_ABSACTIVE_INACTIVE = 0;
+    ESC_ABSACTIVE_ACTIVE = 1;
+  }
+  enum Esc_vdcActiveType {
+    ESC_VDCACTIVE_INACTIVE = 0;
+    ESC_VDCACTIVE_ACTIVE = 1;
+  }
+  enum Esc_escActiveType {
+    ESC_ESCACTIVE_INACTIVE = 0;
+    ESC_ESCACTIVE_ACTIVE = 1;
+  }
+  enum Esc_tcsActiveType {
+    ESC_TCSACTIVE_INACTIVE = 0;
+    ESC_TCSACTIVE_ACTIVE = 1;
+  }
+  enum Esc_offStatusValidType {
+    ESC_OFFSTATUSVALID_INVALID = 0;
+    ESC_OFFSTATUSVALID_VALID = 1;
+  }
+  enum Esc_OBD_MILOnRqType {
+    ESC_OBD_MILONRQ_NO_REQUEST = 0;
+    ESC_OBD_MILONRQ_OBD_MIL_REQUEST_ON = 1;
+  }
+  enum Esc_EBDActiveType {
+    ESC_EBDACTIVE_INACTIVE = 0;
+    ESC_EBDACTIVE_ACTIVE = 1;
+  }
+  enum Esc_avhActiveType {
+    ESC_AVHACTIVE_INACTIVE = 0;
+    ESC_AVHACTIVE_ACTIVE = 1;
+  }
+  enum Esc_avhStandbyType {
+    ESC_AVHSTANDBY_NOT_STANDBY = 0;
+    ESC_AVHSTANDBY_STANDBY = 1;
+  }
+  enum Esc_avhAvailableType {
+    ESC_AVHAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_AVHAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_cdpActiveType {
+    ESC_CDPACTIVE_INACTIVE = 0;
+    ESC_CDPACTIVE_ACTIVE = 1;
+  }
+  enum Esc_cdpAvailableType {
+    ESC_CDPAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_CDPAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_hdcStatusType {
+    ESC_HDCSTATUS_OFF = 0;
+    ESC_HDCSTATUS_STANDBY = 1;
+    ESC_HDCSTATUS_ACTIVE = 2;
+  }
+  enum Esc_hdcAvailableType {
+    ESC_HDCAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_HDCAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_hhcActiveType {
+    ESC_HHCACTIVE_INACTIVE = 0;
+    ESC_HHCACTIVE_ACTIVE = 1;
+  }
+  enum Esc_hhcAvailableType {
+    ESC_HHCAVAILABLE_NOT_AVAILABLE = 0;
+    ESC_HHCAVAILABLE_AVAILABLE = 1;
+  }
+  enum Esc_masCylBrakePressureValidType {
+    ESC_MASCYLBRAKEPRESSUREVALID_INVALID = 0;
+    ESC_MASCYLBRAKEPRESSUREVALID_VALID = 1;
+  }
+  enum Esc_wheelCyBrakeForceExistType {
+    ESC_WHEELCYBRAKEFORCEEXIST_NO_BRAKE_FORCE = 0;
+    ESC_WHEELCYBRAKEFORCEEXIST_BRAKE_FORCE_AVAILABLE = 1;
+  }
+  enum Esc_ebdFaultType {
+    ESC_EBDFAULT_NOMAL = 0;
+    ESC_EBDFAULT_FAULT = 1;
+  }
+  enum Esc_offStatusType {
+    ESC_OFFSTATUS_OFF = 0;
+    ESC_OFFSTATUS_ON = 1;
+  }
+  enum Esc_escFaultType {
+    ESC_ESCFAULT_NOMAL = 0;
+    ESC_ESCFAULT_FAULT = 1;
+  }
+  enum Esc_emergencyBrakeStsType {
+    ESC_EMERGENCYBRAKESTS_INACTIVE = 0;
+    ESC_EMERGENCYBRAKESTS_ACTIVE = 1;
+  }
+  enum Esc_dtcActiveType {
+    ESC_DTCACTIVE_INACTIVE = 0;
+    ESC_DTCACTIVE_ACTIVE = 1;
+  }
+  enum Esc_gearholdRequstType {
+    ESC_GEARHOLDREQUST_SHIFTING_NOT_SUPRESSED = 0;
+    ESC_GEARHOLDREQUST_SHIFTING_SUPRESSED = 1;
+  }
+  // vehiclereferencespeed [km/h] [0|270]
+  optional double esc_vehicle_speed = 1;
+  // vehiclereferencespeedvalidsignal [] [0|1]
+  optional Esc_vehicleSpeedValidType esc_vehicle_speed_valid = 2;
+  // ABSsystemhasdetectedafailurewhichdoesnotallowareliableABSregulationandisthereforeswitchedoff
+  // [] [0|1]
+  optional Esc_absFaultType esc_abs_fault = 3;
+  // indicatesABSinterventionactive [] [0|1]
+  optional Esc_absActiveType esc_abs_active = 4;
+  // VDCcontrolleractive:OversteeringbrakeinterventionorUndersteeringbrakeintervention
+  // [] [0|1]
+  optional Esc_vdcActiveType esc_vdc_active = 5;
+  // IndicationthatVDC/TCSenginetorquecontrolorbraketorquecontrolsystemcurrentlyperformsabrake/engineintervention
+  // [] [0|1]
+  optional Esc_escActiveType esc_esc_active = 6;
+  // indicatesTCSinterventionactive£¬TCSwilldetectspinningwheelsandrequesttorquereduction/limitation
+  // [] [0|1]
+  optional Esc_tcsActiveType esc_tcs_active = 7;
+  // ESCOFFstatusvalidsignal [] [0|1]
+  optional Esc_offStatusValidType esc_off_status_valid = 8;
+  // MILindicatorlight [] [0|1]
+  optional Esc_OBD_MILOnRqType esc_obd_milon_rq = 9;
+  // EBDActive [] [0|1]
+  optional Esc_EBDActiveType esc_ebdactive = 10;
+  // indicatesAVHinactiveornot [] [0|1]
+  optional Esc_avhActiveType esc_avh_active = 11;
+  // indicatesAVHinstandbymodeornot [] [0|1]
+  optional Esc_avhStandbyType esc_avh_standby = 12;
+  // HMIResponsible,CANgetdegrateAVHstatementfromDSWandsendout [] [0|1]
+  optional Esc_avhAvailableType esc_avh_available = 13;
+  // IndicateCDPControlActive [] [0|1]
+  optional Esc_cdpActiveType esc_cdp_active = 14;
+  // HMIResponsible,CANgetdegrateCDPstatementfromDSWandsendout [] [0|1]
+  optional Esc_cdpAvailableType esc_cdp_available = 15;
+  // indicatesHDCcontrolstatus [] [0|3]
+  optional Esc_hdcStatusType esc_hdc_status = 16;
+  // HMIResponsible,CANgetdegrateHDCstatementfromDSWandsendout [] [0|1]
+  optional Esc_hdcAvailableType esc_hdc_available = 17;
+  // IndicateHHCactivesignal [] [0|1]
+  optional Esc_hhcActiveType esc_hhc_active = 18;
+  // HMIResponsible,CANgetdegradeHHCstatementfromDSWandsendout [] [0|1]
+  optional Esc_hhcAvailableType esc_hhc_available = 19;
+  // Pressureinthemastercylinderoffsetincluded [Bar] [0|250]
+  optional double esc_mas_cyl_brake_pressure = 20;
+  // mastercylinderpressurevalid [] [0|1]
+  optional Esc_masCylBrakePressureValidType esc_mas_cyl_brake_pressure_valid =
+      21;
+  // LDMindicationbrakeforceatwheel [] [0|1]
+  optional Esc_wheelCyBrakeForceExistType esc_wheel_cy_brake_force_exist = 22;
+  // ABSsystemhasdetectedaheavyfault,whichdoesnotevenallowareliableelectronicbrakedistributionandisthereforecompletelyshutdown
+  // [] [0|1]
+  optional Esc_ebdFaultType esc_ebd_fault = 23;
+  // ESPOFFSWclose,ESPfunctionpassivePATA [] [0|1]
+  optional Esc_offStatusType esc_off_status = 24;
+  // VDC/TCSisswitchedoffduetodetectedfailure [] [0|1]
+  optional Esc_escFaultType esc_esc_fault = 25;
+  // Emergencybrakesstatussignal [] [0|1]
+  optional Esc_emergencyBrakeStsType esc_emergency_brake_sts = 26;
+  // Dragtorquecontrolactive [] [0|1]
+  optional Esc_dtcActiveType esc_dtc_active = 27;
+  // Gearhold-requstreserved [] [0|1]
+  optional Esc_gearholdRequstType esc_gearhold_requst = 28;
+  // esc_212_rollingCounter [] [0|15]
+  optional int32 esc_212_rolling_counter = 29;
+  // esc_212_checksum [] [0|255]
+  optional int32 esc_212_checksum = 30;
+}
+
+message Snoah_Version_Report_102 {
+  // Report Message
+  optional int32 num0 = 1;
+  optional int32 num1 = 2;
+  optional int32 num2 = 3;
+  optional int32 year = 4;
+  optional int32 month = 5;
+  optional int32 day = 6;
+}
+
+message Snoah_brake_command_50 {
+  // Control Message
+  enum BrkreqenType {
+    BRKREQEN_DISABLE = 0;
+    BRKREQEN_ENABLED = 1;
+  }
+  // [] [0|0]
+  optional int32 brkreqchksm = 1;
+  // Optional Watchdog Counter (brakes) [] [0|15]
+  optional int32 brkreqrc = 2;
+  // Brake Pedal Command [%] [0|99.9]
+  optional double brkreqval = 3;
+  // Brakes Enable [] [0|0]
+  optional BrkreqenType brkreqen = 4;
+}
+
+message Snoah_brake_report_51 {
+  // Report Message
+  enum BrkcmdtimeoutType {
+    BRKCMDTIMEOUT_VALID = 0;
+    BRKCMDTIMEOUT_TIMEOUT = 1;
+  }
+  enum BrkrptenType {
+    BRKRPTEN_DISABLED = 0;
+    BRKRPTEN_ENABLED = 1;
+  }
+  enum BrkoverrideType {
+    BRKOVERRIDE_NO_OVERRIDE = 0;
+    BRKOVERRIDE_DRIVER_OVERRIDE = 1;
+  }
+  // brake  available [] [0|1]
+  optional bool brkavl = 1;
+  // brake fault [] [0|1]
+  optional bool brkflt = 2;
+  // Rolling Counter [] [0|15]
+  optional int32 brkrptrc = 3;
+  // Brake Pedal Output [%] [0|100]
+  optional double brkout = 4;
+  // Brake Pedal Input [%] [0|100]
+  optional double brkpdlpos = 5;
+  // Timeout (brake command) [] [0|0]
+  optional BrkcmdtimeoutType brkcmdtimeout = 6;
+  // Brakes Enabled [] [0|0]
+  optional BrkrptenType brkrpten = 7;
+  // Driver Override (brakes) [] [0|0]
+  optional BrkoverrideType brkoverride = 8;
+  optional bool brk_pdl_appd = 9;
+}
+
+message Snoah_throttle_command_52 {
+  // Control Message
+  enum ThrreqenType {
+    THRREQEN_DISABLE = 0;
+    THRREQEN_ENABLED = 1;
+  }
+  // [] [0|0]
+  optional int32 thrreqchksm = 1;
+  // Optional Watchdog Counter (throttle) [] [0|15]
+  optional int32 thrreqrc = 2;
+  // Throttle Pedal Command [%] [0|100]
+  optional double thrreqval = 3;
+  // Throttle Enable [] [0|0]
+  optional ThrreqenType thrreqen = 4;
+}
+
+message Snoah_throttle_report_53 {
+  // Report Message
+  enum ThrcmdtimeoutType {
+    THRCMDTIMEOUT_VALID = 0;
+    THRCMDTIMEOUT_TIMEOUT = 1;
+  }
+  enum ThrrptenType {
+    THRRPTEN_DISABLED = 0;
+    THRRPTEN_ENABLED = 1;
+  }
+  enum ThroverrideType {
+    THROVERRIDE_NO_OVERRIDE = 0;
+    THROVERRIDE_DRIVER_OVERRIDE = 1;
+  }
+  // throttle available [] [0|1]
+  optional bool thravl = 1;
+  // Throttle Fault [] [0|1]
+  optional bool thrflt = 2;
+  // Rolling Counter [] [0|0]
+  optional int32 thrrptrc = 3;
+  // Throttle Pedal Output [] [-848|2000]
+  optional double throut = 4;
+  // Throttle Pedal Input [%] [0|100]
+  optional double thractlpos = 5;
+  // Timeout (throttle command) [] [0|0]
+  optional ThrcmdtimeoutType thrcmdtimeout = 6;
+  // Throttle Enabled [] [0|0]
+  optional ThrrptenType thrrpten = 7;
+  // Driver Override (throttle) [] [0|0]
+  optional ThroverrideType throverride = 8;
+
+  optional bool vcu_override_status = 9;
+}
+
+message Snoah_steering_command_54 {
+  // Control Message
+  enum EpsctlmodType {
+    EPSCTLMOD_NONE = 0;
+    EPSCTLMOD_ANGLEREQ = 1;
+    EPSCTLMOD_TOQREQ = 2;
+    EPSCTLMOD_RES = 3;
+  }
+  enum StrreqenType {
+    STRREQEN_DISABLE = 0;
+    STRREQEN_ENABLED = 1;
+  }
+  // [] [0|15]
+  optional EpsctlmodType epsctlmod = 1;
+  // [] [-10.24|10.23]
+  optional double lkareqtoqval = 2;
+  // [] [0|0]
+  optional bool lkareqtoqen = 3;
+  // [] [0|0]
+  optional int32 strreqchksm = 4;
+  // Optional Watchdog Counter (steering) [] [0|15]
+  optional int32 strreqrc = 5;
+  // Steering Command Rate Limit [degrees/s] [0|500]
+  optional double strwhlangspdreq = 6;
+  // Steering Enable [] [0|0]
+  optional StrreqenType strreqen = 7;
+  // Steering Wheel Angle Request [degrees] [-470|470]
+  optional double strwhlangreqval = 8;
+}
+
+message Snoah_steering_report_55 {
+  // Report Message
+  enum StrcmdtimeoutType {
+    STRCMDTIMEOUT_VALID = 0;
+    STRCMDTIMEOUT_TIMEOUT = 1;
+  }
+  enum StrrptenType {
+    STRRPTEN_DISABLED = 0;
+    STRRPTEN_ENABLED = 1;
+  }
+  enum StroverrideType {
+    STROVERRIDE_NO_OVERRIDE = 0;
+    STROVERRIDE_DRIVER_OVERRIDE = 1;
+  }
+  // [] [-2048|2046]
+  optional int32 strgwhlanggrd = 1;
+  // steering available [] [0|1]
+  optional bool stravl = 2;
+  // Steering Fault [] [0|1]
+  optional bool strflt = 3;
+  // Rolling Counter [] [0|15]
+  optional int32 strrptrc = 4;
+  // Timeout (steering command) [] [0|0]
+  optional StrcmdtimeoutType strcmdtimeout = 5;
+  // Driver Steering Delivered Torque [Nm] [0|0]
+  optional double drvrstrgdlvrdtoq = 6;
+  // Steering Enabled [] [0|0]
+  optional StrrptenType strrpten = 7;
+  // Driver Override (steering) [] [0|0]
+  optional StroverrideType stroverride = 8;
+  // Steering Wheel Angle [degrees] [-470|470]
+  optional double strwhlangval = 9;
+}
+
+message Snoah_gear_command_56 {
+  // Control Message
+  enum GearreqenType {
+    GEARREQEN_DISABLE = 0;
+    GEARREQEN_ENABLED = 1;
+  }
+  enum GearposreqType {
+    GEARPOSREQ_NONE = 0;
+    GEARPOSREQ_PARK = 1;
+    GEARPOSREQ_REVERSE = 2;
+    GEARPOSREQ_NEUTRAL = 3;
+    GEARPOSREQ_DRIVE = 4;
+    GEARPOSREQ_LOW = 5;
+  }
+  // [] [0|15]
+  optional int32 gearrc = 1;
+  // [] [0|0]
+  optional int32 gearchksm = 2;
+  // Gear Shift Enable [] [0|0]
+  optional GearreqenType gearreqen = 3;
+  // Gear Position Request [] [0|0]
+  optional GearposreqType gearposreq = 4;
+}
+
+message Snoah_gear_report_57 {
+  // Report Message
+  enum GearctlstsType {
+    GEARCTLSTS_NOT_REJECTED = 0;
+    GEARCTLSTS_OVERRIDE = 1;
+    GEARCTLSTS_SHIFT_IN_PROGRESS = 2;
+    GEARCTLSTS_REPEAT = 3;
+    GEARCTLSTS_CMD_ILLEGAL = 4;
+    GEARCTLSTS_SPEED_NOT_2KPH = 5;
+    GEARCTLSTS_REJECTED_BY_VEHICLE_TIMEOUT = 6;
+  }
+  enum GearactlposType {
+    GEARACTLPOS_NONE = 0;
+    GEARACTLPOS_PARK = 1;
+    GEARACTLPOS_REVERSE = 2;
+    GEARACTLPOS_NEUTRAL = 3;
+    GEARACTLPOS_DRIVE = 4;
+    GEARACTLPOS_LOW = 5;
+  }
+  // [] [0|0]
+  optional bool gearcmdtimeout = 1;
+  // Gear available [] [0|1]
+  optional bool gearavl = 2;
+  // Gear Status [] [0|0]
+  optional GearctlstsType gearctlsts = 3;
+  // Gear Actual Position [] [0|0]
+  optional GearactlposType gearactlpos = 4;
+}
+
+message Snoah_light_command_58 {
+  // Control Message
+  enum TrnlghtreqType {
+    TRNLGHTREQ_NONE = 0;
+    TRNLGHTREQ_LEFT = 1;
+    TRNLGHTREQ_RIGHT = 2;
+    TRNLGHTREQ_DOUBLEFLASH = 3;
+  }
+  // [] [0|0]
+  optional bool horn = 1;
+  // [] [0|0]
+  optional bool emeglampreq = 2;
+  // [] [0|15]
+  optional int32 lghtreqrc = 3;
+  // [] [0|0]
+  optional bool lghten = 4;
+  // Turn Light Request [] [0|0]
+  optional TrnlghtreqType trnlghtreq = 5;
+  optional bool lowbeamreq = 6;
+  optional bool highbeamreq = 7;
+  optional bool foglampreq = 8;
+  optional bool autolampreq = 9;
+  optional bool passlampreq = 10;
+  optional bool widthlampreq = 11;
+}
+
+message Snoah_vehicle_report_59 {
+  // Report Message
+  enum LdupType {
+    LDUP_NOT_PRESSED = 0;
+    LDUP_PRESSED = 1;
+  }
+  enum LdrhtType {
+    LDRHT_NOT_PRESSED = 0;
+    LDRHT_PRESSED = 1;
+  }
+  enum LdokType {
+    LDOK_NOT_PRESSED = 0;
+    LDOK_PRESSED = 1;
+  }
+  enum LdlftType {
+    LDLFT_NOT_PRESSED = 0;
+    LDLFT_PRESSED = 1;
+  }
+  enum LddwnType {
+    LDDWN_NOT_PRESSED = 0;
+    LDDWN_PRESSED = 1;
+  }
+  enum CnclType {
+    CNCL_NOT_PRESSED = 0;
+    CNCL_PRESSED = 1;
+  }
+  enum ResType {
+    RES_NOT_PRESSED = 0;
+    RES_PRESSED = 1;
+  }
+  enum OnType {
+    ON_NOT_PRESSED = 0;
+    ON_PRESSED = 1;
+  }
+  enum OffType {
+    OFF_NOT_PRESSED = 0;
+    OFF_PRESSED = 1;
+  }
+  enum BeltpType {
+    BELTP_UNBUCKLED = 0;
+    BELTP_BUCKLED = 1;
+  }
+  enum BeltdType {
+    BELTD_UNBUCKLED = 0;
+    BELTD_BUCKLED = 1;
+  }
+  enum PabagType {
+    PABAG_DISABLED = 0;
+    PABAG_ENABLED = 1;
+  }
+  enum PdectType {
+    PDECT_NO_PASSENGER = 0;
+    PDECT_PASSENGER = 1;
+  }
+  enum TrunkType {
+    TRUNK_CLOSED = 0;
+    TRUNK_OPEN = 1;
+  }
+  enum HoodType {
+    HOOD_CLOSED = 0;
+    HOOD_OPEN = 1;
+  }
+  enum DoorrType {
+    DOORR_CLOSED = 0;
+    DOORR_OPEN = 1;
+  }
+  enum DoorpType {
+    DOORP_CLOSED = 0;
+    DOORP_OPEN = 1;
+  }
+  enum DoorlType {
+    DOORL_CLOSED = 0;
+    DOORL_OPEN = 1;
+  }
+  enum DoordType {
+    DOORD_CLOSED = 0;
+    DOORD_OPEN = 1;
+  }
+  enum WiperType {
+    WIPER_OFF = 0;
+    WIPER_AUTO_OFF = 1;
+    WIPER_OFF_MOVING = 2;
+    WIPER_MANUAL_OFF = 3;
+    WIPER_MANUAL_ON = 4;
+    WIPER_MANUAL_LOW = 5;
+    WIPER_MANUAL_HIGH = 6;
+    WIPER_MIST_FLICK = 7;
+    WIPER_WASH = 8;
+    WIPER_AUTO_LOW = 9;
+    WIPER_AUTO_HIGH = 10;
+    WIPER_COURTESY_WIPE = 11;
+    WIPER_AUTO_ADJUST = 12;
+    WIPER_RESERVED = 13;
+    WIPER_STALLED = 14;
+    WIPER_NO_DATA = 15;
+  }
+  enum TrnlghtstsType {
+    TRNLGHTSTS_NONE = 0;
+    TRNLGHTSTS_LEFT = 1;
+    TRNLGHTSTS_RIGHT = 2;
+  }
+  enum SincType {
+    SINC_NOT_PRESSED = 0;
+    SINC_PRESSED = 1;
+  }
+  enum SdecType {
+    SDEC_NOT_PRESSED = 0;
+    SDEC_PRESSED = 1;
+  }
+  enum OnoffType {
+    ONOFF_NOT_PRESSED = 0;
+    ONOFF_PRESSED = 1;
+  }
+  enum LkaenType {
+    LKAEN_NOT_PRESSED = 0;
+    LKAEN_PRESSED = 1;
+  }
+  enum HibeamType {
+    HIBEAM_NULL = 0;
+    HIBEAM_FLASH_TO_PASS = 1;
+    HIBEAM_HIGH = 2;
+  }
+  enum GincType {
+    GINC_NOT_PRESSED = 0;
+    GINC_PRESSED = 1;
+  }
+  enum GdecType {
+    GDEC_NOT_PRESSED = 0;
+    GDEC_PRESSED = 1;
+  }
+  enum FltbusType {
+    FLTBUS_NO_FAULT = 0;
+    FLTBUS_FAULT = 1;
+  }
+  enum RescnclType {
+    RESCNCL_NOT_PRESSED = 0;
+    RESCNCL_PRESSED = 1;
+  }
+  enum AmbientType {
+    AMBIENT_DARK = 0;
+    AMBIENT_LIGHT = 1;
+    AMBIENT_TWILIGHT = 2;
+    AMBIENT_TUNNEL_ON = 3;
+    AMBIENT_TUNNEL_OFF = 4;
+    AMBIENT_NO_DATA = 7;
+  }
+  enum TurnLeverType {
+    TURN_NONE = 0;
+    TURN_DOWN = 1;
+    TURN_UP = 2;
+  }
+
+  // [] [0|0]
+  optional int32 turnlightswout = 1;
+  // [] [0|0]
+  optional bool autooff = 2;
+  // [] [0|0]
+  optional bool auto_snoah = 3;
+  // [] [0|0]
+  optional bool lghtcmdtimeout = 4;
+  // Light available [] [0|1]
+  optional bool lghtavl = 5;
+  // [] [0|0]
+  optional bool movedir = 6;
+  // [] [0|0]
+  optional bool ismove = 7;
+  // Button Left D-Pad Up [] [0|0]
+  optional LdupType ldup = 8;
+  // Button Left D-Pad Right [] [0|0]
+  optional LdrhtType ldrht = 9;
+  // Button Left D-Pad OK [] [0|0]
+  optional LdokType ldok = 10;
+  // Button Left D-Pad Left [] [0|0]
+  optional LdlftType ldlft = 11;
+  // Button Left D-Pad Down [] [0|0]
+  optional LddwnType lddwn = 12;
+  // Button Cruise Control CANCEL [] [0|0]
+  optional CnclType cncl = 13;
+  // Button Cruise Control RESUME [] [0|0]
+  optional ResType res = 14;
+  // Button Cruise Control ON [] [0|0]
+  optional OnType on = 15;
+  // Button Cruise Control OFF [] [0|0]
+  optional OffType off = 16;
+  // Passenger Seat Belt Buckle [] [0|0]
+  optional BeltpType beltp = 17;
+  // Driver Seat Belt Buckle [] [0|0]
+  optional BeltdType beltd = 18;
+  // Passenger Airbag [] [0|0]
+  optional PabagType pabag = 19;
+  // Passenger Detect [] [0|0]
+  optional PdectType pdect = 20;
+  // Trunk Open [] [0|0]
+  optional TrunkType trunk = 21;
+  // Hood Open [] [0|0]
+  optional HoodType hood = 22;
+  // Rear Right Door [] [0|0]
+  optional DoorrType doorr = 23;
+  // Passenger Door [] [0|0]
+  optional DoorpType doorp = 24;
+  // Rear Left Door [] [0|0]
+  optional DoorlType doorl = 25;
+  // Driver Door [] [0|0]
+  optional DoordType doord = 26;
+  // Windshield Wiper Status [] [0|0]
+  optional WiperType wiper = 27;
+  // Turn Signal Status [] [0|0]
+  optional TrnlghtstsType trnlghtsts = 28;
+  // Button ACC SET+ [] [0|0]
+  optional SincType sinc = 29;
+  // Button ACC SET- [] [0|0]
+  optional SdecType sdec = 30;
+  // Button ACC On/Off Toggle [] [0|0]
+  optional OnoffType onoff = 31;
+  // Button LKA On/Off Toggle [] [0|0]
+  optional LkaenType lkaen = 32;
+  // High Beam Headlights [] [0|0]
+  optional HibeamType hibeam = 33;
+  // Button ACC GAP+ [] [0|0]
+  optional GincType ginc = 34;
+  // Button ACC GAP- [] [0|0]
+  optional GdecType gdec = 35;
+  // Fault CAN Bus (misc) [] [0|0]
+  optional FltbusType fltbus = 36;
+  // Button ACC Resume/Cancel [] [0|0]
+  optional RescnclType rescncl = 37;
+  // Ambient Light Level [] [0|0]
+  optional AmbientType ambient = 38;
+  optional TurnLeverType turn_lever_state = 39;
+  optional bool rear_mirror_status = 40;
+}
+
+message Snoah_wheelspeed_report_5a {
+  // Report Message
+  // Wheel Speed Rear Right [km/h] [0|0]
+  optional double rr = 1;
+  // Wheel Speed Rear Left [km/h] [0|0]
+  optional double rl = 2;
+  // Wheel Speed Front Right [km/h] [0|0]
+  optional double fr = 3;
+  // Wheel Speed Front Left [km/h] [0|0]
+  optional double fl = 4;
+}
+
+message Snoah_accel_report_5b {
+  // Report Message
+  // Vertical Acceleration [m/s^2] [0|0]
+  optional double vert = 1;
+  // Longitudinal Acceleration [m/s^2] [0|0]
+  optional double my_long = 2;
+  // Lateral Acceleration [m/s^2] [0|0]
+  optional double lat = 3;
+}
+
+message Snoah_gyro_report_5c {
+  // Report Message
+  // Yaw Rate [rad/s] [0|0]
+  optional double yaw = 1;
+  // Roll Rate [rad/s] [0|0]
+  optional double roll = 2;
+}
+
+message Snoah_gps_1_report_5d {
+  // Report Message
+  enum ValidType {
+    VALID_INVALID = 0;
+    VALID_VALID = 1;
+  }
+  // GPS Valid [] [0|0]
+  optional ValidType valid = 1;
+  // GPS Longitude [degrees] [0|0]
+  optional double longitude = 2;
+  // GPS Latitude [degrees] [0|0]
+  optional double latitude = 3;
+}
+
+message Snoah_gps_2_report_5e {
+  // Report Message
+  enum InfType {
+    INF_ACTUAL_POSITION = 0;
+    INF_INFERRED_POSITION = 1;
+  }
+  enum FltgpsType {
+    FLTGPS_NO_FAULT = 0;
+    FLTGPS_FAULT = 1;
+  }
+  // GPS Position Inferred [] [0|0]
+  optional InfType inf = 1;
+  // Fault GPS [] [0|0]
+  optional FltgpsType fltgps = 2;
+  // GPS Position Dilution Of Precision [] [0|0]
+  optional double pdop = 3;
+  // Compass Heading [degrees] [0|315]
+  optional double compass = 4;
+  // GPS UTC Seconds [seconds] [0|59]
+  optional int32 seconds = 5;
+  // GPS UTC Minutes [minutes] [0|59]
+  optional int32 minutes = 6;
+  // GPS UTC Hours [hours] [0|23]
+  optional int32 hours = 7;
+  // GPS UTC Day [days] [1|31]
+  optional int32 day = 8;
+  // GPS UTC Month [months] [1|12]
+  optional int32 month = 9;
+  // GPS UTC Year [years] [0|99]
+  optional int32 year = 10;
+}
+
+message Snoah_gps_3_report_5f {
+  // Report Message
+  enum QualityType {
+    QUALITY_NO_FIX = 0;
+    QUALITY_2D_FIX = 1;
+    QUALITY_3D_FIX = 2;
+  }
+  // GPS Number Of satellites [] [0|0]
+  optional int32 numsat = 1;
+  // GPS Fix Quality [] [0|0]
+  optional QualityType quality = 2;
+  // GPS Vertical Dilution Of Precision [] [0|0]
+  optional double vdop = 3;
+  // GPS Horizontal Dilution Of Precision [] [0|0]
+  optional double hdop = 4;
+  // GPS Vehicle Speed [mph] [0|0]
+  optional int32 speed = 5;
+  // GPS Heading [degrees] [0|0]
+  optional double heading = 6;
+  // GPS Altitude [m] [0|0]
+  optional double altitude = 7;
+}
+
+message Snoah_wheelposition_report_60 {
+  // Report Message
+  enum WhdircnrrType {
+    WHDIRCNRR_NOMOVING = 0;
+    WHDIRCNRR_MOVINGFORWARD = 1;
+    WHDIRCNRR_MOVINGBACKWARD = 2;
+    WHDIRCNRR_ERROR = 3;
+  }
+  enum WhdircnrlType {
+    WHDIRCNRL_NOMOVING = 0;
+    WHDIRCNRL_MOVINGFORWARD = 1;
+    WHDIRCNRL_MOVINGBACKWARD = 2;
+    WHDIRCNRL_ERROR = 3;
+  }
+  enum WhdircnfrType {
+    WHDIRCNFR_NOMOVING = 0;
+    WHDIRCNFR_MOVINGFORWARD = 1;
+    WHDIRCNFR_MOVINGBACKWARD = 2;
+    WHDIRCNFR_ERROR = 3;
+  }
+  enum WhdircnflType {
+    WHDIRCNFL_NOMOVING = 0;
+    WHDIRCNFL_MOVINGFORWARD = 1;
+    WHDIRCNFL_MOVINGBACKWARD = 2;
+    WHDIRCNFL_ERROR = 3;
+  }
+  // [] [0|0]
+  optional WhdircnrrType whdircnrr = 1 [deprecated = true];
+  // [] [0|0]
+  optional WhdircnrlType whdircnrl = 2 [deprecated = true];
+  // [] [0|0]
+  optional WhdircnfrType whdircnfr = 3 [deprecated = true];
+  // [] [0|0]
+  optional WhdircnflType whdircnfl = 4 [deprecated = true];
+  // Wheel Position Rear Right [counts] [0|1023]
+  optional int32 whplsrr = 5;
+  // Wheel Position Rear Left [counts] [0|1023]
+  optional int32 whplsrl = 6;
+  // Wheel Position Front Right [counts] [0|1023]
+  optional int32 whplsfr = 7;
+  // Wheel Position Front Left [counts] [0|1023]
+  optional int32 whplsfl = 8;
+}
+
+message Snoah_ads_command_61 {
+  // Control Message
+  enum AdsmodType {
+    ADSMOD_NONE = 0;
+    ADSMOD_PILOT = 1;
+    ADSMOD_APA = 2;
+    ADSMOD_ACC = 3;
+    ADSMOD_LSS = 4;
+    ADSMOD_AEB = 5;
+  }
+  // [] [0|0]
+  optional int32 accreqrc = 1;
+  // [] [0|0]
+  optional int32 accchksm = 2;
+  // [] [0|0]
+  optional bool accreqen = 3;
+  // [] [-10.24|10.24]
+  optional double accaccreqval = 4;
+  // [] [0|0]
+  optional AdsmodType adsmod = 5;
+}
+
+// Report Message.
+message Snoah_Vcu_State_62 {
+  enum VcuReadyType {
+    VCU_READY_NOT_READY = 0;
+    VCU_READY_READY = 1;
+  }
+  enum VcuTcmFailType {
+    VCU_TCMFAIL_NORMAL_TCM = 0;
+    VCU_TCMFAIL_LIMPHOME_TCM = 1;
+  }
+  // Fuel Tank Level [%] [0|0]
+  optional double fuel = 1;
+  // [] [0|0]
+  optional VcuReadyType vcu_ready = 2;
+  // [] [0|0]
+  optional VcuTcmFailType vcu_tcm_fail = 3;
+  optional double vcu_frontmotorrpm = 4;
+  optional double vcu_rearmotorrpm = 5;
+}
+
+message Snoah_surround_report_63 {
+  // Report Message
+  enum EnsnrType {
+    ENSNR_DISABLED = 0;
+    ENSNR_ENABLED = 1;
+  }
+  enum FltsnrType {
+    FLTSNR_NO_FAULT = 0;
+    FLTSNR_FAULT = 1;
+  }
+  enum Sonar11Type {
+    SONAR11_NO_DETECTION = 0;
+  }
+  enum Sonar10Type {
+    SONAR10_NO_DETECTION = 0;
+  }
+  enum Sonar09Type {
+    SONAR09_NO_DETECTION = 0;
+  }
+  enum Sonar08Type {
+    SONAR08_NO_DETECTION = 0;
+  }
+  enum Sonar07Type {
+    SONAR07_NO_DETECTION = 0;
+  }
+  enum Sonar06Type {
+    SONAR06_NO_DETECTION = 0;
+  }
+  enum Sonar05Type {
+    SONAR05_NO_DETECTION = 0;
+  }
+  enum Sonar04Type {
+    SONAR04_NO_DETECTION = 0;
+  }
+  enum Sonar03Type {
+    SONAR03_NO_DETECTION = 0;
+  }
+  enum Sonar02Type {
+    SONAR02_NO_DETECTION = 0;
+  }
+  enum Sonar01Type {
+    SONAR01_NO_DETECTION = 0;
+  }
+  enum Sonar00Type {
+    SONAR00_NO_DETECTION = 0;
+  }
+  enum BlisreType {
+    BLISRE_DISABLED = 0;
+    BLISRE_ENABLED = 1;
+  }
+  enum BlisraType {
+    BLISRA_NO_ALERT = 0;
+    BLISRA_ALERT = 1;
+  }
+  enum BlisleType {
+    BLISLE_DISABLED = 0;
+    BLISLE_ENABLED = 1;
+  }
+  enum BlislaType {
+    BLISLA_NO_ALERT = 0;
+    BLISLA_ALERT = 1;
+  }
+  enum CtareType {
+    CTARE_DISABLED = 0;
+    CTARE_ENABLED = 1;
+  }
+  enum CtaraType {
+    CTARA_NO_ALERT = 0;
+    CTARA_ALERT = 1;
+  }
+  enum CtaleType {
+    CTALE_DISABLED = 0;
+    CTALE_ENABLED = 1;
+  }
+  enum CtalaType {
+    CTALA_NO_ALERT = 0;
+    CTALA_ALERT = 1;
+  }
+  // Sonar Enabled [] [0|0]
+  optional EnsnrType ensnr = 1;
+  // Fault Sonar Sensors [] [0|0]
+  optional FltsnrType fltsnr = 2;
+  // Sonar Rear Right Side [m] [0.3|2.4]
+  optional Sonar11Type sonar11 = 3;
+  // Sonar Rear Right Corner [m] [0.3|2.4]
+  optional Sonar10Type sonar10 = 4;
+  // Sonar Rear Right Center [m] [0.3|2.4]
+  optional Sonar09Type sonar09 = 5;
+  // Sonar Rear Left Center [m] [0.3|2.4]
+  optional Sonar08Type sonar08 = 6;
+  // Sonar Rear Left Corner [m] [0.3|2.4]
+  optional Sonar07Type sonar07 = 7;
+  // Sonar Rear Left Side [m] [0.3|2.4]
+  optional Sonar06Type sonar06 = 8;
+  // Sonar Front Right Side [m] [0.3|2.4]
+  optional Sonar05Type sonar05 = 9;
+  // Sonar Front Right Corner [m] [0.3|2.4]
+  optional Sonar04Type sonar04 = 10;
+  // Sonar Front Right Center [m] [0.3|2.4]
+  optional Sonar03Type sonar03 = 11;
+  // Sonar Front Left Center [m] [0.3|2.4]
+  optional Sonar02Type sonar02 = 12;
+  // Sonar Front Left Corner [m] [0.3|2.4]
+  optional Sonar01Type sonar01 = 13;
+  // Sonar Front Left Side [m] [0.3|2.4]
+  optional Sonar00Type sonar00 = 14;
+  // Blind Spot Information System Right Enabled [] [0|0]
+  optional BlisreType blisre = 15;
+  // Blind Spot Information System Right Alert [] [0|0]
+  optional BlisraType blisra = 16;
+  // Blind Spot Information System Left Enabled [] [0|0]
+  optional BlisleType blisle = 17;
+  // Blind Spot Information System Left Alert [] [0|0]
+  optional BlislaType blisla = 18;
+  // Cross Traffic Alert Right Enabled [] [0|0]
+  optional CtareType ctare = 19;
+  // Cross Traffic Alert Right Alert [] [0|0]
+  optional CtaraType ctara = 20;
+  // Cross Traffic Alert Left Enabled [] [0|0]
+  optional CtaleType ctale = 21;
+  // Cross Traffic Alert Left Alert [] [0|0]
+  optional CtalaType ctala = 22;
+}
+
+message Snoah_brakeinfo_report_64 {
+  // Report Message
+  enum TraceType {
+    TRACE_DISABLED = 0;
+    TRACE_ENABLED = 1;
+  }
+  enum TracaType {
+    TRACA_INACTIVE = 0;
+    TRACA_ACTIVE = 1;
+  }
+  enum StabeType {
+    STABE_DISABLED = 0;
+    STABE_ENABLED = 1;
+  }
+  enum StabaType {
+    STABA_INACTIVE = 0;
+    STABA_ACTIVE = 1;
+  }
+  enum AbseType {
+    ABSE_DISABLED = 0;
+    ABSE_ENABLED = 1;
+  }
+  enum AbsaType {
+    ABSA_INACTIVE = 0;
+    ABSA_ACTIVE = 1;
+  }
+  enum PbrakeType {
+    PBRAKE_UNKNOWN = 0;
+    PBRAKE_TRANSITIONPARK_BRAKE_APPLIED = 1;
+    PBRAKE_PARK_BRAKE_RELEASED = 2;
+    PBRAKE_PARK_BRAKE_IN_PROGRESS = 3;
+  }
+  enum StatnryType {
+    STATNRY_MOVING = 0;
+    STATNRY_STATIONARY = 1;
+  }
+  enum HsastatType {
+    HSASTAT_OFF = 0;
+    HSASTAT_INTERVENTION = 1;
+    HSASTAT_STANDBY = 2;
+    HSASTAT_ERROR = 3;
+    HSASTAT_UNDEFINED = 4;
+  }
+  enum HsamodeType {
+    HSAMODE_OFF = 0;
+    HSAMODE_AUTO = 1;
+    HSAMODE_MANUAL = 2;
+    HSAMODE_UNDEFINED = 3;
+  }
+  // Traction Control Enabled [] [0|0]
+  optional TraceType trace = 1;
+  // Traction Control Active [] [0|0]
+  optional TracaType traca = 2;
+  // Stability Control Enabled [] [0|0]
+  optional StabeType stabe = 3;
+  // Stability Control Active [] [0|0]
+  optional StabaType staba = 4;
+  // Acceleration Over Ground Estimated [m/s^2] [-17.92|17.885]
+  optional double aog = 5;
+  // ABS Enabled [] [0|0]
+  optional AbseType abse = 6;
+  // ABS Active [] [0|0]
+  optional AbsaType absa = 7;
+  // Wheel Torque [Nm] [-32768|32764]
+  optional double whltrq = 8;
+  // Parking Brake Status [] [0|0]
+  optional PbrakeType pbrake = 9;
+  // Vehicle Stationary [] [0|0]
+  optional StatnryType statnry = 10;
+  // Hill Start Assist Status [] [0|0]
+  optional HsastatType hsastat = 11;
+  // Hill Start Assist Mode [] [0|0]
+  optional HsamodeType hsamode = 12;
+  // Braking Torque Request [Nm] [0|16380]
+  optional double brktrqr = 13;
+  // Braking Torque Actual [Nm] [0|16380]
+  optional double brktrqa = 14;
+}
+
+message Snoah_throttleinfo_report_65 {
+  // Report Message
+  // Vehicle Speed [kph] [0|0]
+  optional double vehspd = 1;
+  // [] [0|0]
+  optional int32 odo = 2;
+  // Engine RPM [RPM] [0|0]
+  optional double engspd = 3;
+}
+
+message Snoah_suspension_69 {
+  // Report Message
+  // [mm] [0|0]
+  optional double suspension_rr = 1;
+  // [mm] [0|0]
+  optional double suspension_rl = 2;
+  // [mm] [0|0]
+  optional double suspension_fr = 3;
+  // [mm] [0|0]
+  optional double suspension_fl = 4;
+}
+
+message Snoah_apa_command_70 {
+  enum GearType {
+    NONE = 0;
+    PARK = 1;
+    REVERSE = 2;
+    NEUTRAL = 3;
+    DRIVE = 4;
+    LOW = 5;
+  }
+  // Control Message
+  // [] [0|0]
+  optional int32 apareqrc = 1;
+  // [] [0|0]
+  optional int32 apachksm = 2;
+  // [km/h] [0|5]
+  optional double apaspdreqval = 3;
+  // [] [0|0]
+  optional bool apaspdreqen = 4;
+  // [m/s2] [-12.7|12.8]
+  optional double apaacclreqval = 5;
+  // [] [0|0]
+  optional bool apaacclreqen = 6;
+  optional double parking_distance = 7;
+  optional GearType apa_gear = 8;
+}
+
+// Control Message.
+message Snoah_acc_command_71 {
+  enum AccStateType {
+    ACCSTATE_OFF_MODE = 0;
+    ACCSTATE_PASSIVE_MODE = 1;
+    ACCSTATE_STANDBY_MODE = 2;
+    ACCSTATE_ACTIVE_CONTROL_MODE = 3;
+    ACCSTATE_OVERRIDE = 4;
+    ACCSTATE_BRAKE_ONLY_MODE = 5;
+    ACCSTATE_STANDSTILL = 6;
+    ACCSTATE_FAILURE_MODE = 7;
+  }
+  // [] [0|0]
+  optional bool acc_drive_off_req = 1;
+  // [] [0|0]
+  optional bool acc_dec_to_stop_req = 2;
+  // [m/s2] [0|12.7]
+  optional double acc_target_ax_upper_limit = 3;
+  // [m/s2] [0|3.15]
+  optional double acc_target_ax_upper_comft_band = 4;
+  // [m/s2] [-12.7|0]
+  optional double acc_target_ax_lower_limit = 5;
+  // [m/s2] [0|3.15]
+  optional double acc_target_ax_lower_comft_band = 6;
+  // [m/s2] [-7|5.75]
+  optional double acc_target_ax = 7;
+  // [] [0|7]
+  optional AccStateType acc_state = 8;
+  // [] [0|0]
+  optional bool acc_standstill_req = 9;
+  // [] [0|15]
+  optional int32 acc_rolling_counter = 10;
+  // [] [0|255]
+  optional int32 acc_check_sum = 11;
+}
+
+// Report Message.
+message Snoah_accinfo_report_72 {
+  // [m/s2] [0|12.7]
+  optional double acc_ax_upper_limit_val = 1;
+  // [m/s2] [0|3.15]
+  optional double acc_ax_upper_comft_band_val = 2;
+  // [m/s2] [-12.7|0]
+  optional double acc_ax_lower_limit_val = 3;
+  // [m/s2] [0|3.15]
+  optional double acc_ax_lower_comft_band_val = 4;
+}
+message Snoah_vehicle_report1_62 {
+  reserved 1;
+}
+
+message Snoahvehicle_suv {
+  optional Snoah_brake_command_50 snoah_brake_command_50 =
+      2;  // control message
+  optional Snoah_brake_report_51 snoah_brake_report_51 = 3;  // report message
+  optional Snoah_throttle_command_52 snoah_throttle_command_52 =
+      4;  // control message
+  optional Snoah_throttle_report_53 snoah_throttle_report_53 =
+      5;  // report message
+  optional Snoah_steering_command_54 snoah_steering_command_54 =
+      6;  // control message
+  optional Snoah_steering_report_55 snoah_steering_report_55 =
+      7;  // report message
+  optional Snoah_gear_command_56 snoah_gear_command_56 =
+      8;                                                     // control message
+  optional Snoah_gear_report_57 snoah_gear_report_57 = 9;  // report message
+  optional Snoah_light_command_58 snoah_light_command_58 =
+      10;  // control message
+  optional Snoah_vehicle_report_59 snoah_vehicle_report_59 =
+      11;  // report message
+  optional Snoah_wheelspeed_report_5a snoah_wheelspeed_report_5a =
+      12;  // report message
+  optional Snoah_accel_report_5b snoah_accel_report_5b =
+      13;                                                     // report message
+  optional Snoah_gyro_report_5c snoah_gyro_report_5c = 14;  // report message
+  optional Snoah_gps_1_report_5d snoah_gps_1_report_5d =
+      15;  // report message
+  optional Snoah_gps_2_report_5e snoah_gps_2_report_5e =
+      16;  // report message
+  optional Snoah_gps_3_report_5f snoah_gps_3_report_5f =
+      17;  // report message
+  optional Snoah_wheelposition_report_60 snoah_wheelposition_report_60 =
+      18;                                                     // report message
+  optional Snoah_ads_command_61 snoah_ads_command_61 = 19;  // control message
+  optional Snoah_vehicle_report1_62 snoah_vehicle_report1_62 =
+      20;  // report message
+  optional Snoah_surround_report_63 snoah_surround_report_63 =
+      21;  // report message
+  optional Snoah_brakeinfo_report_64 snoah_brakeinfo_report_64 =
+      22;  // report message
+  optional Snoah_throttleinfo_report_65 snoah_throttleinfo_report_65 =
+      23;                                                     // report message
+  optional Snoah_suspension_69 snoah_suspension_69 = 24;    // report message
+  optional Snoah_apa_command_70 snoah_apa_command_70 = 25;  // control message
+
+  optional Snoah_acc_command_71 snoah_acc_command_71 = 26;  // control message
+
+  optional Snoah_accinfo_report_72 snoah_accinfo_report_72 =
+      27;  // report message
+
+  optional Snoah_gw_esc_state1_74 snoah_gw_esc_state1_74 =
+      28;  // report message
+
+  optional Snoah_gw_esc_state2_75 snoah_gw_esc_state2_75 =
+      29;  // report message
+
+  optional Snoah_aeb_command_73 snoah_aeb_command_73 = 30;  // control message
+  optional Snoah_Vcu_State_62 Snoah_Vcu_State_62 = 31;      // report message
+  optional Snoah_Version_Report_102 snoah_version_report_102 = 32;
+}

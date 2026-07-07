@@ -1,0 +1,54 @@
+
+syntax = "proto2";
+import "offboard/simulation/metric_evaluator/prt/traffic_participant/proto/match.proto";
+
+package snoah;
+
+message TrafficParticipantTaggersConfig {
+  repeated TrafficParticipantTaggerConfig tagger_configs = 1;
+}
+
+message TrafficParticipantTaggerConfig {
+  oneof type {
+    DisplayTypeTagger display_type_tagger = 2;
+    VehicleLightTagger vehicle_light_tagger = 3;
+    ImageAnonymizationTagger image_anonymization_tagger = 4;
+    ImageAnomaliesTagger image_anomalies_tagger = 5;
+    TrafficLightTagger traffic_light_tagger = 6;
+    SceneTypeTagger scene_type_tagger = 7;
+    ConfidenceTagger confidence_tagger = 8;
+    KeypointTagger keypoint_tagger = 9;
+    FollowingStateTagger following_state_tagger = 10;
+    OcclusionRateTagger occlusion_rate_tagger = 11;
+    CrossingLineStateTagger crossing_line_state_tagger = 12;
+    LaneTagger lane_tagger = 13;
+  }
+}
+
+message DisplayTypeTagger {
+  optional TypeLevel type_level = 1 [default = Level2];
+}
+
+message VehicleLightTagger {}
+
+message ImageAnonymizationTagger {}
+
+message ImageAnomaliesTagger {}
+
+message TrafficLightTagger {}
+
+message SceneTypeTagger {}
+
+message ConfidenceTagger {}
+
+message KeypointTagger {
+  optional bool calculate_if_missing = 1 [default = true];
+}
+
+message FollowingStateTagger {}
+
+message OcclusionRateTagger {}
+
+message CrossingLineStateTagger {}
+
+message LaneTagger {}

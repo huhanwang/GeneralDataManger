@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/proto/map_geometry.proto";
+
+message OkButtonConfigListProto {
+  optional sfixed64 id = 1;
+  // LC max field, snoah's type is scenario field.
+  optional string type = 2;
+  // Lc max field.
+  optional string tag = 3;
+  // Lc max field.
+  optional mapping.GeoPointProto point = 4;  // unit: radian.
+  // The track point is 200 meters away from the start_point before reaching the
+  // stop line.
+  optional mapping.GeoPointProto start_point = 5;  // unit: radian.
+  // Stop line mid point.
+  optional mapping.GeoPointProto end_point = 6;  // unit: radian.
+  map<string, string> attribute = 7;
+}
+
+message TrafficLightOkButtonProto {
+  optional string software_version = 1;
+  optional string config_version = 2;
+  repeated OkButtonConfigListProto config_lists = 3;
+  optional string yaml_file_md5 = 4;
+}

@@ -1,0 +1,21 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+// Describe the information of the route in the sd map, such as the id sequence
+// of the link, etc.
+message SdMapRouteProto {
+  optional LiteHeader header = 1;
+  repeated sfixed64 link_ids = 2;
+  enum LinkDirection {
+    UNKNOWN = 1;
+    FORWARD = 2;
+    REVERSED = 3;
+  }
+  repeated LinkDirection link_directions = 4;
+
+  optional sfixed64 route_id = 3;
+}

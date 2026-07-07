@@ -1,0 +1,72 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/params/v2/proto/vehicle/installation.proto";
+import "onboard/params/v2/proto/omc/common.proto";
+import "onboard/params/v2/proto/obc/common.proto";
+import "onboard/lite/launch_plan/proto/launch_plan.proto";
+import "onboard/proto/ads.proto";
+
+message LaunchPlanComponentMatchCondition {
+  optional string plan_name = 1;
+
+  message NodesConfig {
+    repeated OmcModel omc_models = 1;
+    repeated ObcModel obc_models = 2;
+  }
+  optional NodesConfig nodes_config = 2;
+
+  optional VehicleInstallationProto.VehiclePlan vehicle_plan = 3;
+
+  message GpusConfig {
+    repeated GpuType gpu_types = 1;
+  }
+  optional GpusConfig gpus_config = 4;  // at most 1 OMC_X86
+}
+
+message LaunchPlanComponent {
+  optional string file_path = 1;
+  repeated VehicleInstallationProto.VehiclePlan vehicle_plan = 2
+      [deprecated =
+           true];  // apply to specified VehiclePlan. unset will apply to all
+  repeated OmcModel omc_model = 3
+      [deprecated =
+           true];  // apply to specified OmcModel. unset will apply to all
+  repeated LaunchPlanComponentMatchCondition match_condition = 4;
+  optional bool auto_rename = 5;
+}
+
+message LaunchPlanComponentList {
+  repeated LaunchPlanComponent launch_plan_components = 1;
+}
+
+message LaunchPlanDefaultPlanNameConfig {
+  repeated LaunchPlanComponentMatchCondition match_condition = 1;
+}
+
+message LaunchPlanPropertyGroup {
+  repeated LaunchPlan properties = 1;
+  optional string path = 2;
+
+  /*
+     Generate filename according to format. Interpreted sequences are:
+     %v   unique vehicle plan with preceding underscore, like '_dbqv3'; empty
+     when multi vehicle plan
+
+     %m   unique omc models with preceding underscore, like '_2DriverOrin';
+     empty when multi nodes config
+
+     %b   unique obc models with preceding underscore, like '_2Xavier'; empty
+     when multi nodes config
+
+     %p   lexicographically minimum plan name
+
+     Default use "%p%v%m%b"
+   */
+  optional string auto_component_name_format = 3;
+}
+
+message LaunchPlanPropertyGroupList {
+  repeated LaunchPlanPropertyGroup property_groups = 1;
+}

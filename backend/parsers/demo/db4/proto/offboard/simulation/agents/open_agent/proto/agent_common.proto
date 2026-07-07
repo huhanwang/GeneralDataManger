@@ -1,0 +1,75 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.agents;
+option go_package = "qcraft-proto.ai/offboard/simulation/agents/open_agent/proto/agent_common";
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/human_driving.proto";
+
+message ReachDestinationPathProto {
+  optional Vec2dProto start_position = 1;
+  optional Vec2dProto destination = 2;
+}
+
+// A list coordinates.
+message PointListProto {
+  // Unique id of this geo feature.
+  optional string uuid = 1;
+  // x, y coordinates.
+  repeated Vec2dProto points = 2;
+}
+
+message MatchingOptions {
+  enum DetectionApproach {
+    CAR_REAR_AXLE_CENTER = 0;
+    CAR_CONTOUR = 1;
+  }
+}
+
+message SpeedStateProto {
+  optional double vel_body = 1;
+  optional double accel_body = 2;
+  optional double vel_body_max = 3;
+  optional double vel_body_min = 4 [default = 0.0];
+  optional double accel_body_max = 5 [default = 3.0];
+  optional double accel_body_min = 6 [default = -5.0];
+}
+
+message IntelligentDriverModelConfigProto {
+  optional double following_distance_target = 1 [default = 4.0];
+  optional double vel_body_target = 2 [default = 10.0];
+  optional double accel_body_max = 3 [default = 2.0];
+  optional double accel_body_min = 4 [default = -4.0];
+  optional double desired_time = 5 [default = 1.5];
+  optional double comfortable_brake = 6 [default = -2.0];
+  optional double delta = 7 [default = 4.0];
+}
+
+message SpeedModeConfigProto {
+  enum SpeedMode {
+    LOG_SPEED = 0;
+    CONSTANT_ACC = 1;
+    IDM = 2;
+  }
+  optional SpeedMode speed_mode = 1 [default = LOG_SPEED];
+  optional ConstantAccelerationConfigProto constant_accel_config = 2;
+  optional IntelligentDriverModelConfigProto idm_config = 3;
+}
+
+message AngleProto {
+  oneof type {
+    double angle = 1;
+    double radian = 2;
+  }
+}

@@ -1,0 +1,18 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/proto/lane_point.proto";
+
+message RouteSectionSequenceProto {
+  optional double start_fraction = 1;
+  optional double end_fraction = 2;
+  repeated int64 section_id = 3;
+  optional mapping.LanePointProto destination = 4;
+  // Should be consistent with section_id, used for mpp.
+  repeated double section_lengths = 5;
+  // for R2
+  optional double destination_lon = 6;
+  optional double destination_lat = 7;
+}

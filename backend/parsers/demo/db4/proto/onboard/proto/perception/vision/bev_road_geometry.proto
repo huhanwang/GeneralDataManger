@@ -1,0 +1,221 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/perception/types/vision_lane_type.proto";
+import "onboard/proto/perception/vision/bev_point.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/perception/fusion/point_score.proto";
+import "onboard/proto/lite_camera.proto";
+
+enum VisionCoarseLaneType {
+  COARSE_LANE = 0;
+  COARSE_CURB = 1;
+  COARSE_STOP_LINE = 2;
+}
+
+// Next ID: 5
+enum LaneLineGroup {
+  UNKNOWN_GROUP = 0;
+  SINGLE_GROUP = 1;
+  DOUBLE_GROUP = 2;
+  TRIPLE_GROUP = 3;
+  QUADRUPLE_GROUP = 4;
+}
+
+// Next ID: 4
+enum VisionLaneVisibilityType {
+  UNKNOWN_VISIBILITY_TYPE = 0;
+  VISIBLE_TYPE = 1;
+  INFERENTIAL_TYPE = 2;
+  INVISIBLE_TYPE = 3;
+}
+
+// Next ID: 11
+message BevLaneProto {
+  optional VisionLaneType bev_lane_type = 1;
+  repeated BevPointProto bev_points = 2;
+  repeated ImageLaneProto image_lanes = 3 [deprecated = true];
+  repeated BevPointProto smooth_points = 4 [deprecated = true];
+  optional int32 bev_lane_id = 5;
+  optional int32 bev_next_lane_id = 6 [default = -1];
+  optional bool is_slowdown = 7;
+  optional LaneLineGroup bev_lane_line_group = 8 [default = UNKNOWN_GROUP];
+  optional VisionCoarseLaneType bev_coarse_lane_type = 9;
+  optional VisionLaneVisibilityType bev_lane_visibility_type = 10;
+}
+
+// Next ID: 16
+message BevCenterLineProto {
+  optional int32 id = 1;
+
+  enum Direction {
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+    UTURN = 4;
+  }
+  optional Direction direction = 2 [deprecated = true];
+  repeated BevPointProto bev_points = 3;
+  optional bool is_virtual = 4;
+  repeated Direction virtual_outgoing_directions = 5 [deprecated = true];
+
+  enum CenterLineType {
+    MOTOR_VEHICLE = 1;
+    NON_MOTOR_VEHICLE = 2;
+    BUS = 3;
+  }
+  optional CenterLineType center_line_type = 6;
+  optional int32 left_lane_id = 7;
+  optional int32 right_lane_id = 8;
+  optional int32 left_boundary_id = 9;
+  optional int32 right_boundary_id = 10;
+  repeated int32 incoming_lane_ids = 11 [packed = true];
+  repeated int32 outgoing_lane_ids = 12 [packed = true];
+  optional bool is_merging = 13;
+  optional bool is_in_intersection = 14;
+  repeated Direction directions =
+      15;  // it means the future directions on the current lane
+}
+
+message BevEgoCenterLineProto {
+  optional int32 id = 1;
+  repeated BevPointProto bev_points = 2;
+  optional bool match_navi = 3;
+}
+
+message BevKeypointProto {
+  enum BevKeypointType {
+    ARROW_VERTEX = 0;
+    DASHED_LINE_ENDPOINT = 1;
+    POLE = 2;
+    Y_CROSS_POINT = 3;
+  }
+  optional BevKeypointType bev_keypoint_type = 1;
+  repeated BevPointProto bev_points = 2;
+}
+
+message ImageLaneProto {
+  optional CameraId camera_id = 1;
+  repeated PointScoreProto points = 2;
+}
+
+// Next ID: 8
+message OnOffRoadProto {
+  // NOTE(xiangxiang): start_x, start_y define as
+  // right bottom point in the vehicle coord.
+  optional float start_x = 1;
+  optional float start_y = 2;
+  optional float grid_size_x = 3;
+  optional float grid_size_y = 4;
+  optional int32 width = 5;
+  optional int32 height = 6;
+  optional bytes mask = 7;
+}
+
+// Next ID: 4
+message CrosswalkProto {
+  // Next ID: 3
+  enum CrosswalkType {
+    UNCONTROLLED = 0;
+    TRAFFIC_LIGHT_CONTROLLED = 1;
+    MUST_YEILD = 2;
+  }
+  optional Box2dProto bbox = 1;
+  optional CrosswalkType crosswalk_type = 2
+      [default = TRAFFIC_LIGHT_CONTROLLED];
+  optional float score = 3;
+  optional int32 id = 4;
+}
+
+// Next ID: 1
+message RoadIntersectionProto {
+  // Next ID: 1
+  enum RoadIntersectionType {
+    ROAD_INTERSECTION = 0;
+  }
+  optional Box2dProto bbox = 1;
+  optional float score = 3;
+  optional int32 id = 4;
+  optional RoadIntersectionType road_intersection_type = 5
+      [default = ROAD_INTERSECTION];
+}
+
+// Next ID: 32
+message BevGroundMarkingProto {
+  enum BevGroundMarkingType {
+    STRAIGHT = 0;
+    STRAIGHT_LEFT = 1;
+    STRAIGHT_RIGHT = 2;
+    STRAIGHT_U_TURN = 3;
+    LEFT = 4;
+    LEFT_U_TURN = 5;
+    MERGE_TO_LEFT = 6;
+    RIGHT = 7;
+    MERGE_TO_RIGHT = 8;
+    LEFT_RIGHT = 9;
+    U_TURN = 10;
+    FORBID_LEFT = 11;
+    FORBID_RIGHT = 12;
+    FORBID_U_TURN = 13;
+    STRAIGHT_LEFT_RIGHT = 14;
+    STRAIGHT_U_TURN_LEFT = 15;
+    RIGHT_U_TURN = 16;
+    FORBID_STRAIGHT = 17;
+    INDICATING_ARROW = 18;
+    INDICATING_STRAIGHT = 19;
+    TEXT = 20;
+    BUS_LANE = 21;
+    VARIABLE_ORIENTATION_LANE = 22;
+    ARROW_OTHER = 23;
+    NUMBER = 24;
+    OTHER = 25;
+    MAX_SPEED_LIMIT = 26;
+    MIN_SPEED_LIMIT = 27;
+    TIME = 28;
+    YIELD_AHEAD_TRIANGLE = 29;
+    YIELD_AHEAD_HOV = 30;
+    NON_MOTORIZED = 31;
+  }
+  optional Box2dProto bbox = 1;
+  optional BevGroundMarkingType ground_marking_type = 2 [default = STRAIGHT];
+  optional float score = 3;
+  optional int32 id = 4;
+}
+
+// Next ID: 12
+message VisionBevRoadGeometryProto {
+  optional LiteHeader header = 1;
+  optional double mid_center_timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  // Bev lane detection
+  repeated BevLaneProto bev_lanes = 4;
+  // Bev keypoint detection
+  repeated BevKeypointProto bev_keypoints = 5;
+  // Bev onoffroad
+  optional OnOffRoadProto onoffroad = 6;
+  // Bev ground marking
+  repeated BevGroundMarkingProto ground_markings = 7;
+  // Bev crosswalk
+  repeated CrosswalkProto crosswalks = 8;
+  // Bev centerline
+  repeated BevCenterLineProto bev_center_lines = 9;
+  // Bev ego centerline
+  repeated BevEgoCenterLineProto bev_ego_center_lines = 10;
+  // Bev roadintersection
+  repeated RoadIntersectionProto roadintersections = 11;
+}

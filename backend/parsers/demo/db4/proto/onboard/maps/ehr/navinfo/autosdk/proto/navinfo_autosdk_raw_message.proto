@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "onboard/third_party/navinfo/autosdk/proto/autosdk_parse_message.proto";
+
+package snoah;
+
+message NavInfoAutoSdkRawMessage {
+  optional double timestamp = 1;
+  optional navinfo.proto.CMessageOnBus message = 2;
+}
+
+message NavInfoAutoSdkRawMessages {
+  repeated NavInfoAutoSdkRawMessage messages = 1;
+}

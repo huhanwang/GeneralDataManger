@@ -1,0 +1,52 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+package snoah;
+
+message BlindSpotAssistProto {
+  optional LiteHeader header = 1;
+
+  enum FunctionState {
+    OFF = 0;
+    STANDBY = 1;
+    ACTIVE = 2;
+    FAULT = 3;
+  }
+
+  enum WarningLevel {
+    LEVEL_NONE = 0;
+    LEVEL_ONE = 1;
+    LEVEL_TWO = 2;
+  }
+
+  message BsdWarningProto {
+    optional WarningLevel left_warning = 1
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+    optional WarningLevel right_warning = 2
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  }
+
+  // Bsd output.
+  optional BsdWarningProto bsd_warning = 2 [(trans_matrix) = true];
+  optional FunctionState bsd_state = 3
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+
+  message DowWarningProto {
+    optional WarningLevel front_left_door_warning = 1
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+    optional WarningLevel front_right_door_warning = 2
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+    optional WarningLevel rear_left_door_warning = 3
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+    optional WarningLevel rear_right_door_warning = 4
+        [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  }
+
+  // Dow output.
+  optional DowWarningProto dow_warning = 4 [(trans_matrix) = true];
+  optional FunctionState dow_state = 5
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}

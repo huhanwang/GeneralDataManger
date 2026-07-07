@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+import "onboard/eval/proto/qevent.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message QEventsProto {
+  optional LiteHeader header = 1;
+  repeated QEventProto items = 2;
+  optional bool contains_valid_snippet = 3;
+}

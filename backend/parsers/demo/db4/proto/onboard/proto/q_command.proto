@@ -1,0 +1,115 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/common/proto/drive_mission.proto";
+import "onboard/common/proto/semantic_map_modifier.proto";
+
+message QCommand {
+  enum Type {
+    ENGAGE = 0;
+    DISENGAGE = 1;
+    DOOR_OPEN = 2;
+    DOOR_CLOSE = 3;
+    REQUEST_REMOTE_ASSIST = 4;
+    NUDGE_LEFT = 5;
+    NUDGE_RIGHT = 6;
+    LANE_CHANGE_LEFT = 7;
+    LANE_CHANGE_RIGHT = 8;
+    LANE_CHANGE_FORCE_KEEP = 32;
+    LANE_CHANGE_CANCEL = 9;
+    NEXT_STATION = 10;
+    DRIVE_NOTE = 11;
+    DRIVE_MISSION = 14;
+    SEMANTIC_MAP_MODIFIER = 15;
+    TRAFFIC_LIGHT_IGNORE_ENABLE = 17;
+    TRAFFIC_LIGHT_IGNORE_DISABLE = 18;
+    LANE_CHANGE_STATIONARY_OBJECTS_ENABLE = 19;
+    LANE_CHANGE_STATIONARY_OBJECTS_DISABLE = 20;
+    PULL_OVER_ENABLE = 21;
+    PULL_OVER_DISABLE = 22;
+    LEFT_BLINKER_ON = 23;
+    LEFT_BLINKER_OFF = 24;
+    LEFT_BLINKER_CANCEL = 25;
+    RIGHT_BLINKER_ON = 26;
+    RIGHT_BLINKER_OFF = 27;
+    RIGHT_BLINKER_CANCEL = 28;
+    EMERGENCY_BLINKER_ON = 29;
+    EMERGENCY_BLINKER_OFF = 30;
+    EMERGENCY_BLINKER_CANCEL = 31;
+    // Next id: 33.
+
+    // use it be careful
+    EMERGENCY_STOP = 1001;
+
+    // test purpose
+    MANUAL_CONTROL_ENABLE = 10001;
+    MANUAL_CONTROL_DISABLE = 10002;
+
+    // Deprecated.
+    DRIVE_ROUTE = 12 [deprecated = true];
+    SEMANTIC_MAP_OVERRIDE = 13 [deprecated = true];
+    QHMI_NOTE = 16 [deprecated = true];
+  }
+  optional QCommand.Type type = 1;
+
+  message Nudge {
+    optional double clearance = 1;
+  }
+
+  message DriveRoute {
+    message RoutingPointProto {
+      oneof dest {
+        mapping.GeoPointProto geo_point = 1;
+      }
+    }
+    message Stops {
+      optional string stop_name = 1;
+      optional DriveRoute.RoutingPointProto stop_point = 2;
+      repeated DriveRoute.RoutingPointProto via_points = 3;
+    }
+    message Zone {
+      repeated sfixed64 lanes = 1;
+      repeated mapping.GeoPolygonProto regions = 2;
+    }
+    repeated DriveRoute.Stops stops = 1;
+    optional bool infinite_loop = 2;
+    optional DriveRoute.Zone limited_zone = 3;
+    optional bool skip_past_stops = 4;
+  }
+
+  message SemanticMapOverride {
+    message Lane {
+      optional sfixed64 lane = 1;
+      optional double limited_speed = 2;  // m/s.
+    }
+    message Region {
+      optional mapping.GeoPolygonProto region = 1;
+      optional double limited_speed = 2;  // m/s.
+    }
+    message Zone {
+      repeated SemanticMapOverride.Lane lanes = 1;
+      repeated SemanticMapOverride.Region regions = 2;
+      optional double limited_speed = 3;  // m/s.
+    }
+    optional SemanticMapOverride.Zone override_zone =
+        1;  // if not exist, it will erase the zone and back to default semantic
+            // map.
+  }
+
+  oneof command {
+    Nudge nudge = 2;             // available type: NUDGE_LEFT, NUDGE_RIGHT
+    DriveRoute drive_route = 3;  // deprecated
+    SemanticMapOverride semantic_map_override = 5;  // deprecated
+    RoutingRequestProto routing_request_proto =
+        6;  // available type: DRIVE_MISSION
+    mapping.SemanticMapModifierProto semantic_map_modifier_proto =
+        7;  // available type: SEMANTIC_MAP_MODIFIER
+  }
+
+  optional string command_id = 4;
+
+  reserved 8;
+}

@@ -1,0 +1,149 @@
+syntax = "proto2";
+
+package snoah.track_classifier_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/track_classifier_label";
+
+import "offboard/labeling/proto/attribute.proto";
+
+enum Category {
+  // Vehicle
+  VEH_CAR = 100;
+  VEH_VAN = 101;
+  VEH_TRUCK = 102;
+  VEH_BUS = 103;
+  VEH_CONSTRUCTION = 104;
+  VEH_EMERGENCY = 105;
+  VEH_WATERINGCART = 106;
+
+  // Pedestrian
+  PED_ADULT = 201;
+  PED_CHILD = 202;
+  PED_CONSTRUCTION = 203;
+  PED_POLICE = 204;
+
+  // Xcyclist
+  XCY_BICYCLIST = 301;
+  XCY_MOTORCYCLIST = 302;
+  XCY_TRICYCLIST = 303;
+
+  // Static
+  STA_VEGETATION = 401;
+  STA_CONE = 402;
+  STA_BARRIER = 403;
+  STA_BICYCLE = 404;
+  STA_MOTOCYCLE = 405;
+  STA_TRICYCLE = 406;
+  STA_TRAFFIC_SIGN = 407;
+  STA_GENERAL = 408;  // Anti-collision bucket, wate horse, mound ...
+  STA_WARNING_TRIANGLE = 409;
+
+  // Other
+  OTH_MIST = 501;
+  OTH_ANIMAL = 502;
+  OTH_FOD = 503;      // Leaf, plastic bag ...
+  OTH_UNKNOWN = 504;  // Unknown movable
+  OTH_CART = 505;
+  OTH_BLACK = 506;  // Object in fen black zone
+}
+
+enum Attribute {
+  // Vehicle
+  VEHATT_DOOROPEN = 100;
+  VEHATT_TRUNKOPEN = 101;
+  VEHATT_OUTSTRETCH = 102;
+  VEHATT_BRAKELIGHT = 103;
+  VEHATT_TURNLIGHT_LEFT = 104 [deprecated = true];
+  VEHATT_TURNLIGHT_RIGHT = 105 [deprecated = true];
+  VEHATT_EMERGENCY_FLASHERS = 106 [deprecated = true];
+  VEHATT_REVERSINGLIGNT = 107 [deprecated = true];
+  VEHATT_DEFORMABLE = 108;
+  VEHATT_LIGHT_BACK = 109 [deprecated = true];   // back turn light
+  VEHATT_LIGHT_FRONT = 110 [deprecated = true];  // front turn light
+  VEHATT_LIGHT_LEFT = 111 [deprecated = true];
+  VEHATT_LIGHT_RIGHT = 112 [deprecated = true];
+  VEHATT_LIGHT_HEAD_ALWAYS_ON = 113 [deprecated = true];
+  VEHATT_LIGHT_TAIL_ALWAYS_ON = 114 [deprecated = true];
+  VEHATT_LIGHT_IGNORE = 199 [deprecated = true];
+  // Pedestrian
+  PEDATT_SIT = 201;
+  PEDATT_LIE = 202;
+  PEDATT_STOOP = 203;
+  PEDATT_SQUAT = 204;
+  PEDATT_WAVE = 205;
+  PEDATT_HOLDING = 206;
+  PEDATT_PHONE = 207;
+  PEDATT_SKATING = 208;
+  PEDATT_WITH_OBJECT = 209;
+  PEDATT_UMBRELLA = 210;
+  PEDATT_RAREPOSE = 211;
+  PEDATT_HANDTOSTOP = 212;
+  PEDATT_HANDTOPROCEED = 213;
+  PEDATT_EXITINGCARS = 214;
+}
+
+enum LabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_21_10_19 = 1;  // Init version
+  V_21_12_12 = 2;
+  V_21_12_22 = 3;
+  V_22_01_12 = 4;  // Add carlight position
+  V_22_01_15 = 5;  // Add carlight sideview
+  V_22_03_29 = 6;  // Add ACE association ID switch label
+  V_22_05_10 = 7;  // Add carlight always on state
+  V_22_05_25 =
+      8;  // Update vehicle lamp attribute, deperacate carlight attribute
+}
+
+// Get label from some sensors
+message Source {
+  enum SourceType {
+    Lidar = 0;
+    Camera = 1;
+    Radar = 2;
+  }
+  optional SourceType label_source = 1;
+}
+
+// Next id: 3
+enum OcclusionType {
+  NO_OCCLUSION = 0;
+  // Less than 40% area got occluded.
+  OCCLUSION = 1;
+  // More than 40% area got occluded.
+  HEAVY_OCCLUSION = 2;
+}
+
+// For one frame
+// Next id: 10
+message TcnLabel {
+  repeated Category categories = 1;
+  repeated Attribute attributes = 2;
+  // Lack of confidience for the label
+  optional bool uncertain = 3;
+  // Multiple object have the same label
+  optional bool duplicated_obj = 4;
+  repeated Source label_sources = 5;
+  optional OcclusionType occlusion_type = 6;
+  // For model output
+  repeated Category model_categories = 7;
+  optional float model_score = 8;
+  // For ACE association
+  repeated bool measurement_matched = 9;
+
+  optional labeling.VehicleLampAttribute veh_lamp_attr = 10;
+}
+
+message TcnLabelsForTrack {
+  repeated TcnLabel labels = 1;  // Label for every frame
+  optional uint32 track_id = 2;
+  optional double state_timestamp = 3;  // Last frame
+  optional labeling.TimeType time_type = 4;
+}
+
+message TcnLabelsForRunSegment {
+  repeated TcnLabelsForTrack track_labels = 1;
+  optional string run_name = 2;
+  optional double start_offset = 3;
+  optional double duration = 4;
+  optional LabelingPolicyVersion version = 5 [default = V_22_05_25];
+}

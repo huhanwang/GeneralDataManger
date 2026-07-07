@@ -1,0 +1,63 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+package snoah.multi_camera_fusion;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/multi_camera_fusion/proto/multi_camera_fusion";
+
+import "onboard/proto/lite_camera.proto";
+
+message CurveFittingProto {
+  optional double a_value = 1;
+  optional double b_value = 2;
+  optional double c_value = 3;
+  optional double d_value = 4;
+  optional double offset = 5;
+}
+
+message RoadLaneRelativePosition {
+  enum RelativePosition {
+    RP_UNKNOWN = 0;
+    RP_LEFT = 1;
+    RP_RIGHT = 2;
+  }
+  optional RelativePosition relative_position = 1 [default = RP_UNKNOWN];
+  optional int32 index = 2;
+}
+
+enum LaneAssignmentType {
+  LAT_UNKNOWN = 0;
+  LAT_LEFT1 = 1;
+  LAT_LEFT2 = 2;
+  LAT_RIGHT1 = 3;
+  LAT_RIGHT2 = 4;
+}
+
+enum RoadWayPositionType {
+  RWPT_UNKNOWN = 0;
+  RWPT_LEFT1 = 1;
+  RWPT_CURRENT = 2;
+  RWPT_RIGHT1 = 3;
+  RWPT_NO_OUTPUT = 4;
+  RWPT_LEFT1_LINE_ON = 5;
+  RWPT_RIGHT1_LINE_ON = 6;
+}
+
+message RoadLineParameteredInfo {
+  optional CurveFittingProto curve = 1;
+  optional double start_value = 2;
+  optional double end_value = 3;
+}
+
+message CameraIdWithRoadLineParameteredInfo {
+  optional CameraId camera_id = 1;
+  optional RoadLineParameteredInfo road_line_param_info = 2;
+}

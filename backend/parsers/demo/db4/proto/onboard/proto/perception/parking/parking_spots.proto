@@ -1,0 +1,109 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/perception/parking/parking_base.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+
+// Next id： 11
+message ParkingSpotProto {
+  optional uint32 id = 1;
+  optional SpotType type = 2;
+  optional float confidence = 3;
+  optional SpotDecorationType decoration_type = 4;
+  optional bool is_wheel_stopper_available = 5;
+  optional SpotState state = 6;
+  optional OccupiedReason occupied_reason = 7;
+  repeated SpotPointProto spot_points = 8;
+  repeated WheelStopperPointProto wheel_stopper_points = 9;
+  repeated Vec2dProto space_points = 10;
+}
+
+// Next id： 12
+message FusionParkingSpotProto {
+  optional uint32 id = 1;
+  optional SpotType type = 2;
+  optional float confidence = 3;
+  optional SpotDecorationType decoration_type = 4;
+  optional bool is_wheel_stopper_available = 5;
+  optional SpotState state = 6;
+  optional OccupiedReason occupied_reason = 7;
+  repeated SpotPointProto spot_points = 8;
+  repeated WheelStopperPointProto wheel_stopper_points = 9;
+  repeated BoundaryObstacleProto boundary_obstacles = 10;
+  repeated Vec2dProto space_points = 11;
+  optional double min_vertical_road = 12;
+  optional double min_horizontal_road = 13;
+  repeated SpotPointProto spot_points_vcs = 14;
+  optional SpotDirection spot_direction = 15;
+}
+
+message ParkingRoadGeometryProto {
+  enum RoadGeometryType {
+    SPEED_BUMP = 0;           // 减速带
+    STOP_LINE = 1;            // 停止线
+    PEDESTRIAN_CROSSING = 2;  // 人行横道
+    ARROW = 3;                // 箭头
+    OTHER = 4;
+  }
+  enum ArrowType {
+    STRAIGHT = 0;                     // 箭头：直行
+    LEFT = 1;                         // 箭头：左转
+    RIGHT = 2;                        // 箭头：右转
+    AROUND = 3;                       // 箭头：掉头
+    STRAIGHT_AND_RIGHT = 4;           // 箭头：直行加右转
+    STRAIGHT_AND_LEFT = 5;            // 箭头：直行加左转
+    LEFT_AND_RIGHT = 6;               // 箭头：左右转
+    STRAIGHT_AND_LEFT_AND_RIGHT = 7;  // 箭头：直行加左右转
+    UNKNOWN = 8;                      // 箭头：其他
+  }
+  optional Box2dProto bbox = 1;
+  optional RoadGeometryType road_geometry_type = 2;
+  optional ArrowType arrow_type = 3 [default = STRAIGHT];
+  optional float score = 4;
+  optional int32 id = 5;
+}
+
+// Next id： 6
+message ParkingSpotsProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  optional CoordinateType coordinate_type = 4;
+  repeated ParkingSpotProto spots = 5;
+  repeated ParkingRoadGeometryProto road_geometries = 6;
+}
+
+// Next id： 5
+message FusionParkingSpotsProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  repeated uint32 visible_parking_spots_id_list = 3;
+  repeated FusionParkingSpotProto spots = 4;
+  optional VehiclePoseProto vehicle_pose = 5;
+  repeated FusionParkingSpotDebugProto debug_spots = 6;
+}
+
+message FusionParkingSpotDebugProto {
+  optional uint32 id = 1;
+  optional SpotType type = 2;
+  optional float confidence = 3;
+  optional SpotDecorationType decoration_type = 4;
+  optional bool is_wheel_stopper_available = 5;
+  optional SpotState state = 6;
+  optional OccupiedReason occupied_reason = 7;
+  repeated SpotPointProto spot_points = 8;
+  repeated WheelStopperPointProto wheel_stopper_points = 9;
+  repeated BoundaryObstacleProto boundary_obstacles = 10;
+  repeated Vec2dProto space_points = 11;
+  optional double min_vertical_road = 12;
+  optional double min_horizontal_road = 13;
+  repeated SpotPointProto spot_points_vcs = 14;
+  optional double free_space_x0 = 15;
+  optional double free_space_x1 = 16;
+}

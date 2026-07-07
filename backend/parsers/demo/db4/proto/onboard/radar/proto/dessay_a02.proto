@@ -1,0 +1,115 @@
+syntax = "proto2";
+
+package snoah;
+
+enum XXR_Hdr_SensorId {
+  SENSOR_ID_UNKNOWN = 0;
+  FRONT_RADAR = 1;
+  REAR_RADAR = 2;
+  FRONT_LEFT_RADAR_CORNER = 3;
+  FRONT_RIGHT_RADAR_CORNER = 4;
+  REAR_LEFT_RADAR_CORNER = 5;
+  REAR_RIGHT_RADAR_CORNER = 6;
+  RESERVE = 7;
+}
+
+enum XXR_Hdr_BlkSts {
+  NONE_BLOCKAGE = 0;
+  BLOCKAGE_ACTIVE = 1;
+}
+
+enum XXR_Hdr_Radar_Status {
+  NOT_A_ACTIVE = 0;
+  ON = 1;
+  RADAR_SUPPLY_VOLTAGE_ERROR = 2;
+  CAN_COMMUNICATION_ERROR = 3;
+  RADAR_INTERNAL_FAILURES = 4;
+  RADAR_ALIGNMENT_ERROR = 5;
+  VEHICLE_TYPE_CONFIGURATION_ERROR = 6;
+  OTHER_FAULTS = 7;
+}
+
+message XXR_SensorState {
+  optional uint32 xxr_hdr_crc = 1;
+  optional uint32 xxr_hdr_rollcounter = 2;
+  optional uint32 xxr_hdr_stamp_s = 3;
+  optional uint32 xxr_hdr_stamp_ms = 4;
+  optional XXR_Hdr_SensorId sensor_id = 5;
+  optional XXR_Hdr_BlkSts blockage_status = 6;
+  optional XXR_Hdr_Radar_Status radar_status = 7;
+  optional uint32 xxr_hdr_timestamp_status = 8;
+  optional uint32 xxr_hdr_obj_objectnum = 9;
+  optional uint32 xxr_hdr_obj_timelatency = 10;
+  optional uint32 xxr_hdr_obj_objectdownsel = 11;
+  optional uint32 xxr_hdr_alig_pitchoutofspec = 12;
+  optional uint32 xxr_hdr_alig_yawoutofspec = 13;
+  optional uint32 xxr_hdr_sgufail = 14;
+  optional uint32 xxr_hdr_blockcount = 15;
+}
+
+enum XXR_Object_Class {
+  XXR_OBJECT_CLASS_UNKNOWN = 0;
+  XXR_PEDESTRAIN = 1;
+  XXR_BICYCLE_MOTORCYCLE = 2;
+  XXR_CAR = 3;
+  XXR_TRTRUCK = 4;
+  XXR_OBSTACLE = 5;
+}
+
+enum XXR_Object_Motion_Status {
+  XXR_STATIONARY = 0;
+  XXR_STOP = 1;
+  XXR_HOMODROMOUS = 2;
+  XXR_REVERSE = 3;
+  XXR_CROSSING = 4;
+  XXR_STATUE_UNKNOWN = 5;
+}
+
+enum XXR_Object_Measured {
+  XXR_DELETED = 0;
+  XXR_NEW = 1;
+  XXR_MEASURED = 2;
+  XXR_PREDICTED = 3;
+}
+
+message XXR_Obj {
+  optional uint32 xxr_hdr_crc = 1;
+  optional uint32 xxr_hdr_rollcounter = 2;
+  optional uint32 xxr_object_id = 3;
+  optional XXR_Object_Class object_class = 4;
+  optional float xxr_object_probability = 5;
+  optional float xxr_object_distance_y = 6;
+  optional float xxr_object_distance_x = 7;
+  optional float xxr_object_relat_vel_y = 8;
+  optional float xxr_object_relat_vel_x = 9;
+  optional float xxr_object_acceleration_y = 10;
+  optional float xxr_object_acceleration_x = 11;
+  optional XXR_Object_Motion_Status object_motion_status = 12;
+  optional float xxr_object_length = 13;
+  optional float xxr_object_width = 14;
+  optional float xxr_object_height = 15;
+  optional XXR_Object_Measured object_measured = 16;
+  optional float xxr_object_dx_vnce = 17;
+  optional float xxr_object_dy_vnce = 18;
+  optional float xxr_object_vx_vnce = 19;
+  optional float xxr_object_vy_vnce = 20;
+  optional float xxr_object_ax_vnce = 21;
+  optional float xxr_object_ay_vnce = 22;
+  optional float xxr_object_heading_yaw_angle = 23;
+  optional float xxr_object_head_yaw_ang_vnce = 24;
+  optional float xxr_object_length_vnce = 25;
+  optional float xxr_object_width_vnce = 26;
+  optional float xxr_object_height_vnce = 27;
+  optional uint32 xxr_object_life_cycles = 28;
+  optional float xxr_object_obj_rcs = 29;
+  optional float xxr_object_w_obstacle = 30;
+  optional uint32 xxr_hdr_blockcount = 31;
+}
+
+// RadarType
+message DESSAYA02 {
+  optional uint32 frame_id = 1;
+  optional double timestamp = 2;
+  optional XXR_SensorState sensor_state = 3;
+  optional XXR_Obj obj = 4;
+}

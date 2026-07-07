@@ -1,0 +1,32 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+message AebSceneInfo {
+  enum AnomalyScene {
+    kDefault = 0;
+    kAnomalyVel = 1;
+    kAnomalyAcc = 2;
+    kAnomalyHeading = 3;
+    kAnomalyFp = 4;
+  }
+  optional AnomalyScene anomaly_scene = 1 [default = kDefault];
+  enum CriticalScene {
+    kUnknown = 0;
+    kDensePed = 1;
+    kPedCloseToVehicle = 2;
+  }
+  optional CriticalScene critical_scene = 2 [default = kUnknown];
+}

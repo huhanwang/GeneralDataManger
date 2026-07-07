@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package snoah;
+
+message ParamServiceStrategys {
+  repeated ParamServiceStrategyProto param_service_strategy_protos = 1;
+  optional bool need_external_params_convert = 2;
+}
+
+message ParamServiceStrategyProto {
+  enum SaveParamType {
+    REALTIME = 1;
+    SCHEDULED = 2;
+    EXITING = 3;
+  }
+  enum CalibrationScene {
+    NORMAL_SCENE = 1;
+    CALIBRATION_PRODUCTION = 2;
+    CALIBRATION_RELEASE = 3;
+  }
+  optional CalibrationScene calibration_scene = 1;
+  optional SaveParamType save_param_type = 2;
+}

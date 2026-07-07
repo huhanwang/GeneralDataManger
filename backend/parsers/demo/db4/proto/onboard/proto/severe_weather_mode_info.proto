@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package snoah;
+
+enum SEVERE_WEATHER_MODE {
+  SEVERE_WEATHER_MODE_NONE = 0;
+  SEVERE_WEATHER_MODE_ACTIVATION = 1;
+  SEVERE_WEATHER_MODE_SPEED = 2;
+  SEVERE_WEATHER_MODE_SPEED_DISTANCE = 3;
+}
+
+message SEVERE_WEATHER_MODE_INFO {
+  optional SEVERE_WEATHER_MODE severe_weather_mode = 1;
+  optional bool is_severe_weather = 2;
+}

@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package snoah.mapping.non_odd;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/dynamic_layer/proto/non_odd.proto";
+
+message NonOddEvent {
+  optional Reason reason = 1;
+  // Less than 0 means that the non-odd area has been crossed.
+  optional double dist_to_start = 2;
+  optional double dist_to_end = 3;
+}
+
+message NonOddEventsProto {
+  optional LiteHeader header = 1;
+  // Sort by distance from nearest to far.
+  repeated NonOddEvent nodd_events = 2;
+}

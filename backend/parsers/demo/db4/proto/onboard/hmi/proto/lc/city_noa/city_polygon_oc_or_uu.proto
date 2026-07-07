@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+import "onboard/hmi/proto/lc/common.proto";
+
+enum CityPolygonType {
+  CityPolygon_TYPE_NONE = 0;
+  CityPolygon_TYPE_UU = 1;
+  CityPolygon_TYPE_OC_FENCE = 2;
+  CityPolygon_TYPE_OC_GENERAL = 3;
+}
+
+enum CityPolygonColor {
+  CityPolygon_COLOR_NONE = 0;
+  CityPolygon_COLOR_YELLOW = 1;  // reserve
+  CityPolygon_COLOR_RED = 2;     // lidar uu 功能目标
+}
+
+message UUorOC {
+  optional string id = 1;
+  optional CityPolygonType type = 2;
+  repeated Point2D uuoroc_polygon = 3;
+  optional Point2D center_point = 4;
+  optional double heading_angle = 5;
+  optional CityPolygonColor color = 6;
+}

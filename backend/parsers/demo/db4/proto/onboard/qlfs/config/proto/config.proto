@@ -1,0 +1,72 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message QlfsDbConfigProto {
+  message MysqlConfig {
+    optional string server = 1;
+    optional string username = 2;
+    optional string password = 3;
+    optional string database = 4;
+  }
+
+  optional MysqlConfig mysql = 1;
+}
+
+message QlfsFileSystemConfigProto {
+  message LocalConfigProto {
+    optional string work_dir = 1;
+  }
+  message LocalTransferConfig {
+    optional string local_work_dir = 1;
+    optional string remote_work_dir = 2;
+  }
+  message AliYunTransferConfig {
+    optional string access_key_id = 1;
+    optional string access_key_secret = 2;
+    optional string endpoint = 3;
+    optional string bucket_name = 4;
+    optional string local_work_dir = 5;
+    optional int32 worker_num = 6;
+    optional int32 request_timeout_in_ms = 7;
+    optional int32 connect_timeout_in_ms = 8;
+  }
+  enum FileStorageType {
+    LOCAL = 0;
+    ALIYUN = 1;
+  }
+  optional LocalConfigProto local = 1;
+  optional LocalTransferConfig local_transfer = 2;
+  optional AliYunTransferConfig aliyun_transfer = 3;
+  optional FileStorageType storage_type = 4;
+  optional int32 compute_sha_thread_num = 5;
+}
+
+message QlfsServiceConfigProto {
+  optional int32 port = 1;
+  optional string ip = 2;
+  optional bool first_run = 3;
+  optional int32 message_size_in_mb = 4;
+  optional int32 max_upload_file_size_in_mb = 5;
+}
+
+message QlfsCacheServerConfigProto {
+  optional int32 port = 1;
+  optional string ip = 2;
+  optional int32 message_size_in_mb = 3;
+  optional string work_dir = 4;
+  optional int32 chunk_size = 5;
+  optional string city = 6;
+}
+
+message QlfsLibraryConfigProto {
+  optional string work_dir = 1;
+}
+
+message QlfsConfigProto {
+  optional QlfsDbConfigProto db = 1;
+  optional QlfsFileSystemConfigProto file_system = 2;
+  optional QlfsServiceConfigProto service_config = 3;
+  repeated QlfsCacheServerConfigProto cache_server_config = 4;
+  optional QlfsLibraryConfigProto library_config = 5;
+}

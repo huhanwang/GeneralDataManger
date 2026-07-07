@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message FilePathProto {
+  optional string path = 1;
+  optional string sha = 2;
+}
+
+message FilePathGroupProto {
+  repeated FilePathProto paths = 1;
+}

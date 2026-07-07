@@ -1,0 +1,76 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/perception/vision/traffic_sign.proto";
+
+message IntelligentSpeedLimitProto {
+  optional int32 id = 1;
+  optional int32 box_center_x = 2;
+  optional int32 box_center_y = 3;
+  optional int32 box_width = 4;
+  optional int32 box_height = 5;
+  optional float distance = 6;
+
+  // Next ID: 6
+  enum Category {
+    MAXIMUM_SPEED_LIMIT = 0;
+    MINIMUM_SPEED_LIMIT = 1;
+    REGION_SPEED_LIMIT = 2;
+    SPEED_LIMIT_CANCEL = 3;
+    REGION_SPEED_LIMIT_CANCEL = 4;
+    MAXIMUM_SPEED_LIMIT_RAMP = 5;
+  }
+  optional Category category = 7;
+
+  // Next ID: 11
+  enum SpeedLimitNumber {
+    SPEED_LIMIT_20 = 0;
+    SPEED_LIMIT_30 = 1;
+    SPEED_LIMIT_40 = 2;
+    SPEED_LIMIT_50 = 3;
+    SPEED_LIMIT_60 = 4;
+    SPEED_LIMIT_70 = 5;
+    SPEED_LIMIT_80 = 6;
+    SPEED_LIMIT_90 = 7;
+    SPEED_LIMIT_100 = 8;
+    SPEED_LIMIT_110 = 9;
+    SPEED_LIMIT_120 = 10;
+    SPEED_LIMIT_5 = 11;
+    SPEED_LIMIT_10 = 12;
+  }
+  optional SpeedLimitNumber speed_limit_number = 8;
+
+  optional bool if_belong_to_current_lane = 9;
+
+  optional bool box_tl_visbility = 10;  // Box top left point.
+  optional bool box_tr_visbility = 11;  // Box top right point.
+  optional bool box_bl_visbility = 12;  // Box bottom left point.
+  optional bool box_br_visbility = 13;  // Box bottom right point.
+
+  optional Vec3dProto position = 14;                // position of vcs
+  optional float confidence = 15;                   // Confidence
+  optional TrafficSignTrackState track_state = 16;  // Track state
+  optional Vec3dProto smooth_position = 17;         // Position under smooth
+
+  enum IntelligentSpeedLimitType {
+    NORMAL = 0;
+    ELECTRONICAL = 1;
+  }
+  optional IntelligentSpeedLimitType speed_limit_sign_type = 18;
+  optional float width = 19;   // 3d
+  optional float height = 20;  // 3d
+}

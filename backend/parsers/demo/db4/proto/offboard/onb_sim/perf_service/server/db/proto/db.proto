@@ -1,0 +1,94 @@
+syntax = "proto2";
+
+package snoah.onbsim.perf;
+
+import "offboard/onb_sim/common/proto/sim.proto";
+
+enum State {
+  QUEUE_FOR_PREPARE = 1;
+  BUILD_PACKAGE = 2;
+  PREPARE_SCENARIO = 3;
+
+  QUEUE_FOR_RUNNING = 4;
+  RUNNING = 5;
+
+  FAILED = 6;
+  HAS_KICKOUT = 7;
+  SUCCESS = 8;
+
+  CANCEL = 9;
+
+  WAIT_FOR_CI_BUILD = 10;
+}
+
+message TaskProto {
+  optional int64 id = 1;
+  optional string run = 2;
+  optional int64 start_offset_in_seconds = 3;
+  optional int64 run_length_in_seconds = 4;
+  optional snoah.onbsim.SimType simulate_type = 21;
+  optional string branch_and_commit = 6;
+  optional State state = 8;
+  optional string result_url = 9;
+  optional string author = 10;
+  optional int64 start_timestamp = 11;
+  optional int64 finish_timestamp = 12;
+  optional int64 time_cost_in_seconds = 13;
+  optional int64 priority = 14;
+  optional int64 engage_offset_in_seconds = 15;
+  optional int64 use_tb = 16;
+  optional string collect_ftrace_offset_in_seconds = 17;
+  optional string release_tag = 18;
+  optional int64 base_task_id = 19;
+  optional string commit_message = 20;
+  optional string fdo_option = 22;
+  optional string playback_device = 23;
+  optional string launch_plan_name = 24;
+  optional string gflags_override = 25 [default = ""];
+  optional string enable_modules = 26 [default = "NULL"];
+  optional string disable_modules = 27 [default = "NULL"];
+  optional int64 is_upload = 28 [default = 0];
+  optional string task_flags = 29 [default = "NULL"];
+
+  reserved 5, 7;
+}
+
+message DeviceProto {
+  optional string name = 1;
+  optional string user = 2;
+  optional string ip = 3;
+  optional string code_root = 4;
+  optional bool in_use = 5;
+}
+
+message DeploySummaryProto {
+  optional string name = 1;
+  optional string type = 2;
+  optional string release_tag = 3;
+  optional string from = 4;
+  optional string to = 5;
+  optional int64 size_in_kb = 6;
+  optional int64 time_cost_in_seconds = 7;
+  optional string time = 8;
+  optional bool success = 9 [default = true];
+}
+
+message BumpSummaryProto {
+  optional string name = 1;
+  optional int32 prune = 2;
+  optional int32 pull = 3;
+  optional int32 pull_file_num = 4;
+  optional int32 pull_file_size = 5;
+  optional int32 checkout = 6;
+  optional int32 rsync = 7;
+  optional int32 commit = 8;
+  optional int32 push = 9;
+  optional int32 push_file_num = 10;
+  optional int32 push_file_size = 11;
+  optional int32 release = 12;
+  optional bool success = 13;
+  optional string error_info = 14;
+  optional int32 other = 15;
+  optional int32 total = 16;
+  optional string timestr = 17;
+}

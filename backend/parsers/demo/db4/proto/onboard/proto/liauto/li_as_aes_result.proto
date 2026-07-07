@@ -1,0 +1,263 @@
+
+syntax = "proto2";
+
+package snoah.li.aeb;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/liauto/li_as_seq_debug.proto";
+import "onboard/proto/liauto/li_as_common.proto";
+import "onboard/proto/liauto/li_as_control_debug.proto";
+
+message CIPV {
+  optional double timestamp = 1;
+  optional uint32 fusion_track_id = 2;
+  optional uint32 vision_track_id = 3;
+  optional double L_long_rel = 4;
+  optional double C_long_rel = 5;
+  optional double V_long_obj = 6;
+  optional double A_long_obj = 7;
+  optional double L_lat_rel = 8;
+  optional double C_lat_rel = 9;
+  optional double V_lat_obj = 10;
+  optional double A_lat_obj = 11;
+  optional double width = 12;
+  optional double length = 13;
+  optional double heading = 14;
+  optional int32 object_class = 15;      // octet
+  optional int32 detection_sensor = 16;  // octet
+  optional int32 status = 17;            // octet
+  optional int32 movement = 18;          // octet
+  optional double xolc = 19;
+  optional uint32 age = 20;
+  optional double overlap_current = 21;
+  optional double overlap_on_ttc = 22;
+}
+
+message AesSteeringDebug {
+  optional double critical_distance_to_obj = 1;
+  optional double distance_to_obj_after_preview = 2;
+  optional double tolerance = 3;
+  optional double window = 4;
+  optional double displacement_x = 5;
+  optional double delay_buffer = 6;
+  optional double turn_direction = 7;
+  optional double vehicle_R_min = 8;
+  optional double obstacle_pos_y_predicted = 9;
+  optional float ego_r = 10;
+  optional bool is_too_late_to_turn = 11;
+  optional bool is_close_to_critical_point = 12;
+  optional bool is_last_chance_to_turn = 13;
+  optional float obs_center_x = 14;
+  optional float obs_center_y = 15;
+  optional float obstacle_r = 16;
+}
+
+message AesCollisionDebug {
+  optional double final_velocity = 1;
+  optional double ttc_without_brake = 2;
+  optional double ttc_with_fullbrake = 3;
+  optional double ax_abs_ego_current = 4;
+  optional double dx_current = 5;
+}
+
+message AesEvaluateDebug {
+  optional CIPV cipv = 1;
+  optional AesSteeringDebug steer_debug = 2;
+  optional AesCollisionDebug collision_debug = 3;
+}
+
+message DriverIntention {
+  optional bool is_driver_small_brake = 1;
+  optional bool is_driver_heavy_brake = 2;
+  optional bool is_driver_want_to_accelerate = 3;
+  optional bool is_driver_heavy_accelerate = 4;
+  optional bool is_driver_heavy_accelerate_rate = 5;
+  optional bool is_driver_want_to_escape = 6;
+  optional bool is_driver_heavy_steer_angle = 7;
+}
+
+message LaneCondition {
+  optional bool is_lane_reverse = 1;
+  optional bool is_lane_slope = 2;
+  optional bool is_lane_curve = 3;
+  optional bool is_lane_structured = 4;
+  optional bool is_lane_intersection = 5;
+  optional bool is_lane_split_merge = 6;
+  optional bool is_lane_width_narrow = 7;
+}
+
+message SocialScene {
+  optional bool is_oncoming_overtaking = 1;
+  optional bool is_threatobstacle_cutin = 2;
+  optional bool is_threatobstacle_crossing = 3;
+}
+
+message AesScene {
+  optional DriverIntention driver_intention = 1;
+  optional LaneCondition lane_condition = 2;
+  optional SocialScene social_scene = 3;
+}
+
+message EsaConditions {
+  optional bool is_steering_trque_ok = 1;
+  optional bool is_steering_speed_ok = 2;
+  optional bool is_steering_angle_ok = 3;
+  optional bool is_steering_trque_gradient_ok = 4;
+  optional bool is_steering_trque_diff_ok = 5;
+  optional bool is_steering_angle_diff_ok = 6;
+  optional bool is_lateral_acc_diff_ok = 7;
+}
+
+message LastestTurnRes {
+  optional bool is_too_late_to_turn = 1;
+  optional bool is_close_to_critical_point = 2;
+  optional bool is_last_chance_to_turn = 3;
+  optional double obs_center_x = 4;
+  optional double obs_center_y = 5;
+  optional double ego_r = 6;
+  optional double obstacle_r = 7;
+  optional double distance_to_obstacle_after_preview = 8;
+  optional double critical_distance_to_obstacle = 9;
+  optional double tolerance = 10;
+  optional double window = 11;
+}
+
+message AesBoundaryEvaluate {
+  optional LastestTurnRes lastest_turn_res = 1;
+}
+
+message AesStateMachineCondition {
+  optional bool is_aeb_trigger = 1;
+  optional bool is_brake_applied = 2;
+  optional bool is_same_CIPV = 3;
+  optional bool is_same_fcw_object = 4;
+  optional bool is_oncoming = 5;
+  optional bool is_planning_ok = 6;
+  optional bool is_eps_ok = 7;
+  optional bool is_failsafe_ok = 8;
+  optional bool is_failsafe_error = 9;
+  optional bool is_envmodel_ok = 10;
+  optional bool is_switch_on = 11;
+  optional bool is_too_late_to_turn = 12;
+  optional bool is_too_late_to_esa = 13;
+  optional bool is_aeb_notable_to_safestop = 14;
+  optional bool has_CIPV = 15;
+  optional bool is_ttc_reached = 16;
+  optional bool is_speed_ok = 17;
+  optional bool is_close_to_critical_point = 18;
+  optional AesScene aes_scene = 19;
+  optional bool is_acc_active = 20;
+  optional bool is_lka_active = 21;
+  optional bool is_last_chance_to_turn = 22;
+  optional bool is_reference_line_enough_long = 23;
+  optional bool is_reference_line_enough_long_long = 24;
+  optional bool is_control_ok = 25;
+  optional AesBoundaryEvaluate aes_boundary_evaluate = 26;
+  optional bool is_esa_precondition_ok = 27;
+  optional bool is_fcw_trigger = 28;
+  optional EsaConditions esa_conditions = 29;
+  optional bool is_trajectory_direction_ok = 30;
+  optional bool is_driver_need_assistance = 31;
+  optional bool is_aes_trajectory_ok = 32;
+  optional bool is_esa_trajectory_ok = 33;
+  optional bool is_overlap_ok = 34;
+  optional uint32 reserved_condition_bit_status = 35;
+}
+
+message AesSuppressDebug {
+  optional bool environment_not_ok = 1;
+  optional bool hu_rainy_mode = 2;
+  optional bool heavy_rain = 3;
+  optional bool chassis_stable_func_activated = 4;
+  optional bool decider_unstable = 5;
+  optional bool has_vru = 6;
+  optional bool exceed_min_overlap = 7;
+  optional bool reverse_lane = 8;
+  optional bool upstream_comm_timeout = 9;
+  optional double road_adhesion = 10;
+  optional uint32 chassis_func_suppress_time = 11;
+  optional bool current_overlap_small = 12;
+  optional bool dangerous_neighbour_cars = 13;
+  optional bool chassis_friction_suppress = 14;
+  optional bool low_friction_suppress_keep = 15;
+  optional bool vlm_snowy = 16;
+  optional uint32 reserved_suppress_bit_status = 17;
+}
+
+message AesStateOverrideDebug {
+  optional bool driver_torque_intention = 1;
+  optional bool driver_brake_intention = 2;
+  optional bool driver_acc_intention = 3;
+  optional bool eps_handshake_outime_flag = 4;
+  optional bool eps_break_flag = 5;
+}
+
+message AesStateDebug {
+  optional AesStateMachineCondition conditions_debug = 1;
+  optional AesStateOverrideDebug override_debug = 2;
+  optional uint32 state_counter = 3;
+}
+
+message SafetyCheckDebug {
+  repeated PathPoint vcs_points = 1;  // sequence<PathPoint>
+  optional bool heading_check_fail = 2;
+  optional double max_heading = 3;
+  optional double init_ego_heading = 4;
+  optional bool velocity_check_fail = 5;
+  optional double point_lateral_acc = 6;
+  optional bool curvature_check_fail = 7;
+  optional double max_curvature = 8;
+  optional bool position_check_fail = 9;
+  optional bool out_of_limit = 10;
+  optional double max_y = 11;
+  optional double min_y = 12;
+  optional double y = 13;
+  optional uint32 descend_point_num = 14;
+  optional double trajectory_max_y = 15;
+  optional bool is_staight_line = 16;
+  optional bool stable_check_fail = 17;
+  optional double mean_trajectory_lat_pos = 18;
+  optional bool sl_check_fail = 19;
+  optional bool along_reference_line = 20;
+  optional bool no_direction = 21;
+}
+
+message AescoreDebug {
+  optional AesSuppressDebug suppress_debug = 1;
+  optional AesEvaluateDebug evaluate_debug = 2;
+  optional SafetyCheckDebug safety_check_debug = 3;
+  optional AesStateDebug state_debug = 4;
+}
+
+enum MainState {
+  OFF = 0;
+  ON = 1;
+  ERROR = 2;
+}
+
+enum SubState {
+  SUB_STATE_PASSIVE = 0;
+  SUB_STATE_STANDBY = 1;
+  SUB_STATE_ACTIVE = 2;
+  SUB_STATE_LANEKEEP = 3;
+  SUB_STATE_ESA = 4;
+}
+
+message AescoreResult {
+  optional MainState aes_main_state = 1;
+  optional SubState aes_sub_state = 2;
+  optional int32 main_state = 3;        // octet -> int32
+  optional int32 sub_state = 4;         // octet -> int32
+  optional bool is_aes_activated = 5;   // boolean -> bool
+  optional bool is_enable_control = 6;  // boolean -> bool
+  optional AescoreDebug aescore_debug = 7;
+}
+
+message AesResultProto {
+  optional LiteHeader header = 1;
+  optional LiHeader li_header = 2;
+  optional AescoreResult aescore_result = 3;
+  optional ControlCommand aes_control_command = 4;
+  repeated AsSeqDebug aes_result_seq_debug =
+      5;  // sequence<AsSeqDebug> -> repeated
+}

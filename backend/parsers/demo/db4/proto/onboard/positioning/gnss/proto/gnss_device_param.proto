@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package snoah;
+
+message GnssDeviceParamProto {
+  optional double horizontal_position_variance = 1;
+  optional double vertical_position_variance = 2;
+  optional double heading_variance = 3;
+  optional double theta_xy_variance = 4;
+  optional double data_rate_hz = 5;
+  optional double horizontal_velocity_variance = 6;
+  optional double vertical_velocity_variance = 7;
+
+  // PPP service.
+  // Refer to onboard/positioning/drivers/data/rtk_params.pb.txt for valid
+  // values.
+  optional string rtk_service = 8;
+}

@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/run/release";
+
+option java_multiple_files = true;
+option java_package = "ai.qcraft.common.run";
+
+// Relase version information.
+message ReleaseInfo {
+  // version in the git, can be sha, or tag.
+  optional string git_tag = 1;
+
+  // should be remove from here , it is not release related.
+  map<string, string> commandline_flag = 2;
+
+  // info from release according to the country
+  optional string release_country = 3;
+  optional string release_tag = 4;
+  optional string release_xavier_tag = 5;
+  optional string release_map_sha = 6;
+  optional string release_map_folder = 7;
+  optional string release_map_qlfs_sha = 8;
+  optional string release_vehicle_commit = 9;
+}

@@ -1,0 +1,31 @@
+
+syntax = "proto2";
+
+package snoah.planner.ml;
+
+enum PlannerObjectType {
+  OR_VOID = 0;
+  OR_CUTIN = 1;
+  OR_LEADING = 2;
+  OR_LEFT_FIRST = 3;
+  OR_LEFT_SECOND = 4;
+  OR_LEFT_THIRD = 5;
+  OR_RIGHT_FIRST = 6;
+  OR_RIGHT_SECOND = 7;
+  OR_RIGHT_THIRD = 8;
+  OR_EMERGENCY = 9;
+  OR_OTHERS = 10;
+}
+
+message AgentTrajectoryGroundTruth {
+  optional string object_id = 1;
+  // gt points in metres ([sequence, 2])
+  repeated float gt_xy_points = 2;
+  optional PlannerObjectType object_type = 3;
+  // Timestemps in seconds ([sequence, 1])
+  repeated float gt_ts = 4;
+  // laterals in metres ([sequence, 1])
+  repeated float gt_laterals = 5;
+  // longitude in metres ([sequence, 1])
+  repeated float gt_longitudes = 6 [packed = true];
+}

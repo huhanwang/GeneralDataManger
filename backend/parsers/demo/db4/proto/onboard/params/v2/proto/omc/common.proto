@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package snoah;
+
+enum OmcModel {
+  OMC_X86 = 1;
+  OMC_DRIVER_XAVIER = 2;
+  OMC_JETSON_ORIN = 3;
+  OMC_DRIVER_ORIN = 4;
+  OMC_J5 = 5;
+  OMC_X9HP = 6;
+  OMC_X9U = 7;
+  OMC_S32G = 8;
+  OMC_ORIN_COOKOO = 9;
+  OMC_J6 = 10;
+  OMC_QUA8775 = 11;
+}
+
+message OmcCommonProto {}

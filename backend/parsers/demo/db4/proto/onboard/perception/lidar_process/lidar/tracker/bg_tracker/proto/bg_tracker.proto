@@ -1,0 +1,19 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/tracker/bg_tracker/proto/bg_tracker";
+
+message BgTrackMatcherConfig {
+  optional float center_dist_thresh = 1 [default = 5.0];
+  optional float area_thresh = 2 [default = 0.1];
+  optional float score_thresh = 3 [default = 0.1];
+  optional float decay_ratio = 4 [default = 0.9];
+  optional string method = 5 [default = "loose"];
+}
+
+message MultiBgTargetTrackerConfig {
+  optional int32 maximum_consecutive_invisible_count = 1 [default = 5];
+  optional int32 concave_hull_dim = 2 [default = 2];
+  optional float concave_hull_alpha = 3 [default = 0.75];
+  optional float concave_hull_range_x = 4 [default = 10.0];
+  optional float concave_hull_range_y = 5 [default = 10.0];
+}

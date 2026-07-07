@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message LcSdRoadHorizonProto {
+  message Global {
+    optional bool reset_signal = 1;
+  }
+  optional LiteHeader header = 1;
+  optional Global global = 2;
+}

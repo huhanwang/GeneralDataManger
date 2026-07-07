@@ -1,0 +1,51 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message TraceEventProto {
+  optional string name = 1;
+  message Arg {
+    optional string key = 1;
+    optional string value = 2;
+  };
+  repeated Arg args = 2 [deprecated = true];
+  optional double start = 3;
+  optional double end = 4;
+
+  optional string key1 = 5;
+  optional string value1 = 6;
+  optional string key2 = 7;
+  optional string value2 = 8;
+  optional string key3 = 9;
+  optional string value3 = 10;
+  optional int32 num_args = 11;
+}
+
+message TraceEventsPerThreadProto {
+  optional string thread_id = 1;
+  repeated TraceEventProto trace_events = 2;
+  optional string process_id = 3;
+}
+
+message MetaEventProto {
+  optional string process_id = 1;
+  optional string thread_id = 2;
+  optional string process_name = 3;
+  optional string thread_name = 4;
+  optional double mono_ts = 5;
+  optional double ts = 6;
+}
+
+message TraceProto {
+  optional LiteHeader header = 1;
+  optional string module = 2;
+  repeated TraceEventsPerThreadProto trace = 3;
+  optional string description = 4;
+  repeated MetaEventProto meta_event = 6;
+  optional bytes kernel_event = 7;
+  optional int64 timestamp_ms = 8;  // Start timestamp for the dump, in order to
+                                    // align the trace and ftrace
+}

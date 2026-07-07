@@ -1,0 +1,396 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+import "onboard/planner/initializer/proto/initializer.proto";
+
+message InitializerConfig {
+  optional int32 traj_steps = 12;
+
+  enum SearchAlgorithm {
+    DP = 2;
+    Astar = 3;
+    reserved 1;
+  }
+  optional SearchAlgorithm search_algorithm = 1;
+
+  message DpFeatureCostConfig {
+    message DpAccelerationFeature {
+      // Weight.
+      optional double accel = 1;
+    }
+
+    message DpLaneBoundaryFeature {
+      // Weight.
+      optional double ref_center = 1;
+      optional double inner_bound = 2;
+      optional double outer_bound = 3;
+    }
+    message DpCurvatureFeautre {
+      // Weight.
+      optional double curvature = 1;
+    }
+    message DpLateralAcclerationFeature {
+      // Weight.
+      optional double acc_hard = 1;
+      optional double acc_soft = 2;
+      optional double jerk = 3;
+    }
+
+    message DpStopConstraintFeature {
+      // Weight.
+      optional double stop_constraint = 1;
+    }
+
+    message DpRefSpeedFeature {
+      // Weight.
+      optional double exceeds_speed_limit = 1;
+      optional double exceeds_ref_speed = 2;
+      optional double below_ref_speed = 3;
+    }
+
+    message DpDynamicCollisionFeature {
+      // Weight.
+      optional double collision_cost = 1;
+    }
+
+    message DpLeadingObjectFeature {
+      // Weight.
+      optional double leading_object = 1;
+    }
+
+    message DpRefTrajectoryFeatureCost {
+      // Weight.
+      optional double ref_traj = 1;
+    }
+
+    message DpFinalProgressFeature {
+      // Weight.
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    message DpNudgeStableFeature {
+      // Weight.
+      optional double nudge_stable = 1;
+    }
+
+    message DpSearchFeatures {
+      optional DpAccelerationFeature dp_acceleration = 1;
+      optional DpLaneBoundaryFeature dp_lane_boundary = 2;
+      optional DpLateralAcclerationFeature dp_lateral_acceleration = 3;
+      optional DpStopConstraintFeature dp_stop_constraint = 4;
+      optional DpRefSpeedFeature dp_ref_speed = 5;
+      optional DpDynamicCollisionFeature dp_dynamic_collision = 6;
+      optional DpCurvatureFeautre dp_curvature = 7;
+      optional DpLeadingObjectFeature dp_leading_object = 8;
+      optional DpRefTrajectoryFeatureCost dp_ref_traj = 9;
+      optional DpFinalProgressFeature dp_final_progress = 10;
+      optional DpNudgeStableFeature dp_nudge_stable = 11;
+    }
+
+    message DpEvaluateFeatures {
+      optional DpAccelerationFeature eval_dp_acceleration = 1;
+      optional DpLaneBoundaryFeature eval_dp_lane_boundary = 2;
+      optional DpLateralAcclerationFeature eval_dp_lateral_acceleration = 3;
+      optional DpStopConstraintFeature eval_dp_stop_constraint = 4;
+      optional DpRefSpeedFeature eval_dp_ref_speed = 5;
+      optional DpDynamicCollisionFeature eval_dp_dynamic_collision = 6;
+      optional DpCurvatureFeautre eval_dp_curvature = 7;
+      optional DpLeadingObjectFeature eval_dp_leading_object = 8;
+      optional DpRefTrajectoryFeatureCost eval_dp_ref_traj = 9;
+      optional DpFinalProgressFeature eval_dp_final_progress = 10;
+    }
+
+    optional DpSearchFeatures dp_search_features = 1;
+    optional DpEvaluateFeatures dp_evaluate_features = 2;
+
+    reserved 8, 9;
+  }
+
+  message AstarFeatureCostConfig {
+    message AstarAccelerationFeature {
+      // Weight.
+      optional double accel = 1;
+    }
+
+    message AstarLaneBoundaryFeature {
+      // Weight.
+      optional double ref_center = 1;
+      optional double inner_bound = 2;
+      optional double outer_bound = 3;
+    }
+    message AstarCurvatureFeautre {
+      // Weight.
+      optional double curvature = 1;
+    }
+    message AstarLateralAcclerationFeature {
+      // Weight.
+      optional double acc_hard = 1;
+      optional double acc_soft = 2;
+      optional double jerk = 3;
+    }
+
+    message AstarStopConstraintFeature {
+      // Weight.
+      optional double stop_constraint = 1;
+    }
+
+    message AstarRefSpeedFeature {
+      // Weight.
+      optional double exceeds_speed_limit = 1;
+      optional double exceeds_ref_speed = 2;
+      optional double below_ref_speed = 3;
+    }
+
+    message AstarDynamicCollisionFeature {
+      // Weight.
+      optional double collision_cost = 1;
+    }
+
+    message AstarLeadingObjectFeature {
+      // Weight.
+      optional double leading_object = 1;
+    }
+
+    message AstarRefTrajectoryFeatureCost {
+      // Weight.
+      optional double ref_traj = 1;
+    }
+
+    message AstarFinalProgressFeature {
+      // Weight.
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    message AstarNudgeStableFeature {
+      // Weight.
+      optional double nudge_stable = 1;
+    }
+
+    message AstarSearchFeatures {
+      optional AstarAccelerationFeature astar_acceleration = 1;
+      optional AstarLaneBoundaryFeature astar_lane_boundary = 2;
+      optional AstarLateralAcclerationFeature astar_lateral_acceleration = 3;
+      optional AstarStopConstraintFeature astar_stop_constraint = 4;
+      optional AstarRefSpeedFeature astar_ref_speed = 5;
+      optional AstarDynamicCollisionFeature astar_dynamic_collision = 6;
+      optional AstarCurvatureFeautre astar_curvature = 7;
+      optional AstarLeadingObjectFeature astar_leading_object = 8;
+      optional AstarRefTrajectoryFeatureCost astar_ref_traj = 9;
+      optional AstarFinalProgressFeature astar_final_progress = 10;
+      optional AstarNudgeStableFeature astar_nudge_stable = 11;
+    }
+
+    message AstarEvaluateFeatures {
+      optional AstarAccelerationFeature eval_astar_acceleration = 1;
+      optional AstarLaneBoundaryFeature eval_astar_lane_boundary = 2;
+      optional AstarLateralAcclerationFeature eval_astar_lateral_acceleration =
+          3;
+      optional AstarStopConstraintFeature eval_astar_stop_constraint = 4;
+      optional AstarRefSpeedFeature eval_astar_ref_speed = 5;
+      optional AstarDynamicCollisionFeature eval_astar_dynamic_collision = 6;
+      optional AstarCurvatureFeautre eval_astar_curvature = 7;
+      optional AstarLeadingObjectFeature eval_astar_leading_object = 8;
+      optional AstarRefTrajectoryFeatureCost eval_astar_ref_traj = 9;
+      optional AstarFinalProgressFeature eval_astar_final_progress = 10;
+    }
+
+    optional AstarSearchFeatures astar_search_features = 1;
+    optional AstarEvaluateFeatures astar_evaluate_features = 2;
+
+    reserved 8, 9;
+  }
+
+  message QdFeatureCostConfig {
+    message QdAccelerationFeature {
+      // Weight.
+      optional double accel = 1;
+    }
+
+    message QdLaneBoundaryFeature {
+      // Weight.
+      optional double ref_center = 1;
+      optional double inner_bound = 2;
+      optional double outer_bound = 3;
+    }
+    message QdCurvatureFeautre {
+      // Weight.
+      optional double curvature = 1;
+    }
+    message QdLateralAcclerationFeature {
+      // Weight.
+      optional double acc_hard = 1;
+      optional double acc_soft = 2;
+      optional double jerk = 3;
+    }
+
+    message QdStopConstraintFeature {
+      // Weight.
+      optional double stop_constraint = 1;
+    }
+
+    message QdRefSpeedFeature {
+      // Weight.
+      optional double exceeds_speed_limit = 1;
+      optional double exceeds_ref_speed = 2;
+      optional double below_ref_speed = 3;
+    }
+
+    message QdDynamicCollisionFeature {
+      // Weight.
+      optional double collision_cost = 1;
+    }
+
+    message QdLeadingObjectFeature {
+      // Weight.
+      optional double leading_object = 1;
+    }
+
+    message QdRefTrajectoryFeatureCost {
+      // Weight.
+      optional double ref_traj = 1;
+    }
+
+    message QdFinalProgressFeature {
+      // Weight.
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    message QdNudgeStableFeature {
+      // Weight.
+      optional double nudge_stable = 1;
+    }
+
+    message QdStationaryObjectCollisionFeature {
+      // Weight.
+      optional double static_collision = 1;
+    }
+
+    message QdSearchFeatures {
+      optional QdAccelerationFeature qd_acceleration = 1;
+      optional QdLaneBoundaryFeature qd_lane_boundary = 2;
+      optional QdLateralAcclerationFeature qd_lateral_acceleration = 3;
+      optional QdStopConstraintFeature qd_stop_constraint = 4;
+      optional QdRefSpeedFeature qd_ref_speed = 5;
+      optional QdDynamicCollisionFeature qd_dynamic_collision = 6;
+      optional QdCurvatureFeautre qd_curvature = 7;
+      optional QdLeadingObjectFeature qd_leading_object = 8;
+      optional QdRefTrajectoryFeatureCost qd_ref_traj = 9;
+      optional QdFinalProgressFeature qd_final_progress = 10;
+      optional QdNudgeStableFeature qd_nudge_stable = 11;
+      optional QdStationaryObjectCollisionFeature
+          qd_stationary_object_collision = 12;
+    }
+
+    message QdEvaluateFeatures {
+      optional QdAccelerationFeature eval_qd_acceleration = 1;
+      optional QdLaneBoundaryFeature eval_qd_lane_boundary = 2;
+      optional QdLateralAcclerationFeature eval_qd_lateral_acceleration = 3;
+      optional QdStopConstraintFeature eval_qd_stop_constraint = 4;
+      optional QdRefSpeedFeature eval_qd_ref_speed = 5;
+      optional QdDynamicCollisionFeature eval_qd_dynamic_collision = 6;
+      optional QdCurvatureFeautre eval_qd_curvature = 7;
+      optional QdLeadingObjectFeature eval_qd_leading_object = 8;
+      optional QdRefTrajectoryFeatureCost eval_qd_ref_traj = 9;
+      optional QdFinalProgressFeature eval_qd_final_progress = 10;
+      optional QdStationaryObjectCollisionFeature
+          eval_qd_stationary_object_collision = 11;
+    }
+
+    optional QdSearchFeatures qd_search_features = 1;
+    optional QdEvaluateFeatures qd_evaluate_features = 2;
+  }
+
+  message RefLineFeatureCostConfig {
+    message RefLineStationaryObjectFeature {
+      // Weight.
+      optional double distance = 1;
+    }
+
+    message RefLineProgressFeature {
+      // Weight.
+      optional double longitudinal = 1;
+      optional double lateral = 2;
+    }
+
+    message RefLinePathBoundaryFeature {
+      // Weight.
+      optional double center = 1;
+      optional double target_boundary = 2;
+      optional double boundary = 3;
+    }
+
+    message RefLineCurvatureFeature {
+      // Weight.
+      optional double absolute = 1;
+    }
+    optional RefLineStationaryObjectFeature ref_line_stationary_object = 1;
+    optional RefLineProgressFeature ref_line_progress = 2;
+    optional RefLinePathBoundaryFeature ref_line_path_boundary = 3;
+    optional RefLineCurvatureFeature ref_line_curvature = 4;
+  }
+
+  message InitializerSamplePattern {
+    enum Scenario {
+      SCENARIO_NONE = 0;
+      SCENARIO_LANE_KEEPING = 1;  // Lane keeping.
+      SCENARIO_LANE_CHANGE = 2;   // Lane change.
+      SCENARIO_LANE_BORROW = 3;   // Lane borrow.
+    }
+    message SampleConfig {
+      repeated double range = 1;               // m.
+      repeated double layer_gap = 2;           // m.
+      repeated double lateral_resolution = 3;  // m.
+      repeated int64 cross_layer_connection = 4;
+      repeated double unit_length_lateral_span = 5;
+    }
+
+    optional InitializerSamplePatternConfig config_name = 1;
+    optional Scenario scenario = 2;
+    optional SampleConfig config = 3;
+  }
+
+  message CollisionCheckerConfig {
+    optional double stationary_object_collision_buffer = 1;
+    optional double moving_object_collision_buffer = 2;
+    optional double reduce_static_buffer_threshold_s = 3;
+    optional bool enable_nudge_geom_resample_buffer_zero = 4;
+  }
+
+  message InitializerSpeedLimitCostParamsProto {
+    optional double curvature_power = 1;
+    optional double curvature_numerator = 2;
+    optional double curvature_bias1 = 3;
+    optional double curvature_bias2 = 4;
+    optional double speed_limit_cost_weight = 5;
+    optional double min_curv_preview_distance = 6;
+    optional double curv_estimate_look_ahead_time = 7;
+    optional double speed_limit_max_lateral_acc = 8;
+    optional bool enable_speed_limit_lpf_filter = 9;
+    optional double speed_estimated_max_a = 10;
+    optional double speed_estimated_min_a = 11;
+    optional double free_speed_estimated_max_a = 12;
+    optional double free_speed_estimated_min_a = 13;
+    optional double curvature_speed_limit_preview_distance = 14;
+  }
+
+  optional DpFeatureCostConfig dp_cost_config = 3;
+  repeated InitializerSamplePattern sample_patterns = 4;
+  optional RefLineFeatureCostConfig ref_line_cost_config = 5;
+  optional AstarFeatureCostConfig astar_cost_config = 11;
+  optional CollisionCheckerConfig collision_checker_config = 14;
+  optional QdFeatureCostConfig qd_cost_config = 16;
+
+  enum LeadingDecisionType {
+    STRUCTURED_ROAD = 1;
+    HOME_PARKING_PILOT = 2;
+  }
+  optional LeadingDecisionType leading_decision_type = 13;
+  optional InitializerSpeedLimitCostParamsProto speed_limit_cost_params = 15;
+  // Next id: 17.
+  reserved 2, 8, 10;
+}

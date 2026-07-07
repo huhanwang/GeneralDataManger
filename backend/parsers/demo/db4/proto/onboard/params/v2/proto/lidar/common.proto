@@ -1,0 +1,63 @@
+syntax = "proto2";
+
+package snoah;
+
+enum LidarModel {
+  LIDAR_UNKNOWN = 0;
+  LIDAR_PANDAR_40P = 1;
+  LIDAR_PANDAR_64 = 2;
+  LIDAR_PANDAR_40M = 3;
+  LIDAR_PANDAR_QT = 4;
+  LIDAR_OS0_128 = 5;
+  LIDAR_OS0_64 = 6;
+  LIDAR_RS_RUBY_LITE = 7;
+  LIDAR_RS_M1 = 8;
+  LIDAR_LIVOX_HORIZON = 9;
+  LIDAR_RS_BPEARL = 10;
+  LIDAR_RS_RUBY = 11;
+  LIDAR_PANDAR_AT128 = 12;
+  LIDAR_PANDAR_QT128 = 13;
+  LIDAR_ZVISION_EXCITON = 14;
+  LIDAR_RAYZ_W100 = 15;
+  LIDAR_PANDAR_ATL = 16;
+  LIDAR_RAYZ_H260 = 17;
+  LIDAR_PANDAR_FT120 = 18;
+  LIDAR_PANDAR_ATL100 = 19 [deprecated = true];  // not used
+ LIDAR_PANDAR_128 = 20;
+}
+
+message LidarCommonProto {
+  enum Type {
+    SPINNING = 1;
+    SOLID_STATE = 2;
+  }
+
+  message SpinningLidarParams {
+    optional int32 num_beams = 1;
+    optional int32 num_scans_per_spin = 2;
+    optional double azimuth_resolution = 3;  // in degree
+  }
+  message SolidStateLidarParams {}
+  message LivoxHorizonParams {
+    optional int32 samples_per_packet = 1;
+    optional int32 points_per_frame = 2;  // dual return, 100ms per frame
+    optional double interval_between_shot = 3;
+  }
+  message DataPacketParam {
+    optional int32 header_size = 1;
+    optional int32 udp_header_size = 2;
+    optional int32 block_size = 3;
+    optional int32 num_blocks_per_packet = 4;
+    optional int32 info_size = 5;
+  };
+
+  optional Type type = 1;
+  oneof lidar_params {
+    SpinningLidarParams spinning_lidar_params = 2;
+    SolidStateLidarParams solid_state_lidar_params = 3;
+    LivoxHorizonParams livox_horizon_params = 4;
+  }
+  optional int32 max_num_returns = 5;
+  optional double meters_per_tick = 6;
+  optional DataPacketParam data_packet_params = 7;
+}

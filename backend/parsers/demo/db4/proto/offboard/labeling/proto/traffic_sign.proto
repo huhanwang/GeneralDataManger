@@ -1,0 +1,261 @@
+
+
+syntax = "proto2";
+
+package snoah.traffic_sign;
+
+import "offboard/labeling/proto/attribute.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+// Next ID: 2
+enum LabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_23_10_09 = 1;  // Add speed limit number 5 and 10
+  V_25_3_17 = 2;   // Add speed limit number 5 and 10
+}
+
+// Next ID: 4
+message PacketLabels {
+  optional string packet_name = 1;
+  repeated CameraFrames camera_frames = 2;
+  optional LabelingPolicyVersion version = 3 [default = V_UNKNOWN];
+}
+
+// Image label proto starts from here
+// Next ID: 4
+message ImageZone {
+  // Next ID: 2
+  enum ZoneType {
+    BLACK = 0;  // No labeling here
+    WHITE = 1;  // Everything labeled here
+  }
+  repeated double xs = 1;
+  repeated double ys = 2;
+  optional ZoneType type = 3;
+}
+// Next ID: 11
+message ImageLabel {
+  optional int32 object_id = 1;
+  optional int32 instance_id = 2;
+  optional double x = 3;
+  optional double y = 4;
+  optional double width = 5;
+  optional double length = 6;
+  optional float confidence_score = 16 [default = 1.0];
+
+  // Next ID: 9
+  message Box3d {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional double length = 5;
+    optional double width = 4;
+    optional double height = 6;
+    optional double heading = 7;
+    optional bool visible = 8 [default = false];
+  }
+  optional Box3d box3d = 17;
+
+  // Category enum element ids has to be consecutive and zero-based numbering.
+  // Next ID: 115
+  enum Category {
+    MAXIMUM_SPEED_LIMIT = 0;
+    MINIMUM_SPEED_LIMIT = 1;
+    REGION_SPEED_LIMIT = 2;
+    SPEED_LIMIT_CANCEL = 3;
+    REGION_SPEED_LIMIT_CANCEL = 4;
+    MAXIMUM_SPEED_LIMIT_RAMP = 5;
+    STOP = 6;
+    NO_ENTRY = 7;
+    NO_VEHICLES = 8;
+    NO_LEFT_TURN = 9;
+    NO_RIGHT_TURN = 10;
+    NO_PARKING = 11;
+    RAMP = 12;
+    REGION = 13;
+    COMBINED_TRAFFIC_SIGN = 14;
+    OTHER_TRAFFIC_SIGN = 15;
+    ZONES = 16;
+    NO_OVERTAKING = 17;
+    CURVES_AHEAD = 18;
+    WATCH_FOR_CHILDREN = 19;
+    STRAIGHT = 20;
+    LEFT_TURN = 21;
+    RIGHT_TURN = 22;
+    LIFT_SPEED_LIMIT = 23;
+    LEFT_TURN_OR_STRAIGHT = 24;
+    RIGHT_TURN_OR_STRAIGHT = 25;
+    WIDTH_LIMIT_SIGN = 26;
+    WIDTH_LIMIT_WITH_BLACK_TRIANGLE = 27;
+    HEIGHT_LIMIT_SIGN = 28;
+    HEIGHT_LIMIT_WITH_BLACK_TRIANGLE = 29;
+    NO_STRAIGHT = 30;
+    NO_U_TURN = 31;
+    NO_LEFT_OR_RIGHT_TURN = 32;
+    NO_HONKING = 33;
+    STOP_WITH_TING = 34;
+    STOP_WITH_P = 35;
+    STOP_AND_GIVE_WAY_TING = 36;
+    STOP_AND_GIVE_WAY_RANG = 37;
+    WATCH_FOR_PEDESTRIANS = 38;
+    WATCH_FOR_INTERSECTION = 39;
+    OTHER_WATCH_SIGN = 40;
+    NO_OVERTAKING_CANCEL = 41;
+    WEIGHT_LIMIT_SIGN = 42;
+    YIELD_TO_ONCOMING_TRAFFIC = 43;
+    NO_MOTOR_VEHICLES_ALLOWED = 44;
+    NO_TRUCKS_ALLOWED = 45;
+    NO_TRAILERS = 46;
+    NO_TRACTORS = 47;
+    NO_TRICYCLES_LOW_SPEED_TRUCKS = 48;
+    NO_MOTORCYCLES = 49;
+    NO_NON_MOTORIZED_VEHICLES = 50;
+    NO_ELECTRIC_BICYCLES = 51;
+    NO_ANIMAL_DRAWN_VEHICLES = 52;
+    NO_TRICYCLES = 53;
+    NO_PEDICABS_PASSENGER = 54;
+    NO_PEDICABS_CARGO = 55;
+    NO_HANDCARTS = 56;
+    NO_PEDESTRIANS = 57;
+    NO_ENTRY_FOR_TWO_SPECIFIED_VEHICLE_TYPES = 58;
+    NO_LEFT_OR_RIGHT_TURNS = 59;
+    NO_STRAIGHT_OR_LEFT_TURN = 60;
+    NO_STRAIGHT_OR_RIGHT_TURN = 61;
+    END_OF_NO_OVERTAKING = 62;
+    NO_LONG_TERM_PARKING = 63;
+    HEIGHT_LIMIT = 64;
+    WIDTH_LIMIT = 65;
+    SHARP_LEFT_TURN_AHEAD = 66;
+    SHARP_RIGHT_TURN_AHEAD = 67;
+    STEEP_UPGRADE = 68;
+    STEEP_DOWNGRADE = 69;
+    CONTINUOUS_DOWNGRADE = 70;
+    ROAD_NARROWS_ON_BOTH_SIDES = 71;
+    ROAD_NARROWS_ON_RIGHT = 72;
+    ROAD_NARROWS_ON_LEFT = 73;
+    NARROW_BRIDGE = 74;
+    TWO_WAY_TRAFFIC = 75;
+    WATCH_FOR_PEDESTRIAN = 76;
+    WATCH_FOR_DISABLED = 77;
+    NON_MOTORIZED_VEHICLES_AHEAD = 78;
+    ELECTRIC_BICYCLES_AHEAD = 79;
+    LIVESTOCK_CROSSING = 80;
+    WILD_ANIMALS_CROSSING = 81;
+    TRAFFIC_SIGNALS_AHEAD = 82;
+    FALLING_ROCKS_LEFT = 83;
+    FALLING_ROCKS_RIGHT = 84;
+    CROSSWINDS_AHEAD = 85;
+    SLIPPERY_ROAD = 86;
+    MOUNTAINOUS_ROAD_LEFT = 87;
+    MOUNTAINOUS_ROAD_RIGHT = 88;
+    DETOUR_LEFT_AND_RIGHT = 89;
+    DETOUR_TO_LEFT = 90;
+    DETOUR_TO_RIGHT = 91;
+    GENERAL_DANGER_WARNING = 92;
+    GUIDE_SIGN = 93;
+    CONSTRUCTION_ZONE = 94;
+    NO_LARGE_PASSENGER_VEHICLES = 95;
+    NO_SMALL_PASSENGER_VEHICLES = 96;
+    AXLE_WEIGHT_LIMIT = 97;
+    STRAIGHT_OR_U_TURN = 98;
+    LEFT_OR_U_TURN = 99;
+    LEFT_OR_RIGHT_TURN = 100;
+    U_TURN = 101;
+    NO_PARKING_IN_WHITE_BG = 102;
+    ADVISED_SPEED_LIMIT = 103;
+    HEIGHT_LIMIT_WITH_RED_TRIANGLE = 104;
+    NO_PHOTO = 105;
+    GUIDE_LEFT = 106;
+    GUIDE_RIGHT = 107;
+    NO_RIDER = 108;
+    REN_FAN = 109;
+    NO_FIRE = 110;
+    ETC_INVALID = 111;
+    ETC = 112;
+    ETC_ACCESSIBLE = 113;
+    ETC_UNACCESSIBLE = 114;
+  }
+  optional Category category = 7;
+  // Next ID: 2
+  enum TrafficSignType {
+    NORMAL = 0;
+    ELECTRONICAL = 1;
+  }
+  optional TrafficSignType traffic_sign_type = 8;
+
+  optional snoah.labeling.VehicleType traffic_sign_target_vehicle_type = 9;
+  // Next ID: 14
+  enum SpeedLimitNumber {
+    SPEED_LIMIT_20 = 0;
+    SPEED_LIMIT_30 = 1;
+    SPEED_LIMIT_40 = 2;
+    SPEED_LIMIT_50 = 3;
+    SPEED_LIMIT_60 = 4;
+    SPEED_LIMIT_70 = 5;
+    SPEED_LIMIT_80 = 6;
+    SPEED_LIMIT_90 = 7;
+    SPEED_LIMIT_100 = 8;
+    SPEED_LIMIT_110 = 9;
+    SPEED_LIMIT_120 = 10;
+    SPEED_LIMIT_5 = 11;
+    SPEED_LIMIT_10 = 12;
+    SPEED_LIMIT_15 = 13;
+    SPEED_LIMIT_25 = 14;
+    SPEED_LIMIT_35 = 15;
+    SPEED_LIMIT_45 = 16;
+    SPEED_LIMIT_55 = 17;
+    SPEED_LIMIT_65 = 18;
+    SPEED_LIMIT_75 = 19;
+    SPEED_LIMIT_85 = 20;
+    SPEED_LIMIT_95 = 21;
+    SPEED_LIMIT_105 = 22;
+    SPEED_LIMIT_115 = 23;
+  }
+  // Next ID: 10
+  enum WeightLimitNumber {
+    WEIGHT_LIMIT_5 = 0;
+    WEIGHT_LIMIT_10 = 1;
+    WEIGHT_LIMIT_15 = 2;
+    WEIGHT_LIMIT_20 = 3;
+    WEIGHT_LIMIT_30 = 4;
+    WEIGHT_LIMIT_40 = 5;
+    WEIGHT_LIMIT_49 = 6;
+    WEIGHT_LIMIT_50 = 7;
+    WEIGHT_LIMIT_55 = 8;
+    WEIGHT_LIMIT_60 = 9;
+  }
+  optional SpeedLimitNumber speed_limit_number = 10;
+  optional int32 group_id = 11;
+  optional Vec3dProto smooth_position = 12;
+  // We assume x-axis is along thickness, y-axis is along width, z-axis is
+  // perpendicular to the ground
+  optional float length_3d = 13;  // x-axis
+  optional float width_3d = 14;   // y-axis
+  optional float height_3d = 15;  // z-axis
+
+  enum WeightLimitType {
+    WEIGHT_LIMIT_TYPE_UNKNOWN = 0;
+    WEIGHT_LIMIT_TYPE_KNOWN = 1;
+  }
+  optional WeightLimitType weight_limit_type = 18;
+}
+// Next ID: 6
+message ImageLabels {
+  repeated ImageLabel labels = 1;
+  repeated ImageZone zones = 2;
+  optional double center_timestamp = 3;
+  optional string image_name = 4;
+  optional int32 current_lane_id = 5;
+}
+
+// Next ID: 3
+message CameraFrame {
+  optional int32 frame_id = 1;
+  // the key of this map(camera id : int32) follows what's defined in the
+  // labeling data
+  map<int32, ImageLabels> image_frames = 2;
+}
+// Next ID: 2
+message CameraFrames {
+  repeated CameraFrame camera_frame = 1;
+}

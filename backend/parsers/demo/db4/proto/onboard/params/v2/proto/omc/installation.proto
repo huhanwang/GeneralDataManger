@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/ads.proto";
+import "onboard/lite/proto/module_config.proto";
+import "onboard/utils/stream/proto/stream.proto";
+
+message OmcInstallationProto {
+  message CanParamsProto {
+    enum Type {
+      DATASPEED = 1;
+      KVASER = 2;
+      SOCKETCAN = 3;
+    }
+    optional Type type = 1;
+    optional int32 kvaser_id = 2;
+    optional int32 bit_rate = 3 [default = 500000];  // bps
+    optional bytes socketcan_ifname = 4;
+    optional bool enable = 5 [default = true];
+    // mixed use B202 and EGPC can card
+    optional bool mixed_can_card = 6 [default = false];
+    enum DriverModel {
+      B202 = 1;
+      EGPC = 2;
+    }
+    // if not mixed use B202 and EGPC, should set driver model
+    optional DriverModel driver_model = 7 [default = B202];
+  }
+
+  message RemoteDriveParamsProto {
+    optional string ip_address = 1;
+    optional int32 port = 2;
+  }
+
+  optional CanParamsProto can_params = 1;
+  optional OmcConfigProto omc_config = 2;
+  optional NodesRunConfig nodes_run_config = 3;
+  optional StreamProto radar_udp_stream = 4;
+  optional StreamProto canbus_udp_stream = 5;
+  optional RemoteDriveParamsProto remote_drive_params = 6;
+  optional StreamProto cockpit_udp_stream = 7;
+}

@@ -1,0 +1,11 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message OnlineCalibrationProto {
+  optional LiteHeader header = 1;
+  optional string calibration_msg = 2;
+}

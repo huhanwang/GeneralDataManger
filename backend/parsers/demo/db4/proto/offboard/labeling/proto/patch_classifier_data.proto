@@ -1,0 +1,67 @@
+syntax = "proto2";
+
+package snoah.patch_classifier;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/patch_classifier_data";
+
+import "onboard/proto/image_overlay.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/lite_camera.proto";
+
+// Next id: 12
+message PcnLaserPoint {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+  optional double range = 4;
+  // Intensity is [0, 255.0] in float.
+  optional float intensity = 5;
+  // Return index 0 or 1.
+  optional int32 return_index = 6;
+  // Whether the current point has returns behind it.
+  optional bool has_returns_behind = 7;
+  optional int32 proj_x = 8;
+  optional int32 proj_y = 9;
+  optional LidarId lidar_id = 10;
+  optional LidarType lidar_type = 11;
+}
+
+// Next id: 5
+message PcnRoi {
+  // Top left
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+}
+
+// Next id: 4
+message PcnImagePatch {
+  optional bytes roi_patch = 1;
+  optional PcnRoi roi = 2;
+  optional PcnRegionProto pcn_region = 3;
+}
+
+// Next id: 6
+message PcnData {
+  // processed points as pcn input
+  repeated PcnLaserPoint points = 1;
+  // Image patches coresponding to lidar points, one to one
+  optional PcnImagePatch image_patch = 2;
+  // index in frame
+  optional uint32 obj_id = 3;
+  optional double timestamp = 4;
+  optional CameraId camera_id = 5;
+}
+
+// Next id: 2
+message PcnLabelingData {
+  repeated PcnData pcn_data = 1;
+}
+
+// Next id: 5
+message PcnLabelingDataForRunSegment {
+  repeated PcnLabelingData pcn_labeling_data = 1;
+  optional string run_name = 2;
+  optional double start_offset = 3;
+  optional double duration = 4;
+}

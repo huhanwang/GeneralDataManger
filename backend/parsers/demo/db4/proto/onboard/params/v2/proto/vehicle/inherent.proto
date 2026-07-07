@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package snoah;
+
+message VehicleInherentProto {
+  enum VehiclePlatform {
+    PLATFORM_UNKNOWN = 0;
+    PLATFORM_AIR = 1;
+    PLATFORM_PRO = 2;
+    PLATFORM_MAX = 3;
+  }
+
+  enum VehicleModelYear {
+    YEAR_UNKNOWN = 0;
+    YEAR_2022 = 2022;
+    YEAR_2023 = 2023;
+    YEAR_2024 = 2024;
+    YEAR_2025 = 2025;
+  }
+  // when left(+), right(-), it is 1;
+  // when left(-), right(+), it is -1;
+  // To adjust the different difinitions of different jinlv_minibuses
+  optional int32 steering_direction = 1 [default = 1];
+  optional double wheel_rolling_radius = 2;
+  optional string vin = 3;
+  optional string serial_no = 4;
+  optional VehiclePlatform vehicle_platform = 5;
+  optional VehicleModelYear model_year = 6;
+}

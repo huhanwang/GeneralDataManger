@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package snoah;
+
+message QInitConfig {
+  message Service {
+    optional string name = 1;
+    optional string svc = 2;
+    optional string group = 3;
+    optional string user = 4;
+    optional bool oneshot = 5;
+    repeated string env = 6;
+    optional int64 delay_ms = 7;
+    optional string cwd = 8;
+  }
+  repeated string exec = 1;
+  repeated Service services = 2;
+}

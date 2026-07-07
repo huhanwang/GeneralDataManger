@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/geo/geolocation";
+
+option java_multiple_files = true;
+option java_package = "ai.qcraft.common.geo";
+option java_outer_classname = "GeoLocationOuterClass";
+
+message Coordinate {
+  optional double lon = 1;
+  optional double lat = 2;
+  optional double alt = 3;
+}
+
+message GeoLocation {
+  optional Coordinate coordinate = 1;
+}

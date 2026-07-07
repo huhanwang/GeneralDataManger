@@ -1,0 +1,240 @@
+
+syntax = "proto2";
+
+package snoah.hpp_mapping;
+import "onboard/hpp/hpp_mapping/protos/map_common.proto";
+import "onboard/proto/lite_camera.proto";
+
+message BevSemanticMapperConfig {
+  message TimeSmoothTrackerConfig {
+    optional bool using_fusion_spot = 1 [default = false];
+    optional double spot_extend_dist = 2 [default = 3.0];
+    optional double spot_cov_threshold = 3 [default = 0.005];
+    optional int32 min_cov_measurements_n = 4 [default = 2];
+    optional double min_update_time_gap = 5 [default = 0.3];
+    optional bool using_pillar = 6 [default = false];
+    optional bool using_speed_bump = 7 [default = false];
+    optional bool check_input_synchronism = 8 [default = false];
+    optional bool using_freespace = 9 [default = false];
+    optional bool use_fisheye_bev_tracker_pillar = 10 [default = true];
+    optional double match_sliding_window_trip_length = 11 [default = 200];
+  }
+  message GlobalMappingConfig {
+    message OptimizerConfig {
+      enum SemanticConstraintType {
+        kSpotToTrajectory = 0;
+        kPillarToTrajectory = 1;
+      }
+      repeated SemanticConstraintType necessary_constraint_types = 1;
+    }
+    optional bool enable = 1 [default = true];
+    optional double max_seconds_to_waiting_for_feature_mapping_result = 2
+        [default = 10.0];
+    optional OptimizerConfig optimizer_config = 3;
+    optional double spot_cov_threshold = 4 [default = 0.005];
+    optional int32 min_cov_measurements_n = 5 [default = 2];
+
+    message TrajectorySmoothConfig {
+      // If a node deviation is greater than the threshold,
+      // it will be added to the trajectory.
+      optional double trajectory_deviation_threshold = 1
+          [default = 0.8];                                           // Meters.
+      optional double trajectory_sampling_step = 2 [default = 0.1];  // Meters.
+      optional int32 gradient_descent_max_iter = 3 [default = 50];
+      // The threshold for the max abs gradient below which the algorithm stops.
+      optional double gradient_descent_esp = 4 [default = 0.05];
+      // The param controls the size of the step taken in each iteration.
+      optional double gradient_descent_alpha = 5 [default = 0.1];
+      optional double curvature_threshold = 6 [default = 3.0];
+      optional bool enable_loop_remove = 7 [default = true];
+      optional bool enable_pose_smooth = 8 [default = true];
+      optional double max_orientation_threshold = 9
+          [default = 120.0];  // Degree.
+      optional bool enable_target_spot_routing = 10 [default = true];
+    }
+    optional TrajectorySmoothConfig trajectory_smooth_config = 6;
+    optional bool enable_update_level = 7;
+  }
+
+  message SemanticMappingDataCollatorConfig {
+    optional bool use_visual_odom_pose = 1 [default = false];
+  }
+
+  optional TimeSmoothTrackerConfig time_smooth_tracker_config = 1;
+  optional GlobalMappingConfig global_mapping_config = 2;
+  optional int32 process_rate = 3 [default = 10];
+  optional int32 online_map_publish_rate = 4 [default = 5];
+  optional string map_path_to_save = 5;
+  optional SemanticMappingDataCollatorConfig data_collator_config = 6;
+  optional int32 try_to_finish_rate = 7 [default = 5];
+  optional int32 hpp_online_map_publish_rate = 8 [default = 5];
+}
+
+message SuperPointConfig {
+  optional double probability_threshold = 1 [default = 0.1];
+  optional int32 nms_padding_radius = 2 [default = 5];  // pixel.
+  message DescriptorQuantizationConfig {
+    optional bool enable_quantization = 1 [default = false];
+    optional double lower_bound = 2 [default = -1.0];
+    optional double scale = 3 [default = 128];
+  }
+  optional DescriptorQuantizationConfig descriptor_quantization_config = 3;
+  message EllipseFliterConfigProto {
+    optional bool enable = 1 [default = false];
+    optional double center_x = 2 [default = 384.0];
+    optional double center_y = 3 [default = 256.0];
+    optional double half_length_of_x_axis = 4 [default = 384.0];
+    optional double half_length_of_y_axis = 5 [default = 256.0];
+  }
+  // TODO(@caochang) : Set different ellipse parameters for different cameras.
+  optional EllipseFliterConfigProto ellipse_fliter_config = 4;
+}
+
+message LooselyCoupledFeatureMapperConfig {
+  message ImageFeatureDataCollatorConfig {
+    optional double max_image_sync_diff = 1 [default = 0.002];  // second.
+    optional int32 max_tolerance_of_data_accumulation = 2 [default = 2];
+    repeated SensorId needed_sensor_data_ids = 3;
+  }
+  optional ImageFeatureDataCollatorConfig data_collator_config = 1;
+  optional int32 pose_buffer_size = 2 [default = 300];
+  optional int32 process_rate = 3 [default = 10];
+  message FeatureMappingDebuggerConfig {
+    optional int32 image_buffer_size = 1 [default = 5];
+    repeated CameraId vis_track_camera_ids = 2;
+    message OverlapCameraIds {
+      optional CameraId camera_id_1 = 1;
+      optional CameraId camera_id_2 = 2;
+    }
+    repeated OverlapCameraIds vis_overlap_camera_ids = 3;
+  }
+  optional FeatureMappingDebuggerConfig debugger_config = 4;
+  message FeatureManagerConfig {
+    optional int32 slide_window_size = 1 [default = 10];
+    optional double max_key_frame_pos_diff = 2 [default = 1.5];    // meter.
+    optional double max_key_frame_angle_diff = 3 [default = 8.0];  // degree.
+    optional int32 effective_map_point_min_observation_num = 4 [default = 3];
+  }
+  optional FeatureManagerConfig feature_manager_config = 5;
+  message OptimizerConfig {
+    optional double reproject_cost_loss_scalar = 1 [default = 0.0];
+    optional double relative_pose_cost_loss_scalar = 2 [default = 0.0];
+    optional int32 num_threads = 3 [default = 1];
+    optional int32 max_num_iterations = 4 [default = 50];
+    optional double parameter_tolerance = 5 [default = 1e-8];
+    optional bool enable_optimize_camera_to_vehicle = 6 [default = false];
+    optional bool enable_optimize_vehicle_to_imu = 7 [default = false];
+    optional int32 needed_observation_num_for_optimization = 8 [default = 3];
+    optional bool enable_analytic_derivatives = 9 [default = false];
+    enum SolverType {
+      kDenseSchur = 0;
+      kSparseNormalCholesky = 1;
+    }
+    optional SolverType solver_type = 10 [default = kDenseSchur];
+  }
+  message OdometryEstimatorConfig {
+    optional bool enable_optimize_pose = 1 [default = true];
+    optional OptimizerConfig local_mapping_optimizer_config = 2;
+    optional OptimizerConfig pose_estimation_optimizer_config = 3;
+    optional double max_reproject_error = 4 [default = 6.0];
+    optional double max_average_reproject_error = 5 [default = 3.0];
+    optional double map_point_min_depth = 6 [default = 0.0];   // Meter.
+    optional double map_point_max_depth = 7 [default = 60.0];  // Meter.
+  }
+  optional OdometryEstimatorConfig odometry_estimator_config = 6;
+  optional int32 max_odometry_pose_buffer_storage_num = 7 [default = 5000];
+  // For test at now, maybe deleted in the future.
+  optional string map_path_to_save = 8;
+  optional SuperPointConfig super_point_config = 9;
+  message LoopClosureConfig {
+    optional bool enable_detect_loop = 1 [default = true];
+    message KeyFramePoseGraphConfig {
+      optional OptimizerConfig optimizer_config = 1;
+      optional int32 relative_pose_cost_edge_num = 2 [default = 5];
+    }
+    optional KeyFramePoseGraphConfig key_frame_pose_graph_config = 2;
+    optional OptimizerConfig non_key_frame_pose_graph_config = 3;
+    optional OptimizerConfig map_points_optimization_config = 4;
+    optional bool enable_map_points_nonlinear_optimization = 5
+        [default = false];
+    optional double map_point_min_depth = 6 [default = 0.0];    // Meter.
+    optional double map_point_max_depth = 7 [default = 150.0];  // Meter.
+    message LoopClosureDetectionConfig {
+      // Min entry id gap between two image pair to build loop closure.
+      optional int32 min_loop_closure_image_pair_gap = 1 [default = 50];
+      // Min frame id gap between two loop closure.
+      optional int32 min_loop_closure_frame_gap = 2 [default = 50];
+      message MultiCameraConsistencyConfig {
+        optional double max_t_norm_diff = 1 [default = 0.2];  // Meter.
+        optional double max_r_norm_diff = 2
+            [default = 1.0];  // Euler angle in degree.
+      }
+      optional MultiCameraConsistencyConfig multi_camera_consistency_config = 3;
+      message PnpSolverConfig {
+        optional int32 min_inliers = 1 [default = 15];
+        optional double normal_plane_reprojection_error_threshold = 2
+            [default = 0.03];  //
+        optional double iterations_count = 3 [default = 200];
+        optional double ransac_confidence = 4 [default = 0.03];
+        optional int32 initial_model_point_size = 5 [default = 5];
+        optional double image_plane_reprojection_error_threshold = 6
+            [default = 5.0];
+      }
+      optional PnpSolverConfig pnp_solver_config = 4;
+      optional double min_bow_vector_match_socre = 5 [default = 0.7];
+      optional double max_feature_point_descriptor_distance = 6 [default = 1.0];
+      optional OptimizerConfig pnp_pose_optimization_config = 7;
+      optional int32 min_loop_closure_image_pair_num = 8 [default = 2];
+      optional int32 query_image_pair_num = 9 [default = 1];
+      optional int32 max_frame_id_diff_of_matching_image = 10 [default = 100];
+    }
+    optional LoopClosureDetectionConfig loop_closure_detection_config = 8;
+  }
+  optional LoopClosureConfig loop_closure_config = 10;
+  optional int32 loop_closure_process_rate = 11 [default = 10];
+  optional int32 det_buffer_size = 12 [default = 100];
+  optional double det_timestamp_threshold = 13 [default = 1.1];
+  optional bool remove_dynamic_feature_points = 14 [default = false];
+  message FeatureMatcherConfig {
+    optional double max_feature_point_descriptor_distance = 1 [default = 1.35];
+    optional double max_project_track_euclid_distance = 2 [default = 8.0];
+    optional double max_smooth_sampson_error = 3 [default = 0.01];
+    optional double max_2d_2d_match_pixel_distance = 4 [default = 40.0];
+    enum FeaturePointMatcherType {
+      kBruteForce = 0;
+      kKdTree = 1;
+      kDbow = 2;
+      kGridSearching = 3;
+    }
+    optional FeaturePointMatcherType points_2d_2d_matcher_type = 5
+        [default = kBruteForce];
+    optional double grid_searcher_resolution = 6 [default = 5.0];
+  }
+  optional FeatureMatcherConfig feature_matcher_config = 15;
+  optional bool enable_save_txt_map = 16 [default = false];
+}
+
+message ParkingMapperConfig {
+  optional BevSemanticMapperConfig bev_semantic_mapper_config = 1;
+  optional LooselyCoupledFeatureMapperConfig
+      loosely_coupled_feature_mapper_config = 2;
+  optional int32 thread_pool_size = 3 [default = 0];
+  optional bool enable_feature_mapping = 4 [default = true];
+  optional int32 debug_proto_publish_rate = 5 [default = 5];
+  optional double background_sliding_window_length = 6 [default = 200];
+}
+
+message StateManagerConfig {
+  optional int32 process_rate = 1 [default = 10];
+  optional double waiting_to_refresh_duration = 2 [default = 2];  // Second.
+}
+
+message ParkingMappingManagerConfig {
+  optional StateManagerConfig state_manager_config = 1;
+  optional ParkingMapperConfig parking_mapper_config = 2;
+  optional double gps_disappear_time_threshold = 3 [default = 3.0];
+}
+
+message ModuleConfig {
+  optional ParkingMappingManagerConfig parking_mapping_manager_config = 1;
+}

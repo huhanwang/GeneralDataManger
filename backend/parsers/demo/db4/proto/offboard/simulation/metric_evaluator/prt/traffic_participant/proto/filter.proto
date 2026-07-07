@@ -1,0 +1,82 @@
+
+
+syntax = "proto2";
+
+package snoah;
+
+import "offboard/labeling/proto/attribute.proto";
+
+message TrafficParticipantFilterConfig {
+  repeated TrafficParticipantFilter label_filters = 1;
+  repeated TrafficParticipantFilter detection_filters = 2;
+}
+
+message TrafficParticipantFilter {
+  oneof type {
+    CyclistFilter cyclist_filter = 1;
+    EvaluationAreaFilter evaluation_area_filter = 2;
+    SensorVisibilityFilter sensor_visibility_filter = 3;
+  }
+}
+
+message CyclistFilter {}
+
+// Restrict the evaluation area, such as 50 meters from front to back, zone,
+// etc.
+message EvaluationRect {
+  message Rect {
+    optional double forward = 1;
+    optional double backward = 2;
+    optional double left = 3;
+    optional double right = 4;
+  }
+  repeated Rect ranges = 1;
+}
+
+message EvaluationFOV {
+  message FOV {
+    optional double fov_angle = 1;
+    optional double max_range = 2;
+  }
+  repeated FOV ranges = 1;
+}
+
+message EvaluationCIPV {
+  optional double lateral_offset = 1;
+  optional double longit_offset = 2;
+}
+message EvaluationZone {
+  enum Type {
+    NonLabelZone = 1;
+    EvaluableArea = 2;
+    DrivableZone = 3;
+  }
+  optional Type type = 1;
+}
+
+message EvaluationImageZone {}
+
+message EvaluationAreaMethod {
+  oneof type {
+    EvaluationRect rect = 1;
+    EvaluationFOV fov = 2;
+    EvaluationCIPV cipv = 3;
+    EvaluationZone zone = 4;
+    EvaluationImageZone image_zone = 5;
+  }
+}
+message EvaluationAreaFilter {
+  repeated EvaluationAreaMethod methods = 1;
+}
+
+// Restrictions from the image visibility.
+message SensorVisibilityFilter {
+  optional bool use_lidar = 1;
+  map<string, int32> lidar_points_threshold = 5;
+
+  optional bool use_camera = 2;
+  repeated labeling.OcclusionLevel occlusion_levels = 3;
+  repeated labeling.TruncatedLevel truncated_levels = 4;
+  optional int32 pixel_threshold = 6;
+  optional double beams_nms_score = 7;
+}

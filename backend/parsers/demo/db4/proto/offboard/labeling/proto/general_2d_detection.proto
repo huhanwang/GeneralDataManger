@@ -1,0 +1,209 @@
+
+syntax = "proto2";
+
+package snoah.general_2d_detection;
+
+import "offboard/labeling/proto/attribute.proto";
+import "offboard/labeling/proto/tl_label_v2.proto";
+import "offboard/labeling/proto/road_geometry_label.proto";
+
+// Next ID: 7
+enum LabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_23_05_06 = 1;  // Added new vision label proto.
+  V_23_10_10 = 2;  // Dont label traffic sign.
+  V_24_01_08 = 3;  // Added street light and construction sign type.
+  V_24_05_21 = 4;  // Added cement pillar type.
+  V_25_03_17 = 5;  // Added etc type and high way auto gate type.
+  V_25_06_04 = 6;  // Updated LightSourceType.
+}
+
+// Next ID: 9
+enum VruType {
+  UNKNOWN_VRU = 0;
+  BICYCLIST = 1;
+  MOTORCYCLIST = 2;
+  TRICYCLIST = 3;
+  TROLLEY = 4;
+  ST_BICYCLIST = 5;     // static unmanned bicyclist
+  ST_MOTORCYCLIST = 6;  // static unmanned motorcyclist
+  ST_TRICYCLIST = 7;    // static unmanned tricyclist
+  ST_TROLLEY = 8;       // static unmanned trolley
+}
+
+// Next ID: 4
+enum TrafficSignType {
+  OTHER = 0;
+  STOP = 1;
+  YIELD = 2;
+  SPEED_LIMIT = 3;
+}
+
+// Next ID: 6
+enum LightSourceType {
+  UNKNOWN_LIGHT = 0;
+  STREET_LIGHT = 1;
+  VEHICLE_HEAD_LIGHT = 2;
+  VEHICLE_TAIL_LIGHT = 3;
+  BICYCLE_HEAD_LIGHT = 4;
+  BICYCLE_TAIL_LIGHT = 5;
+}
+
+// Next ID: 3
+enum CementPillarType {
+  SQUARE = 0;
+  CIRCLE = 1;
+  OTHER_CPT = 2;
+}
+
+// Next ID: 4
+message ImageZone {
+  repeated double xs = 1;
+  repeated double ys = 2;
+  enum ZoneType {
+    BLACK = 0;  // No need to label.
+  }
+  optional ZoneType type = 3;
+}
+
+// Next ID: 7
+enum ETCType {
+  ETC_INVALID = 0;
+  ETC = 1;
+  ETC_OR_MANUAL = 2;
+  ETC_LANE = 3;
+  ETC_DEDICATED = 4;
+  ETC_ACCESSIBLE = 5;
+  ETC_UNACCESSIBLE = 6;
+  ETC_DEDICATED_LANE = 7;
+  ETC_SELF_SERVICE = 8;
+  ETC_BIG_CAR = 9;
+  ETC_SMALL_CAR = 10;
+}
+
+enum ETCSignType {
+  NORMAL = 0;
+  ELECTRONICAL = 1;
+}
+
+// Next ID: 2
+enum ETCHeight {
+  ETCH_INVALID = 0;
+  ETCH_LOW = 1;
+  ETCH_HIGH = 2;
+}
+
+// Next ID: 2
+enum ConstructionSignType {
+  default = 0;
+  qiandao = 1;
+}
+
+// Next ID: 24
+message ImageLabel {
+  // Next ID: 7
+  message Box2d {
+    optional int32 object_id = 1;
+    optional double x = 2;
+    optional double y = 3;
+    optional double width = 4;
+    optional double height = 5;
+    optional float confidence_score = 6 [default = 1.0];
+  }
+
+  optional Box2d box2d = 1;
+
+  // Next ID: 14
+  enum Category {
+    UNKNOWN = 0;
+    PED = 1;
+    VEHICLE = 2;
+    VRU = 3;
+    ROAD_BARRIER = 4;
+    TRAFFIC_LIGHT = 5;
+    TRAFFIC_SIGN = 6;
+    ANIMAL = 7;
+    WHEEL = 8;
+    ROAD_HOLE = 9;
+    HEADLIGHT_AREA = 10;
+    POLE = 11;
+    LIGHT_SOURCE = 12;
+    ETC_TYPE = 13;
+  }
+  optional Category category = 2;
+
+  optional bool is_fake = 3 [default = false];
+
+  optional snoah.labeling.PedestrianType ped_type = 4;
+
+  optional snoah.labeling.VehicleType vehicle_type = 5;
+
+  optional VruType vru_type = 6;
+
+  optional snoah.labeling.RoadBarrierType road_barrier_type = 7;
+
+  optional tflabelingv2.TrafficLightScope traffic_light_scope = 8;
+
+  optional TrafficSignType traffic_sign_type = 9;
+
+  optional snoah.labeling.ImageVisibility image_visibility = 10;
+
+  optional snoah.labeling.OcclusionLevel occlusion_level = 11;
+
+  optional snoah.labeling.TruncatedLevel truncated_level = 13;
+
+  optional LightSourceType light_source_type = 12;
+
+  optional bool with_cover = 14 [default = false];
+
+  optional bool with_painting = 15 [default = false];
+
+  optional CementPillarType cement_pillar_type = 16;
+
+  optional ETCType etc_type = 17;
+
+  optional ETCHeight etc_height = 18;
+
+  optional ConstructionSignType construction_sign_type = 19;
+
+  optional snoah.road_geometry_label.GroundMarkingInfo.Type
+      ground_marking_type = 20;
+
+  optional string ground_marking_text = 21;
+
+  optional bool is_ground_marking_type_indistinguishable = 22 [default = false];
+
+  optional ETCSignType etc_sign_type = 23;
+}
+
+// Next ID: 6
+message SingleKeyPoint {
+  optional int32 object_id = 1;
+  optional double x = 2;
+  optional double y = 3;
+  optional bool is_visible = 4 [default = true];
+  optional float confidence_score = 5 [default = 1.0];
+}
+
+// Next ID: 5
+message HighwayAutoGateKeyPointsType {
+  optional SingleKeyPoint point_0 = 1;
+  optional SingleKeyPoint point_1 = 2;
+  optional SingleKeyPoint point_2 = 3;
+  optional SingleKeyPoint point_3 = 4;
+}
+
+// Next ID: 5
+message ImageLabels {
+  optional string image_name = 1;
+  repeated ImageLabel labels = 2;
+  repeated ImageZone zones = 3;
+  repeated HighwayAutoGateKeyPointsType keypoints = 4;
+}
+
+// Next ID: 4
+message PacketLabels {
+  optional string packet_name = 1;
+  repeated ImageLabels image_labels = 2;
+  optional LabelingPolicyVersion version = 3 [default = V_UNKNOWN];
+}

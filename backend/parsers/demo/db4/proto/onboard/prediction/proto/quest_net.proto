@@ -1,0 +1,249 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/prediction/proto/prediction_common.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+import "onboard/proto/lane_change_type.proto";
+
+message QuestNetDumpedFeatureProto {
+  // QuestNet SC, first always AV.
+  message AgentsFeature {
+    // Position sequence.
+    repeated float pos = 1 [packed = true];
+    // Position diff sequence
+    repeated float pos_diff = 2 [packed = true];
+    // Speed sequence.
+    repeated float speed = 3 [packed = true];
+    // Yaw sequence.
+    repeated float yaw = 4 [packed = true];
+    // Length & width of objects.
+    repeated float lw = 5 [packed = true];
+    // Mask of history sequence, 1 for exist and 0 for non.
+    repeated float mask = 6 [packed = true];
+    // Object type.
+    repeated float type = 7 [packed = true];
+    // Relative position diff w.r.t Agent of each time stemp: [x_o - x_a, y_o -
+    // y_a].
+    repeated float rel_pos = 8 [packed = true];
+    // Relative distance, norm of above rel_pos.
+    repeated float rel_dist = 9 [packed = true];
+    // Unit vector of relative position diff.
+    repeated float rel_yaw = 10 [packed = true];
+    // Yaw diff of object w.r.t agent at history point yaw - rel_yaw.
+    repeated float yaw_diff = 11 [packed = true];
+    // [v_xo - v_xa, v_yo - v_ya].
+    repeated float rel_speed = 12 [packed = true];
+    // Relative sequence mask, 1 for exist and 0 for non.
+    repeated float rel_mask = 13 [packed = true];
+    // Relative shape [x_oi - x_a, y_oi -  y_a].
+    repeated float rel_shape = 14 [packed = true];
+    // Time points. (relative to sampling timestamp).
+    repeated float ts = 15 [packed = true];
+    // Shape
+    repeated float shape = 16 [packed = true];
+  }
+
+  message PolylineFeature {
+    // segment sequence [p0, p1] four dims.
+    repeated float seg = 1 [packed = true];
+    // unit vector of p1-p0.
+    repeated float unit_seg_vec = 2 [packed = true];
+    // segement length
+    repeated float seg_len = 3 [packed = true];
+    // unit tangent at p0
+    repeated float unit_tangent = 4 [packed = true];
+    // agent min distance to segment. Min dist point is r
+    repeated float dist = 5 [packed = true];
+    // unit vector of [0, r].
+    repeated float unit_dist_vec = 6 [packed = true];
+    // distance from p1 to r.
+    repeated float nearest_to_end_dist = 7 [packed = true];
+    // Yaw diff of segment heading & agent-segment perpendicular vector.
+    repeated float yaw_diff = 8 [packed = true];
+    // Consider lane center, curb, solid lane, double solid lane, pedestrian
+    // crossing.
+    repeated float type = 9 [packed = true];
+    // Validity mask.
+    repeated float mask = 10 [packed = true];
+    // Speed limits (km/h).
+    repeated float speed_limits = 11 [packed = true];
+
+    // Only valid for lane center polylines.
+    repeated float boundary_type = 12 [packed = true];
+    repeated float seg_width = 13 [packed = true];
+    repeated float lb_seg = 14 [packed = true];
+  }
+
+  message LaneFeature {
+    repeated Vec2dProto points = 1;
+  }
+
+  message MapFeature {
+    optional PredictionMapType map_type = 1;
+    optional PolylineFeature lane_centers = 2;
+    optional PolylineFeature lane_boundaries = 3;
+    optional PolylineFeature broken_lane_boundaries = 4;
+    optional PolylineFeature crosswalks = 5;
+    optional PolylineFeature stoplines = 6;
+    repeated float lc_mask = 7 [packed = true];
+    repeated float lb_mask = 8 [packed = true];
+    repeated float brk_lb_mask = 9 [packed = true];
+    repeated float cw_mask = 10 [packed = true];
+    repeated float stopline_mask = 11 [packed = true];
+
+    // generate by mapformer.
+    repeated LaneFeature ego_center_lines = 20;
+    repeated LaneFeature center_lines = 21;
+    repeated LaneFeature guide_lines = 22;
+  }
+
+  message SchedulerFeature {
+    repeated double dp_centers = 1 [packed = true];
+    repeated double path_sl_left = 2 [packed = true];
+    repeated double path_sl_right = 3 [packed = true];
+    optional PredictionMapType map_type = 4;
+    optional LaneChangeStage lc_stage = 5;
+  }
+
+  message DrivePassageFeature {
+    enum DrivePassageType {
+      CENTER = 0;
+      LEFT = 1;
+      RIGHT = 2;
+    }
+    repeated float dp_centers = 1 [packed = true];
+    repeated float soft_left = 2 [packed = true];
+    repeated float soft_right = 3 [packed = true];
+    repeated float hard_left = 4 [packed = true];
+    repeated float hard_right = 5 [packed = true];
+    optional float current_dist = 6;
+    repeated float future_dist = 7;
+    optional DrivePassageType semantic_type = 8;
+    optional bool is_target = 9;
+  }
+
+  message DrivePassageFeaturePerMap {
+    repeated DrivePassageFeature dps_feature = 1;
+    optional PredictionMapType map_type = 2;
+  }
+
+  message SdLinksFeature {
+    optional sfixed64 id = 99;
+    repeated float links_pos = 1 [packed = true];
+    optional int32 speed_limit_type = 9;
+    optional int32 links_class = 2;
+    optional int32 links_type = 3;
+    optional int32 links_travel_direction = 4;
+    repeated float links_lw = 5 [packed = true];
+    optional float links_max_speed = 6;
+    optional float links_lane_count = 7;
+    repeated SdLanesDumpedFeauture lane_features = 8;
+    optional sfixed64 start_node_id = 10;
+    optional sfixed64 end_node_id = 11;
+    repeated sfixed64 incoming_link_id = 12 [packed = true];
+    repeated sfixed64 outgoing_link_id = 13 [packed = true];
+  }
+
+  message SdNodesFeature {
+    optional sfixed64 id = 99;
+    repeated float nodes_pos = 1 [packed = true];
+    optional int32 nodes_type = 2;
+    optional bool has_traffic_light = 3;
+    repeated sfixed64 connected_links = 4 [packed = true];
+  }
+
+  message SdLanesDumpedFeauture {
+    repeated int32 lane_type = 1 [packed = true];  // multi-type
+    optional int32 lane_direction = 2;
+  }
+
+  message SdMapFeature {
+    repeated SdLinksFeature links = 1;
+    repeated SdNodesFeature nodes = 2;
+    repeated sfixed64 pocr_link_ids = 5 [packed = true];
+    repeated sfixed64 ehp_v2_link_ids = 6 [packed = true];
+    repeated float links_mask = 3;
+    repeated float nodes_mask = 4;
+  }
+
+  message PlannerInfoFeature {
+    // Scheduled two choices. First one should be selector's choice.
+    repeated SchedulerFeature schedulers = 1;
+    // Traffic light histories, colors to floats.
+    repeated float traffic_light_info = 2 [packed = true];
+    repeated float traffic_light_ts = 6
+        [packed = true];  // Relative time w.r.t. current sampling ts.
+    optional SdMapFeature sd_map = 3;
+    // Selector's result.
+    optional LaneChangeType select_lc_type = 4;
+    optional LaneChangeStage select_lc_stage = 5;
+    // When drive passage is invalid, use navigation area generated with
+    // mapformer results to guide AV.
+    repeated LaneFeature navi_area = 10;
+  }
+
+  message GroundTruthProto {
+    repeated TrajectoryGroundTruth agent_gts = 1;
+    repeated bool valid_gts = 2 [packed = true];
+  }
+
+  optional AgentsFeature agents = 1;
+  repeated MapFeature maps = 2;  // hd, vision...
+  optional AgentsFeature static_objs = 3;
+  optional PlannerInfoFeature planner_info = 4;
+  optional GroundTruthProto ground_truth = 5;
+  repeated float agent_mask = 6 [packed = true];
+  repeated float static_obj_mask = 7 [packed = true];
+
+  // Sample related.
+  optional double timestamp = 8;
+  repeated string agent_ids = 9;
+  // Use to build smooth coord.
+  optional Vec2dProto av_pos = 10;
+  optional double av_angle = 11;
+
+  // Other labels proto. Traj behavior, scenario labels.
+  // av states at the sampling timestamp.
+
+  // TODO(chuanying): fix typo.
+  message InteractionLable {
+    // has_interaction: if false, all following fields are empty.
+    optional bool has_interaction = 1 [default = false];
+
+    // Considering three objects comprehensively,
+    // if there is a relationship with one of them, it is considered true
+    // Are av following the object.
+    optional bool av_is_following = 2 [default = false];
+    // Are av overtaking the object.
+    optional bool av_is_overtaking = 3 [default = false];
+    // Are av yielding the object.
+    optional bool av_is_yielding = 4 [default = false];
+    // Are av cut in the object.
+    optional bool av_is_cutting_in = 5 [default = false];
+    // Are av cut in by the object.
+    optional bool av_is_cut_in_by = 6 [default = false];
+    // Are av merging with the object.
+    optional bool av_is_merging = 7 [default = false];
+    // Are av crossing with the object.
+    optional bool av_is_crossing = 8 [default = false];
+    // Are av cut out the first object.
+    optional bool av_is_cutting_out = 9 [default = false];
+    // Are av cut out by the first object.
+    optional bool av_is_cut_out_by = 10 [default = false];
+  }
+
+  // Specific gt labels for quest net.
+  message GroundTruthLabels {
+    optional InteractionLable av_interaction_label = 2;
+    optional TrajBehaviorLabel av_traj_label = 3;
+    optional PredictionScenarioLabel scenario_label = 4;
+    reserved 1;
+  }
+
+  optional AvStateLabelsProto av_states = 12;
+  optional GroundTruthLabels gt_labels = 13;
+  // Drive passages
+  repeated DrivePassageFeaturePerMap map_dps_feature = 14;
+}

@@ -1,0 +1,731 @@
+
+syntax = "proto2";
+
+package snoah.labeling;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/label";
+
+import "offboard/labeling/proto/attribute.proto";
+import "offboard/labeling/proto/tl_label_v2.proto";
+import "offboard/labeling/proto/scene_label.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "offboard/labeling/proto/traffic_sign.proto";
+import "offboard/labeling/proto/general_2d_detection.proto";
+import "offboard/labeling/proto/road_geometry_label.proto";
+
+// Next ID: 57
+message Label {
+  // Box3d info
+  optional int32 object_id = 1;
+
+  message MiscIds {
+    optional int32 detection_id = 1;
+  }
+  optional MiscIds misc_ids = 45;
+
+  optional double x = 2;
+  optional double y = 3;
+  optional double z = 9;
+  optional double width = 4;
+  // The shrunk width by cutting of rearview mirror of cars.
+  optional double shrinked_width = 32;
+  // width with rearview mirrors, only apply to cars and tricyclists
+  optional double width_with_rvm = 42;
+  optional double length = 5;
+  optional double height = 10;
+  optional double heading = 6;
+  optional double pitch = 49;
+  optional double roll = 50;
+  optional float confidence_score = 23 [default = 1.0];
+  optional double timestamp = 51;
+  // This indicates if the object is stationary in ***THE WHOLE SCENE***.
+  optional bool stationary_track = 52 [default = false];
+  // Category enum element ids has to be consecutive and zero-based numbering.
+  // Next ID: 23
+  enum Category {
+    CAR = 0;
+    PED = 1;
+    CHILD = 2;
+    BICYCLIST = 3;
+    MOTORCYCLIST = 4;
+    TRICYCLIST = 5;
+    TRAILER = 6;
+    ANIMAL = 7;
+    CAR_DOOR = 8;
+    // Obstacles that's on-road but not belong to any of the categories above.
+    // NOTE(yu): This is SAIC specific.
+    UNKNOWN = 10;
+    POLE = 11;
+    ROAD_BARRIER = 12;
+    TROLLEY = 14;
+    TRAFFIC_SIGN = 15;
+    IMAGE_ANONYMIZATION = 16;
+    IMAGE_ANOMALIES = 17;
+    TRAFFIC_LIGHT = 18;
+    LIGHT_SOURCE = 19;
+    SCENE_TYPE = 20;
+    TRAFFIC_LIGHT_BULB = 21;
+    LANE = 22;
+    // deprecated fields
+    CONE = 9 [deprecated = true];
+    UNMANNED_TRICYCLE = 13 [deprecated = true];
+  }
+  optional Category category = 7;
+  optional bool fake = 29 [default = false];
+  // Whether the engineering vehicle is in the expand state.
+  optional bool is_expanded = 30 [default = false];
+  // Whether the double-decker trucks loaded cars.
+  optional bool is_loaded = 31 [default = false];
+
+  optional int32 connected_id = 8 [default = -1];
+
+  enum OcclusionType {
+    NO_OCCLUSION = 0;
+    // Less than 40% area got occluded.
+    OCCLUSION = 1;
+    // More than 40% area got occluded.
+    HEAVY_OCCLUSION = 2;
+    UNKNOWN_OCCLUSION = 3;
+  }
+  optional OcclusionType occlusion_type = 12;
+
+  optional VehicleType veh_type = 14;
+
+  optional PedestrianType ped_type = 15;
+
+  repeated VehicleAttribute veh_attr = 17;
+
+  repeated PedestrianAttribute ped_attr = 19;
+
+  optional ImageVisibility image_visibility = 22;
+
+  // use lidar id as key, enum can't be used as map key, use int32 instead
+  map<int32, int32> num_points_per_lidar = 24;
+
+  optional RoadBarrierType road_barrier_type = 25;
+
+  // This is for stf gerneration only, not use for labeling
+  optional Vec3dProto velocity = 26;    // Generate stf only.
+  optional Vec3dProto accelerate = 27;  // Generate stf only.
+
+  // Onroad and NOT on opposite lanes. Onroad: 1, offroad: -1, Not set: 0
+  optional int32 is_on_road = 33 [default = 0];
+
+  // Auto Labelling meta info
+  enum LabelSource {
+    HUMAN = 0;
+    AUTO_LABEL_LIDAR = 1;
+    AUTO_LABEL_RADAR = 2;
+  }
+  message MetaInfo {
+    optional bool virtual = 1 [default = false];
+    optional bool valid = 2 [default = true];
+    optional LabelSource source = 3;
+  }
+  optional MetaInfo meta_info = 34;
+  // Occluded score in bev space, is different from occluded_ratio in
+  // ImageLabel.
+  optional float occluded_score = 35;
+  optional double yaw_rate = 38;
+  repeated int32 merged =
+      39;  // records ids of all objects that are merged into this one.
+
+  message ConfidenceScores {
+    optional float box_score = 1;
+    optional float track_max_score = 2;
+    optional float refined_score = 3;
+    optional float refined_track_score = 4;
+  }
+  optional ConfidenceScores scores = 41;
+
+  enum LaneCrossingStatus {
+    LANE_CROSSING_STATUS_INVALID = 0;
+    LANE_CROSSING_STATUS_TRUE = 1;
+    LANE_CROSSING_STATUS_FALSE = 2;
+    LANE_CROSSING_STATUS_UNKNOWN = 3;
+  }
+  optional LaneCrossingStatus lane_crossing_status = 43;
+  optional double lane_crossing_ratio = 44 [default = 0.0];
+
+  // map<VehicleLightType, VehicleLightStatus>
+  map<string, VehicleLightStatus> vehicle_lights_status = 46;
+
+  optional bool is_driver_missing = 47 [default = false];
+  // Only for 110/119/120
+  optional bool is_emergency = 48 [default = false];
+
+  optional BarrierGateStatus barrier_gate_status = 53;
+
+  map<string, VehicleLightSeqStatus> vehicle_lights_seq_status = 54;
+
+  // deprecated fields
+  optional XcyclistType xcy_type = 16 [deprecated = true];
+  optional VehicleLampAttribute veh_lamp_attr = 18 [deprecated = true];
+  optional StaticObjectType sta_type = 20 [deprecated = true];
+  optional OtherObjectType oth_type = 21 [deprecated = true];
+  // Fine-grained classification of vehicle (car as its legacy name).
+  // This is only valid for Category::CAR and Category::TRAILER.
+  enum CarType {
+    CARTYPE_CAR = 0;
+    CARTYPE_VAN = 1;
+    // Including construction vehicles, freight trucks, buses.
+    CARTYPE_TRUCK = 2;
+  }
+  optional CarType car_type = 11 [deprecated = true];
+  optional int32 num_points = 13 [deprecated = true];
+  optional LabelSource source = 28 [deprecated = true];
+  // velocity along x / y
+  optional double vx = 36 [deprecated = true];
+  optional double vy = 37 [deprecated = true];
+  enum ScoreType {
+    BOX_SCORE = 0;
+    TRACK_MAX_SCORE = 1;
+  }
+  map<string, float> confidence_scores = 40 [deprecated = true];
+
+  enum CriticalObjectType {
+    COT_INVALID = 0;
+    COT_UNKNOWN = 1;
+    COT_CIPV = 2;
+    COT_SCIPV = 3;
+  }
+  enum ObjectCrossingLine {
+    OCL_INVALID = 0;
+    OCL_UNKNOWN = 1;
+    OCL_CROSSING_LINE = 2;
+    OCL_NOT_CROSSING_LINE = 3;
+  }
+  enum FollowingStateType {
+    FS_INVALID = 0;
+    FS_UNKNOWN = 1;
+    FOLLOWING = 2;
+    UNFOLLOWING = 3;
+  }
+  optional CriticalObjectType critical_object_type = 55 [default = COT_INVALID];
+  optional ObjectCrossingLine object_crossing_line = 56 [default = OCL_INVALID];
+  optional FollowingStateType following_state = 57 [default = FS_INVALID];
+}
+
+// Next ID: 3
+message LabelOr {
+  optional double timestamp = 1;
+  optional Label label = 2;
+}
+
+// Next ID: 6
+message Zone {
+  repeated double xs = 1;
+  repeated double ys = 2;
+  enum ZoneType {
+    BLACK = 0;  // No labeling here
+    WHITE = 1;  // Everything labeled here
+    MIST = 2;   // Zone [LOOSE] containing mist/exhaust/rain/etc
+
+    REFLECTION = 3;     // Zone [TIGHT] containing reflection points
+    STATIC_OBJECT = 4;  // Zone [TIGHT] containing static objects
+    BARRIER = 6;        // Zone [TIGHT] containing barrier
+    CURB = 7;           // Zone [TIGHT] containing curb
+
+    // Note that the difference between VEGETATION and GREEN_BELT is that
+    // GREEN_BELT denotes a piece of area where bushes interleaved with other
+    // trees and high grass. Take it out to save effort of labeling.
+    VEGETATION = 5;    // Zone [TIGHT] containing vegetation
+    GREEN_BELT = 8;    // Zone [TIGHT] containing a whole area of vegetation
+    CONSTRUCTION = 9;  // Zone [TIGHT] containing construction area
+    CROWD = 10;        // Zone [TIGHT] containing a whole area of crowd
+    DRIVABLE = 11;     // PRT evaluation area, ground connecting to self-car
+
+    // Zone marking all verticals (obstacles) has been labeled inside
+    // the zone. What's not being labeled by above zones or traffic
+    // participants are horizontals (surface).
+    // Note that traffic participants or object zones (reflection, static or
+    // vegetation) above don't have to be necessarily inside a FULL_SEMANTIC
+    // zone but all verticals have to be labeled inside a FULL_SEMANTIC zone.
+    FULL_SEMANTIC = 100;
+  }
+  optional ZoneType type = 3;
+  repeated double zs = 4;
+  optional int32 object_id = 5;
+}
+
+message MiscLabel {
+  message MiscLableInfo {
+    optional string version = 1;
+    optional string comment = 2;
+  }
+  optional MiscLableInfo info = 1;
+  repeated Label labels = 2;
+  repeated Zone zones = 3;
+}
+
+// Next ID: 6
+message Frame {
+  optional int32 frame_id = 1;
+  repeated Label labels = 2;
+  repeated Zone zones = 3;
+  map<string, MiscLabel> misc_labels = 4;
+  optional bool has_lane_crossing_status = 5;
+}
+
+// Next ID: 30
+enum LabelingPolicyVersion {
+  V_UNKNOWN = 0;
+  V_21_7_21 = 1;    // Added details on car door label.
+  V_21_8_9 = 2;     // Added curb and enlarge full semantic to offroad.
+  V_21_8_30 = 3;    // Added greenbelt.
+  V_21_10_22 = 4;   // Update image type and attributes.
+  V_21_10_26 = 5;   // Use 3D det, simplify semantic zone, discard static cars.
+  V_21_11_05 = 6;   // Added the attributes of traffic light and traffic sign.
+  V_21_12_10 = 7;   // Added other static and bicycle traffic light type.
+  V_21_12_29 = 8;   // Added object id for polygon labeled objects.
+  V_22_01_28 = 9;   // Set the default ped heading as unknown.
+  V_22_02_28 = 10;  // Added pole label
+  V_22_03_03 = 11;  // DBQ camera and lidar union label, ignore the attributes
+                    // of car & ped to speed up labeling.
+  V_22_03_14 = 12;  // PBQ  with lot of non-labeling zone
+  V_22_05_10 = 13;  // Lite version, including (ped, cyc, car), with 1Hz lidar.
+  V_22_05_11 = 14;  // Added unified catagory
+  V_22_05_12 = 15;  // Update the unified label in image, with 10Hz lidar.
+  V_22_05_24 = 16;  // DPC unified label.
+  V_22_05_25 = 17;  // Update lamp attribute.
+  V_22_07_13 = 18;  // Added weather and scene
+  V_22_08_26 = 19;  // Added tank truck and garbage truck
+  V_22_08_28 = 20;  // Use tl_label_v2 for traffic light
+  V_22_08_31 = 21;  // Add attributes of cone class of 2D image
+  V_22_09_07 = 22;  // Add image_name attribute in ImageLabels, for 2d detection
+                    // labelling only.
+  V_22_09_22 = 23;  // Add CONSTRUCTION & CROWD ZoneType in Label.
+  V_22_11_08 = 24;  // Add ROAD_BARRIER for lidar label
+  V_22_11_29 = 25;  // add scene label for each frame
+  V_22_12_15 = 26;  // Revise finetype and attribute label
+  V_22_12_22 = 27;  // Add HEADLIGHT_AREA for 2d detection
+  V_23_05_22 = 28;  // Add more road barrier type and vechile type
+  V_23_07_04 = 29;  // Add more vehicle type, add double consignment vehicle and
+                    // froklift vehicle.
+  V_23_07_10 = 30;  // Add expand and loaded bool for labeling.
+  V_23_10_24 = 31;  // Add more fine-grained categories, unmanned tricycle, mini
+                    // vehicle, ped with assistive device, ped in wheelchair
+}
+
+// Next ID: 6
+enum Weather {
+  SUNNY = 0;
+  CLOUDY = 1;
+  FOGGY = 2;
+  RAINY = 3;
+  SNOWY = 4;
+  UNKNOWN_WEATHER = 5;
+}
+
+// Next ID: 5
+enum SceneType {
+  URBAN_ROAD = 1;
+  HIGH_WAY = 2;
+  UNDERGROUND_PARKING = 3;
+  UNKNOWN_SCENE = 4;
+};
+
+// Next ID: 10
+message PacketLabels {
+  optional string packet_name = 1;
+  repeated Frame frames = 2;
+  optional string comment = 3;
+  repeated CameraFrame camera_frames = 4;
+  optional LabelingPolicyVersion version = 5 [default = V_UNKNOWN];
+  optional bool has_fine_grained_label = 6 [default = false];
+  // deprecated fields
+  optional TimeType time_type = 7 [deprecated = true];
+  optional Weather weather = 8 [deprecated = true];
+  optional SceneType scene_type = 9 [deprecated = true];
+  // Camera status for each camera in the packet
+  map<int32, CameraStatus> camera_status = 10;
+}
+
+// Camera status enum
+enum CameraStatus {
+  NORMAL = 0;
+  OFFSET = 1;
+  ABNORMAL = 2;
+}
+
+// Image label proto starts from here
+// Next ID: 4
+message ImageZone {
+  repeated double xs = 1;
+  repeated double ys = 2;
+  enum ZoneType {
+    BLACK = 0;  // No labeling here
+    WHITE = 1;  // Everything labeled here
+  }
+  optional ZoneType type = 3;
+}
+
+// Next ID: 60
+message ImageLabel {
+  optional int32 object_id = 1;
+  optional int32 mapped_3d_object_id = 2 [default = -1];
+  optional double x = 3;
+  optional double y = 4;
+  optional double width = 5;
+  optional double length = 6;
+  optional float confidence_score = 33 [default = 1.0];
+
+  // Next ID: 9
+  message Box3d {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional double length = 5;
+    optional double width = 4;
+    optional double height = 6;
+    optional double heading = 7;
+    optional Label.Category category = 8;
+  }
+  // Interpolated 3d box at image timestamp.
+  optional Box3d box3d = 34;
+
+  // Category enum element ids has to be consecutive and zero-based numbering.
+  // Next ID: 23
+  enum Category {
+    CAR = 0;
+    PED = 1;
+    BICYCLIST = 2;
+    MOTORCYCLIST = 3;
+    TRICYCLIST = 4;
+    TRAILOR = 6;
+    TRAFFIC_LIGHT = 7;
+    TRAFFIC_SIGN = 8;
+    ROAD_BARRIER = 9;
+    ANIMAL = 10;
+    WHEEL = 12;
+    ROAD_HOLE = 13;
+    HEADLIGHT_AREA = 14;
+    TROLLEY = 16;
+    IMAGE_ANONYMIZATION = 17;
+    IMAGE_ANOMALIES = 18;
+    LIGHT_SOURCE = 19;
+    SCENE_TYPE = 20;
+    TRAFFIC_LIGHT_BULB = 21;
+    LANE = 22;
+    // deprecated fields
+    CONE = 5 [deprecated = true];
+    OTHER_STATIC = 11 [deprecated = true];
+    UNMANNED_TRICYCLE = 15 [deprecated = true];
+  }
+  optional Category category = 7;
+
+  optional bool fake = 30 [default = false];
+  optional double truncated_ratio = 31 [default = 0.0];
+  optional double occluded_ratio = 32 [default = 0.0];
+  optional bool if_ignore = 36 [default = false];
+  optional double pixel_ratio = 38 [default = 0.0];
+
+  // Next ID: 16
+  enum TrafficSignType {
+    SPEED_LIMIT_5 = 0;
+    SPEED_LIMIT_10 = 1;
+    SPEED_LIMIT_20 = 2;
+    SPEED_LIMIT_30 = 3;
+    SPEED_LIMIT_40 = 4;
+    SPEED_LIMIT_50 = 5;
+    SPEED_LIMIT_60 = 6;
+    SPEED_LIMIT_70 = 7;
+    SPEED_LIMIT_80 = 8;
+    SPEED_LIMIT_90 = 9;
+    SPEED_LIMIT_100 = 10;
+    SPEED_LIMIT_110 = 11;
+    SPEED_LIMIT_120 = 12;
+    STOP = 13;
+    YIELD = 14;
+    OTHER = 15;
+  }
+  optional TrafficSignType traffic_sign_type = 17 [deprecated = true];
+
+  optional VehicleType veh_type = 18;
+
+  repeated VehicleAttribute veh_attr = 19;
+
+  optional PedestrianType pedestrian_type = 20;
+
+  repeated PedestrianAttribute pedestrian_attr = 21;
+
+  // Next ID: 4
+  enum WheelType {
+    FRONT_LEFT = 0;
+    FRONT_RIGHT = 1;
+    REAR_LEFT = 2;
+    REAR_RIGHT = 3;
+  }
+  optional WheelType wheel_type = 22;
+
+  optional int32 wheel_belong_id = 23;
+
+  optional ImageVisibility image_visibility = 24;
+
+  optional tflabelingv2.LightBodyInfo traffic_light_attr = 26;
+
+  optional ConeAttribute cone_attribute = 27;
+
+  // Next ID: 6
+  message TrafficLightBlubInfo {
+    // center x and center y of light
+    optional double x = 1;
+    optional double y = 2;
+    optional double width = 3;
+    optional double height = 4;
+    optional TrafficLightColorAttribute color = 5;
+  }
+  repeated TrafficLightBlubInfo traffic_light_blub_info = 28;
+
+  optional RoadBarrierType road_barrier_type = 29;
+
+  optional OcclusionLevel occlusion_level = 35;
+  optional TruncatedLevel truncated_level = 37;
+
+  optional bool with_cover = 39;
+
+  // map<VehicleLightType, VehicleLightStatus>
+  map<string, VehicleLightStatus> vehicle_lights_status = 40;
+
+  // Whether the engineering vehicle is in the expand state.
+  optional bool is_expanded = 41 [default = false];
+  // Whether the double-decker trucks loaded cars.
+  optional bool is_loaded = 42 [default = false];
+  optional bool is_driver_missing = 43 [default = false];
+  // Only for 110/119/120
+  optional bool is_emergency = 44 [default = false];
+  optional BarrierGateStatus barrier_gate_status = 45;
+
+  map<string, VehicleLightSeqStatus> vehicle_lights_seq_status = 46;
+
+  message TrafficSignRecognitionAttribute {
+    optional snoah.traffic_sign.ImageLabel.Category category = 1;
+    optional snoah.traffic_sign.ImageLabel.TrafficSignType traffic_sign_type =
+        2;
+    optional VehicleType traffic_sign_target_vehicle_type = 3;
+    optional snoah.traffic_sign.ImageLabel.SpeedLimitNumber
+        speed_limit_number = 4;
+  }
+  optional TrafficSignRecognitionAttribute traffic_sign_recognition_Attribute =
+      47;
+
+  // Next ID: 3
+  message ImageAnonymizationAttribute {
+    enum AnonymizationType {
+      FACE = 0;
+      PLATE = 1;
+      MANUAL_PLATE = 2;
+      OTHER_PLATE = 3;
+    }
+    optional bool is_clear = 1;
+
+    optional AnonymizationType anonymization_type = 2;
+  }
+  optional ImageAnonymizationAttribute image_anonymization_attribute = 48;
+
+  // Next ID: 7
+  message ImageAnomaliesAttribute {
+    optional bool abandoned = 1;
+    optional ImageAnomaliesResultLevel blur = 2;
+    optional ImageAnomaliesResultLevel block = 3;
+    optional ImageAnomaliesResultLevel glare = 4;
+    optional string time = 5;
+    optional string weather = 6;
+
+    enum ImageAnomaliesResultLevel {
+      NORMAL = 0;
+      MILD = 1;
+      MEDIUM = 2;
+      SEVERE = 3;
+      INVISIBLE = 4;
+    }
+  }
+  optional ImageAnomaliesAttribute image_anomalies_attribute = 49;
+
+  optional general_2d_detection.LightSourceType light_source_type = 50;
+
+  message SceneTypeAttribute {
+    enum SceneCategory {
+      UNKNOWN = 0;
+      CABLE_STAYED_BRIDGE = 1;
+      OPEN_TOP_TUNNEL = 2;
+      COVERED_NON_TUNNEL = 3;
+      UNDER_VIADUCT = 4;
+      ON_VIADUCT = 5;
+      NORMAL_ROAD = 6;
+      INSIDE_TUNNEL = 7;
+      INSIDE_PARKING_LOT = 8;
+      DIM_PARKING_LOT = 9;
+      PARKING_ENTRY_EXIT = 10;
+      PARKING_BUILDING = 11;
+      OUTDOOR_PARKING = 12;
+      BRIDGE_UNDERPASS = 13;
+      OTHER = 14;
+    }
+
+    enum EnvironmentType {
+      ENVIRONMENT_UNKNOWN = 0;
+      OUTDOOR = 1;
+      INDOOR = 2;
+    }
+
+    enum TunnelType {
+      TUNNEL_UNKNOWN = 0;
+      OUT_TUNNEL = 1;
+      IN_TUNNEL = 2;
+    }
+
+    enum BridgeType {
+      BRIDGE_UNKNOWN = 0;
+      NOT_UNDER_BRIDGE = 1;
+      UNDER_BRIDGE = 2;
+    }
+
+    optional SceneCategory category = 1;
+    optional EnvironmentType environment_type = 2;
+    optional TunnelType tunnel_type = 3;
+    optional BridgeType bridge_type = 4;
+  }
+  optional SceneTypeAttribute scene_type_attribute = 51;
+
+  // car door status
+  // Deprecated: use individual door status fields below instead
+  map<string, CarDoorStatus> car_door_status = 52 [deprecated = true];
+
+  // Individual car door status fields
+  optional CarDoorStatus left_front_door = 53 [default = UNKNOWN];
+  optional CarDoorStatus left_rear_door = 54 [default = UNKNOWN];
+  optional CarDoorStatus right_front_door = 55 [default = UNKNOWN];
+  optional CarDoorStatus right_rear_door = 56 [default = UNKNOWN];
+  optional CarDoorStatus front_trunk_door = 57 [default = UNKNOWN];
+  optional CarDoorStatus trunk_door = 58 [default = UNKNOWN];
+
+  optional road_geometry_label.LaneInfo lane_info = 59;
+
+  // deprecated fields
+  enum CarType {
+    CARTYPE_SMALL = 0;
+    CARTYPE_MEDIUM = 1;
+    CARTYPE_LARGE = 2;
+    CARTYPE_CONSTRUCTION = 3;
+    CARTYPE_EMERGENCY = 4;
+  }
+  optional CarType car_type = 8 [deprecated = true];
+  enum PedType {
+    PEDTYPE_ADULT = 0;
+    PEDTYPE_CHILD = 1;
+    PEDTYPE_CONSTRUCTION = 2;
+    PEDTYPE_POLICE = 3;
+  }
+  optional PedType ped_type = 9 [deprecated = true];
+
+  enum PedAttribute {
+    PEDATT_HOLDING = 0;
+    PEDATT_PHONE = 1;
+    PEDATT_SKATING = 2;
+    PEDATT_RAREPOSE_DEPRECATED = 3 [deprecated = true];
+    PEDATT_LOOKINGATUS = 4;
+  }
+  repeated PedAttribute ped_attributes = 10 [deprecated = true];
+  enum CarAttribute {
+    CARATT_LIGHTON_DEPRECATED = 0;
+    CARATT_DOOROPEN = 1;
+    CARATT_OUTSTRETCH = 2;
+    CARATT_LEFTTURNINGLIGHTON = 3;
+    CARATT_RIGHTTURNINGLIGHTON = 4;
+    CARATT_BRAKELIGHTON = 5;
+    CARATT_HAZARDLIGHTON = 6;
+    CARATT_REVERSELIGHTON = 7;
+    CARATT_EMERGENCYLIGHTON = 8;
+  }
+  repeated CarAttribute car_attributes = 11 [deprecated = true];
+  // whether the object is fully contained in current image
+  optional bool is_complete = 12 [deprecated = true];
+  enum PedPostureAndGesture {
+    PEDPG_STANDING = 0;
+    PEDPG_SITTING = 1;
+    PEDPG_LAYINGDOWN = 2;
+    PEDPG_SQUATTING = 3;
+    PEDPG_BENDINGOVER = 4;
+    PEDPG_WALKING = 5;
+    PEDPG_HANDTOSTOP = 6;
+    PEDPG_HANDTOPROCEED = 7;
+    PEDPG_EXITINGCARS = 8;
+  }
+  optional PedPostureAndGesture ped_posture_and_gesture = 13
+      [deprecated = true];
+  enum PedHeading {
+    PEDH_UP = 0;
+    PEDH_UPRIGHTUP = 1;
+    PEDH_UPRIGHT = 2;
+    PEDH_UPRIGHTRIGHT = 3;
+    PEDH_RIGHT = 4;
+    PEDH_DOWNRIGHTRIGHT = 5;
+    PEDH_DOWNRIGHT = 6;
+    PEDH_DOWNRIGHTDOWN = 7;
+    PEDH_DOWN = 8;
+    PEDH_DOWNLEFTDOWN = 9;
+    PEDH_DOWNLEFT = 10;
+    PEDH_DOWNLEFTLEFT = 11;
+    PEDH_LEFT = 12;
+    PEDH_UPLEFTLEFT = 13;
+    PEDH_UPLEFT = 14;
+    PEDH_UPLEFTUP = 15;
+    PEDH_UNKNOWN = 16;
+  }
+  optional PedHeading ped_heading = 14 [deprecated = true];
+  enum TrafficLightColorAttribute {
+    RED = 0;
+    GREEN = 1;
+    YELLOW = 2;
+    BLACK = 3;
+  }
+  optional TrafficLightColorAttribute traffic_light_color_attribute = 15
+      [deprecated = true];
+  enum TrafficLightShapeAttribute {
+    UP = 0;
+    LEFT = 1;
+    RIGHT = 2;
+    U_TURN = 3;
+    ROUND = 4;
+    PEDESTRIAN = 5;
+    COUNTDOWN = 6;
+    CHINESE = 7;
+    BICYCLE = 8;
+  }
+  optional TrafficLightShapeAttribute traffic_light_shape_attribute = 16
+      [deprecated = true];
+  optional VehicleLampAttribute veh_lamp_attr = 25 [deprecated = true];
+}
+
+// Next ID: 2
+enum ImageQuality {
+  IQ_HIGH = 0;      // Good quality.
+  IQ_LOW_MIST = 1;  // Image quality low because of rain drop on camera.
+}
+
+// Next ID: 6
+message ImageLabels {
+  repeated ImageLabel labels = 1;
+  repeated ImageZone zones = 2;
+  optional double center_timestamp = 3;
+  optional ImageQuality image_quality = 4;
+  optional string image_name = 5;
+}
+
+// Next ID: 12
+message CameraFrame {
+  optional int32 frame_id = 1;
+  optional int32 mapped_3d_frame_id = 2;
+  // the key of this map(camera id : int32) follows what's defined in the
+  // labeling data
+  map<int32, ImageLabels> image_frames = 3;
+  optional MainScene main_scene = 7;
+  optional SmallScene small_scene = 8;
+  optional SceneWeather scene_weather = 9;
+  optional SceneLight scene_light = 10;
+  optional SceneTime scene_time = 11;
+  // deprecated fields
+  optional TimeType time_type = 4 [deprecated = true];
+  optional Weather weather = 5 [deprecated = true];
+  optional SceneType scene_type = 6 [deprecated = true];
+}

@@ -1,0 +1,21 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message PerceptionFreespaceProto {
+  message Point {
+    optional float x = 1;
+    optional float y = 2;
+    optional float z = 3;
+  }
+  optional LiteHeader header = 1;
+  optional int32 cam_id = 2 [default = 0];
+  optional int32 frame_id = 3 [default = 0];
+  optional int64 timestamp = 4 [default = 0];
+  optional int64 pub_timestamp = 5 [default = 0];
+  repeated int32 property = 6;  // for each fov ray point
+  repeated Point pts_vcs = 7;   // position in vcs
+}

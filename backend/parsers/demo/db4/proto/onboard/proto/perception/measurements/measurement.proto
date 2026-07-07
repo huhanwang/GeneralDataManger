@@ -1,0 +1,208 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/perception/fusion/objects.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/fusion/object.proto";
+import "onboard/proto/perception/fusion/prediction_traj2d.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/perception/vision/traffic_sign.proto";
+import "onboard/proto/perception/vision/intelligent_speed_limit.proto";
+import "onboard/proto/perception/measurements/det2d_measurement.proto";
+import "onboard/proto/perception/vision/traffic_light_state.proto";
+import "onboard/proto/perception/measurements/vehicle_keypoint.proto";
+import "onboard/proto/perception/lidar/lidar_perception_net_result.proto";
+import "onboard/proto/perception/types/fine_grained_type.proto";
+import "onboard/proto/perception/measurements/road_geometry_measurement.proto";
+// import "onboard/proto/perception.proto";
+
+message LaserMeasurementProto {
+  optional int32 measurement_id = 19;
+  repeated Vec2dProto contour = 3;
+  optional Vec2dProto contour_centroid = 18;
+  optional Box2dProto detection_bounding_box = 4;
+
+  message ObstacleInfo {
+    optional Vec2dProto center = 1;
+    optional double min_z = 2;
+    optional double max_z = 3;
+    optional int32 num_points = 4;
+  }
+
+  message ClusterMeasurement {
+    optional int32 num_obstacles_deprecated = 1 [deprecated = true];
+    optional double height = 2;
+    optional bool near_curb = 3;
+    optional double min_dist_to_curb = 4;
+    optional double max_dist_to_curb = 5;
+    repeated Vec2dProto obstacle_centers_deprecated = 6 [deprecated = true];
+    optional int32 cluster_id = 7;
+    optional double timestamp = 8;
+    optional double min_z = 9;
+    optional double max_z = 10;
+    optional double clearance = 11;
+    optional int32 num_points = 12;
+    optional double ground_z = 13;
+    repeated ObstacleInfo obstacle_info = 14;
+    optional double static_obstacle_ratio = 15;
+    optional Vec2dProto pillar_motion_vel = 16;
+    optional Vec2dProto pillar_motion_vel_variance = 17;
+    optional Vec2dProto weighted_obstacle_centroid = 18;
+  }
+  optional ClusterMeasurement cluster_measurement = 5;
+
+  message IcpMeasurement {
+    optional Vec2dProto vel = 1;
+    optional double mse = 2;
+    optional int32 matched_prev_cluster_id = 3;
+    optional double matched_prev_cluster_timestamp = 4;
+    optional double matched_curr_cluster_timestamp = 5;
+    optional Mat2dProto velocity_covariance = 6;
+  }
+  optional IcpMeasurement icp_measurement = 6;
+
+  // Feature embeddings.
+  repeated float feature_embeddings = 7 [packed = true, deprecated = true];
+  repeated float point_feature_embeddings = 11 [packed = true];
+  repeated float image_feature_embeddings = 12 [packed = true];
+  repeated float point_association_embeddings = 14 [packed = true];
+  repeated float image_association_embeddings = 15 [packed = true];
+
+  // Min area bbox with heading, only filled when it has detection bbox.
+  optional Box2dProto min_area_bounding_box = 8;
+
+  // The refined bbox originated from detection bounding box, it contains
+  // the whole contour, in the future maybe tunning bounding box according
+  // to contour further.
+  optional Box2dProto refined_bounding_box = 9 [deprecated = true];
+  optional Vec2dProto fen_velocity = 10;
+  optional ObservationState observation_state = 13 [default = OS_UNKNOWN];
+  optional double fen_height = 16;
+
+  reserved 1, 2;
+  repeated PredictionTraj2dProto future_trajs = 17;
+}
+
+message CameraMeasurementProto {
+  optional Vec2dProto center = 1;
+  optional Mat2dProto center_cov = 2;
+
+  // Feature embeddings.
+  repeated float feature_embeddings = 3 [packed = true];
+
+  // Related information on detected box.
+  optional CameraId camera_id = 4;
+  optional double camera_trigger_timestamp = 5;
+  optional int32 box_center_x = 6;
+  optional int32 box_center_y = 7;
+  optional int32 box_width = 8;
+  optional int32 box_height = 9;
+}
+
+// Amendment measruement.
+message KeyPointMeasruementProto {
+  optional VehicleKeypointProto vehicle_keypoint = 1;
+  optional Vec2dProto centroid = 2;
+  optional int32 measurement_id = 3;
+}
+
+message VidarMeasurementProto {
+  optional MeasurementType type = 1;
+  repeated Vec2dProto contour = 2;
+  // Centroid from instance point cloud.
+  optional Vec2dProto weighted_centroid = 3;
+  // Centroid from instance contour.
+  optional Vec2dProto centroid = 4;
+  optional int32 measurement_id = 5;
+}
+
+// Next ID: 6
+message Camera2dMeasurementProto {
+  optional CameraId camera_id = 1;
+  optional double timestamp = 2;
+  optional int32 measurement_id = 3;
+  oneof Measurement {
+    TrafficSignProto traffic_sign = 4;
+    IntelligentSpeedLimitProto intelligent_speed_limit = 5;
+    Det2dMeasurementProto det2d_measurement = 6;
+    TrafficLightStateProto traffic_light = 7;
+  }
+}
+
+message LidarProcessMeasurementProto {
+  optional int32 id = 1;
+  optional bool supposed_be_filtered = 2;
+  optional double confidence = 3;
+  optional double tracking_time = 4;
+  repeated Vec3dProto contour = 5;
+  optional double yaw = 6;
+  optional double yaw_full = 7;
+  optional double yaw_rate = 8;
+  optional Vec3dProto center = 9;
+  optional Vec3dProto center_full = 10;
+  // size = [length, width, height] of boundingbox
+  // length is the size of the main direction, required
+  optional Vec3dProto size = 11;
+  optional Vec3dProto size_full = 12;
+  optional Vec3dProto velocity = 13;
+  optional Vec3dProto acceleration = 14;
+  // actually uint8_t data
+  optional uint32 aeb_conf = 15;
+  // seq means frame_id
+  optional int32 seq = 16;
+  optional uint32 sensor_state = 17;
+  optional uint32 msg_wiper_spd = 18;
+  optional uint32 msg_rain_intensity = 19;
+  optional bool is_cipv = 20 [default = false];
+  optional bool is_critical_object = 21 [default = false];
+  optional LidarPerceptionNetResultProto.RangeInfo detection_range = 22;
+  optional LidarPerceptionNetResultProto.RangeInfo pillar_semantic_range = 23;
+  optional ObjectProto.ObstacleLaneLineRelation obstacle_lane_line_relation =
+      24;
+  optional FineGrainedType lidar_fine_grained_type = 25;
+  optional int32 tracking_frame_number = 26;
+  repeated Vec3dProto concave_contour = 27;
+  // Next id = 28
+}
+
+// Next ID: 14
+message MeasurementProto {
+  optional int32 id = 13;
+  optional double timestamp = 1;
+
+  optional ObjectType type_deprecated = 2 [deprecated = true];
+  optional MeasurementType type = 7;
+
+  oneof Measurement {
+    LaserMeasurementProto laser_measurement = 3;
+    CameraMeasurementProto camera_measurement = 4 [deprecated = true];
+    Camera3dMeasurementProto camera3d_measurement = 8;
+    RadarMeasurementProto radar_measurement = 5;
+
+    // Amendment measurement.
+    KeyPointMeasruementProto keypoint_measurement = 9;
+    VidarMeasurementProto vidar_measurement = 10;
+    RoadGeometryMeasurementProto road_geometry_measurement = 11;
+
+    Camera2dMeasurementProto camera2d_measurement = 12;
+    LidarProcessMeasurementProto lidarprocess_measurement = 14;
+  }
+  optional MeasurementTypeSource type_source = 6 [default = MTS_DEFAULT];
+}

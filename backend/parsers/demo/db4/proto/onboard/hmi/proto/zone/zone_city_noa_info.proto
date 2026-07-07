@@ -1,0 +1,226 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/hmi/proto/zone/common.proto";
+import "onboard/hmi/proto/zone/zone_traffic_control.proto";
+
+enum ZopSysSts {
+  ZOPSYSSTS_OFF = 0x0;
+  ZOPSYSSTS_PASSIVE = 0x1;
+  ZOPSYSSTS_STANDBY = 0x2;
+  ZOPSYSSTS_HANDSONACTIVE = 0x3;
+  ZOPSYSSTS_HANDSFREE_ACTIVE = 0x4;
+  ZOPSYSSTS_WAITFORDRIVERTOCONFIRM = 0x5;
+  ZOPSYSSTS_ALCACTIVE = 0x6;
+  ZOPSYSSTS_OVERRIDE = 0x7;
+  ZOPSYSSTS_TOR = 0x8;
+  ZOPSYSSTS_PROHIBIT = 0x9;
+  ZOPSYSSTS_FAULT = 0xA;
+  ZOPSYSSTS_SAFESTOP = 0xB;
+}
+
+enum PilotSystemMessage {
+  PILOTSYSTEM_NODISPLAY = 0x0;
+  PILOTSYSTEM_ACCACTIVE = 0x1;
+  PILOTSYSTEM_ACCEXIT = 0x2;
+  PILOTSYSTEM_LCCACTIVE = 0x3;
+  PILOTSYSTEM_LCCUPGRADEFROMACC = 0x4;
+  PILOTSYSTEM_LCCDEGRADATIONTOACC = 0x5;
+  PILOTSYSTEM_LCCEXIT = 0x6;
+  PILOTSYSTEM_NOAACTIVE = 0x7;
+  PILOTSYSTEM_NOAUPGRADE = 0x8;
+  PILOTSYSTEM_NOADEGRADATIONTOLCC = 0x9;
+  PILOTSYSTEM_NOADEGRADATIONTOACC = 0xA;
+  PILOTSYSTEM_NOAEXIT = 0xB;
+}
+
+enum AccStatus {
+  ACCSTATUS_OFF = 0x0;
+  ACCSTATUS_STANDBY = 0x1;
+  ACCSTATUS_ACTIVE = 0x2;
+  ACCSTATUS_OVERRIDE = 0x3;
+  ACCSTATUS_BRAKEONLY = 0x4;
+  ACCSTATUS_STANDSTILLACTIVE = 0x5;
+  ACCSTATUS_STANDSTILLWAIT = 0x6;
+}
+
+enum TjaicaSysSts {
+  TJAICASYSSTS_OFF = 0x0;
+  TJAICASYSSTS_STANDBY = 0x1;
+  TJAICASYSSTS_ACTIVE = 0x2;
+  TJAICASYSSTS_OVERRIDE = 0x3;
+  TJAICASYSSTS_PASSIVE = 0x4;
+}
+
+enum LaneChngStatus {
+  LANECHNG_NOREQUEST = 0x0;
+  LANECHNG_INHIBIT = 0x1;
+  LANECHNG_STARTING = 0x2;
+  LANECHNG_PROGRESS = 0x3;
+  LANECHNG_SUCCES = 0x4;
+  LANECHNG_FAILED = 0x5;
+  LANECHNG_SUPPRESSBYDRIVER = 0x6;
+  LANECHNG_RETURNTOEGOLANEBYDRIVER = 0x7;
+  LANECHNG_RETURNTOEGOLANEBYALC = 0x8;
+  LANECHNG_MANOEUVREWITHRISK = 0x9;
+  LANECHNG_RETURNTOEGOLANESUCCESS = 0xA;
+  LANECHNG_TOR = 0xB;
+  LANECHNG_LOWSPEED = 0xC;
+  LANECHNG_TEMPERRWARN = 0xE;
+  LANECHNG_PERMANENTERRWARN = 0xF;
+}
+
+enum AutoLaneChngMsgReq {
+  AUTO_LANECHNGMSGREQ_NODISPLAY = 0x0;
+  AUTO_LANECHNGMSGREQ_INHIBIT = 0x1;
+  AUTO_LANECHNGMSGREQ_STARTING = 0x2;
+  AUTO_LANECHNGMSGREQ_PROGRESS = 0x3;
+  AUTO_LANECHNGMSGREQ_SUCCES = 0x4;
+  AUTO_LANECHNGMSGREQ_FAILED = 0x5;
+  AUTO_LANECHNGMSGREQ_SUPPRESSBYDRIVER = 0x6;
+  AUTO_LANECHNGMSGREQ_RETURNTOEGOLANEBYDRIVER = 0x7;
+  AUTO_LANECHNGMSGREQ_RETURNTOEGOLANEBYALC = 0x8;
+  AUTO_LANECHNGMSGREQ_MANOEUVREWITHRISK = 0x9;
+  AUTO_LANECHNGMSGREQ_RETURNTOEGOLANESUCCESS = 0x10;
+  AUTO_LANECHNGMSGREQ_TOR = 0x11;
+  AUTO_LANECHNGMSGREQ_LOWSPEED = 0x12;
+}
+
+enum IlcDirectionCmd {
+  ILCCMD_UNAVAILABLE = 0x0;
+  ILCCMD_NOTACTIVE = 0x1;
+  ILCCMD_LEFT = 0x2;
+  ILCCMD_RIGHT = 0x3;
+}
+
+enum DistanceLvl {
+  DISTANCELVL_NOGAPSET = 0x0;
+  DISTANCELVL_DISTANCELEVEL1NEAR = 0x1;
+  DISTANCELVL_DISTANCELEVEL2MIDDLE = 0x2;
+  DISTANCELVL_DISTANCELEVEL3FAR = 0x3;
+}
+
+enum ACCSysFltSts {
+  ACCSYSFLTSTS_NOERROR = 0x0;
+  ACCSYSFLTSTS_PERFORMANCEDEGRADATION = 0x1;
+  ACCSYSFLTSTS_SYSTEMTEMPORARYUNAVAILABLE = 0x2;
+  ACCSYSFLTSTS_SERVICEREQUIRE = 0x3;
+}
+
+enum TjaIcaSysFaultSts {
+  TJAICA_SYSFAULTSTS_NOERROR = 0x0;
+  TJAICA_SYSFAULTSTS_PERFORMANCEDEGRADATION = 0x1;
+  TJAICA_SYSFAULTSTS_SYSTEMTEMPORARYUNAVAILABLE = 0x2;
+  TJAICA_SYSFAULTSTS_SERVICEREQUIRE = 0x3;
+}
+
+enum NOPSysFltSts {
+  NOPSYSFLTSTS_NOERROR = 0x0;
+  NOPSYSFLTSTS_PERFORMANCEDEGRADATION = 0x1;
+  NOPSYSFLTSTS_SYSTEMTEMPORARYUNAVAILABLE = 0x2;
+  NOPSYSFLTSTS_SERVICEREQUIRE = 0x3;
+}
+
+enum ACCMsgReq {
+  ACCMSGREQ_NODISPLAY = 0x0;
+  ACCMSGREQ_RESERVED1 = 0x1;
+  ACCMSGREQ_HANDSOFFPUNISHMENTACTIVE = 0x2;
+  ACCMSGREQ_DRIVEOFFIN50S = 0x3;
+  ACCMSGREQ_DRIVEOFFOUTOF50SIN300S = 0x4;
+}
+
+enum TjaIcaMsgReq {
+  TJAICA_MSGREQ_NODISPLAY = 0x0;
+  TJAICA_MSGREQ_HANDSONREQ = 0x1;
+  TJAICA_MSGREQ_WIDELANELEFT = 0x2;
+  TJAICA_MSGREQ_WIDELANERIGHT = 0x3;
+  TJAICA_MSGREQ_REDLIGHT_ATTENTION = 0x4;
+  TJAICA_MSGREQ_OVERRIDE_ATTENTION = 0x5;
+  TJAICA_MSGREQ_CURVE_ATTENTION = 0x6;
+}
+
+enum HandOffStrgWhlDetnSta {
+  HANDOFFSTRGWHLDETNSTA_HANDSOFFLEVEL1 = 0x0;
+  HANDOFFSTRGWHLDETNSTA_HANDSON = 0x1;
+  HANDOFFSTRGWHLDETNSTA_HANDSOFFLEVEL2 = 0x2;
+  HANDOFFSTRGWHLDETNSTA_HANDSOFFLEVEL3 = 0x3;
+}
+
+enum IlcActvnVelDspCmd {
+  ILCACTVNVELDSPCMD_UNAVAILABLE = 0x0;
+  ILCACTVNVELDSPCMD_ILCNOTACTIVE = 0x1;
+  ILCACTVNVELDSPCMD_ILCACCELERATION = 0x2;
+  ILCACTVNVELDSPCMD_ILCDECELERATION = 0x3;
+}
+
+enum EgoMotionProperty {
+  EGO_MOTION_PROPERTY_NODISPLAY = 0x0;
+  EGO_MOTION_PROPERTY_STOPPED = 0x1;
+  EGO_MOTION_PROPERTY_ACCELERATING = 0x2;
+  EGO_MOTION_PROPERTY_DECELERATING = 0x3;
+  EGO_MOTION_PROPERTY_TURNLEFT = 0x4;
+  EGO_MOTION_PROPERTY_TURNRIGHT = 0x5;
+}
+
+enum NOPSysMsg {
+  NOPSYSMSG_NODISPLAY = 0x0;
+  NOPSYSMSG_LAMP_COMFIRM_RIGHTLANE_RECOMMENDATION = 0xA;
+  NOPSYSMSG_LAMP_COMFIRM_LEFTLANE_RECOMMENDATION = 0xB;
+  NOPSYSMSG_ENTERING_RAMP_IMMEDIATELY = 0x11;
+  NOPSYSMSG_ENTERING_MAIN_ROAD_HIGHWAY = 0x12;
+  NOPSYSMSG_APPROACHING_JAMTOCHANGE_LEFTLANE = 0x34;
+  NOPSYSMSG_APPROACHING_JAMTOCHANGE_RIGHTLANE = 0x35;
+}
+
+message HmiEs33Msg {
+  optional ACCSysFltSts acc_fault_status = 1;
+  optional TjaIcaSysFaultSts tja_ica_sys_fault_status = 2;
+  optional NOPSysFltSts ai_pilot_sys_flt_sts = 3;
+  optional TjaIcaMsgReq tja_ica_msg_req = 4;
+  optional ACCMsgReq acc_cannot_active_msg = 5;
+  optional NOPSysMsg zop_cannot_active_msg = 6;
+  optional bool drvr_take_over_req = 7;
+  optional bool acc_is_standwait = 8;
+  optional HandOffStrgWhlDetnSta hod_status_detection = 9;
+  optional IlcActvnVelDspCmd ilc_velocity_dsp = 10;
+  optional DistanceLvl distance = 11;
+  optional LaneChngStatus auto_lane_chng_left_status = 12;
+  optional LaneChngStatus auto_lane_chng_right_status = 13;
+  optional AutoLaneChngMsgReq auto_lane_chng_msg_req = 14;
+}
+
+message TargetListStruct {
+  optional uint32 target_id = 1;
+  optional DistanceLvl object_collision_risk_level = 2;
+  optional uint32 actua_activated_function = 3;
+}
+
+message AccTargetStruct {
+  optional uint32 follow_car_id = 1;
+  optional uint32 follow_car_collision_risk = 2;  // reverse
+}
+
+message PlanningControlInfo {
+  optional EgoMotionProperty ego_motion_property = 1;
+  optional float ego_wheel_angle = 2;
+  repeated TargetListStruct planning_target = 3;
+  optional AccTargetStruct acc_target = 4;
+  optional Point2D alc_trajectory_point = 5;
+}
+
+message ZoneCityNoaInfo {
+  optional LiteHeader header = 1;
+  optional ZopSysSts zop_sys_sts = 2;
+  optional PilotSystemMessage pilot_system_message = 3;
+  optional AccStatus acc_status = 4;
+  optional uint32 acc_speed = 5;
+  optional TjaicaSysSts tja_ica_sys_sts = 6;
+  optional LaneChngStatus auto_lane_chng_msg_req = 7;
+  optional IlcDirectionCmd ilc_direction_cmd = 8;
+
+  optional HmiEs33Msg hmi_es33_msg = 20;
+  optional PlanningControlInfo planning_control_info = 21;
+  optional TrafficControlStruct traffic_control = 22;
+}

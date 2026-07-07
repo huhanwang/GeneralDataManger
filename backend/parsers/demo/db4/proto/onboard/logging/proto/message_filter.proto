@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package snoah.logging;
+
+message MessageFilterProto {
+  message SensorFilterProto {
+    optional int32 sensor_id = 1;
+    optional int32 keep_frames_per_second = 2 [default = 100];
+  }
+  repeated SensorFilterProto camera_filters = 1;
+  optional int32 default_camera_keep_frame_per_second = 2 [default = 100];
+
+  optional int32 default_lidar_keep_frame_per_second = 4 [default = 100];
+}

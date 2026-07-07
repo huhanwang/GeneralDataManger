@@ -1,0 +1,22 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/lite_msg_simple.proto";
+
+message HistoryMsgRequestProto {
+  optional LiteHeader header = 1;
+  optional string channel = 2;
+}
+
+message HistoryMsgResponseProto {
+  optional LiteHeader header = 1;
+  optional string channel = 2;
+  optional string field_name = 3;
+
+  oneof lite_msg {
+    LiteMsgSimpleProto lite_msg_simple_proto = 4;
+    LitePerfTestMsgProto lite_perf_test_msg_proto = 5;
+  }
+}

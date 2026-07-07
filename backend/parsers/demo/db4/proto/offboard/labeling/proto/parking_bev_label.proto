@@ -1,0 +1,425 @@
+
+
+syntax = "proto2";
+
+package snoah.parking_bev_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/parking_bev_label";
+
+// Next ID: 3
+message BevPoint {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+// Next ID: 2
+enum ParkingSlotLabelPolicyVersion {
+  V_UNKNOWN = 0;
+  V_23_12_26 = 1;
+  V_25_08_22 = 2;
+}
+
+// Next ID: 4
+enum RoadSurfaceState {
+  UNKNOWN_ROAD_SURFACE_STATE = 0;
+  DRY = 1;   // Dry road surface.
+  WET = 2;   // Wet road surface.
+  SNOW = 3;  // Snow on the road.
+}
+
+// Next ID: 5
+enum WeatherType {
+  UNKNOWN_WEATHER = 0;
+  SUNNY = 1;
+  FOGGY = 2;
+  RAINY = 3;
+  SNOWY = 4;
+}
+
+// Next ID: 3
+enum SceneType {
+  UNKNOWN_MAIN_SCENE = 0;  // unknown scene
+  INDOOR = 1;              // indoor
+  OUTDOOR = 2;             // outdoor
+}
+
+// Next ID: 6
+enum RoadSurfaceType {
+  UNKNOWN_ROAD_SURFACE_TYPE = 0;
+  CEMENT = 1;              // cement road surface.
+  EPOXY_FLOORING = 2;      // epoxy flooring road surface.
+  ASPHALT = 3;             // asphalt road surface.
+  INLAID_GRASS_BRICK = 4;  // inlaid grass brick road surface.
+  BRICK_SURFACE = 5;       // brick road surface.
+}
+
+// Next ID: 7
+enum SlotLineType {
+  UNKNOWN_LINE_TYPE = 0;
+  CLOSED = 1;       // closed slot.
+  SEMI_CLOSED = 2;  // semi-closed slot.
+  UNSEALED = 3;     // unsealed slot.
+  U_SHAPE = 4;      // u shape slot.
+  TWO_CORNER = 5;   // two corner slot.
+  FOUR_CORNER = 6;  // four corner slot.
+}
+
+// Next ID: 4
+enum SlotDecorationType {
+  UNKNOWN_DECORATION_TYPE = 0;
+  LINE = 1;     // draw line slot.
+  BRICK = 2;    // brick slot.
+  MACHINE = 3;  // machine slot.
+}
+
+// Next ID: 3
+enum SlotLineColor {
+  UNKNOWN_LINE_COLOR = 0;
+  WHITE_LINE_COLOR = 1;   // white line.
+  YELLOW_LINE_COLOR = 2;  // yellow.
+}
+
+enum OcclusionType {
+  VISIBLE = 0;
+  BLOCKED = 1;
+  TRUNCATION = 2;
+}
+
+message VisibleAttributeGeneral {
+  optional double ratio_in_perceptual_range = 1;
+  optional double occluded_ratio_by_obstacle = 2;
+}
+
+message CornerPoint {
+  optional int32 mark_id = 1;
+  optional BevPoint location = 2;
+  optional OcclusionType occlusion_type = 3;
+  optional int32 panonet_id = 4;
+}
+
+// Next ID: 4
+message ParkingLock {
+  // Next ID: 2
+  enum LockState {
+    LOCK = 0;
+    UNLOCK = 1;
+    UNKNOW = 2;
+  }
+  optional int32 lock_id = 1;
+  repeated BevPoint polygon = 2;  // Polygon
+  optional LockState lock_state = 3;
+  optional bool is_visible = 6;
+  optional double ratio_in_perceptual_range = 7;
+  optional double occluded_ratio_by_obstacle = 8;
+  optional bool is_center_point_visible = 9;
+}
+
+// Next ID: 5
+message ParkingSlot {
+  // Next ID: 4
+  enum SlotType {
+    OTHER = 0;
+    PARALLEL = 1;
+    VERTICAL = 2;
+    TILT = 3;
+    TILT_VERTICAL = 4;
+    MACHINE = 5;
+  }
+  // Next ID: 8
+  enum OccupiedState {
+    UNKNOWN = 0;
+    EMPTY = 1;
+    CAR_OCCUPIED = 2;
+    LOCK_OCCUPIED = 3;
+    CONE_OCCUPIED = 4;
+    PEDESTRIAN_OCCUPIED = 5;
+    UNKNOWN_OCCUPIED = 6;
+    NON_MOTOR_OCCUPIED = 7;
+    SUSPENSION_SIGN_OCCUPIED = 8;
+  }
+  message VisibleAttribute {
+    optional double slot_area = 1;
+    optional double ratio_in_perceptual_range = 2;
+    optional bool is_occluded_by_slot = 3;
+    optional double occluded_ratio_by_obstacle = 4;
+  }
+  optional int32 slot_id = 1;
+  repeated CornerPoint corner_points = 2;
+  optional SlotType slot_type = 3;
+  optional OccupiedState occupied_state = 4;
+  optional ParkingLock parking_lock = 5;
+  optional bool is_visible = 6;
+  optional VisibleAttribute visible_attribute = 7;
+  repeated WheelChock wheel_chocks = 8;
+  repeated LimitRod limit_rods = 9;
+  repeated GradeLine grade_lines = 10;
+  optional int32 group_id = 11;
+  repeated SlotHight slot_highs = 12;
+  optional double height = 13;
+  //"confidence" just for PRT
+  optional double confidence = 14;
+}
+
+message GradeLine {
+  optional int32 grade_line_id = 1;
+  optional int32 group_id = 2;
+  repeated BevPoint polygon = 3;
+  optional bool is_visible = 4;
+  optional VisibleAttributeGeneral visible_attribute_general = 5;
+}
+
+message WheelChock {
+  optional int32 wheel_chock_id = 1;
+  repeated BevPoint polygon = 2;
+  optional bool is_visible = 3;
+  optional VisibleAttributeGeneral visible_attribute_general = 4;
+}
+
+message LimitRod {
+  optional int32 limit_rod_id = 1;
+  repeated BevPoint polygon = 2;
+  optional bool is_visible = 3;
+  optional VisibleAttributeGeneral visible_attribute_general = 4;
+}
+
+message ParkingRoadGeometry {
+  enum RoadGeometryType {
+    UNKNOWN = 0;        // 其他
+    SPEEDBUMP = 1;      // 减速带
+    STOPLINE_AREA = 2;  // 停止线
+    CROSSWALK = 3;      // 人行横道
+    ARROW = 4;          // 箭头
+  }
+  enum ArrowType {
+    UNKNOWN_ARROW = 0;                 // 箭头：其他
+    STRAIGHT_AHEAD = 1;                // '直行箭头',
+    STRAIGHT_LEFT = 2;                 // '直行左转箭头',
+    STRAIGHT_RIGHT = 3;                // '直行右转箭头',
+    STRAIGHT_UTURN = 4;                // '直行掉头箭头',
+    STRAIGHT_LEFT_RIGHT = 5;           // '直行左右转箭头',
+    STRAIGHT_LEFT_UTURN = 6;           // '直行左转掉头箭头',
+    LEFT_TURN = 7;                     // '左转箭头',
+    LEFT_RIGHT = 8;                    // '左右转箭头',
+    LEFT_UTURN = 9;                    // '左转掉头箭头',
+    RIGHT_TURN = 10;                   // '右转箭头',
+    RIGHT_UTURN = 11;                  // '右转掉头箭头',
+    UTURN = 12;                        // '掉头箭头',
+    MERGE_TO_LEFT = 13;                // '向左合流箭头',
+    MERGE_TO_RIGHT = 14;               // '向右合流箭头',
+    STRAIGHT_AND_LEFT_AND_RIGHT = 15;  // '直行加左右转箭头',
+    STRAIGHT_AND_LEFT_AROUND = 16;     // '直行左转加掉头箭头',
+    UP_DOWN_STRAIGHT = 17;             // '上下直行箭头',
+    STRAIGHT_AND_DOWN_LEFT = 18;       // '上行直行和下行左转箭头',
+    STRAIGHT_AND_DOWN_RIGHT = 19;      // '上行直行和下行右转箭头',
+    RIGHT_AND_DOWN_STRAIGHT = 20;      // '上行右转和下行直行箭头',
+    LEFT_AND_DOWN_STRAIGHT = 21;       // '上行左转和下行直行箭头',
+    UP_DOWN_STRAIGHT_AND_RIGHT = 22;  // '上行直行加右转和下行直行箭头',
+    UP_DOWN_STRAIGHT_AND_DOWN_RIGHT = 23;  // '上行直行和下行直行加右转箭头',
+    UP_STRAIGHT_AND_LEFT_AND_DOWN_LEFT = 24;  // '上行直行加左转和下行左转箭头',
+    UP_LEFT_AND_DOWN_STRAIGHT_AND_LEFT = 25;  // '上行左转和下行直行加左转箭头',
+    UP_DOWN_LEFT_OR_RIGHT = 26;  // '双向左转或右转箭头',
+  }
+  enum Occlusion {
+    FULL_VISIBLE = 0;
+    OCCLUDED = 1;
+    HEAVILY_OCCLUDED = 2;
+    INVISIBLE = 3;
+  }
+  repeated CornerPoint corner_points = 1;
+  optional double heading = 2;
+  optional double width = 3;
+  optional double length = 4;
+  optional RoadGeometryType road_geometry_type = 5;
+  optional ArrowType arrow_type = 6;
+  optional int32 id = 7;
+  optional Occlusion occlusion = 8;
+
+  // 添加可见性判断关键结果，便于下游灵活使用
+  optional double ratio_in_perceptual_range = 9;
+  optional double occluded_ratio_by_obstacle = 10;
+  optional bool is_center_point_visible = 11;
+}
+
+// Next ID: 3
+message WheelStopper {
+  optional int32 id = 1;
+  repeated BevPoint polygon = 2;  // Line
+  optional bool is_visible = 3;
+}
+
+// Next ID: 3
+message IgnoreRegion {
+  optional int32 id = 1;
+  repeated BevPoint polygon = 2;  // Polygon
+}
+
+message SlotHight {
+  optional int32 id = 1;
+  repeated BevPoint polygon = 2;  // Polygon
+}
+
+message FilterInfo {
+  optional bool is_filtered = 1;
+  optional int32 visible_slot_count = 2;
+  optional double ignore_region_ratio =
+      3;  // ignore region ratio in -10m~10m(right to left) and -10m~20m(back to
+          // front)
+  optional double ignore_region_poi_ratio =
+      4;  // ignore region ratio in -5m~5m(right to left) and -5m~5m(back to
+          // front)
+  optional int32 missing_slot_count = 5;
+  optional int32 overkill_slot_count = 6;
+  optional int32 bev_slot_number = 7;
+  optional int32 avm_slot_number = 8;
+  optional int32 vertical_slot_number = 9;
+  optional int32 horizontal_slot_number = 10;
+  optional int32 tilt_slot_number = 11;
+  optional int32 other_slot_number = 12;
+  optional double average_iou_with_avm_slot = 13;
+  optional double max_slot_area = 14;
+  optional double min_slot_area = 15;
+  optional int32 overlap_slot_number = 16;
+  optional int32 matched_occupancy_attribute_number = 17;
+  optional int32 unmatched_occupancy_attribute_number = 18;
+  optional int32 iou_greater_than_0_9_number = 19;
+  optional int32 iou_greater_than_0_8_number = 20;
+  optional int32 iou_greater_than_0_7_number = 21;
+  optional int32 iou_greater_than_0_6_number = 22;
+  optional int32 iou_less_than_0_6_number = 23;
+  // Filter reason.
+  enum FilterType {
+    INVALID = 0;
+    RESERVED = 1;
+    AVM_MISSING = 2;
+    VISIBLE_SLOT_MISSING = 3;
+  }
+  optional FilterType filter_type = 24;
+
+  optional int32 total_road_geometry = 25;
+
+  optional int32 parallel_slot_number = 26;
+  optional int32 tilt_vertical_slot_number = 27;
+  optional int32 machine_slot_number = 28;
+  optional int32 unknown_slot_number = 29;
+  optional int32 empty_slot_number = 30;
+  optional int32 car_occupied_slot_number = 31;
+  optional int32 lock_occupied_slot_number = 32;
+  optional int32 cone_occupied_slot_number = 33;
+  optional int32 pedestrian_occupied_slot_number = 34;
+  optional int32 unknown_occupied_slot_number = 35;
+  optional int32 non_motor_occupied_slot_number = 36;
+  optional int32 suspension_sign_occupied_slot_number = 37;
+  optional int32 visible_slot_number = 38;
+  optional int32 invisible_slot_number = 39;
+  optional int32 unknown_rg_number = 40;
+  optional int32 speedbump_rg_number = 41;
+  optional int32 stopline_area_rg_number = 42;
+  optional int32 crosswalk_rg_number = 43;
+  optional int32 arrow_rg_number = 44;
+  optional int32 arrow_unknown_arrow_rg_number = 45;
+  optional int32 arrow_straight_ahead_rg_number = 46;
+  optional int32 arrow_straight_left_rg_number = 47;
+  optional int32 arrow_straight_right_rg_number = 48;
+  optional int32 arrow_straight_uturn_rg_number = 49;
+  optional int32 arrow_straight_left_right_rg_number = 50;
+  optional int32 arrow_straight_left_uturn_rg_number = 51;
+  optional int32 arrow_left_turn_rg_number = 52;
+  optional int32 arrow_left_right_rg_number = 53;
+  optional int32 arrow_left_uturn_rg_number = 54;
+  optional int32 arrow_right_turn_rg_number = 55;
+  optional int32 arrow_right_uturn_rg_number = 56;
+  optional int32 arrow_uturn_rg_number = 57;
+  optional int32 arrow_merge_to_left_rg_number = 58;
+  optional int32 arrow_merge_to_right_rg_number = 59;
+  optional int32 arrow_straight_and_left_and_right_rg_number = 60;
+  optional int32 arrow_straight_and_left_around_rg_number = 61;
+  optional int32 arrow_up_down_straight_rg_number = 62;
+  optional int32 arrow_straight_and_down_left_rg_number = 63;
+  optional int32 arrow_straight_and_down_right_rg_number = 64;
+  optional int32 arrow_right_and_down_straight_rg_number = 65;
+  optional int32 arrow_left_and_down_straight_rg_number = 66;
+  optional int32 arrow_up_down_straight_and_right_rg_number = 67;
+  optional int32 arrow_up_down_straight_and_down_right_rg_number = 68;
+  optional int32 arrow_up_straight_and_left_and_down_left_rg_number = 69;
+  optional int32 arrow_up_left_and_down_straight_and_left_rg_number = 70;
+  optional int32 arrow_up_down_left_or_right_rg_number = 71;
+  optional int32 full_visible_rg_number = 72;
+  optional int32 occluded_rg_number = 73;
+  optional int32 heavily_occluded_rg_number = 74;
+  optional int32 invisible_rg_number = 75;
+  optional bool is_occlusion_valid = 76;
+
+  // parking_lock
+  optional int32 parking_lock_number = 77;
+  optional int32 visible_parking_lock_number = 78;
+  optional int32 invisible_parking_lock_number = 79;
+  optional int32 lock_parking_lock_number = 80;
+  optional int32 unlock_parking_lock_number = 81;
+  optional int32 unknow_parking_lock_number = 82;
+
+  // grade_lines
+  optional int32 grade_line_number = 83;
+  optional int32 visible_grade_line_number = 84;
+  optional int32 invisible_grade_line_number = 85;
+
+  // limit_rods
+  optional int32 limit_rod_number = 86;
+  optional int32 visible_limit_rod_number = 87;
+  optional int32 invisible_limit_rod_number = 88;
+  optional int32 max_limit_rod_number_per_slot = 102;
+
+  // wheel_chocks
+  optional int32 wheel_chock_number = 89;
+  optional int32 visible_wheel_chock_number = 90;
+  optional int32 invisible_wheel_chock_number = 91;
+
+  // height
+  optional int32 height_number = 92;
+  optional double max_slot_height = 100;
+  optional double min_slot_height = 101;
+
+  // scene_info
+  optional int32 weather_type_info = 93;
+  optional int32 road_surface_state_info = 94;
+  optional int32 scene_type_info = 95;
+  optional int32 road_surface_type_info = 96;
+  optional int32 slot_line_type_info = 97;
+  optional int32 slot_decoration_type_info = 98;
+  optional int32 slot_line_color_info = 99;
+
+  // version info
+  optional string slot_production_version = 103;
+
+  // 2D keypoint detection quality check
+  optional int32 filtered_by_keypointdet =
+      104;  // 0: no filter, 1: filter, 2: check failed
+  optional int32 keypoints_slot_number = 105;  // 单帧中各个视角检测到的车位总和
+  optional double projection_bias_by_keypointdet = 106;
+  optional int32 fn_count_by_keypointdet = 107;  // 漏检数：2D检测到但BEV未标注
+  optional int32 fp_count_by_keypointdet = 108;  // 误检数：BEV标注但2D未检测到
+}
+
+// Next ID: 23
+message ParkingBevLabelProto {
+  optional string name = 1;
+  optional double center_timestamp = 2;
+  optional int32 frame_id = 3;  // Single frame scene is 0.
+  optional WeatherType weather_type = 4;
+  repeated RoadSurfaceState road_surface_state = 5;
+  optional SceneType scene_type = 6;
+  optional RoadSurfaceType road_surface_type = 7;
+  repeated SlotLineType slot_line_type = 8;
+  repeated SlotDecorationType slot_decoration_type = 9;
+  repeated SlotLineColor slot_line_color = 10;
+  repeated ParkingSlot parking_slots = 11;
+  repeated WheelStopper wheel_stoppers = 12;
+  repeated IgnoreRegion ignore_regions = 13;
+  optional ParkingSlotLabelPolicyVersion version = 14 [default = V_UNKNOWN];
+  optional FilterInfo filter_info = 15;
+  repeated ParkingRoadGeometry parking_road_geometry = 16;
+  repeated ParkingLock parking_locks = 17;
+  repeated WheelChock wheel_chocks = 18;
+  repeated LimitRod limit_rods = 19;
+  repeated GradeLine grade_lines = 20;
+  repeated SlotHight slot_highs = 21;
+}

@@ -1,0 +1,187 @@
+syntax = "proto2";
+
+package snoah.vis.vantage;
+
+import "onboard/params/run_params/proto/run_params.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/vehicle.proto";
+import "onboard/proto/lite_msg.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/vis/canvas/proto/canvas_buffer.proto";
+import "onboard/lite/proto/shm_message.proto";
+import "onboard/common/system/remote_assist.proto";
+import "onboard/lite/proto/large_msg.proto";
+
+message SendHeartbeatRequest {
+  optional LiteHeader header = 3;
+  optional int64 now = 1;
+  optional int64 seq_num = 2;
+  optional int64 rtt = 4;
+}
+
+message SendHeartbeatResponse {
+  optional bool success = 1;
+}
+
+message EchoHeartbeatRequest {
+  optional LiteHeader header = 1;
+  optional int64 seq_num = 2;
+  optional int64 old_now_usec = 3;
+  optional int64 now_usec = 4;
+  optional RemoteAssistStatusInfo.Status status = 5;
+}
+
+message EchoHeartbeatResponse {
+  optional bool success = 1;
+}
+
+message UpdateLiteMessageRequest {
+  optional LiteHeader header = 3;
+  optional LiteMsgWrapper lite_message = 1;
+  optional int64 seq_num = 2;
+}
+
+message UpdateLiteMessageResponse {
+  optional bool success = 1;
+}
+
+message UpdateRunParamsRequest {
+  optional RunParamsProto run_params = 1;
+}
+
+message UpdateRunParamsResponse {
+  optional bool success = 1;
+}
+
+message UpdateLabelRequest {
+  optional LiteHeader header = 3;
+  optional LiteMsgWrapper lite_message = 1;
+  optional int64 seq_num = 2;
+}
+
+message UpdateLabelResponse {
+  optional bool success = 1;
+}
+
+message PullUserInputMsgRequest {}
+
+message PullUserInputMsgResponse {
+  optional bool success = 1;
+  repeated LiteMsgWrapper lite_msgs = 2;
+}
+
+message UpdateShmMessageRequest {
+  optional LiteHeader header = 6;
+  optional ShmMsgType shm_message_type = 3;
+  optional bytes data = 2;
+  optional LidarParamsProto lidar_params = 9;
+  optional EncodedImageMetadata encoded_image_meta = 5;
+  optional DecodedImageMetadata decoded_image_meta = 10;
+  optional SpinMetadata spin_meta = 8;
+  optional EncodedLidarFrameMetaData encoded_lidar_frame_meta = 11;
+  optional LargeMsgMetadata large_msg_meta = 12;
+  reserved 1, 4, 7;
+}
+
+message UpdateShmMessageResponse {
+  optional bool success = 1;
+}
+
+message SetCanvasBufferRequest {
+  optional LiteHeader header = 1;
+  optional string name = 2;
+  optional vis.CanvasBufferProto buffer = 3;
+  optional int64 ttl = 4;  // Seconds. Negative to set default TTL.
+}
+
+message SetCanvasBufferResponse {
+  optional bool success = 1;
+}
+
+message AppendCanvasBufferRequest {
+  optional LiteHeader header = 1;
+  optional string name = 2;
+  optional vis.CanvasBufferProto buffer = 3;
+  optional int64 ttl = 4;  // Seconds. Negative to not refresh.
+}
+
+message AppendCanvasBufferResponse {
+  optional bool success = 1;
+}
+
+message ClearCanvasBuffersRequest {
+  optional LiteHeader header = 1;
+  optional string name_prefix = 2;
+}
+
+message ClearCanvasBuffersResponse {
+  optional bool success = 1;
+}
+
+message ContinuouslySavingScreenshotsRequest {
+  optional bool enable = 1;
+  optional string path = 2;
+  optional bool use_wall_clock = 3;
+  optional int64 framerate = 4;
+}
+
+message ContinuouslySavingScreenshotsResponse {
+  optional bool success = 1;
+}
+
+message SingleScreenShotRequest {
+  optional int64 log_key = 1;
+  optional string window_name = 2;
+  optional string screen_shot_file_path = 3;
+  optional bool show_image = 4;
+}
+
+message SingleScreenShotResponse {
+  optional bool success = 1;
+  optional string window_name = 2;
+  optional string screen_shot_file_path = 3;
+}
+
+message FetchLiteMsgsRequest {
+  // Query condition
+  optional bool use_msg_channel = 1;
+  repeated string channels = 2;
+}
+
+message FetchLiteMsgsResponse {
+  optional bool success = 1;
+  repeated LiteMsgWrapper lite_msgs = 2;
+}
+
+service VantageService {
+  rpc SendHeartbeat(SendHeartbeatRequest) returns (SendHeartbeatResponse);
+  rpc EchoHeartbeat(EchoHeartbeatRequest) returns (EchoHeartbeatResponse);
+
+  rpc UpdateRunParams(UpdateRunParamsRequest) returns (UpdateRunParamsResponse);
+
+  rpc UpdateLiteMessage(UpdateLiteMessageRequest)
+      returns (UpdateLiteMessageResponse);
+
+  rpc UpdateShmMessage(UpdateShmMessageRequest)
+      returns (UpdateShmMessageResponse);
+
+  rpc PullUserInputMessages(PullUserInputMsgRequest)
+      returns (PullUserInputMsgResponse);
+
+  rpc SetCanvasBuffer(SetCanvasBufferRequest) returns (SetCanvasBufferResponse);
+
+  rpc AppendCanvasBuffer(AppendCanvasBufferRequest)
+      returns (AppendCanvasBufferResponse);
+
+  rpc ClearCanvasBuffers(ClearCanvasBuffersRequest)
+      returns (ClearCanvasBuffersResponse);
+
+  rpc ContinuouslySavingScreenshots(ContinuouslySavingScreenshotsRequest)
+      returns (ContinuouslySavingScreenshotsResponse);
+
+  rpc TakeSingleScreenShot(SingleScreenShotRequest)
+      returns (SingleScreenShotResponse);
+
+  rpc FetchLiteMsgs(FetchLiteMsgsRequest) returns (FetchLiteMsgsResponse);
+}

@@ -1,0 +1,20 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/semantic_parser/proto/semantic_parser";
+
+message LiSemanticConfig {
+  optional bool use_intensity = 1 [default = true];
+  optional uint32 intensity_threshold = 2 [default = 50];
+  optional string model_config = 3 [default = ""];
+  optional string model_onnx = 4 [default = ""];
+  optional string model_trt = 5 [default = ""];
+  optional int32 vegetation_label = 6 [default = 8];
+  optional float vegetation_conf_th = 7 [default = 0.3];
+  optional float untrust_cloud_min_x = 8 [default = 0.0];
+  optional float untrust_cloud_max_x = 9 [default = 30.0];
+  optional float untrust_cloud_min_y = 10 [default = -30.0];
+  optional float untrust_cloud_max_y = 11 [default = 30.0];
+  optional float untrust_cloud_min_z = 12 [default = -5.0];
+  optional float untrust_cloud_max_z = 13 [default = 5.0];
+  optional int32 max_cld_pts = 14 [default = 300000];
+}

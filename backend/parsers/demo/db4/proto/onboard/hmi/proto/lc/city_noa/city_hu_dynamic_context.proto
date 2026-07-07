@@ -1,0 +1,74 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/hmi/proto/lc/city_noa/city_header.proto";
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/hmi/proto/lc/city_noa/city_lane_line.proto";
+import "onboard/hmi/proto/lc/city_noa/city_traffic_participants.proto";
+import "onboard/hmi/proto/lc/city_noa/city_traffic_light.proto";
+import "onboard/hmi/proto/lc/city_noa/city_traffic_marking.proto";
+import "onboard/hmi/proto/lc/city_noa/city_lane_arrow_and_marking.proto";
+import "onboard/hmi/proto/lc/city_noa/traffic_unavailable_area.proto";
+import "onboard/hmi/proto/lc/city_noa/city_occupancy.proto";
+import "onboard/hmi/proto/lc/city_noa/city_polygon_oc_or_uu.proto";
+import "onboard/hmi/proto/zone/zone_hu_dynamic_context.proto";
+
+enum EID_DISPLAY_SCENE {
+  EID_DISPLAY_SCENE_NONE = 0;
+  EID_DISPLAY_SCENE_LANE_CHANGE_BLOCK_LEVEL1 = 1;
+  EID_DISPLAY_SCENE_LANE_CHANGE_BLOCK_LEVEL2 = 2;
+  EID_DISPLAY_SCENE_LANE_CHANGE_BLOCK_LEVEL3 = 3;
+  EID_DISPLAY_SCENE_RESERVE_1 = 4;
+  EID_DISPLAY_SCENE_RESERVE_2 = 5;
+  EID_DISPLAY_SCENE_RESERVE_3 = 6;
+  EID_DISPLAY_SCENE_RESERVE_4 = 7;
+  EID_DISPLAY_SCENE_RESERVE_5 = 8;
+}
+
+message CityHuDynamicContext {
+  optional LiteHeader header = 1;
+
+  optional CityHeader city_header = 2;
+
+  repeated CityLaneLine city_lane_lines = 3;  // 车道线们
+
+  optional int32 lanes_of_same_driving_direction =
+      4;  // number of lanes 车道线数,预留
+
+  optional int32 vehicle_in_the_lane =
+      5;  // lane id of ego vehicle 自车位置，预留
+
+  optional EID_DISPLAY_SCENE eid_display_scene = 6;  // eid场景，预留
+
+  repeated Point2D noa_trajectory_line_points = 7;
+
+  optional int32 index_of_stop_point = 8;
+
+  optional bool brake_to_stop = 9;
+
+  repeated TrafficUnavailableArea city_unavailable_areas =
+      10;  // 不可行驶区域们
+
+  repeated CityTrafficParticipants city_traffic_participants =
+      11;  // 交通参与者&障碍物
+
+  repeated CityTrafficLight city_traffic_lights = 12;  // 交通灯    需要高度信息
+
+  repeated CityTrafficMarking city_traffic_markings = 13;  // 交通标线
+
+  repeated CityLaneArrowAndMarking city_lane_arrow_and_markings =
+      14;  // 交通标识
+
+  repeated Point2D targetlane_middleline = 145;  // 路口目标车道中心线
+
+  optional BevOccuapncy city_occupancy = 16;  // reserved，not used
+
+  repeated UUorOC uuoroc_polygons = 17;
+
+  repeated Point2D ego_history_trajectory =
+      18;  // 自车历史轨迹，1m一个点，共20个，用于通勤noa
+
+  optional Qzone.ZoneHuDynamicContext zone_hu_dynamic_context = 30;
+}

@@ -1,0 +1,60 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/maps/proto/geometry.proto";
+
+// semantic map patch meta used to verify the integrity of map
+message SemanticMapPatchMetaProto {
+  optional fixed64 patch_id = 1;
+  optional fixed64 patch_size = 2;
+}
+
+message MapOriginInfoProto {
+  optional double lon = 1;
+  optional double lat = 2;
+}
+
+// please do not use the type any more,it's just aim to work with legacy map
+message MapMetaInfoProto {
+  enum Country {
+    CHINA = 0;
+    US = 1;
+    JAPAN = 2;
+  }
+  optional string map_name = 1;
+  optional string repo_dir = 2;
+  optional MapOriginInfoProto origin_info = 3;
+  optional Country region = 4;
+}
+message MapMetaInfosProto {
+  repeated MapMetaInfoProto map_meta_info = 1;
+}
+
+// WARNING: The type sfixed64 is researved for feature ID only! Don't use it to
+// represent other info in semantic maps.
+
+message SemanticMapMetaProto {
+  optional sfixed64 next_unique_id = 1;
+  optional string version = 2;
+  repeated SemanticMapPatchMetaProto semantic_map_patch_metas = 3;
+  repeated int32 levels = 4;
+  // If any curb is modified, `quill` will put it's id and bbox into this place,
+  // for imagery post-processing
+  message UpdatedCurb {
+    optional sfixed64 id = 1;
+    optional GeoBoxProto bbox = 2;
+    repeated int32 levels = 3;
+    enum Type {
+      PREV = 1;
+      NOW = 2;
+    }
+    optional Type type = 4;
+  }
+  repeated UpdatedCurb updated_curbs = 5;
+  optional bool need_post_process = 6 [default = false];
+  optional MapOriginInfoProto origin_info = 7;
+  optional MapMetaInfoProto map_meta_info = 9;
+  optional string previous_map_sha = 8;
+  optional string map_name = 10;
+}

@@ -1,0 +1,247 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message BorderLine {
+  optional float border_line_position = 1;
+  optional float border_line_hysteresis = 2;
+}
+
+message CurverLine {
+  repeated float coeffs = 1;  // "repeated" 用于表示一个可变长度的数组[4]
+  optional BorderLine border_line = 2;
+}
+
+message BsdWarningZone {
+  optional BorderLine border_line_upper = 1;
+  optional CurverLine curver_line_right = 2;
+  optional BorderLine border_line_down = 3;
+  optional CurverLine curver_line_left = 4;
+}
+
+message DowWarningZone {
+  optional BorderLine border_line_upper = 1;
+  optional BorderLine border_line_right = 2;
+  optional BorderLine border_line_down = 3;
+  optional BorderLine border_line_left = 4;
+}
+
+message ObjSelectorDebug {
+  optional uint64 id = 1;
+  optional uint64 bit_status = 2;
+};
+
+message ObjTrack {
+  optional float center_px = 1;
+  optional float center_py = 2;
+  optional float heading = 3;
+};
+
+message BsdFunctionLogger {
+  optional int32 bsd_posjudge_flag = 1;              // octet
+  optional int32 bsd_inhibit_flag = 2;               // octet
+  optional float bsd_warning_left_vertical = 3;      // float
+  optional float bsd_warning_right_vertical = 4;     // float
+  optional float bsd_warning_upper_vertical = 5;     // float
+  optional float bsd_warning_lower_vertical = 6;     // float
+  optional float bsd_warning_extended_position = 7;  // float
+  optional bool bsd_necessity = 8;                   // boolean
+  optional uint32 bsd_obj_id = 9;                    // unsigned long
+  optional float bsd_obj_relvx = 10;                 // float
+  optional float bsd_obj_relvy = 11;                 // float
+  optional float bsd_obj_length = 12;                // float
+  optional float bsd_obj_width = 13;                 // float
+  optional float bsd_obj_heading = 14;               // float
+  optional float bsd_obj_px = 15;                    // float
+  optional float bsd_obj_py = 16;                    // float
+  optional BsdWarningZone bsd_warning_zone = 17;
+  optional int32 bsd_subState = 18;
+  repeated ObjSelectorDebug obj_selector_debug = 19;
+}
+
+message BsdCommonLogger {
+  optional int32 bsd_funcerror_flag = 1;
+  optional int32 bsd_generalselector_flag = 2;
+  optional int32 bsd_vxongroundselector_flag = 3;
+  optional int32 bsd_vxovertakingselector_flag = 4;
+  optional int32 bsd_hostlaneselector_flag = 5;
+  optional int32 bsd_headingselector_flag = 6;
+  optional int32 bsd_state = 7;
+  optional int32 bsd_mainState = 8;
+  optional uint64 bsd_bitStatus = 9;
+}
+
+message BsdFunctionDebug {
+  optional BsdFunctionLogger bsd_logger_left = 1;
+  optional BsdFunctionLogger bsd_logger_right = 2;
+  optional BsdCommonLogger bsd_common_logger = 3;
+}
+
+message DowFunctionLogger {
+  optional int32 dow_posjudge_flag = 1;
+  optional int32 dow_inhibit_flag = 2;
+  optional float dow_warning_left_vertical = 3;
+  optional float dow_warning_right_vertical = 4;
+  optional float dow_warning_upper_vertical = 5;
+  optional float dow_warning_lower_vertical = 6;
+  optional float dow_warning_extended_position = 7;
+  optional bool dow_necessity = 8;
+  optional uint32 dow_obj_id = 9;
+  optional float dow_obj_relvx = 10;
+  optional float dow_obj_relvy = 11;
+  optional float dow_obj_length = 12;
+  optional float dow_obj_width = 13;
+  optional float dow_obj_heading = 14;
+  optional float dow_obj_px = 15;
+  optional float dow_obj_py = 16;
+  optional DowWarningZone dow_warning_zone = 17;
+  optional int32 dow_subState = 18;
+  repeated ObjSelectorDebug obj_selector_debug = 19;
+}
+
+message DowCommonLogger {
+  optional int32 dow_funcerror_flag = 1;
+  optional int32 dow_generalselector_flag = 2;
+  optional int32 dow_vxongroundselector_flag = 3;
+  optional int32 dow_headingselector_flag = 4;
+  optional int32 dow_state = 5;
+  optional int32 dow_mainState = 6;
+  optional uint64 dow_bitStatus = 7;
+}
+
+message DowFunctionDebug {
+  optional DowFunctionLogger dow_logger_left = 1;
+  optional DowFunctionLogger dow_logger_right = 2;
+  optional DowCommonLogger dow_common_logger = 3;
+}
+
+message WarningObject {
+  optional uint32 fusion_id = 1;
+  optional uint32 target_check_condition = 2;
+  optional float tte = 3;
+  optional int32 approaching_trends = 4;
+  optional float dis_collision_point = 5;
+  optional float ttc = 6;
+  optional float target_moving_angle = 7;
+  optional int32 warning_source = 8;
+  optional float dx = 9;
+  optional float dy = 10;
+  optional float length = 11;
+  optional float width = 12;
+  optional float ttl = 13;
+  optional float ttrange = 14;
+  optional float curXolc = 15;
+  repeated ObjTrack objPreditTrack = 16;
+  repeated ObjSelectorDebug trackCollisionBit = 17;
+}
+
+message CtFunctionDebug {
+  repeated int32 cta_cross_warning = 1;       // 数组类型
+  optional int32 fcta_status = 2;             // 单个的octet
+  optional int32 rcta_status = 3;             // 单个的octet
+  optional int32 fctb_status = 4;             // 单个的octet
+  optional int32 rctb_status = 5;             // 单个的octet
+  optional uint32 fct_machine_condition = 6;  // unsigned long
+  optional uint32 rct_machine_condition = 7;  // unsigned long
+  repeated int32 necessity_flag = 8;          // 数组类型
+  repeated WarningObject obstacles = 9;       // sequence<WarningObject>替换
+}
+
+message StateMachineDebug {
+  optional int32 main_state = 1;    // 代替octet
+  optional int32 sub_state = 2;     // 代替octet
+  optional uint32 bit_status = 3;   // 代替unsigned long
+  optional int32 ctb_req = 4;       // 代替octet
+  optional int32 ax_tar = 5;        // 代替octet
+  optional float ax_tar_debug = 6;  // 保持float
+  optional int32 activeCount = 7;   // 代替octet
+}
+
+message EgoInfoDebug {
+  optional float ego_movement_roc = 1;             // 保持float
+  optional float ego_movement_front_bump_roc = 2;  // 保持float
+  optional float ego_front_wheel_rad = 3;          // 保持float
+  optional float ego_steering_rate_rad = 4;        // 保持float
+  optional float ego_braking_distance = 5;         // 保持float
+  optional float raeb_brakeAcc_Need = 6;           // 保持float
+  optional float raeb_brakeAcc_cal = 7;
+  repeated ObjTrack egoTrack = 8;
+  optional float length = 9;
+  optional float width = 10;
+}
+
+message ObjVehDebug {
+  optional uint32 obj_veh_id = 1;                     // 代替unsigned long
+  optional float obj_veh_cur_xolc = 2;                // 保持float
+  optional float obj_veh_est_xolc = 3;                // 保持float
+  optional float obj_veh_ttc = 4;                     // 保持float
+  optional float obj_veh_ttl = 5;                     // 保持float
+  optional float obj_veh_ttrange = 6;                 // 保持float
+  optional float objVehMaxLatCollisionPosition = 7;   // 保持float
+  optional float objVehMinLatCollisionPosition = 8;   // 保持float
+  optional float objVehMaxLonCollisionPosition = 9;   // 保持float
+  optional float objVehMinLonCollisionPosition = 10;  // 保持float
+  optional float objVehCollisionLatArea = 11;         // 保持float
+  optional float objVehCollisionLonArea = 12;         // 保持float
+  repeated ObjTrack objPreditTrack = 13;
+  repeated ObjSelectorDebug objProcessBits = 14;
+}
+
+message ObjVruDebug {
+  optional uint32 obj_vru_id = 1;                     // 代替unsigned long
+  optional float obj_vru_cur_xolc = 2;                // 保持float
+  optional float obj_vru_est_xolc = 3;                // 保持float
+  optional float obj_vru_ttc = 4;                     // 保持float
+  optional float obj_vru_ttl = 5;                     // 保持float
+  optional float obj_vru_ttrange = 6;                 // 保持float
+  optional float objVruMaxLatCollisionPosition = 7;   // 保持float
+  optional float objVruMinLatCollisionPosition = 8;   // 保持float
+  optional float objVruMaxLonCollisionPosition = 9;   // 保持float
+  optional float objVruMinLonCollisionPosition = 10;  // 保持float
+  optional float objVruCollisionLatArea = 11;         // 保持float
+  optional float objVruCollisionLonArea = 12;         // 保持float
+  repeated ObjTrack objPreditTrack = 13;
+  repeated ObjSelectorDebug objProcessBits = 14;
+}
+
+message TADebug {
+  repeated uint32 coeffs = 1;    // 代替unsigned long
+  repeated uint32 bit_flag = 2;  // 代替unsigned long
+}
+
+message CtbFunctionDebug {
+  optional StateMachineDebug state_machine_debug = 1;  // abort
+  optional StateMachineDebug fcta_sm_debug = 2;
+  optional WarningObject fcta_warningObject = 3;
+  optional StateMachineDebug fctb_sm_debug = 4;
+  optional WarningObject fctb_warningObject = 5;
+  optional StateMachineDebug rcta_sm_debug = 6;
+  optional WarningObject rcta_warningObject = 7;
+  optional StateMachineDebug rctb_sm_debug = 8;
+  optional WarningObject rctb_warningObject = 9;
+  optional StateMachineDebug raeb_sm_debug = 10;
+  optional WarningObject raeb_warningObject = 11;
+  optional EgoInfoDebug ego_info_debug = 12;
+  optional ObjVehDebug obj_veh_debug = 13;
+  optional ObjVruDebug obj_vru_debug = 14;
+  optional TADebug ta_debug = 15;
+  optional int32 failsafe_debug = 16;  // 代替octet
+  optional uint32 scene_flag = 17;     // 代替unsigned long
+}
+
+message RcwFunctionDebug {
+  optional int32 main_state = 1;   // 代替octet
+  optional int32 sub_state = 2;    // 代替octet
+  optional uint32 bit_status = 3;  // 代替unsigned long
+  optional ObjVehDebug obj_veh_debug = 4;
+  optional WarningObject rcw_warningObject = 5;
+}
+
+message CornorFunctionDebug {
+  optional BsdFunctionDebug bsd_function_debug = 1;
+  optional DowFunctionDebug dow_function_debug = 2;
+  optional CtFunctionDebug ct_function_debug = 3;  // abort
+  optional CtbFunctionDebug ctb_function_debug = 4;
+  optional RcwFunctionDebug rcw_function_debug = 5;
+}

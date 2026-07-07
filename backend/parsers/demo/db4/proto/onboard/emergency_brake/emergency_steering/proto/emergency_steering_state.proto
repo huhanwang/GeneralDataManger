@@ -1,0 +1,70 @@
+
+syntax = "proto2";
+
+package snoah.emergency_steering;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/emergency_steering.proto";
+import "onboard/proto/trajectory_point.proto";
+import "onboard/proto/perception/fusion/fusion_object.proto";
+
+enum NudgeSide {
+  NONE = 0;
+  LEFT = 1;
+  RIGHT = 2;
+}
+
+message EmergencySteeringPlannerOutputProto {
+  repeated PathPoint path = 1;
+  optional Vec2dProto target_lane_start_pos = 2;
+  optional FusionObjectProto target_fusion_object = 3;
+  optional NudgeSide nudge_side = 4;
+  optional bool is_nudge_finished = 5;
+  optional bool is_lane_keeping_stable = 6;
+}
+
+message AesOutputProto {
+  optional bool request = 1;
+  optional EmergencySteeringProto.AesActiveType aes_active_type = 2;
+  optional double current_start_time = 3;
+  optional EmergencySteeringPlannerOutputProto aes_planner_output = 4;
+  optional int32 aes_planner_valid_frame_count = 5;
+}
+
+message EmergencySteeringStateProto {
+  optional LiteHeader header = 1;
+
+  // AES system state.
+  enum AesSystemState {
+    AESS_OFF = 0;
+    AESS_ON = 1;
+    AESS_ERROR = 2;
+  }
+  optional AesSystemState aess_state = 2;
+
+  // ESA function state.
+  enum EsaState {
+    ESA_STANDBY = 0;
+    ESA_ACTIVE = 1;
+    ESA_LANE_KEEPING = 2;
+  }
+  optional EsaState esa_state = 3;
+
+  // AES function state.
+  enum AesState {
+    AES_STANDBY = 0;
+    AES_ACTIVE = 1;
+    AES_LANE_KEEPING = 2;
+  }
+  optional AesState aes_state = 4;
+
+  // AES system util states.
+  optional bool prev_prev_aes_active = 5;
+  optional double last_aes_active_finish_time = 6;
+  optional double last_aess_fault_time = 7;
+  optional string aess_system_fault_message = 8;
+  optional AesOutputProto prev_aes_output = 9;
+  optional double prev_filtered_steer_speed = 10;
+  optional double stable_lane_keeping_start_time = 12;
+}

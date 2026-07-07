@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package snoah;
+
+message ChassisEventParamsProto {
+  optional double auxiliary_lever_holding_time = 1;
+
+  optional int32 max_cruising_speed_limit = 2;  // km/h
+
+  optional int32 cruising_speed_fine_step = 3;  // km/h
+
+  optional int32 cruising_speed_stride_step = 4;  // km/h
+
+  optional int32 cruising_speed_engage_initial_value_min = 5;  // km/h
+
+  optional int32 min_cruising_speed_limit = 6;  // km/h
+}

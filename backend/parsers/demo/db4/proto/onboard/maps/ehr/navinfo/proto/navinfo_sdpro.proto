@@ -1,0 +1,135 @@
+syntax = "proto2";
+
+package snoah.mapping.navinfo.sdpro;
+
+import "onboard/common/proto/map_geometry.proto";
+
+
+message SDProId {
+  optional sfixed32 tile_id = 1;
+  optional string id = 2;
+}
+
+message Link {
+  optional string link_id = 1;        // LinkId
+  optional string start_node_id = 2;  // 始点交叉点 ID
+  optional SDProId end_node_id = 3;   // 终点交叉点 ID
+  enum RoadKind {
+    HIGHWAY = 1;                // 高速道路
+    URBAN_EXPRESSWAY = 2;       // 城市快速路
+    LOCAL_ROAD = 3;             // 一般道路
+    NATIONAL_HIGHWAY = 4;       // 国道
+    PROVINCIAL_HIGHWAY = 5;     // 省道
+    CCOUNTY_HIGHWAY = 6;        // 县道
+    TOWNSHIP_VILLAGE_ROAD = 7;  // 乡镇道路
+    OTHER_ROADS = 8;            // 其他道路
+    FERRY = 9;                  // 轮渡
+    PEDESTRIAN_ROAD = 10;       // 步行道路
+    PEOPLE_CROSSING = 11;       // 人渡
+    BIKEWAY = 12;               // 自行车专用道
+  }
+  optional RoadKind road_kind = 4;  // Link 种别
+  enum Direction {
+    BI_DIRECTION = 1;
+    FORWARD = 2;
+    BACKWARD = 3;
+  }
+  optional Direction direction = 5;  // 通行方向(1:双向;2:顺向;3:逆向)
+  optional int32 length = 6;         // Link 长度
+  optional int32 form_of_way = 7;    // Link 类型
+  repeated GeoPointProto shape_points = 8;  // 形点记录 List
+}
+
+message Node {
+  optional string node_id = 1;  // 交叉点 ID
+  optional int32 is_main_node = 2;  // 是否主点(0:非路口主点;1:路口主点)
+  optional GeoPointProto node_point = 3;  // 交叉点坐标
+  optional bool has_traffic_light = 4;    // 路口内是否有红绿灯
+  optional bool is_gateway = 5;           // 是否为 gateway
+  repeated SDProId connect_links = 6;     // Node 接续 Link Id List
+}
+
+// 路口点 - MainNode in NavInfo's definition
+message CrossDotInfo {
+  optional string main_node_id = 1;  // 路口主点 ID(唯一表达一个路口)
+  optional string cross_id = 2;      // 路口 ID
+  repeated SDProId in_dots = 3;      // 路口进入 DOT 列表
+  repeated SDProId out_dots = 4;     // 路口退出 DOT 列表
+  optional bool has_traffic_light = 5;  // 路口内是否有红绿灯
+}
+
+message LinkRange {
+  optional int32 start_coord_index =
+      1;  // 经过当前 Tile 的 Link 区间始点(Link Geometry 坐标的索引)
+  optional int32 end_coord_index =
+      2;  // 经过当前 Tile 的 Link 区间终点(Link Geometry 坐标的索引)
+}
+message LinkShape {
+  optional SDProId link_id = 1;        // LinkID
+  repeated LinkRange link_ranges = 2;  // 经过当前 Tile 内的 LinkRange
+}
+
+message DotInfo {
+  optional int32 lane_seq_id = 1;          // 车道序号
+  optional SDProId connect_dot_id = 2;     // 接续的 DOT ID
+  optional int32 connect_lane_seq_id = 3;  // 接续的 lane 序号
+}
+
+// TODO(luzou): the actual type of some fields need to be confirmed
+message LaneInfo {
+  optional int32 lane_seq_id = 1;            // 车道序号
+  optional int32 lane_type = 2;              // 车道类型
+  optional double lane_width = 3;            // 车道宽度, unit: m
+  optional int32 lane_arrow = 4;             // 车道箭头类型
+  optional int32 lane_form_end = 5;          // 车道消亡信息
+  optional string left_boundary_type = 6;    // 车道左侧边线类型
+  optional string right_boundary_type = 7;   // 车道右侧边线类型
+  optional string left_boundary_color = 8;   // 车道左侧边线颜色
+  optional string right_boundary_color = 9;  // 车道右侧边线颜色
+}
+
+message LaneDot {
+  optional string dot_id = 1;            // DOT 编号
+  optional SDProId ref_link_id = 2;      // 关联 LinkID
+  optional GeoPointProto dot_point = 3;  // Dot 点经纬度
+  optional int32 offset_distance =
+      4;  // Dot 点投影点较 LINK 端点的偏移距离(视 dot
+          // 方向而定,顺则距离起点的,逆则距离终点的)
+  enum DotType {
+    DOT_TYPE_UNINVESTIGATED = 0;  // 未调查
+    DOT_TYPE_START = 1;           // 车道开始
+    DOT_TYPE_CHANGED = 2;         // 车道变化
+    DOT_TYPE_CONNECTED = 3;       // 车道连续
+    DOT_TYPE_EXIT_IN_CROSS = 4;   // 车道中断
+    DOT_TYPE_EXCHANGED_AREA = 5;  // 车道交换区
+    DOT_TYPE_IN_OUT = 6;          // 既是 in 又是 out 的 DOT
+  }
+  optional DotType dot_type = 5;          // Dot 类型
+  optional int32 dot_deciding_point = 6;  // Dot 决策点
+  optional int32 lane_direction = 7;  // 车道通行方向(1:双向;2:顺向;3:逆向)
+  optional int32 lane_count = 8;               // 车道总数
+  optional int32 stopline_dot_type = 9;        // 停止线类型
+  optional int32 stopline_detailed_type = 10;  // 停止线细分类
+  optional int32 cross_in_out = 11;            // 是否为路口进出口点
+  optional SDProId main_node_id = 12;  // 路口进出口点关联路口主点 ID
+  optional int32 left_curb_type = 13;   // Link 左侧边界类型
+  optional int32 right_curb_type = 14;  // Link 右侧边界类型
+  optional SDProId ref_stopline_dot_id =
+      15;  // 关联的停止线 dot(进入路口点关联)
+  repeated DotInfo next_dot_infos = 16;  // 后续 Dot 情报
+  repeated DotInfo prev_dot_infos = 17;  // 前继 Dot 情报
+  repeated LaneInfo lane_infos = 18;     // 当前 Dot 的 Lane 情报 List
+}
+
+message Tile {
+  optional int32 tile_id = 1;
+  repeated Link links = 2;
+  repeated Node nodes = 3;
+  repeated CrossDotInfo cross_dot_infos = 4;
+  repeated LinkShape link_shapes = 5;
+  repeated LaneDot lane_dots = 6;
+}
+
+message SDProMapProto {
+  repeated Tile tiles = 1;
+}

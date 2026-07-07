@@ -1,0 +1,168 @@
+syntax = "proto2";
+
+package snoah.run_process;
+// import "onboard/logging/proto/q_rules_match.proto";
+import "onboard/proto/lite_camera.proto";
+
+
+enum EventType {
+  INVALID = 0;
+  EMERGENCY = 1;
+  KICKOUT = 2;
+  CRASH = 3;
+  TAKE_OVER = 4;
+  COMMENT = 5;
+}
+
+message UploadTask {
+  enum TaskType {
+    TASK_TYPE_UNKNOWN = 0;
+    TASK_TYPE_EVENTS = 1;
+    TASK_TYPE_SNIPPETS = 2;
+    TASK_TYPE_ALL = 3;
+    TASK_TYPE_ONBOARD_EVENT = 4;
+    TASK_TYPE_ONBOARD_URGENT = 5;
+    TASK_TYPE_ONBOARD_QTRIAGE = 6;
+    TASK_TYPE_ONBOARD_EVENT_UPLOAD = 7;
+    TASK_TYPE_ONBOARD_SNIPPET_DUMP = 8;
+  }
+  optional TaskType task_type = 1;
+  optional string mount_path = 2;
+  optional string run_name = 3;
+  optional int64 event_timestamp_us = 4 [deprecated = true];
+  optional int64 event_offset_us = 5;
+  optional string run_snippet_meta_path = 6;
+  optional bool log_is_finished = 7;
+  // user request upload task option
+  optional EventType event_type = 10;
+  optional bool upload_camera_high = 8;
+  optional bool upload_camera_low_or_down_sample = 9;
+  optional string trigger_results_path = 11;
+}
+
+message EventInfo {
+  optional string run_name = 1;
+  optional double offset = 2;
+  optional EventType event_type = 3;
+  optional string car_id = 4;
+}
+
+// ONBOARD: all events from disk
+message GetEventListRequest {}
+message GetEventListResponse {
+  repeated EventInfo events = 1;
+  optional bool has_low_definition = 2;  // j5无低清
+}
+// ONBOARD: image samples
+message GetEventPreviewRequest {
+  optional string run_name = 1;
+  optional double offset = 2;
+}
+message GetEventPreviewResponse {
+  message CameraPreview {
+    optional CameraId camera_id = 1;
+    repeated bytes preview = 2;
+  }
+  repeated CameraPreview camera_preview = 1;
+  optional EncodeType image_encode_type = 2;
+}
+
+// QTT, or QPad
+message InsertUploadTasksRequest {
+  repeated UploadTask upload_tasks = 1;
+}
+message InsertUploadTasksResponse {}
+
+message StopUploadEventsRequest {}
+
+message StopUploadEventsResponse {}
+
+message GetEventsUploadStatusRequest {}
+
+message GetEventsUploadStatusResponse {
+  enum UploadStatus {
+    WAITING = 0;
+    UPLOADING = 1;
+    UPLOADED = 2;
+    FAILED = 3;
+  }
+  message EventUploadStatus {
+    optional EventInfo event = 1;
+    optional UploadStatus status = 2;
+    optional double percentage = 3;  // no valid yet
+  }
+  repeated EventUploadStatus events_upload_status = 1;
+}
+
+message UploadOverview {
+  enum TaskStatus {
+    TASK_STATUS_UNKNOWN = 0;
+    TASK_STATUS_PENDING = 1;
+    TASK_STATUS_RUNNING = 2;
+    TASK_STATUS_FINISHED = 3;
+  }
+  map<string, TaskStatus> tasks_status = 1;
+  optional float process_percent = 2;
+  optional float upload_percent = 3;
+  optional bool has_error = 4;
+  optional string error_message = 5;
+}
+
+message FetchUploadOverviewRequest {}
+
+message FetchUploadOverviewResponse {
+  optional UploadOverview overview = 1;
+}
+
+message FetchOnboardUrgentTaskProgressRequest {
+  optional string run_name = 1;
+}
+
+message FetchOnboardUrgentTaskProgressResponse {
+  optional bool has_error = 1;
+  optional string error_message = 2;
+  optional bool is_processing = 3;
+  optional int32 finished_file_count = 4;
+  optional int64 finished_file_size = 5;
+  optional int32 pending_file_count = 6;
+  optional int64 pending_file_size = 7;
+  optional int64 uploading_file_size = 8;
+  optional int64 upload_total_time_in_millis = 9;
+}
+
+message CleanDiskRequest {
+  optional int64 expect_remove_amount_in_gb = 1 [default = 100];
+}
+
+message CleanDiskResponse {
+  optional int32 error_code = 1;
+  optional int64 actual_remove_amount_in_gb = 2;
+}
+
+message SetEnableAutomicFileUploadRequest {
+  optional bool enable = 1;
+}
+message SetEnableAutomicFileUploadResponse {}
+
+service RunProcessService {
+  //
+  rpc GetEventList(GetEventListRequest) returns (GetEventListResponse);
+  rpc GetEventPreview(GetEventPreviewRequest) returns (GetEventPreviewResponse);
+  rpc SetEnableAutomicFileUpload(SetEnableAutomicFileUploadRequest)
+      returns (SetEnableAutomicFileUploadResponse);
+
+  rpc InsertUploadTasks(InsertUploadTasksRequest)
+      returns (InsertUploadTasksResponse);
+  rpc StopUploadEvents(StopUploadEventsRequest)
+      returns (StopUploadEventsResponse);
+  rpc GetEventsUploadStatus(GetEventsUploadStatusRequest)
+      returns (GetEventsUploadStatusResponse);
+
+  rpc FetchUploadOverview(FetchUploadOverviewRequest)
+      returns (FetchUploadOverviewResponse);
+
+  rpc FetchOnboardUrgentTaskProgress(FetchOnboardUrgentTaskProgressRequest)
+      returns (FetchOnboardUrgentTaskProgressResponse);
+
+  rpc CleanDisk(CleanDiskRequest) returns (CleanDiskResponse);
+}

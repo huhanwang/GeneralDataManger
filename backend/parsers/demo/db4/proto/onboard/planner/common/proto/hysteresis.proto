@@ -1,0 +1,13 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+message HysteresisProto {
+  optional int32 counters_from_true = 1;
+  optional int32 counters_from_false = 2;
+  optional int32 counters_threshold_from_true = 3;
+  optional int32 counters_threshold_from_false = 4;
+  optional bool state = 5 [default = false];
+  optional bool requested_state = 6 [default = false];
+}

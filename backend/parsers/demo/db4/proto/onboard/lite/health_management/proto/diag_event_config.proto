@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package snoah;
+
+message DiagEventConfig {
+  required uint32 module_id = 1;
+  required uint32 event_id = 2;
+  optional bool auto_clear = 3 [default = true];
+  optional double expired_time_s = 4 [default = 2.0];
+}
+
+message DiagEventConfigList {
+  repeated DiagEventConfig diag_event_configs = 1;
+}

@@ -1,0 +1,44 @@
+
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/control_cmd.proto";
+
+package snoah;
+
+message EmergencySteeringProto {
+  optional LiteHeader header = 1;
+
+  // Aes system output.
+  enum AesStatus {
+    AES_STATUS_OFF = 0;
+    AES_STATUS_ON = 1;
+    AES_STATUS_FAILURE = 2;
+  }
+  optional AesStatus aes_status = 2;
+
+  enum AesSetting {
+    AES_SETTING_NONE = 0;
+    AES_SETTING_OFF = 1;
+    AES_SETTING_ESA = 2;
+    AES_SETTING_AES = 3;
+  }
+  optional AesSetting aes_setting = 3;
+
+  enum AesActiveType {
+    AES_ACTIVE_TYPE_NONE = 0;
+    AES_ACTIVE_TYPE_ESA = 1;
+    AES_ACTIVE_TYPE_AES = 2;
+  }
+  optional AesActiveType aes_active_type = 4;
+
+  // AES function output.
+  optional bool aes_request = 5;
+  optional ControlCommand control_cmd = 6;
+
+  optional string aes_target_object_id = 7;
+
+  optional string aes_control_fault_message = 8;
+
+  // NEXT ID: 9
+}

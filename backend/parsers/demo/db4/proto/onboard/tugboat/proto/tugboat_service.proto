@@ -1,0 +1,883 @@
+syntax = "proto2";
+package snoah;
+
+message GetBaseInfoRequest {}
+
+message GetBaseInfoResponse {
+  optional string car_id = 1;
+  optional string country = 2;
+  optional string vin = 3;
+  optional string serial_no = 4;
+}
+
+message GetNodeIpRequest {
+  optional string car_id = 1;
+}
+
+message GetNodeIpResponse {
+  optional string omc_ip = 1;
+  repeated string obc_ip = 2;
+  optional string qview_server_address = 3;
+}
+
+message GetObcDeviceRequest {
+  optional string car_id = 1;
+}
+
+message NodeInfo {
+  optional string ip = 1;
+  optional string device = 2;
+}
+
+message GetObcDeviceResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  repeated NodeInfo nodeInfo = 3;
+}
+
+message DiskUsage {
+  optional int64 total = 3;
+  optional int64 used = 4;
+  optional int64 free = 5;
+}
+
+message DiskInfo {
+  optional string mount_path = 1;
+  optional DiskUsage usage = 2;
+  enum DiskType {
+    INTERNAL = 1;
+    EXTERNAL = 2;
+  }
+  optional DiskType type = 3;
+}
+
+message GetDiskUsageRequest {}
+
+message NodeDiskUsage {
+  optional string ip = 1;
+  optional string device = 2;
+  repeated DiskInfo disks = 4;
+  reserved 3;
+  optional DiskUsage internal_usage = 5;
+}
+
+message GetDiskUsageResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  repeated NodeDiskUsage usage = 3;
+}
+
+message ReleaseDetail {
+  optional string version = 1;
+  repeated string cities = 2;
+  optional string release_info = 3;  // content of release_v2.json
+  optional bool complete = 4;        // version installed on all nodes
+}
+
+message ReleaseDetailV2 {
+  optional string release_tag = 1;
+  optional string platform = 2;
+  repeated string cities = 3;
+  optional ReleaseVersionStatus release_version_status = 4;
+  optional string docker_image_type = 5;
+  optional int32 error_code = 6 [default = 0x0000];
+  repeated string third_party_maps = 7;
+  optional string release_type = 8 [default = "full_image"];
+  repeated string release_binary_detail = 9;
+}
+
+message InstalledReleaseV2Request {
+  optional TargetType target_type = 1 [default = LAPTOP_TARGET];
+  optional string qtt_mode = 2 [default = "test_mode"];
+}
+
+message InstalledReleaseV2Response {
+  repeated ReleaseDetailV2 release_Info = 1;
+}
+
+message InstalledReleaseRequest {
+  optional DeployNodesConfigType deploy_nodes_config_type = 1
+      [default = DEPLOY_NODES_CONFIG_TYPE_OMC];
+  optional string platform = 14 [default = "x86"];
+}
+
+message InstalledReleaseResponse {
+  repeated string installed_version = 1;  // deprecated
+  optional string selected_version = 2;
+  repeated string current_cities = 3;  // deprecated
+  optional string busline_config = 4;  // deprecated
+  repeated ReleaseDetail installed_release = 5;
+  repeated ReleaseDetail incomplete_release = 6;
+}
+
+message RemoveReleaseRequest {
+  optional string release_tag = 1;
+  optional string device = 2;  // deprecated
+}
+
+message RemoveReleaseResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+enum PackageSource {
+  AWS = 1;
+  ALIYUN = 2;
+  LOCAL_UNPACKED = 3;  // use package under ~/.snoah_release_temp
+}
+
+enum DeployNodesConfigType {
+  DEPLOY_NODES_CONFIG_TYPE_OMC = 1;
+  DEPLOY_NODES_CONFIG_TYPE_DRIVE_ORIN = 2;
+  DEPLOY_NODES_CONFIG_TYPE_J5 = 3;
+  DEPLOY_NODES_CONFIG_TYPE_JETSON_ORIN = 4;
+}
+
+enum TargetType {
+  LAPTOP_TARGET = 1;
+  VEHICLE_TARGET = 2;
+}
+
+enum ReleaseVersionStatus {
+  USING = 1;
+  ABNORMAL = 2;
+  AVAILABLE = 3;
+  UNAVAILABLE = 4;
+}
+
+message LaptopDeploy {
+  optional string laptop_ip = 1;
+  optional string laptop_user = 2;
+  optional string laptop_password = 3;
+  optional bool use_basic_image = 4;
+  optional string map_mode = 5 [default = 'cache'];  // git or cache
+}
+
+message OTADeploy {
+  optional bool use_basic_image = 1;
+  optional PackageSource package_source = 2 [default = ALIYUN];
+}
+
+message AdhocDeploy {
+  optional bool use_basic_image = 1;
+  optional PackageSource package_source = 2 [default = ALIYUN];
+  optional string map_mode = 3 [default = 'cache'];  // git or cache
+}
+
+message ProductionAdhocDeploy {
+  repeated string sub_release_tag = 1;
+  repeated string remote_pilot_dbet = 2;
+}
+
+message ProductionLaptopDeploy {
+  repeated string sub_release_tag = 1;
+}
+
+message DeployRequest {
+  optional string release_tag = 1;
+
+  // current only support one city
+  repeated string cities = 2;
+
+  oneof deploy_info {
+    // deploy the machine where server is running on.
+    AdhocDeploy adhoc = 3;
+
+    // deploy the onboard system, where server is running on the omc
+    // must call PrepareHostForInstall api on *on laptop* before call this.
+    LaptopDeploy laptop = 4;
+
+    // deploy the onboard system. Server is running on the omc.
+    OTADeploy ota = 5;
+
+    ProductionAdhocDeploy production_adhoc = 16;
+
+    ProductionLaptopDeploy production_laptop = 17;
+  }
+
+  // Whether use qlfs to download data
+  optional bool use_qlfs = 6 [default = false];
+
+  reserved 7;
+
+  optional string rewrite_map_sha = 8;
+
+  optional bool use_qlfs_deploy_audio = 9 [default = false];
+
+  // Used by HIL
+  optional bool skip_xavier = 10 [default = false];
+  optional bool local_build_image = 11 [default = false];
+  optional bool skip_push_host_registry = 13 [default = false];
+
+  optional DeployNodesConfigType deploy_nodes_config_type = 12
+      [default = DEPLOY_NODES_CONFIG_TYPE_OMC];
+
+  optional string platform = 14;
+  optional string deploy_user = 15;
+}
+
+message DeployResponse {
+  optional bool good = 1;  // response instantly.
+  optional string msg = 2;
+  optional int32 error_code = 3 [default = 0x0000];
+}
+
+message SwitchVersionWithProgressRequest {
+  optional string release_tag = 1;
+  optional bool use_qlfs = 2 [default = false];
+  optional string map_mode = 3 [default = "cache"];
+  optional bool use_qlfs_deploy_audio = 4 [default = false];
+}
+
+message SwitchVersionWithProgressResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message UpgradeServiceRequest {
+  optional string version = 1 [default = "latest_stable"];
+}
+
+message UpgradeServiceResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message StopInstallRequest {}
+
+message StopInstallResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  optional int32 error_code = 3;
+}
+
+message GetInstallStatusRequest {}
+
+enum InstallType {
+  FROM_REMOTE = 1;   // Internal InstallReleaseFromRemove
+  FROM_HOST = 2;     // Internal InstallReleaseFromHost
+  HOST_PREPARE = 3;  // Internal PrepareHostForInstall
+  ADHOC_DEPLOY = 4;
+  OTA_DEPLOY = 5;
+  LAPTOP_DEPLOY = 6;
+  SWITCH_VERSION = 7;
+  SWITCH_VERSION_ON_NODE = 8;  // Internal
+  SERVICE_UPGRADE = 9;
+  SERVICE_UPGRADE_SINGLE_NODE = 10;  // Internal
+  REMOVE_RELEASE = 11;               // Internal
+}
+
+message GetInstallStatusResponse {
+  optional bool good = 1;       // only valid when is_installing=false
+  optional int32 progress = 2;  // deprecated
+  optional string msg = 3;      // maybe error msg or progress msg
+  optional ProgressDetail progress_detail = 4;
+  optional int32 error_code = 5;  // only valid when is_installing=false
+  optional InstallType install_type =
+      6;  // installation triggered from calling which one of api
+  optional bool is_installing = 7;
+  optional int64 network_bytes_per_sec = 8;
+}
+
+message UpdateVehicleParamRequest {
+  optional string release_tag = 1;
+}
+
+message UpdateVehicleParamResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message PrepareAudioGroupRequest {
+  message SingleAudioRequest {
+    optional string audio_name = 1;
+    optional string branch_or_commit = 2;
+  }
+  repeated SingleAudioRequest audio_requests = 1;
+}
+
+message PrepareAudioGroupResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+enum AppType {
+  VPN = 1;
+  CHROME = 2;
+  FIREFOX = 3;
+  CHROMIUM = 4;
+}
+
+message StartAppRequest {
+  optional AppType app = 1;
+}
+
+message StartAppResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message StopAppRequest {
+  optional AppType app = 1;
+}
+
+message StopAppResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetAppStatusRequest {
+  optional AppType app = 1;
+}
+
+message GetAppStatusResponse {
+  optional bool running = 1;
+}
+
+message StartVpnRequest {
+  reserved 1;
+}
+
+message StartVpnResponse {}
+
+message StopVpnRequest {}
+
+message StopVpnResponse {}
+
+message GetVpnStatusRequest {}
+
+message GetVpnStatusResponse {
+  optional bool running = 1;
+  optional string ip_address = 2;
+}
+
+message StartBrowserOnMainDisplayRequest {
+  enum WebAppType {
+    QVIEW = 1;
+  }
+  optional WebAppType type = 1;
+  optional string path = 2;
+}
+
+message StartBrowserOnMainDisplayResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message StopBrowserOnMainDisplayRequest {}
+
+message StopBrowserOnMainDisplayResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetBrowserStatusOnMainDisplayRequest {}
+
+message GetBrowserStatusOnMainDisplayResponse {
+  optional bool running = 1;
+}
+
+// command:
+// shutdown/reboot/disable_ntp/fix_omc_time_source/check_obc_system_time
+// find_process/kill_process
+// 1(AppType.VPN) 2(AppType.CHROME) 3(AppType.FIREFOX) 4(AppType.CHROMIUM)
+// fix_system_service
+// [ptp4l/ptp4l_lidar/camera/can/gpsd, start/stop/restart/status/signal_monitor]
+// setup_can 6/7
+// mount_run_data local/suzhou/beijing/shenzhen/bayarea
+message SystemCommandRequest {
+  optional string device = 1;  // value: omc/xavier(internal)
+  optional string command = 2;
+  repeated string args = 3;
+}
+
+message SystemCommandResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message ClearDockerLogsRequest {
+  optional string docker_container_name = 1;
+}
+
+message ClearDockerLogsResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message SyncVehiclesToObcNodeRequest {}
+
+message SyncVehiclesToObcNodeResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+// TODO(liyu) deprecated it by SystemCommand
+message SetupCanRequest {
+  optional int32 baudrate = 1;  // for install
+}
+
+message SetupCanResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+// TODO(liyu) deprecated it by SystemCommand
+message FixSystemServiceRequest {
+  optional string service = 1;  // value: ptp4l/camere/can/source_time
+  oneof ServiceOption {
+    int32 can_baudrate = 2;
+    string cmd = 3;  // start/stop/status for system service
+  }
+}
+
+message FixSystemServiceResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message CheckServiceVersionAllNodeRequest {}
+
+message CheckServiceVersionAllNodeResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message RollBackRequest {}
+
+message RollBackResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message FixLaptopLoggingRunInfoRequest {
+  optional string run_name = 1;
+  optional string car_id = 2;
+  optional string launch_plan_name = 3;
+  optional string node_ip = 4;
+  optional string online_calibration_mode = 5;
+  optional string vehicle_project = 6;
+}
+
+message FixLaptopLoggingRunInfoResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message PrepareForLaptopLoggingRequest {
+  optional string car_id = 1;
+  optional string node_ip = 2;
+  optional string online_calibration_mode = 3;
+  optional string vehicle_project = 4;
+}
+
+message PrepareForLaptopLoggingResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message Ad4LogsCollectRequest {
+  optional string node_ip = 1;
+  optional string local_logs_path = 2;
+  optional string local_logs_duration = 3;
+}
+
+message Ad4LogsCollectResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+message Ad4LoadingMonitorRequest {
+  optional string command = 1;
+  optional string node_ip = 2;
+  optional string sys_loadings_local_path = 3;
+}
+
+message Ad4LoadingMonitorResponse {
+  optional bool success = 1;
+  optional string error_msg = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Internal API. Don't use it
+///////////////////////////////////////////////////////////////////////////////
+message GetDiskUsageOnNodeRequest {}
+
+message GetDiskUsageOnNodeResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  optional DiskUsage usage = 3;  // deperecated
+  repeated DiskInfo disks = 4;
+}
+
+message RemoveReleaseOnNodeRequest {
+  optional string release_tag = 1;
+  optional string device = 2;
+  optional string platform = 3;
+}
+
+message RemoveReleaseOnNodeResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetReleasePackageRequest {
+  optional string release_tag = 1;
+  optional string domain_controller = 2;
+}
+
+message GetReleasePackageResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  optional bytes content = 3;
+}
+
+message ProgressDetail {
+  optional int32 percentage = 1;  // total percentage
+  optional string current_step = 2;
+  repeated string stdout = 3;  // stdout/err splitted into lines
+  optional bool cancellable =
+      4;  // if true, installation can be stopped by StopInstall
+  optional string error_code = 5;
+}
+
+message PrepareHostForInstallRequest {
+  optional string release_tag = 1;
+  optional string map_type = 2;
+  optional bool use_basic_image = 3 [default = true];
+  optional DeployNodesConfigType deploy_nodes_config_type = 4
+      [default = DEPLOY_NODES_CONFIG_TYPE_OMC];
+  optional string platform = 5;
+}
+
+message PrepareHostForInstallResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+  optional int32 progress = 3;  // 0~100, 100 means done
+  optional ProgressDetail progress_detail = 4;
+  optional int32 error_code = 5 [default = 0x0000];
+}
+
+message InstallReleaseFromHostRequest {
+  optional string release_tag = 1;
+  optional string host_ip = 2;
+  optional string host_user = 3;
+  optional string host_password = 4;
+  optional string city = 5;  // deprecated
+  optional string device = 6;
+  optional bool use_qlfs = 7 [default = false];
+  optional bool use_qlfs_deploy_audio = 8 [default = false];
+  optional string param_host = 9;
+  optional string param_user = 10;
+  optional string param_password = 11;
+
+  // Used by HIL
+  optional bool local_build_image = 12 [default = false];
+
+  optional string random_str = 13;
+  optional string platform = 14;
+  optional string map_mode = 15 [default = 'cache'];   // git or cache
+  optional string run_mode = 16 [default = 'binary'];  // binary or docker
+  optional string deploy_type = 17;
+  optional string deploy_user = 18;
+}
+
+message InstallReleaseFromHostResponse {
+  optional bool good = 1;
+  optional int32 progress = 2;  // 0~100, 100 means done
+  optional string msg = 3;      // maybe error msg or progress msg
+  optional ProgressDetail progress_detail = 4;
+  optional int32 error_code = 5 [default = 0x0000];
+}
+
+message SwitchVersionOnNodeWithProgressRequest {
+  optional string release_tag = 1;
+  optional string device = 2;
+  optional string omc_ip = 3;
+  optional string omc_user = 4;
+  optional string omc_password = 5;
+  optional bool use_qlfs = 6 [default = false];
+  optional bool use_qlfs_deploy_audio = 7 [default = false];
+  optional bool with_binary = 9 [default = false];
+  optional string map_mode = 10 [default = 'cache'];  // git or cache
+  reserved 8;
+  optional string run_mode = 11 [default = 'binary'];  // binary or docker
+  optional bool clean_progress_info = 12 [default = false];
+}
+
+message SwitchVersionOnNodeWithProgressResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetServiceInfoRequest {}
+
+message GetServiceInfoResponse {
+  optional string version = 1;
+  optional string git_head = 2;
+  optional string date = 3;
+  optional string service_release_tag = 4;
+}
+
+message InstallServiceOnNodeRequest {
+  optional string package_file_path = 1;  // package file path on host
+  optional string package_host = 2;
+}
+
+message SwitchServiceOnNodeRequest {
+  optional string version = 1;
+}
+
+message SwitchServiceOnNodeResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+enum UpgraderStatusType {
+  UPGRADER_STARTED = 1;
+  UPGRADE_FINISHED = 2;
+  UPGRADE_FAILED = 3;
+}
+
+message UpgraderStatusReportRequest {
+  optional bool good = 1;
+  optional string msg = 2;
+  optional UpgraderStatusType status = 3;
+}
+
+message UpgraderStatusReportResponse {}
+
+message StartBrowserRequest {
+  optional string release_tag = 1;
+
+  enum BrowserType {
+    CHROME = 1;
+    FIREFOX = 2;
+    CHROMIUM = 3;
+  }
+  optional BrowserType type = 2;
+
+  optional string url = 3;
+
+  optional bool kiosk = 4;
+}
+
+message StartBrowserResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetDeviceRequest {}
+
+message GetDeviceResponse {
+  optional string device_name = 1;
+}
+
+message GetCarIdFromVinRequest {
+  optional string nodes_ip = 1;
+}
+
+message GetCarIdFromVinResponse {
+  optional string car_id = 1;
+}
+
+message LauchPlanModifierRequest {
+  optional string node_ip = 1;
+  optional string laptop_launch_plan = 2;
+  optional string laptop_obc_launch_plan = 3;
+  optional string operate_type = 4;
+}
+
+message LauchPlanModifierResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message StartRtkRequest {
+  optional string user = 1;
+}
+
+message StartRtkResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message StopRtkRequest {}
+
+message StopRtkResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message DownloadThirdPartyMapRequest {
+  optional string third_party_map = 1;
+  optional string release_tag = 2;
+}
+
+message DownloadThirdPartyMapResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+message GetThirdPartyMapListRequest {}
+
+message GetThirdPartyMapListResponse {
+  repeated string maps = 1;
+}
+
+message UploadDeployInfoRequest {
+  optional string token = 1;
+}
+
+message UploadDeployInfoResponse {
+  optional bool good = 1;
+  optional string msg = 2;
+}
+
+service TugboatService {
+  rpc GetBaseInfo(GetBaseInfoRequest) returns (GetBaseInfoResponse);
+
+  rpc GetNodeIp(GetNodeIpRequest) returns (GetNodeIpResponse);
+
+  rpc GetCarIdFromVin(GetCarIdFromVinRequest) returns (GetCarIdFromVinResponse);
+
+  rpc GetObcDevice(GetObcDeviceRequest) returns (GetObcDeviceResponse);
+
+  rpc GetDiskUsage(GetDiskUsageRequest) returns (GetDiskUsageResponse);
+
+  rpc InstalledRelease(InstalledReleaseRequest)
+      returns (InstalledReleaseResponse);
+
+  rpc InstalledReleaseV2(InstalledReleaseV2Request)
+      returns (InstalledReleaseV2Response);
+
+  rpc RemoveRelease(RemoveReleaseRequest) returns (RemoveReleaseResponse);
+
+  rpc Deploy(DeployRequest) returns (DeployResponse);
+
+  rpc SwitchVersionWithProgress(SwitchVersionWithProgressRequest)
+      returns (SwitchVersionWithProgressResponse);
+
+  rpc UpgradeService(UpgradeServiceRequest) returns (UpgradeServiceResponse);
+
+  rpc StopInstall(StopInstallRequest) returns (StopInstallResponse);
+
+  rpc GetInstallStatus(GetInstallStatusRequest)
+      returns (stream GetInstallStatusResponse);
+
+  rpc UpdateVehicleParam(UpdateVehicleParamRequest)
+      returns (UpdateVehicleParamResponse);
+
+  rpc PrepareAudioGroup(PrepareAudioGroupRequest)
+      returns (PrepareAudioGroupResponse);
+
+  rpc StartApp(StartAppRequest) returns (StartAppResponse);
+
+  rpc StopApp(StopAppRequest) returns (StopAppResponse);
+
+  rpc ModifieLaunchPlan(LauchPlanModifierRequest)
+      returns (LauchPlanModifierResponse);
+
+  rpc GetAppStatus(GetAppStatusRequest) returns (GetAppStatusResponse);
+
+  rpc StartVpn(StartVpnRequest) returns (StartVpnResponse);
+
+  rpc StopVpn(StopVpnRequest) returns (StopVpnResponse);
+
+  rpc GetVpnStatus(GetVpnStatusRequest) returns (GetVpnStatusResponse);
+
+  rpc StartBrowserOnMainDisplay(StartBrowserOnMainDisplayRequest)
+      returns (StartBrowserOnMainDisplayResponse);
+
+  rpc StopBrowserOnMainDisplay(StopBrowserOnMainDisplayRequest)
+      returns (StopBrowserOnMainDisplayResponse);
+
+  rpc GetBrowserStatusOnMainDisplay(GetBrowserStatusOnMainDisplayRequest)
+      returns (GetBrowserStatusOnMainDisplayResponse);
+
+  rpc SystemCommand(SystemCommandRequest) returns (SystemCommandResponse);
+
+  rpc ClearDockerLogs(ClearDockerLogsRequest) returns (ClearDockerLogsResponse);
+
+  rpc SyncVehiclesToObcNode(SyncVehiclesToObcNodeRequest)
+      returns (SyncVehiclesToObcNodeResponse);
+
+  rpc CheckServiceVersionAllNode(CheckServiceVersionAllNodeRequest)
+      returns (CheckServiceVersionAllNodeResponse);
+
+  rpc RollBackToPreviousVersion(RollBackRequest) returns (RollBackResponse);
+
+  rpc StartRtk(StartRtkRequest) returns (StartRtkResponse);
+
+  rpc StopRtk(StopRtkRequest) returns (StopRtkResponse);
+
+  rpc DownloadThirdPartyMap(DownloadThirdPartyMapRequest)
+      returns (DownloadThirdPartyMapResponse);
+
+  rpc GetThirdPartyMapList(GetThirdPartyMapListRequest)
+      returns (GetThirdPartyMapListResponse);
+
+  rpc UploadDeployInfo(UploadDeployInfoRequest)
+      returns (UploadDeployInfoResponse);
+
+  // TODO(liyu) deprecated it by SystemCommand
+  rpc SetupCan(SetupCanRequest) returns (SetupCanResponse);
+
+  // TODO(liyu) deprecated it by SystemCommand
+  rpc FixSystemService(FixSystemServiceRequest)
+      returns (FixSystemServiceResponse);
+
+  rpc FixLaptopLoggingRunInfo(FixLaptopLoggingRunInfoRequest)
+      returns (FixLaptopLoggingRunInfoResponse);
+
+  rpc PrepareForLaptopLogging(PrepareForLaptopLoggingRequest)
+      returns (PrepareForLaptopLoggingResponse);
+
+  rpc Ad4LogsCollect(Ad4LogsCollectRequest) returns (Ad4LogsCollectResponse);
+
+  rpc Ad4LoadingMonitor(Ad4LoadingMonitorRequest)
+      returns (Ad4LoadingMonitorResponse);
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Internal API. Don't use it
+  ///////////////////////////////////////////////////////////////////////////////
+  rpc GetDiskUsageOnNode(GetDiskUsageOnNodeRequest) returns (
+      GetDiskUsageOnNodeResponse);  // Internal API. used by GetDiskUsage
+
+  rpc RemoveReleaseOnNode(RemoveReleaseOnNodeRequest) returns (
+      RemoveReleaseOnNodeResponse);  // Internal API. used by RemoveRelease
+
+  rpc GetReleasePackage(GetReleasePackageRequest)
+      returns (GetReleasePackageResponse);  // Internal API. used by Deploy
+
+  rpc PrepareHostForInstall(PrepareHostForInstallRequest) returns (
+      stream PrepareHostForInstallResponse);  // Internal API. used by QTT
+
+  rpc InstallReleaseFromHost(InstallReleaseFromHostRequest) returns (
+      stream InstallReleaseFromHostResponse);  // Internal API. used by Deploy
+
+  rpc SwitchVersionOnNodeWithProgress(SwitchVersionOnNodeWithProgressRequest)
+      returns (
+          SwitchVersionOnNodeWithProgressResponse);  // Internal API. used by
+                                                     // SwitchVersionWithProgress
+
+  rpc GetServiceInfo(GetServiceInfoRequest)
+      returns (GetServiceInfoResponse);  // Internal API. used by UpgradeService
+
+  rpc InstallServiceOnNode(InstallServiceOnNodeRequest)
+      returns (UpgradeServiceResponse);  // Internal API. used by UpgradeService
+
+  rpc SwitchServiceOnNode(SwitchServiceOnNodeRequest) returns (
+      SwitchServiceOnNodeResponse);  // Internal API. used by UpgradeService
+
+  rpc UpgraderStatusReport(UpgraderStatusReportRequest)
+      returns (UpgraderStatusReportResponse);  // Internal API. used by
+                                               // UpgradeService
+
+  rpc StartBrowser(StartBrowserRequest)
+      returns (StartBrowserResponse);  // Internal API. used by
+                                       // StartBrowserOnMainDisplay
+
+  rpc GetDevice(GetDeviceRequest)
+      returns (GetDeviceResponse);  // Internal API. used by QLFS
+}

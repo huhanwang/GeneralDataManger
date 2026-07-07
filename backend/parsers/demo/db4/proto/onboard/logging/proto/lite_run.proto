@@ -1,0 +1,206 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/run/release.proto";
+import "onboard/params/run_params/proto/run_params.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/proto/system_status_info.proto";
+import "onboard/proto/release_run_error_code.proto";
+import "onboard/proto/q_hardware_info.proto";
+import "onboard/proto/run_infos.proto";
+import "onboard/proto/system_checker.proto";
+import "onboard/params/v2/proto/assembly/vehicle.proto";
+
+message LogSegment {
+  enum LogType {
+    UNKNOWN = 0;
+    LITE_MSG = 1;
+    LIDAR_DATA = 8;
+    CAMERA_JPG_IMG = 3;
+    TEXT_CONTENT = 4;
+    RUN_EVENTS = 5;
+    CAMERA_JPG_IMG_LOW_RESOLUTION = 6;
+    LITE_RUN = 7;
+
+    // Deprecated.
+    UNUSED = 2 [deprecated = true];
+  }
+  // Filename of log segment, not include file path.
+  optional string filename = 1;
+  // Type of log saved in stf format.
+  optional LogType type = 2;
+  // In microseconds, the start time is not necessarily the first timestamp of
+  // saved message.
+  optional int64 start_time = 3;
+  // In microseconds, the end time is not necessarily the last timestamp of
+  // saved message.
+  optional int64 end_time = 4;
+
+  // Number of records saved in the log segment.
+  optional int64 num_of_records = 5;
+}
+
+message CarInfo {
+  // In format Q0001.
+  optional string car_id = 1;
+  // Car-specific run params, such as lidar and camera ex/intrinsics.
+  optional RunParamsProto run_params = 5;
+
+  // Note(mike): the following fields are deprecated in favor of the new
+  // run_params field. However, we can't simply mark them as deprecated here
+  // because some older runs still have them in the lite run info
+  // (i.e. lite_run_info.pb.txt) which is a text proto. As a result,
+  // deprecating the fields here would result in a CHECK-failure. We may
+  // consider storing the run info file in a binary format, in which case,
+  // deprecated fields would be ignored by default.
+  // Car's lidar extrinsic params.
+  optional LidarExtrinsicsProto lidar_extrinsics = 2;
+  // Car's lidar intrinsic params.
+  optional LidarIntrinsicsProto lidar_intrinsics = 3;
+  // Car's front camera params.
+  optional CameraIntrinsicsProto front_camera_intrinsics = 4;
+  // Since many attributes are only defined in param v2 proto, there may be
+  // errors in param v1 proto records. Need to gradually abandon the use of
+  // param v1 proto. using run_params.v2_vehicle_params field instead.
+  optional HardwareParametersProto run_params_v2 = 6 [deprecated = true];
+}
+
+// Special self-check information
+message SpecialCheckInfo {
+  optional bool fix_can = 1;
+}
+
+message ModuleStartDuration {
+  // "node_name/module_name"
+  optional string module = 1;
+  optional int32 duration = 2;
+  optional int32 priority = 3;
+  optional bool started = 4;
+  optional bool ready = 5;
+  optional int32 init_duration = 6;
+  optional int32 ok_after_message_duration = 7;
+}
+
+message VehiclePlanStatus {
+  optional bool success = 1;
+  repeated string missed_lidar_ids = 2;
+  repeated string missed_radar_ids = 3;
+  repeated string missed_camera_ids = 4;
+}
+
+message SystemStatus {
+  optional bool good = 1 [default = true];
+  optional string txt_result = 2;
+  optional SystemStatusInfoProto system_info = 3;
+  // Node: the check_err_msg and check_err_code fields are deprecated in the new
+  // SystemStatus fields. However, there are a large number of release
+  // versions that use these two fields to store error information, it is still
+  // necessary to keep them for a period of time until all versions no longer
+  // use them.
+  optional string check_err_msg = 4;
+  optional BinaryExecErrorCode check_err_code = 5;
+  // Must use the following two fields to store error information.
+  optional string err_msg = 6;
+  optional ReleaseRunErrorCode err_code = 7;
+  // In microseconds.
+  optional int64 check_time_consume = 8;
+  optional SpecialCheckInfo special_check_info = 9;
+  repeated string init_timeout_modules = 10;
+  repeated string exit_timeout_modules = 11;
+  repeated string exit_slow_modules = 12;
+  repeated ModuleStartDuration module_start_durations = 13;
+  optional VehiclePlanStatus vehicle_plan_status = 14;
+  optional CheckResult hardware_check_result = 15;
+}
+
+message NodeSystemStatus {
+  optional string node_name = 1;
+  optional SystemStatus system_status = 2;
+  // In unix microseconds.
+  optional int64 node_start_ok_timestamp = 3;
+  optional int64 autonomy_module_start_timestamp = 4;
+  optional int64 autonomy_module_ok_timestamp = 5;
+}
+
+message StatsInfo {
+  optional double mileage = 1;
+  optional double auto_mileage = 2;
+
+  message ClassifiedMileage {
+    optional double mileage = 1;
+    optional int32 road_class = 4;
+    oneof class {
+      int32 autonomy_state = 2;
+      int32 assist_state = 3;
+    }
+  }
+
+  repeated ClassifiedMileage classfied_mileages = 3;
+}
+
+enum RunModeType {
+  RUN_MODE_TYPE_NONE = 0;
+  RUN_MODE_TYPE_L4 = 1;
+  RUN_MODE_TYPE_L2PLUSPLUS = 2;
+}
+
+message LiteRunVersion {
+  enum ProjectVersion {
+    None = 0;
+    Master_1_0 = 1;
+    AD_PRO_3_0 = 2;
+    AD_PRO_4_0 = 3;
+  }
+  optional ProjectVersion project_version = 1;
+  optional string app_version = 2;
+}
+
+message LiteRun {
+  // Format is 20190120_140359_Q0000001
+  optional string name = 1;
+  // In unix microseconds.
+  optional int64 start_time = 2;
+  // In microseconds.
+  optional int64 end_time = 3;
+  // Log segments recorded in this bag.
+  repeated LogSegment segments = 4;
+  // car_info.
+  optional CarInfo car_info = 5;
+  // Release binary information.
+  optional ReleaseInfo release_info = 6;
+
+  map<string, string> commandline_flag = 7;
+
+  optional SystemStatus system_status = 8;
+
+  map<string, string> extra_flag = 9;
+
+  repeated NodeSystemStatus node_system_status = 11;
+
+  optional HardwareInfo hardware_info = 12;
+
+  optional RunInfos run_infos = 13;
+
+  optional StatsInfo stats_info = 14;
+
+  optional int64 start_ok_timestamp = 15;
+
+  optional int64 is_production = 16;
+
+  optional string product_name = 17;
+
+  optional RunModeType run_mode_type = 18;
+
+  optional string holobag_name = 19;
+
+  optional bool has_p_frame = 20 [default = false];
+
+  map<string, string> vbs_str = 21;
+
+  optional LiteRunVersion lite_run_version = 22;
+
+  map<string, string> proto_str = 23;
+
+  reserved 10;
+}

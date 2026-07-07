@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package snoah.qlfs;
+
+message FileShaProto {
+  message FileSha {
+    optional string path = 1;
+    optional string sha = 2;
+  }
+  repeated FileSha files = 1;
+  optional string time_str = 2;
+}

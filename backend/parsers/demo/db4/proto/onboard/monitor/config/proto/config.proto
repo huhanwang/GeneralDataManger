@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package snoah.monitor;
+
+message MonitorVersionProto {
+  optional string version = 1;
+  optional string status = 2;
+  optional string release_date = 3;
+  optional string description = 4;
+}
+
+message CommandConfig {
+  optional string name = 1;
+  optional string path = 2;
+  optional string args = 3;
+  optional uint32 queue_size = 4;
+  optional bool need_publish = 5;
+}
+
+message ConfigProto {
+  optional MonitorVersionProto monitor_version = 1;
+
+  optional string cgroup = 10;
+  repeated CommandConfig cpu_commands = 11;
+  repeated CommandConfig mem_commands = 12;
+  repeated CommandConfig other_commands = 19;
+}

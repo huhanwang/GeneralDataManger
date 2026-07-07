@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+enum CityTrafficMarkingType {
+  CityTrafficMarking_TYPE_NONE = 0x0;
+  CityTrafficMarking_TYPE_STOP_LINE = 0x1;
+  CityTrafficMarking_TYPE_ZEBRA_CROSSING = 0x2;  // 按多边型发送
+  CityTrafficMarking_TYPE_SPEED_BUMP = 0x3;      // 按多边型发送
+  CityTrafficMarking_TYPE_LEFT_TURN_WAITING = 0x4;
+  CityTrafficMarking_TYPE_STAIGHT_WAITING = 0x5;
+}
+
+message CityTrafficMarking {
+  optional string id = 1;
+  optional CityTrafficMarkingType type = 2;
+  optional float width = 3;
+  optional float heading_angle = 4;
+  repeated Point2D middle_line = 5;
+  optional float conf_level = 6 [default = 1.0];  // confidence level
+  optional bool is_highlight = 7;                 // 高亮停止线
+}

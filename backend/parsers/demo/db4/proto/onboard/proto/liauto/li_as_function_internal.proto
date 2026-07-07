@@ -1,0 +1,69 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message AsInternalHeader {
+  optional uint64 time_stamp = 1;
+  optional uint32 frame_id = 2;
+}
+
+message AsafetyFuncErrorCan {
+  optional int32 as_main_aeb_status = 1;
+  optional bool as_main_fcw_function_error = 2;  // 1 error
+  optional bool as_main_bsd_function_error = 3;
+  optional bool as_main_dow_function_error = 4;
+  optional int32 as_main_ld_function_error = 5;
+  optional int32 as_main_elk_function_error = 6;
+}
+
+message AsafetyFuncActiveCan {
+  optional bool as_main_fcw_function_wrning = 1;         // 1 warning
+  optional int32 as_main_bsd_function_wrning_req_l = 2;  // 1 level1 2 level2
+  optional int32 as_main_bsd_function_wrning_req_r = 3;
+  optional int32 as_main_dow_function_req_l = 4;
+  optional int32 as_main_dow_function_req_r = 5;
+  optional int32 as_main_ldw_function_wrning = 6;  // 1 left 2 right
+  optional int32 as_main_ldp_function_active = 7;  // 1 left 2 right
+  optional int32 as_main_ldp_acous_wrning = 8;     // 1 left 2 right
+  optional int32 as_main_elk_fucntion_state =
+      9;  // 0:off 1:standby 2:active 3:finish 4:fail
+  optional int32 as_main_aes_status =
+      10;  // 0:off 1:initial 2:inhibit 3:prepare 4:stop
+           // 5:aes_active 6:esa_active 0x7:error
+  optional bool as_main_ctb_left_active = 11;   // 1 active
+  optional bool as_main_ctb_right_active = 12;  // 1 active
+  optional uint32 as_main_rcw_status =
+      13;  // 0:off 1:passive 2:standby 3:active 4:error
+  optional uint32 as_main_raeb_status =
+      14;  // 0:off 1:passive 2:standby 3:active 4:error
+  optional uint32 as_main_alsaeb_status =
+      15;  // 0:off 1:passive 2:standby 3:active front 4:active rear 5:active
+           // left 6:active right 7:hold 8:error
+}
+
+message AsafetyGeneralCan {
+  optional float as_main_aeb_desired_ax = 1;
+  optional int32 as_main_aeb_func_inhibit_flag = 2;    // 1 inhibit
+  optional int32 as_main_aeb_func_inhibit_reason = 3;  // 1 safebelt 2 OMS
+  optional int32 as_main_corner_wrning_lamp_left = 4;
+  optional int32 as_main_corner_wrning_lamp_right = 5;
+}
+
+message AsafetyObjCompare {
+  optional uint32 obj_id = 1;
+  optional float obj_px = 2;
+  optional float obj_py = 3;
+  optional float obj_vx = 4;
+  optional float obj_vy = 5;
+  optional float obj_ax = 6;
+  optional float obj_ay = 7;
+}
+
+message AsFunctionInternal {
+  optional AsInternalHeader header = 1;
+  optional AsafetyFuncErrorCan asafety_func_error_can = 2;
+  optional AsafetyFuncActiveCan asafety_func_active_can = 3;
+  optional AsafetyGeneralCan asafety_general_can = 4;
+  optional AsafetyObjCompare asafety_obj_cpmpare = 5;
+}

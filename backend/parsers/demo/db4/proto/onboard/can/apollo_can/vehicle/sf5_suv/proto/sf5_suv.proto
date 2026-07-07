@@ -1,0 +1,138 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+// Report Message.
+message Esc_Wssrear_115 {
+  enum Esc_wheelDirectionRLType {
+    ESC_WHEELDIRECTIONRL_INVALID = 0;
+    ESC_WHEELDIRECTIONRL_FORWARD = 1;
+    ESC_WHEELDIRECTIONRL_REVERSE = 2;
+    ESC_WHEELDIRECTIONRL_STOP = 3;
+  }
+  enum Esc_wheelDirectionRRType {
+    ESC_WHEELDIRECTIONRR_INVALID = 0;
+    ESC_WHEELDIRECTIONRR_FORWARD = 1;
+    ESC_WHEELDIRECTIONRR_REVERSE = 2;
+    ESC_WHEELDIRECTIONRR_STOP = 3;
+  }
+  // Rear left wheel moving direction. [] [0|3]
+  optional Esc_wheelDirectionRLType esc_wheel_direction_rl = 1;
+  // Rear right wheel moving direction. [] [0|3]
+  optional Esc_wheelDirectionRRType esc_wheel_direction_rr = 2;
+  // every message increments the counter [] [0|15]
+  optional int32 esc_282_rolling_counter = 3;
+  // CRC8, message checksum. [] [0|255]
+  optional int32 esc_282_checksum = 4;
+}
+
+// Report Message.
+message Esc_Wssfront_114 {
+  enum Esc_wheelDirectionFLType {
+    ESC_WHEELDIRECTIONFL_INVALID = 0;
+    ESC_WHEELDIRECTIONFL_FORWARD = 1;
+    ESC_WHEELDIRECTIONFL_REVERSE = 2;
+    ESC_WHEELDIRECTIONFL_STOP = 3;
+  }
+  enum Esc_wheelDirectionFRType {
+    ESC_WHEELDIRECTIONFR_INVALID = 0;
+    ESC_WHEELDIRECTIONFR_FORWARD = 1;
+    ESC_WHEELDIRECTIONFR_REVERSE = 2;
+    ESC_WHEELDIRECTIONFR_STOP = 3;
+  }
+  // Front left wheel moving direction. [] [0|3]
+  optional Esc_wheelDirectionFLType esc_wheel_direction_fl = 1;
+  // Front right wheel moving direction. [] [0|3]
+  optional Esc_wheelDirectionFRType esc_wheel_direction_fr = 2;
+  // every message increments the counter [] [0|15]
+  optional int32 esc_272_rolling_counter = 3;
+  // CRC8, message checksum. [] [0|255]
+  optional int32 esc_272_checksum = 4;
+}
+
+// Report Message.
+message Vcu_State_111 {
+  enum Vcu_actualGearType {
+    VCU_ACTUALGEAR_P = 0;
+    VCU_ACTUALGEAR_R = 1;
+    VCU_ACTUALGEAR_N = 2;
+    VCU_ACTUALGEAR_D = 3;
+  }
+  enum Vcu_actualGearValidType {
+    VCU_ACTUALGEARVALID_INVALID = 0;
+    VCU_ACTUALGEARVALID_VALID = 1;
+  }
+  // Actual gear engaged [] [0|3]
+  optional Vcu_actualGearType vcu_actual_gear = 1;
+  // Message counter for the message [] [0|15]
+  optional int32 vcu_241_rolling_counter = 2;
+  // CRC8, message checksum. [] [0|255]
+  optional int32 vcu_241_checksum = 3;
+  // Actualgearvalidsignal. [] [0|1]
+  optional Vcu_actualGearValidType vcu_actual_gear_valid = 4;
+}
+
+// Report Message.
+message Esc_Wheelspd_Rear_113 {
+  // Rear left wheel speed [kmh] [0|270]
+  optional double esc_wheel_speed_rl = 1;
+  // Rear right wheel speed [kmh] [0|270]
+  optional double esc_wheel_speed_rr = 2;
+  // every message increments the counter [] [0|15]
+  optional int32 esc_122_rolling_counter = 3;
+  // CRC8, checksum. [] [0|255]
+  optional int32 esc_122_checksum = 4;
+}
+
+// Report Message.
+message Esc_Wheelspd_Front_112 {
+  // Front left wheel speed [kmh] [0|270]
+  optional double esc_wheel_speed_fl = 1;
+  // Front right wheel speed [kmh] [0|270]
+  optional double esc_wheel_speed_fr = 2;
+  // every message increments the counter [] [0|15]
+  optional int32 esc_142_rolling_counter = 3;
+  // CRC8, checksum. [] [0|255]
+  optional int32 esc_142_checksum = 4;
+}
+
+// Report Message.
+message Gtw_Ac_Bcm_Chacan_39e {
+  enum Bcm_lowBeamStsType {
+    BCM_LOWBEAMSTS_OFF = 0;
+    BCM_LOWBEAMSTS_ON = 1;
+    BCM_LOWBEAMSTS_LOWBEAMFAULT = 3;
+  }
+  enum Bcm_highBeamStsType {
+    BCM_HIGHBEAMSTS_OFF = 0;
+    BCM_HIGHBEAMSTS_ON = 1;
+    BCM_HIGHBEAMSTS_HIGHBEAMFAULT = 3;
+  }
+  // Lowbeamstatus [] [0|3]
+  optional Bcm_lowBeamStsType bcm_low_beam_sts = 1;
+  // highbeamstatus [] [0|3]
+  optional Bcm_highBeamStsType bcm_high_beam_sts = 2;
+}
+
+// Report Message.
+message Bcm_Beam_116 {
+  // [] [0|3]
+  optional int32 bcm_low_beam_sts = 1;
+  // [] [0|3]
+  optional int32 bcm_high_beam_sts = 2;
+}
+
+message Sf5_suv {
+  // Report message.
+  optional Esc_Wssrear_115 esc_wssrear_115 = 1;
+  // Report message.
+  optional Esc_Wssfront_114 esc_wssfront_114 = 2;
+  // Report message.
+  optional Vcu_State_111 vcu_state_111 = 3;
+  // Report message.
+  optional Esc_Wheelspd_Rear_113 esc_wheelspd_rear_113 = 4;
+  // Report message.
+  optional Esc_Wheelspd_Front_112 esc_wheelspd_front_112 = 5;
+  // Report message.
+  optional Bcm_Beam_116 bcm_beam_116 = 6;
+}

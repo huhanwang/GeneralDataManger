@@ -1,0 +1,82 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/offboard/simulation/proto/virtual_object";
+
+import "offboard/simulation/agents/proto/sim_agent.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/fusion/object.proto";
+
+// Fixed route virtual object.
+message FixedRouteVirtualObjectProto {
+  // Waypoints the object will move along with.
+  // Manually drawn waypoint proto.
+  message DrawnWaypointProto {
+    optional Vec2dProto pos = 1;
+    optional double t = 2;  // Time (relative to first point).
+    optional double v = 3;  // Speed. Can not be negative.
+    optional double z = 4;  // map z elevation.
+    optional double a = 5;  // Acceleration
+  }
+  repeated DrawnWaypointProto waypoints = 2;
+
+  optional double duration = 4;  // seconds.
+  optional bool loop = 5 [default = false];
+
+  reserved 1, 3;
+}
+
+message DrivableVirtualObjectProto {
+  optional Vec2dProto init_pos = 1;
+  optional double init_speed = 2;  // m/s.
+  optional double init_yaw = 3;
+}
+
+// Virtual object controlled by a sim agent.
+message AgentVirtualObjectProto {
+  optional agents.SimAgentConfigProto config = 2;
+
+  reserved 1;
+}
+
+// Perception object proto for virtual objects.
+message VirtualPerceptionObjectProto {
+  // Unique id of the object.
+  optional string id = 1;
+
+  // Type of the perception objects.
+  optional ObjectType type = 2;
+
+  // Object is a box contour, length of the box.
+  optional double length = 3;
+
+  // Object is a box contour, width of the box.
+  optional double width = 4;
+
+  // If not empty, will also render the points into vantage. Note: this is for
+  // visualization only.
+  repeated Vec3dProto lidar_points = 5;
+
+  // Whether or not the object is parked.
+  optional bool parked = 6;
+
+  // radian
+  optional double yaw = 7;
+
+  // Height
+  optional double min_z = 8;
+  optional double max_z = 9;
+  optional double ground_z = 10;
+}

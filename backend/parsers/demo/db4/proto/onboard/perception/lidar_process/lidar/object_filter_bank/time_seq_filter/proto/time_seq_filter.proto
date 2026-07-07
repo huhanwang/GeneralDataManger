@@ -1,0 +1,33 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/time_seq_filter/proto/time_seq_filter";
+
+message TimeSeqFilterConfig {
+  optional float max_aspect_ratio = 1 [default = 10];
+  optional float min_aspect_ratio = 2 [default = 3];
+  optional int32 untracked_frames = 3 [default = 5];
+  optional int32 fg_min_tracked_times = 4 [default = 4];
+  optional int32 bg_min_tracked_times = 5 [default = 4];
+  optional int32 min_continous_isolated_detect_frames = 6 [default = 3];
+  optional float fg_credible_conf = 7 [default = 25.0];
+  optional float fg_invalid_conf = 8 [default = 15.0];
+  optional float bg_credible_conf = 9 [default = 25.0];
+  optional float bg_invalid_conf = 10 [default = 15.0];
+  optional float fg_credible_distance = 11 [default = 50.0];
+  optional float fg_invalid_distance = 12 [default = 0.0];
+  optional float bg_credible_distance = 13 [default = 50.0];
+  optional float bg_invalid_distance = 14 [default = 0.0];
+  optional float conf_adjustment_weight = 15 [default = 2];
+  optional float distance_adjustment_weight = 16 [default = 1];
+  optional float near_fg_expand_length = 17 [default = 3.0];
+  optional float near_fg_low_expand_width = 18 [default = 0.3];
+  optional float near_fg_mid_expand_width = 19 [default = 0.6];
+  optional float near_fg_high_expand_width = 20 [default = 1.0];
+  optional float near_fg_expand_height = 21 [default = 50.0];
+  optional float near_filter_object_size_th = 22 [default = 8.0];
+  optional int32 exhaust_fg_min_tracked_frames = 23 [default = 10];
+  optional float low_velocity_th = 24 [default = 5.0];
+  optional float high_velocity_th = 25 [default = 15.0];
+  optional float near_fg_prob_th = 26 [default = 0.125];
+  repeated int32 nearby_object_type = 27;
+}

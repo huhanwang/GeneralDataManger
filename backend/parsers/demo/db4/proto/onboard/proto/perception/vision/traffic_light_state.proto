@@ -1,0 +1,127 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/math/geometry/proto/aabox.proto";
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+import "onboard/proto/perception/types/traffic_light_count_down.proto";
+import "onboard/proto/perception/types/traffic_light_shape.proto";
+import "onboard/proto/perception/types/traffic_light_state_source.proto";
+
+// NEXT ID: 47
+message TrafficLightStateProto {
+  // Traffic light related information.
+  // Timestamp of the latest trigger timestamp of the camera images inferenced
+  // together, this could be used to align traffic light state proto output
+  // temporally.
+  optional double timestamp_deprecated = 1 [deprecated = true];
+  // after 2024年11月20日: L4高精地图绑定的ID
+  optional int64 traffic_light_id = 2;
+  optional CameraId camera_id = 5;
+  optional double camera_center_timestamp = 16;
+  optional double camera_trigger_timestamp = 17;
+  optional double tl_yaw_diff = 18;
+  optional double distance = 19;
+
+  // Estimated state related information.
+  optional TrafficLightColor color = 3;
+  optional mapping.TrafficLightShape shape = 4 [deprecated = true];
+  optional float score = 6;
+  optional bool flashing = 7 [default = false];
+  optional bool occluded = 8 [default = false];
+  optional float occlusion_ratio = 9 [default = 0];
+  // Net raw pre-fusion output.
+  // TODO(yu): Add other raw pre-fusion output.
+  optional TrafficLightColor raw_color = 11;
+  // TODO(zhongying): Add color info to debug.
+  optional TrafficLightColor temporal_fused_color = 24;
+  optional bool temporal_fused_flashing = 25 [default = false];
+  optional TrafficLightColor multi_camera_voted_color = 27;
+
+  optional TrafficLightStateSourceProto state_source = 10
+      [default = TL_SS_OBSERVATION];
+
+  // The traffic light region related information.
+  optional int32 x = 12;
+  optional int32 y = 13;
+  // TL center point projected from map
+  optional int32 raw_x = 30;
+  optional int32 raw_y = 31;
+  // May be subject to rescaling based on original width/height and overlap
+  // between tl regions.
+  optional int32 width = 14;
+  optional int32 height = 15;
+  optional int32 original_width = 20;
+  optional int32 original_height = 21;
+  repeated AABox2iProto light_body_bboxes = 22;
+  repeated AABox2iProto light_bboxes = 23 [deprecated = true];
+  optional TrafficLightCountDown countdown = 26 [deprecated = true];
+  optional bool merged_result = 28 [default = false];
+  optional int32 countdown_int = 29;
+  enum Direction {
+    DIR_UNKNOWN = 0;
+    STRAIGHT = 1;
+    LEFT_TURN = 2;
+    RIGHT_TURN = 3;
+    UTURN = 4;
+  }
+  optional Direction direction = 32;
+  message BulbInfo {
+    optional AABox2iProto bbox = 1;
+    optional TrafficLightShape shape = 2;
+    optional float score = 3;
+  }
+  repeated BulbInfo bulb_infos = 33;
+  optional Vec3dProto position = 34;               // smooth
+  optional double life_time = 35;                  // track life time
+  optional TrafficLightColor pre_color = 36;       // Previous color
+  optional VehiclePoseProto vehicle_pose = 37;     // vehicle pose from image
+  optional VehiclePoseProto integrated_pose = 38;  // integrated pose from image
+  message AdditionalInfo {
+    optional float heading_front = 1;
+    optional float heading_side = 2;
+    optional float heading_back = 3;
+    optional float attr_vehicle = 4;
+    optional float attr_ped = 5;
+  }
+  optional AdditionalInfo additional_info = 39;
+  enum Heading {
+    HEADING_UNKNOWN = 0;
+    HEADING_FRONT = 1;
+    HEADING_SIDE = 2;
+    HEADING_BACK = 3;
+  }
+  optional Heading heading = 40;
+  enum Type {
+    UNKNOWN_LIGHT = 0;
+    VEHICLE_LIGHT = 1;
+    PED_LIGHT = 2;
+  }
+  optional Type type = 41;
+  optional bool selected = 42;
+  optional int64 group_id = 43;
+  // corresponding to: tl_net_constants.h : kOutputColorList
+  repeated float all_colors_porbs = 44;
+  // corresponding to: tl_net_constants.h : kOutputShapeList
+  repeated float all_shapes_porbs = 45;
+
+  // after 2024年11月20日: 替代 traffic_light_id
+  optional int64 track_id = 46;
+  optional Vec3dProto vcs_position = 47;  // vcs
+}

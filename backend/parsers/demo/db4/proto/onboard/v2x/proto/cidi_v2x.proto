@@ -1,0 +1,201 @@
+syntax = "proto2";
+
+package snoah;
+
+// 版本号
+enum UiVersion {
+  VERSION_NONE = 0;
+  VERSION = 20220209;  // 版本日期
+}
+
+// 经纬度点
+message UiPos {
+  optional double lon = 1;  // 经度，度数
+  optional double lat = 2;  // 纬度，度数
+  optional float elev = 3;  // 海拔高度，米
+}
+
+// 物体尺寸
+message UiSize {
+  optional float length = 1;  // 长，米
+  optional float width = 2;   // 宽，米
+  optional float height = 3;  // 高，米
+}
+
+// 本车所在的地图信息（obu ——> ui）
+message UiHvMap {
+  optional bool valid = 1;       // 是否在地图内，false不在，true在
+  optional int32 region_id = 2;  // 地图 region id
+  optional int32 node_id = 3;    // 地图 node id
+  optional int32 link_id = 4;    // 地图 link id
+  optional int32 lane_id = 5;    // 地图 lane id
+}
+
+// 本车数据（obu ——> ui）
+message UiHv {
+  optional bytes id = 1;  // 本车id，应该设置8各字节
+  optional int32 type =
+      2;  // 车辆类型,0未知，1特殊车辆，10普通车，54公交车...（参考国标2020）
+  optional UiSize size = 3;  // 车辆长宽高
+  optional UiPos pos = 4;    // 车辆位置，经纬度
+  optional UiHvMap map = 5;  // 本车所在的地图信息
+  optional float speed = 6;  // 速度, km/h
+  optional float heading = 7;  // 航向角,度数（0～360，正北为0，顺时针为正)
+  optional int32 satellite = 8;  // 卫星数 (0 - 12)
+  optional int32 gps_mode =
+      9;  // gps状态
+          // (0初始化，1单点定位，2码差分，3无效PPS，4固定解，5浮点解，6正在估算,7人工输入固定值，8模拟模式，9WAAS差分)
+  optional float hdop = 10;  // 水平精度因子（0.5 - 99.9,一般认为越小，质量越好)
+  optional int32 light =
+      11;  // 车转向灯状态, 0全熄灭，1近光灯，2远光灯，4左转灯，8右转灯，16双闪
+  optional int32 brake = 12;  // 制动状态，0未知，1未制动，2制动
+  optional int32 events =
+      13;  // 车辆特殊状态，0无，1警示灯亮起，2过停止线来不及刹车，4ABS系统触发...（参考国标2020，可多个状态相加）
+  optional int32 gear =
+      14;  // 挡位，0未知，P停车挡，R倒车挡，N空挡，D前进挡，S前进挡
+}
+
+// 一个网联车数据（obu ——> ui）
+message UiRv {
+  optional bytes id = 1;  // 本车id，应该设置8各字节
+  optional int32 type =
+      2;  // 车辆类型,0未知，1特殊车辆，10普通车，54公交车...（参考国标2020）
+  optional UiSize size = 3;  // 车辆长宽高
+  optional UiPos pos = 4;    // 车辆位置，经纬度
+  optional float speed = 5;  // 速度, km/h
+  optional float heading = 6;  // 航向角,度数（0～360，正北为0，顺时针为正)
+  optional int32 light =
+      7;  // 车转向灯状态, 0全熄灭，1近光灯，2远光灯，4左转灯，8右转灯，16双闪
+  optional int32 brake = 8;  // 制动状态，0未知，1未制动，2制动
+  optional int32 events =
+      9;  // 车辆特殊状态，0无，1警示灯亮起，2过停止线来不及刹车，4ABS系统触发...（参考国标2020，可多个状态相加）
+}
+
+// 所有网联车数据（obu ——> ui）
+message UiRvs {
+  repeated UiRv array = 1;
+}
+
+// 一个障碍物数据（obu ——> ui）
+message UiObstacle {
+  optional int64 timestamp = 1;  // 时间戳，毫秒数
+  optional string id = 2;  // id，为区分两个不同rsu发出来的，用string比较适合
+  optional int32 type =
+      3;  // 障碍物类型，0未知（障碍物），1机动车，2非机动车，3行人
+  optional UiPos pos = 4;    // 位置，经纬度
+  optional float speed = 5;  // 速度, km/h
+  optional float heading = 6;  // 航向角,度数（0～360，正北为0，顺时针为正)
+}
+
+// 所有障碍物数据（obu ——> ui）
+message UiObstacles {
+  repeated UiObstacle array = 1;
+}
+
+// 一个事件预警数据，具体场景数据见表（obu ——> ui）
+message UiEvent {
+  optional int32 type = 1;      // 事件类型，0无效
+  optional int32 sub_type = 2;  // 事件子类型，0无效
+  optional int32 level = 3;     // 预警等级，0一般，1紧急
+  optional int32 direction =
+      4;  // 方向,1前方，2左前，3右前，11后方，12左后方，13右后方
+  optional float distance = 5;  // 距离, 米
+  optional float data = 6;  // 其他数据,限速值，限高值，限宽值等等
+  optional UiPos pos = 7;           // 事件位置
+  optional bytes reserved = 10000;  // 预留
+}
+
+// 所有事件预警数据
+message UiEvents {
+  repeated UiEvent array = 1;
+}
+
+// 一个红绿灯数据（obu ——> ui）
+message UiLight {
+  optional bool valid = 1;  // 灯是否有效 ,false无效，true有效
+  optional int32 color =
+      2;  // 灯的颜色，0未知，R(0x52)红色，G(0x47)绿色，Y(0x59)黄色，F(0x46)黄闪
+  optional float time = 3;  // 剩余时间
+  optional int32 current = 4;  // 是否是车当前车道的红绿灯，0未知，1是，2不是
+}
+
+// 所有红绿灯数据（obu ——> ui）
+message UiLights {
+  optional UiLight straight = 1;  // 直行
+  optional UiLight left = 2;      // 左转
+  optional UiLight right = 3;     // 右转
+  optional UiLight u_turn = 4;    // u型（掉头）
+}
+
+// rsi的影响路径（obu ——> ui）
+message UiRefPath {
+  optional float radius = 1;  // 影响半径，米
+  repeated UiPos pts = 2;     // 路径上的点
+}
+
+// 一个rsi数据（obu ——> ui）
+message UiRsi {
+  optional string id = 1;           // id
+  optional UiPos pos = 2;           // 事件或标牌位置
+  optional string rsi_type = 3;     // rsi类型,"rte":事件,"rts":标牌
+  optional int32 type = 4;          // 标牌或事件类型
+  optional string description = 5;  // rsi里的description
+  repeated UiRefPath paths = 6;     // 影响路径
+}
+
+// 所有rsi数据（obu ——> ui）
+message UiRsis {
+  repeated UiRsi array = 1;
+}
+
+// asn数据 ， 方便远程读取车收到的asn数据，用于录包 ？ 本机测试算法 ？（obu ——>
+// ui）
+message UiAsn {
+  optional bytes array = 1;  //
+}
+
+// 设备其他信息（obu ——> ui）
+message UiDevInfo {
+  optional bytes id = 1;       // 本车id，应该设置8各字节
+  optional string mac = 2;     // mac地址, 例如 "00:76:09:12:59:D4"
+  optional string uap0 = 3;    // wifi的ip地址, 例如"192.168.2.10"
+  optional string eth0 = 4;    // eth0 ip
+  optional string tun0 = 5;    // vpn ip
+  optional string cv2x = 6;    // cv2x状态,例如"Active" ...
+  optional string net_4g = 7;  // 4g状态
+}
+
+// 自驾数据:车辆本身状态（自驾模块 ——> obu）
+message AvtoObu {
+  optional float speed = 1;  // 速度, km/h
+  optional int32 brake = 2;  // 制动状态，0未知，1未制动，2制动
+  optional int32 gear =
+      3;  // 挡位，0未知，P停车挡，R倒车挡，N空挡，D前进挡，S前进挡
+  optional int32 light =
+      4;  // 车转向灯状态，0全熄灭，1近光灯，2远光灯，4左转灯，8右转灯，16双闪
+  optional int32 door =
+      5;  // 车门，0全关，1左前门开，2右前门开，4右后门开，8左后门开，16右后门开，32尾门开...(可多个状态相加)
+}
+
+// obu发给ui的数据（obu ——>ui）
+message CidiObuDataProto {
+  optional int64 timestamp = 1;  // 时间戳，毫秒数
+  oneof CidiObuDataType {
+    UiHv hv = 2;          // 本车数据
+    UiRvs rv = 3;         // 周边网联车
+    UiObstacles obs = 4;  // 障碍物数据
+    UiEvents event = 5;   // 事件预警数据
+    UiLights light = 6;   // 红绿灯数据
+    UiRsis rsi = 7;       // rsi数据
+    UiAsn asn = 8;        // asn数据
+    UiDevInfo dev = 9;    // 设备其他信息
+  }
+}
+
+// 其他模块发给obu的数据（其他模块 ——>obu）
+message ToObuData {
+  optional int64 timestamp = 1;  // 时间戳，毫秒数
+  oneof ToObuDataType {
+    AvtoObu av = 2;  // 自驾数据:车辆本身状态
+  }
+}

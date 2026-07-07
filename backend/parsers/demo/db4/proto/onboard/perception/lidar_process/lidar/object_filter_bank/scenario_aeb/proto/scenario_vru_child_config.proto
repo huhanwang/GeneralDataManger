@@ -1,0 +1,31 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/scenario_aeb/proto/scenario_vru_child_config";
+message AreaConfig {
+  optional double front_dis_min = 1 [default = 0.0];
+  optional double front_dis_max = 2 [default = 1.0];
+  optional double horizon_dis_min = 3 [default = 0.0];
+  optional double horizon_dis_max = 4 [default = 1.0];
+}
+
+message ScenarioVRUChildConfig {
+  repeated AreaConfig areas = 1;
+  optional int32 default_history_size = 2 [default = 100];
+  optional double child_length_min = 3 [default = 0.0];
+  optional double child_length_max = 4 [default = 10.0];
+  optional double child_width_min = 5 [default = 0.0];
+  optional double child_width_max = 6 [default = 10.0];
+  optional double child_height_min = 7 [default = 0.0];
+  optional double child_height_max = 8 [default = 10.0];
+  optional double right_roi_min = 9 [default = -4.5];
+  optional double right_roi_max = 10 [default = 0];
+  optional double front_roi_dis = 11 [default = 15.0];
+  optional double max_motion_dis_frame = 12 [default = 1.0];
+  optional double min_motion_dis_frame = 13 [default = 1.0];
+  optional double dynamic_frames_threshold = 14 [default = 30.0];
+  optional double time_window = 15 [default = 3.0];
+  optional double velocity_th_max = 16 [default = 15.0];
+  optional int32 roi_area_object_size = 17 [default = 2];
+  optional double cross_angle = 18 [default = 60.0];
+  optional int32 pointcloud_count_th = 19 [default = 100];
+}

@@ -1,0 +1,102 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/proto/perception/types/measurement_type.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/perception/vision/vision_box.proto";
+
+// Next ID: 11
+message Det2dMeasurementProto {
+  optional CameraId camera_id = 1;
+  // Capture timestamp.
+  optional double timestamp = 2;
+  optional MeasurementType type = 3;
+  // Detection confidence.
+  optional double existence_confidence = 4;
+  optional VehiclePoseProto vehicle_pose = 5;
+  // 2D detection bbox.
+  optional Vision2DBoxProto vision_2d_box = 6;
+  // Pseudo 3D detection bbox.
+  optional Vision3DBoxProto vision_3d_box = 7;
+  // Depth
+  optional Vision3DBoxProto vision_3d_from_model_box = 8;
+  // Traffic light.
+  // Next ID: 6
+  message TrafficLightHeadingAttrProto {
+    optional float heading_front = 1;
+    optional float heading_side = 2;
+    optional float heading_back = 3;
+    optional float attr_vehicle = 4;
+    optional float attr_ped = 5;
+  }
+  optional TrafficLightHeadingAttrProto traffic_light_heading_attr = 9;
+  // Light source type.
+  // Next ID: 4
+  message LightSourceScore {
+    optional float vehicle_head_light = 1;
+    optional float vehicle_tail_light = 2;
+    optional float street_light = 3;
+  }
+  optional LightSourceScore light_source_score = 10;
+
+  // Road barier gate
+
+  // gate arm vcs location from model
+  optional Vec3dProto arm_end_pos = 11;
+
+  // Next ID: 4
+  enum HighwayAutoGateStatus {
+    UNKONWN = 0;
+    OPEN = 1;
+    HALF = 2;
+    CLOSE = 3;
+  }
+
+  optional HighwayAutoGateStatus gate_status = 12;
+
+  // Next ID: 5
+  message SingleKeyPoint {
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional bool is_visible = 3 [default = true];
+    optional float confidence_score = 4 [default = 1.0];
+  }
+
+  // Next ID: 5
+  message HighwayAutoGateKeyPointsType {
+    // (optional) is null only-if the point is out-of-image
+    optional SingleKeyPoint point_0 = 1;
+    optional SingleKeyPoint point_1 = 2;
+    optional SingleKeyPoint point_2 = 3;
+    optional SingleKeyPoint point_3 = 4;
+  }
+  optional HighwayAutoGateKeyPointsType gate_key_points = 13;
+
+  // Next ID: 7
+  enum ETCType {
+    ETC_INVALID = 0;
+    ETC = 1;
+    ETC_OR_MANUAL = 2;
+    ETC_LANE = 3;
+    ETC_DEDICATED = 4;
+    ETC_ACCESSIBLE = 5;
+    ETC_UNACCESSIBLE = 6;
+  }
+
+  optional ETCType etc_type = 14;
+}

@@ -1,0 +1,7 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/segmentation/detection_parser/proto/detection_parser";
+
+message DetectionParserConfig {
+  optional uint32 num_box_feature = 1;
+}

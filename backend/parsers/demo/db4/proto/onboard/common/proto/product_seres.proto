@@ -1,0 +1,205 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/product_seres";
+
+import "onboard/proto/trajectory_point.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+message ProductSeresMessageWrapper {
+  message SeresAutonomyCmd {
+    optional AutonomyCmd autonomy_cmd = 1
+        [(trans_matrix) = true, (matrix_data_type) = INT8];
+  }
+
+  message SeresAutonomyStatus {
+    optional AutonomyStatus autonomy_status = 1
+        [(trans_matrix) = true, (matrix_data_type) = INT8];
+  }
+
+  message SeresAssistStatus {
+    enum BsdState {
+      BSD_STATE_OFF = 0;
+      BSD_STATE_STANDBY = 1;
+      BSD_STATE_ACTIVE = 2;
+      BSD_STATE_FAULT = 3;
+    }
+
+    optional BsdState bsd_left_state = 1
+        [(trans_matrix) = true, (matrix_data_type) = INT8];
+    optional BsdState bsd_right_state = 2
+        [(trans_matrix) = true, (matrix_data_type) = INT8];
+  }
+
+  message ObjectData {
+    enum Type {
+      UNKNOWN = 0x0;
+      CAR = 0x1;
+      SUV = 0x2;
+      TRUCK = 0x3;
+      BUS = 0x4;
+      SPECIAL_VEHICLE = 0x5;
+      TRICYCLIST = 0x6;
+      MOTOR_CYCLIST = 0x7;
+      CYCLIST = 0x8;
+      ADULT = 0x9;
+      CHILD = 0xA;
+      CONE = 0xB;
+      WARNING_TRIANGLE = 0xC;
+      ANTI_COLLISION_COLUMN = 0xD;
+      ANTI_COLLISION_BARRIER = 0xE;
+      CROSSWALK = 0xF;
+      STOP_LINE = 0x10;
+    }
+
+    message OBJ_Point {
+      optional double xAxis = 1;
+      optional double yAxis = 2;
+      optional double Heading = 3;
+    }
+
+    message Size {
+      optional double obj_length = 1;
+      optional double obj_width = 2;
+      optional double obj_height = 3;
+    }
+
+    enum Color {
+      NO_REQUEST = 0x0;
+      RED = 0x1;
+      YELLOW = 0x2;
+      BLUE = 0x3;
+    }
+
+    enum TurnSign {
+      NO_SIGN = 0x0;
+      LEFT_TURN = 0x1;
+      RIGHT_TURN = 0x2;
+      DOUBLE_FLASH = 0x3;
+    }
+
+    optional string obj_id = 1;
+    optional Type obj_type = 2;
+    optional OBJ_Point obj_Coordinates = 3;
+    optional Size obj_Size = 4;
+    optional Color obj_Color = 5;
+    optional uint32 obj_Speed = 6;
+    optional TurnSign obj_obj_TurnSignSts = 7;
+    optional int32 obj_StopLampSts = 8;
+  }
+
+  message MapData {
+    message RoadLine {
+      enum Type {
+        UNKNOWN = 0x0;
+        SOLID_DOUBLE_YELLOW = 0x1;
+        SOLID_YELLOW = 0x2;
+        BROKEN_YELLOW = 0x3;
+        SOLID_WHITE = 0x4;
+        BROKEN_WHITE = 0x5;
+        CURB = 0x6;
+        UNKNOWM_ROADLINE_TYPE = 0x7;
+        BROKEN_LEFT_DOUBLE_WHITE = 0x8;
+        BROKEN_RIGHT_DOUBLE_WHITE = 0x9;
+        REVERSIBLE_LANE = 0xA;
+        TIDAL_FLOW_LANE = 0xB;
+        BUS_LANE = 0xC;
+      }
+
+      enum Color {
+        NO_REQUEST = 0x0;
+        RED = 0x1;
+        YELLOW = 0x2;
+        BLUE = 0x3;
+      }
+
+      optional int64 Roadlines_id = 1;
+      optional Type Roadlines_type = 2;
+      optional Color Roadlines_color = 3;
+      repeated ObjectData.OBJ_Point Roadlines_points = 4;
+    }
+
+    message TrafficLight {
+      enum Direction {
+        UNKNOWN_DIRECTION = 0x0;
+        STRAIGHT = 0x1;
+        LEFT_TURN = 0x2;
+        RIGHT_TURN = 0x3;
+        UTURN = 0x4;
+      }
+
+      enum Color {
+        UNKNOWN_COLOR = 0x0;
+        RED = 0x1;
+        YELLOW = 0x2;
+        GREEN = 0x3;
+      }
+
+      enum FlashingType {
+        NO_FLASHING = 0x0;
+        FLASHING = 0x1;
+      }
+
+      optional int64 TrafficLights_id = 1;
+      optional Direction TrafficLights_direction = 2;
+      optional Color TrafficLights_color = 3;
+      optional FlashingType TrafficLights_flashing = 4;
+      optional int32 TrafficLights_time = 5 [default = 0xFF];
+    }
+
+    message LaneInfo {
+      enum Color {
+        NO_REQUEST = 0x0;
+        RED = 0x1;
+        YELLOW = 0x2;
+        BLUE = 0x3;
+      }
+
+      optional int64 Lane_Id = 1;
+      optional ObjectData.OBJ_Point Parallel_Pose = 2;
+      optional Color Lane_Color = 3;
+    }
+
+    repeated RoadLine Roadlines = 1;
+    repeated TrafficLight TrafficLights = 2;
+    repeated LaneInfo LanesInfo = 3;
+  }
+
+  message Trajectory {
+    message LocalPath {
+      repeated ApolloTrajectoryPointProto PathInfo = 1;
+    }
+
+    message GlobalPath {
+      repeated ApolloTrajectoryPointProto PathInfo = 1;
+    }
+
+    optional LocalPath localPath = 1;
+    optional GlobalPath globalPath = 2;
+    optional ObjectData.Color path_color = 3;
+  }
+
+  enum AutonomyCmd {
+    STOP = 0;
+    START = 1;
+  }
+
+  enum AutonomyStatus {
+    LOADING = 0;
+    LOADED = 1;
+    STARTING = 2;
+    STARTED = 3;
+    CLOSING = 4;
+  }
+
+  optional int32 tag_number = 1;
+
+  oneof message {
+    SeresAutonomyCmd seres_autonomy_cmd = 2;
+    SeresAutonomyStatus seres_autonomy_status = 3;
+    SeresAssistStatus seres_assist_status = 4;
+    ObjectData seres_objects = 7;
+    MapData seres_map = 8;
+    Trajectory seres_trajectory = 9;
+  }
+}

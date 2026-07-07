@@ -1,0 +1,268 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/proto/localization.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/positioning.proto";
+
+message LocalizationInitLevelMetric {
+  optional int32 localization_init_level_id = 1;
+}
+
+message LocalizationStatusMetric {
+  optional LocalizationTransformProto.LocStatus localization_status = 1;
+  optional bool positive_flag = 2;
+}
+
+message LocalizationLaneErrorMetric {
+  optional int64 localization_current_lane_id = 1;
+}
+
+message LocalizationResetTimesMetric {
+  optional int32 localization_max_reset_times = 1;
+}
+
+message LocalizationDriftErrorMetric {
+  optional double localization_drift_evaluate_time = 1;
+  optional double localization_max_drift_x = 2;
+  optional double localization_max_drift_y = 3;
+  optional double localization_max_drift_yaw = 4;
+}
+
+message LocalizationMatchErrorMetric {
+  optional double localization_lateral_dist = 1;
+  optional double localization_longitudinal_dist = 2;
+  optional double localization_lateral_dist_pct90 = 3;
+}
+
+message LocalizationPoseErrorMetric {
+  optional VehiclePoseProto localization_end_pose = 1;
+
+  message LocalizationGlobalPose {
+    optional double longitude = 1;
+    optional double latitude = 2;
+    optional double yaw = 3;
+  }
+  optional LocalizationGlobalPose localization_global_pose = 2;
+}
+
+message LocalizationStabilityMetric {
+  // New metric
+  message LocalizationShakeMetric {
+    optional int32 longitudinal_shake_times = 1;
+    optional int32 lateral_shake_times = 2;
+    optional double longitudinal_dist = 3;
+    optional double longitudinal_ratio = 4;
+    optional double lateral_dist = 5;
+    optional double lateral_delta_angle = 6;
+    optional int32 slide_window_size = 7;
+  }
+
+  optional int32 continuous_skip_times = 16;
+  optional double total_skip_rate = 17;
+  optional double init_time = 18;
+  optional LocalizationShakeMetric localization_shake = 19;
+
+  // TODO(xiaobin): Deprecated,to remove later
+  optional double offset_to_gnss_x = 1 [deprecated = true];
+  optional double offset_to_gnss_y = 2 [deprecated = true];
+  optional double offset_to_gnss_yaw = 3 [deprecated = true];
+  optional int32 kickout_capability = 4 [deprecated = true];
+  optional int32 kickout_total_capability = 5 [deprecated = true];
+  optional int32 localization_init_time = 6 [deprecated = true];
+
+  reserved 7, 8, 9, 10, 11, 12, 13, 14, 15;
+}
+
+message LocalizationErrorCodeMetric {
+  optional int32 error_index = 1;
+  optional int32 error_code = 2;
+  optional double duration_time = 3;
+  optional double distance = 4;
+  optional bool expectation = 5;
+}
+
+message LocalizationMatchStatusMetric {
+  optional LocalizationMatchErrorMetric localization_match_error_metric = 1;
+}
+
+message PosrtMetric {
+  optional double positioning_drift_compute_distance = 1;
+  optional VehiclePoseProto positioning_drift = 2;
+  optional VehiclePoseProto localization_smoothness = 3;
+  optional VehiclePoseProto localization_offset_to_gnss = 4;
+  optional VehiclePoseProto localization_accuracy = 6;
+  optional double positioning_drift_compute_time = 7;
+  optional int32 localization_kickout_count = 8;
+  message VisualLocalizationResetMetric {
+    optional double reset_compute_distance = 1;
+    optional int32 reset_times = 2;
+    optional double reset_compute_time = 3;
+    optional double reset_average_time = 4;
+    optional double reset_success_ratio = 5;
+  }
+  optional VisualLocalizationResetMetric visual_localization_reset = 9;
+  optional LocalizationMatchErrorMetric visual_localization_match = 10
+      [deprecated = true];
+  message VisualLocalizationMatchErrorMetric {
+    optional double max_lateral_match_err_mae = 1;
+    optional double max_longitudinal_match_err_mae = 2;
+  }
+  optional VisualLocalizationMatchErrorMetric v_localization_match = 11;
+  optional double integrated_navigation_drift_ratio = 12;
+}
+
+message PositioningMetric {
+  optional VehiclePoseProto positioning_drift = 1;
+  optional double positioning_data_loss_ratio = 2;
+  optional double positioning_translation_error = 3;
+  optional double positioning_rotation_error = 4;
+  optional VehiclePoseProto positioning_pose_shake = 5;
+  optional Vec3dProto positioning_max_accel = 6;
+  optional bool stationary_start = 7;
+}
+
+message SmoothPosrtMetric {
+  optional VehiclePoseProto smooth_pose_accuracy = 1;
+  optional double smooth_pose_drift_translation_error = 2;
+  optional double smooth_pose_drift_rotation_error = 3;
+  optional double smooth_pose_drift_xy_error = 4;
+  optional double smooth_pose_drift_yaw_error = 5;
+
+  // for parking pose evaluation
+  optional double parking_run_duration_ratio = 6;
+
+  optional string gt_file_indexing = 7;
+}
+
+message CalibrationMetric {
+  message CameraEvalMetric {
+    optional CameraId camera_id = 1;
+    optional double lane_angle = 2;
+    optional double lane_width_diff = 3;
+    optional double lateral_match_dist = 4;
+    optional double end_point_dist = 5;
+    optional double max_roll_error = 6;
+    optional double max_pitch_error = 7;
+    optional double max_yaw_error = 8;
+  }
+  repeated CameraEvalMetric camera_metrics = 1;
+  optional double cost_time = 2;
+  optional bool is_converged = 3;
+}
+
+message CalibrationRepeatedAccuracyMetric {
+  optional VehiclePoseProto repeated_accuracy = 1;
+}
+
+message ImuCanCalibrationRepeatedAccuracyMetric {
+  optional double max_roll_error = 1;
+  optional double max_pitch_error = 2;
+  optional double max_yaw_error = 3;
+  optional double max_speed_scale_error = 4;
+  optional double max_speed_rpm_scale_error = 5;
+  message GroundTruth {
+    optional double roll = 1 [default = 0.0];
+    optional double pitch = 2 [default = 0.0];
+    optional double yaw = 3 [default = 0.0];
+    optional double speed_scale = 4 [default = 0.0];
+    optional double speed_rpm_scale = 5 [default = 0.0];
+  }
+  optional GroundTruth ground_truth = 6;
+}
+
+message GlobalFusionMetric {
+  optional double yaw_rate_bias = 1;
+  optional double yaw_rate_bias_large_ratio = 2;
+  optional double soa_drift_ratio = 3;
+}
+
+message LocalizationInitTimeMetric {
+  optional double init_duration = 1;
+  optional double init_success_timestamp = 2;
+}
+
+message HppLocalizationMatchMetric {
+  message ErrorStatisticsMetric {
+    optional double mae = 1;
+    optional double rmse = 2;
+    optional double pct90 = 3;
+    optional double pct99 = 4;
+  }
+  optional ErrorStatisticsMetric vcs_x_offset = 1;
+  optional ErrorStatisticsMetric vcs_y_offset = 2;
+  optional ErrorStatisticsMetric vcs_yaw_offset = 3;
+  optional ErrorStatisticsMetric match_error = 4;
+}
+
+message HppLocalizationVprErrorMetric {
+  message ErrorStatisticsMetric {
+    optional double mae = 1;
+    optional double rmse = 2;
+    optional double pct90 = 3;
+    optional double pct99 = 4;
+  }
+  optional ErrorStatisticsMetric xy = 1;
+  optional ErrorStatisticsMetric yaw = 2;
+  optional ErrorStatisticsMetric pose_dist = 3;
+  optional double valid_ratio = 4;
+}
+
+message LocalizationTargetSpotMetric {
+  optional int32 target_spot_id = 1;
+}
+
+message IntegratedNavigationDriftMetric {
+  optional double max_drift_ratio = 1;
+}
+
+message SdlocLinkIdMetric {
+  optional string link_id_groundtruth_file = 1;
+}
+
+message SdlocDeviatedFromRouteMetric {
+  optional int32 deviated_from_route_times = 1;
+  optional bool expected_deviated_from_route = 2;
+  repeated sfixed64 expected_link_ids = 3;
+}
+
+message SdLinkAccuracyMetric {
+  message TimeRangePair {
+    optional double start_timestamp = 1;
+    optional double end_timestamp = 2;
+  }
+  optional string link_id_groundtruth_file = 1;
+  optional double accuracy_mileage_ratio = 2;
+  optional double accuracy_time_ratio = 3;
+  optional double accuracy_link_count_ratio = 4;
+  repeated TimeRangePair miss_deviate_time_range = 5;
+  repeated TimeRangePair incorrect_deviate_time_range = 6;
+}
+
+message IntegratedNavigationAccuracyMetric {
+  message ErrorStatisticsMetric {
+    optional double rmse = 1 [default = 0.1];
+    optional double std = 2 [default = 0.1];
+  }
+  optional ErrorStatisticsMetric pose_x = 1;
+  optional ErrorStatisticsMetric pose_y = 2;
+  optional ErrorStatisticsMetric pose_z = 3;
+  optional ErrorStatisticsMetric pose_yaw = 4;
+  optional ErrorStatisticsMetric pose_pitch = 5;
+  optional ErrorStatisticsMetric pose_roll = 6;
+}
+
+message IntegratedNavigationStatusMetric {
+  optional GnssRawReadingProto.INSStatusType ins_status = 1;
+  optional bool positive_flag = 2;
+}
+
+message IntegratedNavigationGnssDiagnoserMetric {
+  // optional GnssRawReadingProto.Vendor ins_vendor = 1;
+  optional string ins_product_type = 2;
+  optional double max_false_negative_rate = 3;
+  optional double max_false_positive_rate = 4;
+}

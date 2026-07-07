@@ -1,0 +1,14 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/tracker/hm_tracker/proto/trace_layer_filler";
+
+message TraceLayerFillerConfig {
+  optional double max_confidence_speed_thresh = 1 [default = 5];
+  optional double expand_lateral_speed_ratio = 2 [default = 0.0];
+  optional double expand_forward_time = 3 [default = 0.0];
+  optional int32 min_tracking_frame_count = 4 [default = 3];
+  optional double trusted_track_min_speed = 5 [default = 1];
+  optional double opposite_direction_distance = 6 [default = 1.0];
+  optional double obj_min_speed = 7 [default = 0.8];
+  optional double obj_min_tracking_time = 8 [default = 10.0];
+}

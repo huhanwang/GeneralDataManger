@@ -1,0 +1,85 @@
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+
+message BoundaryProto {
+  enum SourceType {
+    ST_NONE = 0;
+    ST_VISION = 1;
+    ST_USS = 2;
+    ST_FUSION = 3;
+    ST_USS_FUSION = 4;
+    ST_USS_POINT_CLOUD = 5;
+    ST_USS_DE = 6;
+    ST_USS_CE = 7;
+    ST_USS_OBJECT = 8;
+    ST_FREESPACE = 9;
+  }
+  enum GeometryType {
+    GT_UNKNOWN = 0;
+    GT_SCATTER = 1;
+    GT_POLYLINE = 2;
+    GT_POLYGON = 3;
+  }
+  enum ObjectType {
+    OT_UNKNOWN = 0;
+    OT_GENERAL_BOUND = 1;
+    OT_VEHICLE = 2;
+    OT_CYCLIST = 3;
+    OT_PEDESTRIAN = 4;
+    // adapt lixiang
+    OT_CURB = 5;
+    OT_WALL = 6;
+    OT_PILLAR = 7;
+    OT_ANIMAL = 8;
+    OT_TRICYCLE = 9;
+    OT_RAILING = 10;
+    OT_CONE = 11;
+    OT_PARKING_LOCK = 12;
+    OT_SPACE_LIMITER = 13;
+    OT_SPEED_BUMP = 14;
+    OT_STICK = 15;
+  }
+  enum FilterCondition {
+    FC_NONE = 0;
+    FC_POS_SHIFT = 1;      // bevdet position shift
+    FC_CROWDED_PLACE = 2;  // Based on the total number of pedestrians, vehicles
+                           // and cyclists around the vehicle.
+    FC_VEHICLE_WITH_PEDESTRIAN =
+        3;  // A nearby vehicle with a pedestrian in its surrounding area.
+    FC_MAYBE_ABNORMAL_FUSION_RESULT =
+        4;  // Missing BEV detection or significant discrepancy between current
+            // position and BEV measurement.
+    FC_MAYBE_ABNORMAL_BEV_DETECTION =
+        5;  // False BEV detection, such as objects appearing too close to the
+            // vehicle with low occlusion.
+    FC_POSSIBLE_FOLLOWING_SCENARIO =
+        6;  // A possible vehicle-following scenario, where a vehicle is
+            // detected to be following another vehicle in a similar direction.
+  }
+
+  optional uint32 id = 1;
+  optional uint32 bev_id = 7;
+  optional SourceType source_type = 2;
+  optional GeometryType geometry_type = 3;
+  optional ObjectType object_type = 4;
+  optional float confidence = 5;
+  repeated Vec3dProto points = 6;
+  optional Vec2dProto vel = 8;
+  optional FilterCondition filter_condition = 9;
+}
+
+message LsaebFreespaceProto {
+  optional LiteHeader header = 1;
+  optional double timestamp = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+  repeated BoundaryProto boundaries = 4;
+  optional Box2dProto bounding_box = 5;
+}

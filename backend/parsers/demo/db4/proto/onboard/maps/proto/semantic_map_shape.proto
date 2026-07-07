@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+
+import "onboard/common/proto/map_geometry.proto";
+
+message GeometryShape {
+  // Clockwise is positive, counterclockwise is negative.
+  optional sint32 curvature = 6;
+  // Clockwise angle from true north.
+  optional sint32 heading = 7;
+  // Along the digitizing direction of the curve, the front high and the back
+  // low are positive.
+  optional sint32 slope = 8;
+  // Along the digitizing direction of the curve, the right high and the left
+  // low are positive.
+  optional sint32 banking = 9;
+  optional GeoPointProto point = 5;
+  reserved 1, 2, 3, 4;
+}
+
+message FeatureShapeProto {
+  optional sfixed64 id = 1;
+  repeated GeometryShape shapes = 2;
+}
+
+message SemanticMapShapeProto {
+  repeated FeatureShapeProto feature_shapes = 1;
+}

@@ -1,0 +1,63 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/lidar.proto";
+import "onboard/proto/calibration.proto";
+
+message LidarInstallationProto {
+  message HesaiLidarParamsProto {
+    optional bool intensity_nonlinear_mapping = 1 [default = false];
+  }
+
+  message OusterLidarParamsProto {
+    optional string ip_address = 1;
+  }
+
+  message LivoxLidarParamsProto {
+    optional int32 slot_id = 1;
+    optional int32 lidar_id = 2 [default = 1];
+  }
+
+  message RsLidarParamsProto {
+    optional int32 difop_port = 1;
+    optional string ip_address = 2;
+    optional bool enable_roi = 3 [default = false];
+    optional bool enable_clock_sync = 4 [default = true];
+  }
+
+  message ScanAzimuthInterval {
+    optional float first = 1;
+    optional float last = 2;
+    optional int32 first_beam = 3;
+    optional int32 last_beam = 4;
+  }
+
+  optional LidarId lidar_id = 1 [default = LDR_CENTER];
+  optional LidarExtrinsicsProto extrinsics = 2;
+  optional bool enabled = 3 [default = true];
+  oneof more_lidar_params {
+    HesaiLidarParamsProto hesai_lidar_params = 4;
+    OusterLidarParamsProto ouster_lidar_params = 5;
+    LivoxLidarParamsProto livox_lidar_params = 6;
+    RsLidarParamsProto rs_lidar_params = 7;
+  }
+  repeated ScanAzimuthInterval ignored_scan_azimuth_ranges_in_degree = 8;
+  // Min range for the lidar point to consider as valid.
+  optional double valid_point_min_range = 9 [default = 0];
+  // host port for lidar data
+  optional int32 port = 10;
+  // server port for command
+  optional int32 command_port = 11;
+
+  optional string ip = 12;
+
+  // The used run when calibration
+  optional string used_run = 13;
+  // Max range for the lidar point to consider as valid.
+  optional double valid_point_max_range = 14 [default = 200];
+
+  // lidar data is sent to this node.
+  optional string destination_node_name = 15;
+  optional bool is_calibration = 16 [default = false];
+}

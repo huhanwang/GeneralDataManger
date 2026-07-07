@@ -1,0 +1,119 @@
+
+syntax = "proto2";
+
+package snoah.planner;
+
+
+import "onboard/planner/scheduler/proto/lane_change.proto";
+import "onboard/proto/turn_signal.proto";
+import "onboard/planner/ml/condition_feature_extractor/proto/condition_feature.proto";
+import "onboard/planner/common/proto/planner_status.proto";
+
+// For selector cost function debug.
+message SelectorFeatureCost {
+  optional string name = 1;
+  optional double cost = 2;
+  repeated string extra_info = 3;
+  repeated string cost_value_info = 4;
+}
+
+message TrajectoryCost {
+  optional int64 start_lane_id = 1;
+  repeated SelectorFeatureCost features = 2;
+  optional double sum_common = 3;
+  optional double sum = 4;
+  optional SelectorStateDebugProto selector_state = 5;
+  optional LaneChangeStage lc_stage = 6;
+  optional PlannerStatusProto status = 7;
+}
+
+message SelectorStateDebugProto {
+  optional int64 best_traj_time = 1;
+  optional int64 best_threshold = 2;
+  optional bool is_last_traj = 3;
+  optional bool is_final_traj = 4;
+}
+
+message PaddleChangeDebugProto {
+  optional bool paddle_change_cross_solid = 1;
+  optional bool paddle_change_has_solid_nearby = 2;
+  optional bool paddle_change_inhibiting_object = 3;
+  optional bool is_from_keep_stage = 4;
+}
+
+message PrefilterCostDebugProto {
+  optional bool lc_left = 1;
+  optional int64 start_lane_id = 2;
+  optional double sum_cost = 3;
+  repeated string extra_info = 4;
+}
+
+message SelectorPrefilterDebugProto {
+  optional string prefilter_reason = 1;
+  optional bool choose_left = 2;
+  repeated PrefilterCostDebugProto prefilter_costs = 3;
+}
+
+message SelectorOutputProto {
+  optional int64 selected_idx = 1;
+  optional int64 best_traj_idx = 2;
+  optional int64 last_selected_idx = 3;
+  optional TurnSignal turn_signal = 4;
+  optional bool all_trajectories_blocked = 5;
+  optional bool is_going_force_route_change_left = 7;
+  optional bool lane_change_for_obstacle_fail = 8;
+  optional TurnSignalReason turn_signal_reason = 9;
+  optional bool need_lane_change_request = 10;
+  optional string force_lane_keep_info = 11;
+  optional bool ego_corner_cross_line = 12;
+  optional string lc_feasibility_reason = 13;
+  optional string lc_waiting_cancel_reason = 14;
+  optional string lc_waiting_reason = 15;
+  optional string lc_cancel_reason = 16;
+  optional double state_time = 17;
+  optional string lc_unavailable_reason = 18;
+  optional bool lk_traj_cross_line = 19;
+  optional bool disable_force_route_change = 20;
+  optional bool is_route_lane_change_fail = 21;
+  optional bool disable_route_intention = 22;
+  optional bool route_intention_left = 23;
+  optional bool construction_intention_left = 24;
+  optional int32 construction_lane_num = 25;
+  optional double remain_dist_consider_lc_num = 26;
+  // for R2
+  optional bool need_take_over = 27;
+
+  reserved 6;
+}
+
+message SelectorMLData {
+  optional bool is_filtered = 1;
+
+  repeated ml.LineSegmentsFeatureProto candidate_lanes_model_inputs = 108;
+  repeated ml.TrajectoryFeatureProto candidate_trajs_model_inputs = 109;
+  repeated ml.PathBoundaryFeatureProto candidate_path_boundaries_model_inputs =
+      110;
+
+  optional ml.LineSegmentsFeatureProto expert_lane_model_input = 207;
+  optional ml.TrajectoryFeatureProto expert_traj_model_input = 208;
+  optional ml.PathBoundaryFeatureProto expert_path_boundary_model_input = 209;
+
+  reserved 100 to 106, 107, 200 to 206;
+}
+
+message SelectorDebugProto {
+  // For selector cost function debug.
+  repeated TrajectoryCost traj_costs = 1;
+
+  // Selector output debug info.
+  optional SelectorOutputProto selector_output = 5;
+
+  optional SelectorPrefilterDebugProto prefilter_debug = 6;
+
+  optional PaddleChangeDebugProto paddle_change_debug = 7;
+
+  // For data dumping.
+  optional SelectorMLData ml_data = 50;
+
+  reserved 2 to 4, 100 to 113, 120, 200;
+}

@@ -1,0 +1,76 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/proto/piecewise_linear_function.proto";
+
+message AessTargetParamsProto {
+  optional double oncoming_target_max_speed_kph = 1;      // km / h.
+  optional double oncoming_target_max_rel_speed_kph = 2;  // km / h.
+  optional PiecewiseLinearFunctionDoubleProto min_collision_rel_speed_kph = 3;
+}
+
+message AessPassiveParamsProto {
+  optional double min_speed_kph = 1;        // km / h.
+  optional double max_speed_kph = 2;        // km / h.
+  optional double min_active_interval = 3;  // s.
+}
+
+message AessExitParamsProto {
+  optional double nudge_max_steering_torque = 1;         // nm.
+  optional double lane_keeping_max_steering_torque = 2;  // nm.
+  optional double max_active_duration = 3;               // s.
+  optional double max_stable_lane_keeping_duration = 4;  // s.
+}
+
+message AesTrajectorEvaluatorParamsProto {
+  optional double weight_lat_offset = 1;
+  optional double weight_obj_dist = 2;
+  optional double weight_lat_accel = 3;
+  optional double weight_lat_jerk = 4;
+  optional double weight_total_accel = 5;
+  optional double max_nudge_lat_offset = 6;    // m.
+  optional double optimal_min_obj_dist = 7;    // m.
+  optional double max_lat_accel = 8;           // m/s^2
+  optional double max_lat_jerk = 9;            // m/s^3
+  optional double max_total_accel_limit = 10;  // m/s^2
+  optional double min_obj_dist_limit = 11;     // m.
+}
+
+message AesPathPlannerParamsProto {
+  optional double lat_sampling_min_interval = 1;           // m.
+  optional double lat_sampling_max_interval = 2;           // m.
+  optional double lon_sampling_max_time_headway = 3;       // sec.
+  optional double lon_sampling_time_headway_interval = 4;  // sec.
+  optional double lane_keeping_preview_time = 5;           // sec.
+  optional double path_length_min_time_headway = 6;        // sec.
+}
+
+message AesPlannerParamsProto {
+  optional AessTargetParamsProto target_params = 1;
+  optional AesPathPlannerParamsProto path_planner_params = 2;
+  optional AesTrajectorEvaluatorParamsProto evaluator_params = 3;
+  optional double target_decel = 4;                             // m/ss.
+  optional double max_lat_error_for_reset = 5;                  // m.
+  optional double replan_preview_time = 6;                      // s.
+  optional double nudge_finish_max_lon_offset = 7;              // m.
+  optional double nudge_finish_min_lat_offset = 8;              // m.
+  optional double nudge_finish_min_time_headway = 9;            // sec.
+  optional double lane_keeping_finish_max_steering_speed = 10;  // deg/s.
+  optional double lane_keeping_finish_max_lat_offset = 11;      // m.
+  optional double lane_keeping_finish_max_heading_diff = 12;    // deg.
+  optional double plan_preview_time = 13;                       // s.
+  optional bool enable_replanning_when_nudge = 14;
+}
+
+message AessParamsProto {
+  optional AessPassiveParamsProto passive_params = 1;
+  optional AessExitParamsProto exit_params = 2;
+  optional AesPlannerParamsProto planner_params = 3;
+  optional int32 delayed_in_frame_count_thres = 4;
+}
+
+message EmergencySteeringParamsProto {
+  optional AessParamsProto aess_params = 1;
+}

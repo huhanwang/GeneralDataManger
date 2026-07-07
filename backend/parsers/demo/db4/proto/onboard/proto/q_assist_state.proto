@@ -1,0 +1,183 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/q_issue.proto";
+import "onboard/proto/assist_driving_system_state.proto";
+
+enum QACCStateType {
+  ACC_STATE_TYPE_OFF = 0;
+
+  ACC_STATE_TYPE_PASSIVE = 1;
+
+  ACC_STATE_TYPE_STANDBY = 2;
+
+  ACC_STATE_TYPE_NORMAL = 3;
+
+  ACC_STATE_TYPE_OVERRIDE = 4;
+
+  ACC_STATE_TYPE_STANDWAIT = 6;
+
+  ACC_STATE_TYPE_FAILURE = 7;
+
+  ACC_STATE_TYPE_MRM = 8;
+}
+
+enum QLCCStateType {
+  LCC_STATE_TYPE_OFF = 0;
+
+  LCC_STATE_TYPE_PASSIVE = 1;
+
+  LCC_STATE_TYPE_STANDBY = 2;
+
+  LCC_STATE_TYPE_NORMAL = 3;
+
+  LCC_STATE_TYPE_COUNTDOWN1 = 4;
+
+  LCC_STATE_TYPE_COUNTDOWN2 = 5;
+
+  LCC_STATE_TYPE_MRM = 6;
+
+  LCC_STATE_TYPE_FORBIDDEN = 7;
+
+  LCC_STATE_TYPE_FAILURE = 8;
+
+  LCC_STATE_TYPE_LATEMEXIT = 9;
+
+  LCC_STATE_TYPE_STANDWAIT = 10;
+
+  LCC_STATE_TYPE_OVERRIDE = 11;
+
+  LCC_STATE_TYPE_OVERALL = 12;
+}
+
+enum QNOAStateType {
+  NOA_STATE_TYPE_OFF = 0;
+
+  NOA_STATE_TYPE_PASSIVE = 1;
+
+  NOA_STATE_TYPE_STANDBY = 2;
+
+  NOA_STATE_TYPE_NORMAL = 3;
+
+  NOA_STATE_TYPE_COUNTDOWN1 = 4;
+
+  NOA_STATE_TYPE_COUNTDOWN2 = 5;
+
+  NOA_STATE_TYPE_MRM = 6;
+
+  NOA_STATE_TYPE_FORBIDDEN = 7;
+
+  NOA_STATE_TYPE_FAILURE = 8;
+
+  NOA_STATE_TYPE_LATEMEXIT = 9;
+
+  NOA_STATE_TYPE_STANDWAIT = 10;
+
+  NOA_STATE_TYPE_OVERRIDE = 11;
+
+  NOA_STATE_TYPE_OVERALL = 12;
+}
+
+enum HmaStateType {
+  HMA_STATE_OFF = 0;
+  HMA_STATE_PASSIVE = 1;
+  HMA_STATE_KEEP = 2;
+  HMA_STATE_ACTIVE = 3;
+  HMA_STATE_FAILURE = 4;
+}
+
+enum TsrStateType {
+  TSR_STATE_OFF = 0;
+  TSR_STATE_STANDBY = 1;
+  TSR_STATE_ACTIVE = 2;
+  TSR_STATE_FAULT = 3;
+}
+
+enum BsdFunctionState {
+  BSD_STATE_TYPE_OFF = 0;
+  BSD_STATE_TYPE_ON = 1;
+  BSD_STATE_TYPE_FAULT = 3;
+}
+
+enum BsdWarningLevel {
+  BSD_LEVEL_NONE = 0;
+  BSD_LEVEL_ONE = 1;
+  BSD_LEVEL_TWO = 2;
+}
+
+enum DowFunctionState {
+  DOW_STATE_TYPE_OFF = 0;
+  DOW_STATE_TYPE_ON = 1;
+  DOW_STATE_TYPE_FAULT = 3;
+}
+
+enum DowWarningLevel {
+  DOW_LEVEL_NONE = 0;
+  DOW_LEVEL_ONE = 1;
+  DOW_LEVEL_TWO = 2;
+}
+
+message QAssistState {
+  enum QIssueReasonType {
+    ISSUE_REASON_TYPE_NONE = 0;
+    ISSUE_REASON_TYPE_ENGAGE_EXIT = 1;
+    ISSUE_REASON_TYPE_ENGAGE_FAIL = 2;
+  }
+
+  message QIssueReason {
+    optional QIssueReasonType type = 1;
+    optional QIssueProto issue = 2;
+    optional string describe = 3;
+  }
+
+  message QACCState {
+    optional QACCStateType type = 1;
+    optional QIssueReason qissue_reason = 2;
+  }
+  optional QACCState q_acc_state = 1;
+
+  message QLCCState {
+    optional QLCCStateType type = 1;
+    optional QIssueReason qissue_reason = 2;
+  }
+  optional QLCCState q_lcc_state = 2;
+
+  message QNOAState {
+    optional QNOAStateType type = 1;
+    optional QIssueReason qissue_reason = 2;
+  }
+  optional QNOAState q_noa_state = 3;
+
+  optional AssistLssStateProto ldw_lka_state = 4;
+
+  optional AssistLssStateProto elk_state = 5;
+
+  optional AssistFcwStateProto assist_fcw_state = 6;
+
+  optional AssistAebStateProto assist_aeb_state = 7;
+
+  optional HmaStateType hma_state = 8;
+
+  optional TsrStateType tsr_state = 9;
+  optional TsrStateType sla_state = 10;
+
+  message QBsdState {
+    optional BsdFunctionState state = 1;
+    optional BsdWarningLevel left_warning = 2;
+    optional BsdWarningLevel right_warning = 3;
+  }
+  optional QBsdState bsd_state = 11;
+
+  message QDowState {
+    optional DowFunctionState state = 1;
+    optional DowWarningLevel front_left_door_warning = 2;
+    optional DowWarningLevel front_right_door_warning = 3;
+    optional DowWarningLevel rear_left_door_warning = 4;
+    optional DowWarningLevel rear_right_door_warning = 5;
+  }
+  optional QDowState dow_state = 12;
+
+  optional AssistApaStateProto apa_state = 13;
+}

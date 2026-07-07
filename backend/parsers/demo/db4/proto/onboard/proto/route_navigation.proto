@@ -1,0 +1,57 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message NaviActionProto {
+  // Almost same with enum lane_turn.
+  enum NaviActionType {
+    STRAIGHT = 1;
+    TURN_LEFT = 2;
+    TURN_RIGHT = 3;
+    U_TURN = 4;
+    DESTINATION = 5;
+    LEFT_SIDE = 6;
+    RIGHT_SIDE = 7;
+    ROUNDABOUT = 8;
+    UNKNOWN = 9;
+  }
+
+  // See third-party related  definitions:
+  enum SubNaviActionType {
+    SUB_ACTION_NONE = 1;
+    ENTER_MAIN_ROAD = 2;
+    ENTER_SIDE_ROAD = 3;
+    ENTER_FREE_WAY = 4;
+    ENTER_RAMP = 5;
+    ENTER_TUNEL = 6;
+    EXIT_MAIN_ROAD = 7;
+    EXIT_FREE_WAY = 8;
+    EXIT_RAMP = 9;
+  }
+  optional NaviActionType navi_action_type = 1;
+  optional Vec2dProto start_point = 2;  // Th entry global point
+  optional sfixed64 section_id = 3;     // The last section id of the NaviAction
+  optional SubNaviActionType sub_action_type = 4;
+}
+
+message NaviInstructionProto {
+  optional NaviActionProto navi_action = 1;
+  optional double distance = 2;  // merters
+
+  // Is the last navi segment, target to the destination.
+  optional bool is_last_navi_action = 3;
+  optional int32 navi_index = 4;
+  optional int64 update_id = 5;
+}
+
+enum NavMode {
+  OFF_ROUTE = 1;       // not on route
+  ON_HD_ROUTE = 2;     // only on hd
+  ON_SD_ROUTE = 3;     // only on sd
+  ON_SD_HD_ROUTE = 4;  // both on sd&hd
+  ON_SD_PRO = 5;
+  INVALID_NAV_MODE = 6;  // No navigation info provided
+};

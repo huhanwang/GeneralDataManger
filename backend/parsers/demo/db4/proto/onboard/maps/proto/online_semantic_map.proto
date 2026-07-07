@@ -1,0 +1,159 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/proto/localization.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message SmoothPointProto {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+// This message is used for perception 2D moudle which is different with BEV, 2D
+// moudle outputs pixel coordinate,we need tranform to smooth coordinate.
+message RoadGeometryProto2D {
+  optional sfixed64 id = 1;
+  repeated SmoothPointProto smooth_points = 2;
+  enum Type {
+    MOVE_CURB = 1;
+
+    reserved 2;
+  }
+  optional Type type = 3;
+}
+
+message OnlineLaneBoundaryProto {
+  optional sfixed64 id = 1;
+  message LaneBoundaryPoint {
+    optional SmoothPointProto smooth_point = 1;
+    optional LaneBoundaryProto.Type type = 2;
+  }
+  repeated LaneBoundaryPoint points = 2;
+  optional sfixed64 left_lane_id = 3;   // not filled
+  optional sfixed64 right_lane_id = 4;  // not filled
+  repeated sfixed64 incoming_boundary_ids = 5;
+  repeated sfixed64 outgoing_boundary_ids = 6;
+  enum MergeForkType {
+    NORMAL = 1;
+    // The following 5 types are for handling fork-to-ramp
+    FORK_RIGHT_MOST = 2;
+    FORK_Y_LEFT_BRANCH = 3;
+    FORK_Y_RIGHT_BRANCH = 4;
+    FORK_Y_ROOT = 5;
+    FORK_MIDDLE = 11;
+    // The following 2 types are for handling merge
+    MERGE_RIGHT_MOST = 6;
+    MERGE_ENDING = 7;
+    MERGE_Y_LEFT_BRANCH = 8;
+    MERGE_Y_RIGHT_BRANCH = 9;
+    MERGE_Y_ROOT = 10;
+  }
+  enum CurbType {
+    NOT_CURB = 0;
+    FLAT_CURB = 1;
+    LOW_CURB = 2;
+    HIGH_CURB = 3;
+  }
+  optional MergeForkType merge_fork_type = 7;
+  optional CurbType highest_curb_type = 19;
+
+  // for adpro4.0
+  optional uint32 position = 8 [default = 0];
+  optional double confidence = 9;
+  optional double lifetime = 10;
+  optional float start_x = 11;
+  optional float end_x = 12;
+  optional float c0 = 13;
+  optional float c1 = 14;
+  optional float c2 = 15;
+  optional float c3 = 16;
+  optional uint32 merge_split_offset = 17;
+  optional uint32 curb_type = 18;
+
+  // Next id: 20.
+}
+
+message OnlineLaneProto {
+  optional sfixed64 id = 1;
+  // Lane center line
+  repeated SmoothPointProto smooth_points = 2;
+  optional sfixed64 left_lane_id = 3;       // not filled
+  optional sfixed64 right_lane_id = 4;      // not filled
+  optional sfixed64 left_boundary_id = 5;   // not filled
+  optional sfixed64 right_boundary_id = 6;  // not filled
+  repeated sfixed64 incoming_lane_ids = 7;
+  repeated sfixed64 outgoing_lane_ids = 8;
+  optional bool is_virtual = 9;
+  optional LaneProto.Direction direction = 10 [default = STRAIGHT];
+  optional bool is_merging = 11;
+  optional bool is_in_intersection = 12;
+  repeated LaneProto.GroundArrow ground_arrows = 13;
+  // Next id: 14.
+}
+
+message OnlinePolylineProto {
+  optional sfixed64 id = 1;
+  enum Type {
+    STOP_LINE = 1;
+  }
+  optional Type type = 2;
+  repeated SmoothPointProto smooth_points = 3;
+}
+
+message OnlinePolygonProto {
+  optional sfixed64 id = 1;
+  enum Type {
+    CROSSWALK = 1;
+  }
+  optional Type type = 2;
+  repeated SmoothPointProto smooth_points = 3;
+}
+
+message OnlineIntersectionProto {
+  optional sfixed64 id = 1;
+  enum Source {
+    PERCEPTION = 1;
+    VISION_MAP = 2;
+  }
+  optional Source source = 2;
+  optional double length = 3;
+  optional double direction = 5;
+  repeated SmoothPointProto stop_line_points = 4;
+}
+
+// Aka. Vision map
+message OnlineSemanticMapProto {
+  optional LiteHeader header = 1;
+  optional sfixed64 update_id = 2;
+
+  // timestamp since unix epoch, in seconds
+  optional double timestamp_s = 3;
+
+  // NOTE: To reuse semantic map manager interface, we need to fake a
+  // localization transform.
+  optional LocalizationTransformProto localization_transform = 4;
+
+  // ego_pos and yaw at timestamp_s
+  optional SmoothPointProto ego_pos = 5;
+  optional double ego_yaw = 6;
+
+  repeated OnlineLaneProto lanes = 7;
+  repeated OnlineLaneBoundaryProto boundaries = 8;
+  repeated OnlinePolylineProto polylines = 11;
+  repeated OnlinePolygonProto polygons = 12;
+  repeated RoadGeometryProto2D road_geometries_2d = 13;
+
+  repeated OnlineIntersectionProto intersections = 14;
+
+  // The current lane that ego_pos is located, and the neighbors of the current
+  // lane
+  repeated sfixed64 lane_ids_at_ego_pos = 9;  // to be deprecated
+  // The index of the nearest point to ego_pos on each lane_at_ego_pos
+  repeated int32 point_index_of_lane_at_ego_pos = 10;  // to be deprecated
+
+  optional double lateral_drifting_error = 15;
+
+  // TODO(luzou): Maybe we need road edges or passable area
+}

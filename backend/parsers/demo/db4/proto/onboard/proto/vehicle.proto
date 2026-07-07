@@ -1,0 +1,514 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/control/proto/controller_conf.proto";
+import "onboard/control/proto/controller_msg.proto";
+import "onboard/proto/ads.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/radar.proto";
+import "onboard/positioning/imu/proto/imu_device_param.proto";
+import "onboard/positioning/gnss/proto/gnss_device_param.proto";
+import "onboard/utils/stream/proto/stream.proto";
+import "onboard/radar/proto/continental_408.proto";
+import "onboard/lite/proto/module_config.proto";
+import "onboard/math/geometry/proto/aabox3d.proto";
+
+message LidarParamsProto {
+  optional LidarType lidar_type = 1;
+  optional LidarId lidar_id = 5 [default = LDR_CENTER];
+  optional string serial_no = 2;
+  optional LidarIntrinsicsProto intrinsics = 3;
+  optional LidarExtrinsicsProto extrinsics = 4;
+  optional bool enabled = 8 [default = true];
+  oneof more_lidar_params {
+    HesaiLidarParamsProto hesai_lidar_params = 9;
+    OusterLidarParamsProto ouster_lidar_params = 10;
+    LivoxLidarParamsProto livox_lidar_params = 14;
+    RsLidarParamsProto rs_lidar_params = 17;
+  }
+  repeated ScanAzimuthInterval ignored_scan_azimuth_ranges_in_degree = 11;
+  // Min range for the lidar point to consider as valid.
+  optional double valid_point_min_range = 12 [default = 0];
+  // host port for lidar data
+  optional int32 port = 13;
+  // server port for command
+  optional int32 command_port = 15;
+
+  optional string ip = 16;
+
+  // Deprecated fields.
+  optional int32 laser_port = 6 [deprecated = true];
+  optional int32 gps_port = 7 [deprecated = true];
+}
+
+message LidarPointsIgnoranceBoxWithUsageV1 {
+  optional AABox3dProto ignorance_box = 1;
+  optional LidarPointsIgnoranceBoxUsageV1 lidar_points_ignorance_boxes_usagev1 =
+      2;
+}
+
+message CameraParamsProto {
+  optional CameraId camera_id = 1;
+  optional string serial_no = 2;
+
+  // Original camera intrinsics. If there is rotation or ROI being set, need to
+  // recalculate the camera matrix.
+  optional CameraIntrinsicsProto intrinsics = 3;
+  optional CameraToLidarExtrinsicsProto extrinsics = 4;
+  // The reference lidar ID for which the extrinsics are calibrated.
+  optional LidarId ref_lidar_id = 11 [default = LDR_CENTER];
+  optional CameraToVehicleExtrinsicsProto camera_to_vehicle_extrinsics = 26;
+
+  // Original camera width and height. If there is rotation or ROI being set,
+  // need to recalculate the size.
+  optional int32 width = 5;
+  optional int32 height = 6;
+
+  optional CameraFormat format = 7;
+
+  optional int32 full_fov_width = 30;
+  optional int32 full_fov_height = 31;
+
+  // Exposure information.
+  // NOTE: the following default value is for leopard camera,
+  // put those params specifically in vehicle config file if it's not leopard.
+  optional double max_fps = 8 [default = 60.0];
+  optional int32 hdr_num_exposures = 9 [default = 4];
+  // The elapsed time from trigger to the middle row of the image starts to
+  // expose.
+  optional double mid_row_time_since_trigger = 10 [default = 0.07];
+  // The elpased time from image top row to bottom row in rolling shutter mode.
+  optional double rolling_elapse_time = 12 [default = 0.033];
+
+  // If camera is gmsl direct link, not via USB, we have to provide /dev/video*
+  // instead of serial_no.
+  optional string device_path = 14;
+  optional bool hardware_trigger = 15 [default = false];
+
+  // Whether to rotate image counterclockwise by 90-degree.
+  optional bool rotate_90_ccw = 16 [default = false];
+
+  optional bool auto_exposure = 19 [default = true];
+
+  // ROI after maybe rotation.
+  message ROI {
+    optional int32 x = 1;
+    optional int32 y = 2;
+    optional int32 width = 3;
+    optional int32 height = 4;
+  }
+  optional ROI roi = 17;
+
+  optional double expected_fps = 18 [default = 10];
+
+  optional CameraInfo camera_info = 21;
+
+  optional bool hardware_encoder = 22 [default = true];
+
+  optional bool flip_x = 23 [default = false];
+
+  // If true, try to maximize the FOV after undistortion. This would affect the
+  // intrinsics.
+  optional bool maximize_fov = 24 [default = false];
+
+  // If true, will use the pitch to do upright perspective correction to make
+  // sure that vertical lines in real world is still vertical in image.
+  optional bool enable_upright_perspective_correction = 25 [default = false];
+
+  optional bool full_undistort_fov = 27 [default = false];
+
+  optional bool warp_perspective = 28 [default = false];
+
+  // WarpedSize must be set when warp_perspective is true.
+  message WarpedSize {
+    optional int32 width = 1 [default = 2304];
+    optional int32 height = 2 [default = 1536];
+  }
+  optional WarpedSize warped_size = 29;
+
+  message ImageResize {
+    optional int32 width = 1;
+    optional int32 height = 2;
+  }
+
+  optional ImageResize image_resize = 32;
+
+  message VirtualCamera {
+    optional CameraId camera_id = 1;
+
+    enum Type {
+      NONE = 0;
+      RESET_OPTICAL = 1;
+      CROP_IMAGE = 2;
+      RAW_IMAGE = 3;
+    }
+    optional Type type = 2;
+
+    message Intrinsics {
+      optional double fx = 1;
+      optional double fy = 2;
+      optional double cx = 3;
+      optional double cy = 4;
+    }
+    optional Intrinsics intrinsics = 3;
+
+    optional int32 width = 4;
+    optional int32 height = 5;
+
+    message VirtualToBaseCameraRotation {
+      optional double yaw = 1;
+      optional double pitch = 2;
+      optional double roll = 3;
+    }
+    optional VirtualToBaseCameraRotation rotation = 6;
+    // The roi is only valid for non-fisheye camera.
+    optional ROI roi = 7;
+
+    optional uint32 pipeline_id = 8;
+
+    optional CameraToVehicleExtrinsicsProto extrinsics = 9;
+
+    repeated CameraToVehicleExtrinsicsProto calib_extrinsics = 10;
+  }
+
+  repeated VirtualCamera virtual_cameras = 33;
+
+  reserved 13, 20;
+}
+
+message GnssParamsProto {
+  repeated GnssAntennaExtrinsicsProto antenna_extrinsics = 1;
+  optional GnssDeviceParamProto device_params = 2;
+
+  // Borrowed from Apollo, currently we only use binary novatel and newton m2
+  enum Format {
+    UNKNOWN = 0;
+    NMEA = 1;
+    RTCM_V2 = 2;
+    RTCM_V3 = 3;
+
+    NOVATEL_TEXT = 10;
+    NOVATEL_BINARY = 11;
+
+    UBLOX_TEXT = 20;
+    UBLOX_BINARY = 21;
+
+    NEWTONM2_TEXT = 30;
+    NEWTONM2_BINARY = 31;
+    // for match gnss installation proto
+    INS570D_TEXT = 40;
+
+    // bynav devices
+    X2C_TEXT = 50;
+    X36D_TEXT = 51;
+
+    // chc
+    CHCCGI230_BINARY = 60;
+  }
+
+  optional Format format = 3;
+
+  // The driver reads data from this port. This port should always be provided.
+  optional StreamProto data_port = 4;
+
+  // If given, the driver sends commands to this port. If not given, the driver
+  // sends commands to the data port.
+  optional StreamProto command_port = 5;
+
+  // The driver gets RTK correction data from this remote port. Usually this is
+  // an NTRIP port.
+  optional StreamProto rtk_from_port = 6;
+
+  // If given, the driver sends RTK correction data to this port. If not given,
+  // the driver sends RTK correction data to the data port.
+  optional StreamProto rtk_to_port = 7;
+}
+
+message ImuParamsProto {
+  optional ImuExtrinsicsProto extrinsics = 1;
+  optional ImuDeviceParamProto device_params = 2;
+  optional ImuExtrinsicsProto extrinsics_when_lidar_calibration = 3;
+}
+
+message SpeedometerParamsProto {
+  optional double speed_scale = 1;
+  optional double rpm_scale = 2;
+}
+
+message CanParamsProto {
+  enum Type {
+    DATASPEED = 1;
+    KVASER = 2;
+    EMUC = 3 [deprecated = true];
+    SOCKETCAN = 4;
+  }
+  optional Type type = 2;
+  optional int32 kvaser_id = 1;
+  optional int32 bit_rate = 3 [default = 500000];  // bps
+  // emuc device's port is usually 24 on Linux. This value can be omitted, in
+  // which case the driver will try to find it automatically (slower and less
+  // robust).
+  optional int32 emuc_id = 4;
+  // emuc is a two channel device. 0 => CAN1, 1 => CAN2
+  optional int32 emuc_channel = 5;
+  optional bytes socketcan_ifname = 6;
+  optional bool enable = 7 [default = true];
+}
+
+message VehicleDriveParamsProto {
+  optional double max_steer_angle = 1;       // radian.
+  optional double max_steer_angle_rate = 2;  // radian/s.
+  optional double min_steer_angle_rate = 3;  // radian/s.
+  optional double steer_ratio = 4;
+  optional double brake_deadzone = 5;
+  optional double throttle_deadzone = 6;
+  optional double max_acceleration = 7;
+  optional double max_deceleration = 8;
+  optional ControlCalibrationTable calibration_table = 9;
+  optional ControlCalibrationTable ebrake_calibration_table = 13
+      [deprecated = true];
+  optional ControlCalibrationTable ibs_calibration_table_when_ebrake = 14
+      [deprecated = true];
+  optional ControlCalibrationTableV2 calibration_table_v2 = 15;
+  optional bool enable_calibration_v2 = 16 [default = false];
+  optional WheelDriveMode wheel_drive_mode = 10 [default = FRONT_WHEEL_DRIVE];
+
+  // The bias DBW adds (i.e. actual EPS steering = control command + bias).
+  // Note that the chassis-reported angle may not be the actual steering angle.
+  // If DBC implementation is correct, chassis will report back the control
+  // command correctly (upon stationarity), but zero control command may not be
+  // executed by EPS as going straight. On some vehicles this bias is quite
+  // significant (~45 degrees).
+  // (+): shift steering command to right;
+  // (-): shift steering command to left.
+  optional double steering_angle_bias = 11 [default = 0.0];  // radian.
+  // when left(+), right(-), it is 1;
+  // when left(-), right(+), it is -1;
+  // To adjust the different difinitions of different jinlv_minibuses
+  optional int32 steering_direction = 12 [default = 1];
+  optional SteerInterface steer_interface = 18 [default = STEER_ANGLE];
+  reserved 17;
+  optional double wheel_rolling_radius = 19;
+  optional double max_driving_torque = 20 [default = 0.0];
+  optional double max_braking_force = 21 [default = 0.0];
+}
+
+message VehicleGeometryParamsProto {
+  // The length from vehicle's front bumper to rear axle center. It is a
+  // positive number.
+  optional double front_edge_to_center = 1;  // Meters.
+  // The length from vehicle's rear bumper to rear axle center. It is a positive
+  // number.
+  optional double back_edge_to_center = 2;  // Meters.
+  // The length from the left edge to the center point along the rear axle. It
+  // is a positive number.
+  optional double left_edge_to_center = 3;  // Meters.
+  // The length from the right edge to the center point along the rear axle. It
+  // is a positive number.
+  optional double right_edge_to_center = 4;  // Meters.
+  optional double length = 5;
+  optional double width = 6;
+  optional double height = 7;
+  optional double min_turn_radius = 8;
+  optional double wheel_base = 9;
+  optional double wheel_rolling_radius = 10;
+
+  // The left mirror is represented by an axis aligned box whose length
+  // direction is perpendicular with vehicle's heading direction. The left
+  // (right) side mirror's length points to the left (right) side of the
+  // vehicle.
+  //          vehicle heading
+  //                ^
+  //          +-----------+
+  //      +---|           |---+
+  //  L <-|   |  AV BODY  |   |-> R
+  //      +---|           |---+
+  //          |           |
+  //          |           |
+  //          |     ^ x   |
+  //          |     |     |
+  //          |y    |     |
+  //          |<----O z   |
+  //          |___________|
+  // z axis points outside the screen.
+  // origin locates at rear axis center with z=0 on the ground.
+  optional AABox3dProto left_mirror = 11;
+  optional AABox3dProto right_mirror = 12;
+}
+
+message RadarParamsProto {
+  optional RadarId radar_id = 1;
+  optional Radarconfiguration_200 radar_configure = 2;
+  optional int32 input_interval = 3;    // ms
+  optional int32 output_interval = 17;  // ms
+  optional RadarExtrinsicsProto extrinsics = 4;
+  optional int32 rms_threshold = 5;
+  optional int32 prob_exist = 6;
+  optional double width_threshold = 7;
+  optional double len_threshold = 8;
+  optional double speed_threshold = 9;
+  optional int32 delay_frame = 10;
+  optional int32 socket_can_id = 12;
+  optional int32 sensor_id = 13;
+  optional RadarType radar_type = 14;
+  message UdpParamsProto {
+    optional string ip = 1;
+    optional int32 port = 2;
+  }
+  oneof CommunicateParam {
+    CanParamsProto can_params = 15;
+    UdpParamsProto udp_params = 16;
+  }
+}
+
+message OBUEntity {
+  enum SubType {
+    UNKNOWN = 0;
+    SPAT = 1;
+    PTCP = 2;
+    FAULT = 3;
+    DECISION = 4;
+    TRAFFIC_LIGHT_IN_VEHICLE = 5;
+    OBJECT_IN_VEHICLE = 6;
+  }
+  optional string ip = 1;
+  optional int32 port = 2;
+  optional bool is_send = 3;
+  optional bool enabled = 4;
+  optional SubType sub_type = 5;
+}
+
+message V2xParamsProto {
+  reserved 1;  // socket_server_ip
+  reserved 2;  // socket_receive_port
+  reserved 3;  // socket_send_port
+  reserved 4;  // parser_mode
+  reserved 5;  // send_data
+  enum Vendor {
+    UNKNOWN = 0;
+    HUALI = 1;
+    WANJI = 2;
+    ZHONGTONG = 3;
+    DATANG = 4;
+    EZHOU_AIRPORT = 5;
+    LENOVO = 6;
+    WUHAN_HUALI = 7;
+    JINLV_POLARIS = 8;
+    CHANGSHA_CIDI = 9;
+    SUZHOU_TRANSUN = 10;
+    DATANG_GSENTRY = 11;  // for match v2x common proto
+    SNOAH = 12;
+    LONGQUANYI = 13;
+    DATANG_BJCW = 14;
+  }
+  optional Vendor vendor = 6;
+  repeated OBUEntity obu_entity = 7;
+}
+
+message VehicleInfoProto {
+  enum VehicleInterface {
+    UNKNOWN = 0;
+    LINCOLN_MKZ = 1;
+    LINCOLN_MKZ_AS_PACMOD = 2;
+    AION_LX = 3;
+    JINLV_MINIBUS = 4;
+    PIXLOOP = 5;
+    SKYWELL = 6;
+    HIGER = 7;
+    ZHONGTONG = 8;
+    BYD = 9;
+    ZHONGXING = 10;
+    TEST_BENCH = 11;
+    MARVELX = 12;
+    POLERSTAR = 13;
+    VEHICLE_POLERSTAR_2 = 14;
+    DONGFENG = 15;
+    ZHONGTONG55 = 16;
+    SHUNFENG = 17;
+    MARVELR = 18;
+    VEHICLE_ZHONGTONG6 = 19;
+    MARVELR_NEW = 20;
+    SNOAHVEHICLE_SUV = 21;
+    HIGER65_LONGZHOU_ONE = 22;
+    HAVAL_SUV = 23;
+    HYUNDAI_CAR = 24;
+    BYD_LONGZHOU_LONG = 25;
+    SF5_SUV = 26;
+    FOTON_LONGZHOU_LONG = 27;
+    AION_LX_PLUS_SUV = 28;
+    HYPER_GT_CAR = 29;
+    FUKANG_CAR = 30;
+    ZEV_LONGZHOU_ONE = 31;
+    JETOUR_SUV = 32;
+    HIGER85_LONGZHOU_LONG = 33;
+    JINLV85_LONGZHOU_LONG = 34;
+    SERES_SF5_SUV = 35;
+    VEHICLE_HYPER_AH8_SUV = 36;
+    VEHICLE_LIXIANG_SUV = 37;
+    VEHICLE_LIXIANGL8_SUV = 38;
+    VEHICLE_LIXIANGL9_SUV = 39;
+    VEHICLE_LIXIANGL6_SUV = 40;
+    VEHICLE_KIAEV6_CAR = 41;
+    VEHICLE_LIXIANGW01_MPV = 42;
+    VEHICLE_LIXIANGW02_MPV = 43;
+    VEHICLE_LIXIANGW03_MPV = 44;
+    VEHICLE_LIXIANGW04_MPV = 45;
+    VEHICLE_LIXIANGW05_MPV = 46;
+    VEHICLE_DONGFENG_EPI_SUV = 47;
+    VEHICLE_EXCEED03_CAR = 48;
+    VEHICLE_JINLVSPIRIT_LONGZHOU = 49;
+    VEHICLE_FOTON_LONGZHOU_ONE = 50;
+    VEHICLE_HYUNDAI_EV5_SUV = 51;
+    VEHICLE_EXEED_CDM_SUV = 52;
+    VEHICLE_ZONE_S_SUV = 53;
+    VEHICLE_ZONE_P_CAR = 54;
+    VEHICLE_REMOTE_COCKPIT = 55;
+    VEHICLE_GAC_AY5_SUV = 56;
+  }
+  optional VehicleInterface vehicle_interface = 1;
+  optional string vin = 2;
+}
+
+enum LidarPointsIgnoranceBoxUsageV1 {
+  ENABLE_ALL_FILTERS_V1 = 0;
+  FILTER_OCCLUDED_POINTS_V1 = 1;
+  FILTER_INSIDE_POINTS_V1 = 2;
+}
+
+// Next ID: 16
+message VehicleParamsProto {
+  optional string car_id = 5;
+  repeated LidarParamsProto lidar_params = 2;
+  repeated CameraParamsProto camera_params = 3;
+  optional ImuParamsProto imu_params = 4;
+  optional GnssParamsProto gnss_params = 12;
+  optional CanParamsProto can_params = 6;
+  optional VehicleGeometryParamsProto vehicle_geometry_params = 8;
+  optional VehicleDriveParamsProto vehicle_drive_params = 9;
+  optional VehicleInfoProto vehicle_info = 10;
+  optional ControllerConf controller_conf = 13;
+
+  optional OmcConfigProto omc_config = 11;
+  optional ObcConfigProto obc_config = 15;
+
+  optional SpeedometerParamsProto speedometer_params = 16;
+  repeated RadarParamsProto radar_params = 18;
+  optional V2xParamsProto v2x_params = 19;
+
+  optional NodesRunConfig nodes_run_config = 20;
+  repeated AABox3dProto lidar_points_ignorance_boxes = 21;
+  optional LidarPointsIgnoranceBoxUsageV1 lidar_points_ignorance_boxes_usage =
+      22;
+  repeated LidarPointsIgnoranceBoxWithUsageV1
+      lidar_points_ignorance_boxes_with_usage_v1 = 23;
+
+  optional string vehicle_plan = 24;  // Only supports conversion from v2 to v1
+  // Deprecated.
+  optional string vehicle_name = 1;
+
+  reserved 14;
+}

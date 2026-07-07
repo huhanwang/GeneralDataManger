@@ -1,0 +1,128 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/drive_mission";
+
+import "onboard/common/proto/lane_point.proto";
+import "onboard/common/proto/map_geometry.proto";
+import "onboard/common/proto/global_pose.proto";
+
+message OffRoadDestinationProto {
+  message ParkingSpot {
+    repeated sfixed64 specified_parking_spot_ids = 1;
+  }
+  // TODO(weijun): add StopPose as a destination.
+
+  oneof dest {
+    ParkingSpot parking_spot = 1;
+  }
+}
+
+message RoutingDestinationProto {
+  oneof dest {
+    mapping.GeoPointProto global_point = 1;
+    mapping.LanePointProto lane_point = 4;
+    string named_spot = 5;
+    OffRoadDestinationProto off_road = 6;
+    GlobalPoseProto global_pose = 7;
+  }
+  optional string id = 8;
+  optional string audio_file = 9;  // station_{id}.wav , station_{id}.mp3
+  reserved 2, 3;
+}
+
+message RouteEndStrategyProto {
+  // Stop in a map indicated bus station area.
+  message StopInArea {
+    optional bool near_curb = 1;
+  }
+  message StopOnPoint {
+    optional bool near_curb = 1;
+  }
+  message StopInParkingSpot {
+    // Find target parking spot among specified spots.
+    // Find suitable parking spot in nearby area if no specified parking spots
+    // are provided.
+    repeated sfixed64 specified_parking_spot_ids = 1;
+  }
+  oneof strategy {
+    StopInArea area = 1;
+    StopOnPoint point = 2;
+    StopInParkingSpot parking_spot = 3;
+  }
+}
+
+message RouteDepartStategyProto {
+  message DepartOnRoad {}  // By default
+  message DepartOffRoad {
+    // Search for best starting point on road if not specified.
+    repeated RoutingDestinationProto specified_onroad_points = 1;
+  }
+  oneof strategy {
+    DepartOnRoad on_road = 1;
+    DepartOffRoad off_road = 2;
+  }
+}
+
+message MultipleStopsRequestProto {
+  message StopProto {
+    repeated RoutingDestinationProto via_points = 1;
+    optional string stop_name = 2;
+    optional RoutingDestinationProto stop_point = 3;
+    optional RouteEndStrategyProto stop_strategy = 4;
+    optional RouteDepartStategyProto depart_strategy = 5;
+  }
+  repeated StopProto stops = 1;
+  optional bool infinite_loop = 2;
+  optional bool skip_past_stops = 4 [default = true];
+
+  reserved 3, 6, 5;
+}
+
+message RoutingLaneCostModifierProto {
+  optional int64 lane_id = 1;
+  optional double gain = 2 [default = 1.0];
+  optional double bias = 3 [default = 0.0];
+}
+
+message RestrictLaneProto {
+  optional sfixed64 section_id = 1;
+  optional bool left_to_right = 2;
+  optional int32 lane_seq = 3;  // Emergence lane = 0
+}
+
+message RestrictProto {
+  repeated mapping.GeoPolygonProto regions = 1;
+  repeated sfixed64 sections = 2;
+  repeated RestrictLaneProto restrict_lanes = 3;
+}
+
+message RoutingRequestProto {
+  optional string id = 9;
+
+  enum CostType {
+    DISTANCE = 1;
+    TIME = 2;
+  }
+
+  repeated RoutingDestinationProto destinations = 1;
+  // Alternative way to specify destinations
+  optional MultipleStopsRequestProto multi_stops = 4;
+
+  repeated sfixed64 avoid_lanes = 2;
+  repeated RoutingLaneCostModifierProto lane_cost_modifiers = 3;
+
+  // TODO(zuowei): Delete 'avoid_regions'.
+  repeated mapping.GeoPolygonProto avoid_regions = 5;
+  optional RestrictProto forbidden = 11;
+
+  optional CostType cost_type = 6 [default = DISTANCE];  // distance,time ...
+  optional int32 k_route_path = 7
+      [default = 1];  // multi_k_route_alernative_path.
+  optional int32 k_lane_path = 8
+      [default = 1];         // multi_k_lane_path but in the same route.
+  optional bool reset = 12;  // Cancel the route path if true.
+
+  // NEXT ID: 13
+  reserved 10;
+}

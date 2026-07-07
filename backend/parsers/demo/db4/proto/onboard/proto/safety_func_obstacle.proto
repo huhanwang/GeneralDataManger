@@ -1,0 +1,293 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/vehicle_pose.proto";
+
+message SafetyFuncPosition {
+  optional float px = 1;
+  optional float py = 2;
+  optional float pz = 3;
+}
+
+message SafetyFuncPositionStd {
+  optional float px_std = 1;
+  optional float py_std = 2;
+}
+
+message SafetyFuncVelocity {
+  optional float vx = 1;
+  optional float vy = 2;
+}
+
+message SafetyFuncVelocityStd {
+  optional float vx_std = 1;
+  optional float vy_std = 2;
+}
+
+message SafetyFuncAccelerate {
+  optional float ax = 1;
+  optional float ay = 2;
+}
+
+enum MotionMovementStatus {
+  MovementStatus_NEVER_MOVED = 0;
+  MovementStatus_STOPED_FROM_MOVING = 1;
+  MovementStatus_MOVING = 2;
+  MovementStatus_ON_COMING = 3;
+  MovementStatus_STOPED_FROM_ONCOMING = 4;
+}
+
+message SafetyFuncMotion {
+  optional SafetyFuncPosition motion_pos = 1;
+  optional SafetyFuncPositionStd motion_pos_std = 2;
+  optional SafetyFuncVelocity motion_vel = 3;
+  optional SafetyFuncVelocityStd motion_vel_std = 4;
+  optional SafetyFuncVelocity motion_abs_vel = 5;
+  optional SafetyFuncAccelerate motion_acc = 6;
+  optional SafetyFuncAccelerate motion_abs_acc = 7;
+  optional MotionMovementStatus motion_movement_status = 8;
+}
+
+message SafetyFuncPoint2F {
+  optional float x = 1;
+  optional float y = 2;
+}
+
+message SafetyFuncPose {
+  optional SafetyFuncPoint2F pose_center = 1;
+  optional float pose_length = 2;
+  optional float pose_width = 3;
+  optional float pose_height = 4;
+  optional float pose_heading = 5;
+  optional float pose_length_std = 6;
+  optional float pose_width_std = 7;
+  optional float pose_height_std = 8;
+  optional float pose_heading_std = 9;
+}
+
+enum ObjectTypeConstants {
+  OBJECT_TYPE_UNKNOWN = 0;
+  OBJECT_CAR = 1;
+  OBJECT_TRUCK = 2;
+  OBJECT_MOTORCYCLE = 3;
+  OBJECT_TRICYCLE = 4;
+  OBJECT_SPECIAL_SHAPED_VEHICLE = 5;
+  OBJECT_BUS = 6;
+  OBJECT_MINIVEHICLE = 7;
+  OBJECT_CONSTRUCTION_VEHICLE = 8;
+  OBJECT_TRAILER = 9;
+  OBJECT_PEDESTRIAN_CHILD = 10;
+  OBJECT_PEDESTRIAN_ADAULT = 11;
+  OBJECT_ELECTRICAL_BICYCLE = 12;
+  OBJECT_BICYCLE = 13;
+  OBJECT_WHEELCHAIR = 14;
+  OBJECT_CONE = 15;
+  OBJECT_BARRIER = 16;
+  OBJECT_SAFETY_TRIANGLE = 17;
+  OBJECT_PARKING_LOCK = 18;
+  OBJECT_SPACE_LIMITER = 19;
+  OBJECT_UNKNOWN_MOVABLE = 20;
+  OBJECT_UNKNOWN_UNMOVABLE = 21;
+}
+
+//    module ObjectTypeConstants {
+//        const uint32 OBJECT_TYPE_UNKNOWN = 0;
+//        const uint32 OBJECT_CAR = 1;
+//        const uint32 OBJECT_TRUCK = 2;
+//        const uint32 OBJECT_MOTORCYCLE = 3;
+//        const uint32 OBJECT_TRICYCLE = 4;
+//        const uint32 OBJECT_SPECIAL_SHAPED_VEHICLE = 5;
+//        const uint32 OBJECT_BUS = 6;
+//        const uint32 OBJECT_MINIVEHICLE = 7;
+//        const uint32 OBJECT_CONSTRUCTION_VEHICLE = 8;
+//        const uint32 OBJECT_TRAILER = 9;
+//        const uint32 OBJECT_PEDESTRIAN_CHILD = 10;
+//        const uint32 OBJECT_PEDESTRIAN_ADAULT = 11;
+//        const uint32 OBJECT_ELECTRICAL_BICYCLE = 12;
+//        const uint32 OBJECT_BICYCLE = 13;
+//        const uint32 OBJECT_WHEELCHAIR = 14;
+//        const uint32 OBJECT_CONE = 15;
+//        const uint32 OBJECT_BARRIER = 16;
+//        const uint32 OBJECT_SAFETY_TRIANGLE = 17;
+//        const uint32 OBJECT_PARKING_LOCK = 18;
+//        const uint32 OBJECT_SPACE_LIMITER = 19;
+//        const uint32 OBJECT_UNKNOWN_MOVABLE = 20;
+//        const uint32 OBJECT_UNKNOWN_UNMOVABLE = 21;
+//}
+
+enum ObjectLaneAssignment {
+  LaneAssignment_EGO = 0;
+  LaneAssignment_LEFT_LANE = 1;
+  LaneAssignment_RIGHT_LANE = 2;
+  LaneAssignment_LEFT_LEFT_LANE = 3;
+  LaneAssignment_RIGHT_RIHGT_LANE = 4;
+  LaneAssignment_LEFT_LEFT_LEFT_LANE = 5;
+  LaneAssignment_RIGHT_RIGHT_RIGHT_LANE = 6;
+  LaneAssignment_UNKNOWN = 7;
+}
+
+enum ObjectTurnLight {
+  ObjectTurnLight_NONE = 0;
+  ObjectTurnLight_LEFT = 1;
+  ObjectTurnLight_RIGHT = 2;
+  ObjectTurnLight_HAZARD = 3;
+}
+
+enum ObjectCamSource {
+  ObjectCamSource_UNKNOW = 0;
+  ObjectCamSource_FRONT = 1;
+  ObjectCamSource_SIDE = 2;
+  ObjectCamSource_RESERVE = 3;
+}
+
+message SafetyFuncObject {
+  optional SafetyFuncMotion motion_state = 1;
+  optional SafetyFuncPose pose = 2;
+  optional uint64 object_fusion_life_time = 3;
+  optional uint64 object_vision_life_time = 4;
+  optional uint64 object_mrr_life_time = 5;
+  optional uint64 object_lidar_life_time = 6;
+  optional uint32 object_fusion_id = 7;
+  optional uint32 object_mrr_id = 8;
+  optional uint32 object_lidar_id = 9;
+  optional uint32 object_vision_id = 10;
+  optional uint32 object_type = 11;
+  optional bool object_CIPV_flag = 12;
+  optional bool object_MCP_flag = 13;
+  optional ObjectLaneAssignment object_lane_assignment = 14;
+  optional bool object_CutIn_flag = 15;
+  optional bool object_CutOut_flag = 16;
+  optional bool object_Blocked_flag = 17;
+  optional bool object_In_Freespace_flag = 18;
+  optional ObjectTurnLight object_turn_light = 19;
+  optional bool object_brake_light = 20;
+  optional uint64 original_vision_id = 21;
+  optional sint64 front_cam_id = 22;
+  optional ObjectCamSource object_cam_source = 23;
+  optional double yaw_rate = 24;
+}
+
+enum RefPointType {
+  RefPointType_INVALID = 0;
+  RefPointType_FRONT_LEFT = 1;
+  RefPointType_FRONT_RIGHT = 2;
+  RefPointType_REAR_LEFT = 3;
+  RefPointType_REAR_RIGHT = 4;
+  RefPointType_CENTER = 5;
+  RefPointType_MID_OF_REAR_BUMPER = 6;
+  RefPointType_MID_OF_FRONT_BUMPER = 7;
+  RefPointType_LEFT_MIDDLE = 8;
+  RefPointType_RIGHT_MIDDLE = 9;
+}
+
+enum FuseInfoStatus {
+  FuseInfoStatus_INVALID = 0;
+  FuseInfoStatus_MERGED = 1;
+  FuseInfoStatus_NEW = 2;
+  FuseInfoStatus_NEWCOASTED = 3;
+  FuseInfoStatus_NEWUPDATED = 4;
+  FuseInfoStatus_UPDATED = 5;
+  FuseInfoStatus_COASTED = 6;
+}
+
+enum FuseInfo_FusionSource {
+  FusionSource_DEFAULT = 0;
+  FusionSource_CRADAR_ONLY = 1;
+  FusionSource_ONLY_FRADAR_TRAKLET = 2;
+  FusionSource_MULTY_FRONT_RADAR_TRACKLET = 3;
+  FusionSource_LIDAR_ONLY = 4;
+  FusionSource_VISION_SIDE_ONLY = 5;
+  FusionSource_VISION_FRONT_ONLY = 6;
+  FusionSource_LIDAR_AND_RADAR = 7;
+  FusionSource_VISION_FRONT_AND_SIDE = 8;
+  FusionSource_VISION_AND_RADAR = 9;
+  FusionSource_VISION_AND_LIDAR = 10;
+  FusionSource_VISION_LIDAR_AND_RADAR = 11;
+  FusionSource_VISION_REAR_AND_SIDE = 12;
+  FusionSource_VISION_FRONT_TWO_CAM = 13;
+}
+
+message SafetyFuncFuseInfo {
+  optional RefPointType fuseinfo_ref_point_type = 1;
+  optional SafetyFuncPoint2F fuseinfo_ref_point = 2;
+  optional FuseInfoStatus fuseinfo_status = 3;
+  optional uint32 fuseinfo_vision_conf = 4;
+  optional float fusion_conf = 5;
+  optional float fuseinfo_exist_prob = 6;
+  optional float fuseinfo_obstacle_prob = 7;
+  optional float fuseinfo_moving_prob = 8;
+  optional float fuseinfo_moved_prob = 9;
+  optional FuseInfo_FusionSource fuseinfo_fusion_source = 10;
+  optional FuseInfo_FusionSource fuseinfo_measure_source = 11;
+  optional bool fuseinfo_is_available = 12;
+}
+
+message SafetyFuncFuseObject {
+  optional SafetyFuncObject object = 1;
+  optional SafetyFuncFuseInfo object_fuse_info = 2;
+  // The object_fusion_id of this object.
+  optional uint32 id = 3;
+}
+
+message SafetyFuncFuseHeader {
+  optional uint64 time_stamp = 1;
+  optional uint64 frame_id = 2;
+}
+
+//    module FusionErrorStatus_Constants {
+//        const uint32 FusionErrorStatus_Nomal = 0;
+//        const uint32 FusionErrorStatus_Error = 1;
+//        const uint32 FusionErrorStatus_Reserved = 2;
+//    }
+
+enum FusionStatus {
+  FusionStatus_NORMAL = 0;
+  FusionStatus_NO_CAMERA_DATA = 1;
+  FusionStatus_NO_RADAR_DATA = 2;
+  FusionStatus_CAMERA_TIMESTAMP_INVALID = 3;
+  FusionStatus_RADAR_TIMESTAMP_INVALID = 4;
+}
+
+message SafetyFuncFuseFramePart {
+  optional SafetyFuncFuseHeader fuse_header = 1;
+  repeated SafetyFuncFuseObject fuse_objects = 2;
+  optional uint64 time_stamp = 3;
+  optional uint32 objects_total_amount = 4;
+  optional uint32 part_index = 5;
+  optional uint32 blocked_number = 6;
+  optional uint32 fusion_error_status = 7;
+}
+
+message SafetyFuncFuseFrameTotal {
+  optional SafetyFuncFuseHeader fuse_header = 1;
+  repeated SafetyFuncFuseObject fuse_objects = 2;
+  optional uint64 time_stamp = 3;
+  optional uint32 objects_total_amount = 4;
+  optional FusionStatus fusion_status = 5;
+}
+
+message FuseObjectSupplement {
+  optional double timestamp = 1;  // timestamp of the latest measurement.
+  optional sint64 object_fusion_id = 2;
+  optional sint64 object_mrr_id = 3;
+  optional sint64 object_lidar_id = 4;
+  optional sint64 object_vision_id = 5;
+}
+
+message FusionOutputProto {
+  optional LiteHeader header = 1;
+  optional SafetyFuncFuseHeader fuse_header = 2;
+  optional FusionStatus fusion_status = 3;
+  repeated SafetyFuncFuseObject fusion_obstacles = 4;
+  repeated FuseObjectSupplement fusion_supplements = 5;
+  optional double timestamp = 6;
+  enum CoordinateType {
+    COORD_VCS = 0;
+    COORD_SMOOTH = 1;
+  }
+  optional CoordinateType coordinate_type = 7 [default = COORD_VCS];
+  optional VehiclePoseProto vehicle_pose = 8;
+}

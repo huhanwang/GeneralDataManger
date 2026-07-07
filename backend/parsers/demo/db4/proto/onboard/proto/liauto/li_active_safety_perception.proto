@@ -1,0 +1,127 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/liauto/li_as_seq_debug.proto";
+
+message Header {
+  optional uint64 fusion_pub_time_stamp = 1;
+  optional uint64 camera_exposure_time_stamp =
+      2;  // time of the camera get the picture
+  optional uint32 frame_id = 3;
+  optional int32 total_obstacle_number = 4;     // octet replaced with int32
+  optional int32 safety_perception_status = 5;  // octet replaced with int32
+  repeated AsSeqDebug fusion_seq_debug = 6;  // sequence replaced with repeated
+}
+
+enum ObjFusionSource {
+  OBJ_FUSION_SRC_DEFAULT = 0;
+  SAFETY_BEV_ONLY = 1;
+  DRVING_BEV_ONLY = 2;
+  RADAR_ONLY = 3;
+  SAFETY_BEV_AND_DRVING_BEV = 4;
+  SAFETY_BEV_AND_RADAR = 5;
+  DRVING_BEV_AND_RADAR = 6;
+  SAFETY_BEV_AND_DRVING_BEV_AND_RADAR = 7;
+}
+
+message FusionInfo {
+  optional int32 object_fusion_source = 1;  // octet replaced with int32
+  optional uint64 object_life_time =
+      2;  // unsigned long long replaced with uint64
+  optional int32 object_confidence = 3;    // octet replaced with int32
+  optional float object_prob = 4;          // 0~1
+  optional int32 object_is_available = 5;  // octet replaced with int32
+  optional int32 object_conf_rct = 6;      // octet replaced with int32
+  optional int32 object_conf_aes = 7;      // octet replaced with int32
+  optional int32 object_conf_lsaeb = 8;
+  optional int32 object_conf_mai = 9;
+}
+
+message ObjectPrediction {
+  optional int32 object_intension = 1;  // octet replaced with int32
+  optional string prediction_debug_info = 2;
+}
+
+message Vector2D {
+  optional float x = 1;
+  optional float y = 2;
+}
+
+message Vector3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+enum ObjType {
+  OBJECT_TYPE_DEFAULT = 0;
+  OBJECT_TYPE_PEDESTRIAN = 1;
+  OBJECT_TYPE_BICYCLE = 2;
+  OBJECT_TYPE_MOTORCYCLE = 3;
+  OBJECT_TYPE_TRICYCLE = 4;
+  OBJECT_TYPE_CAR = 5;
+  OBJECT_TYPE_TRUCK = 6;
+  OBJECT_TYPE_BUS = 7;
+  OBJECT_TYPE_CONE = 8;
+  OBJECT_TYPE_BARREL = 9;
+  OBJECT_TYPE_UNKNOWN_UNMOVABLE = 20;  // for temporarily use only
+}
+
+enum ObjectMotionStatus {
+  OBJECT_MOTION_STATUS_DEFAULT = 0;
+  OBJECT_MOTION_STATUS_STATIONARY = 1;
+  OBJECT_MOTION_STATUS_PRECEDING = 2;
+  OBJECT_MOTION_STATUS_ONCOMING = 3;
+  OBJECT_MOTION_STATUS_CROSSING = 4;
+  OBJECT_MOTION_STATUS_STOPPED = 5;
+}
+
+message ObstacleLight {
+  optional int32 left_turn_lights = 1;   // octet replaced with int32
+  optional int32 right_turn_lights = 2;  // octet replaced with int32
+  optional int32 brake_lights = 3;       // octet replaced with int32
+  optional int32 hazard_lights = 4;      // octet replaced with int32
+}
+
+message VehicleStatus {
+  optional int32 wiper_spd = 1;       // octet replaced with int32
+  optional int32 rain_intensity = 2;  // octet replaced with int32
+}
+
+message ActiveSafetyObject {
+  optional uint32 id = 1;   // unsigned long replaced with uint32
+  optional int32 type = 2;  // octet replaced with int32
+  optional float heading_angle = 3;
+  optional float length = 4;
+  optional float width = 5;
+  optional float height = 6;
+  optional float yaw_rate = 7;
+  optional Vector2D center_point = 8;  // also the anchor point
+  optional Vector2D velocity = 9;
+  optional Vector2D abs_velocity = 10;
+  optional Vector2D accleration = 11;
+  optional Vector2D abs_accleration = 12;
+  optional int32 motion_status = 13;       // octet replaced with int32
+  optional bool blocked_temporarily = 14;  // boolean replaced with bool
+  optional FusionInfo fusion_info = 15;
+  optional ObjectPrediction prediction = 16;
+  optional string object_debug_info = 17;
+  optional int32 object_reserved_flags = 18;  // octet replaced with int32
+  optional float heading_angle_odom = 19;
+  optional Vector2D position_odom = 20;
+  optional Vector2D velocity_odom = 21;
+  optional Vector2D acceleration_odom = 22;
+  repeated Vector3D polygen_odom = 23;  // sequence replaced with repeated
+  optional ObstacleLight obstacle_light = 24;  // 车灯信息
+  optional int32 danger_level = 25;            // // 0 no danger 1 low 2 high
+}
+
+message ActiveSafetyPerceptionProto {
+  optional LiteHeader header = 1;
+  optional Header active_safety_perception_header = 2;
+  repeated ActiveSafetyObject obstacles = 3;  // sequence replaced with repeated
+  optional VehicleStatus vehicle_status = 4;
+}

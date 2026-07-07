@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package snoah.li.aeb;
+
+message LiHeader {
+  optional double timestamp = 1;     // 时间戳
+  optional uint32 sequence_num = 2;  // 序列号
+  optional string frame_id = 3;      // 帧ID
+}
+
+message PathPoint {
+  optional double x = 1;              // X坐标
+  optional double y = 2;              // Y坐标
+  optional double z = 3;              // Z坐标
+  optional double theta = 4;          // 方向角
+  optional double kappa = 5;          // 曲率
+  optional double s = 6;              // 位置
+  optional double dkappa = 7;         // 曲率变化率
+  optional double ddkappa = 8;        // 曲率变化率的变化率
+  optional string lane_id = 9;        // 车道ID
+  optional double x_derivative = 10;  // X方向导数
+  optional double y_derivative = 11;  // Y方向导数
+}
+
+message TrajectoryPoint {
+  optional PathPoint path_point = 1;  // 路径点
+  optional double v = 2;              // 速度
+  optional double a = 3;              // 加速度
+  optional double relative_time = 4;  // 相对时间
+  optional double da = 5;             // 加速度变化量
+  optional double steer = 6;          // 转向角
+}

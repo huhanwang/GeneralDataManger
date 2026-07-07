@@ -1,0 +1,44 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message ActuatorStatusProto {
+  optional bool vmm_main_awb_ctrl_active = 1 [default = false];
+  optional bool vmm_main_awb_available = 2 [default = false];
+  optional bool vmm_main_abp_ctrl_active = 3 [default = false];
+  optional bool vmm_main_abp_available = 4 [default = false];
+  optional bool vmm_main_aba_ctrl_active = 5 [default = false];
+  optional bool vmm_long_main_cdp_ctrl = 6 [default = false];
+  optional bool vmm_long_main_avh_actived = 7 [default = false];
+  optional bool vmm_main_availability = 8 [default = false];
+  optional bool vmm_main_aba_available = 9 [default = false];
+  optional bool vmm_main_actived_state = 10 [default = false];
+  optional bool lat_control_online = 11 [default = false];
+  enum VMM_LongMainParkBrakeState {
+    UNKNOWN = 0;
+    APPLYING = 1;
+    APPLIED = 2;
+    RELEASING = 3;
+    RELEASED = 4;
+  }
+  enum VMMLongMainAxCtrlMode {
+    NONE = 0;
+    COMFORT = 1;
+    EMERGENCY = 2;
+    RESERVED = 3;
+  }
+  enum AP_PmsLongCapability {
+    APPLC_NONE = 0;
+    APPLC_REDUCE = 1;
+    APPLC_AXCAPBL_FULL = 2;
+    APPLC_RESERVED = 3;
+  }
+  optional VMM_LongMainParkBrakeState vmm_main_park_brake_state = 12
+      [default = UNKNOWN];
+  optional VMMLongMainAxCtrlMode vmm_main_ax_ctrl_mode = 13 [default = NONE];
+  optional double timestamp = 14 [default = 0];
+  optional AP_PmsLongCapability ap_pms_long_capability = 15
+      [default = APPLC_NONE];
+  optional bool vmm_long_main_cdp_available = 16 [default = false];
+}

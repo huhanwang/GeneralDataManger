@@ -1,0 +1,85 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.perception.parking_fusion;
+option go_package = "qcraft-proto.ai/onboard/perception/parking_fusion/proto/parking_fusion_config";
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Note about param loading here: Due to the para loading method which is
+// designed to be backward compatible as the param set evolves, special care
+// must be taken when adding certain types of params.
+//
+// * When adding repeated fields into an existing proto: usually you'll need to
+//   wrap it in a proto. Directly adding a repeated field into an existing proto
+//   will cause the field to have zero elements when loading the params of an
+//   old log, regardless of the default params, which is typically not what you
+//   want. This is because the old log's param file has zero elements, and
+//   having zero elements is not considered missing (unlike scalar fields where
+//   has_XXX() can be used to decide if the field is missing in old logs, for
+//   repeated fields, having zero elements is a valid and meaningful state).
+//   Wrapping it in a proto will solve this problem because the field becomes a
+//   scalar field of the proto type and param loading will recognize that the
+//   old log does not have this field, thus loading the default.
+//
+//   A common example is PiecewiseLinearFunctionXXXProto which wraps repeated
+//   fields.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+message BevdetConfigProto {
+  optional float max_distance_square = 1;
+  optional float min_confidence = 2;
+}
+
+message FreespaceConfigProto {
+  optional float max_distance_x = 1;
+  optional float max_distance_y = 2;
+  optional bool use_interpolate = 3;
+  optional int32 freespace_output_max_size = 4 [default = 400];
+}
+
+message ObstacleConfigProto {
+  optional float max_distance_x = 1;
+  optional float max_distance_y = 2;
+}
+
+message UssConfigProto {
+  optional float point_min_range = 1;
+  optional float point_max_range = 2;
+  optional float point_unit = 3;
+  optional float object_min_confidence = 4;
+  optional float ego_front_distance = 5;
+  optional float ego_rear_distance = 6;
+  optional float ego_left_distance = 7;
+  optional float ego_right_distance = 8;
+  optional float nearby_pillar_distance_threshold = 9;
+  optional float nearby_vegetation_distance_threshold = 10;
+  optional float nearby_pillar_association_distance_threshold = 11;
+  optional float nearby_vegetation_association_distance_threshold = 12;
+}
+
+message SlotConfigProto {
+  optional float max_distance_x = 1;
+  optional float max_distance_y = 2;
+  optional float max_iou = 3;
+  optional float min_confidence = 4;
+}
+
+message ParkingFusionConfigProto {
+  optional BevdetConfigProto bevdet_config = 1;
+  optional FreespaceConfigProto freespace_config = 2;
+  optional ObstacleConfigProto obstacle_config = 3;
+  optional UssConfigProto uss_config = 4;
+  optional SlotConfigProto slot_config = 5;
+}

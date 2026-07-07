@@ -1,0 +1,58 @@
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah.limap;
+
+// Based on limap motor_file_v2, which is used by the Max platform. The
+// motor_file_v1 used by Pro platform is currently unavailable. They should
+// be similar. Will update this file once we get more info about the
+// motor_file_v1.
+message Point3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message Polygon {
+  repeated Point3D points = 1;
+  optional Point3D normal = 2;
+  optional float edge_width = 3;
+  optional Point3D orientation = 4;
+}
+
+message FeatureId {
+  optional uint32 tile_id = 1;
+  optional int32 feature_type = 2;
+  optional int64 feature_id = 3;
+  optional int64 version = 4;
+}
+
+message Relation {
+  optional FeatureId id = 1;
+  optional Point3D start_point = 2;
+  optional Point3D end_point = 3;
+}
+
+message DynamicNonOdd {
+  optional string id = 1;
+  optional Polygon polygon = 2;
+  optional Relation relation = 3;
+  optional int64 reason = 4;
+  optional int32 action = 5;
+  repeated string tags = 6;
+  optional int32 source = 7;
+  repeated FeatureId group_ids = 8;
+  optional float heading = 9;
+}
+
+message Tile {
+  optional uint64 version = 2;
+  optional uint32 tile_id = 3;
+  repeated DynamicNonOdd dynamic_non_odds = 4;
+}
+
+message LiMapTilesProto {
+  optional LiteHeader header = 1;
+  repeated Tile tiles = 2;
+}

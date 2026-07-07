@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package snoah;
+
+import "google/protobuf/descriptor.proto";
+// for seres project mcu<->soc communication
+// if set DEFAULT_TYPE, will use origin proto type
+enum MatrixDataType {
+  DEFAULT_TYPE = 0;
+  INT8 = 1;
+  UINT8 = 2;
+  INT16 = 3;
+  UINT16 = 4;
+  INT32 = 5;
+  UINT32 = 6;
+}
+
+extend google.protobuf.FieldOptions {
+  optional MatrixDataType matrix_data_type = 100000;
+  optional bool trans_matrix = 100001;
+  optional bool matrix_skip_header = 100002;
+  optional string matrix_math_operator = 100003;
+}

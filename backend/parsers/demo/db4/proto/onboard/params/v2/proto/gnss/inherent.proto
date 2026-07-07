@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+package snoah;
+
+message GnssImuInherentProto {
+  message GnssDeviceParamProto {
+    optional double horizontal_position_variance = 1;
+    optional double vertical_position_variance = 2;
+    optional double heading_variance = 3;
+    optional double theta_xy_variance = 4;
+    optional double horizontal_velocity_variance = 5;
+    optional double vertical_velocity_variance = 6;
+  }
+  message ImuDeviceParamProto {
+    optional double accel_noise_variance = 1;
+    optional double omega_noise_variance = 2;
+    optional double accel_bias_noise_variance = 3;
+    optional double omega_bias_noise_variance = 4;
+  }
+
+  optional GnssDeviceParamProto gnss_device_parms = 1;
+  optional ImuDeviceParamProto imu_device_parms = 2;
+  optional string serial_no = 3;
+  message RtkInherentProto {
+    optional string username = 1;
+    optional string password = 2;
+  }
+  optional RtkInherentProto rtk_inherents = 4;
+}

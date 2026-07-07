@@ -1,0 +1,18 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_filter_bank/geometry_filter/proto/geometry_filter_config";
+
+message GeometryFilterConfig {
+  optional bool activate_debug_mode = 1 [default = false];
+  optional bool activate_profiling = 2 [default = false];
+  optional double size_threshold = 3 [default = 3.];
+  optional double min_azimuth = 4 [default = -180.];
+  optional double max_azimuth = 5 [default = 180.];
+  optional uint32 resolution = 6 [default = 3600];
+  optional bool enable_fg_filter = 7 [default = false];
+  optional bool enable_bg_filter = 8 [default = true];
+  optional int32 filter_max_tracking_frames = 9 [default = 20];
+  optional double transparent_z_th = 10 [default = 1.0];
+  optional double vel_x_th = 11 [default = 2.0];
+  optional double vel_y_th = 12 [default = 5.0];
+}

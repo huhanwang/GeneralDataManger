@@ -1,0 +1,16 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message QSystemCheckErrorLiteral {
+  optional int32 release_run_error_code = 1;
+  optional string title = 2;
+  optional string content = 3;
+  optional string type_name = 4;
+  optional string action = 5;
+}
+
+message QSystemErrorHelper {
+  repeated QSystemCheckErrorLiteral result = 1;
+}

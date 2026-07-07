@@ -1,0 +1,320 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/q_issue.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+
+message AssistLssStateProto {
+  enum LssState {
+    LSS_STATE_OFF = 0;
+
+    LSS_STATE_NOT_READY = 1;
+
+    LSS_STATE_READY = 2;
+
+    LSS_STATE_ACTIVE_LEFT = 3;
+
+    LSS_STATE_ACTIVE_RIGHT = 4;
+
+    LSS_STATE_FAILURE = 5;
+  }
+  enum LssActiveType {
+    LSS_ACTIVE_TYPE_NORMAL = 0;
+
+    LSS_ACTIVE_TYPE_INTERVENTION = 1;
+
+    LSS_ACTIVE_TYPE_WARNING = 2;
+
+    LSS_ACTIVE_TYPE_WARNING_INTERVENTION = 3;
+  }
+  optional LssState state = 1 [(trans_matrix) = true];
+  optional LssActiveType active_type = 2
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistAesStateProto {
+  enum AesState {
+    AES_STATE_OFF = 0;
+
+    AES_STATE_PASSIVE = 1;
+
+    AES_STATE_ACTIVE = 2;
+
+    AES_STATE_FAILURE = 3;
+  }
+  optional AesState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistFcwStateProto {
+  enum FcwState {
+    FCW_OFF = 0;
+
+    FCW_STANDBY = 1;
+
+    FCW_ACTIVE = 2;
+
+    FCW_FAILURE = 3;
+  }
+  optional FcwState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistAebStateProto {
+  enum AebState {
+    AEB_OFF = 0;
+
+    AEB_STANDBY = 1;
+
+    AEB_ACTIVE = 2;
+
+    AEB_STANDSTILL = 3;
+
+    AEB_FAULT = 5;
+
+    AEB_RESERVED = 6;
+  }
+  optional AebState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistAccStateProto {
+  enum AccState {
+    ACC_STATE_OFF = 0;
+
+    ACC_STATE_PASSIVE = 2;
+    ACC_STATE_STANDBY = 3;
+
+    ACC_STATE_NORMAL = 5;
+    ACC_STATE_STANDWAIT = 6;
+
+    ACC_STATE_VERTICAL_OVERRIDE = 7;
+
+    ACC_STATE_FAULT = 8;
+
+    ACC_STATE_MRM = 9;
+  }
+  optional AccState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistLccStateProto {
+  enum LccState {
+    LCC_STATE_OFF = 0;
+
+    LCC_STATE_PASSIVE = 2;
+    LCC_STATE_STANDBY = 3;
+
+    LCC_STATE_NORMAL = 5;
+    LCC_STATE_STANDWAIT = 6;
+
+    LCC_STATE_VERTICAL_OVERRIDE = 7;
+
+    LCC_STATE_LATEMEXIT = 8;
+
+    LCC_STATE_COUNTDOWN_1 = 10;
+    LCC_STATE_COUNTDOWN_2 = 11;
+
+    LCC_STATE_MRM = 12;
+
+    LCC_STATE_FORBIDDEN = 13;
+
+    LCC_STATE_FAULT = 15;
+
+    LCC_STATE_OVERALL_OVERRIDE = 20;
+  }
+  optional LccState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+}
+
+message AssistNoaStateProto {
+  enum NoaState {
+    NOA_STATE_OFF = 0;
+
+    NOA_STATE_PASSIVE = 2;
+    NOA_STATE_STANDBY = 3;
+
+    NOA_STATE_NORMAL = 5;
+    NOA_STATE_STANDWAIT = 6;
+
+    NOA_STATE_VERTICAL_OVERRIDE = 7;
+
+    NOA_STATE_LATEMEXIT = 8;
+
+    NOA_STATE_COUNTDOWN_1 = 10;
+    NOA_STATE_COUNTDOWN_2 = 11;
+
+    NOA_STATE_MRM = 12;
+
+    NOA_STATE_FORBIDDEN = 13;
+
+    NOA_STATE_FAULT = 15;
+
+    NOA_STATE_OVERALL_OVERRIDE = 20;
+  }
+  optional NoaState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  optional bool lcc_auto_upgrade_enable = 2 [(trans_matrix) = true];
+  optional bool is_slient = 3 [(trans_matrix) = true];
+}
+
+message AssistApaStateProto {
+  enum ApaState {
+    APA_STATE_OFF = 0;
+    APA_STATE_PASSIVE = 2;
+
+    APA_STATE_PARKING_STANDBY = 10;
+    APA_STATE_PARKING_ACTIVE_ON = 12;
+    APA_STATE_PARKING_ACTIVE_PAUSE = 13;
+    APA_STATE_PARKING_FINISH = 14;
+    APA_STATE_PARKING_SAFE_STOP = 15;
+
+    APA_STATE_PARKING_OUT_ACTIVE_ON = 17;
+    APA_STATE_PARKING_OUT_ACTIVE_PAUSE = 18;
+    APA_STATE_PARKING_OUT_FINISH = 19;
+    APA_STATE_PARKING_OUT_SAFE_STOP = 20;
+    APA_STATE_PARKING_OUT_STANDBY = 21;
+    APA_STATE_FAULT = 23;
+    APA_STATE_PARKING_ACTIVE_STANDBY = 24;
+    APA_STATE_PARKING_OUT_ACTIVE_STANDBY = 25;
+
+    APA_STATE_PARKING_STANDBY_HANDSHAKE = 26;
+    APA_STATE_PARKING_OUT_STANDBY_HANDSHAKE = 27;
+
+    APA_STATE_PARKING_SEARCHING = 28;
+    APA_STATE_PARKING_OUT_SEARCHING = 29;
+
+    APA_STATE_STOP_WAIT = 30;
+    APA_STATE_STOP_HANDSHAKE = 31;
+
+    RPA_STATE_PARKING_PASSIVE = 51;
+    RPA_STATE_PARKING_INHIBIT = 54;
+    RPA_STATE_PARKING_STANDBY = 55;
+    RPA_STATE_PARKING_ACTIVE_ON = 56;
+    RPA_STATE_PARKING_ACTIVE_PAUSE = 57;
+    RPA_STATE_PARKING_FINISH = 58;
+    RPA_STATE_PARKING_SAFE_STOP = 59;
+
+    RPA_STATE_PARKING_OUT_PASSIVE = 61;
+    RPA_STATE_PARKING_OUT_INHIBIT = 64;
+    RPA_STATE_PARKING_OUT_STANDBY = 65;
+    RPA_STATE_PARKING_OUT_ACTIVE_ON = 66;
+    RPA_STATE_PARKING_OUT_ACTIVE_PAUSE = 67;
+    RPA_STATE_PARKING_OUT_FINISH = 68;
+    RPA_STATE_PARKING_OUT_SAFE_STOP = 69;
+
+    APA_STATE_SEARCHING = 5 [deprecated = true];  // Deprecated
+    reserved 3, 4, 7 to 9, 16, 52, 53;
+  }
+
+  enum RpaActiveType {
+    RPA_NOT_ACTIVE = 0;
+    RPA_ACTIVE_APP = 1;
+    RPA_ACTIVE_HANDLE = 2;
+  }
+
+  optional ApaState state = 1
+      [(trans_matrix) = true, (matrix_data_type) = UINT8];
+  repeated QIssueProto reason = 2;
+
+  optional bool flag_rpa_is_ready = 3;
+
+  optional RpaActiveType rpa_active_type = 4;
+
+  optional bool flag_rpa_is_recoverable = 5;
+
+  optional bool flag_rpo_is_ready = 6;
+
+  optional bool is_hpp_parkin = 7;
+}
+
+message AssistHppStateProto {
+  enum HppState {
+    HPP_STATE_INHIBIT = 1;
+    HPP_STATE_STANDBY = 2;
+    HPP_STATE_MAPPING_LEARNING = 3;
+    HPP_STATE_MAPPING_DISPLAY = 4;
+    HPP_STATE_MAPPING_FINISH = 5;
+    HPP_STATE_MAPPING_FAIL = 6;
+    HPP_STATE_CRUISE_ACTIVE_ON = 8;
+    HPP_STATE_CRUISE_OVERRIDE = 9;
+    HPP_STATE_CRUISE_QUIT = 10;
+    HPP_STATE_CRUISE_FINISH = 11;
+    HPP_STATE_STANDBY_CRUISE_HANDSHAKE = 12;
+
+    // Deprecated
+    HPP_STATE_CRUISE_HANDSHAKE = 7;
+  }
+
+  optional HppState state = 1;
+
+  repeated QIssueProto reason = 2;
+
+  optional bool flag_mapping_background_enable = 3;
+
+  optional bool flag_indoor_enable = 4;
+
+  optional bool flag_cruise_enable = 5;
+
+  optional bool flag_mapping_enable = 6;
+}
+
+message AssistMrmStateProto {
+  enum MrmReason {
+    NONE = 0;
+    HANDOFF = 1;
+    TOLL_GATE = 2;
+  }
+  optional bool is_mrm = 1;
+  optional double distance = 2;
+  optional MrmReason mrm_reason = 3;
+}
+
+// assit lane change info to pnc
+message AssistLcaInfoProto {
+  optional bool is_lca_error = 1;
+}
+
+message DrivingParkingModeProto {
+  enum Mode {
+    NONE = 0;
+    PARKING = 1;
+    DRIVING = 2;
+  }
+  enum DrivingMode {
+    PRIMARY_DRIVING_MODE = 0;
+    SECONDARY_DRIVING_MODE = 1;
+  }
+  enum ParkingMode {
+    PARKING_ACTIVE_MODE = 0;
+    PARKING_SEARCHING_MODE = 1;
+  }
+  optional Mode mode = 1;
+  optional DrivingMode driving_mode = 2;
+  optional ParkingMode parking_mode = 3;
+}
+
+message AssistSummonChartStateProto {
+  enum SummonState {
+    SUMMON_STATE_INITIAL = 0;
+    SUMMON_STATE_STANDBY = 1;
+    SUMMON_STATE_RUNNING = 2;
+    SUMMON_STATE_PAUSE = 3;
+    SUMMON_STATE_FINISH = 4;
+    SUMMON_STATE_QUIT = 5;
+    SUMMON_STATE_FAILURE = 6;
+    SUMMON_STATE_HANDSHAKE = 7;
+  }
+  optional SummonState state = 1;
+}
+
+enum ParkingTaskType {
+  PARKING_TASK_TYPE_NONE = 0;
+  PARKING_TASK_TYPE_PARKING = 1;
+  PARKING_TASK_TYPE_PARKING_OUT = 2;
+  PARKING_TASK_TYPE_REMOTE_PARKING = 3;
+  PARKING_TASK_TYPE_REMOTE_PARKING_OUT = 4;
+  PARKING_TASK_TYPE_SUMMON = 5;
+}

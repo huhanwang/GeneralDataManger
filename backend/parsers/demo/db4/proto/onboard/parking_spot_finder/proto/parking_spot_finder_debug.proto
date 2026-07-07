@@ -1,0 +1,85 @@
+
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/onboard/parking_spot_finder/proto/parking_spot_finder_debug";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/perception/parking/parking_base.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/parking_spot_finder.proto";
+
+message ParkingSpotFinderDebugInfo {
+  optional string id = 1;
+  optional string geometry_method_debug = 2;
+  optional string hybrid_a_star_debug = 3;
+  optional double time_consuming_ms = 4;
+  optional string rule_based_method_debug = 5;
+}
+
+message NeighbourSpotsDebugProto {
+  repeated string ids = 1;
+}
+
+message NeighbourObjectsDebugProto {
+  repeated string ids = 1;
+}
+
+message EgoParkingSpotDebugProto {
+  optional string id = 1;
+  optional double overlap_ratio = 2;
+}
+
+message ParkingOutTaskDeciderDebugProto {
+  repeated EgoParkingSpotDebugProto ego_parking_spots = 1;
+  repeated NeighbourSpotsDebugProto neighbour_spots = 2;
+  repeated NeighbourObjectsDebugProto neighbour_objects = 3;
+  optional SpotType spot_type = 4;
+}
+
+message VirtualBounaryDebugProto {
+  optional string id = 1;
+  optional Vec2dProto start = 2;
+  optional Vec2dProto end = 3;
+}
+
+message VirtualBounariesDebugProto {
+  repeated VirtualBounaryDebugProto virtual_boundaries = 2;
+
+  reserved 1;
+}
+
+message ParkingOutDirectionFinderDebugProto {
+  repeated VirtualBounariesDebugProto all_dirs_virtual_boundaries = 1;
+  repeated ParkingOutDirection pre_filter_directions = 2;
+  repeated Box2dProto target_boxes = 3;
+  repeated string path_status = 4;
+  repeated double time_consuming_ms = 5;
+  optional string perpendicular_front_out_not_release_reason = 6;
+}
+
+message CustomSpotFinderDebugInfo {
+  enum ThreadStatus {
+    INACTIVE = 1;
+    RUNNING = 2;
+    PLAN_FINISH = 3;
+  }
+  optional int64 ha_iters = 1;
+  optional string ha_status = 2;
+  optional double ha_time_consuming_ms = 3;
+  optional double total_time_consuming_ms = 4;
+  optional ThreadStatus plan_thread_status = 5;
+  optional bool terminate_searching = 6;
+}
+
+message ParkingSpotFinderDebugProto {
+  optional LiteHeader header = 1;
+  optional string fault_reason = 2;
+  repeated ParkingSpotFinderDebugInfo spots = 3;
+  optional ParkingOutTaskDeciderDebugProto parking_out_task_decider_debug = 4;
+  optional ParkingOutDirectionFinderDebugProto parking_out_direction_debug = 5;
+  repeated VirtualBounaryDebugProto curb_wall_fit_segments = 6;
+  optional ParkingSpotFinderInfo original_custom_spot = 7;
+  optional CustomSpotFinderDebugInfo custom_spot_finder_debug = 8;
+}

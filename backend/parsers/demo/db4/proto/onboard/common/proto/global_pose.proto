@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/proto/global_pose";
+
+import "onboard/common/proto/map_geometry.proto";
+
+message GlobalPoseProto {
+  optional mapping.GeoPointProto geo_location = 1;
+  optional double yaw = 2;
+}

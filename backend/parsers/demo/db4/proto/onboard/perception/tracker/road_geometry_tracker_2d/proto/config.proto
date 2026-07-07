@@ -1,0 +1,64 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+package snoah;
+import "onboard/proto/lite_camera.proto";
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/road_geometry_tracker_2d/proto/config";
+
+message PreprocessParams {
+  optional double min_lane_length_to_filter = 1 [default = 1.0];
+  optional double min_measurement_bev_x = 2 [default = 0.0];
+  optional double max_measurement_bev_x = 3 [default = 300.0];
+}
+
+message AssociatorParams {
+  message DistanceMetricCalculationOptions {
+    optional double max_overlap_start_lateral_distance = 1 [default = 1.0];
+    optional double max_overlap_longitudinal_distance = 2 [default = 0.0];
+  }
+
+  message MatchCondition {
+    optional double max_lateral_distance = 1 [default = 3.0];
+    optional double max_average_lateral_distance = 2 [default = 0.75];
+    optional double min_overlap = 3 [default = 1.0];
+    optional double min_overlap_ratio = 4 [default = 0.4];
+  }
+
+  optional DistanceMetricCalculationOptions
+      distance_metric_calculation_options = 1;
+  optional MatchCondition match_condition = 2;
+}
+
+message TrackingParams {
+  message FitterParams {
+    optional double max_fitting_mse = 1 [default = 0.6];
+    optional double fitting_sample_step = 2 [default = 1.0];
+    optional double expired_time_duration = 3 [default = 2.0];
+  }
+  optional FitterParams fitter_params = 1;
+}
+
+message PostProcessParams {
+  optional double expired_tracks_time_duration = 1 [default = 0.5];
+}
+
+message RoadGeometryTracker2DParams {
+  optional PreprocessParams preprocess_params = 1;
+  optional AssociatorParams associator_params = 2;
+  optional TrackingParams tracking_params = 3;
+  optional PostProcessParams postprocess_params = 4;
+}
+
+message MultiCameraRoadGeometryTracker2DParams {
+  repeated CameraId useful_camera_ids = 1;
+  optional RoadGeometryTracker2DParams tracker_params = 2;
+}

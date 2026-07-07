@@ -1,0 +1,150 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/nets/proto/net_param.proto";
+
+// NEXT ID: 7
+message RangeInfo {
+  // x means the vehicle drive direction, y means the vehicle left direction,
+  // z means the vehicle up direction
+  optional float x_min = 1;
+  optional float y_min = 2;
+  optional float z_min = 3;
+  optional float x_max = 4;
+  optional float y_max = 5;
+  optional float z_max = 6;
+}
+
+// NEXT ID: 3
+message DetectionRangeInfo {
+  // clip range for normal object
+  optional RangeInfo detection_range_info = 1;
+  // clip range for small object
+  optional RangeInfo detection_clip_range_info = 2;
+}
+
+// NEXT ID: 4
+message SizeInfo {
+  optional float x_size = 1;
+  optional float y_size = 2;
+  optional float z_size = 3;
+}
+
+// NEXT ID: 3
+message VoxelInfo {
+  optional SizeInfo voxel_size = 1;
+  optional SizeInfo voxel_grid_size = 2;
+}
+
+// NEXT ID: 3
+message PointInfo {
+  optional int32 num_max_point = 1;
+  optional int32 num_point_feature = 2;
+}
+
+// NEXT ID: 2
+message SequenceInfo {
+  optional int32 num_sequence = 1;
+}
+
+// NEXT ID: 6
+message DetectionClassInfo {
+  enum DetectionClass {
+    CAR = 0;
+    PED = 1;
+    CYC = 2;
+    TRI = 3;
+    POLE = 4;
+    CONE = 5 [deprecated = true];
+    TRUCK = 6;
+  }
+  repeated DetectionClass detection_class = 1;
+  optional int32 num_classes = 2;
+  optional int32 feature_map_scale = 3;
+}
+
+// NEXT ID: 13
+message PillarSemanticClassInfo {
+  enum PillarSemanticClass {
+    CAR = 0;
+    PED = 1;
+    XCYCLIST = 2;
+    ANIMAL = 3;
+    CONE = 4;
+    BARRIER = 5;
+    STATIC_OBJECT = 6;
+    VEGETATION = 7;
+    MIST = 8;
+    REFLECTION = 9;
+    CAR_DOOR = 10;
+    POLE = 11;
+    BACKGROUND = 12;
+  }
+  optional int32 num_classes = 1;
+  optional int32 feature_map_scale = 2;
+}
+
+// NEXT ID: 3
+message PillarBaseClassInfo {
+  optional int32 num_classes = 1;
+  optional int32 feature_map_scale = 2;
+}
+
+// NEXT ID: 7
+message ClassInfo {
+  // optional for single-scale classes
+  optional DetectionClassInfo detection_class_info = 1;
+  // repeated for multi-scale classes
+  repeated DetectionClassInfo multi_detection_class_info = 2;
+  // pillar class info
+  optional PillarSemanticClassInfo pillar_semantic_class_info = 3;
+  optional PillarBaseClassInfo pillar_instance_class_info = 4;
+  optional PillarBaseClassInfo pillar_motion_class_info = 5;
+  optional PillarBaseClassInfo pillar_occupancy_class_info = 6;
+}
+
+// NEXT ID: 14
+message ThresholdInfo {
+  // detection
+  optional int32 detection_max_num = 1;
+  optional float detection_all_score_threshold = 2;
+  repeated float detection_class_score_threshold = 3;
+  optional float detection_all_iou_threshold = 4;
+  repeated float detection_class_iou_threshold = 5;
+  // pillar
+  optional float pillar_semantic_all_threshold = 6;
+  repeated float pillar_semantic_class_threshold = 7;
+  optional float pillar_instance_all_threshold = 8;
+  repeated float pillar_instance_class_threshold = 9;
+  optional float pillar_motion_all_threshold = 10;
+  repeated float pillar_motion_class_threshold = 11;
+  optional float pillar_occupancy_all_threshold = 12;
+  repeated float pillar_occupancy_class_threshold = 13;
+}
+
+// NEXT ID: 2
+message ModelStructureInfo {
+  optional TensorInfo output_feature_map = 1;  // TensorInfo likely defined in net_param.proto
+}
+
+// NEXT ID: 2
+message ResolutionInfo {
+  optional float pillar_resolution = 1;
+}
+
+// NEXT ID: 11
+message OmniNetParam {
+  optional NetParam net_param = 1;
+  oneof detection_range_info {
+    DetectionRangeInfo full_detection_range = 2;
+    DetectionRangeInfo shrink_detection_range = 3;
+  }
+  optional VoxelInfo voxel_info = 4;
+  optional PointInfo point_info = 5;
+  optional SequenceInfo sequence_info = 6;
+  optional ClassInfo class_info = 7;
+  optional ThresholdInfo threshold_info = 8;
+  optional ModelStructureInfo model_structure_info = 9;
+  optional ResolutionInfo resolution_info = 10;
+}

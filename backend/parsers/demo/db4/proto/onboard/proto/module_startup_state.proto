@@ -1,0 +1,16 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message ModuleStartupStateProto {
+  enum State {
+    UNKNOWN = 0;
+    STOPPED = 1;
+    STARTING = 2;
+    ALL_READY = 3;
+  }
+  optional LiteHeader header = 1;
+  optional State state = 2;
+}

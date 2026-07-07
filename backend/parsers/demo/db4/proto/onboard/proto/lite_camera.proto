@@ -1,0 +1,249 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/shm_message.proto";
+
+enum CameraId {
+  CAM_UNKNOWN = 0;
+
+  // FUNCTION CAMERAS
+  // Cameras in the center.
+  CAM_FRONT_LEFT = 1;
+  CAM_FRONT = 2;
+  CAM_FRONT_RIGHT = 3;
+  CAM_REAR_RIGHT = 4;
+  CAM_REAR = 5;
+  CAM_REAR_LEFT = 6;
+
+  // Dim cameras for TL recognition.
+  CAM_FRONT_DIM = 7;
+
+  // Cameras on the left on minibus.
+  CAM_L_FRONT_LEFT = 10;
+  CAM_L_FRONT = 11;
+  CAM_L_FRONT_RIGHT = 12;
+  CAM_L_REAR_LEFT = 13;
+  CAM_L_LEFT = 14;
+
+  // Cameras on the right on minibus.
+  CAM_R_FRONT_LEFT = 20;
+  CAM_R_FRONT = 21;
+  CAM_R_FRONT_RIGHT = 22;
+  CAM_R_RIGHT = 23;
+  CAM_R_REAR_RIGHT = 24;
+  CAM_R_FRONT_DIM = 25;
+  CAM_R_FRONT_HD = 26;
+
+  // PBQ cameras.
+  CAM_PBQ_FRONT_WIDE = 50;  // 120-degree
+  CAM_PBQ_FRONT = 51;       // 60-degree
+  CAM_PBQ_FRONT_TELE = 52;  // 30-degree
+  CAM_PBQ_FRONT_LEFT = 53;
+  CAM_PBQ_FRONT_RIGHT = 54;
+  CAM_PBQ_REAR_LEFT = 55;
+  CAM_PBQ_REAR_RIGHT = 56;
+  CAM_PBQ_REAR = 57;
+  CAM_PBQ_FRONT_FISHEYE = 58;
+  CAM_PBQ_LEFT_FISHEYE = 59;
+  CAM_PBQ_RIGHT_FISHEYE = 60;
+  CAM_PBQ_REAR_FISHEYE = 61;
+
+  // virtual cameras
+  CAM_PBQ_FRONT_LEFT_FISHEYE_VIRTUAL = 62;
+  CAM_PBQ_FRONT_RIGHT_FISHEYE_VIRTUAL = 63;
+  CAM_PBQ_REAR_LEFT_FISHEYE_VIRTUAL = 64;
+  CAM_PBQ_REAR_RIGHT_FISHEYE_VIRTUAL = 65;
+  CAM_PBQ_FRONT_WIDE_CROP_VIRTUAL = 66;
+  CAM_PBQ_FRONT_TELE_CROP_VIRTUAL = 67;
+  CAM_PBQ_AVM_VIRTUAL = 68;
+  CAM_PBQ_IPM_VIRTUAL = 69;
+  CAM_PBQ_FRONT_WIDE_RAW_VIRTUAL = 70;
+  CAM_PBQ_FRONT_TELE_RAW_VIRTUAL = 71;
+  CAM_PBQ_REAR_LEFT_CROP_VIRTUAL = 72;
+  CAM_PBQ_REAR_RIGHT_CROP_VIRTUAL = 73;
+  CAM_PBQ_FRONT_WIDE_CROP_HPA_DVR_VIRTUAL = 74;
+
+  // standard virtual camera
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_H110 = 75;
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_H60 = 76;
+  CAM_PBQ_FRONT_TELE_RESET_OPTICAL_H30 = 77;
+  CAM_PBQ_FRONT_LEFT_RESET_OPTICAL_H99 = 78;
+  CAM_PBQ_FRONT_RIGHT_RESET_OPTICAL_H99 = 79;
+  CAM_PBQ_REAR_RESET_OPTICAL_H50 = 82;
+  CAM_PBQ_REAR_LEFT_RESET_OPTICAL_H99 = 83;
+  CAM_PBQ_REAR_LEFT_RESET_OPTICAL_H30 = 84;
+  CAM_PBQ_REAR_RIGHT_RESET_OPTICAL_H99 = 85;
+  CAM_PBQ_REAR_RIGHT_RESET_OPTICAL_H30 = 86;
+  CAM_PBQ_FRONT_TELE_RESET_OPTICAL_H15 = 97;
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_LEFT_H60 = 103;
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_RIGHT_H60 = 104;
+
+  // standard virtual camera for offboard labeling (high resolution)
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_H110_HR = 87;
+  CAM_PBQ_FRONT_WIDE_RESET_OPTICAL_H60_HR = 88;
+  CAM_PBQ_FRONT_TELE_RESET_OPTICAL_H30_HR = 89;
+  CAM_PBQ_FRONT_LEFT_RESET_OPTICAL_H99_HR = 90;
+  CAM_PBQ_FRONT_RIGHT_RESET_OPTICAL_H99_HR = 91;
+  CAM_PBQ_REAR_RESET_OPTICAL_H50_HR = 92;
+  CAM_PBQ_REAR_LEFT_RESET_OPTICAL_H99_HR = 93;
+  CAM_PBQ_REAR_LEFT_RESET_OPTICAL_H30_HR = 94;
+  CAM_PBQ_REAR_RIGHT_RESET_OPTICAL_H99_HR = 95;
+  CAM_PBQ_REAR_RIGHT_RESET_OPTICAL_H30_HR = 96;
+  CAM_PBQ_FRONT_TELE_RESET_OPTICAL_H15_HR = 98;
+  CAM_PBQ_FRONT_FISHEYE_RESET_OPTICAL_LEFT_H120_HR = 105;
+  CAM_PBQ_FRONT_FISHEYE_RESET_OPTICAL_RIGHT_H120_HR = 106;
+  CAM_PBQ_REAR_FISHEYE_RESET_OPTICAL_LEFT_H120_HR = 107;
+  CAM_PBQ_REAR_FISHEYE_RESET_OPTICAL_RIGHT_H120_HR = 108;
+  CAM_PBQ_LEFT_FISHEYE_RESET_OPTICAL_LEFT_H120_HR = 109;
+  CAM_PBQ_LEFT_FISHEYE_RESET_OPTICAL_RIGHT_H120_HR = 110;
+  CAM_PBQ_RIGHT_FISHEYE_RESET_OPTICAL_LEFT_H120_HR = 111;
+  CAM_PBQ_RIGHT_FISHEYE_RESET_OPTICAL_RIGHT_H120_HR = 112;
+
+  // Aligned cameras.
+  CAM_PBQ_ALIGNED_AROUND = 80;
+  CAM_PBQ_ALIGNED_FISHEYE = 81;
+
+  // End of normal cameras.
+  CAM_FUNCTION_MAX = 99;
+
+  // AUXILIARY CAMERAS
+  // Auxiliary cameras are not used on onboard system.
+  CAM_INSIDE_DRIVER = 100;
+  CAM_INSIDE_PASSENGER = 101;
+  CAM_INSIDE_FRONT = 102;
+}
+
+message CameraInfo {
+  enum CameraVendor {
+    FLIR = 0;
+    LEOPARD = 1;
+    SENSING = 2;
+    LIJING = 3;  // for match camera inherent proto
+  }
+  optional CameraVendor camera_vendor = 1;
+
+  enum SensorType {
+    AR0231 = 0;
+    AR0233 = 1;
+    IMX390 = 2;
+    IMX490 = 3;
+    IMX424 = 4;
+    AR0820 = 5;
+    ISX031 = 6;
+    OX03CC = 7;
+    OX08BC = 8;
+    IMX728 = 9;
+    OX03CD = 10;
+    IMX623 = 11;
+  }
+  // Only for SENSING camera type.
+  optional SensorType sensor_type = 2;
+}
+
+message CameraFormat {
+  enum OutputFormat {
+    RGB = 1;
+    RAW_RGGB = 2;
+    RAW_RCCB = 3;
+    YUV = 4;
+    YCbCr = 5;
+  }
+  optional OutputFormat output_format = 1;
+  // Only valid for raw output.
+  optional int32 bits_per_pixel = 2;
+}
+
+enum EncodeType {
+  ENCODE_TYPE_JPEG = 0;
+  ENCODE_TYPE_H265 = 1;
+  UNENCODE_YUVNV12 = 2;
+}
+
+enum ImageType {
+  IMAGE_FULLSIZE = 0;
+  IMAGE_DOWNSIZED = 1;
+}
+
+message ImageInfo {
+  // When the camera is triggered.
+  optional double trigger_timestamp = 1;
+  // When the original image arrives at OBC.
+  optional double original_image_arrival_timestamp = 2;
+  // When the encoded image is published at OBC.
+  optional double encoded_image_publish_timestamp = 3;
+  // When the encoded image arrives at OMC.
+  optional double encoded_image_arrival_timestamp = 11;
+  // When the decoded image is published.
+  optional double decoded_image_publish_timestamp = 12;
+  // When the image begin to encode
+  optional double original_image_encode_timestamp = 15;
+
+  optional float exposure_time_ms = 5;
+  optional float gain = 6;
+  optional bool dim_mode = 7;
+  optional bool hardware_trigger_mode = 13;
+
+  message Pose {
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional double yaw = 4;
+    optional double pitch = 5;
+    optional double roll = 6;
+  }
+  optional Pose pose = 8;
+
+  optional int32 width = 9;
+  optional int32 height = 10;
+
+  optional EncodeType encode_type = 14 [default = ENCODE_TYPE_JPEG];
+
+  optional bool filtered_image = 16;
+
+  optional ImageType image_type = 17;
+
+  // if true, the image has not been cropped, undistorted, flipped, etc.
+  optional bool is_original_image = 18;
+
+  message AeInfo {
+    optional uint32 ae_exposure_us = 1;
+    optional uint32 again = 2;
+    optional uint32 sys_exposure = 3;
+    optional uint32 status_info_exp_log2 = 4;
+    optional uint32 cur_lux = 5;
+  }
+  optional AeInfo ae_info = 19;
+
+  message AwbInfo {
+    optional uint32 rgain = 1;
+    optional uint32 bgain = 2;
+    optional uint32 cct = 3;
+  }
+  optional AwbInfo awb_info = 21;
+
+  optional float scale_based_raw_image = 22;
+
+  optional bool reference_image = 20 [default = true];
+
+  optional bool is_p_frame = 31 [default = false];
+
+  reserved 4;
+}
+
+message EncodedImageMetadata {
+  extend ShmMessageMetadata {
+    optional EncodedImageMetadata encoded_image_meta = 10001;
+  }
+  optional CameraId camera_id = 1;
+  optional ImageInfo image_info = 2;
+}
+
+message DecodedImageMetadata {
+  extend ShmMessageMetadata {
+    optional DecodedImageMetadata decoded_image_meta = 10002;
+  }
+  optional CameraId camera_id = 1;
+  optional ImageInfo image_info = 2;
+}

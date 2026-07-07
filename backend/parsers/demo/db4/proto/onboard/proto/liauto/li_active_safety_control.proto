@@ -1,0 +1,43 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message AsControlHeader {
+  optional uint64 as_control_timestamp = 1;  // unsigned long long
+  optional uint32 as_control_frame_id = 2;   // unsigned long
+}
+
+message AsLongitControl {
+  optional bool as_main_awb_enable = 1;           // boolean
+  optional int32 as_main_awb_warning_level = 2;   // octet
+  optional bool as_main_aba_enable = 3;           // boolean
+  optional int32 as_main_aba_req_level = 4;       // octet
+  optional bool as_main_abp_req = 5;              // boolean
+  optional int32 as_main_aeb_fault = 6;           // octet
+  optional float as_main_aeb_ax_tar = 7;          // float
+  optional int32 as_main_aeb_request = 8;         // octet
+  optional bool as_main_aeb_avh_req = 9;          // boolean
+  optional int32 as_main_accel_inhibit_req = 10;  // octet
+}
+
+message AsLatitControl {
+  optional int32 as_main_str_whel_ang_req_valid = 1;  // octet
+  optional int32 as_main_str_whel_ang_ctrl_ena = 2;   // octet
+  optional int32 as_main_lat_fault_status = 3;        // octet
+  optional int32 as_main_lat_func_ctrl_mod = 4;       // octet
+  optional float as_main_target_str_ang = 5;          // float
+  optional int32 as_main_haptic_warning = 6;          // octet
+  optional bool as_main_haptic_warning_valid = 7;     // boolean
+
+  optional int32 as_rear_str_whel_ang_req_valid = 8;  // octet
+  optional int32 as_rear_lat_fault_status = 9;        // octet
+  optional int32 as_rear_lat_func_ctrl_mod = 10;      // octet
+  optional float as_rear_target_str_ang = 11;         // float
+}
+
+message AsControlCommand {
+  optional AsControlHeader as_control_header = 1;  // Nested message
+  optional AsLongitControl as_longit_control = 2;  // Nested message
+  optional AsLatitControl as_lat_control = 3;      // Nested message
+}

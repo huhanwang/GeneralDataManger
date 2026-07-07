@@ -1,0 +1,12 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/q_run_event.proto";
+
+message QRunEventsProto {
+  optional LiteHeader header = 1;
+  repeated QRunEvent run_events = 2;
+}

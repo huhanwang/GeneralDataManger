@@ -1,0 +1,149 @@
+syntax = "proto2";
+
+package snoah.logging;
+
+
+import "onboard/proto/localization.proto";
+import "onboard/logging/proto/q_rules_match.proto";
+
+message Counter {
+  optional string key = 1;
+  optional uint64 value = 2;
+}
+
+message Label {
+  optional string key = 1;
+  optional string value = 2;
+}
+
+message RunningStats {
+  optional string run_name = 1;
+  optional string car_id = 2;
+  optional uint64 start_time = 3;  // 统计时间长短
+  optional uint64 end_time = 4;
+  optional uint32 mileage = 5;              // 行驶历程
+  optional LocalizationPoseProto pose = 6;  // 地理位置信息
+  // NOA on/off
+  // 驾驶状态： manual， ADAS, NOA
+  optional uint64 noa_time = 7;
+  optional uint64 noa_mileage = 8;
+  repeated Label labels = 9;
+
+  // Add flowing items to labels
+  // road type:  高速，城区，山区，国道，乡镇
+  // optional SceneType scene_type = 7;
+  // 天候: 雾天，阴天，雪天， 雨天，晴天
+  // optional WeatherType weather_type;
+  // 时段: 白天/黑夜，上午/下午， 日出/日落
+  // optional TimeType time_type;
+  // LightType: 自然光/灯光/强光/夕阳光/黑暗/其他
+  // optional LightType light_type; // 根据地平线文档增加的
+
+  // NOA State
+  // NOA, Navigate on Autopilot, 自动辅助导航驾驶
+  // LCC, Lane Centering Control, 车道居中控制
+  // ACC, Adaptive Cruise Control, 自适应巡航控制
+  // PLC, Paddle Lane Change, 指令变道/拨杆变道
+  optional uint32 plc_trigger_num = 10;
+  // ALC, Auto Lane Change, 自主变道
+  optional uint32 alc_trigger_num = 11;
+  // 前碰撞预警-FCW
+  optional uint32 fcw_trigger_num = 12;
+  // 紧急制动-AEB
+  optional uint32 aeb_trigger_num = 13;
+  // LDW/LKA/ELK 车道保持
+  optional uint32 ldw_trigger_num = 14;
+
+  // Crash, TakeOver, KickOut, HardBrake
+  optional uint32 crash_num = 20;
+  optional uint32 takerover_num = 21;
+  optional uint32 kickout_num = 22;
+  optional uint32 hardbrake_num = 23;
+
+  repeated Counter extra_counters = 30;
+  // OddProto: TODO
+  // optional OddProto odd;
+  // 交通参与者，道路复杂度
+
+  // TODO(Shaohui)
+  // 系统SOC统计信息：CPU/DPU，内存，先存，利用率
+  // 重点关注进程的内存，丢帧，最大处理实验，lite通讯延时
+  // CPU温度
+  // QEvent相关的统计信息
+  // version 版本
+}
+
+message TriggerStats {
+  optional string run_name = 1;
+  optional string car_id = 2;
+  optional int64 start_time = 3;  // 统计时间长短
+  optional int64 end_time = 4;
+
+  optional uint32 total_trigger_num = 5;        // 完整Trigger总数
+  optional uint32 uncompleted_trigger_num = 6;  // 不完整trigger个数
+  // 优先级不足被排挤的数量
+  optional uint32 drop_for_low_priority_trigger_num = 7;
+  // 高优先级插入抢占的数据
+  optional uint32 high_priority_cutin_trigger_num = 8;
+  optional uint32 drop_for_disk_full_trigger_num = 9;  // EMMC存储已满的数量
+
+  message TriggerPerRuleStat {
+    optional uint32 rule_id = 1;
+    optional string rule_version = 5;
+    optional uint32 total_trigger_num = 2;
+    optional uint32 uncompleted_trigger_num = 3;
+    optional uint32 drop_for_low_priority_trigger_num = 4;
+  }
+  repeated TriggerPerRuleStat per_rule_stats = 10;
+}
+
+// next id: 21
+message ClipMetaProto {
+  // name pattern: ${run_name}_${event_offset_sec},
+  // note: sec precision %.2f
+  optional string name = 1;
+  optional string run_name = 2;
+  optional string car_id = 3;
+  optional int32 trigger_id = 4;
+  optional string trigger_version = 17;
+  optional string release_info = 18;
+  optional string purpose = 19;
+  optional int64 header_timestamp = 5;  // absolute unix timestamp, in us
+  optional int64 event_offset_us = 6;
+  optional int64 start_offset_us = 9;
+  optional int32 duration_us = 7;
+  optional string state = 8;  // upload state
+
+  optional bool has_lidar = 10;
+  optional int64 lidar_size_bytes = 11;
+  optional bool has_camera = 12;
+  optional int64 camera_size_bytes = 13;
+  optional bool has_lite = 14;
+  optional int64 lite_size_bytes = 15;
+
+  optional string action_type = 20;  // snippet, or tag
+
+  optional QMatchingMergedSnippetsProto merged_snippets_proto =
+      16;  // context info from rule_matcher
+  optional QContextInfoProto.QEgoStatusProto ego_status = 21;
+}
+
+message ClipUploadReportProto {
+  optional string run_file_name = 1;
+  optional string run_name = 2;
+  optional string car_id = 3;
+  optional string file_type_name = 4;
+  optional int64 start_offset_us = 5;
+  optional int64 end_offset_us = 6;
+  optional int64 total_file_size = 7;
+  optional int64 start_timestamp = 8;
+  optional int64 finish_timestamp = 9;
+}
+
+message TriggerTag {
+  optional string run_name = 1;
+  optional int64 offset = 2;
+  optional int64 header_timestamp = 3;
+  repeated string labels = 4;
+  optional QContextInfoProto.QEgoStatusProto ego_status = 5;
+}

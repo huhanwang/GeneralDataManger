@@ -1,0 +1,113 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+message LiMcuToSoaFailsafeProto {
+  optional LiteHeader header = 1;
+  optional double stamp = 2;
+  optional bool clock = 3;
+  optional Driving driving = 4;
+  optional Parking parking = 5;
+  optional Reminder reminder = 6;
+  optional OnMCU on_mcu = 7;
+  optional FsdEcuFaultStatus fsd_ecu_fault_status = 8;
+  optional FsdSensorFaultStatus fsd_sensor_fault_status = 9;
+  optional FaultSource faults = 10;
+  optional SUMMONChartState summon_chart_state = 11;
+
+  enum FsdEcuFaultStatus {
+    FSD_ECU_FAULT_STATUS_NONE = 0;
+    FSD_ECU_FAULT_STATUS_FSD_ECU_FAILURE = 1;
+    FSD_ECU_FAULT_STATUS_FSD_NAV_FAILURE = 2;
+  }
+
+  enum FsdSensorFaultStatus {
+    FSD_SENSOR_FAULT_STATUS_NONE = 0;
+    FSD_SENSOR_FAULT_STATUS_FSD_FRONT_CAMERA_FAILURE = 1;
+    FSD_SENSOR_FAULT_STATUS_FSD_REAR_CAMERA_FAILURE = 2;
+    FSD_SENSOR_FAULT_STATUS_FSD_SIDE_CAMERA_FAILURE = 3;
+    FSD_SENSOR_FAULT_STATUS_FSD_FRONT_CAMERA_BLIND = 4;
+    FSD_SENSOR_FAULT_STATUS_FSD_REAR_CAMERA_BLIND = 5;
+    FSD_SENSOR_FAULT_STATUS_FSD_FL_CAMERA_BLIND = 6;
+    FSD_SENSOR_FAULT_STATUS_FSD_RL_CAMERA_BLIND = 7;
+    FSD_SENSOR_FAULT_STATUS_FSD_FR_CAMERA_BLIND = 8;
+    FSD_SENSOR_FAULT_STATUS_FSD_RR_CAMERA_BLIND = 9;
+    FSD_SENSOR_FAULT_STATUS_FSD_MRR_FAILURE = 10;
+    FSD_SENSOR_FAULT_STATUS_FSD_MRR_BLIND = 11;
+    FSD_SENSOR_FAULT_STATUS_FSD_LIDAR_FAILURE = 12;
+    FSD_SENSOR_FAULT_STATUS_FSD_LIDAR_BLIND = 13;
+    FSD_SENSOR_FAULT_STATUS_FSD_PAS_FAILURE = 14;
+    FSD_SENSOR_FAULT_STATUS_FSD_FISHEYE_CAMERA_FAILURE = 15;
+    FSD_SENSOR_FAULT_STATUS_FSD_SENSOR_FAILURE = 16;
+    FSD_SENSOR_FAULT_STATUS_FSD_ENVIRONMENT_LIMIT = 17;
+  }
+
+  message Driving {
+    optional bool diaaccerrorstatus = 1;
+    optional bool dialkaerrorstatus = 2;
+    optional bool diatjaerrorstatus = 3;
+    optional bool dialcaerrorstatus = 4;
+    optional bool dianoaerrorstatus = 5;
+    optional bool diafsderrorstatus = 6;
+    optional bool diacnoaerrorstatus = 7;
+  }
+
+  message Parking {
+    optional bool diarpaerrorstatus = 1;
+    optional bool diaapaerrorstatus = 2;
+    optional bool diavpaerrorstatus = 3;
+    optional bool diaavperrorstatus = 4;
+    optional bool diasummonerrorstatus = 5;
+    optional bool dialsaeberrorstatus = 6;
+  }
+
+  message Reminder {
+    optional bool diaihcerrorstatus = 1;
+  }
+
+  message OnMCU {
+    optional bool diafcwvruerrorstatus = 1;
+    optional bool diafcwc2cerrorstatus = 2;
+    optional bool diaaebvruerrorstatus = 3;
+    optional bool diaaebc2cerrorstatus = 4;
+    optional bool dialdwerrorstatus = 5;
+    optional bool dialdperrorstatus = 6;
+    optional bool diabsderrorstatus = 7;
+    optional bool diadowerrorstatus = 8;
+    optional bool diaelkerrorstatus = 9;
+    optional bool diafcwerrorstatus = 10;
+    optional bool diaaeberrorstatus = 11;
+    optional bool diaesaerrorstatus = 12;
+    optional bool diaaeserrorstatus = 13;
+    optional bool diafctaerrorstatus = 14;
+    optional bool diafctberrorstatus = 15;
+    optional bool diarctaerrorstatus = 16;
+    optional bool diarctberrorstatus = 17;
+    optional bool diarcwerrorstatus = 18;
+    optional bool diamaierrorstatus = 19;
+    optional bool diascmerrorstatus = 20;
+  }
+
+  message FaultSource {
+    repeated uint64 dtc_faults = 1 [packed = true];
+    optional uint64 can_fault = 2;
+  }
+
+  enum SUMMONChartState {
+    SUMMON_CHART_STATE_INITIAL = 0;
+    SUMMON_CHART_STATE_STANDBY = 1;
+    SUMMON_CHART_STATE_RUNNING = 2;
+    SUMMON_CHART_STATE_PAUSE = 3;
+    SUMMON_CHART_STATE_FINISH = 4;
+    SUMMON_CHART_STATE_QUIT = 5;
+    SUMMON_CHART_STATE_FAILURE = 6;
+    SUMMON_CHART_STATE_HANDSHAKE = 7;
+  }
+
+  message TriggerInfo {
+    optional string scenario = 1;
+    optional string tag_info = 2;
+  }
+}

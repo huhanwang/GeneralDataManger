@@ -1,0 +1,390 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/maps/proto/semantic_map.proto";
+import "onboard/planner/assist/proto/external_command_status.proto";
+import "onboard/proto/route.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/q_run_event.proto";
+import "onboard/proto/hmi_content.proto";
+import "onboard/proto/vehicle_signal.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/proto/assist_state.proto";
+import "onboard/proto/q_state.proto";
+import "onboard/proto/route_navigation.proto";
+import "onboard/proto/perception.proto";
+import "onboard/proto/q_vehicle_info.proto";
+import "onboard/common/proto/scene_setting.proto";
+import "onboard/calibration/proto/calibration_response.proto";
+import "onboard/proto/parking_spot_finder.proto";
+import "onboard/planner/scheduler/proto/lane_change.proto";
+import "onboard/proto/lane_change_type.proto";
+import "onboard/common/proto/product_seres.proto";
+import "onboard/proto/run_event_common_value.proto";
+import "onboard/hmi/proto/lc/park_hmi_state.proto";
+import "onboard/hmi/proto/lc/park_avp_maps.proto";
+import "onboard/proto/perception/vision/traffic_sign.proto";
+import "onboard/proto/perception/vision/intelligent_speed_limit.proto";
+
+message QViewPublisherMessage {
+  enum Type {
+    QVIEW_ELEMENTS = 1;
+    SERES_ELEMENTS = 2;
+    PLANNER_EXTERNAL_COMMAND_STATUS_PROTO = 100;
+    ROUTING_RESULT_SUGGEST_NAVI_ACTION_PROTO = 101;
+    QRUN_EVENT = 102;
+    CALIBRATION_PROGRESS = 103;
+  }
+
+  message QViewElements {
+    message QViewV2xNotifications {
+      optional int32 type = 1;
+      optional int32 sub_type = 2;
+      optional int32 direction = 3;
+      repeated int32 data = 4;
+      optional int32 distance = 5;  // m
+      optional int32 alert_level = 6;
+      optional string description = 7;
+      repeated Vec2dProto points = 8;
+    }
+
+    message QViewTimeInfoProto {
+      optional int64 qview_publish_timestamp = 1;       // ms
+      optional int64 trajectory_update_timestamp = 2;   // ms
+      optional int64 pose_timestamp = 3;                // ms
+      optional int64 pose_receive_timestamp = 4;        // ms
+      optional int64 pose_start_process_timestamp = 5;  // ms
+      optional int64 pose_end_process_timestamp = 6;    // ms
+    }
+
+    message QViewObjectInfoProto {
+      message QViewObjectProto {
+        enum Type {
+          UNKNOWN = 0;
+          VEHICLE = 1;
+          MOTORCYCLIST = 2;
+          CYCLIST = 3;
+          PEDESTRIAN = 4;
+          FOD = 5;
+          ABNORMAL_VEHICLE = 6;
+          LARGE_VEHICLE = 7;
+          CONE = 8;
+          WARNING_TRIANGLE = 9;
+          TRICYCLIST = 10;
+          BARRIER_ANTI_COLLISION_BUCKET = 11;
+          BARRIER_ANTI_COLLISION_POST = 12;
+        }
+
+        enum DataSource {
+          PERCEPTION = 1;
+          V2X = 2;
+        }
+
+        message QViewRect {
+          optional double x = 1;  // m
+          optional double y = 2;  // m
+          optional double heading = 3;
+          optional double length = 4;  // m
+          optional double width = 5;   // m
+        }
+
+        optional string id = 1;
+        optional Type type = 2;
+        optional DataSource data_src = 3;
+        optional QViewRect bounding_box = 5;
+        optional int32 highlight_type = 8;
+        optional int32 v2x_event = 9;
+
+        reserved 4, 6, 7;
+      }
+
+      message QViewPointCloudProto {
+        message QViewLidarPointProto {
+          optional float x = 1;  // m
+          optional float y = 2;  // m
+          optional float z = 3;  // m
+        }
+
+        repeated QViewLidarPointProto ped_points = 1;
+        repeated QViewLidarPointProto cyc_points = 2;
+      }
+
+      message V2xConstruction {
+        optional int64 id = 1;
+        optional double x = 2;
+        optional double y = 3;
+      }
+
+      repeated QViewObjectProto objects = 1;
+      optional QViewPointCloudProto point_cloud = 2;
+      optional bool replace_lidar_point_by_model = 3;
+      optional int64 perception_obj_update_timestamp = 4;  // ms
+      optional int64 v2x_obj_update_timestamp = 5;         // ms
+      repeated V2xConstruction v2x_constructions = 6;
+    }
+
+    message QViewPolygonProto {
+      message Point {
+        optional double x = 1;  // m
+        optional double y = 2;  // m
+      }
+      // More colors can be referenced at
+      // https://www.sioe.cn/yingyong/yanse-rgb-16/.
+      enum Color {
+        WHITE = 1;
+        YELLOW = 2;
+        GRAY = 3;
+        GREEN = 4;
+        DIMGRAY = 5;
+        CYAN = 6;
+        RED = 7;
+      }
+
+      enum Type {
+        UNKNOWN = 0;
+        LANE_BOUNDARY = 1;
+        STOP_LINE = 2;
+        CROSSWALK = 3;
+        BUILDING = 4;
+        CURB = 5;
+        PARKING_SPOT = 6;
+      }
+
+      enum Source {
+        SEMANTIC = 0;
+        VISION = 1;
+      }
+
+      repeated Point points = 1;
+      optional Color color = 2 [default = WHITE];
+      optional bool is_map_element = 3;
+      optional string polygon_id = 4;
+      optional double height = 5;  // m
+      optional int32 transparency = 6;
+      optional Type type = 7;
+      optional ParkingSpotFinderInfo.NoneParkableType parkable_type = 8;
+      optional Point center = 9;
+      optional bool is_three_angle = 10;
+      repeated Point front_points = 11;
+      repeated Point back_points = 12;
+      optional double heading = 13;
+      optional bool is_target_slot = 14;
+      optional bool is_memorized = 15;
+    }
+
+    message QViewLightInfoProto {
+      message QViewTrafficLightProto {
+        enum Color {
+          COLOR_UNKNOWN = 0;
+          RED = 1;
+          YELLOW = 2;
+          GREEN = 3;
+        }
+
+        optional Color color = 1 [default = COLOR_UNKNOWN];
+        optional bool flashing = 2 [default = false];
+        optional int32 timing = 3 [default = 0];
+        optional mapping.LaneProto.Direction direction = 4 [default = STRAIGHT];
+      }
+
+      repeated QViewTrafficLightProto traffic_lights = 1;
+      repeated QViewTrafficLightProto glosa_lights = 2;
+    }
+
+    message QViewVehicleInfoProto {
+      message QViewPoseProto {
+        optional double x = 1;  // m
+        optional double y = 2;  // m
+        optional double heading = 3;
+      }
+
+      message QViewPolygonsProto {
+        repeated QViewPolygonProto polygons = 1;
+      }
+
+      message QViewControlInfoProto {
+        optional double steering = 1;
+        optional bool left_blinker = 4;
+        optional bool right_blinker = 5;
+        optional int64 blinker_reason = 6;
+        repeated QViewPolygonProto target_lane_polygons = 9;
+        optional bool is_target_lane_changed = 10;
+        repeated QViewPolygonProto trajectory_polygons = 11;
+        optional QViewPolygonProto.Color target_lane_color = 12;
+        reserved 7, 8;
+      }
+
+      message QViewDriveInfoProto {
+        optional QRunEvent.LccFollowingDistanceLevel lcc_follow_distance_level =
+            3;
+        repeated HmiContentProto.DrivingState driving_states = 5;
+        optional bool is_gas_override = 6;
+        optional int32 event_notify = 8;
+        optional double cruising_speed_limit = 9;  // m/s
+        optional int32 lane_speed_limit = 10;  // km/h, 单位和数据来源保持一致
+        optional double speed = 11;            // m/s
+        optional AutonomyStateProto.State autonomy_state = 12;
+        optional AssistStateProto.AssistDriveSystemState assist_drive_state =
+            13;
+        optional double distance_to_roadblock = 14;
+        optional double distance_to_toll = 15;
+        optional double distance_to_traffic_light = 16;
+        optional double distance_to_map_boundary = 17;
+        optional bool all_trajectories_blocked = 18;
+        optional LaneChangeStage lane_change_stage = 19;
+        optional bool lane_change_for_obstacle_fail = 20;
+        optional double apa_rest_distance = 21;
+        repeated DistanceRangeProto sd_route_match_dist_ranges = 22;
+        optional LaneChangeType lane_change_type = 23;
+        reserved 1, 2, 4, 7;
+      }
+
+      optional QViewPoseProto vehicle_pose = 1;
+      optional QViewPoseProto parallel_pose = 2;
+      optional QViewControlInfoProto control_info = 4;
+      optional QViewDriveInfoProto drive_info = 5;
+      optional string vehicle_type = 6;
+
+      reserved 3;
+    }
+
+    message QViewRouteInfoProto {
+      message QViewStationProto {
+        optional int32 id = 1;
+        optional string name = 2;
+        optional double longitude = 3;  // Global coordinate, unit: radian
+        optional double latitude = 4;   // Global coordinate, unit: radian
+        optional double altitude = 5;   // Global coordinate, unit: radian
+        optional string direction = 6;
+        optional string change_route_info = 7;
+        optional double x = 8;   // Smooth coordinate
+        optional double y = 9;   // Smooth coordinate
+        optional double z = 10;  // Smooth coordinate
+      }
+
+      optional string name = 1;
+      optional bool is_loop = 2;
+      optional int64 update_timestamp = 3;  // ms
+      optional int32 next_station = 4;
+      optional double distance_to_next_station = 5;  // m
+      optional bool stopped_at_route_end = 6;
+      repeated QViewStationProto stations = 7;
+      optional string routing_request_id = 8;
+      optional NaviActionProto nav_action = 9;
+      optional int32 distance_to_action = 10;  // UNIT=meters
+    }
+
+    message QChassisInfoProto {
+      optional VehicleSignal vehicle_signal = 1;
+      optional Chassis.GearPosition gear_position = 2;
+      optional bool esc_vehicle_standstill = 3;
+      optional Chassis.LonStateType lon_state = 4;
+      optional bool is_driver_control_steer = 5;
+      optional Chassis.SeatBeltStatus driver_seat_belt_status = 6;
+      optional bool rear_mirror_status = 7;
+    }
+
+    message QViewGroundMarkProto {
+      optional sfixed64 id = 1;
+      optional mapping.GroundMarkingProto.Type type = 2;
+      optional QViewVehicleInfoProto.QViewPoseProto pose = 3;
+    }
+
+    message ParkingInfo {
+      enum ParkingState {
+        IDLE = 0;
+        PARKING = 1;
+        PARKING_SUCCESS = 2;
+        PARKING_FAILED = 3;
+      }
+
+      enum ParkingFailReason {
+        SPEED_TOO_HIGH = 0;
+        SYSTEM_NOT_ENGAGE = 1;
+      }
+      optional ParkingState parking_state = 1 [default = IDLE];
+      optional ParkingFailReason parking_fail_reason = 2;
+    }
+
+    message QParkingInfoProto {
+      enum ApaViewStatus {
+        APA_VIEW_OFF = 0;
+        APA_VIEW_ON = 1;
+      }
+
+      message ParkingTips {
+        optional int32 id = 1;
+        optional int32 ext1 = 2;
+        optional int32 ext2 = 3;
+        optional int64 create_time = 4;
+        optional int64 expire_time = 5;
+      }
+
+      message ParkingToasts {
+        optional int32 id = 1;
+        optional int32 ext1 = 2;
+        optional int32 ext2 = 3;
+        optional int32 level = 4;
+        optional int64 create_time = 5;
+        optional int64 expire_time = 6;
+      }
+
+      optional ApaViewStatus apa_view_status = 1;
+      optional ParkingTips apa_tip = 2;
+      optional ParkingToasts apa_toast = 3;
+    }
+
+    repeated QViewV2xNotifications v2x_notifications = 1;
+    optional QViewTimeInfoProto time_info = 2;
+    optional QViewObjectInfoProto object_info = 3;
+    repeated QViewPolygonProto map_polygons = 4;
+    optional QViewLightInfoProto light_info = 5;
+    optional QViewVehicleInfoProto vehicle_info = 6;
+    optional string rear_image = 7;
+    optional QViewRouteInfoProto route_info = 8;
+    repeated QViewGroundMarkProto ground_marks = 9;
+    repeated QViewPolygonProto highlight_boundaries = 10;
+    optional int32 map_type = 11;
+    optional QChassisInfoProto chassis_info = 12;
+    optional QState q_state = 13;
+    optional AutonomyStateProto autonomy_state = 14;
+    optional TrafficSignAndIntelligentSpeedProto
+        traffic_sign_and_intelligent_speed = 15;
+    repeated QViewPolygonProto vision_map_polygons = 16;
+    optional QVehicleInfo q_vehicle_info = 17;
+    optional SceneSettingsProto scene_settings = 18;
+    repeated QViewPolygonProto parking_spots = 19;
+    optional ParkingSpotFinderProto parking_spot_finder = 20;
+    repeated string hide_polygon_ids = 21;
+    repeated TrafficSignProto traffic_signs = 22;
+    repeated IntelligentSpeedLimitProto intelligent_speed_limits = 23;
+    repeated double bsd_warning_headings = 24;
+    repeated QViewPolygonProto hide_map_polygons = 25;
+    optional ParkingInfo parking_info = 27;
+    optional LoggingStatusProto logging_status = 28;
+    optional int32 rtk_status = 29;
+    optional QParkingInfoProto parking_info_proto = 30;
+    optional LongCheng.ParkHmiState park_hmi_state = 31;
+    optional LongCheng.ParkAvpMaps park_avp_maps = 32;
+  }
+
+  message SeresElements {
+    repeated ProductSeresMessageWrapper.ObjectData objects = 1;
+    optional ProductSeresMessageWrapper.MapData map_data = 2;
+    optional ProductSeresMessageWrapper.Trajectory trajectory = 3;
+  }
+
+  optional Type type = 1;
+
+  oneof message {
+    QViewElements qview_elements = 2;
+    PlannerExternalCommandStatusProto planner_external_command_status_proto = 3;
+    RoutingResultProto.SuggestNaviAction suggest_navi_action_proto = 4;
+    QRunEvent run_event = 5;
+    CalibrationProgressData calibration_progress = 6;
+    SeresElements seres_elements = 7;
+  }
+}

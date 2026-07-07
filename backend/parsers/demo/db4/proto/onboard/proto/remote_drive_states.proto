@@ -1,0 +1,18 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+message RemoteDriveStatesProto {
+  enum RemoteDriveStates {
+    IDLE = 0;
+    REMOTE_DRIVE_REQ = 1;
+    REMOTE_DRIVE = 3;
+  }
+  // optional int64 timestamp = 1;  // unit: us
+  optional LiteHeader header = 1;
+  optional RemoteDriveStates remote_drive_state = 2;
+  optional string error_code = 3;
+}

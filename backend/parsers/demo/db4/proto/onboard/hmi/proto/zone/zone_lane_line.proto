@@ -1,0 +1,99 @@
+
+syntax = "proto2";
+
+package snoah.Qzone;
+
+// import "onboard/hmi/proto/zone/point2D_conf_level.proto";
+
+message LaneInfoStructType {
+  message LaneMarkerIndexListType {
+    repeated uint32 lane_marker_index_list = 1;
+  }
+
+  optional uint32 lane_id = 1;
+  optional uint32 left_mrkr_valid_size = 2;
+  optional LaneMarkerIndexListType left_lane_marker_index_list = 3;
+  optional uint32 right_mrkr_valid_size = 4;
+  optional LaneMarkerIndexListType right_lane_marker_index_list = 5;
+  optional uint32 lane_info_identity = 6;
+  optional uint32 valid = 7;
+  optional uint32 pavement_left_start_index = 8;
+  optional uint32 pavement_left_end_index = 9;
+  optional uint32 pavement_right_start_index = 10;
+  optional uint32 pavement_right_end_index = 11;
+}
+
+message LaneMarkerStructType {
+  enum LaneBoundaryType {
+    LANETYPE_UNKNOWN = 0x0;
+    LANETYPE_NONE = 0x1;
+    LANETYPE_SOLIDLINE = 0x2;              // 实线
+    LANETYPE_DASHEDLINE = 0x3;             // 虚线
+    LANETYPE_DOUBLESOLIDLINE = 0x4;        // 双实线
+    LANETYPE_DOUBLEDASHEDLINE = 0x5;       // 双虚线
+    LANETYPE_LEFTSOLIDRIGHTDASHED = 0x6;   // 左实右虚
+    LANETYPE_RIGHTSOLIDLEFTDASHED = 0x7;   // 右实左虚
+    LANETYPE_RAMPWIDEDASHEDLINE = 0x8;     // 匝道宽虚线
+    LANETYPE_RAMPWIDESOLIDLINE = 0x9;      // 匝道宽实线
+    LANETYPE_DIVERSIONLINE = 0xA;          // 导流线
+    LANETYPE_WAITINGAREADASHEDLINE = 0xB;  // 待行区虚线
+    LANETYPE_WAITINGAREASOLIDLINE = 0xC;   // 待行区实线
+  }
+
+  enum LanelineColor {
+    LANELINECOLOR_NOLINE = 0x0;
+    LANELINECOLOR_WHITE = 0x1;
+    LANELINECOLOR_RED = 0x2;
+    LANELINECOLOR_YELLOW = 0x3;
+    LANELINECOLOR_OTHER = 0x4;
+  }
+
+  enum LanePositionIndex {
+    LANEPOSITION_HOST_LEFT = 0x0;
+    LANEPOSITION_HOST_RIGHT = 0x1;
+    LANEPOSITION_LEFT_NEIGHBOR_LANE_LEFT = 0x2;
+    LANEPOSITION_LEFT_NEIGHBOR_LANE_RIGHT = 0x3;
+    LANEPOSITION_RIGHT_NEIGHBOR_LANE_LEFT = 0x4;
+    LANEPOSITION_RIGHT_NEIGHBOR_LANE_RIGHT = 0x5;
+  }
+
+  optional uint32 lane_marker_id = 1;
+  optional LaneBoundaryType lane_marker_type = 2;
+  optional LanelineColor lane_marker_color = 3;
+  optional uint32 vertix_index_start = 4;
+  optional uint32 vertix_index_end = 5;
+  optional uint32 lane_marker_identity = 6;  // reverse
+  optional uint32 valid = 7;
+
+  optional LanePositionIndex lane_position_index = 20;
+}
+
+message SamplingPointType {
+  optional float x = 1;
+  optional float y = 2;
+}
+
+message RoadEdgeInfoStructType {
+  enum RoadEdgeLocationEn {
+    RoadEdgeLocationEn_UNKNOWN = 0x0;
+    RoadEdgeLocationEn_LEFT = 0x1;
+    RoadEdgeLocationEn_RIGHT = 0x2;
+  }
+
+  optional uint32 id = 1;
+
+  optional RoadEdgeLocationEn position = 3;
+
+  repeated SamplingPointType pts_list = 5;
+
+  optional uint32 valid = 7;
+  optional uint32 valid_points_size = 8;
+}
+
+message ZoneLaneLine {
+  optional uint32 lane_marker_vertices_valid_size = 1;  // 有效点个数
+  repeated LaneInfoStructType lane_info_st = 2;         // 10个车道集合
+  repeated LaneMarkerStructType lane_marker_st = 3;     // 320个分段集合
+  repeated SamplingPointType sampling_point = 4;        // 2000个点集合
+  repeated RoadEdgeInfoStructType road_edge = 5;        // 10个路沿集合
+}

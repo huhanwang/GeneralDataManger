@@ -1,0 +1,320 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message ElkReThreatAssessResult {
+  optional uint64 id = 1;
+  optional uint32 type = 2;
+  optional float timeToCollision = 3;
+  optional float lonPosition = 4;
+  optional float latPosition = 5;
+  optional uint32 conf = 6;
+};
+
+message LdwDebug {
+  optional uint32 debug_ldw_target_line_id = 1;
+  optional uint32 debug_ldw_suppress_condition = 2;
+  optional int32 debug_ldw_ldw_state = 3;
+  optional uint32 debug_ldw = 4;
+  optional float debug_ldw_target_line_distance_to_body_edge = 5;
+  optional float debug_ldw_odd_when_active = 6;
+  optional int32 debug_ldw_closest_leftline_index = 7;
+  optional int32 debug_ldw_closest_rightline_index = 8;
+  optional uint32 debug_ldw_countdown_turnlight_suppress = 9;
+  optional uint32 debug_ldw_countdown_since_ldw_actived = 10;
+  optional int32 debug_ldw_haptic_activecnt = 11;
+  optional int32 debug_ldw_force_active_state = 12;
+  optional uint64 debug_ldw_abort_reason = 13;
+  optional uint64 debug_ldw_supp_reason = 14;
+  optional int32 debug_ldw_notavail_reason = 15;
+  optional int32 debug_ldw_active_reason = 16;
+  optional int32 debug_ldw_complete_reason = 17;
+  optional int32 debug_ldw_warn_side_req = 18;
+  repeated float debug_ldw_reserve_signals = 19;
+  optional int32 debug_ldw_algo_version = 20;
+}
+
+message LdpDebug {
+  optional int32 debug_ldp_status = 1;
+  optional int32 debug_ldp_abortion = 2;
+  optional int32 debug_ldp_driver_override = 3;
+  optional int32 debug_ldp_driver_lane_change = 4;
+  optional uint32 debug_ldp = 5;
+  optional int32 debug_ldp_force_active_state =
+      6;  // 1:一次强制激活；2：连续两次无意识强制激活
+  optional float debug_lka_exit_time = 7;
+  optional float debug_ldp_dtlc = 8;
+  optional int32 debug_ldp_fail = 9;
+  optional int32 debug_ldp_deviate_unintension = 10;
+  optional int32 debug_ldp_driver_stable = 11;
+  optional int32 debug_ldp_deviate = 12;
+  optional int32 debug_ldp_prevent_area = 13;
+  optional int32 debug_ldp_drive_lane = 14;
+  optional int32 debug_ldp_suppression = 15;
+  optional uint32 debug_ldp_closest_line_id = 16;
+  optional float debug_ldp_lateral_speed_global = 17;
+  optional float debug_ldp_total_odd_edge_afterlimit_global = 18;
+  optional float debug_ldp_line2_ego_edge_global = 19;
+  optional uint32 debug_ldp_timecounterinonelane_global = 20;
+  optional float debug_ldp_currentpiderror_global = 21;
+  optional float debug_ldp_vehspd_factor_global = 22;
+  optional float debug_ldp_kapcurve_factor_global = 23;
+  optional float debug_ldp_pid_kp_global = 24;
+  optional float debug_ldp_pid_steerangle_ori_global = 25;
+  optional float debug_ldp_pid_steerangle_filter_global = 26;
+  optional float debug_ldp_ff_steerangle_ori_global = 27;
+  optional float debug_ldp_total_steerangle_ori_global = 28;
+  optional float debug_ldp_total_steerangle_filter_global = 29;
+  optional float debug_ldp_lookahead_distance_global = 30;
+  optional float debug_ldp_control_torque_steeringwheeltorque = 31;
+  optional float debug_ldp_active_oddedge_global = 32;
+  optional float debug_ldp_result_control_angle_steerwheelangledesired = 33;
+  optional int32 debug_ldp_haptic_ldpctl_hapticstatus = 34;
+  optional bool debug_ldp_funcstate_fucntionactive = 35;
+  optional int32 debug_ldp_funcstate_indexofline = 36;
+  optional uint64 debug_ldp_abort_reason = 37;
+  optional uint64 debug_ldp_supp_reason = 38;
+  optional int32 debug_ldp_notavail_reason = 39;
+  optional int32 debug_ldp_active_reason = 40;
+  optional int32 debug_ldp_complete_reason = 41;
+  optional int32 debug_ldp_intv_side_req = 42;
+  optional int32 debug_ldp_warn_side_req = 43;
+  optional int32 debug_ldp_cool_down_stage = 44;
+  optional int32 debug_ldp_force_warning_type = 45;
+  optional float debug_ldp_toline_ttc = 46;
+  repeated float debug_ldp_reserve_signals = 47;
+  optional int32 debug_ldp_algo_version = 48;
+}
+
+message ElkEdgeDebug {
+  optional int32 debug_elk_state = 1;
+  optional float debug_elk_active_oddedge = 2;
+  optional uint32 debug_elk_warning = 3;
+  optional int32 debug_elk_warning_state = 4;
+  optional int32 debug_elk_force_active_state = 5;
+  optional float debug_elk_latspeed = 6;
+  optional float debug_elk_latspeed_fence = 7;
+  optional float debug_elk_total_odd = 8;
+  optional int32 debug_elk_fencecase_type = 9;
+  optional uint32 debug_elk = 10;
+  optional int32 debug_elk_current_active_side = 11;
+  optional float debug_elk_nearest_dis = 12;
+  optional uint32 debug_elk_current_closestLine_id = 13;
+  optional int32 debug_elk_current_closestLine_index = 14;
+  optional int32 debug_elk_diag_error_bit = 15;
+  optional int32 debug_elk_linecond_bit = 16;
+  optional int32 debug_elk_deviation_trend_bit = 17;
+  optional int32 debug_elk_driver_unintend_bit = 18;
+  optional int32 debug_elk_mono_increase_counter = 19;
+  optional int32 debug_elk_mono_decrease_counter = 20;
+  optional float debug_elk_c0_diff_during_mono = 21;
+  optional int32 debug_elk_oncoming_index = 22;
+  optional int32 debug_elk_oncoming_suppress_counter = 23;
+  optional int32 debug_elk_oncoming_suppress_res = 24;
+  optional int32 debug_elk_frontside_obj_index = 25;
+  optional int32 debug_elk_frontside_counter_left = 26;
+  optional int32 debug_elk_frontside_counter_right = 27;
+  optional int32 debug_elk_frontside_suppress_left = 28;
+  optional int32 debug_elk_frontside_suppress_right = 29;
+  optional int32 debug_elk_line1to2_parall_counter = 30;
+  optional int32 debug_elk_line1to2_split_counter = 31;
+  optional int32 debug_elk_overtake_bit = 32;
+  optional int32 debug_elk_fence_both_lrh_yst_counter = 33;
+  optional float debug_elk_pid_error = 34;
+  optional float debug_elk_pid_steerangle = 35;
+  optional float debug_elk_cmd_steerangle = 36;
+  optional uint64 debug_elk_abort_reason = 37;
+  optional uint64 debug_elk_supp_reason = 38;
+  optional int32 debug_elk_notavail_reason = 39;
+  optional int32 debug_elk_active_reason = 40;
+  optional int32 debug_elk_complete_reason = 41;
+  optional int32 debug_elk_intv_side_req = 42;
+  optional int32 debug_elk_warn_side_req = 43;
+  optional int32 debug_elk_cool_down_stage = 44;
+  optional int32 debug_elk_force_warning_type = 45;
+  optional float debug_ldp_tofence_ttc = 46;
+  optional float debug_elk_linelatpos = 47;
+  repeated float debug_elk_reserve_signals = 48;
+  optional int32 debug_elk_algo_version = 49;
+}
+
+message ElkTargetDebug {
+  optional uint32 debug_elk_tgt = 1;
+  optional int32 debug_elk_tgt_state = 2;
+  optional int32 debug_elk_tgt_active_state = 3;
+  optional int32 debug_elk_tgt_current_closest_lineindex = 4;
+  optional int32 debug_elk_tgt_current_active_side = 5;
+  optional float elk_tgt_latspeed = 6;
+  optional int32 debug_elk_tgt_linecond_bit = 7;
+  optional int32 debug_elk_tgt_deviation_trend_bit = 8;
+  optional int32 debug_elk_tgt_driver_unintend_bit = 9;
+  optional float debug_elk_tgt_cmd_steer_angle = 10;
+  optional float debug_elk_tgt_overtake_bit = 11;
+  optional uint32 debug_elk_tgt_suppress_condition = 12;
+  optional bool debug_elk_tgt_traj_found = 13;
+  optional bool debug_elk_tgt_zerotraj_found = 14;
+  optional bool deubg_elk_tgt_left_laneline_ok = 15;
+  optional bool debug_elk_tgt_right_laneline_ok = 16;
+  optional int32 debug_elk_tgt_control_refrence_side = 17;
+  repeated float debug_elk_tgt_path_cp = 18;
+  repeated float debug_elk_tgt_path_dt = 19;
+  optional float debug_elk_tgt_path_time = 20;
+  optional float debug_elk_tgt_active_duration_time = 21;
+  optional float debug_elk_tgt_target_lane_offset = 22;
+  optional float debug_elk_tgt_start_lane_offset = 23;
+  optional float debug_elk_tgt_start_lateral_speed = 24;
+  optional float debug_elk_tgt_pid_error = 25;
+  optional float debug_elk_tgt_pid_steer_angle = 26;
+  optional float elk_tgt_steer_wheel_angle_disired = 27;
+  optional int32 debug_elk_tgt_current_closest_line_id = 28;
+  optional float debug_elk_tgt_active_oddedge = 29;
+  optional int32 debug_elk_tgt_intv_side = 30;
+  optional int32 debug_elk_tgt_warning_side = 31;
+  optional uint64 debug_elk_tgt_abort_reason = 32;
+  optional uint64 debug_elk_tgt_supp_reason = 33;
+  optional int32 debug_elk_tgt_notavail_reason = 34;
+  optional int32 debug_elk_tgt_active_reason = 35;
+  optional int32 debug_elk_tgt_complete_reason = 36;
+  optional bool debug_elk_tgt_in_cool_down = 37;
+  optional float deubg_elk_tgt_lat_posn = 38;
+  optional float debug_elk_tgt_lat_speed = 39;
+  optional bool debug_elk_tgt_force_open = 40;
+  optional int32 debug_elk_tgt_intv_side_req = 41;
+  repeated float debug_elk_tgt_reserve_signals = 42;
+  optional int32 debug_elk_tgt_algo_version = 43;
+}
+
+message TrajDebug {
+  optional uint32 fusion_id = 1;
+  repeated float px = 2;
+  repeated float py = 3;
+}
+
+message ObstacleDebug {
+  optional uint32 fusion_id = 1;
+  optional float px = 2;
+  optional float py = 3;
+  optional float heading = 4;
+  optional float width = 5;
+  optional float length = 6;
+  optional float height = 7;
+  optional float velocity = 8;
+  optional float acceleration = 9;
+  optional uint32 type = 10;
+  optional float ttc = 11;
+}
+
+message TaDebug {
+  optional uint32 slots_occupancy = 1;
+  optional uint32 flags_targets = 2;
+  optional uint32 flags_boundaries = 3;
+  repeated uint32 fusion_ids = 4;
+  optional uint32 flags_elk_road_edge_suppression = 5;
+  repeated uint32 debug_flags_vector = 6;
+  repeated float debug_values_vector = 7;
+  optional TrajDebug ego_traj = 8;
+  repeated TrajDebug target_trajs = 9;
+  repeated ObstacleDebug ego_obstacles = 10;
+  repeated ObstacleDebug target_obstacles = 11;
+  repeated ElkReThreatAssessResult elkre_threat = 12;
+}
+
+message LatPlanDebug {
+  optional int32 debug_intervention_type = 1;
+  optional bool debug_elk_decel_ena = 2;
+  optional float debug_elk_decel_req = 3;
+  optional int32 debug_elkre_intervention_state = 4;
+  optional int32 debug_elkre_intervention_side = 5;
+  optional int32 debug_elkre_warning_side = 6;
+  optional uint32 dubug_elkre_bit = 7;
+  optional float debug_elkre_lat_posn = 8;
+  optional float debug_elkre_lat_velocity = 9;
+  optional bool debug_elkre_traj_found = 10;
+  optional bool debug_elkre_zerotraj_found = 11;
+  optional bool deubg_left_roadedge_ok = 12;
+  optional bool debug_right_roadedge_ok = 13;
+  optional uint32 dubug_ldp_bit = 14;
+  optional int32 debug_ldp_intervention_state = 15;
+  optional int32 debug_ldp_intervention_side = 16;
+  optional int32 debug_ldp_warning_side = 17;
+  optional float debug_ldp_lat_posn = 18;
+  optional float debug_ldp_lat_velocity = 19;
+  optional bool debug_ldp_traj_found = 20;
+  optional bool debug_ldp_zerotraj_found = 21;
+  optional bool deubg_left_laneline_ok = 22;
+  optional bool debug_right_laneline_ok = 23;
+  optional int32 debug_control_refrence_side = 24;
+  repeated float debug_path_cp = 25;
+  repeated float debug_path_dt = 26;
+  optional float debug_path_time = 27;
+  optional float debug_active_duration_time = 28;
+  optional float debug_target_lane_offset = 29;
+  optional float debug_start_lane_offset = 30;
+  optional float debug_start_lateral_speed = 31;
+  // 以下信号为初始版本信号
+  optional int32 debug_ldp_intervene_type = 32;
+  optional int32 debug_ldp_intervene_state = 33;
+  repeated float debug_ldp_path_cp = 34;
+  repeated float debug_ldp_path_dt = 35;
+  optional float debug_ldp_path_time = 36;
+  optional int32 debug_ldp_control_refrence_side = 37;
+  optional int32 debug_ldp_intervene_side = 38;
+  optional float debug_ldp_active_duration_time = 39;
+  optional float debug_ldp_target_lane_offset = 40;
+  optional float debug_ldp_start_lane_offset = 41;
+  optional float debug_ldp_start_lateral_speed = 42;
+  optional int32 debug_hod_status = 43;
+  optional uint64 debug_elkre_bit = 44;
+  optional uint64 debug_ldp_bit = 45;
+}
+
+message LatCtrlDebug {
+  repeated float debug_ldp_lane_line_coeff = 1;
+  optional int32 debug_lateral_control_mode = 2;
+  optional float debug_local_offset = 3;
+  optional float debug_local_heading = 4;
+  optional float debug_look_ahead_offset = 5;
+  optional float debug_vlat_request = 6;
+  optional float debug_vlat_real = 7;
+  optional float debug_alat_request = 8;
+  optional float debug_yawrate_request = 9;
+  optional float debug_curvature_desired = 10;
+  optional float debug_ff_angle_request = 11;
+  optional float debug_bf_angle_request = 12;
+  optional int32 debug_angle_ratelimit_active = 13;
+  optional float debug_total_angle_request = 14;
+  optional float debug_vlatpid_p = 15;
+  optional float debug_vlatpid_i = 16;
+  optional float debug_vlatpid_d = 17;
+  repeated float debug_path_x = 18;
+  repeated float debug_path_y = 19;
+  optional float debug_look_ahead_dist = 20;
+  optional bool debug_reset_controller = 21;
+  optional bool debug_dil_factor_decreased = 22;
+  optional float debug_vlat_error = 23;
+}
+
+message LaneLineFit {
+  optional uint32 line_id = 1;
+  optional uint32 original_line_id = 2;
+  optional uint32 line_type = 3;
+  repeated float coeffs = 4;
+  optional float range_start_px = 5;
+  optional float range_end_px = 6;
+}
+
+message LateralCommonDebug {
+  optional TaDebug target_debug = 1;
+  optional LatPlanDebug lateral_plan_debug = 2;
+  optional LatCtrlDebug lateral_control_debug = 3;
+  repeated LaneLineFit lane_line_fit = 4;
+}
+
+message LateralFunctionDebug {
+  optional LdwDebug ldw_debug = 1;
+  optional LdpDebug ldp_debug = 2;
+  optional ElkEdgeDebug elk_edge_debug = 3;
+  optional ElkTargetDebug elk_target_debug = 4;
+  optional LateralCommonDebug lateral_common_debug = 5;
+}

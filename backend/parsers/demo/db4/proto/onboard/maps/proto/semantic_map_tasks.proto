@@ -1,0 +1,64 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+message Task {
+  enum Progress {
+    UNKNOWN = 0;
+    WAITING = 1;
+    WORKING = 2;
+    DONE = 3;
+  }
+  optional Progress progress = 1 [default = UNKNOWN];
+  optional string cartographer = 2;
+}
+
+message Patch {
+  optional int32 column_index = 1;
+  optional fixed64 cell_id = 2;
+  optional Task drawing = 3;
+}
+
+message PatchRow {
+  repeated Patch patches = 1;
+}
+
+message Stitch {
+  optional int32 column_index = 1;
+  optional fixed64 top_left_cell_id = 2;
+  optional Task drawing = 3;
+}
+
+message StitchRow {
+  repeated Stitch stitches = 1;
+}
+
+message SemanticMapTasks {
+  repeated PatchRow patches = 1;
+  repeated StitchRow stitches = 2;
+
+  repeated string imagery_commit_ids = 4;
+
+  reserved 3;
+}
+
+message UserProto {
+  // The default id(0) is reserved, do not assign it to anyone
+  optional fixed64 id = 1 [default = 0];
+  optional string name = 2;
+  optional string password = 3;
+  enum Role {
+    DEVELOPER = 0;
+    ADMIN = 1;
+    MANAGER = 2;
+    REGIONAL_MANAGER = 3;
+    // Quality-Assurance Manager
+    QA_MANAGER = 4;
+    CARTOGRAPHER = 5;
+  }
+  optional Role role = 4;
+}
+
+message UsersProto {
+  repeated UserProto users = 1;
+}

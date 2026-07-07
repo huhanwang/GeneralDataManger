@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah.mapping;
+
+import "onboard/math/geometry/proto/box2d.proto";
+
+message SdFusedIntersectionProto {
+  optional double dist_to_sd_cross_node = 1;
+  optional Box2dProto intersection_box = 2;
+  optional Box2dProto target_zone_box = 3;
+}

@@ -1,0 +1,108 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+
+message DataStatisticsMapping {
+  enum ParkFunctionMode {
+    INVALID = 0;
+    APA_PARKIN = 1;
+    APA_PARKOUT = 2;
+    RPA_PARKIN = 3;
+    SUMMON = 4;
+    AVP_PARKIN = 5;
+    AVP_PARKOUT = 6;
+    RPA_PARKOUT = 7;
+  }
+
+  optional ParkFunctionMode park_function_mode = 1;
+
+  enum APStatus {
+    OFF = 0;
+    SEARCHING = 1;
+    INHIBIT = 2;
+    STANDBY = 3;
+    SUSPEND = 4;
+    QUIT = 5;
+    FINISH = 6;
+    FAILURE = 7;
+  }
+
+  optional APStatus ap_status = 2;
+
+  enum APAOTerminateReason {
+    INITI = 0;
+    RECOVERABLE = 1;
+    BRAKE_PRESSED = 2;
+    UNBUCKLED = 3;
+    FLDOOR_OPEN = 4;
+    FRDOOR_OPEN = 5;
+    RLDOOR_OPEN = 6;
+    RRDOOR_OPEN = 7;
+    TRUNK_OPEN = 8;
+    MIRROR_FOLD = 9;
+    OBSTACLE_ON_PATH = 10;
+    RESERVED = 0xF;
+  }
+
+  optional APAOTerminateReason apao_terminate_reason = 3;
+
+  enum APAInhibitReason {
+    INHIBIT_INITI = 0;
+    PLANNING = 1;
+    COMMAND = 2;
+    SUSPEND_DURATION = 3;
+    SUSPEND_TIMES = 4;
+    BLOCK = 5;
+    OVER_SPEED = 6;
+    SPACE = 7;
+    INTERVENTION = 8;
+    SLOPE_OVER_LIMITED = 9;
+    SHIFT_TIMES = 0xA;
+    CHARGING = 0xB;
+    TIRE = 0xC;
+    PARKING_TIMEOUT = 0xD;
+    POWER_OFF = 0xE;
+    NOT_READY = 0xF;
+    EPS_ACTIVE = 0x10;
+    HANDSHAKE_FAILED = 0x11;
+    ADAS_ACTIVE = 0x12;
+    HOOD_OPEN = 0x13;
+    INHIBIT_OBSTACLE_ON_PATH = 0x14;
+    PASSENGER_NOT_IN_CAR = 0x15;
+    INTERVENTION_TO_R = 0x16;
+    INTERVENTION_TO_N = 0x17;
+    INTERVENTION_TO_D = 0x18;
+    INTERVENTION_TO_P = 0x19;
+    ODOM_ERROR = 0x1A;
+    PERCEPTION_ERROR = 0x1B;
+    ENVIRONMENT_MODEL_ERROR = 0x1C;
+  }
+
+  optional APAInhibitReason apao_inhibit_reason = 4;
+
+  enum APTarPrkLotSource {
+    INIT = 0;
+    VISION = 1;
+    PAS = 2;
+  }
+
+  optional APTarPrkLotSource apao_tar_prk_lot_source = 5;
+
+  enum APTarPrkLotType {
+    VERTICAL = 1;
+    HORIZONTAL = 2;
+    ANGLEDPRKLOT = 3;
+  }
+
+  optional APTarPrkLotType apao_tar_prk_lot_type = 6;
+
+  enum LocState {
+    INITING = 1;
+    LOW_PRECISION = 3;
+    HIGH_PRECISION = 4;
+    ABNORMAL = 6;
+  }
+
+  optional LocState loc_state = 7;
+}

@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/proto/ads.proto";
+
+// A message defines the GPU user information, such as device id, GPU usage
+// fraction, priority, etc.
+message GpuUserParam {
+  repeated GpuId gpu_id = 1;
+}
+
+message GpuUsersParam {
+  map<string, GpuUserParam> params = 1;
+}

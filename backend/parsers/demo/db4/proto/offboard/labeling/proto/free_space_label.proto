@@ -1,0 +1,102 @@
+syntax = "proto2";
+
+package snoah.free_space_label;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/free_space_label";
+
+// Next ID: 3
+message FreeSpaceContourPoint {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+// Next ID: 11
+message FreeSpaceContour {
+  enum ContourType {
+    CURBS = 0;
+    VEHICLE = 1;
+    PREDESTRIAN = 2;
+    CYCLIST = 3;
+    MULTI_WHEELER = 4;
+    CONE = 5;
+    WATER_BARRIER = 6;
+    ANTI_COLLISION_BUCKET = 7;
+    FENCE = 8;
+    GENERAL_OBJECT = 9;
+    INVALID = 10;
+  }
+
+  optional int32 contour_id = 1;
+  repeated FreeSpaceContourPoint points = 2;
+  optional ContourType contour_type = 3;
+  optional bool is_hallucinated = 4;
+}
+
+// Next ID: 3
+enum FreeSpaceLabelPolicyVersion {
+  V_UNKNOWN = 0;
+  V_22_08_29 = 1;  // Add contour point.
+  V_23_02_13 = 2;  // Add sequence label.
+  V_23_02_14 = 3;  // Add scene attribute.
+}
+
+// Next ID: 6
+enum RoadSurfaceState {
+  ROAD_STATE_UNKNOWN = 0;
+  DRY = 1;      // Dry road surface.
+  WET = 2;      // Wet road surface.
+  SNOW = 3;     // Snow on the road.
+  PONDING = 4;  // Water on the road.
+  MUDDY = 5;    // Muddy road.
+}
+
+// Next ID: 5
+enum TimeType {
+  TIME_TYPE_UNKNOWN = 0;  // don't known time from image
+  DAY = 1;                // day
+  NIGHT = 2;              // night
+  DAWN = 3;               // dawn
+  DUSK = 4;               // dusk
+}
+// Next ID: 6
+enum Weather {
+  SUNNY = 0;
+  CLOUDY = 1;
+  FOGGY = 2;
+  RAINY = 3;
+  SNOWY = 4;
+  UNKNOWN_WEATHER = 5;
+}
+
+// Next ID: 9
+enum SceneType {
+  OTHER_MAIN_SCENE = 0;  // other scene
+  URBAN = 1;             // urban
+  EXPRESSWAY = 2;        // high speed way in city
+  HIGHWAY = 3;           // highway
+  RURAL = 4;             // countryside
+  PARKING_LOT = 5;       // parking lot
+  TUNNEL = 6;            // tunnel
+  TOLL_GATE = 7;         // toll gate
+  ROUNDABOUT = 8;        // roundabout
+}
+
+// Next ID: 10
+message FreeSpaceLabelProto {
+  optional string name = 1;
+  repeated FreeSpaceContour contours = 2;
+  optional FreeSpaceLabelPolicyVersion version = 3 [default = V_UNKNOWN];
+  optional double center_timestamp = 4;
+  optional int32 frame_id = 5;  // Single frame scene is 0.
+  optional SceneType scene_type = 6;
+  optional Weather weather = 7;
+  optional TimeType time_type = 8;
+  optional RoadSurfaceState road_surface_state = 9;
+}
+
+// Next ID: 5
+message FreeSpaceSequenceLabelProto {
+  optional string run_name = 1;
+  optional double start_timestamp = 2;
+  optional double end_timestamp = 3;
+  repeated FreeSpaceLabelProto labels = 4;
+}

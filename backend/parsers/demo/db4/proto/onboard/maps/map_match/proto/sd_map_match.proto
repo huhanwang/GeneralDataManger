@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package snoah;
+import "onboard/maps/map_match/proto/sd_localization.proto";
+message MatchPointProto {
+  optional RawGnssPointProto raw_gnss_point = 1;
+  optional LocalizedResultProto localized_result = 2;
+  optional bool is_matching_succeed = 3;
+  enum MatchStatus {
+    kNormal = 1;
+    kLowPrecision = 2;
+  }
+  optional MatchStatus match_status = 4;
+  optional bool is_interpolated = 5;
+}
+message SdMapMatchProto {
+  optional sfixed64 route_id = 1;
+  repeated MatchPointProto matched_points = 2;
+}

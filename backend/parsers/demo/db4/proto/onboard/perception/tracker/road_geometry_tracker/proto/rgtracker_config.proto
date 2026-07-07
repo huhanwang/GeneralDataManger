@@ -1,0 +1,80 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/road_geometry_tracker/proto/rgtracker_config";
+
+enum RGTrackerType {
+  VISION_BEVRG_TRACKER = 0;
+  LIDAR_VISION_MAPFORMER_TRACKER = 1;
+  VISION_MAPFORMER_TRACKER = 2;
+}
+
+message CityNoaFlagsProto {
+  optional bool enable_convert_mapformer_model_curb = 1 [default = false];
+  optional bool enable_only_convert_forward_lanes = 2 [default = false];
+  optional bool enable_calculate_center_line = 3 [default = false];
+  optional bool enable_center_lines_fusion = 4 [default = false];
+  optional bool enable_rule_base_center_line = 5 [default = false];
+  optional bool enable_process_ego_center_lines = 6 [default = false];
+  optional bool enable_convert_vehicle_fusion_center_lines = 7
+      [default = false];
+}
+
+message MatchCondition {
+  optional double max_lateral_distance = 1 [default = 3.0];
+  optional double max_average_lateral_distance = 2 [default = 0.75];
+  optional double min_overlap = 3 [default = 1.0];
+  optional double min_overlap_ratio = 4 [default = 0.4];
+}
+
+message MapformerAssociationProto {
+  optional MatchCondition measurement_to_track_match_condition = 1;
+  optional MatchCondition horizontal_line_match_condition = 2;
+}
+
+message DebugConfigProto {
+  optional bool enable_debug_associate = 1 [default = false];
+  optional bool enable_debug_fit = 2 [default = false];
+  optional bool enable_debug_manage_fitting_points = 3 [default = false];
+  optional bool enable_debug_preprocess = 4 [default = false];
+}
+
+message MapformerPreprocess {
+  optional double consider_pred_shift_x_threshold = 1 [default = 35.0];
+  optional double consider_pred_shift_y_threshold = 2 [default = 10.0];
+  optional double pred_shift_drop_point_threshold = 3 [default = 0.5];
+}
+
+message MapformerConfigProto {
+  optional MapformerPreprocess preprocess = 1;
+}
+
+message CenterLineConfigProto {
+  optional bool enable_rear_center_lines = 1 [default = false];
+  optional double rear_length = 2 [default = 60.0];
+  optional bool enable_intersection_connect = 3 [default = false];
+}
+
+message RGTrackerConfigProto {
+  optional bool enable_fusing_with_bev_rg = 1 [default = true];
+  optional bool enable_fusing_with_map_former = 2 [default = false];
+  optional bool enable_expand_fuse_range = 3 [default = false];
+  optional CityNoaFlagsProto city_noa_flags = 4;
+  optional MapformerAssociationProto mapformer_association = 5;
+  optional DebugConfigProto mapformer_fusion_debug_config = 6;
+  optional bool enable_debug = 7 [default = false];
+  optional MapformerConfigProto mapformer_config = 8;
+  optional CenterLineConfigProto center_line_config = 9;
+}

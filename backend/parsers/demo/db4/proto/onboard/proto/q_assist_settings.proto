@@ -1,0 +1,226 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message FcwSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_LOW = 2;
+    ENABLE_SETTING_MID = 3;
+    ENABLE_SETTING_HIGH = 4;
+  }
+  optional EnableSetting enable_setting = 1;
+}
+
+message AebSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_LOW = 2;
+    ENABLE_SETTING_MID = 3;
+    ENABLE_SETTING_HIGH = 4;
+  }
+  optional EnableSetting enable_setting = 1;
+}
+
+message LAebSettings {
+  optional bool enable_setting = 1;
+}
+
+message LdwLkaSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_WARNING = 2;
+    ENABLE_SETTING_INTERVENTION = 3;
+  }
+  optional EnableSetting enable_setting = 1;
+
+  enum WarnMode {
+    WARN_MODE_NONE = 0;
+    WARN_MODE_VISION = 1;
+    WARN_MODE_VISION_VOICE = 2;
+    WARN_MODE_VISION_VOICE_VIBRATE = 3;
+  }
+  optional WarnMode warn_mode = 2;
+}
+
+message BsdDowSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_DISPLAY = 2;
+    ENABLE_SETTING_DISPLAY_VOICE = 3;
+  }
+  optional EnableSetting bsd_enable_setting = 1;
+  optional EnableSetting dow_enable_setting = 2;
+}
+
+message SpeedLimitSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_DISPLAY = 2;
+    ENABLE_SETTING_DISPLAY_VOICE = 3;
+  }
+  optional EnableSetting enable_setting = 1;
+
+  enum AdjusMode {
+    ADJUS_MODE_NONE = 0;
+    ADJUS_MODE_RELATIVE = 1;
+    ADJUS_MODE_ABSOLUTE = 2;
+  }
+  optional AdjusMode adjus_mode = 2;
+
+  optional int32 relative_adjus = 3;
+  optional int32 absolute_adjus = 4;
+}
+
+message NoaSettings {
+  enum LaneChangeSetting {
+    LANE_CHANGE_SETTING_NONE = 0;
+    LANE_CHANGE_SETTING_NEED_CONFIRM = 1;
+    LANE_CHANGE_SETTING_NOT_NEED_CONFIRM = 2;
+  }
+  optional LaneChangeSetting lane_change_setting = 1;
+
+  enum SpeedLimitMode {
+    SPEED_LIMIT_MODE_DRIVER_NONE = 0;
+    SPEED_LIMIT_MODE_DRIVER_FIRST = 1;
+    SPEED_LIMIT_MODE_MAP_FIRST = 2;
+  }
+  optional SpeedLimitMode speed_limit_mode = 2;
+
+  message SpeedOverWhelmedRatio {
+    optional int32 speed_ratio = 1;
+    optional int32 percent_ratio = 2;
+  }
+  optional SpeedOverWhelmedRatio speed_over_whelmed_ratio = 3;
+
+  optional bool enable = 4;
+
+  enum LaneChangeStyleMode {
+    LANE_CHANGE_STYLE_MODE_NONE = 0;
+    LANE_CHANGE_STYLE_MODE_MILD = 1;
+    LANE_CHANGE_STYLE_MODE_MODERATE = 2;
+    LANE_CHANGE_STYLE_MODE_SPORT = 3;
+  }
+  optional LaneChangeStyleMode lane_change_style_mode = 5;
+  optional bool enable_auto_upgrade_to_noa = 6;
+  optional bool noa_tmp_enable = 7;
+  enum SwitchState {
+    SWITCH_STATUS_NONE = 0;
+    SWITCH_STATUS_OFF = 1;
+    SWITCH_STATUS_ON = 2;
+    SWITCH_STATUS_INVALID = 3;
+  }
+  optional SwitchState lateral_evasion = 8;
+}
+
+message ApaSettings {
+  enum EnableSetting {
+    ENABLE_SETTING_NONE = 0;
+    ENABLE_SETTING_OFF = 1;
+    ENABLE_SETTING_PARKING = 2;
+    ENABLE_SETTING_PARKING_OUT = 3;
+    ENABLE_SETTING_PARKING_CUSTOM = 4;
+  }
+  optional EnableSetting enable_setting = 1;
+
+  enum SwitchState {
+    SWITCH_STATUS_NONE = 0;
+    SWITCH_STATUS_OFF = 1;
+    SWITCH_STATUS_ON = 2;
+    SWITCH_STATUS_INVALID = 3;
+  }
+  enum BodyTransparent {
+    BODY_TRANSPARENT_IMAGE_NONE = 0;
+    BODY_TRANSPARENT_IMAGE_OFF = 1;
+    BODY_TRANSPARENT_IMAGE_ALPHA_PERCENT_50 = 2;
+    BODY_TRANSPARENT_IMAGE_ALPHA_PERCENT_0 = 3;
+    BODY_TRANSPARENT_IMAGE_INVALID = 4;
+  }
+  enum NarrowLaneImage {
+    NARROW_LANE_IMAGE_NONE = 0;
+    NARROW_LANE_IMAGE_OFF = 1;
+    NARROW_LANE_IMAGE_NEAR = 2;
+    NARROW_LANE_IMAGE_MIDDLE = 3;
+    NARROW_LANE_IMAGE_FAR = 4;
+    NARROW_LANE_IMAGE_INVALID = 5;
+  }
+  enum ParkingSpeed {
+    PARKING_SPEED_NONE = 0;
+    PARKING_SPEED_SLOW = 1;
+    PARKING_SPEED_MIDDLE = 2;
+    PARKING_SPEED_FAST = 3;
+    PARKING_SPEED_INVALID = 4;
+  }
+  optional NarrowLaneImage narrow_lane_image = 2;
+  optional SwitchState avm = 3;
+  optional SwitchState low_speed_steering_assist = 4;
+  optional BodyTransparent body_transparent = 5;
+  optional SwitchState remote_parking = 6;
+  optional ParkingSpeed parking_speed = 7;
+  optional SwitchState track_guided_reverse = 8;
+  optional SwitchState forward_radar_alert = 9;
+  optional SwitchState radar_alert_mute = 10;
+}
+
+message ChildSeatSettings {
+  optional bool child_seat_in_midleft = 1;
+  optional bool child_seat_in_midright = 2;
+  optional bool child_seat_in_rearleft = 3;
+  optional bool child_seat_in_rearright = 4;
+}
+
+message QDrivingStyle {
+  enum Style {
+    NONE = 0;
+    COMFORTABLE = 1;
+    AGREESSIVE = 2;
+    AI = 3;
+  }
+  optional Style style = 1;
+}
+
+message QCruisingSpeedErrorCode {
+  enum ErrorCode {
+    ERROR_CODE_NONE = 0;
+    ERROR_CODE_ASSIST_NOT_ACTIVED = 1;
+    ERROR_CODE_ONE_KEY_SETTED_FINISH = 2;
+    ERROR_CODE_EHPV2_LIMIT_NOT_FIND = 3;
+    ERROR_CODE_UP_LIMITED = 4;
+    ERROR_CODE_DOWN_LIMITED = 5;
+  }
+  optional ErrorCode error_code = 1;
+}
+
+enum QRpaCommandStatus {
+  Q_RPA_COMMAND_STATUS_NONE = 0;
+  Q_RPA_COMMAND_STATUS_EXIT = 1;
+  Q_RPA_COMMAND_STATUS_ACTIVE = 2;
+}
+
+enum QRpaAppCommand {
+  Q_RPA_APP_COMMAND_NONE = 0;
+  Q_RPA_APP_COMMAND_INIT = 1;
+  Q_RPA_APP_COMMAND_ACTIVE = 2;
+  Q_RPA_APP_COMMAND_PAUSE = 3;
+  Q_RPA_APP_COMMAND_QUIT = 4;
+}
+
+enum MrmSettings {
+  MRM_UNKNOWN = 0;
+  MRM_HAND_OFF = 1;
+  MRM_VISION = 2;
+  MRM_HAND_OFF_AND_VISION = 3;
+}
+
+enum HdTurnLightSettings {
+  HD_TURN_LIGHT_NONE = 0;
+  HD_TURN_LIGHT_ENABLE = 1;
+  HD_TURN_LIGHT_DISABLE = 2;
+  HD_TURN_LIGHT_RESERVED = 3;
+}

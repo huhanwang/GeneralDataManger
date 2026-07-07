@@ -1,0 +1,35 @@
+
+syntax = "proto2";
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+message BaiduNavInfoProto {
+  optional LiteHeader header = 1;
+  enum NavigationStatus {
+    PATH_PLANNING = 1;  // 路径规划中
+    NAVIGATION = 2;     // 导航中
+    CRUISE = 3;         // 巡航中
+    DEVIATE = 4;        // 偏航中
+    REPLANNING = 5;     // 重新规划中
+  }
+  optional uint32 navigation_status = 2;  // 导航状态
+  enum MatchingTableStatus {
+    CLOUD_LATEST = 1;                // 关联表为云端最新
+    NO_NETWORK_LOCAL_TABLE = 2;      // 无网络，使用本地关联表
+    NO_NETWORK_NON_LOCAL_TABLE = 3;  // 无网络，本地无关联表
+    COVERAGE_LOWER_THAN_80 = 4;      // 关联表查找覆盖率低于80%
+  }
+  optional uint32 matching_table_status = 3;  // 匹配状态
+  optional uint32 remain_distance = 4;        // 导航剩余距离
+  optional uint32 via_point_distance = 5;     // unit : meter
+  optional uint32 to_hd_start_distance = 6;   // unit : meter
+  optional uint64 map_version = 7;            // SD版本
+  repeated uint64 linkid = 8;                 // SD轨迹
+  // Same as NavigationStatus
+  optional uint32 route_update_status = 9;  // 导航轨迹更新信息
+  repeated uint32 link_lengths = 10;        // SD轨迹长度
+  repeated uint32 link_dirs = 11;           // SD轨迹方向
+  optional uint64 cur_link_id = 12;         // 当前导航link id
+  optional uint32 cur_link_offset = 13;     // 当前导航link offset
+  optional uint32 cur_link_index = 14;      // 当前导航link index
+}

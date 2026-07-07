@@ -1,0 +1,14 @@
+syntax = "proto2";
+package snoah;
+
+message DiskMonitorConfigProto {
+  repeated Monitorconfig monitor_configs = 1;
+}
+message Monitorconfig {
+  optional string directory_name = 1;
+  optional bool is_handle = 2;
+  optional double expiration_time_seconds = 3;  // 当等于0 启动第一次不做检查
+  optional double up_limit = 4;
+  repeated string white_list = 5;
+  optional double target_usage_percentage = 6;
+}

@@ -1,0 +1,9 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message LiHuEidInfoProto {
+  optional int32 eid_acc_spd_inc_req = 1 [default = 0];
+  optional int32 eid_acc_spd_dec_req = 2 [default = 0];
+}

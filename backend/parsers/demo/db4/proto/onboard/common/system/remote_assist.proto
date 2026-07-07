@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah;
+option go_package = "qcraft-proto.ai/common/system/remote_assist";
+
+option java_multiple_files = true;
+option java_package = "ai.qcraft.common.system";
+
+// RA status will expire after 3 seconds, please keep sending REQUESTING if
+// request is needed
+message RemoteAssistStatusInfo {
+  optional string source = 1;
+  optional string reason = 2;
+  enum Status {
+    UNKNOWN = 0;
+    REQUESTING = 1;
+    ASSISTING = 2;
+    REMOTE_DRIVING = 3;
+    EMERGENCY_STOP = 4;
+
+    None = 999;
+  }
+  optional Status status = 3;
+}

@@ -1,0 +1,130 @@
+
+syntax = "proto2";
+
+package snoah.tracker.association;
+option go_package = "qcraft-proto.ai/onboard/perception/tracker/association/proto/associator_config";
+
+message GatesProto {
+  enum GateType {
+    CIRCLE = 0;
+    ELIPSE = 1;
+    BEV_IOU = 2;
+    OBJECT_TYPE = 3;
+    SPEED = 4;
+    M_TYPE_CIRCLE = 5;
+    IMG_IOU = 6;
+    HACK_OBJECT_TYPE = 7;
+    T_TYPE_CIRCLE = 8;
+    RADAR_MAHALANOBIS = 9;
+    LATERAL_DIST = 10;
+    RADAR_MEASUREMENT_AND_NON_CONFIRMTRACK = 11;
+    OSM_DETECTION = 12;
+    LASER_NON_PO_TRACK_NOT_ASSOCIATE_CAMERA = 13;
+    ABSREL_DEPTH = 14;
+    VIEWING_ANGLE = 15;
+    VIEWING_ANGLE_DISTANCE = 16;
+    RAD_CAM_ABSREL_DEPTH = 17;
+    RAD_CAM_VIEWING_ANGLE_DISTANCE = 18;
+    ROAD_TYPE = 19;
+    ROAD_LATERAL_DIST = 20;
+    IMG_DIS = 21;
+    M_CONDITION_TYPE_CIRCLE = 22;
+    FRUSTUM_POINT_LIMITE = 23;
+    FRUSTUM_FRUSTUM_LIMITE = 24;
+    RADAR_VIEWING_ANGLE = 25;
+    RADAR_MEASUREMENT_AND_CONFIRMTRACK = 26;
+    SKIP_RADAR_CONE_ASSOCIATION = 27;
+    ROAD_LINE_INTERSECTION_ANGLE = 28;
+    SKIP_TRAFFIC_BARRICADE_DYNAMIC_OBJECT_ASSOCIATION = 29;
+    DYNAMIC_OBJECT_ASSO_RADAR = 30;
+    EUCLIDEAN_DIST_FOR_SAME_TIME_TAFFIC_BARRIES = 31;
+    NEARBY_VIEWING_ANGLE_DISTANCE = 32;
+    FRONT_CAMERA_3DBOX_IOU = 33;
+    M_TYPE_CIRCLE_WITH_VARIABLE_THRESH = 34;
+    ELLIPSE_FOR_OCCLUDED = 35;
+    BEV_HEADING = 36;
+    TRAFFIC_LIGHT_SHAPE = 37;
+    ELLIPSE_POS = 38;
+    FRONT_FUSION_OBJECT_TYPE = 39;
+    GENERAL_OBJECT_ONLY_ASSO_UNKNOW_LIDAR = 40;
+    LIDAR_AREA_GATE = 41;
+    TRAFFIC_LIGHT_DIST = 42;
+    NEAR_M_TYPE_CIRCLE = 43;
+    LIDAR_TYPE_GATE = 44;
+    PED_AND_CYCLIST_PAIR_GATE = 45;
+    CYCLIST_VEHICLE_PAIR_GATE = 46;
+    TYPE_LOGIC_GATE = 47;
+    TIMESTAMP_DIFF_GATE = 48;
+  }
+
+  message GateParamProto {
+    optional GateType gate_type = 1;
+    repeated double gate_thresholds = 2;
+  }
+
+  repeated GateParamProto gate_params = 1;
+}
+
+message MetricsProto {
+  enum MetricType {
+    EUCLIDEAN_DIST = 0;
+    RADAR_MAHALANOBIS_DIST = 1;
+    BEV_IOU = 2;
+    ICP = 3;
+    FEATURE = 4;
+    VEHICLE_IOU = 5;
+    P_VALUE = 6;
+    IMG_IOU = 7;
+    IMG_APPEARANCE_FEATURE = 8;
+    CAMERA_TRACKER_ID = 9;
+    KEY_POINT_SPECIFIED_DIST = 10;
+    VIDAR_SPECIFIED_DIST = 11;
+    ABSREL_DEPTH = 12;
+    ROAD_LATERAL_DIST = 13;
+    IMG_DIS = 14;
+    HEADING_DIFF = 15;
+    RADAR_RELATIVE_DEPTH = 16;
+    CAMERA_INTRA_ID_INTER_IOU = 17;
+    CROSS_CAMERA_IMAGE_IOU = 18;
+    RADAR_TRACKER_ID = 19;
+    VARIANT_EUCLIDEAN_DIST = 20;
+    TRAFFIC_LIGHT_IMG_IOU = 21;
+    TRAFFIC_LIGHT_IMG_DIS = 22;
+    TRAFFIC_LIGHT_ID = 23;
+    TRAFFIC_LIGHT_3D_2D = 24;
+    TRAFFIC_LIGHT_DIST = 25;
+    ELLIPSE_POS = 26;
+    CAMERA_TRACKER_ID_FOR_BARRICADE = 27;
+    LIDAR_ID_METRIC = 28;
+    MAP_TRAFFIC_LIGHT_2D_COL_OFFSET = 29;
+  }
+
+  message MetricParamProto {
+    optional MetricType metric_type = 1;
+    optional double metric_weight = 2;
+    repeated double metric_thresholds = 3;
+  }
+
+  repeated MetricParamProto metric_params = 1;
+}
+
+message SimilarityMatrixBuilderProto {
+  optional GatesProto gates = 1;
+  optional MetricsProto metrics = 2;
+}
+
+message MatchSolverProto {
+  enum SolverAlgorithm {
+    GNN = 0;
+    KUHN_MUNKRES = 1;
+    GNN_MV1 = 2;
+    GNN_1VM = 3;
+  }
+
+  optional SolverAlgorithm solver_algorithm = 1;
+}
+
+message AssociationProto {
+  optional SimilarityMatrixBuilderProto similarity_matrix_builder = 1;
+  optional MatchSolverProto match_solver = 2;
+}

@@ -1,0 +1,23 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/lite/proto/lite_common.proto";
+
+message HilSystemCommandProto {
+  enum PlayBackCommand {
+    SET_RSIM_CLOCK = 0;
+  }
+
+  message HilModuleCommand {
+    optional string module_name = 1;
+    optional string value = 2;
+    optional PlayBackCommand command = 3;
+  }
+
+  optional LiteHeader header = 1;
+
+  oneof msg {
+    HilModuleCommand hil_module_command = 2;
+  }
+}

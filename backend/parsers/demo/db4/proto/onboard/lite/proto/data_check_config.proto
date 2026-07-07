@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message DataCheckConfig {
+  enum DataCheckType {
+    UNKNOWN = 0;
+    TS_FALLBACK = 1;
+    TS_UNCHANGED = 2;
+    TS_EXCEED = 3;
+    TS_TIMEOUT = 4;
+    DATA_UNCHANGED = 5;
+  }
+  message DataCheckItem {
+    optional DataCheckType type = 1;
+    optional int64 frame_threshold = 2 [default = 1];
+    optional int64 time_threshold_ms = 3;
+    optional bool ignore = 4 [default = false];
+  }
+  // The class name of module, extended from LiteModule.
+  optional string module_class_name = 1;
+
+  // The enum type of module name.
+  optional LiteModuleName module_name = 2;
+
+  // The field name listed in LiteMsg, used to identify which proto in
+  // LiteMsg.
+  optional string field_name = 3;
+
+  // Empty means use lite_msg_field_name as channel name, otherwise use this
+  // field as new channel name.
+  optional string channel = 4;
+
+  // The domain it publishes/subcribes to.
+  optional string domain = 5;
+
+  // Tag is channel's sensor id
+  optional string sensor_id = 6;
+
+  repeated DataCheckItem data_check_item = 7;
+}
+
+message DataCheckConfigList {
+  repeated DataCheckConfig configs = 1;
+}

@@ -1,0 +1,35 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/fail_safe/proto/fail_safe";
+
+message FailSafeConfig {
+  optional int32 static_frame_at_least = 1 [default = 100];
+  optional int32 upper_failed_frame_threshold = 2 [default = 70];
+  optional int32 lower_failed_frame_threshold = 3 [default = 10];
+  optional int32 pts_threshold_at_least = 4 [default = 1000];
+  optional float ground_plane_check_range_x_min = 5 [default = 0.0];
+  optional float ground_plane_check_range_x_max = 6 [default = 100.0];
+  optional float ground_plane_check_range_y_min = 7 [default = -60.0];
+  optional float ground_plane_check_range_y_max = 8 [default = 60.0];
+  optional float stable_ground_plane_ratio = 9 [default = 0.7];
+  optional int32 stable_ground_plane_num_thresh = 10 [default = 4];
+  optional float lidar_perception_time_thresh = 11 [default = 200.0];
+  optional int32 fg_obj_num_thresh = 12 [default = 5];
+  optional int32 fg_pt_num_in_roi_thresh = 13 [default = 1000];
+  optional bool mute_lidar_result = 14 [default = false];
+  optional int32 init_buff_failed_num = 15 [default = 300];
+  optional int32 filter_intensity_thresh = 16 [default = 2];
+  optional float wet_ground_ratio_thresh = 17 [default = 0.7];
+  optional int32 upper_rain_intensity_thresh = 18 [default = 160];
+  optional int32 lower_rain_intensity_thresh = 19 [default = 50];
+  optional int32 upper_blindness_cnt_thresh = 20 [default = 20];
+  optional int32 lower_blindness_cnt_thresh = 21 [default = 10];
+  optional bool output_failsafe_rain_blind_data_mean_or_cur = 22
+      [default = false];
+  optional int32 env_model_rain_day_thresh = 23 [default = 10];
+  optional int32 env_model_continue_frame = 24 [default = 18000];
+  optional int32 upper2_failed_frame_threshold = 25 [default = 8];
+  optional int32 lower2_failed_frame_threshold = 26 [default = 5];
+  optional int32 observation_window_count_for_continuity = 27 [default = 20];
+  optional float tolerence_time_interval_for_window = 28 [default = 8.0];
+}

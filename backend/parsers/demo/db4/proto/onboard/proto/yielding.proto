@@ -1,0 +1,90 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message YieldingLabelDataProto {
+  optional YieldingScenarioProto yielding_scenario = 1;
+  repeated YieldingStateProto labels = 2;
+}
+
+message YieldingScenarioProto {
+  optional int64 timestamp = 1;
+  optional string run_name = 2;
+  optional double start_offset = 3;
+  optional YieldingFeatureProto yielding_feature = 4;
+}
+
+message YieldingFeatureProto {
+  optional InteractionFeatureProto interaction_feature = 1;
+}
+
+message InteractionFeatureProto {
+  optional double av_path_s_at_interaction = 1;
+  optional double agent_path_s_at_interaction = 2;
+  optional double av_v_at_interaction = 3;
+  optional double agent_v_at_interaction = 4;
+  optional double av_t_at_interaction = 5;
+  optional double agent_t_at_interaction = 6;
+  optional double av_time_lead = 7;
+  optional double av_speed_limit = 8;
+  optional double agent_speed_limit = 9;
+
+  optional double our_right_of_way = 11;
+
+  optional double av_overlap_av_s = 12;
+  optional double agent_overlap_agent_s = 13;
+  optional double av_overlap_agent_time = 14;
+  optional double av_overlap_av_time = 15;
+  optional double agent_overlap_av_time = 27;
+  optional double agent_overlap_agent_time = 32;
+  optional double av_overlap_av_v = 16;
+  optional double agent_overlap_av_v = 26;
+  optional double av_overlap_agent_v = 17;
+
+  optional bool is_agent_past_interaction_point = 18;
+  optional bool is_av_past_interaction_point = 19;
+  optional double av_acceleration_time_penalty = 20;
+  optional double agent_acceleration_time_penalty = 21;
+
+  optional double agent_s = 22;
+  optional double av_agent_overlap_lon_distance = 23;
+  optional double av_overlap_theta_diff = 24;
+  optional double agent_overlap_theta_diff = 25;
+}
+
+message YieldingStateProto {
+  optional int64 start_time_offset = 1;
+  optional int64 end_time_offset = 2;
+  optional string id = 3;
+  optional bool is_yield = 4 [default = false];
+}
+
+message YieldingStatesProto {
+  optional LiteHeader header = 1;
+  repeated YieldingStateProto states = 2;
+}
+
+message InteractionTimeMapProto {
+  optional string run_name = 1;
+  optional string map = 2;
+  optional int64 total_count = 3;
+  message InteractionTime {
+    optional int64 time_offset = 1;
+    optional int64 other_lane_id = 2;
+    optional double other_lane_fraction = 3;
+    optional Vec2dProto pose = 4;
+  }
+  repeated InteractionTime interaction_time = 4;
+}
+
+message YieldingLabels {
+  optional string run_name = 1;
+  optional string map = 2;
+  optional int64 yield_count = 3 [default = 0];
+  optional int64 total_count = 4 [default = 0];
+  repeated YieldingStateProto labels = 5;
+}

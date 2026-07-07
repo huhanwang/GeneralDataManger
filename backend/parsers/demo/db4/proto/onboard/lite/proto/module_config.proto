@@ -1,0 +1,292 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/transport/someip_service/proto/someip_config.proto";
+import "onboard/lite/proto/data_check_config.proto";
+
+message GFlagConfig {
+  optional string key = 1;
+  oneof value {
+    string string_value = 3;
+    bool bool_value = 4;
+    int32 int32_value = 5;
+    int64 int64_value = 6;
+    uint32 uint32_value = 7;
+    uint64 uint64_value = 8;
+    double double_value = 9;
+  }
+  reserved 2;
+}
+
+message LiteModuleConfig {
+  // The class name of module, extended from LiteModule.
+  optional string module_class_name = 1;
+  // The enum type of module name.
+  optional LiteModuleName module_name = 2;
+
+  message PubSubMessage {
+    enum MsgType {
+      NORMAL = 0;
+      SERVER_INPUT = 1;
+      CLIENT_INPUT = 2;
+    }
+    enum PriorityLevel {
+      PRY_NORMAL = 0;
+      PRY_MIDDLE = 1;
+      PRY_HIGH = 2;
+    }
+
+    // The field name listed in LiteMsg, used to identify which proto in
+    // LiteMsg.
+    optional string field_name = 1;
+
+    // Empty means use lite_msg_field_name as channel name, otherwise use this
+    // field as new channel name.
+    optional string channel = 2;
+
+    // The domain it publishes/subcribes to.
+    optional string domain = 3;
+
+    // The minimum execution interval of the pub/sub function for the message
+    // in seconds. Positive `interval` will enable rate checking for
+    // over-execution.
+    optional double min_interval = 4;
+
+    // The maximum execution interval of the pub/sub function for the message
+    // in seconds. Positive `interval` will enable rate checking for
+    // under-execution.
+    optional double max_interval = 5;
+
+    // Tag is channel's sensor id
+    optional string sensor_id = 6;
+
+    // The minimum frequency at which the channel is sent, less than this
+    // frequency is abnormal.
+    optional int64 min_frequency = 7;
+
+    // The maximum frequency that the channel is sent, if it is greater than
+    // this frequency, it is abnormal.
+    optional int64 max_frequency = 8;
+
+    // Window size for calculating frequency.
+    optional int64 frame_window_size = 9;
+
+    // If a msg is defined as critical, the module is truly READY only if the
+    // msg is sent out once.
+    optional bool critical = 10 [default = false];
+
+    // If it's true to an input decl, means to accept msg from remote nodes
+    // deprecated
+    optional bool allow_xnode_input = 11 [deprecated = true];
+
+    optional bool no_xnode_input = 12 [default = false];
+
+    optional MsgType msg_type = 13 [default = NORMAL];
+
+    optional bool cs_mode = 14 [default = false];
+
+    optional PriorityLevel priority = 15 [default = PRY_NORMAL];
+
+    // Channel checker report frequency if enabled in checkers.
+    optional bool report_frequency = 16 [default = false];
+
+    // Checking channel is input or output.
+    optional bool check_input = 17 [default = false];
+  }
+
+  repeated PubSubMessage inputs = 4;
+
+  repeated PubSubMessage outputs = 5;
+
+  // Only used for simulation
+  repeated ModuleStateChannelPair default_state_channel_pairs = 6
+      [deprecated = true];
+
+  // Module startup and exit priority
+  optional int32 module_startup_exit_priority = 7;
+
+  // channel checker config
+  repeated PubSubMessage checkers = 8;
+
+  // heartbeat check config, unit:us
+  message HeartbeatItem {
+    optional int64 kickout_deadline = 1 [default = 250000];
+    optional int64 terminate_deadline = 2 [default = 3000000];
+  }
+
+  // Heartbeat check config.
+  optional HeartbeatItem heartbeat_config = 12;
+
+  // How many times will the module restart after crash.
+  optional int32 module_restart_times = 13;
+
+  optional string sub_module_name = 18;
+
+  optional string bin_path = 19;
+
+  optional string module_arg = 20;
+
+  message ReadMessageConfig {
+    optional bool event_driven = 1 [default = true];
+    optional int32 wait_timeout_ms = 2 [default = 10];
+    optional int32 wait_timeout_slice_ms = 3 [default = 1];
+  }
+
+  optional ReadMessageConfig read_message_config = 21;
+
+  message ModuleEnvConfig {
+    optional string env_name = 1;
+    optional string env_value = 2;
+  }
+
+  repeated ModuleEnvConfig module_env = 22;
+
+  optional bool require_complete_exit = 23;
+
+  reserved 9, 10, 11, 14, 15, 16, 17;
+}
+
+message LaunchRunConfig {
+  // Cpu usage check config, unit:%
+  message CpuItem {
+    optional int64 kickout_deadline = 1 [default = 100];
+    optional int64 terminate_deadline = 2 [default = 400];
+  }
+
+  // Memory check config, unit:MB
+  message MemoryItem {
+    optional int64 kickout_deadline = 1 [default = 2048];
+    optional int64 terminate_deadline = 2 [default = 6000];
+  }
+
+  message ModuleResourceConfig {
+    enum PolicyName {
+      MODULE = 0;
+      MAIN_THREAD = 1;
+      ON_DEMAND_SIDECAR = 2;
+      PERIODIC_SIDECAR = 3;
+    }
+
+    message SchedPolicy {
+      optional PolicyName policy_name = 1;
+      optional string policy = 2 [default = "SCHED_OTHER"];
+      optional int32 priority = 3 [default = 20];
+      repeated int32 cpu_cores_to_run = 4;
+    }
+
+    message NetResourceConfig {
+      optional string net_param_key = 1;
+
+      // gpu_id_to_device_id in vehicle param
+      repeated int32 gpu_ids_to_run = 2;
+      repeated int32 bpu_ids_to_run = 3;
+    }
+
+    optional LiteModuleName module_name = 1;
+    // CPU cores bound to the module.
+    repeated int32 cpu_core_to_bind = 2;
+
+    // Shared memory check config.
+    optional CpuItem cpu_config = 3;
+
+    // Memory check config.
+    optional MemoryItem memory_config = 4;
+
+    // Shared memory check config.
+    optional MemoryItem shared_memory_config = 5;
+
+    // Gpu memory check config.
+    optional MemoryItem gpu_memory_config = 6;
+
+    // Nice value of process
+    optional int32 nice_value = 7;
+
+    // Cores bound to the main thread
+    repeated int32 cpu_core_to_main_thread = 8;
+
+    repeated SchedPolicy sched_policies = 9;
+
+    repeated NetResourceConfig net_resource_configs = 10;
+
+    optional bool in_booting_group = 11;
+
+    // Cpu usage of module
+    optional uint32 cpu_usage = 12;
+
+    optional string module_config_filename = 13;
+
+    repeated GFlagConfig flags = 14;
+  }
+
+  repeated string lite_module_config_filenames = 1;
+  repeated ModuleResourceConfig module_resource_configs = 2;
+
+  message ModuleContainerConfig {
+    optional LiteModuleName container_name = 1;
+    optional ModuleResourceConfig container_resource_config = 2;
+    repeated LiteModuleName contained_shared_main_thread_modules = 3;
+
+    message ModulesInOneMainThread {
+      repeated LiteModuleName contained_modules = 1;
+      optional ModuleResourceConfig main_thread_resource_config = 2;
+    }
+    repeated ModulesInOneMainThread contained_seperated_main_threads = 4;
+  }
+
+  repeated ModuleContainerConfig module_container_configs = 3;
+
+  message ChannelCheckerOverrideConfig {
+    optional string channel = 1;
+    optional string domain = 2;
+    optional string sensor_id = 3;
+    optional int64 min_frequency = 4;
+    optional int64 max_frequency = 5;
+    optional int64 frame_window_size = 6;
+    optional bool critical = 7;
+    optional bool ignore = 8;
+    // Checking channel is input or output.
+    optional bool check_input = 9 [default = false];
+  }
+
+  repeated ChannelCheckerOverrideConfig channel_checker_override_configs = 4;
+
+  repeated DataCheckConfig data_check_configs = 5;
+}
+
+message NodeConfig {
+  // Used to identify which node will be the server node.
+  optional string node_name = 1;
+
+  // Used to describe where node will be run.
+  optional string name_space = 2;
+
+  // The ip address that you want to be listen or connect to.
+  optional string node_ip = 3;
+
+  // The ip port that you want to be listen or connect to.
+  optional string node_port = 4;
+
+  // Filenames saved under launch_config.
+  optional string lite_launch_config_filename = 5;
+
+  // The timeout of the connnect/transimitter/receiver function for the
+  // message in microseconds.
+  optional int32 timeout = 6;
+
+  // Used to config the node have unilink or not
+  optional bool unilink_available_flag = 7 [default = false];
+
+  optional bool enable_mcu_trans = 8 [default = false];
+
+  optional SomeipCommConfig someip_comm_config = 9;
+}
+
+message NodesRunConfig {
+  // The scheme name of DBQ(Driven by SNoah) System, such as
+  // nodes_normal_7, nodes_standard_12, nodes_upgrade_15
+  optional string nodes_scheme_name = 1;
+
+  repeated NodeConfig nodes = 2;
+}

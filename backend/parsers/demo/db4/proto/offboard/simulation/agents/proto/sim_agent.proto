@@ -1,0 +1,43 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah.agents;
+option go_package = "qcraft-proto.ai/offboard/simulation/agents/proto/sim_agent";
+
+import "onboard/maps/proto/lane_path.proto";
+import "offboard/simulation/agents/open_agent/proto/open_agent.proto";
+
+// Simplistic agent that follows lanes and always travels at lane speed limit,
+// capable of accelerating/decelerating infinitely quickly.
+message LaneSpeedLimitAgentConfigProto {
+  optional mapping.LanePathProto route = 1;
+}
+
+// intelligent cruise control agent
+message ICCAgentConfigProto {
+  optional string object_id = 1;
+}
+
+message ShyAgentConfigProto {
+  optional string object_id = 1;
+}
+
+message SimAgentConfigProto {
+  oneof AgentType {
+    LaneSpeedLimitAgentConfigProto lane_speed_limit_agent = 1;
+    ICCAgentConfigProto icc_agent = 3;
+    ShyAgentConfigProto shy_agent = 4;
+    OpenAgentConfigProto open_agent = 5;
+  }
+  reserved 2;
+}

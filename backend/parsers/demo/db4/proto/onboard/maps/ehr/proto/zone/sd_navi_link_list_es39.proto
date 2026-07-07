@@ -1,0 +1,67 @@
+syntax = "proto2";
+
+import "onboard/maps/ehr/proto/zone/common_msg.proto";
+
+package snoah.zone_data;
+
+message RouteLinkPointInfo {
+  optional common.ComHeader header = 1;
+  optional uint64 link_id = 2;        // uint64
+  optional uint32 pack_count = 3;     // uint16，映射为 uint32
+  optional uint32 pack_sequence = 4;  // uint16，映射为 uint32
+  repeated common.PointLocationInfoES39 geo_point_list =
+      5;  // geo_point_list[100]，使用 repeated 表示
+  required uint32 raw_geo_point_valid_size = 6;  // uint8，映射为 uint32
+}
+
+// 定义 LinkInfo 消息类型
+message LinkInfo {
+  optional uint64 link_id = 1;              // uint64
+  optional uint32 curr_road_type = 2;       // uint8，映射为 uint32
+  optional uint32 curr_road_form = 3;       // uint32
+  optional uint32 curr_road_class = 4;      // uint8，映射为 uint32
+  optional float road_length = 5;           // float
+  optional uint32 max_speed_lmt = 6;        // uint8，映射为 uint32
+  optional string road_name = 7;            // uint8[64]，使用 string 表示
+  optional uint32 turn_kind = 8;            // uint32
+  optional uint32 main_road_separated = 9;  // uint8，映射为 uint32
+  optional uint32 via_duct = 10;            // uint8，映射为 uint32
+  optional uint32 side_road = 11;           // uint8，映射为 uint32
+  optional uint32 is_way_point = 12;        // uint8，映射为 uint32
+  optional uint32 lane_num = 13;            // uint32
+  optional uint32 main_action = 14;         // uint32
+  optional uint32 assistant_action = 15;    // uint32
+  optional uint32 has_traffic_light = 16;   // uint8，映射为 uint32
+  optional uint32 has_mix_fork = 17;        // uint8，映射为 uint32
+}
+
+// 定义 NaviRouteInfo 消息类型
+message NaviRouteInfo {
+  optional common.ComHeader header = 1;
+  optional uint32 path_id = 2;     // uint8，映射为 uint32
+  optional uint32 part_count = 3;  // uint32
+  optional uint32 part_index = 4;  // uint8，映射为 uint32
+  repeated LinkInfo route_link_info =
+      5;  // route_link_info[100]，使用 repeated 表示
+  required uint32 raw_route_link_info_valid_size = 6;  // uint8，映射为 uint32
+}
+
+message SegmentInfo {
+  optional uint32 seg_length = 1;            // uint16，映射为 uint32
+  optional uint32 seg_start_link_index = 2;  // uint32
+  optional uint32 seg_link_number = 3;       // uint16，映射为 uint32
+  optional uint32 main_action = 4;           // uint32
+  optional uint32 assistant_action = 5;      // uint32
+  optional uint32 light_number = 6;          // uint16，映射为 uint32
+}
+
+message NaviSegmentInfo {
+  optional common.ComHeader header = 1;
+  optional uint32 path_id = 2;  // uint16，映射为 uint32
+  repeated SegmentInfo route_segment_info =
+      3;  // route_segment_info[1000]，使用 repeated 表示
+  required uint32 segment_valid_size = 4;  // uint16，映射为 uint32
+  repeated common.PointLocationInfoES39 traffic_light =
+      5;  // traffic_light[1000]，使用 repeated 表示
+  required uint32 traffic_light_valid_size = 6;  // uint16，映射为 uint32
+}

@@ -1,0 +1,155 @@
+syntax = "proto2";
+
+package snoah;
+
+message ConstraintsWeightParamsProto {
+  optional double gnss_position_weight_xy = 1;
+  optional double gnss_position_weight_z = 2;
+  optional double gnss_rotation_weight = 3;
+  optional double gnss_velocity_weight = 4;
+
+  optional double can_position_weight = 5;
+  optional double can_rotation_weight = 6;
+  optional double can_velocity_weight = 7;
+  optional double can_yawrate_bias_weight = 8;
+  optional double can_speed_scale_weight = 9;
+  optional double imu_accel_bias_weight = 10;
+  optional double imu_gyro_bias_weight = 11;
+
+  optional double icp_position_weight_xy = 12;
+  optional double icp_position_weight_z = 13;
+  optional double icp_rotation_weight = 14;
+
+  optional double stationary_rotation_weight = 15;
+  optional double stationary_position_weight = 16;
+  optional double stationary_velocity_weight = 17;
+}
+
+message StateUncertaintyParamsProto {
+  optional double position_uncertainty = 1;
+  optional double rotation_uncertainty = 2;
+  optional double velocity_uncertainty = 3;
+  optional double accelerator_bias_uncertainty = 4;
+  optional double gyroscope_bias_uncertainty = 5;
+  optional double can_yawrate_bias_uncertainty = 6;
+  optional double can_speed_scale_uncertainty = 7;
+}
+
+message FixedLagSmootherParamsProto {
+  optional int32 window_size = 1;
+  optional int32 slide_step_size = 2;
+  optional int32 max_num_iterations = 3;
+  optional double parameter_tolerance = 4;
+  optional double function_tolerance = 5;
+  optional int32 num_threads = 6;
+  optional bool minimizer_progress_to_stdout = 7;
+  optional double max_solver_time_opt = 8;
+}
+
+message OptimizationLimitParamsProto {
+  optional double extrinsic_yaw_limit = 1;
+  optional double extrinsic_pitch_limit = 2;
+  optional double extrinsic_roll_limit = 3;
+  optional double speed_scale_limit = 4;
+  optional double yawrate_bias_limit = 5;
+  optional double accelerator_bias_limit = 6;
+  optional double gyroscope_bias_limit = 7;
+}
+
+message PublishThresholdParamsProto {
+  optional double accel_bias_threshold = 1;
+  optional double gyro_bias_threshold = 2;
+  optional double yaw_angel_threshold = 3;
+  optional double pitch_angel_threshold = 4;
+  optional double roll_angel_threshold = 5;
+  optional double speed_scale_threshold = 6;
+  optional double yawrate_bias_threshold = 7;
+  optional double cost_threshold = 8;
+  optional int32 optimize_step_threshold = 9;
+}
+
+message OptimizationResultFilterParamsProto {
+  optional int32 minimum_num_results = 1;
+  optional int32 num_reserved_results = 2;
+  optional int32 minimum_num_valid_results = 3;
+  optional double ypr_angle_threshold = 4;
+  optional double accel_bias_threshold = 5;
+  optional double gyro_bias_threshold = 6;
+  optional double speed_scale_threshold = 7;
+  optional double yawrate_bias_threshold = 8;
+}
+
+message OptimizationParamsProto {
+  // TODO(@chunlei) : Dynamic adjustment based on cpu usage.
+  optional int32 online_ceres_sleep_us = 1 [default = 10000];
+  optional int32 online_ceres_sleep_every_n_residual = 2 [default = 10];
+  optional int32 online_propagate_sleep_us = 3 [default = 10000];
+  optional int32 online_propagate_sleep_every_n_frame = 4 [default = 5];
+  enum MainSensorTypeProto {
+    GNSS = 0;
+    LIDAR_ICP = 1;
+  }
+  optional MainSensorTypeProto main_sensor_type = 5 [default = GNSS];
+}
+
+message EnabledConstraintParamsProto {
+  optional bool is_imu_preintegration_enabled = 1 [default = true];
+  optional bool is_mps_preintegration_enabled = 2 [default = true];
+  optional bool is_rpm_preintegration_enabled = 3 [default = false];
+  optional bool is_icp_delta_pose_enabled = 4 [default = false];
+  optional bool is_gnss_position_enabled = 5 [default = true];
+  optional bool is_stationary_enabled = 6 [default = true];
+}
+
+message PoseGraphParamsProto {
+  optional ConstraintsWeightParamsProto constraints_weight = 1;
+  optional ChassisPerformanceParamsProto chassis_performance_params = 2;
+  optional FixedLagSmootherParamsProto sliding_window_params = 3;
+  optional StateUncertaintyParamsProto state_uncertainty_params = 4;
+  optional OptimizationLimitParamsProto optimization_limit_params = 5;
+  optional PublishThresholdParamsProto publish_threshold_params = 6;
+  optional OptimizationResultFilterParamsProto
+      optimization_result_filter_params = 7;
+  optional OptimizationParamsProto optimization_params = 8;
+  optional EnabledConstraintParamsProto enabled_constraint_params = 9;
+}
+
+message ChassisPerformanceParamsProto {
+  optional double sampling_time_sec = 1;
+  optional double yawrate_noise = 2;
+  optional double yawrate_bias_instability = 3;
+  optional double speed_noise = 4;
+  optional double speed_scale_instability = 5;
+}
+
+message SensorTimeParamsProto {
+  optional double main_sensor_decimation_time = 1;
+  optional double main_sensor_delay_time = 2;
+  optional double chassis_delay_time = 3;
+  optional double imu_delay_time = 4;
+}
+
+message VehicleRelatedParamsProto {
+  optional SensorTimeParamsProto sensor_time_params = 1;
+  optional ChassisPerformanceParamsProto chassis_performance_params = 2;
+}
+
+message DataPrerequisiteParamsProto {
+  optional double minimum_speed_threshold = 1;
+  optional double maximum_speed_threshold = 2;
+  optional double speed_mean_threshold = 3;
+  optional double speed_std_threshold = 4;
+  optional double minimum_yawrate_threshold = 5;
+  optional double maximum_yawrate_threshold = 6;
+  optional double yawrate_mean_threshold = 7;
+  optional double main_sensor_loss_ratio_threshold = 8;
+  optional double height_delta_threshold = 9;
+  optional double height_std_threshold = 10;
+  optional double speed_fluctuation_threshold = 11;
+  optional double stationary_ratio_threshold = 12;
+}
+
+message ImuCanCalibrationParamsProto {
+  optional PoseGraphParamsProto pose_graph_params = 1;
+  optional DataPrerequisiteParamsProto data_prerequisite_params = 2;
+}

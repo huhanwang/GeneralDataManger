@@ -1,0 +1,38 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/emergency_brake/proto/emergency_brake_object.proto";
+
+message RcwInputSeqNum {
+  optional uint64 pose = 1;
+  optional uint64 objects = 2;
+  optional uint64 chassis = 3;
+  optional uint64 execution_issue = 4;
+}
+
+message RcwCommonDebugProto {
+  optional RcwInputSeqNum input_seq_num = 1;
+  // Rcw objects.
+  repeated emergency_brake.EmergencyBrakeObjectProto objects = 2;
+  optional double start_time = 3;  // In sec.
+}
+
+message RearCollisionWarningDebugProto {
+  optional LiteHeader header = 1;
+
+  optional RcwCommonDebugProto common_debug = 2;
+
+  enum PassiveReason {
+    NONE = 0;
+    GEAR_REVERSE = 1;
+    SPEED_NOT_IN_RANGE = 2;
+    RCW_JUST_ACTIVE = 3;
+    TRUNK_OPEN = 4;
+  }
+  optional PassiveReason passive_reason = 3;
+  optional double target_object_ttc = 4;
+  optional double ttc_thres = 5;
+}

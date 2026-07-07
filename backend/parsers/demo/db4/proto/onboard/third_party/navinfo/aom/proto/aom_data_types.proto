@@ -1,0 +1,3350 @@
+syntax = "proto2";
+
+package snoah.aom.proto;
+option go_package = "qcraft-proto.ai/third_party/navinfo/aom/proto/aom_data_types";
+
+message Wgs84Point {
+  optional int32 latitude = 1;
+  optional int32 longitude = 2;
+  optional int32 altitude = 3;
+}
+
+message Curve {
+  enum CurveType {
+    /**
+     * @brief 未体现
+     *
+     */
+    CURVETYPE_NOTPRESENT = 0;
+    /**
+     * @brief 折线
+     *
+     */
+    CURVETYPE_POLYLINE = 1;
+    /**
+     * @brief Bezier样条曲线
+     * @note 目前不支持这种数据
+     */
+    CURVETYPE_BEZIERSPLINE = 2;
+  }
+  optional CurveType type = 1;
+  optional int32 point_size = 2;
+  repeated Wgs84Point points = 3;
+}
+
+message LinearObject {
+  optional int32 id = 1;
+  enum LinearObjectType {
+    /**
+     * @brief 未知
+     *
+     */
+    LINEAROBJECTTYPE_UNKNOWN = 0;
+    /**
+     * @brief 车道线Marking，请参考LineMarking中地面标线图示
+     *
+     */
+    LINEAROBJECTTYPE_LANEMARKING = 1;
+    /**
+     * @brief
+     * 安全护栏，高速城快支持无法区分类型，城区无法区分都是Kerb，AVP不支持
+     *
+     */
+    LINEAROBJECTTYPE_GUARDRAIL = 2;
+    /**
+     * @brief
+     * 栅栏，高速城快支持无法区分类型，barrier扩展，城区无法区分都是Kerb，AVP不支持。
+     *
+     */
+    LINEAROBJECTTYPE_FENCE = 3;
+    /**
+     * @brief 路肩
+     * \image html Kerb.png
+     */
+    LINEAROBJECTTYPE_KERB = 4;
+    /**
+     * @brief 墙，高速城快支持，城区无法区分都是Kerb，AVP不支持
+     *
+     */
+    LINEAROBJECTTYPE_WALL = 5;
+    /**
+     * @brief 杆状障碍物，高速城快支持，城区无法区分都是Kerb，AVP不支持
+     * @note 目前不支持这种数据
+     */
+    LINEAROBJECTTYPE_BARRIER = 6;
+    /**
+     * @brief 虚拟三角岛
+     *
+     */
+    LINEAROBJECTTYPE_VIRTUALTHRINACIA = 7;
+    /**
+     * @brief 铺设路面边缘
+     * \image html LOT_PavedRoad_Edge.png
+     *
+     */
+    LINEAROBJECTTYPE_PAVED_ROADEDGE = 8;
+    /**
+     * @brief 无标线无可区分边界（虚拟边界）
+     * \image html LOT_NoMarkingRoad_Edge.png
+     *
+     */
+    LINEAROBJECTTYPE_NO_MARKING_ROADEDGE = 9;
+  }
+  optional LinearObjectType type = 2;
+  enum LineMarking {
+    /**
+     * @brief 未知
+     *
+     */
+    LINEMARKING_UNKNOWN = 0;
+    /**
+     * @brief 无
+     *
+     */
+    LINEMARKING_NONE = 1;
+    /**
+     * @brief 实线
+     * \image html SolidLine.png
+     */
+    LINEMARKING_SOLIDLINE = 2;
+    /**
+     * @brief 虚线
+     * \image html DashedLine.png
+     */
+    LINEMARKING_DASHEDLINE = 3;
+    /**
+     * @brief 双实线
+     * \image html DoubleSolidLine.png
+     */
+    LINEMARKING_DOUBLESOLIDLINE = 4;
+    /**
+     * @brief 双虚线
+     * \image html DoubleDashedLine.png
+     */
+    LINEMARKING_DOUBLEDASHEDLINE = 5;
+    /**
+     * @brief 左实线右虚线组合
+     * \image html LeftSolidRightDashed.png
+     */
+    LINEMARKING_LEFTSOLIDRIGHTDASHED = 6;
+    /**
+     * @brief 右实线左虚线组合
+     * \image html RightSolidLeftDashed.png
+     */
+    LINEMARKING_RIGHTSOLIDLEFTDASHED = 7;
+    /**
+     * @brief 块形线
+     * \image html DashedBlocks.png
+     */
+    LINEMARKING_DASHEDBLOCKS = 8;
+    /**
+     * @brief 画有阴影的区域
+     * \image html ShadedArea.png
+     * \image html ShadedArea1.png
+     */
+    LINEMARKING_SHADEDAREA = 9;
+    /**
+     * @brief 障碍物体分割线
+     * \image html PhysicalDivider.png
+     * \image html PhysicalDivider1.png
+     */
+    LINEMARKING_PHYSICALDIVIDER = 10;
+    /**
+     * @brief 菱形减速标线，对应NDS CrossingAlert
+     * @note 目前不支持这种数据
+     *
+     */
+    LINEMARKING_DIAMONDDECELARATIONMARK = 11;
+    /**
+     * @brief 可变导向标线，对应NDS CLIFF
+     * @note 目前不支持这种数据
+     *
+     */
+    LINEMARKING_REVERSIBLELANEMARK = 12;
+  }
+  optional LineMarking marking = 3;
+  enum LineMarkingColour {
+    /**
+     * @brief 无
+     *
+     */
+    LINEMARKINGCOLOUR_NONE = 0;
+    /**
+     * @brief 其他
+     *
+     */
+    LINEMARKINGCOLOUR_OTHER = 1;
+    /**
+     * @brief 白色
+     *
+     */
+    LINEMARKINGCOLOUR_WHITE = 2;
+    /**
+     * @brief 黄色
+     *
+     */
+    LINEMARKINGCOLOUR_YELLOW = 3;
+    /**
+     * @brief 橙色
+     *
+     */
+    LINEMARKINGCOLOUR_ORANGE = 4;
+    /**
+     * @brief 红色
+     *
+     */
+    LINEMARKINGCOLOUR_RED = 5;
+    /**
+     * @brief 蓝色
+     *
+     */
+    LINEMARKINGCOLOUR_BLUE = 6;
+  }
+  optional LineMarkingColour color = 4;
+  optional int32 width = 5;
+  optional LineMarkingColour color_left = 6;
+}
+
+message BoundaryAttribution {
+  optional int32 section_index = 1;
+  optional int32 bs_start_point_index = 2;
+  optional int32 bs_end_point_index = 3;
+  optional LinearObject boundary_marking = 4;
+  enum MarkingMaterialType {
+    /**
+     * @brief 未知
+     *
+     */
+    MARKING_MTRL_UNKNOWN = 0;
+    /**
+     * @brief 喷涂
+     *
+     */
+    MARKING_MTRL_PAINTED = 1;
+    /**
+     * @brief 凸起
+     *
+     */
+    MARKING_MTRL_RAISED_PM = 2;
+    /**
+     * @brief 喷涂+凸起
+     *
+     */
+    MARKING_MTRL_PAINTED_RAISED_PM = 3;
+  }
+  optional MarkingMaterialType material = 5;
+  optional bool is_side_walk = 6;
+}
+
+message Boundary {
+  optional int32 index = 1;
+  enum BoundaryType {
+    /**
+     * @brief 车道边界类型
+     *
+     */
+    BOUNDARY_TYPE = 0;
+    /**
+     * @brief 道路边界类型
+     *
+     */
+    ROADEDGE_TYPE = 1;
+  }
+  optional BoundaryType type = 2;
+  optional int32 section_number = 3;
+  optional int32 attribution_size = 4;
+  repeated BoundaryAttribution attribution_list = 5;
+  optional Curve shape = 6;
+}
+
+message LaneRelationship {
+  optional int32 path_id = 1;
+  optional int64 section_id = 2;
+  optional int64 topo_successor = 3;
+  optional int32 offset = 4;
+}
+
+enum YesNoUnknown {
+  /**
+   * @brief 未知
+   *
+   */
+  UNKNOWN = 0;
+  /**
+   * @brief yes
+   *
+   */
+  YES = 1;
+  /**
+   * @brief no
+   *
+   */
+  NO = 2;
+}
+
+enum FuzzyTime {
+  /**
+   * @brief 未知
+   *
+   */
+  FUZZYTIME_UNKNOWN = 0;
+  /**
+   * @brief 白天
+   *
+   */
+  FUZZYTIME_DAY = 1;
+  /**
+   * @brief 黑天
+   *
+   */
+  FUZZYTIME_NIGHT = 2;
+}
+
+enum ConditionType {
+  /**
+   * @brief 未知条件
+   *
+   */
+  CONDITIONTYPEUNKNOWN = 0;
+  /**
+   * @brief 车辆类型限制
+   *
+   */
+  CONDITIONTYPEVEHICLE = 1;
+  /**
+   * @brief 车辆载重限制
+   *
+   */
+  CONDITIONTYPELOAD = 2;
+  /**
+   * @brief 一天内时间限制
+   *
+   */
+  CONDITIONTYPETIMEOFDAY = 3;
+  /**
+   * @brief 一星期内周几限制
+   *
+   */
+  CONDITIONTYPEDAYSOFWEEK = 4;
+  /**
+   * @brief 车辆重量限制
+   *
+   */
+  CONDITIONTYPEWEIGHT = 5;
+  /**
+   * @brief 转弯方向限制
+   *
+   */
+  CONDITIONTYPETURNDIRECTION = 6;
+  /**
+   * @brief 天气限制
+   *
+   */
+  CONDITIONTYPEWEATHER = 7;
+  /**
+   * @brief 模糊时间限制
+   *
+   */
+  CONDITIONTYPEFUZZYTIME = 8;
+  /**
+   * @brief 一年内那天限制
+   *
+   */
+  CONDITIONTYPEDAYOFYEAR = 9;
+}
+
+message ConditionFuzzyTime {
+  optional ConditionType condition_type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+  optional FuzzyTime fuzzy_time = 3;
+}
+
+message ConditionTimeOfDay {
+  optional ConditionType condition_type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+  optional int32 start_minutes = 3;
+  optional int32 end_minutes = 4;
+}
+
+enum Weather {
+  /// 未知
+  WEATHER_Unknown = 0;
+  /// 正常天气
+  WEATHER_NoSpecial = 1;
+  /// 阳光
+  WEATHER_Sunshine = 2;
+  /// 雨
+  WEATHER_Rain = 3;
+  /// 雾
+  WEATHER_Fog = 4;
+  /// 雪
+  WEATHER_Snow = 5;
+  /// 冰
+  WEATHER_Ice = 6;
+  /// 强风
+  WEATHER_StrongWind = 7;
+}
+
+message ConditionWeather {
+  optional ConditionType condition_type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+  optional Weather weather = 3;
+}
+
+message ConditionDaysOfWeek {
+  optional ConditionType condition_type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+  optional int32 week_day_mask = 3;
+}
+
+message DayOfYear {
+  optional int32 year = 1;
+  optional int32 month = 2;
+  optional int32 day = 3;
+}
+
+message ConditionDayRangeOfYear {
+  optional ConditionType condition_type = 1;
+  optional YesNoUnknown applies_to_ego_vehicle = 2;
+  optional bool include_start_day = 3;
+  optional bool include_end_day = 4;
+  optional DayOfYear start_day = 5;
+  optional DayOfYear end_day = 6;
+}
+
+enum UnitOfSpeed {
+  /**
+   * @brief 千米每小时
+   *
+   */
+  KPH = 0;
+  /**
+   * @brief 英里每小时
+   * @note 目前不支持这种数据
+   */
+  MPH = 1;
+}
+
+message LaneSpeedLimit {
+  optional UnitOfSpeed unit = 1;
+  enum LaneSpeedLimitType {
+    /**
+     * @brief 最高限速
+     *
+     */
+    MAX_SPEED_LIMIT = 0;
+    /**
+     * @brief 最低限速
+     *
+     */
+    MIN_SPEED_LIMIT = 1;
+  }
+  optional LaneSpeedLimitType type = 2;
+  optional int32 value = 3;
+  /**
+   * @brief 生效起始点，提供起始点在lane中线的百分比0~100，默认值0
+   *
+   */
+  optional int32 start_range = 4;
+  /**
+   * @brief 生效终止点，提供终止点在lane中线的百分比0~100，默认值0
+   *
+   */
+  optional int32 end_range = 5;
+  optional ConditionFuzzyTime fuzzy_time_condition = 6;
+  optional ConditionTimeOfDay time_of_day_condition = 7;
+  optional ConditionWeather weather_condition = 8;
+  optional ConditionDaysOfWeek days_of_week_condition = 9;
+  optional ConditionDayRangeOfYear day_of_year_condition = 10;
+}
+
+message PositionOnLane {
+  optional Wgs84Point coordinate = 1;
+  /**
+   *
+   * @brief 斜率，提供的每条车道线的slope，默认无效值是-10,000
+   * 斜率  单位: 0.0001 度，例如： 1 度对应的值为 Slope =10000。 Slope α is the
+   * tangent angle along spline direction to the horizontal plane
+   *
+   */
+  optional int64 slope = 2;
+  /**
+   *
+   * @brief 曲率  单位：0.000001/m，半径的倒数。右图中k为曲率，R为半径，t为
+   * tangential direction，默认无效值-1,000,000.
+   *
+   *
+   */
+  optional int64 curvature = 3;
+
+  /**
+   *
+   * @brief 车道线头朝向 Unit: 0.0001 degree,
+   * 从正北到车道线头朝向的顺时针角度，默认值是0
+   *
+   *
+   */
+  optional int64 heading = 4;
+
+  /**
+   *
+   * @brief 横向坡度  SuperElev = (Tanα)*100% ,
+   * 提供的是Link的横坡定义参考SuperElevationClass，默认无效值是 -1
+   * @see navinfo::sdk::SuperElevationClass
+   *
+   */
+  enum SuperElevationClass {
+    /**
+     * @brief Superelevation between 4 degrees towards curb and 4 degrees
+     * towards the middle of the road
+     *
+     */
+    SUPERELEVATION_FLAT = 0;
+    /**
+     * @brief Superelevation more than 4 degrees and less or equal 6 degrees
+     * towards the curb
+     *
+     */
+    MORE_THAN_4_TOWARDS_CURB = 1;
+    /**
+     * @brief Superelevation more than 6 degrees and less or equal 8 degrees
+     * towards the curb
+     *
+     */
+    MORE_THAN_6_TOWARDS_CURB = 2;
+    /**
+     * @brief Superelevation more than 8 degrees towards curb
+     *
+     */
+    MORE_THAN_8_TOWARDS_CURB = 3;
+    /**
+     * @brief Superelevation more than 4 degrees and less or equal 6 degrees
+     * towards the middle of the road
+     *
+     */
+    MORE_THAN_4_TOWARDS_MIDDLE = 4;
+    /**
+     * @brief Superelevation more than 6 degrees and less or equal 8 degrees
+     * towards the middle of the road
+     *
+     */
+    MORE_THAN_6_TOWARDS_MIDDLE = 5;
+    /**
+     * @brief Superelevation more than 8 degrees towards the middle of the road
+     *
+     */
+    MORE_THAN_8_TOWARDS_MIDDLE = 6;
+    /**
+     * @brief invalid
+     *
+     */
+    SUPERELEVATION_INVALID = -1;
+  }
+  optional SuperElevationClass super_elevation = 5;
+}
+
+message LaneUnderCon {
+  /**
+   * @brief 生效起始点，提供起始点在lane中线的百分比0~100，默认值0
+   *
+   */
+  optional int32 start_range = 1;
+
+  /**
+   * @brief 生效终止点，提供终止点在lane中线的百分比0~100，默认值0
+   *
+   */
+  optional int32 end_range = 2;
+
+  /**
+   * @brief 是否包含起始日期
+   *
+   */
+  optional bool include_start_day = 3;
+
+  /**
+   * @brief 是否包含终止日期
+   *
+   */
+  optional bool include_end_day = 4;
+
+  /**
+   * @brief 生效起始日期，提供起始日期，默认值0
+   *
+   */
+  optional DayOfYear day_of_year_start = 5;
+
+  /**
+   * @brief 生效终止日期，提供终止日期，默认值0
+   *
+   */
+  optional DayOfYear day_of_year_end = 6;
+}
+
+/**
+ *
+ * @brief 车道线箭头方向，定义参考LaneArrowMarking，默认值为NONE
+ * @note 目前不支持这种数据
+ * @see navinfo::sdk::LaneArrowMarking
+ *
+ */
+enum LaneArrowMarking {
+  /**
+   * @brief 无效
+   *
+   */
+  LANEARROWMARKING_NONE = 0;
+  /**
+   * @brief 直行
+   *
+   */
+  LANEARROWMARKING_STRAIGHT = 1;
+  /**
+   * @brief 右前方行驶
+   *
+   */
+  LANEARROWMARKING_SLIGHTRIGHT = 2;
+  /**
+   * @brief 右转
+   *
+   */
+  LANEARROWMARKING_RIGHT = 4;
+  /**
+   * @brief 大角度右转>90度
+   *
+   */
+  LANEARROWMARKING_HARDRIGHT = 8;
+  /**
+   * @brief Uturn
+   *
+   */
+  LANEARROWMARKING_UTURN = 16;
+  /**
+   * @brief 大角度左转 >90度
+   *
+   */
+  LANEARROWMARKING_HARDLEFT = 32;
+  /**
+   * @brief 左转
+   *
+   */
+  LANEARROWMARKING_LEFT = 64;
+  /**
+   * @brief 左前方行驶
+   *
+   */
+  LANEARROWMARKING_SLIGHTLEFT = 128;
+  /**
+   * @brief 禁止+方向
+   * @note 目前不支持这种数据
+   */
+  LANEARROWMARKING_PROHIBIT = 4096;
+  /**
+   * @brief 无
+   *
+   */
+  LANEARROWMARKING_NA = -1;
+}
+
+message LaneDetail {
+  /**
+   *
+   * @brief 车线索引，从边界向道路中心增加，起始值为0
+   *
+   *
+   */
+  optional int32 index = 1;
+
+  /**
+   *
+   * @brief 关联的DrivingSection的数量，无关联拓扑时数量为0.
+   *
+   *
+   */
+  optional int32 next_relation_num = 2;
+
+  /**
+   *
+   * @brief 与各个DrivingSection的拓扑关系
+   *
+   *
+   */
+  repeated LaneRelationship next_relations = 3;
+
+  /**
+   *
+   * @brief 关联的DrivingSection的数量，无关联拓扑时数量为0.
+   *
+   *
+   */
+  optional int32 pre_relation_num = 4;
+
+  /**
+   *
+   * @brief 与各个DrivingSection的拓扑关系
+   *
+   *
+   */
+  repeated LaneRelationship pre_relations = 5;
+
+  repeated LaneArrowMarking arrow_markings = 6;
+
+  /**
+   *
+   * @brief 车线类型LaneType，默认值LANE_UNKNOWN
+   * @see navinfo::sdk::LaneType
+   *
+   */
+  enum LaneType {
+    /**
+     * @brief 未知
+     *
+     */
+    LANETYPE_LANE_UNKNOWN = 0;
+    /**
+     * @brief 一般车线
+     *
+     */
+    LANETYPE_LANE_REGULAR = 1;
+    /**
+     * @brief 加速车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_ACCELERATION = 2;
+    /**
+     * @brief 减速车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_DECELERATION = 4;
+    /**
+     * @brief 多乘车线（车中必须多于1人）
+     *
+     */
+    LANETYPE_LANE_HOV = 8;
+    /**
+     * @brief 慢车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_SLOW = 16;
+    /**
+     * @brief 管制车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_REGULATED_ACCESS = 64;
+    /**
+     * @brief 可行驶的路肩
+     *
+     */
+    LANETYPE_LANE_DRIVABLE_SHOULDER = 256;
+    /**
+     * @brief 紧急泊车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_EMERGENCY_PARKING_STRIP = 512;
+    /**
+     * @brief 公交车线
+     *
+     */
+    LANETYPE_LANE_BUS = 1024;
+    /**
+     * @brief 自行车车线
+     *
+     */
+    LANETYPE_LANE_BICYCLE = 2048;
+    /**
+     * @brief 转折车线
+     * @note 目前不支持这种数据
+     */
+    LANETYPE_LANE_TURN = 4096;
+    /**
+     * @brief 可逆车线，仅城区支持
+     *
+     */
+    LANETYPE_LANE_REVERSIBLE = 8192;
+    /**
+     * @brief 安全脱出车线
+     * @note 目前不支持这种数据
+     */
+    LANETYPE_LANE_TRUCK_ESCAPE_RAMP = 16384;
+    /**
+     * @brief 可变车线
+     *
+     */
+    LANETYPE_LANE_VARIABLE_DRIVING = 32768;
+    /**
+     * @brief 泊车车线，仅高速城快提供
+     *
+     */
+    LANETYPE_LANE_PARKING_LANE = 65536;
+  }
+  repeated LaneType types = 7;
+
+  /**
+   *
+   * @brief 车辆通行方向与形状点存储方向的关系，定义参考DirectionType，永不为0.
+   * @see navinfo::sdk::DirectionType
+   *
+   */
+  enum DirectionType {
+    /**
+     * @brief 无信息
+     *
+     */
+    DIRECTION_TYPE_NONE = 0;
+    /**
+     * @brief 行驶方向与Link存储方向相同
+     *
+     */
+    DIRECTION_TYPE_POSITIVE = 1;
+    /**
+     * @brief 行驶方向与Link存储方向相反
+     *
+     */
+    DIRECTION_TYPE_NEGATIVE = 2;
+  }
+  optional DirectionType travel_direction = 8;
+
+  /**
+   *
+   * @brief 车线变换类型，定义参考LaneTransition，默认为None
+   * @see navinfo::sdk::LaneTransition
+   *
+   */
+  enum LaneTransition {
+    /**
+     * @brief 当前车线不变
+     *
+     */
+    LANETRANSITION_NONE = 0;
+    /**
+     * @brief 车道线始点，对应lane start
+     *
+     */
+    LANETRANSITION_OPENING = 1;
+    /**
+     * @brief 车道线终点，对应lane end
+     *
+     */
+    LANETRANSITION_CLOSING = 2;
+    /**
+     * @brief 合流
+     *
+     */
+    LANETRANSITION_MERGING = 3;
+    /**
+     * @brief 分歧
+     *
+     */
+    LANETRANSITION_SPLITTING = 4;
+  }
+  optional LaneTransition transition_type = 9;
+
+  /**
+   *
+   * @brief 中心线曲线，永远有效
+   *
+   *
+   */
+  optional Curve center_line = 10;
+
+  /**
+   *
+   * @brief 左边界索引，多线的情况下提供距离车所在车道线最近的边界线，默认值为0
+   *
+   *
+   */
+  optional int32 left_boundary_index = 11;
+
+  /**
+   *
+   * @brief 右边界索引，多线的情况下提供距离车所在车道线最近的边界线，默认值为0
+   *
+   *
+   */
+  optional int32 right_boundary_index = 12;
+
+  /**
+   *
+   * @brief 车线的起始宽度(cm)，AVP情况下不提供，默认值为0
+   *
+   *
+   */
+  optional int32 start_width = 13;
+
+  /**
+   *
+   * @brief 车线的结束宽度(cm)，AVP情况下不提供，默认值为0
+   *
+   *
+   */
+  optional int32 end_width = 14;
+
+  /**
+   *
+   * @brief 车线长度(cm)，默认值为0
+   *
+   *
+   */
+  optional int32 length = 15;
+
+  /**
+   *
+   * @brief 车线限速个数，没有限速值则为0
+   *
+   *
+   */
+  optional int32 speed_limit_cnt = 16;
+
+  /**
+   *
+   * @brief 车线限速详情
+   *
+   *
+   */
+  repeated LaneSpeedLimit speed_limits = 17;
+
+  /**
+   *
+   * @brief 当前车线是否可通行（考虑时间及车型限制），默认值是true
+   *
+   *
+   */
+  optional bool is_available = 18;
+
+  /**
+   *
+   * @brief Position点的数量，默认值为0
+   *
+   *
+   */
+  optional int32 pos_num = 19;
+
+  /**
+   *
+   * @brief Position点的详细数据，无法提供车线级情报的每条车线使用link数据
+   *
+   *
+   */
+  repeated PositionOnLane positions_on_lane = 20;
+
+  /**
+   *
+   * @brief Lane始点到当前车线第一个可向左变线的起始位置的距离（cm），默认值为0
+   *
+   *
+   */
+  optional int32 change_to_left_lane_start_offset = 21;
+
+  /**
+   *
+   * @brief Lane始点到当前车线第一个可向左变线的结束位置的距离（cm），默认值为0
+   *
+   *
+   */
+  optional int32 change_to_left_lane_end_offset = 22;
+
+  /**
+   *
+   * @brief Lane始点到当前车线第一个可向右变线的起始位置的距离（cm），默认值为0
+   *
+   *
+   */
+  optional int32 change_to_right_lane_start_offset = 23;
+
+  /**
+   *
+   * @brief Lane始点到当前车线第一个可向右变线的结束位置的距离（cm），默认值为0
+   *
+   *
+   */
+  optional int32 change_to_right_lane_end_offset = 24;
+
+  /**
+   *
+   * @brief 关联的对象数量，默认值为0
+   *
+   *
+   */
+  optional int32 rel_object_num = 25;
+
+  /**
+   *
+   * @brief
+   * 关联的对象ID列表，无法关联到Lane上的Object，Section上的每一个Lane都关联该Object
+   *
+   *
+   */
+  repeated int32 object_id_list = 26;
+
+  /**
+   *
+   * @brief 当前车线可通行车辆类型RoadAccessFlags，默认无效值为0
+   * @see navinfo::sdk::RoadAccessFlags
+   *
+   */
+  enum RoadAccessFlags {
+    /**
+     * @brief 乘用车
+     *
+     */
+    ROADACCESSFLAGS_PASSENGERCARS = 1;
+    /**
+     * @brief 行人
+     *
+     */
+    ROADACCESSFLAGS_PEDESTRIANS = 2;
+    /**
+     * @brief 公交
+     *
+     */
+    ROADACCESSFLAGS_BUS = 4;
+    /**
+     * @brief 运输车辆
+     *
+     */
+    ROADACCESSFLAGS_DELIVERY = 8;
+    /**
+     * @brief 救护车
+     *
+     */
+    ROADACCESSFLAGS_EMERGENCY = 16;
+    /**
+     * @brief 出租车
+     *
+     */
+    ROADACCESSFLAGS_TAXI = 32;
+    /**
+     * @brief 直达运输车
+     * @note 目前不支持这种数据
+     */
+    ROADACCESSFLAGS_THROUGHTRAFFIC = 64;
+    /**
+     * @brief 卡车
+     *
+     */
+    ROADACCESSFLAGS_TRUCKS = 128;
+  }
+  repeated RoadAccessFlags vehicle_type_masks = 27;
+
+  /**
+   *
+   * @brief 车线上的在建属性个数，默认值为0
+   *
+   *
+   */
+  optional int32 under_construction_cnt = 28;
+
+  /**
+   *
+   * @brief 车线上的在建属性
+   *
+   *
+   */
+  repeated LaneUnderCon lane_under_construction = 29;
+}
+
+enum ExternalFormOfWay {
+  /**
+   * @brief 未知
+   *
+   */
+  EXTERNALFORMOFWAY_UNKNOWN = 0;
+  /**
+   * @brief 限制进入，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_CONTROLLEDACCESS = 1;
+  /**
+   * @brief 双向通行道路
+   *
+   */
+  EXTERNALFORMOFWAY_MULTIPLECARRIAGEWAY = 2;
+  /**
+   * @brief 单行道
+   *
+   */
+  EXTERNALFORMOFWAY_SINGLECARRIAGEWAY = 4;
+  /**
+   * @brief 环岛，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_ROUNDABOUTCIRCLE = 8;
+  /**
+   * @brief 特殊交通标识，SD属性HDMap不支持
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_SPECIALTRAFFICFIGURE = 16;
+  /**
+   * @brief reserved
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_RESERVEDA = 32;
+  /**
+   * @brief reserved
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_RESERVEDB = 64;
+  /**
+   * @brief 并行道路，SD属性HDMap不支持
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_PARALLELROAD = 128;
+  /**
+   * @brief 受限进入的ramp，仅高速城快提供
+   *
+   */
+  EXTERNALFORMOFWAY_RAMPONCONTROLLEDACCESS = 256;
+  /**
+   * @brief 无限制进入的ramp，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_RAMPNOTONCONTROLLEDACCESS = 512;
+  /**
+   * @brief 沿街道路
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_FRONTAGEROAD = 1024;
+  /**
+   * @brief 停车场内道路，仅AVP提供
+   *
+   */
+  EXTERNALFORMOFWAY_CARPARK = 2048;
+  /**
+   * @brief 服务区内道路，仅高速城快提供
+   *
+   */
+  EXTERNALFORMOFWAY_SERVICE = 4096;
+  /**
+   * @brief 人行区内道路，仅AVP提供
+   *
+   */
+  EXTERNALFORMOFWAY_PEDESTRIANZONE = 8192;
+  /**
+   * @brief 其他
+   * @note 目前不支持这种数据
+   */
+  EXTERNALFORMOFWAY_NOTAVAILABLE = 16384;
+  /**
+   * @brief 上行连接路，仅AVP提供
+   *
+   */
+  EXTERNALFORMOFWAY_UPRAMP = 32768;
+  /**
+   * @brief 下行连接路，仅AVP提供
+   *
+   */
+  EXTERNALFORMOFWAY_DOWNRAMP = 65536;
+  /**
+   * @brief 高速，仅高速城快提供
+   *
+   */
+  EXTERNALFORMOFWAY_MOTORWAY = 131072;
+  /**
+   * @brief 城快，仅高速城快提供
+   *
+   */
+  EXTERNALFORMOFWAY_URBANEXPRESSWAY = 262144;
+  /**
+   * @brief 隧道，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_TUNNEL = 524288;
+  /**
+   * @brief 桥梁，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_BRIDGE = 1048576;
+  /**
+   * @brief 交叉点内道路，AVP不提供
+   *
+   */
+  EXTERNALFORMOFWAY_INNERINTERSECTION = 2097152;
+  /**
+   * @brief 收费站区域道路，仅高速城快提供
+   *
+   */
+  EXTERNALFORMOFWAY_TOLLPLAZA = 4194304;
+  /**
+   * @brief 一般道，AVP不适用
+   *
+   */
+  EXTERNALFORMOFWAY_LOCALROAD = 8388608;
+  /**
+   * @brief 预留
+   *
+   */
+  EXTERNALFORMOFWAY_RESERVED_25 = 16777216;
+  /**
+   * @brief 预留
+   *
+   */
+  EXTERNALFORMOFWAY_RESERVED_26 = 33554432;
+  /**
+   * @brief 预留
+   *
+   */
+  EXTERNALFORMOFWAY_RESERVED_27 = 67108864;
+  /**
+   * @brief 预留
+   *
+   */
+  EXTERNALFORMOFWAY_RESERVED_28 = 134217728;
+}
+
+enum SubgradeType {
+  /**
+   * @brief 顺方向整体路基
+   * \image html SubgradeType1.png
+   */
+  SUBGRADE_INTEGRAL_POSITIVE = 0;
+  /**
+   * @brief 逆方向整体路基
+   * \image html SubgradeType1.png
+   */
+  SUBGRADE_INTEGRAL_NEGATIVE = 1;
+  /**
+   * @brief 顺方向分离式路基
+   * \image html SubgradeType2.png
+   * @note 目前不支持这种数据
+   */
+  SUBGRADE_SEPARATED_POSITIVE = 2;
+  /**
+   * @brief 逆方向分离式路基
+   * \image html SubgradeType3.png
+   */
+  SUBGRADE_SEPARATED_NEGATIVE = 3;
+}
+
+enum FloorID {
+  /**
+   * @brief  全部
+   *
+   */
+  FLOOR_ALL = 0;
+  /**
+   * @brief  地下一层
+   *
+   */
+  FLOOR_B1 = 1;
+  /**
+   * @brief  地下二层
+   *
+   */
+  FLOOR_B2 = 2;
+  /**
+   * @brief  地下三层
+   *
+   */
+  FLOOR_B3 = 3;
+  /**
+   * @brief  地下四层
+   *
+   */
+  FLOOR_B4 = 4;
+  /**
+   * @brief  地下五层
+   *
+   */
+  FLOOR_B5 = 5;
+  /**
+   * @brief  地下六层
+   *
+   */
+  FLOOR_B6 = 6;
+  /**
+   * @brief  地下七层
+   *
+   */
+  FLOOR_B7 = 7;
+  /**
+   * @brief  地下八层
+   *
+   */
+  FLOOR_B8 = 8;
+  /**
+   * @brief  地下九层
+   *
+   */
+  FLOOR_B9 = 9;
+  /**
+   * @brief  地下十层
+   *
+   */
+  FLOOR_B10 = 10;
+  /**
+   * @brief  地上一层
+   *
+   */
+  FLOOR_F1 = 11;
+  /**
+   * @brief  地上二层
+   *
+   */
+  FLOOR_F2 = 12;
+  /**
+   * @brief  地上三层
+   *
+   */
+  FLOOR_F3 = 13;
+  /**
+   * @brief  地上四层
+   *
+   */
+  FLOOR_F4 = 14;
+  /**
+   * @brief  地上五层
+   *
+   */
+  FLOOR_F5 = 15;
+  /**
+   * @brief  地上六层
+   *
+   */
+  FLOOR_F6 = 16;
+  /**
+   * @brief  地上七层
+   *
+   */
+  FLOOR_F7 = 17;
+  /**
+   * @brief  地上八层
+   *
+   */
+  FLOOR_F8 = 18;
+  /**
+   * @brief  地上九层
+   *
+   */
+  FLOOR_F9 = 19;
+  /**
+   * @brief  地上十层
+   *
+   */
+  FLOOR_F10 = 20;
+  /**
+   * @brief  无效
+   *
+   */
+  FLOOR_INVALID = 21;
+}
+
+message DrivingSection {
+  /**
+   *
+   * @brief Section的ID，数据范围内ID唯一，默认无效值为0,实际数据为uint64_t
+   *
+   *
+   */
+  optional int64 section_id = 1;
+
+  /**
+   *
+   * @brief
+   * drivingSection始端沿经路offset，避免sectionID重复的case，单位m，默认值为0
+   *
+   *
+   */
+  optional int32 offset = 2;
+
+  /**
+   *
+   * @brief 如果Section终点存在IntersectionNode则赋值，否则为INT_MAX
+   *
+   *
+   */
+  optional int32 intersection_id = 3;
+
+  /**
+   *
+   * @brief
+   * DrivingSection对应LinkID，实际数据为uint64_t,数据范围内ID唯一，默认无效值为0，E0X
+   *
+   *
+   */
+  optional int64 link_id = 4;
+
+  /**
+   *
+   * @brief Section 长度，单位：cm，默认无效值为0
+   *
+   *
+   */
+  optional int32 length = 5;
+
+  /**
+   *
+   * @brief 当前DrivingSeciton种别ExternalFormOfWay，默认值Unknown
+   * @see navinfo::sdk::ExternalFormOfWay
+   *
+   */
+  repeated ExternalFormOfWay section_types = 6;
+
+  /**
+   *
+   * @brief
+   * 转折方向，如果当前DrivingSection为诱导经路的交叉路口进入DrivingSection，则提供经路的转折方向，定义参考LaneArrowMarking
+   * ，默认值NONE，
+   * 其他情况提供连续两个DrivingSection的夹角，交叉点内的DrivingSection不提供转折方向。
+   * @see navinfo::sdk::LaneArrowMarking
+   *
+   */
+  optional LaneArrowMarking turn_type = 7;
+
+  /**
+   *
+   * @brief
+   * 路基类型，具体指当前道路与同向或逆向道路之前是否存在物理间隔。整体式路基表示无间隔，分离式路基表示有间隔，定义参考SubgradeType，默认值0
+   * @see navinfo::sdk::SubgradeType
+   *
+   */
+  optional SubgradeType sub_grade_type = 8;
+
+  /**
+   *
+   * @brief 车线数量，默认无效值0
+   *
+   *
+   */
+  optional int32 lane_num = 9;
+
+  /**
+   *
+   * @brief
+   * 车线详细数据，DrivingSection内保证不会发生lane个数变化，车线数发生变更点会切分DrivingSection
+   *
+   *
+   */
+  repeated LaneDetail lane_infos = 10;
+
+  /**
+   *
+   * @brief 车线边界数量，默认无效值0
+   *
+   *
+   */
+  optional int32 boundary_num = 11;
+
+  /**
+   *
+   * @brief 车线边界详细数据
+   *
+   *
+   */
+  repeated Boundary boundaries = 12;
+
+  /**
+   *
+   * @brief 共用路基时逆向车线数量，默认值0
+   *
+   *
+   */
+  optional int32 reverse_lane_num = 13;
+
+  /**
+   *
+   * @brief 共用路基时逆向车线详细数据，
+   *
+   *
+   */
+  repeated LaneDetail reverse_lane_infos = 14;
+
+  /**
+   *
+   * @brief 逆向车线边界数量，默认值0
+   *
+   *
+   */
+  optional int32 reverse_boundary_num = 15;
+
+  /**
+   *
+   * @brief 逆向车线边界详细数据
+   *
+   *
+   */
+  repeated Boundary reverse_boundaries = 16;
+
+  /**
+   *
+   * @brief drivingsection所在楼层信息，默认无效值FLOOR_INVALID
+   * @see navinfo::sdk::FloorID
+   *
+   */
+  optional FloorID floor_id = 17;
+
+  /**
+   *
+   * @brief drivingsection覆盖2根以上Link, 默认值0
+   *
+   *
+   */
+  optional bool is_shared = 18;
+
+  /**
+   *
+   * @brief 数据编译日期，按UR区分，默认值为0
+   *
+   *
+   */
+  optional DayOfYear day_of_year = 19;
+
+  /**
+   *
+   * @brief 表达DrivingSection是诱导 经路一部分的flag，默认值0
+   *
+   *
+   */
+  optional bool is_part_of_guided_route = 20;
+}
+
+enum ObjectType {
+  /**
+   * @brief 未知
+   *
+   */
+  OBJECT_TYPE_UNKNOWN = 0;
+  /**
+   * @brief 路牙，仅高速城快提供
+   *
+   */
+  OBJECT_CURB = 1;
+  /**
+   * @brief 障碍物，AVP可提供
+   *
+   */
+  OBJECT_BARRIER = 2;
+  /**
+   * @brief 交通标志
+   *
+   */
+  OBJECT_TRAFFIC_SIGN = 3;
+  /**
+   * @brief 可变信息标志
+   *
+   */
+  OBJECT_VARIABLE_MESSAGE_SIGN = 4;
+  /**
+   * @brief 反射柱
+   * @note 目前不支持这种数据
+   */
+  OBJECT_REFLECTOR_POST = 5;
+  /**
+   * @brief 杆状物
+   *
+   */
+  OBJECT_POLE_LIKE = 6;
+  /**
+   * @brief 交通灯
+   *
+   */
+  OBJECT_TRAFFIC_LIGHT = 7;
+  /**
+   * @brief 墙，仅高速城快提供
+   *
+   */
+  OBJECT_WALL = 8;
+  /**
+   * @brief 箭头，AVP可提供
+   *
+   */
+  OBJECT_ARROW = 9;
+  /**
+   * @brief 文字，仅高速城快提供
+   *
+   */
+  OBJECT_TEXT = 10;
+  /**
+   * @brief 符号，仅高速城快提供
+   *
+   */
+  OBJECT_SYMBOL = 11;
+  /**
+   * @brief 警示区域，仅高速城快提供
+   *
+   */
+  OBJECT_WARNING_AREA = 12;
+  /**
+   * @brief 导流区，AVP可提供，高速城快支持、城区不支持
+   *
+   */
+  OBJECT_FILLED_AREA = 13;
+  /**
+   * @brief 公交站，仅高速城快提供
+   *
+   */
+  OBJECT_PUBLIC_TRANSIT_STOP = 14;
+  /**
+   * @brief 停止线
+   *
+   */
+  OBJECT_STOPPING_LOCATION = 15;
+  /**
+   * @brief 人行横道，AVP可提供
+   *
+   */
+  OBJECT_CROSS_WALK = 16;
+  /**
+   * @brief 高架物，仅高速城快提供
+   *
+   */
+  OBJECT_OVERHEAD_STRUCTURE = 17;
+  /**
+   * @brief 垂直墙，仅高速城快提供
+   *
+   */
+  OBJECT_PERPENDICULAR_WALL = 18;
+  /**
+   * @brief 减速带，AVP可提供，高速城快支持、城区不支持
+   *
+   */
+  OBJECT_SPEED_BUMP = 19;
+  /**
+   * @brief 禁停区，AVP可提供，高速城快支持、城区不支持
+   *
+   */
+  OBJECT_NO_PARKING_AREA = 20;
+  /**
+   * @brief 交差点内障碍物
+   * @note 目前不支持这种数据
+   */
+  OBJECT_INTERSECTION_OBSTACLE = 21;
+  /**
+   * @brief 停车场闸门，仅AVP数据可提供
+   *
+   */
+  OBJECT_PARKING_GATE = 22;
+  /**
+   * @brief 停车场入口
+   * @note 目前不支持这种数据
+   */
+  OBJECT_PARKING_ENTRY = 23;
+  /**
+   * @brief 停车场出口
+   * @note 目前不支持这种数据
+   */
+  OBJECT_PARKING_EXIT = 24;
+  /**
+   * @brief 停车场内卷帘门
+   * @note 目前不支持这种数据
+   */
+  OBJECT_ROLLING_SHUTTER_DOOR = 25;
+  /**
+   * @brief 减速标线
+   * @note 目前不支持这种数据
+   */
+  OBJECT_SPEED_MARKING = 26;
+  /**
+   * @brief 新泽西护栏，仅高速城快支持
+   *
+   */
+  OBJECT_BARRIER_JERSEY = 27;
+  /**
+   * @brief 安全护栏，仅高速城快支持
+   *
+   */
+  OBJECT_GUARDRAIL = 28;
+}
+
+/**
+ *
+ * @brief 与当前对象相关的对象信息
+ *
+ *
+ */
+message RelatedObjectInfo {
+  /**
+   *
+   * @brief ID
+   *
+   *
+   */
+  optional int32 object_id = 1;
+
+  /**
+   *
+   * @brief 对象类型，定义参考ObjectType
+   * @see navinfo::sdk::ObjectType
+   *
+   */
+  optional ObjectType object_type = 2;
+
+  /**
+   *
+   * @brief 关系。 0 unknow、1 the composition of One Object、2 one of two more
+   * traffic lights mutually exclusive
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 relation_type = 3;
+}
+
+message IntersectionEdgeRange {
+  /**
+   *
+   * @brief 当前边界在形状点列表中线束点的索引
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 position_index = 1;
+
+  /**
+   *
+   * @brief 边界类型 ，定义参考IntersectionEdgeType
+   * @note 目前不支持这种数据
+   * @see navinfo::sdk::IntersectionEdgeType
+   *
+   */
+  enum IntersectionEdgeType {
+    /**
+     * @brief 车辆可通过
+     *
+     */
+    EDGE_TYPE_PASSABLE = 0;
+    /**
+     * @brief 车辆不可通过
+     *
+     */
+    EDGE_TYPE_NOT_PASSABLE = 1;
+  }
+  optional IntersectionEdgeType edge_type = 2;
+}
+
+message IntersectionPath {
+  /**
+   * @brief section的数量 based on link，默认无效值为0
+   *
+   */
+  optional int32 section_cnt = 1;
+
+  /**
+   * @brief 各个Secttion的数据，offset，intersectionId，turnType为无效值。
+   * 所提供的LaneRelationship的pathID无效值为-1.
+   *
+   */
+  repeated DrivingSection driving_sections = 2;
+}
+
+message IntersectionNode {
+  /**
+   *
+   * @brief 交叉点唯一标识ID，默认无效值为0，ID从1开始
+   *
+   *
+   */
+  optional int32 node_id = 1;
+
+  /**
+   *
+   * @brief 进入交叉点的sections的ID，默认无效值为0,实际数据为uint64_t
+   *
+   *
+   */
+  optional int64 section_id = 2;
+
+  /**
+   *
+   * @brief Intersect始点沿经路offset，单位m，默认值为0
+   *
+   *
+   */
+  optional int32 offset = 3;
+
+  /**
+   *
+   * @brief 交叉点路口边界形状点情报，默认值点列为空。
+   *
+   *
+   */
+  optional Curve object_affect_shape = 4;
+
+  /**
+   *
+   * @brief 相关的对象数量
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 related_object_cnt = 5;
+
+  /**
+   *
+   * @brief 相关的对象列表
+   * @note 目前不支持这种数据
+   *
+   */
+  repeated RelatedObjectInfo related_objects = 6;
+
+  /**
+   *
+   * @brief 交差点对象的边界数量
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 edge_section_cnt = 7;
+
+  /**
+   *
+   * @brief 交差点对象的边界信息
+   * @note 目前不支持这种数据
+   *
+   */
+  repeated IntersectionEdgeRange edge_types = 8;
+
+  /**
+   *
+   * @brief 是否是复杂交叉路口，默认值0
+   *
+   *
+   */
+  optional bool is_complex = 9;
+
+  /**
+   *
+   * @brief 进入该交叉点的path个数，Node点所在Path不包含在内，默认值0
+   *
+   *
+   */
+  optional int32 enter_path_cnt = 10;
+
+  /**
+   *
+   * @brief 进入交叉点PathId 列表
+   *
+   *
+   */
+  repeated int32 enter_path_id_list = 11;
+
+  /**
+   *
+   * @brief 脱出该交叉点的path个数，Node点所在Path不包含在内，默认值0
+   *
+   *
+   */
+  optional int32 exit_path_cnt = 12;
+
+  /**
+   *
+   * @brief 脱出交叉点PathId 列表
+   *
+   *
+   */
+  repeated int32 exit_path_id_list = 13;
+
+  /**
+   *
+   * @brief 是否是虚拟路口，默认值0，
+   *
+   *
+   */
+  optional bool is_virtual = 14;
+
+  /**
+   *
+   * @brief 非path上的关联path个数，默认值0
+   *
+   *
+   */
+  optional int32 indirect_path_cnt = 15;
+
+  /**
+   *
+   * @brief 非path上的关联路线详细信息
+   *
+   *
+   */
+  repeated IntersectionPath indirect_paths = 16;
+}
+
+message Speed {
+  /**
+   *
+   * @brief 车速, 实际数据为uint8_t
+   *
+   *
+   */
+  optional int32 value = 1;
+
+  /**
+   *
+   * @brief 车速单位
+   * @see navinfo::sdk::UnitOfSpeed
+   *
+   */
+  optional UnitOfSpeed unit = 2;
+}
+
+message EffectiveSpeedLimit {
+  /**
+   *
+   * @brief 限速值 ，单位参考结构体定义
+   * @note 目前不支持这种数据
+   *
+   */
+  optional Speed value = 1;
+
+  /**
+   *
+   * @brief 限速种类
+   * @note 目前不支持这种数据
+   * @see navinfo::sdk::EffectiveSpeedLimitType
+   *
+   */
+  enum EffectiveSpeedLimitType {
+    /**
+     * @brief 未知
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_UNKNOWN = 0;
+    /**
+     * @brief 暗示性的限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_IMPLICIT = 1;
+    /**
+     * @brief 交通灯上的明确限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITONTRAFFICSIGN = 2;
+    /**
+     * @brief 夜间限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITNIGHT = 3;
+    /**
+     * @brief 日间限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITDAY = 4;
+    /**
+     * @brief 规定时间/日期内的限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITTIMEORDAY = 5;
+    /**
+     * @brief 雨天限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITRAIN = 6;
+    /**
+     * @brief 雪天限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITSNOW = 7;
+    /**
+     * @brief 雾天限速
+     *
+     */
+    EFFECTIVESPEEDLIMITTYPE_EXPLICITFOG = 8;
+  }
+  optional EffectiveSpeedLimitType type = 2;
+}
+
+message TrafficSignData {
+  /**
+   *
+   * @brief 交通标志类型，定义参考SignType，默认值或未知类型为Unknown.
+   * @see navinfo::sdk::SignType
+   *
+   */
+  enum SignType {
+    /**
+     * @brief 未知
+     * @note 数据有效
+     */
+    SIGNTYPE_UNKNOWN = 255;
+    /**
+     * @brief 左弯
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_LEFTBEND = 10;
+    /**
+     * @brief 右弯
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_RIGHTBEND = 9;
+    /**
+     * @brief 左转后右转
+     *
+     */
+    SIGNTYPE_DOUBLEBENDLEFTFIRST = 14;
+    /**
+     * @brief 右转后左转
+     *
+     */
+    SIGNTYPE_DOUBLEBENDRIGHTFIRST = 13;
+    /**
+     * @brief 连续弯路
+     *
+     */
+    SIGNTYPE_CURVYROAD = 17;
+    /**
+     * @brief 下陡坡
+     *
+     */
+    SIGNTYPE_STEEPDESCENT = 68;
+    /**
+     * @brief 上陡坡
+     *
+     */
+    SIGNTYPE_STEEPASCENT = 67;
+    /**
+     * @brief 道路变窄
+     *
+     */
+    SIGNTYPE_CARRIAGEWAYNARROWS = 40;
+    /**
+     * @brief 右侧变窄
+     *
+     */
+    SIGNTYPE_CARRIAGEWAYNARROWSLEFT = 42;
+    /**
+     * @brief 左侧变窄
+     *
+     */
+    SIGNTYPE_CARRIAGEWAYNARROWSRIGHT = 41;
+    /**
+     * @brief 可移动摆桥
+     *
+     */
+    SIGNTYPE_SWINGBRIDGE = 89;
+    /**
+     * @brief 河岸
+     *
+     */
+    SIGNTYPE_RIVERBANK = 29;
+    /**
+     * @brief 左侧有河岸
+     *
+     */
+    SIGNTYPE_RIVERBANKLEFT = 30;
+    /**
+     * @brief 坑洼道路
+     *
+     */
+    SIGNTYPE_UNEVENROAD = 69;
+    /**
+     * @brief 减速带
+     *
+     */
+    SIGNTYPE_HUMP = 70;
+    /**
+     * @brief 前方有凹陷
+     *
+     */
+    SIGNTYPE_DIP = 71;
+    /**
+     * @brief 路滑
+     *
+     */
+    SIGNTYPE_SLIPPERYROAD = 66;
+    /**
+     * @brief 右侧落石
+     *
+     */
+    SIGNTYPE_FALLINGROCKSRIGHT = 62;
+    /**
+     * @brief 左侧落石
+     *
+     */
+    SIGNTYPE_FALLINGROCKSLEFT = 61;
+    /**
+     * @brief 人行路
+     *
+     */
+    SIGNTYPE_PEDESTRIANS = 50;
+    /**
+     * @brief 人行横道
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_PEDESTRIANCROSSING = 51;
+    /**
+     * @brief 注意儿童
+     *
+     */
+    SIGNTYPE_CHILDREN = 52;
+    /**
+     * @brief 学校区域
+     *
+     */
+    SIGNTYPE_SCHOOLZONE = 53;
+    /**
+     * @brief 注意自行车
+     *
+     */
+    SIGNTYPE_CYCLISTS = 54;
+    /**
+     * @brief 注意牛
+     *
+     */
+    SIGNTYPE_DOMESTICANIMALSCROSSING = 4;
+    /**
+     * @brief 注意动物
+     *
+     */
+    SIGNTYPE_WILDANIMALSCROSSING = 5;
+    /**
+     * @brief 注意施工路段
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_ROADWORKS = 6;
+    /**
+     * @brief 灯光信号
+     *
+     */
+    SIGNTYPE_LIGHTSIGNALS = 31;
+    /**
+     * @brief 危险路口
+     *
+     */
+    SIGNTYPE_DANGEROUSINTERSECTION = 22;
+    /**
+     * @brief 路口
+     *
+     */
+    SIGNTYPE_INTERSECTION = 35;
+    /**
+     * @brief 为右侧来车让行
+     *
+     */
+    SIGNTYPE_INTERSECTIONWITHPRIORITYTOTHERIGHT = 37;
+    /**
+     * @brief 小路让大路
+     *
+     */
+    SIGNTYPE_INTERSECTIONWITHMINORROAD = 36;
+    /**
+     * @brief 前方双向行驶道路
+     *
+     */
+    SIGNTYPE_TWOWAYTRAFFIC = 55;
+    /**
+     * @brief 道路拥堵
+     *
+     */
+    SIGNTYPE_TAFFICCONGESTION = 75;
+    /**
+     * @brief 有杆的铁道路口
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_RAILWAYCROSSINGWITHGATES = 56;
+    /**
+     * @brief 无杆的铁道路口
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_RAILWAYCROSSINGWITHOUTGATES = 57;
+    /**
+     * @brief 有轨电车交叉口
+     *
+     */
+    SIGNTYPE_TRAMWAY = 59;
+    /**
+     * @brief 铁道路口
+     *
+     */
+    SIGNTYPE_RAILWAYCROSSING = 58;
+    /**
+     * @brief 注意危险
+     *
+     */
+    SIGNTYPE_DANGER = 0;
+    /**
+     * @brief 让行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_GIVEWAY = 32;
+    /**
+     * @brief 停车让行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_STOP = 33;
+    /**
+     * @brief 优先道路
+     *
+     */
+    SIGNTYPE_PRIORITYROAD = 34;
+    /**
+     * @brief 为对向车辆让行
+     *
+     */
+    SIGNTYPE_PRIORITYFORONCOMINGTRAFFIC = 82;
+    /**
+     * @brief 优先于对向车辆
+     *
+     */
+    SIGNTYPE_PRIORITYOVERONCOMINGTRAFFIC = 81;
+    /**
+     * @brief 禁止超车
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_OVERTAKINGPROHIBITED = 46;
+    /**
+     * @brief 卡车禁止超车
+     *
+     */
+    SIGNTYPE_OVERTAKINGBYGOODSVEHICLESPROHIBITED = 20;
+    /**
+     * @brief 终止所有限制
+     *
+     */
+    SIGNTYPE_ENDOFALLPROHIBITIONS = 79;
+    /**
+     * @brief 限速牌
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_SPEEDLIMIT = 87;
+    /**
+     * @brief 终止限速
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_ENDOFSPEEDLIMIT = 88;
+    /**
+     * @brief 终止禁止超车
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_ENDOFPROHIBITIONONOVERTAKING = 47;
+    /**
+     * @brief 终止禁止卡车超车
+     *
+     */
+    SIGNTYPE_ENDOFPROHIBITIONONOVERTAKINGFORGOODSVEHICLES = 21;
+    /**
+     * @brief 右行
+     *
+     */
+    SIGNTYPE_DIRECTIONTOTHERIGHT = 38;
+    /**
+     * @brief 左行
+     *
+     */
+    SIGNTYPE_DIRECTIONTOTHELEFT = 39;
+    /**
+     * @brief 右侧通过障碍物
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_PASSRIGHTSIDE = 3;
+    /**
+     * @brief 左侧或右侧通过障碍物
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_PASSLEFTORRIGHTSIDE = 1;
+    /**
+     * @brief 左侧通过障碍物
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_PASSLEFTSIDE = 2;
+    /**
+     * @brief build up area起点
+     *
+     */
+    SIGNTYPE_BEGINNINGOFBUILTUPAREA = 77;
+    /**
+     * @brief build up area终点
+     *
+     */
+    SIGNTYPE_ENDOFBUILTUPAREA = 83;
+    /**
+     * @brief 前方隧道
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_TUNNEL = 24;
+    /**
+     * @brief 前方进入生活区
+     *
+     */
+    SIGNTYPE_RESIDENTIALAREA = 7;
+    /**
+     * @brief 前方离开生活区
+     *
+     */
+    SIGNTYPE_ENDOFRESIDENTIALAREA = 8;
+    /**
+     * @brief 右侧车线汇入
+     *
+     */
+    SIGNTYPE_LANEMERGERIGHT = 44;
+    /**
+     * @brief 左侧车线汇入
+     *
+     */
+    SIGNTYPE_LANEMERGELEFT = 43;
+    /**
+     * @brief 被保护路段结束
+     *
+     */
+    SIGNTYPE_PROTECTEDPASSINGEND = 48;
+    /**
+     * @brief 拱桥
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_HUMPBACKBRIDGE = 28;
+    /**
+     * @brief 可变交通标志，机械牌
+     *
+     */
+    SIGNTYPE_VARIABLESIGNMECHANICELEMENTS = 65;
+    /**
+     * @brief 可变交通标志，灯牌
+     *
+     */
+    SIGNTYPE_VARIABLESIGNLIGHTELEMENTS = 80;
+    /**
+     * @brief ferry码头
+     *
+     */
+    SIGNTYPE_FERRYTERMINAL = 25;
+    /**
+     * @brief 窄桥
+     *
+     */
+    SIGNTYPE_NARROWBRIDGE = 26;
+    /**
+     * @brief 结冰路面
+     *
+     */
+    SIGNTYPE_ICYROAD = 73;
+    /**
+     * @brief 左侧悬崖陡坡
+     *
+     */
+    SIGNTYPE_STEEPDROPLEFT = 63;
+    /**
+     * @brief 右侧悬崖陡坡
+     *
+     */
+    SIGNTYPE_STEEPDROPRIGHT = 64;
+    /**
+     * @brief 积水路段
+     *
+     */
+    SIGNTYPE_ROADFLOODS = 72;
+    /**
+     * @brief 大风路段
+     *
+     */
+    SIGNTYPE_SIDEWINDS = 74;
+    /**
+     * @brief 向中间变线
+     *
+     */
+    SIGNTYPE_LANEMERGECENTER = 45;
+    /**
+     * @brief 事故多发
+     *
+     */
+    SIGNTYPE_HIGHACCIDENTAREA = 76;
+    /**
+     * @brief 鸣笛警告
+     *
+     */
+    SIGNTYPE_AUDIBLEWARNING = 78;
+    /**
+     * @brief 最低限速
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_SPEEDLIMITLOW = 180;
+    /**
+     * @brief 高速入口
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_MOTORWAY = 181;
+    /**
+     * @brief 高速出口
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_MOTORWAYEND = 182;
+    /**
+     * @brief 潮汐车道
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_LANEUSEDINBOTHDIRECTIONS = 183;
+    /**
+     * @brief 禁止左转
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_LEFTPROHIBITED = 184;
+    /**
+     * @brief 禁止右转
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_RIGHTPROHIBITED = 185;
+    /**
+     * @brief 禁止掉头
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_UTURNPROHIBITED = 186;
+    /**
+     * @brief 禁止直行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_STRAIGHTPROHIBITED = 187;
+    /**
+     * @brief 禁止左转+直行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_STRAIGHTANDLEFTPROHIBITED = 188;
+    /**
+     * @brief 禁止右转+直行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_STRAIGHTANDRIGHTPROHIBITED = 189;
+    /**
+     * @brief 禁止左转+右转
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_LEFTANDRIGHTPROHIBITED = 190;
+    /**
+     * @brief 禁止驶入
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_DONOTENTER = 191;
+    /**
+     * @brief 禁止通行
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_PASSINGRESTRICTION = 192;
+    /**
+     * @brief 禁止机动车驶入
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_CARSPROHIBITED = 193;
+    /**
+     * @brief 禁止临时及长时间停车
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_NOPARKING = 194;
+    /**
+     * @brief 禁止长时间停车
+     * @note 数据有效
+     *
+     */
+    SIGNTYPE_NOPARKINGFORALONGTIME = 195;
+  }
+  optional SignType type = 1;
+
+  /**
+   *
+   * @brief
+   * 交通标志形状类型，定义参考TrafficSignShapeType，默认值和未知类型为TRAFFICSIGNSHAPETYPE_UNKNOWN
+   * @see navinfo::sdk::TrafficSignShapeType
+   *
+   */
+  enum TrafficSignShapeType {
+    /**
+     * @brief 三角形tip up
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_TRIANGLE_TIP_UP = 0;
+    /**
+     * @brief 矩形
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_RECTANGLE = 1;
+    /**
+     * @brief 圆形
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_ROUND = 2;
+    /**
+     * @brief 八角形
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_OCTAGON = 3;
+    /**
+     * @brief 菱形
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_DIAMOND = 4;
+    /**
+     * @brief crossbuck
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_CROSBUCK = 5;
+    /**
+     * @brief 三角形tip down
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_TRIANGLE_TIP_DOWN = 6;
+    /**
+     * @brief 椭圆形
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_ELLIPSE = 7;
+    /**
+     * @brief 其他类型
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_OTHER = 8;
+    /**
+     * @brief 未知
+     *
+     */
+    TRAFFICSIGNSHAPETYPE_UNKNOWN = 15;
+  }
+  optional TrafficSignShapeType shape = 2;
+
+  /**
+   *
+   * @brief 模糊时间规制
+   * @note 目前不支持这种数据
+   *
+   */
+  optional ConditionFuzzyTime fuzzy_time_condition = 3;
+
+  /**
+   *
+   * @brief 准确时间规制
+   * @note 目前不支持这种数据
+   *
+   */
+  optional ConditionTimeOfDay time_of_day_condition = 4;
+
+  /**
+   *
+   * @brief 限速信息
+   * @note 目前不支持这种数据
+   *
+   */
+  optional EffectiveSpeedLimit speed_limit = 5;
+
+  /**
+   *
+   * @brief 交通标识的位置和实际起作用的位置间的距离，单位m
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 shift = 6;
+
+  /**
+   *
+   * @brief 交通标识上表示的作用位置，单位m
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 distance = 7;
+
+  /**
+   *
+   * @brief 交通标识上表示的作用长度，单位m
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 length = 8;
+
+  /**
+   *
+   * @brief 是否是动态交通标识牌，定义参考YesNoUnknown
+   * ，默认值和未知类型为Unknown
+   * @see navinfo::sdk::YesNoUnknown
+   *
+   */
+  optional YesNoUnknown vms = 9;
+
+  /**
+   *
+   * @brief 如果有提供交通标识值，默认值为0
+   *
+   *
+   */
+  optional int32 value = 10;
+}
+
+message TrafficLightData {
+  /**
+   *
+   * @brief 交通灯类型，定义参考TrafficLightType，默认无效值为0。
+   * @see navinfo::sdk::TrafficLightType
+   *
+   */
+  enum TrafficLightType {
+    TRAFFIC_LIGHT_TYPE_INVALID = 0;
+    /**
+     * @brief 交差点红绿灯
+     *
+     */
+    INTERSECTION_CONTROL = 1;
+    /**
+     * @brief 匝道控制灯
+     *
+     */
+    RAMP_CONTROL = 2;
+    /**
+     * @brief 收费站信号灯
+     *
+     */
+    TOLLGATE_SIGNAL = 4;
+    /**
+     * @brief 车线状态信号
+     *
+     */
+    LANE_STATUS_SIGNAL = 8;
+    /**
+     * @brief 计时器
+     *
+     */
+    TIMER = 16;
+  }
+  optional TrafficLightType type = 1;
+
+  /**
+   *
+   * @brief 交通灯样式，定义参考TrafficLightOrientation，默认值为0。
+   * @see navinfo::sdk::TrafficLightOrientation
+   *
+   */
+  enum TrafficLightOrientation {
+    /**
+     * @brief 垂直
+     *
+     */
+    TL_Horizontal = 0;
+    /**
+     * @brief 水平
+     *
+     */
+    TL_Vertical = 1;
+  }
+  optional TrafficLightOrientation orientation = 2;
+
+  /**
+   *
+   * @brief Number of tiers: columns of lights in a vertical signal, rows in a
+   * horizontal signal) 默认值为0.
+   *
+   *
+   */
+  optional int32 tier_num = 3;
+
+  /**
+   *
+   * @brief Number of lights in each tier: top to down for vertical, left to
+   * right if horizontal  默认值为0.
+   *
+   *
+   */
+  repeated int32 lights_num_per_tier = 4;
+
+  /**
+   *
+   * @brief traffic light heading 单位是，0.0001度，默认值为0.
+   *
+   *
+   */
+  optional int32 heading = 5;
+}
+
+message PoleData {
+  /**
+   *
+   * @brief 顶点坐标，默认无效值0
+   *
+   *
+   */
+  optional Wgs84Point upper_point = 1;
+
+  /**
+   *
+   * @brief 地面点坐标，默认无效值0
+   *
+   *
+   */
+  optional Wgs84Point lower_point = 2;
+
+  /**
+   *
+   * @brief 杆状物顶点直径，单位cm，默认无效值0
+   *
+   *
+   */
+  optional int32 upper_diameter = 3;
+
+  /**
+   *
+   * @brief 杆状物地面点直径，单位cm，默认无效值0
+   *
+   *
+   */
+  optional int32 lower_diameter = 4;
+
+  /**
+   *
+   * @brief 杆状物高度，单位cm,默认无效值0
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 height = 5;
+}
+
+message BoundingBox {
+  /**
+   *
+   * @brief 多边形顶点数量，默认无效值0
+   *
+   *
+   */
+  optional int32 point_num = 1;
+
+  /**
+   *
+   * @brief 多边形顶点坐标，默认无效值0
+   *
+   *
+   */
+  repeated Wgs84Point lower_points = 2;
+}
+
+/**
+ * @brief 相关连的Lane索引
+ *
+ */
+message RelSectionLane {
+  /**
+   * @brief 关联section所在PathID，默认无效值为0
+   *
+   */
+  optional int32 path_id = 1;
+
+  /**
+   * @brief drivingSection ID，默认无效值0,实际数据为uint64_t
+   *
+   */
+  optional int64 section_id = 2;
+
+  /**
+   * @brief Lane 的索引，从边界向道路中心增加，起始值为0，默认值0
+   *
+   */
+  optional int32 lane_index = 3;
+
+  /**
+   * @brief
+   * 关联drivingSection始端沿经路offset，避免sectionID重复的case，单位m，默认值0
+   *
+   */
+  optional int32 offset = 4;
+}
+
+/**
+ *
+ * @brief 自动驾驶参考对象数据
+ *
+ *
+ */
+message ObjectAttribute {
+  /**
+   *
+   * @brief ID，从1开始（新变更）
+   *
+   *
+   */
+  optional int32 object_id = 1;
+
+  /**
+   *
+   * @brief 对象类型，定义参考ObjectType，默认值OBJECT_TYPE_UNKNOWN
+   * @see navinfo::sdk::ObjectType
+   *
+   */
+  optional ObjectType obj_type = 2;
+
+  /**
+   *
+   * @brief
+   * 停止线类型，定义参考StoppingLocationType，对应类型OBJECT_STOPPING_LOCATION
+   * @note 目前不支持这种数据
+   * @see navinfo::sdk::StoppingLocationType
+   *
+   */
+  enum StoppingLocationType {
+    /**
+     * @brief 单实线,STOP_LINE
+     *
+     */
+    SINGLE_SOLID_STOPPING = 0;
+    /**
+     * @brief 双实线,STOP_YIELD_LINE
+     *
+     */
+    DOUBLE_SOLID_STOPPING = 1;
+    /**
+     * @brief 双虚线,SLOW_DOWN_YIELD_LINE
+     *
+     */
+    DOUBLE_DASHED_STOPPING = 2;
+    /**
+     * @brief 根据人行横道推测的虚拟停止线,VIRTUAL_STOP_LINE
+     *
+     */
+    VIRTUAL_STOPPING_LINE_STOPPING = 3;
+    /**
+     * @brief 待转停止线
+     * @note 目前不支持这种数据
+     */
+    SINGLE_STOPPING_LINE_WAITING = 4;
+  }
+  optional StoppingLocationType stopping_type = 3;
+
+  /**
+   *
+   * @brief 交通标志数据，对应类型OBJECT_TRAFFIC_SIGN
+   *
+   *
+   */
+  optional TrafficSignData traffic_sign_data = 4;
+
+  /**
+   *
+   * @brief 交通灯数据，对应类型OBJECT_TRAFFIC_LIGHT
+   *
+   *
+   */
+  optional TrafficLightData traffic_light_data = 5;
+
+  /**
+   *
+   * @brief 路面箭头方向,定义参考LaneArrowMarking，对应类型 OBJECT_ARROW
+   * @see navinfo::sdk::LaneArrowMarking
+   *
+   */
+  repeated LaneArrowMarking arrow_directions = 6;
+
+  /**
+   *
+   * @brief 减速带和减速标线的高度，单位cm
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 speed_bump_height = 7;
+
+  /**
+   *
+   * @brief 杆状物详细情报，对应类型OBJECT_POLE_LIKE
+   *
+   *
+   */
+  optional PoleData pole_data = 8;
+
+  /**
+   *
+   * @brief 所在位置或影响范围的形状点列表(地面投影)，默认值点列为空。
+   *
+   *
+   */
+  optional Curve object_affect_shape = 9;
+
+  /**
+   *
+   * @brief Object定位外接矩形个数，默认值为0
+   *
+   *
+   */
+  optional int32 boundng_box_cnt = 10;
+
+  /**
+   *
+   * @brief Object定位外接矩形数组
+   *
+   *
+   */
+  repeated BoundingBox bounding_boxes = 11;
+
+  /**
+   *
+   * @brief 相关车线数量(e.g.交通灯对象对应的车线)，默认值为0
+   *
+   *
+   */
+  optional int32 related_link_lane_num = 12;
+
+  /**
+   *
+   * @brief 相关车线ID列表
+   *
+   *
+   */
+  repeated RelSectionLane related_link_lanes = 13;
+
+  /**
+   *
+   * @brief 相关的对象数量
+   *
+   *
+   */
+  optional int32 related_object_num = 14;
+
+  /**
+   *
+   * @brief 相关的对象列表:
+   * 提供停止线、红绿灯、人行横道,人行横道关联多个Path上的多个Section关系.交通灯和倒计时器的关联
+   *
+   *
+   */
+  repeated RelatedObjectInfo related_objects = 15;
+
+  /**
+   *
+   * @brief 关联交叉点个数
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 related_intersection_num = 16;
+
+  /**
+   *
+   * @brief 关联交叉点ID
+   * @note 目前不支持这种数据
+   *
+   */
+  repeated int32 related_intersection_ids = 17;
+
+  /**
+   *
+   * @brief Object对应drivingsection所在楼层信息，默认无效值FLOOR_INVALID,
+   * 停车场外为FLOOR_INVALID
+   * @see navinfo::sdk::FloorID
+   *
+   */
+  optional FloorID floor_id = 18;
+}
+
+/**
+ *
+ * @brief 可通行path的定义
+ * \image html DrivingPath.png
+ *
+ */
+message DrivingPath {
+  /**
+   *
+   * @brief DrivingPath的唯一标识，默认无效值为0，ID从1开始
+   *
+   *
+   */
+  optional int32 path_id = 1;
+
+  /**
+   *
+   * @brief section的数量 based on link，默认无效值0
+   *
+   *
+   */
+  optional int32 section_cnt = 2;
+
+  /**
+   *
+   * @brief 各个Secttion的数据
+   *
+   *
+   */
+  repeated DrivingSection driving_sections = 3;
+
+  /**
+   *
+   * @brief path上交叉点的数量，默认值0
+   *
+   *
+   */
+  optional int32 node_cnt = 4;
+
+  /**
+   *
+   * @brief 交叉点列表
+   *
+   *
+   */
+  repeated IntersectionNode node_list = 5;
+
+  /**
+   *
+   * @brief Object的数量，默认值0
+   *
+   *
+   */
+  optional int32 object_cnt = 6;
+
+  /**
+   *
+   * @brief Object的详细数据
+   *
+   *
+   */
+  repeated ObjectAttribute objects = 7;
+}
+
+/**
+ *
+ * @brief 自车前方通行空间，包括经路和 n
+ * m经路上的通行空间信息，每500m更新一次，path个数max=56
+ *
+ *
+ */
+message DrivingSpace {
+  /**
+   *
+   * @brief 数据做成时间戳ms，实际数据为uint64_t
+   *
+   *
+   */
+  optional int64 timestamp = 1;
+
+  /**
+   *
+   * @brief 计算出的经路
+   *
+   *
+   */
+  optional DrivingPath guide_line = 2;
+
+  /**
+   *
+   * @brief 经路关联进入Path个数，默认值0
+   *
+   *
+   */
+  optional int32 enter_path_cnt = 3;
+
+  /**
+   *
+   * @brief 经路关联全部进入path列表
+   *
+   *
+   */
+  repeated DrivingPath enter_path_list = 4;
+
+  /**
+   *
+   * @brief 经路关联脱出Path个数，默认值0
+   *
+   *
+   */
+  optional int32 exit_path_cnt = 5;
+
+  /**
+   *
+   * @brief 经路关联全部脱出path列表
+   *
+   *
+   */
+  repeated DrivingPath exit_path_list = 6;
+}
+
+/**
+ * @brief
+ * 无经路情况下，自车周围Nm范围内的可到达和不可到达的路网信息。requestDataType需要设定“REQUEST_FOREST”。
+ * 此时DrivingSpace中的guideline代表该方向上的mpp，N定义为500m 可配置
+ *
+ */
+message ForestDrivingSpace {
+  /**
+   * @brief 数据做成时间戳ms，实际数据为uint64_t
+   *
+   */
+  optional int64 timestamp = 1;
+
+  /**
+   * @brief 表示forest制作结果，ForestState，默认值为FOREST_STATE_UNKNOWN
+   * @see navinfo::sdk::ForestState
+   *
+   */
+  enum ForestState {
+    /**
+     * @brief 初始状态
+     *
+     */
+    FOREST_STATE_UNKNOWN = 0;
+    /**
+     * @brief Forest制作成功
+     *
+     */
+    FOREST_STATE_SUCCESS = 1;
+    /**
+     * @brief 指定范围内未找到路线
+     *
+     */
+    FOREST_STATE_NO_ROUTE_FOUND = 2;
+    /**
+     * @brief Forest制作失败
+     *
+     */
+    FOREST_STATE_FAILURE = 3;
+  }
+  optional ForestState forest_result = 2;
+
+  /**
+   * @brief forest中drivingSpace个数，默认值为0
+   *
+   */
+  optional int32 driving_space_cnt = 3;
+
+  /**
+   * @brief drivingSpace的列表
+   *
+   */
+  repeated DrivingSpace driving_space_list = 4;
+}
+
+message RouteMatchPath {
+  optional int64 start_matched_link_index = 1;
+  optional int64 start_shape_point_index = 2;
+  optional Wgs84Point start_match_point = 3;
+  optional int64 end_matched_link_index = 4;
+  optional int64 end_shape_point_index = 5;
+  optional Wgs84Point end_match_point = 6;
+}
+
+/**
+ * @brief 调用StartRouteMatching后的路线匹配结果。用handle来标识经路
+ *
+ */
+message RouteMatchResult {
+  optional int64 timestamp = 1;  // milliseconds
+  optional int32 sd_route_handle = 2;
+  enum RouteMatchState {
+    ROUTEMATCHSTATE_SUCCESS = 0;
+    ROUTEMATCHSTATE_FAILED = 1;
+  }
+  optional RouteMatchState status = 3;
+  optional int32 route_match_path_cnt = 4;
+  repeated RouteMatchPath route_match_path_list = 5;
+}
+
+message VehiclePosition {
+  optional int32 latitude = 1;
+  optional int32 longitude = 2;
+  optional int32 altitude = 3;
+  optional int64 timestamp = 4;
+  optional float heading = 5;
+}
+
+message VehicleInfo {
+  optional int32 path_id = 1;
+  optional int64 section_id = 2;
+  optional int32 offset_on_path = 3;
+  optional int32 offset_on_section = 4;
+  optional float speed = 5;
+  optional float probability = 6;
+  optional int32 current_lane = 7;
+  optional VehiclePosition position = 8;
+}
+
+message SysStateHeartBeat {
+  optional int64 timestamp = 1;
+  enum SystemStatus {
+    /**
+     * @brief 系统关闭状态
+     *
+     */
+    SYSTEM_OFF = 0;
+    /**
+     * @brief 系统启动完了
+     *
+     */
+    SYSTEM_STARTUP = 1;
+    /**
+     * @brief 系统可用状态
+     *
+     */
+    SYSTEM_AVAILABLE = 2;
+    /**
+     * @brief 系统不可用状态
+     *
+     */
+    SYSTEM_DISABLE = 3;
+  }
+  optional SystemStatus status = 2;
+}
+
+message ManeuverDetail {
+  /**
+   * @brief 自车到Maneuver的距离（厘米），默认值为0
+   *
+   */
+  optional double offset_of_maneuver = 1;
+
+  /**
+   * @brief 到Maneuver的行驶时间 （秒），HMI显示用，默认值为0
+   * <p>
+   * 目前不支持这种数据
+   *
+   */
+  optional int32 travel_time = 2;
+
+  /**
+   * @brief Maneuver 类型，定义参考ManeuverType，默认值为MT_INVALID
+   * @see navinfo::sdk::ManeuverType
+   *
+   */
+  optional int32 maneuver_type = 3;
+
+  /**
+   * @brief 路口的转折方向，定义参考 GuidanceManeuverDirection，默认值为INVALID
+   * @see navinfo::sdk::GuidanceManeuverDirection
+   *
+   */
+  optional int32 maneuver_direction = 4;
+
+  /**
+   * @brief 高速路出口编号，与道路编号不一致，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 exit_number = 5;
+
+  /**
+   * @brief 坐标
+   *
+   */
+  optional Wgs84Point maneuver_pos = 6;
+
+  /**
+   * @brief
+   * 交叉点前DrivingSectionID，案内Path上的sectionID，默认无效值为0,实际数据为uint64_t
+   *
+   */
+  optional int64 driving_section_id = 7;
+
+  /**
+   * @brief
+   * 关联drivingSection始端沿经路offset，避免sectionID重复的case，单位m，默认值为0
+   *
+   */
+  optional int32 offset_on_path = 8;
+
+  /**
+   * @brief 推荐的车线情报，HMI显示用
+   * @note 目前不支持这种数据
+   * (NOTE(luzou): 暂不做转换)
+   */
+  // optional lcmbcp::RecomLaneData recom_lane_data;
+
+  /**
+   * @brief 隧道长度，单位m，提供隧道入口出口所在隧道的长度。默认值为0
+   *
+   */
+  optional int32 tunnel_length = 9;
+
+  /**
+   * @brief 隧道group的flag,
+   * group中每一个隧道的入口出口该flag都为true,其他为false,默认值为0
+   *
+   */
+  optional int32 tunnel_group = 10;
+
+  /**
+   * @brief 针对目的地类型的Maneuver提供目的地所在车线Index，默认值0xFF
+   *
+   */
+  optional int32 lane_idx = 11;
+}
+
+message ManeuverInfo {
+  /**
+   * @brief Maneuver做成时的时间戳，实际数据为uint64_t
+   *
+   */
+  optional int64 timestamp = 1;
+
+  /**
+   * @brief Maneuver后道路编号，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  optional string road_number_after_maneuver = 2;
+
+  /**
+   * @brief Maneuver后道路名称，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  optional string road_name_after_maneuver = 3;
+
+  /**
+   * @brief Maneuver后的路线属性数量，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 road_properties_after_maneuver_num = 4;
+
+  /**
+   * @brief Maneuver后的路线属性，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  repeated int32 road_properties_after_maneuver = 5;
+
+  /**
+   * @brief Maneuver前的路线属性数量，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 road_properties_in_front_of_maneuver_num = 6;
+
+  /**
+   * @brief Maneuver前的路线属性，HMI显示用
+   * @note 目前不支持这种数据
+   *
+   */
+  repeated int32 road_properties_in_front_of_maneuver = 7;
+
+  /**
+   * @brief Maneuver分组类型，定义参考ManeuverGroupType，默认值为0
+   * @see navinfo::sdk::ManeuverGroupType
+   *
+   */
+  optional int32 maneuver_group_type = 8;
+
+  /**
+   * @brief Maneuver案内时机，HMI显示用, 定义参考ManeuverPhase
+   * @note 目前不支持这种数据
+   *
+   */
+  optional int32 maneuver_phase = 9;
+
+  /**
+   * @brief Maneuver详细数据的数量,默认值为0
+   *
+   */
+  optional int32 maneuver_detail_num = 10;
+
+  /**
+   * @brief Maneuver 详细数据列表
+   *
+   */
+  repeated ManeuverDetail maneuver_details_list = 11;
+}
+
+message ManeuverUpdate {
+  optional int64 timestamp = 1;
+  optional int32 maneuver_num = 2;
+  repeated ManeuverInfo maneuver_infos = 3;
+}

@@ -1,0 +1,67 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/maps/proto/lane_path.proto";
+
+message FrenetPositionProto {
+  optional double s = 1;
+  optional double l = 2;
+  optional int64 lane_id = 3;
+}
+
+// Manually drawn waypoint proto.
+message DrawnWaypointProto {
+  oneof position_type {
+    Vec2dProto smooth_pos = 1;
+    FrenetPositionProto frenet_pos = 6;
+  }
+  optional double t = 2;  // Time (relative to first point).
+  optional double v = 3;  // Speed. Can not be negative.
+  optional double z = 4;  // map z elevation.
+  optional double a = 5;  // Acceleration
+}
+
+message DrownWaypointRouteProto {
+  repeated DrawnWaypointProto waypoints = 1;
+  optional double duration = 2;  // seconds.
+  optional bool loop = 3 [default = false];
+  optional bool smooth_waypoints = 4 [default = false];
+}
+
+message StraightLinePathProto {
+  oneof position_type {
+    Vec2dProto smooth_pos = 1;
+    FrenetPositionProto frenet_pos = 2;
+  }
+  optional double direction = 3;
+}
+
+message LaneOffPathProto {
+  optional mapping.LanePathProto lane_path_route = 1;
+  optional double prefix_lane_distance = 2;
+  optional double radius = 3;
+  oneof type {
+    double arc_lateral_offset = 4;
+    double vel_lateral_offset = 5;
+  }
+}
+
+message PathModeConfigProto {
+  enum PathMode {
+    LOG_PATH = 0;
+    STRAIGHT_LINE_PATH = 1;
+    LANE_PATH = 2;
+    WAYPOINT_PATH = 3;
+    LANE_DEPARTURE_PATH = 4;
+  }
+  optional PathMode path_mode = 1 [default = LOG_PATH];
+  repeated mapping.LanePathProto lane_path = 2 [deprecated = true];
+  repeated DrawnWaypointProto waypoint_path = 3 [deprecated = true];
+  optional DrownWaypointRouteProto waypoint_route = 4;
+  optional mapping.LanePathProto lane_path_route = 5;
+  optional StraightLinePathProto straight_line_path_route = 6;
+  optional LaneOffPathProto lane_departure_path_route = 7;
+  optional double start_offset_distance = 8;
+}

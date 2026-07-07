@@ -1,0 +1,125 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+// This is a high frequency message containing time-sensitive status.
+// Next ID: 27.
+message VehicleControlStatusProto {
+  optional LiteHeader header = 1;
+
+  // DBW module output.
+  optional float brake_percentage = 2;
+  optional float throttle_percentage = 3;
+  optional float steering_angle = 4;  // Radian.
+  optional float vehicle_speed = 25;  // m/s.
+
+  // Wheel sensors.
+  // Size = 4. Order: Front-left, front-right, rear-left, rear-right
+  repeated float wheel_position = 5;  // Radian.
+  repeated float wheel_speed = 6;     // Radian/s.
+
+  // Vehicle built-in GPS and IMU readings.
+  optional float gps_longitude = 7;
+  optional float gps_latitude = 8;
+  optional float gps_altitude = 9;
+  optional float gps_heading = 10;
+  optional float gps_speed = 11;
+  optional float imu_accel_x = 12;
+  optional float imu_accel_y = 13;
+  optional float imu_accel_z = 14;
+  optional float imu_yaw_rate = 15;  // Radian/s.
+  optional float imu_roll_rate = 16;
+
+  // Vehicle built-in surrounding sensors.
+  // Size = 12. Order: [Front, Rear] x [Left, Right] x [Side, Corner, Center].
+  repeated float sonar_range = 17;  // m.
+
+  // Engine/brake performance.
+  optional float wheel_torque = 18;            // Nm.
+  optional float wheel_accel = 19;             // m/s/s.
+  optional float engine_rpm = 20;              // rpm.
+  optional float steering_column_torque = 21;  // Nm.
+
+  // Signal status.
+  optional bool left_blinker = 22;
+  optional bool right_blinker = 23;
+  optional bool brake_light = 24;
+
+  // Gear.
+  enum Gear {
+    NONE = 0;
+    PARK = 1;
+    REVERSE = 2;
+    NEUTRAL = 3;
+    DRIVE = 4;
+    LOW = 5;
+  }
+  optional Gear gear = 26;
+}
+
+// This is a comprehensive message summarizing the vehicle's status at a low
+// frequency.
+// Next ID: 40.
+message VehicleOperationStatusProto {
+  optional LiteHeader header = 1;
+
+  // Vehicle body status.
+  optional bool wiper = 16;
+  optional bool driver_door = 17;
+  optional bool passenger_door = 18;
+  optional bool rear_left_door = 19;
+  optional bool rear_right_door = 20;
+  optional bool hood = 21;
+  optional bool trunk = 22;
+
+  // Vehicle operation status.
+  optional float outside_temperature = 36;  // Degrees celsius.
+  // Size = 4. Order: Front-left, front-right, rear-left, rear-right.
+  repeated float tire_pressure = 37;  // kPa.
+  optional float fuel_percentage = 38;
+  optional bool can_fault = 39;
+
+  reserved 2 to 15;
+}
+
+message SteeringWheelButtonProto {
+  optional LiteHeader header = 1;
+
+  enum Button {
+    LEFT_OK_BUTTON = 1;
+    LEFT_UP_BUTTON = 2;
+    LEFT_DOWN_BUTTON = 3;
+    LEFT_LEFT_BUTTON = 4;
+    LEFT_RIGHT_BUTTON = 5;
+    ACC_ON_BUTTON = 6;
+    ACC_OFF_BUTTON = 7;
+    ACC_ON_OFF_BUTTON = 8;
+    ACC_RESUME_BUTTON = 9;
+    ACC_CANCEL_BUTTON = 10;
+    ACC_RESUME_CANCEL_BUTTON = 11;
+    ACC_INCREMENT_BUTOTN = 12;
+    ACC_DECREMENT_BUTTON = 13;
+  };
+  optional Button button = 2;
+
+  optional bool pressed = 3;  // true for pressing event; false for releasing.
+}
+
+message SystemStatusProto {
+  optional LiteHeader header = 1;
+
+  enum DriveState {
+    AUTONOMOUS = 0;  // Computer is driving.
+    MANUAL = 1;      // Test driver is driving.
+  }
+  optional DriveState drive_state = 2;
+
+  enum ComputeState {
+    READY = 1;    // Computer is driving or ready to drive.
+    UNREADY = 2;  // Computer is not ready to drive.
+  }
+  optional ComputeState compute_state = 3;
+}

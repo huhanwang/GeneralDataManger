@@ -1,0 +1,299 @@
+syntax = "proto2";
+
+package snoah;
+
+
+// 主proto
+message GacCalibrationUdsMsgProto {
+  optional Mode mode = 1;                         // 标定模式与普通模式
+  optional Instruction instruction = 2;           // 标定指令
+  optional RoutineStatus cal_routine_status = 3;  // 标定例程程序运行状态
+  optional PreconditionResponse precondition_response =
+      4;  // 标定前置条件例程应答
+  repeated CalibrationResultResponse cali_result_response =
+      5;  // 请求标定结果例程应答
+  optional RoutineStatus gen_distortion_routine_status =
+      6;  // 摄像头畸变映射表生成例程程序运行状态
+
+  repeated CheckDistortionMapStatusResponse
+      check_distortion_map_status_response = 7;  // 检查摄像头畸变映射表状态应答
+
+  repeated CalibrationAfterSalesResponse calibration_after_sales_response =
+      8;                                             // 售后标定应答
+  optional bool auto_calib_after_sales_trigger = 9;  // 自动售后标定触发
+}
+
+// 标定模式与普通模式
+enum Mode {
+  CALIBRATION_MODE = 0;  // 标定模式
+  NORMAL_MODE = 1;       // 普通模式
+}
+
+// 标定指令
+enum Instruction {
+  CHECK_PRECONDITION_ROUTINE = 0;          // 检查标定前置条件例程
+  START_CALIBRATION_ROUTINE = 1;           // 开始标定例程
+  REQUEST_CALIBRATION_RESULT_ROUTINE = 2;  // 请求标定结果例程
+  GENERATE_CAMERA_DISTORTION_MAP_ROUTINE = 3;  // 摄像头畸变映射表生成例程
+  CHECK_CAMERA_DISTORTION_MAP_STATUS_ROUTINE =
+      4;  // 检查摄像头畸变映射表状态例程
+  START_AFTER_SALES_ONLINE_CALIBRATION_ROUTINE = 5;  // 开始售后在线标定例程
+  REQUEST_AFTER_SALES_ONLINE_CALIBRATION_RESULT_ROUTINE =
+      6;  // 请求售后在线标定结果例程
+  START_AFTER_SALES_OFFLINE_CALIBRATION_ROUTINE = 7;  // 开始售后离线标定例程
+  REQUEST_AFTER_SALES_OFFLINE_CALIBRATION_RESULT_ROUTINE =
+      8;  // 请求售后离线标定结果例程
+}
+
+// 例程运行状态，开始标定例程、摄像头畸变映射表生成例程使用
+enum RoutineStatus {
+  ROUTINE_SUCCESS = 0;  // 例程运行成功
+  ROUTINE_FAILURE = 1;  // 例程运行失败
+}
+
+// 标定前置条件例程应答
+message PreconditionResponse {
+  optional PreconditionRoutineStatus precondition_status =
+      1;  // 标定前置条件例程运行状态
+  optional PreconditionFailureReason failure_reason =
+      2;  // 标定前置条件不满足原因
+}
+
+// 检查标定前置条件例程运行状态
+enum PreconditionRoutineStatus {
+  PRECONDITION_ROUTINE_SUCCESS = 0;  // 检查标定前置例程运行成功
+  PRECONDITION_ROUTINE_FAILURE = 1;  // 检查标定前置例程运行失败
+  PRECONDITION_ROUTINE_RUNNING = 2;  // 检查标定前置例程正在运行
+}
+
+// 标定前置条件不满足原因
+message PreconditionFailureReason {
+  optional bool low_beam_on = 1;                  // 近光灯已打开
+  optional bool high_beam_on = 2;                 // 远光灯打开
+  optional bool turn_signal_on = 3;               // 转向灯打开
+  optional bool doors_or_trunks_not_closed = 4;   // 四门两盖未关闭
+  optional bool imu_signal_invalid = 5;           // IMU信号无效
+  optional bool wheel_speed_signal_abnormal = 6;  // 轮速信号异常
+  optional bool vehicle_not_stationary = 7;       // 车辆处于非静止状态
+  optional bool air_suspension_signal_invalid = 8;  // 空气悬架信号无效
+  optional bool air_suspension_not_normal = 9;  // 空气悬架处于非normal状态
+  optional bool rear_camera_no_signal = 10;         // 后视相机无信号
+  optional bool right_rear_camera_no_signal = 11;   // 右后视相机无信号
+  optional bool left_rear_camera_no_signal = 12;    // 左后视相机无信号
+  optional bool right_front_camera_no_signal = 13;  // 右前视相机无信号
+  optional bool left_front_camera_no_signal = 14;   // 左前视相机无信号
+  optional bool front_camera_30_no_signal = 15;   // 前视相机(30°)无信号
+  optional bool front_camera_120_no_signal = 16;  // 前视相机(120°)无信号
+  optional bool rear_camera_intrinsic_abnormal = 17;  // 后视相机内参异常
+  optional bool right_rear_camera_parameter_abnormal =
+      18;  // 右后视相机内参异常
+  optional bool left_rear_camera_parameter_abnormal = 19;  // 左后视相机内参异常
+  optional bool right_front_camera_parameter_abnormal =
+      20;  // 右前视相机内参异常
+  optional bool left_front_camera_parameter_abnormal =
+      21;  // 左前视相机内参异常
+  optional bool front_camera_30_parameter_abnormal =
+      22;  // 前视相机(30°)内参异常
+  optional bool front_camera_120_parameter_abnormal =
+      23;                                  // 前视相机(120°)内参异常
+  optional bool gear_not_in_neutral = 24;  // 档位不为N档，不满足产线标定
+}
+
+enum CameraID {
+  LEFT_FRONT_CAMERA = 1;        // 侧左前摄像头
+  LEFT_REAR_CAMERA = 2;         // 侧左后摄像头
+  REAR_CAMERA = 3;              // 后视摄像头
+  RIGHT_REAR_CAMERA = 4;        // 侧右后摄像头
+  RIGHT_FRONT_CAMERA = 5;       // 侧右前摄像头
+  FRONT_CAMERA_30_DEGREE = 6;   // 前视30度摄像头
+  FRONT_CAMERA_120_DEGREE = 7;  // 前视120摄像头
+  // Reserve
+  RESERVE_CAMERA_1 = 8;   // 预留摄像头1
+  RESERVE_CAMERA_2 = 9;   // 预留摄像头2
+  RESERVE_CAMERA_3 = 10;  // 预留摄像头3
+}
+
+enum CalibrationTypeResult {
+  EOL_CALIBRATION_SUCCESS = 0;          // 显示:EOL标定成功
+  AFTER_SALES_CALIBRATION_SUCCESS = 1;  // 显示:售后标定成功
+  SELF_CALIBRATION_SUCCESS = 2;         // 显示:自标定成功
+  NOT_CALIBRATED = 3;                   // 显示:未标定
+}
+
+// 请求标定结果例程应答
+message CalibrationResultResponse {
+  optional CameraID camera_id = 1;                       // 摄像头编号
+  optional CalibrationRunStatus cali_status = 2;         // 标定状态
+  optional CalibrationFailureReason failure_reason = 3;  // 标定失败原因
+  optional CameraCalibratedOffsetValue offset_value =
+      4;  // 标定成功后摄像头的实时角度值
+  optional CalibrationTypeResult cali_type_result = 5;  // 标定类型结果
+}
+
+enum CalibrationRunStatus {
+  CALIBRATION_DONE_SUCCESS = 0;  // 标定成功
+  CALIBRATION_ONGOING = 1;       // 标定进行中
+  CALIBRATION_FAILED = 2;        // 标定失败
+  NO_CALIBRATION = 0xFF;         // 不标定
+}
+
+// 标定失败原因
+message CalibrationFailureReason {
+  optional bool roll_angle_large = 1;             // 侧倾角过大
+  optional bool pitch_angle_large = 2;            // 俯仰角过大
+  optional bool yaw_angle_large = 3;              // 横摆角过大
+  optional bool x_position_deviation_large = 4;   // x位置偏差过大
+  optional bool y_position_deviation_large = 5;   // y位置偏差过大
+  optional bool z_position_deviation_large = 6;   // z位置偏差过大
+  optional bool sensor_input_data_abnormal = 7;   // 传感器输入数据异常
+  optional bool no_calibration_board_in_fov = 8;  // FOV中未检测到标定板
+  optional bool calibration_board_pattern_detection_failed =
+      9;  // 标定板Pattern检测失败
+  optional bool calibration_board_not_stable = 10;  // 标定板稳定性不足
+  optional bool calibration_timed_out = 11;         // 标定超时
+  optional bool data_collection_unmet = 12;  // 采集数据不符合要求
+
+  optional bool calibration_normal = 13 [deprecated = true];  // 标定正常
+  optional bool read_config_failure = 14
+      [deprecated = true];  // 读取配置文件失败
+  optional bool create_folder_failure = 15
+      [deprecated = true];  // 创建标定结果文件夹失败
+  optional bool initialize_target_failure = 16
+      [deprecated = true];  // 初始化周视靶标失败
+  optional bool read_parameters_failure = 17
+      [deprecated = true];  // 读取内（外）参文件失败
+  optional bool image_size_error = 18 [deprecated = true];  // 输入图片大小错误
+  optional bool image_channel_error = 19
+      [deprecated = true];  // 输入图像通道数错误
+  optional bool corner_extraction_error = 20
+      [deprecated = true];  // 周视摄像头角点提取错误
+  optional bool initial_reprojection_error_large = 21
+      [deprecated = true];  // 初始重投影误差过大
+  optional bool optimized_reprojection_error_large = 22
+      [deprecated = true];  // 优化重投影误差过大
+  optional bool angle_error_large = 23
+      [deprecated = true];  // 和初始值角度误差过大
+  optional bool translation_error_large = 24
+      [deprecated = true];  // 和初始值平移误差过大
+  optional bool output_calibration_file_error = 25
+      [deprecated = true];  // 输出摄像头标定文件错误
+
+  optional ErrorType error = 26;
+}
+
+enum ErrorType {
+  CALIBRATION_NORMAL = 0;                  // 标定正常
+  READ_CONFIG_FAILURE = 1;                 // 读取配置文件失败
+  CREATE_FOLDER_FAILURE = 2;               // 创建标定结果文件夹失败
+  INITIALIZE_TARGET_FAILURE = 3;           // 初始化周视靶标失败
+  READ_PARAMETERS_FAILURE = 4;             // 读取内（外）参文件失败
+  IMAGE_SIZE_ERROR = 5;                    // 输入图片大小错误
+  IMAGE_CHANNEL_ERROR = 6;                 // 输入图像通道数错误
+  CORNER_EXTRACTION_ERROR = 7;             // 周视摄像头角点提取错误
+  INITIAL_REPROJECTION_ERROR_LARGE = 8;    // 初始重投影误差过大
+  OPTIMIZED_REPROJECTION_ERROR_LARGE = 9;  // 优化重投影误差过大
+  ANGLE_ERROR_LARGE = 10;                  // 和初始值角度误差过大
+  TRANSLATION_ERROR_LARGE = 11;            // 和初始值平移误差过大
+  OUTPUT_CALIBRATION_FILE_ERROR = 12;      // 输出摄像头标定文件错误
+  RESERVED_ERROR_1 = 13;                   // reserved1
+  RESERVED_ERROR_2 = 14;                   // reserved2
+}
+
+// 标定成功后摄像头的实时角度值
+message CameraCalibratedOffsetValue {
+  optional int32 roll_angle = 1;   // 侧倾角角度值
+  optional int32 pitch_angle = 2;  // 俯仰角角度值
+  optional int32 yaw_angle = 3;    // 横摆角角度值
+  optional int32 x_offset = 4;     // x轴偏移量
+  optional int32 y_offset = 5;     // y轴偏移量
+  optional int32 z_offset = 6;     // z轴偏移量
+}
+
+enum GenerateDistortionMapStatus {
+  GENERATION_SUCCESS = 0;
+  GENERATION_IN_PROGRESS = 1;
+  GENERATION_FAILURE = 2;
+}
+
+message CheckDistortionMapStatusResponse {
+  optional CameraID camera_id = 1;
+  optional GenerateDistortionMapStatus distortion_map_status = 2;
+}
+
+message CalibrationAfterSalesFailureReason {
+  optional bool roll_angle_large = 1;            // 侧倾角过大
+  optional bool pitch_angle_large = 2;           // 俯仰角过大
+  optional bool yaw_angle_large = 3;             // 横摆角过大
+  optional bool x_position_deviation_large = 4;  // x位置偏差过大
+  optional bool y_position_deviation_large = 5;  // y位置偏差过大
+  optional bool z_position_deviation_large = 6;  // z位置偏差过大
+  optional bool calibration_timeout = 7;         // 标定超时
+  optional bool data_collection_unmet = 8;       // 采集数据不符合要求
+  optional bool abnormal_ved_input_data = 9;     // ved输入数据异常
+
+  optional CalibrationAfterSalesFailureSubReason sub_reason =
+      10;  // CalibrationAfterSalesFailureSubReason
+}
+
+enum CalibrationAfterSalesFailureSubReason {
+  CAL_NORMAL = 0x00;               // 标定正常
+  CAMERA_CALIB_FAILED = 0x01;      // 摄像头售后标定失败
+  READ_CONFIG_FAILED = 0x14;       // 读取配置失败
+  READ_CALIBRATION_FAILED = 0x15;  // 读取标定文件失败
+  OUTPUT_FAILED = 0x16;            // 输出ACE标定结果错误
+  IMU_ACC_ERROR = 0x17;            // IMU加速计数值异常
+  IMU_ACC_LOSS_FRAME = 0x18;       // IMU加速计丢帧
+  IMU_ACC_DISORDER = 0x19;         // IMU加速度乱序
+  IMU_GYRO_ERROR = 0x1a;           // IMU陀螺仪数值异常
+  IMU_GYRO_LOSS_FRAME = 0x1b;      // IMU陀螺仪丢帧
+  IMU_GYRO_DISORDER = 0x1c;        // IMU陀螺仪乱序
+  GNSS_DATA_ERROR = 0x1d;          // GNSS数据错误
+  GNSS_DATA_LOSS_FRAME = 0x1e;     // GNSS数据丢帧
+  GNSS_DATA_DISORDER = 0x1f;       // GNSS数据乱序
+  IMAGE_DATA_ERROR = 0x20;         // 图像数据错误
+  IMAGE_DATA_LOSS_FRAME = 0x21;    // 图像数据丢帧
+  IMAGE_DATA_DISORDER = 0x22;      // 图像数据乱序
+  VISTA_DATA_ERROR = 0x23;         // VISTA数据错误
+  VISTA_DATA_LOSS_FRAME = 0x24;    // VISTA数据丢帧
+  VISTA_DATA_DISORDER = 0x25;      // VISTA数据乱序
+  WHEEL_SPEED_ERROR = 0x26;        // 轮速错误
+  WHEEL_SPEED_LOSS_FRAME = 0x27;   // 轮速丢帧
+  WHEEL_SPEED_DISORDER = 0x28;     // 轮速乱序
+  WHEEL_ANGLE_ERROR = 0x29;        // 轮角错误
+  WHEEL_ANGLE_LOSS_FRAME = 0x2a;   // 轮角丢帧
+  WHEEL_ANGLE_DISORDER = 0x2b;     // 轮角乱序
+  WHEEL_PULSE_ERROR = 0x2f;        // 轮脉冲错误
+  WHEEL_PULSE_LOSS_FRAME = 0x30;   // 轮脉冲丢帧
+  WHEEL_PULSE_DISORDER = 0x31;     // 轮脉冲乱序
+  EGO_INIT_FAILED = 0x40;          // EGO初始化失败
+  EGO_POSE_UNACCESSABLE = 0x41;    // 获取EGO pose失败
+  EGO_VISUAL_DISABLED = 0x42;      // EGO未启用视觉更新
+  CAM_NEED_CALIB_NULL = 0x43;      // 需要标定的摄像头为0
+  CAM_INSUFFICIENT_MATCHING_FEATURE_CROSS = 0x46;  // 摄像头匹配点数过少
+  IMU_EXTRINSIC_UNFIXED = 0x47;                    // IMU外参未固定
+  IMU_BIAS_UNESTIMATED = 0x48;                     // IMU偏差未估计
+  IMU_BIAS_UNFIXED = 0x49;                         // IMU偏差未固定
+  COV_INCREASE_ABNORMALLY = 0x4a;                  // 协方差异常增加
+  COV_NOT_DECREASE = 0x4b;                         // 协方差不减少
+  COV_UNACCESSABLE = 0x4c;                         // 协方差无法获取
+  UNSTATIC_LAUNCH = 0x4d;                          // 非静态启动
+  MIN_MILEAGE_UNREACHED = 0x4e;                    // 最小里程未达到
+  MAX_MILEAGE_UNCONVERGED = 0x4f;                  // 最大里程未收敛
+  INSUFFICIENT_TURNS = 0x50;                       // 转弯次数过少
+  LARGE_DEVIATION_IN_DESIGNED_ROTATION = 0x60;     // 旋转外参偏差过大
+  CAM_SET_INIT_PARAM_FAILED = 0x70;  // 设置摄像头初始化参数失败
+  CAM_LOWER_FREQ = 0x71;             // 摄像头更新频率过低
+  CAM_INSUFFICIENT_TRACKING_FEATURE_SINGLE = 0x72;  // 摄像头视觉跟踪点数过少
+  CAM_INSUFFICIENT_UPDATING_FEATURE_SINGLE = 0x73;  // 摄像头视觉更新点数过少
+}
+
+message CalibrationAfterSalesResponse {
+  optional CameraID camera_id = 1;  // 摄像头编号
+  optional CalibrationRunStatus calibration_after_sales_run_status =
+      2;                                    // 标定状态
+  optional int32 calibration_progress = 3;  // 标定进度
+  optional CalibrationAfterSalesFailureReason
+      calibration_after_sales_failure_reason = 4;  // 标定失败原因
+  optional CameraCalibratedOffsetValue calibration_after_sales_offset_value =
+      5;  // 售后标定偏移量
+}

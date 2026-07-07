@@ -1,0 +1,181 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/ddr_monitor.proto";
+
+message ProcessGpuMem {
+  optional string process_name = 1;
+  optional int64 memory_used_byte = 2;
+}
+
+message GPUDeviceInfoProto {
+  optional string name = 1;
+  optional int32 temperature = 2;         // C
+  optional int32 power_usage = 3;         // W
+  optional int32 memory_utilization = 4;  // %(0~100)
+  optional int32 gpu_utilization = 5;     // %(0~100)
+  optional int32 fan_speed = 6;           // %(0~100)
+  optional int64 memory_total_byte = 7;  // Total installed FB memory (in bytes)
+  optional int64 memory_free_byte = 8;   // Unallocated FB memory (in bytes)
+  optional int32 max_clock = 9;          // Max sm clock (in MHZ)
+  optional int32 current_clock = 10;     // Current sm clock (in MHZ)
+  repeated ProcessGpuMem process_gpu_mem = 11;  // Memory by process(in bytes)
+}
+
+message GPUInfoProto {
+  repeated GPUDeviceInfoProto gpu_device_info = 1;
+}
+
+message CPUInfoProto {
+  optional float usage = 1;  // usage ratio %(0~100) (deprecated)
+  optional string module = 2;
+  optional int64 usage_amount = 3;  // 1 core is 100, up to core * 100
+  repeated int32 cpu_freqs = 4;
+  optional int32 cpu_freq = 5;
+}
+
+message MemInfoProto {
+  optional int64 used = 1;  // B (deprecated)
+  optional string module = 2;
+  optional int64 used_kb = 3;   // kB
+  optional int64 total_kb = 4;  // kB
+  optional int64 dirty_kb = 5;  // kB
+}
+
+message IonModuleInfoProto {
+  optional string module = 1;
+  optional int32 pid = 2;
+  optional uint64 used_kb = 3;  // kB
+}
+
+message IonInfoProto {
+  repeated IonModuleInfoProto ion_module_info = 1;
+}
+
+message VmStatsProto {
+  optional string node_name = 1;
+  optional uint64 allocstall_dma = 2;
+  optional uint64 allocstall_dma32 = 3;
+  optional uint64 allocstall_normal = 4;
+  optional uint64 allocstall_movable = 5;
+  optional uint64 pgsteal_kswapd = 6;
+  optional uint64 pgsteal_direct = 7;
+  optional uint64 kswapd_low_wmark_hit_quickly = 8;
+  optional uint64 compact_stall = 9;
+  optional uint64 compact_daemon_wake = 10;
+}
+
+message IoInfoProto {
+  optional string module = 1;
+  optional int64 rchar = 2;  // characters read
+  optional int64 wchar = 3;  // characters written
+  optional int64 syscr = 4;  // number of read I/O operations
+  optional int64 syscw = 5;  // number of write I/O operations
+  optional int64 read_bytes =
+      6;  // number of bytes fetched from the storage layer
+  optional int64 write_bytes = 7;  // number of bytes sent to the storage layer
+  optional int64 cancelled_write_bytes =
+      8;  // number of bytes truncating pagecache
+}
+
+message FanInfoProto {
+  optional string name = 1;
+  optional int64 rpm = 2;
+}
+
+message TemperatureInfoProto {
+  optional string name = 1;
+  optional int64 temperature = 2;  // C
+}
+
+message MiscInfoProto {
+  repeated TemperatureInfoProto temperature_info = 1;
+  repeated FanInfoProto fan_info = 2;
+}
+
+message NetworkDeviceInfoProto {
+  optional string name = 1;
+  optional int64 rx = 2;  // kB
+  optional int64 tx = 3;  // kB
+
+  // use int32 because int64 will be convert to string when convert to json.
+  // this is one sec diff value, int32 is good enough.
+  optional int32 rx_packets = 4;
+  optional int32 tx_packets = 5;
+  optional int32 rx_errors = 6;
+  optional int32 tx_errors = 7;
+  optional int32 rx_dropped = 8;
+  optional int32 tx_dropped = 9;
+}
+
+message NetworkInfoProto {
+  repeated NetworkDeviceInfoProto network_device_info = 1;
+  optional string module = 2;
+}
+
+message ContextSwitchThreadInfoProto {
+  optional string module = 1;
+  optional uint64 cswch = 2;
+  optional uint64 nvcswch = 3;
+  optional string thread_name = 4;
+  optional int32 pid = 5;
+}
+
+message ContextSwitchInfoProto {
+  optional string module = 1;
+  optional uint64 total_cswch = 2;
+}
+
+message ModuleGpuInfo {
+  optional string gpu_name = 1;
+  optional int64 memory_used_byte = 2;
+}
+
+message ModuleSystemInfoProto {
+  optional string module_name = 1;
+  optional uint32 threads_number = 2;
+  repeated string threads_name = 3;
+  repeated uint64 threads_cpu = 4;
+  repeated uint64 threads_tid = 5;
+  repeated ModuleGpuInfo gpu_info = 6;
+  repeated string threads_cores = 7;
+}
+
+message SystemInfoProto {
+  optional LiteHeader header = 1;
+  optional CPUInfoProto cpu_info = 2;
+  optional GPUInfoProto gpu_info = 3;
+  optional MemInfoProto mem_info = 4;
+  optional NetworkInfoProto network_info = 5;
+  optional MiscInfoProto misc_info = 6;
+  repeated CPUInfoProto cpu_info_cores = 7;
+  optional IoInfoProto io_info = 8;
+  // the number of context switches for a process or the system
+  optional ContextSwitchInfoProto total_cswch_info = 9;
+  // the number of context switches for all threads in one process
+  repeated ContextSwitchThreadInfoProto cswch_info = 10;
+  // System information related to the module or process
+  optional ModuleSystemInfoProto module_system_info = 11;
+  optional DdrInfoProto ddr_info = 12;
+  optional VmStatsProto vm_stats = 13;
+  optional IonInfoProto ion_bpu_info = 14;
+  optional IonInfoProto ion_vio_info = 15;
+}
+
+message SystemInfoProtoList {
+  repeated SystemInfoProto system_info_proto_list = 1;
+}
+
+message LaunchPlanModules {
+  optional LiteHeader header = 1;
+
+  message ModuleInfo {
+    optional string node_name = 1;
+    optional string name_space = 2;
+    optional LiteModuleName lite_module = 3;
+  };
+  repeated ModuleInfo module_infos = 2;
+};

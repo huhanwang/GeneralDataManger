@@ -1,0 +1,57 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message AlarmZoneParamsProto {
+  optional double rear_near_alarm_distance_to_vehicle_rear_edge = 1;
+  optional double rear_near_alarm_extension_distance_to_vehicle_rear_edge = 2;
+  optional double rear_far_alarm_distance_to_vehicle_rear_edge = 3;
+
+  message LateralAlarmZoneParamsProto {
+    optional double alarm_begin_distance_to_vehicle_lateral_edge = 1;
+    optional double alarm_end_distance_to_vehicle_lateral_edge = 2;
+    optional double alarm_end_extension_distance_to_vehicle_lateral_edge = 3;
+  }
+
+  optional LateralAlarmZoneParamsProto left_alarm_zone_params = 4;
+  optional LateralAlarmZoneParamsProto right_alarm_zone_params = 5;
+}
+
+message BsdDeciderParams {
+  optional double bsd_active_min_speed_threshold = 1;         // m/s.
+  optional double bsd_passive_min_speed_threshold = 2;        // m/s.
+  optional double bsd_max_speed_threshold = 7;                // m/s.
+  optional double bsd_enable_min_curvature_radius = 3;        // 1/m.
+  optional double static_object_speed_threshold = 4;          // m/s.
+  optional double av_ignore_slow_object_speed_threshold = 5;  // m/s
+  optional double slow_object_relative_speed_threshold = 6;   // m/s.
+}
+
+message BsdParamsProto {
+  optional AlarmZoneParamsProto alarm_zone_params = 1;
+  optional double min_alarm_duration = 2 [default = 2.0];
+  optional double ttc_alarm_threshold_standby = 3;
+  optional double ttc_alarm_threshold_active = 4;
+  optional BsdDeciderParams bsd_decider_params = 5;
+}
+
+message DowDeciderParams {
+  optional double dow_active_max_speed_threshold = 1;        // m/s.
+  optional double dow_passive_max_speed_threshold = 2;       // m/s.
+  optional double slow_object_absolute_speed_threshold = 3;  // 1/m.
+  optional double valid_object_max_angle_threshold = 4;      // radius.
+}
+
+message DowParamsProto {
+  optional AlarmZoneParamsProto alarm_zone_params = 1;
+  optional double min_alarm_duration = 2 [default = 2.0];
+  optional double ttc_alarm_threshold_standby = 3;
+  optional double ttc_alarm_threshold_active = 4;
+  optional DowDeciderParams dow_decider_params = 5;
+}
+
+message BsaParamsProto {
+  optional BsdParamsProto bsd_params = 1;
+  optional DowParamsProto dow_params = 2;
+}

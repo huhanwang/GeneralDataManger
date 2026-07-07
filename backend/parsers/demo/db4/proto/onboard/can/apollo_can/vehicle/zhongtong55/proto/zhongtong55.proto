@@ -1,0 +1,322 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Vehicle_wheelspeed_zt55_180b11ff {
+  // Report Message
+  enum Abs_rrwheelspeed_validType {
+    ABS_RRWHEELSPEED_VALID_VALID = 0;
+    ABS_RRWHEELSPEED_VALID_INVALID = 1;
+  }
+  enum Abs_rlwheelspeed_validType {
+    ABS_RLWHEELSPEED_VALID_VALID = 0;
+    ABS_RLWHEELSPEED_VALID_INVALID = 1;
+  }
+  enum Abs_frwheelspeed_validType {
+    ABS_FRWHEELSPEED_VALID_VALID = 0;
+    ABS_FRWHEELSPEED_VALID_INVALID = 1;
+  }
+  enum Abs_flwheelspeed_validType {
+    ABS_FLWHEELSPEED_VALID_VALID = 0;
+    ABS_FLWHEELSPEED_VALID_INVALID = 1;
+  }
+  // [] [0|1]
+  optional Abs_rrwheelspeed_validType abs_rrwheelspeed_valid = 1;
+  // [km/h] [0|460.74375]
+  optional double abs_rrwheelspeed = 2;
+  // [] [0|1]
+  optional Abs_rlwheelspeed_validType abs_rlwheelspeed_valid = 3;
+  // [km/h] [0|460.74375]
+  optional double abs_rlwheelspeed = 4;
+  // [] [0|1]
+  optional Abs_frwheelspeed_validType abs_frwheelspeed_valid = 5;
+  // [km/h] [0|460.74375]
+  optional double abs_frwheelspeed = 6;
+  // [] [0|1]
+  optional Abs_flwheelspeed_validType abs_flwheelspeed_valid = 7;
+  // [km/h] [0|460.74375]
+  optional double abs_flwheelspeed = 8;
+}
+
+message Vehicle_steering_feedback_zt55_c01a5a7 {
+  // Report Message
+  enum Vehicle_eps_statusType {
+    VEHICLE_EPS_STATUS_STANDBY = 0;
+    VEHICLE_EPS_STATUS_AUTODRIVING = 1;
+    VEHICLE_EPS_STATUS_MANUALDRIVING = 4;
+    VEHICLE_EPS_STATUS_MANUALENGAGE = 5;
+    VEHICLE_EPS_STATUS_ALARM = 6;
+    VEHICLE_EPS_STATUS_FAULT = 7;
+  }
+  // [] [0|255]
+  optional int32 life_vehicle_eps_feedback = 1;
+  // [Nm] [-12.8|5.05]
+  optional double vehicle_eps_torque_feedback = 2;
+  // [] [0|15]
+  optional Vehicle_eps_statusType vehicle_eps_status = 3;
+  // [Nm] [-5|4.96132]
+  optional double vehicle_eps_motortorque_feedback = 4;
+  // [degree/s] [0|540]
+  optional double vehicle_eps_anglespeed_feedback = 5;
+  // LeftNegative_RightPositive [degree] [-1575|1575]
+  optional double vehicle_eps_angle_feedback = 6;
+}
+
+message Acu_eps_control_zt55_c01a7a5 {
+  // Control Message
+  enum Ad_target_angle_validType {
+    AD_TARGET_ANGLE_VALID_ABNORMAL = 0;
+    AD_TARGET_ANGLE_VALID_NORMAL = 1;
+  }
+  enum Ad_eps_statusType {
+    AD_EPS_STATUS_ABNORMAL = 0;
+    AD_EPS_STATUS_NORMAL = 1;
+  }
+  enum Ad_eps_modeType {
+    AD_EPS_MODE_STANDBY = 0;
+    AD_EPS_MODE_AUTODRIVING = 1;
+    AD_EPS_MODE_MANUALDRIVING = 4;
+    AD_EPS_MODE_MANUALENGAGERECOVER = 5;
+  }
+  // [] [0|255]
+  optional int32 life_acu_eps_control = 1;
+  // [] [0|540]
+  optional double ad_target_steerin_angular_spd = 2;
+  // [] [0|1]
+  optional Ad_target_angle_validType ad_target_angle_valid = 3;
+  // LeftNegative_RightPositive [] [-1575|1575]
+  optional double ad_target_angle = 4;
+  // [] [0|1]
+  optional Ad_eps_statusType ad_eps_status = 5;
+  // [degree] [0|15]
+  optional Ad_eps_modeType ad_eps_mode = 6;
+}
+
+message Vehicle_drive_feedback_zt55_c02a5a7 {
+  // Report Message
+  enum Vehicle_tbsstate_feedbackType {
+    VEHICLE_TBSSTATE_FEEDBACK_NORMAL = 0;
+    VEHICLE_TBSSTATE_FEEDBACK_FAULT = 1;
+  }
+  enum Vihicle_epb_feedbackType {
+    VIHICLE_EPB_FEEDBACK_EPBPULL = 0;
+    VIHICLE_EPB_FEEDBACK_EPBRELAX = 1;
+  }
+  enum Vehicle_gear_feedbackType {
+    VEHICLE_GEAR_FEEDBACK_N = 0;
+    VEHICLE_GEAR_FEEDBACK_D = 1;
+    VEHICLE_GEAR_FEEDBACK_R = 2;
+  }
+  enum Vehicle_faultType {
+    VEHICLE_FAULT_NOFAULT = 0;
+    VEHICLE_FAULT_FAULT = 1;
+  }
+  enum Vehicle_ad_mode_feedbackType {
+    VEHICLE_AD_MODE_FEEDBACK_MANUALDRIVING = 0;
+    VEHICLE_AD_MODE_FEEDBACK_AUTODRIVING = 1;
+  }
+  // [] [0|3]
+  optional Vehicle_tbsstate_feedbackType vehicle_tbsstate_feedback = 1;
+  // [] [0|3]
+  optional Vihicle_epb_feedbackType vihicle_epb_feedback = 2;
+  // NoNegativeTorque [Nm] [-5000|60535]
+  optional int32 vehicle_motor_torque_feedback = 3;
+  // [km/h] [0|127.5]
+  optional double vehicle_speed_feedback = 4;
+  // [%] [0|100]
+  optional double vehicle_brakepedal_feedback = 5;
+  // [%] [0|100]
+  optional double vehicle_accpedal_feedback = 6;
+  // [] [0|3]
+  optional Vehicle_gear_feedbackType vehicle_gear_feedback = 7;
+  // [] [0|3]
+  optional Vehicle_faultType vehicle_fault = 8;
+  // [] [0|3]
+  optional Vehicle_ad_mode_feedbackType vehicle_ad_mode_feedback = 9;
+}
+
+message Acu_drive_control_zt55_c02a7a5 {
+  // Control Message
+  enum Ad_target_gear_cmdType {
+    AD_TARGET_GEAR_CMD_N = 0;
+    AD_TARGET_GEAR_CMD_D = 1;
+    AD_TARGET_GEAR_CMD_R = 2;
+  }
+  enum Ad_faultType {
+    AD_FAULT_NOFAULT = 0;
+    AD_FAULT_FAULT = 1;
+  }
+  // [] [0|0]
+  optional int32 life_acu_drive_control = 1;
+  // [] [0|255]
+  optional Ad_target_gear_cmdType ad_target_gear_cmd = 2;
+  // NoNegativeTorque [Nm] [-5000|60535]
+  optional int32 ad_target_drive_torque = 3;
+  // [] [0|255]
+  optional Ad_faultType ad_fault = 4;
+}
+
+message Vehicle_light_door_feedback_zt55_c03a5a7 {
+  // Report Message
+  enum Braking_light_feedbackType {
+    BRAKING_LIGHT_FEEDBACK_NOBRAKELIGHT = 0;
+    BRAKING_LIGHT_FEEDBACK_BRAKELIGHTOFF = 1;
+    BRAKING_LIGHT_FEEDBACK_BRAKELIGHTON = 2;
+  }
+  enum Frontlamp_feedbackType {
+    FRONTLAMP_FEEDBACK_FRONTFOGCLOSE = 0;
+    FRONTLAMP_FEEDBACK_FRONTFOGOPEN = 1;
+  }
+  enum Back_fog_lamp_feedbackType {
+    BACK_FOG_LAMP_FEEDBACK_BACKFOGCLOSE = 0;
+    BACK_FOG_LAMP_FEEDBACK_BACKFOGOPEN = 1;
+  }
+  enum Vehicle_turnlight_feedbackType {
+    VEHICLE_TURNLIGHT_FEEDBACK_NOTURNLIGHT = 0;
+    VEHICLE_TURNLIGHT_FEEDBACK_LEFTTURNLIGHT = 1;
+    VEHICLE_TURNLIGHT_FEEDBACK_RIGHTTURNLIGHT = 2;
+  }
+  enum Vehicle_stoplamp_feedbackType {
+    VEHICLE_STOPLAMP_FEEDBACK_FRONTDOORNOACTION = 0;
+    VEHICLE_STOPLAMP_FEEDBACK_FRONTDOORCLOSE = 1;
+    VEHICLE_STOPLAMP_FEEDBACK_FRONTDOOROPEN = 16;
+  }
+  enum Vehicle_door_feedbackType {
+    VEHICLE_DOOR_FEEDBACK_PASSENGERDOORCLOSE = 0;
+    VEHICLE_DOOR_FEEDBACK_PASSENGERDOOROPEN = 1;
+  }
+  enum Vehicle_horn_feedbackType {
+    VEHICLE_HORN_FEEDBACK_HORNOFF = 0;
+    VEHICLE_HORN_FEEDBACK_HORNON = 1;
+  }
+  enum Vehicle_hazardwlamp_feedbackType {
+    VEHICLE_HAZARDWLAMP_FEEDBACK_LIGHTOFF = 0;
+    VEHICLE_HAZARDWLAMP_FEEDBACK_LIGHTON = 1;
+  }
+  // [] [0|3]
+  optional Braking_light_feedbackType braking_light_feedback = 1;
+  // [] [0|1]
+  optional Frontlamp_feedbackType frontlamp_feedback = 2;
+  // [] [0|1]
+  optional Back_fog_lamp_feedbackType back_fog_lamp_feedback = 3;
+  // [] [0|3]
+  optional Vehicle_turnlight_feedbackType vehicle_turnlight_feedback = 4;
+  // [] [0|3]
+  optional Vehicle_stoplamp_feedbackType vehicle_stoplamp_feedback = 5;
+  // [] [0|3]
+  optional int32 vehicle_headlight_feedback = 6;
+  // [] [0|3]
+  optional Vehicle_door_feedbackType vehicle_door_feedback = 7;
+  // [] [0|1]
+  optional bool vehicle_wiperblade_feedback = 8;
+  // [] [0|1]
+  optional Vehicle_horn_feedbackType vehicle_horn_feedback = 9;
+  // [] [0|1]
+  optional Vehicle_hazardwlamp_feedbackType vehicle_hazardwlamp_feedback = 10;
+}
+
+message Acu_braking_control_vcu_zt55_c03a7a5 {
+  // Control Message
+  enum Epb_controlType {
+    EPB_CONTROL_EPBNOACTION = 0;
+    EPB_CONTROL_EPBPULL = 1;
+    EPB_CONTROL_EPBRELAX = 2;
+  }
+  enum Braking_control_modeType {
+    BRAKING_CONTROL_MODE_NOTCONTROL = 0;
+    BRAKING_CONTROL_MODE_NOCONTROL = 1;
+    BRAKING_CONTROL_MODE_EBRCONTROL = 32;
+  }
+  // [] [0|3]
+  optional Epb_controlType epb_control = 1;
+  // [] [0|1]
+  optional Braking_control_modeType braking_control_mode = 2;
+  // [] [0|0]
+  optional int32 braking_life_signal = 3;
+  // [] [-20.48|20.48]
+  optional double ad_xbr_rq = 4;
+}
+
+message Acu_light_door_control_zt55_c04a7a5 {
+  // Control Message
+  enum Far_light_controlType {
+    FAR_LIGHT_CONTROL_NOBEAM = 0;
+    FAR_LIGHT_CONTROL_HIGHBEAMOFF = 1;
+    FAR_LIGHT_CONTROL_HIGHBEAMON = 2;
+  }
+  enum Braking_light_controlType {
+    BRAKING_LIGHT_CONTROL_NOBRAKELIGHT = 0;
+    BRAKING_LIGHT_CONTROL_BRAKELIGHTOFF = 1;
+    BRAKING_LIGHT_CONTROL_BRAKELIGHTON = 2;
+  }
+  enum Ad_turnlight_control_reqType {
+    AD_TURNLIGHT_CONTROL_REQ_NOTURNLIGHT = 0;
+    AD_TURNLIGHT_CONTROL_REQ_LEFTTURNLIGHT = 1;
+    AD_TURNLIGHT_CONTROL_REQ_RIGHTTURNLIGHT = 2;
+  }
+  enum Ad_middledoor_control_reqType {
+    AD_MIDDLEDOOR_CONTROL_REQ_NOACTION = 0;
+    AD_MIDDLEDOOR_CONTROL_REQ_MIDDLEDOORCLOSE = 1;
+    AD_MIDDLEDOOR_CONTROL_REQ_MIDDLEDOOROPEN = 2;
+  }
+  enum Ad_selfcheck_staType {
+    AD_SELFCHECK_STA_ISSELFCHECKING = 0;
+    AD_SELFCHECK_STA_SELFCHECKFINISHED = 1;
+    AD_SELFCHECK_STA_FAULT = 2;
+  }
+  enum Ad_mode_reqType {
+    AD_MODE_REQ_MANUALDRIVING = 0;
+    AD_MODE_REQ_AUTODRIVING = 1;
+  }
+  enum Ad_door_control_reqType {
+    AD_DOOR_CONTROL_REQ_PASSENGERDOORNOACTION = 0;
+    AD_DOOR_CONTROL_REQ_PASSENGERDOORCLOSE = 1;
+    AD_DOOR_CONTROL_REQ_PASSENGERDOOROPEN = 2;
+  }
+  enum Ad_hazard_waringlamp_control_reqType {
+    AD_HAZARD_WARINGLAMP_CONTROL_REQ_LIGHTOFF = 0;
+    AD_HAZARD_WARINGLAMP_CONTROL_REQ_LIGHTON = 1;
+  }
+  enum Ad_backup_light_control_reqType {
+    AD_BACKUP_LIGHT_CONTROL_REQ_LIGHTOFF = 0;
+    AD_BACKUP_LIGHT_CONTROL_REQ_LIGHTON = 1;
+  }
+  // [] [0|3]
+  optional Far_light_controlType far_light_control = 1;
+  // [] [0|3]
+  optional Braking_light_controlType braking_light_control = 2;
+  // [] [0|3]
+  optional Ad_turnlight_control_reqType ad_turnlight_control_req = 3;
+  // [] [0|3]
+  optional Ad_middledoor_control_reqType ad_middledoor_control_req = 4;
+  // [] [0|3]
+  optional Ad_selfcheck_staType ad_selfcheck_sta = 5;
+  // [] [0|3]
+  optional Ad_mode_reqType ad_mode_req = 6;
+  // [] [0|3]
+  optional Ad_door_control_reqType ad_door_control_req = 7;
+  // [] [0|1]
+  optional Ad_hazard_waringlamp_control_reqType
+      ad_hazard_waringlamp_control_req = 8;
+  // [] [0|1]
+  optional Ad_backup_light_control_reqType ad_backup_light_control_req = 9;
+}
+
+message Zhongtong55 {
+  optional Vehicle_wheelspeed_zt55_180b11ff vehicle_wheelspeed_zt55_180b11ff =
+      1;  // report message
+  optional Vehicle_steering_feedback_zt55_c01a5a7
+      vehicle_steering_feedback_zt55_c01a5a7 = 2;  // report message
+  optional Acu_eps_control_zt55_c01a7a5 acu_eps_control_zt55_c01a7a5 =
+      3;  // control message
+  optional Vehicle_drive_feedback_zt55_c02a5a7
+      vehicle_drive_feedback_zt55_c02a5a7 = 4;  // report message
+  optional Acu_drive_control_zt55_c02a7a5 acu_drive_control_zt55_c02a7a5 =
+      5;  // control message
+  optional Vehicle_light_door_feedback_zt55_c03a5a7
+      vehicle_light_door_feedback_zt55_c03a5a7 = 6;  // report message
+  optional Acu_braking_control_vcu_zt55_c03a7a5
+      acu_braking_control_vcu_zt55_c03a7a5 = 7;  // control message
+  optional Acu_light_door_control_zt55_c04a7a5
+      acu_light_door_control_zt55_c04a7a5 = 8;  // control message
+}

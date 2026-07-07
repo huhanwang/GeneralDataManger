@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package snoah.mapping.ehr.hdmap;
+
+message Customization {
+  optional string version = 1;
+  optional string area = 2;
+  optional string date = 3;
+}

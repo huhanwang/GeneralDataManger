@@ -1,0 +1,62 @@
+syntax = "proto2";
+
+import "google/protobuf/any.proto";
+
+package snoah;
+
+
+message Field {
+  optional string key = 1;
+  oneof value {
+    int64 int64_val = 2;
+    double double_val = 3;
+    string string_val = 4;
+    bool bool_val = 6;
+    google.protobuf.Any any_val = 5;
+  }
+}
+
+message QEventProto {
+  optional string name = 1;
+  optional string source_id = 2;  // Job id or run id for the QEvent
+  optional int64 timestamp = 3;   // Timestamp in microseconds.
+  optional string uid = 4;        // unique id for the QEvent
+  repeated Field fields = 5;
+  optional string user = 6;  // The user who created the QEvent.
+
+  // used for run analysis purpose only
+  repeated AggregateField aggregate_fields = 7;
+}
+
+message TimestampGrouper {
+  optional int64 interval = 1;
+}
+
+message QEventGrouper {
+  optional string name = 1;
+
+  oneof Type {
+    TimestampGrouper timestamp_grouper = 2;
+  }
+}
+
+// https://developers.google.com/protocol-buffers/docs/proto3#json
+message AggregateField {
+  enum FieldType {
+    UNKNOWN = 0;
+    INT32 = 1;
+    INT64 = 2;
+    DOUBLE = 3;
+    FLOAT = 4;
+    BOOL = 5;
+    STRING = 6;
+  }
+
+  optional string key = 1;
+  optional string value = 2;
+  optional FieldType type = 3;
+}
+
+message QEventListProto {
+  repeated QEventProto qevents = 1;
+}

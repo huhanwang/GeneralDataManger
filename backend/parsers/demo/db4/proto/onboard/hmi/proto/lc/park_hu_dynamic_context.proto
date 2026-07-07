@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/hmi/proto/lc/park_hmi_slots.proto";
+import "onboard/hmi/proto/lc/park_hmi_trajectory.proto";
+import "onboard/hmi/proto/lc/park_static_object.proto";
+import "onboard/hmi/proto/lc/park_traffic_participants.proto";
+import "onboard/hmi/proto/lc/park_uu_or_oc.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/hmi/proto/lc/personalized_slot.proto";
+
+message ParkHuDynamicContext {
+  optional LiteHeader header = 1;
+  optional HeaderLC header_lc = 2;
+  repeated PARKHMISlot park_slots = 3;
+  repeated PARKHMITrajectory park_trajectory = 4;
+  repeated PARKHMITrajectoryPose park_trajectory_pose = 5;
+  repeated ParkTrafficParticipants park_traffic_participants = 6;
+  repeated ParkStaticObject park_static_object = 7;
+  repeated Point3D total_navi_route = 8;   // 导航路线
+  repeated Point3D remain_navi_route = 9;  // 剩余导航路线
+  repeated ParkUUorOC park_uu_or_oc = 10;
+  optional PersonalSlot personal_slot = 11;
+}
+
+message ApHmiTrajectory {
+  optional LiteHeader header = 1;
+  optional HeaderLC header_lc = 2;
+  repeated APHMISingleTrajectory traj = 3;
+}

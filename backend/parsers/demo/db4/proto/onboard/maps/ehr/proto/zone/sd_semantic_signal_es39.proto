@@ -1,0 +1,204 @@
+syntax = "proto2";
+
+import "onboard/maps/ehr/proto/zone/common_msg.proto";
+
+package snoah.zone_data;
+
+// 定义 LaneGuideES39 消息类型（占位）
+message LaneGuideES39 {
+  // Define the fields for LaneGuideES39 here
+  repeated uint32 lane_info = 1;  // uint16[10] 数组，使用 repeated uint32 表示
+  required uint32 raw_lane_info_size = 2;  // uint8，映射为 uint32
+}
+
+// 定义 FirstTBTGuideInfoES39 消息类型（占位）
+message FirstTBTGuideInfoES39 {
+  optional string next_road_name = 1;  // uint8[64] 数组，使用 string 表示
+  required uint32 name_valid_size = 2;      // uint8，映射为 uint32
+  optional uint32 dist_to_first_guide = 3;  // uint16，映射为 uint32
+  optional uint32 first_guide_action = 4;   // uint8，映射为 uint32
+  optional common.PointLocationInfoES39 point_location = 5;  // 自定义消息类型
+  optional LaneGuideES39 lane_guide = 6;            // 自定义消息类型
+  optional common.LocationStructES39 location = 7;  // 自定义消息类型
+}
+
+// 定义 SecondTBTGuideInfoES39 消息类型（占位）
+message SecondTBTGuideInfoES39 {
+  optional uint32 dist_to_second_guide = 1;         // uint16，映射为 uint32
+  optional uint32 second_guide_action = 2;          // uint8，映射为 uint32
+  optional LaneGuideES39 lane_guide = 3;            // 自定义消息类型
+  optional common.LocationStructES39 location = 4;  // 自定义消息类型
+}
+
+message TBTGuideInfoES39 {
+  // Define the fields for TBTGuideInfoES39 here
+  optional FirstTBTGuideInfoES39 first_guide = 1;
+  optional SecondTBTGuideInfoES39 second_guide = 2;
+}
+
+message SpdLmtEleEyeES39 {
+  // Define the fields for SpdLmtEleEyeES39 here
+  optional uint32 speed_value = 1;  // uint8，映射为 uint32
+  optional uint32 dist_to_eye = 2;  // uint32
+}
+
+message TrafficCameraES39 {
+  // Define the fields for TrafficCameraES39 here
+  optional uint32 type = 1;  // uint8，映射为 uint32
+  optional common.PointLocationInfoES39 location = 2;  // 自定义消息类型
+  optional uint32 distance = 3;  // uint16，映射为 uint32
+}
+
+message IntervalCameraES39 {
+  // Define the fields for IntervalCameraES39 here
+  optional uint32 dist_to_start = 1;  // uint16，映射为 uint32
+  optional uint32 dist_to_end = 2;    // uint16，映射为 uint32
+  optional common.PointLocationInfoES39 location_start = 3;  // 自定义消息类型
+  optional common.PointLocationInfoES39 location_end = 4;  // 自定义消息类型
+  optional uint32 speed_value = 5;  // uint8，映射为 uint32
+}
+
+message TrafficJamES39 {
+  // Define the fields for TrafficJamES39 here
+  optional uint32 jam_length = 1;                 // uint32
+  optional uint32 distance_to_traffic_jam = 2;    // uint32
+  optional uint32 status = 3;                     // uint8，映射为 uint32
+  optional uint32 start_distance_to_traffic = 4;  // uint32
+  optional uint32 travel_time = 5;                // uint32
+}
+
+message WarnBoardSignES39 {
+  // Define the fields for WarnBoardSignES39 here
+  optional uint32 type = 1;      // uint8，映射为 uint32
+  optional uint32 distance = 2;  // uint16，映射为 uint32
+  optional common.PointLocationInfoES39 location = 3;  // 自定义消息类型
+  optional uint32 limit_speed = 4;                     // uint8，映射为 uint
+}
+
+message TrafficLightES39 {
+  message TrafficLightPeriodInfo {
+    optional uint32 light_type = 1;             // uint8，映射为 uint32
+    optional uint32 light_period = 2;           // uint8，映射为 uint32
+    optional uint32 light_blink_period = 3;     // uint8，映射为 uint32
+    optional uint32 cur_period_remain_sec = 4;  // uint8，映射为 uint32
+  };
+  // Define the fields for TrafficLightES39 here
+  optional uint32 direction = 1;   // uint8，映射为 uint32
+  optional uint32 intscn_pos = 2;  // uint8，映射为 uint32
+  optional int64 timestamp = 3;    // int64，映射为 uint32
+  optional uint32 remain_dis = 4;  // uint8，映射为 uint32
+  repeated TrafficLightPeriodInfo period_info = 5;
+  required uint32 raw_period_info_size = 6;
+}
+
+message TollStationES39 {
+  // Define the fields for TollStationES39 here
+  optional uint32 distance = 1;  // uint16，映射为 uint32
+  repeated uint32 lane_type = 2;  // uint8[10] 数组，使用 repeated uint32 表示
+  required uint32 valid_size = 3;  // uint8，映射为 uint32
+}
+
+message ConstructionRemindES39 {
+  message ConstructionTypeInfo {
+    optional uint32 dist_to_cons_start = 1;
+    optional uint32 cons_length = 2;
+    optional uint32 cons_type = 3;
+  };
+  // Define the fields for ConstructionRemindES39 here
+  required uint32 construction_valid_size = 1;  // uint8，映射为 uint32
+  repeated ConstructionTypeInfo construct_info =
+      2;  // ConsInfoType[6] 数组，使用 repeated 表示
+}
+
+message TimeSpanTypeES39 {
+  optional uint32 end_hour = 1;      // uint8，映射为 uint32
+  optional uint32 end_minute = 2;    // uint8，映射为 uint32
+  optional uint32 start_hour = 3;    // uint8，映射为 uint32
+  optional uint32 start_minute = 4;  // uint8，映射为 uint32
+}
+
+message SpecialLaneInfoES39 {
+  optional uint32 special_lane_type = 1;   // uint8，映射为 uint32
+  optional uint32 special_lane_index = 2;  // uint8，映射为 uint32
+  optional uint32 start_offset = 3;        // uint16，映射为 uint32
+  optional uint32 end_offset = 4;          // uint16，映射为 uint32
+  required uint32 restrict_time_num = 5;   // uint8，映射为 uint32
+  repeated TimeSpanTypeES39 restrict_time =
+      6;  // TimeSpanTypeES39[5] 数组，使用 repeated 表示
+}
+
+message SpecialLaneRemindES39 {
+  // Define the fields for SpecialLaneRemindES39 here
+  required uint32 valid_size = 1;  // uint8，映射为 uint32
+  repeated SpecialLaneInfoES39 special_lane_info =
+      2;  // SpecialLaneInfoES39[10] 数组，使用 repeated 表示
+}
+
+message TunnelES39 {
+  // Define the fields for TunnelES39 here
+  optional uint32 status = 1;          // uint8，映射为 uint32
+  optional uint32 length = 2;          // uint16，映射为 uint32
+  optional uint32 start_distance = 3;  // uint16，映射为 uint32
+  optional uint32 end_distance = 4;    // uint16，映射为 uint32
+}
+
+message RoadTypeES39 {
+  optional int32 lane_angle = 1;  // int16，映射为 int32
+  optional uint32 lane_num = 2;   // uint8，映射为 uint32
+  optional common.PointLocationInfoES39 location = 3;  // 自定义消息类型
+}
+
+message ConnectedRoadES39 {
+  // Define the fields for ConnectedRoadES39 here
+  repeated RoadTypeES39 road_type =
+      1;  // RoadTypeES39[10] 数组，使用 repeated 表示
+  required uint32 valid_size = 2;  // uint8，映射为 uint32
+}
+
+message NaviDestinationES39 {
+  // Define the fields for NaviDestinationES39 here
+  optional uint32 estimated_arrival_time = 1;  // uint32
+  optional uint32 time_left = 2;               // uint32
+  optional uint32 distance_left = 3;           // uint32
+}
+
+message SdSemanticSignalES39 {
+  optional common.ComHeader header = 1;
+  optional uint32 navi_status = 2;
+  optional common.LocationStructES39 location_struct = 3;
+  optional uint32 curr_road_type = 4;
+  optional uint32 curr_road_form = 5;
+  optional uint32 road_class = 6;
+  optional uint32 road_ownership = 7;
+  optional uint32 main_side_road_sts = 8;
+  optional TBTGuideInfoES39 tbt_guide_info = 9;
+  optional uint32 lane_amount = 10;
+  optional uint32 dis_to_nxt_intscn = 11;
+  optional LaneGuideES39 lane_guide = 12;
+  optional SpdLmtEleEyeES39 spd_lmt_ele_eye = 13;
+  optional TrafficCameraES39 traffic_camera = 14;
+  optional IntervalCameraES39 interval_camera = 15;
+  repeated TrafficJamES39 traffic_jam_list = 16;
+  required uint32 raw_traffic_jam_list_size = 17;
+  optional WarnBoardSignES39 warn_board_sign = 18;
+  optional uint32 round_about_guide = 19;
+  repeated TrafficLightES39 traffic_light = 20;
+  required uint32 raw_traffic_light_size = 21;
+  optional TollStationES39 toll_station = 22;
+  optional uint32 service_station_remind = 23;
+  optional uint32 lane_change_remind = 24;
+  optional ConstructionRemindES39 construction_remind = 25;
+  optional SpecialLaneRemindES39 special_lane_remind = 26;
+  optional TunnelES39 tunnel = 27;
+  optional uint32 ramp_remind = 28;
+  optional uint32 descent_remind = 29;
+  repeated common.PointLocationInfoES39 route_start_end_pos = 30;
+  optional uint32 direction_of_next_intscn = 31;
+  optional uint32 pos_of_destination = 32;
+  optional uint32 main_point_type = 33;
+  optional uint32 secondary_point_type = 34;
+  optional ConnectedRoadES39 connected_road = 35;
+  optional uint32 common_speed_limit = 36;
+  optional NaviDestinationES39 navi_destination = 37;
+  optional uint32 total_navi_distance = 38;
+}

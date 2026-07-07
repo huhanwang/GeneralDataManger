@@ -1,0 +1,36 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/proto/perception/types/measurement_type.proto";
+
+message TrackClassifierDebugProto {
+  enum Method {
+    VOTING = 0;
+    MODEL = 1;
+  }
+  message TrackClassifierInfo {
+    optional Method adopted_method = 1;
+    optional MeasurementType voting_cls = 2;
+    optional MeasurementType model_cls = 3;
+    optional Box2dProto bounding_box = 4;
+    optional double model_score = 5;
+  }
+  optional LiteHeader header = 1;
+  repeated TrackClassifierInfo track_classifier_info = 2;
+  optional double timestamp = 3;
+}

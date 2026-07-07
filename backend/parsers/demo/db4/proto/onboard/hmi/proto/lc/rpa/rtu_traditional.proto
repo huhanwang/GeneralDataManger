@@ -1,0 +1,100 @@
+syntax = "proto2";
+
+package snoah.LongCheng.rpa;
+
+// import "onboard/hmi/proto/lc/common.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message ECAN_ADAS_Info5_50ms {
+  optional uint32 APCtrlMode = 1;
+  optional uint32 APAOSlotType = 2;
+  optional uint32 APTarSlotW = 3;
+  optional uint32 APTarSlotL = 4;
+  optional uint32 RPARlngCtr = 5;
+  optional uint32 SummonApMtLong = 6;
+  optional uint32 SummonPNCinfo3 = 7;
+  optional uint32 SummonPNCinfo6 = 8;
+  optional uint32 SummonPNCinfo7 = 9;
+  optional uint32 RPAInfo1 = 10;
+  optional uint32 RPAInfo2 = 11;
+  optional uint32 RPAInfo3 = 12;
+  optional uint32 RPAInfo4 = 13;
+  optional uint32 RPAInfo5 = 14;
+  optional uint32 RPAInfo6 = 15;
+  optional uint32 RPAInfo7 = 16;
+  optional uint32 RPAInfo8 = 17;
+  optional uint32 u8_reserved1 = 18;
+  optional uint32 u8_reserved2 = 19;
+  optional uint32 u8_reserved3 = 20;
+  optional uint32 u8_reserved4 = 21;
+  optional uint32 u8_reserved5 = 22;
+  optional uint32 u8_reserved6 = 23;
+
+  optional int32 APTarSlotEdgeMidPointX = 24;
+  optional int32 APTarSlotEdgeMidPointY = 25;
+  optional int32 APStepTotalDis = 26;
+  optional int32 APStepRemDis = 27;
+  optional uint32 APAerrorcode4 = 28;
+
+  optional uint32 u16_reserved1 = 29;
+  optional uint32 u16_reserved2 = 30;
+  optional uint32 u16_reserved3 = 31;
+  optional uint32 u16_reserved4 = 32;
+  optional uint32 u16_reserved5 = 33;
+  optional uint32 u16_reserved6 = 34;
+
+  optional bool APTarSlotLimitedFlag = 35;
+
+  optional float APTarSlotEdge1Ang = 36;
+  optional float APTarSlotEdge2Ang = 37;
+
+  optional uint32 AVPInfo11 = 38;  // RPA前左障碍物所在区域
+  optional uint32 AVPInfo12 = 39;  // RPA前中障碍物所在区域
+  optional uint32 AVPInfo13 = 40;  // RPA前右障碍物所在区域
+  optional uint32 AVPInfo14 = 41;  // RPA后左障碍物所在区域
+  optional uint32 AVPInfo15 = 42;  // RPA后中障碍物所在区域
+  optional uint32 AVPInfo16 = 43;  // RPA后右障碍物所在区域
+  optional uint32 AVPInfo17 = 44;  // RPA左侧前障碍物所在区域
+  optional uint32 AVPInfo18 = 45;  // RPA左侧后障碍物所在区域
+  optional uint32 AVPInfo19 = 46;  // RPA右侧前障碍物所在区域
+  optional uint32 AVPInfo20 = 47;  // RPA右侧后障碍物所在区域
+
+  optional uint32 AVPInfo21 = 48;
+  optional uint32 AVPInfo22 = 49;
+  optional uint32 AVPInfo23 = 50;
+
+  optional uint32 APAInfo5 = 51;
+  optional uint32 APAInfo7 = 52;
+  optional uint32 APAInfo18 = 53;
+
+  optional uint32 software_id = 54;
+  optional uint32 software_version = 55;
+  optional uint32 hardware_version = 56;
+  optional uint32 bt_version = 57;
+
+  optional uint32 AVPInfo24 = 58;  // 预留
+  optional uint32 AVPInfo25 = 59;  // 预留
+
+  optional uint32 AD_RmtParkingOutUnbRsn = 60;
+  optional uint32 AD_RcmndParkngOutDircn = 61;
+  optional uint32 AD_FlagLParkngOutAvlbl = 62;
+  optional uint32 AD_FlagRParkngOutAvlbl = 63;
+  optional uint32 AD_FlagFrtParkngOutAvlbl = 64;
+  optional uint32 AD_FlagRrParkngOutAvlbl = 65;
+  optional uint32 AD_FlagFrtLParkngOutAvlbl = 66;
+  optional uint32 AD_FlagFrtRParkngOutAvlbl = 67;
+  optional uint32 AD_FlagRrLParkngOutAvlbl = 68;
+  optional uint32 AD_FlagRrRParkngOutAvlbl = 69;
+  optional uint32 ParkTerminateReason = 70;
+  optional uint32 ParkInhibitReason = 71;
+  optional uint32 FlagRPARdyQuitRsn = 72;
+  optional uint32 HMIDspSts = 73;
+  optional uint32 HMICmd = 74;
+  optional uint32 ParkOffsetReq = 75;
+  optional uint32 PreADASOnSts = 76;
+}
+
+message RtuTraditionalProto {
+  optional LiteHeader header = 1;
+  optional ECAN_ADAS_Info5_50ms ecan_adas_info5_50ms = 2;
+}

@@ -1,0 +1,87 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/utils/stream/proto/stream.proto";
+import "onboard/proto/calibration.proto";
+
+// Bynav RBV input from user based on installation, refer to official doc
+message InsRBV {
+  optional double x = 1 [default = 0.0];
+  optional double y = 2 [default = 0.0];
+  optional double z = 3 [default = 0.0];
+}
+
+message GnssImuInstallationProto {
+  enum Format {
+    UNKNOWN = 0;
+    NMEA = 1;
+    RTCM_V2 = 2;
+    RTCM_V3 = 3;
+
+    NOVATEL_TEXT = 10;
+    NOVATEL_BINARY = 11;
+
+    UBLOX_TEXT = 20;
+    UBLOX_BINARY = 21;
+
+    NEWTONM2_TEXT = 30;
+    NEWTONM2_BINARY = 31;
+
+    INS570D_TEXT = 40;
+
+    X2C_TEXT = 50;
+
+    CHCCGI230_BINARY = 60;
+
+    QUECTEL_TEXT = 70;
+    M22_UG016_TEXT = 71;
+
+    WIBEDA_TEXT = 80;
+  }
+
+  repeated GnssAntennaExtrinsicsProto antenna_extrinsics = 1;
+  optional Format format = 2;
+  // The driver reads data from this port. This port should always be provided.
+  optional StreamProto data_port = 3;
+
+  // If given, the driver sends commands to this port. If not given, the driver
+  // sends commands to the data port.
+  optional StreamProto command_port = 4;
+
+  // The driver gets RTK correction data from this remote port. Usually this is
+  // an NTRIP port.
+  optional StreamProto rtk_from_port = 5;
+
+  // If given, the driver sends RTK correction data to this port. If not given,
+  // the driver sends RTK correction data to the data port.
+  optional StreamProto rtk_to_port = 6;
+
+  optional ImuExtrinsicsProto imu_extrinsics = 7;
+
+  optional double gnss_data_rate_hz = 8;
+  optional double imu_data_rate_hz = 9;
+
+  optional InsRBV ins_rbv = 11;
+
+  // The used run when calibration
+  optional string used_run = 10;
+
+  // gnss_imu data is sent to this node.
+  optional string destination_node_name = 12;
+
+  optional ImuBiasProto imu_bias = 13;
+
+  optional int32 online_calibration_weight = 14;
+
+  message RtkExtrinsicsProto {
+    optional string port = 1;     // NCOM1, NCOM2
+    optional string type = 2;     // DISABLED, SERVER, CLIENT
+    optional string version = 3;  // V1
+    optional string ip_address = 4;
+    optional int32 ip_port = 5;
+    optional string mount_point = 6;
+    optional string bind_interface = 7;
+  }
+  optional RtkExtrinsicsProto rtk_extrinsics = 15;
+}

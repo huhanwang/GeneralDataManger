@@ -1,0 +1,61 @@
+
+syntax = "proto2";
+
+package snoah.image_anomaly_ad4;
+option go_package = "qcraft-proto.ai/offboard/labeling/proto/image_anomaly_ad4";
+
+// Ref: https://qcraft.feishu.cn/wiki/NYq4wfXH3ix91VkcJZtcby5ynJh
+message ImageAnomalyFront {
+  optional string image_key = 1;
+  optional uint32 width = 2;
+  optional uint32 height = 3;
+  repeated ImageLabel image_label = 4;
+}
+message ImageLabel {
+  optional string struct_type = 1;
+  optional string label_type = 2;
+  optional Attrs attrs = 3;
+}
+message Attrs {
+  optional bool abandoned = 1;
+  optional ImageAnomalyResultLevel blur = 2;
+  optional ImageAnomalyResultLevel block = 3;
+  optional ImageAnomalyResultLevel glare = 4;
+  optional string time = 5;
+  optional string weather = 6;
+
+  enum ImageAnomalyResultLevel {
+    normal = 0;
+    mild = 1;
+    medium = 2;
+    severe = 3;
+    invisible = 4;
+  }
+}
+
+// Ref: https://qcraft.feishu.cn/wiki/M2J2wKeAai6GlRkK35Wczg54nHg
+message ImageAnomalySideAndRear {
+  optional string image_key = 1;
+  optional uint32 width = 2;
+  optional uint32 height = 3;
+  repeated Regions regions = 4;
+}
+message Regions {
+  repeated double polygon = 1;
+  optional ImageAnomalyType type = 2 [default = normal];
+  optional string global = 3 [default = "no"];
+  optional string ignore = 4 [default = "no"];
+  optional string confidence = 5 [default = "certain"];
+  optional string blur_attr = 6 [default = "other_blur"];
+  optional string blockage_attr = 7 [default = "other_blockage"];
+  optional string glare_attr = 8 [default = "other_glare"];
+  optional string level = 9 [default = "light"];
+  optional string light_attr = 10 [default = "no_light"];
+
+  enum ImageAnomalyType {
+    normal = 0;
+    blockage = 1;
+    blur = 2;
+    glare = 3;
+  }
+}

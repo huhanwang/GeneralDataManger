@@ -1,0 +1,26 @@
+
+// This code is from apollo and modified by SNoah.
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+import "onboard/proto/chassis.proto";
+
+message PadMessage {
+  enum DrivingAction {
+    STOP = 0;
+    START = 1;
+    RESET = 2;
+  };
+
+  optional LiteHeader header = 1;
+
+  // send driving mode to drive
+  optional snoah.Chassis.DrivingMode driving_mode = 2
+      [(trans_matrix) = true, (matrix_data_type) = INT8];
+
+  // action in the driving_mode
+  optional DrivingAction action = 3;
+}

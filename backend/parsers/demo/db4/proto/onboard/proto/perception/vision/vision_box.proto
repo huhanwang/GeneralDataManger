@@ -1,0 +1,51 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/math/geometry/proto/aabox.proto";
+import "onboard/proto/perception/types/image_visibility_type.proto";
+import "onboard/proto/perception/types/traffic_light_color.proto";
+
+message Vision3DBoxProto {
+  optional Vec3dProto pos = 1;
+  optional double heading = 2;
+  optional double width = 3;
+  optional double length = 4;
+  optional double height = 5;
+  optional double depth = 6;
+  optional double turncated_ratio = 7 [default = 0.0];
+  optional Mat3dProto pos_covariance = 8;
+  repeated Vec2iProto projected_3d_bbox_vertices = 9;
+  optional bool filtered_by_beam_nms = 10 [default = false];
+  optional double nearest_facet_depth = 11;
+  optional Vec3dProto nearest_depth_point1 = 12;
+  optional Vec3dProto nearest_depth_point2 = 13;
+}
+
+message Vision2DBoxProto {
+  // left top width height
+  optional AABox2iProto bbox_2d = 1;
+  optional double visibility_score = 2;
+  optional TrafficLightColor tl_color = 3;
+  repeated float embedding_features = 4 [packed = true];
+  optional double width_truncated_ratio = 5 [default = 0.0];
+  optional double height_truncated_ratio = 6 [default = 0.0];
+  optional bool is_man_made_object = 7 [default = false];
+
+  optional ImageVisibilityType image_visibility_type = 8;
+  optional float image_visibility_score = 9;
+  optional bool vehicle_occluded_by_pedestrian = 10;
+}

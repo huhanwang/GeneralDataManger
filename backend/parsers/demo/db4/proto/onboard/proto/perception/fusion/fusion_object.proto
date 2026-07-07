@@ -1,0 +1,122 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/math/geometry/proto/box2d.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+// import "onboard/proto/perception/types/object_type.proto";
+import "onboard/proto/perception/fusion/object.proto";
+import "onboard/proto/vehicle_pose.proto";
+import "onboard/proto/perception/active_safety/active_safety_track_scene.proto";
+
+// AEB(ADAS) related proto, any fields not commented/indicated are available for
+// all kinds of measurment types
+// next id: 27.
+message FusionObjectProto {
+  optional string id = 1;
+  optional ObjectType type = 2;
+  optional ObjectAttribute attribute = 3;
+  // Position, available for all types. Camera pos will be the center of its
+  // bounding box
+  optional Vec2dProto pos = 4;
+  // [x,y] in smooth coordinate, not available for radar_only_measurement
+  optional Box2dProto bounding_box = 5;
+  // Not available for radar_only_measurement (dyaw/dt)
+  optional double yaw_rate = 7;
+  optional Vec2dProto vel = 8;     // Absolute vel in smooth coordinate
+  optional Vec2dProto accel = 9;   // Absolute accel in smooth coordinate
+  optional double timestamp = 10;  // Latest measurement time
+  optional bool offroad = 11;      // Indicate if this is an offroad object,
+  optional double life_time = 12 [default = 0.0];  // Second
+
+  enum MeasurementSource {
+    MS_RADAR_ONLY = 0;
+    MS_CAMERA_ONLY = 1;
+    MS_RADAR_CAMERA = 2;
+  }
+  optional MeasurementSource measurement_source = 13;
+  // Overall confidence score after tracking, between [0, 1]
+  optional double confidence_score = 14;
+  // Camera feature
+  optional double visibility_score = 15;
+  optional double turncated_ratio = 16;
+  optional double width_truncated_ratio = 22;
+  optional double height_truncated_ratio = 23;
+
+  enum FilteringReason {
+    UNFILTERED = 0;
+    SAME_LANE_REVERSE_SPEED = 1;
+    OTHER_LANE_CUTIN_SPEED = 2;
+    LOW_VISIBILITY_SCORE = 3;
+    LOW_CONFIDENCE_SCORE = 4;
+    HIGH_TURNCATED_RATIO = 5;
+    NON_RADAR_VISION_OBJECT_WITHIN_CAUTIOUS_REGION = 6;
+    STRANGE_MOTION = 7;
+    NON_FREESPACE = 8;
+    NMS_OVERLAPPING = 9;
+    NEAR_STATIC_RADAR_OBJECT = 10;
+    STATIC_RECENT_RADAR_OBJECT = 11;
+    HIGHWAY_NONRADAR = 12;
+    NOT_IN_FRONT_OF_EGO = 13;
+    ABNORMAL_HEADING = 14;
+    INSIDE_IMAGE_ANOMALY_DETECTION = 15;
+    TURNING_OBJECT = 16;
+    DENSE_PARKING_SCENE_CROSSING_VEHICLE = 17;
+    FORWARD_NON_RADAR = 18;
+    VEHICLE_FILTER_REGION = 19;
+    ABNORMAL_TILT = 20;
+  }
+
+  enum ModificationReason {
+    RADAR_POSITION_CORRECTION = 0;
+    RADAR_VELOCITY_CORRECTION = 1;
+    OTHER_LANE_SPEED_CORRECTION = 2;
+    CAMERA_VELOCITY_CORRECTION = 3;
+    SHOOTER_VELOCITY_CORRECTION = 4;
+    DENSE_SCENE_VELOCITY_CORRECTION = 5;
+    BEV_VELOCITY_CORRECTION = 6;
+  }
+
+  // Filter reason
+  optional FilteringReason filtering_reason = 17;
+  // Correction reason
+  optional ModificationReason modification_reason = 18;
+
+  message GroupingProperty {
+    optional ObjectType group_type = 1;
+    // Different object types can have same group id.
+    optional int32 group_id = 2;
+  }
+  optional GroupingProperty group_property = 19;
+  // Use old-fashioned reserved yaw field
+  optional bool is_man_made_object = 20 [default = false];
+  optional Density density = 21 [default = UNKNOWN_SCENE];
+
+  message FusionOutputMissingFields {
+    optional bool object_in_freespace_flag = 1;
+    optional uint32 fuseinfo_vision_conf = 2;
+  }
+  optional FusionOutputMissingFields fusion_output_missing_fields = 24;
+  optional active_safety.FineGrainedTrackScene track_scene = 25;
+  optional double trigger_delay_default = 26;
+  reserved 6;
+}
+
+message FusionObjectsProto {
+  optional LiteHeader header = 1;
+  repeated FusionObjectProto fusion_objects = 2;
+  optional VehiclePoseProto vehicle_pose = 3;
+}

@@ -1,0 +1,101 @@
+//
+//
+
+// The Software is provided "AS IS", without warranty of any kind, express or
+// implied, including but not limited to the warranties of merchantability,
+// fitness for a particular purpose, and non-infringement. In no event shall
+// qcraft or its licensors be liable for any claim, damages, or other liability,
+// whether in an action of contract, tort, or otherwise, arising from, out of,
+// or in connection with the Software or the use or other dealings in the
+// Software.
+
+syntax = "proto2";
+
+package snoah;
+
+option go_package = "qcraft-proto.ai/onboard/perception/proto/lidar_pipeline_debug";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/perception/proto/type.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+// meta info
+message MetaInfo {
+  // meta info
+  optional int32 pt_num = 1;
+  optional float max_z = 2;
+  optional float min_z = 3;
+}
+// appearance info
+message AppearanceInfo {
+  optional int32 distance = 1;
+  optional int32 conf = 2;
+}
+// inflation info
+message InflationInfo {
+  optional bool is_flat = 1;
+  optional int32 is_blooming = 2;
+  optional int32 suspend_bright_cnt = 3;
+  optional int32 nonsuspend_bright_cnt = 4;
+  optional int32 bright_cnt = 5;
+  optional int32 blooming_max_height = 6;
+}
+
+// Lidar grid info
+message LidarGridInfoProto {
+  // smooth coordinates
+  optional Vec2dProto position = 1;
+  // exist layer
+  optional MetaInfo meta_info = 2;
+  // bg layer
+  optional float clearance = 3;
+  // gd layer
+  optional float gd_info = 4;
+  // fg layer
+  optional float fg_info = 5;
+  // cluster layer
+  optional int32 cluster_id = 6;
+  // bit map layer
+  optional int32 bit_value = 7;
+  // bit veg layer
+  optional int32 bit_vegetation_value = 8;
+  // trace layer
+  optional float trace_info = 9;
+  // driveable layer
+  optional float driveable = 10;
+  // flat layer
+  optional bool is_flat = 11 [deprecated = true];
+  // appearance info
+  optional AppearanceInfo appearance_info = 12;
+  // semantic layer
+  optional float semantic_info = 13;
+  // flat layer
+  optional InflationInfo inflation_info = 14;
+  // local grid idx
+  optional Vec2iProto grid_idx = 15;
+  // bg map layer
+  optional int32 bg_map_info = 16;
+}
+
+message LidarGridsInfoProto {
+  optional LiteHeader header = 1;
+  optional float resolution = 2;
+  optional int32 grid_size = 3;
+  optional double timestamp = 4;
+  optional bytes lidar_grid_info = 5;
+  repeated Vec2dProto corner_points = 6;
+};
+
+message SegmentObjectProto {
+  repeated Vec2dProto polygon = 1;
+  optional int32 points_size = 2;
+  optional SegmentationType type = 3;
+  optional bool is_recovered = 4;
+  optional double timestamp = 5;
+  optional bool is_background = 6;
+}
+
+message LidarSegmentObjectsProto {
+  optional LiteHeader header = 1;
+  repeated SegmentObjectProto objects = 2;
+}

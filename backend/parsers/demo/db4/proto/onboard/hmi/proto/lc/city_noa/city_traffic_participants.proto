@@ -1,0 +1,68 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+
+message CityTrafficParticipants {
+  enum CityTrafficParticipantsType {
+    TYPE_NONE = 0x0;
+    TYPE_SUV = 0x1;  // reserved
+    TYPE_SEDAN = 0x2;
+    TYPE_HEAVY_TRUCK = 0x3;
+    TYPE_LIGHT_TRUCK = 0x4;  // reserved
+    TYPE_BICYCLE = 0x5;      // 两轮车
+    TYPE_PEDESTRIAN = 0x6;
+    TYPE_BUS = 0x7;
+    TYPE_GENERAL_VEHICLES = 0x8;
+    TYPE_WARNING_TRIANGLE = 0x9;
+    TYPE_CONE = 0xA;
+    TYPE_STRAIGHT_BARREL = 0xB;
+    TYPE_UPRIGHT_POLE = 0xC;
+    TYPE_GENERAL_OBSTACLES = 0xD;  // reserved
+    TYPE_TRICYCLIST = 0xE;         // reserved
+  }
+
+  enum CityTrafficParticipantsColor {
+    COLOR_RISK_NONE = 0x0;
+    COLOR_RISK_CIPV = 0x1;      // main
+    COLOR_RISK_HIGH_RED = 0x2;  // cutin
+    COLOR_RISK_LOW_GREY = 0x3;  // yield
+    COLOR_RISK_NUDGE = 0x4;     // nudge
+  }
+
+  enum CityTrafficParticipantsBrake {
+    BRAKE_LIGHT_OFF = 0x0;
+    BRAKE_LIGHT_ON = 0x1;
+  }
+
+  enum CityTrafficParticipantsTurn {
+    TURN_LIGHT_OFF = 0x0;
+    TURN_LIGHT_LEFT_TURN_LIGHT = 0x1;
+    TURN_LIGHT_RIGHT_TURN_LIGHT = 0x2;
+    TURN_HAZZARD_LIGHT = 0x3;
+  }
+
+  optional string id = 1;
+
+  optional CityTrafficParticipantsType type = 2;
+
+  optional Point2D position = 3;
+
+  optional CityTrafficParticipantsColor color_risk = 4;
+
+  optional CityTrafficParticipantsBrake brake_light = 5;
+
+  optional CityTrafficParticipantsTurn turn_light = 6;  // reserved
+
+  optional float heading_angle = 7;
+  optional float length = 8;
+
+  optional float velocity_x = 9;
+
+  optional float velocity_y = 10;
+
+  optional float conf_level = 11 [default = 100.0];  // reserved
+
+  repeated Point2D predict_traj_points = 12;
+}

@@ -1,0 +1,75 @@
+
+syntax = "proto2";
+
+package snoah;
+
+enum Region {
+  UNKNOWN_REGION = 0;
+  CHINA = 1;
+  FOREIGN = 2;
+  US = 3;
+}
+
+// Each imagery pixel has the s2 cell level 26 (approx 0.15m x 0.15m).
+message ImageryPixel {
+  enum S2Level {
+    S2_LEVEL = 26;
+  };
+  optional uint64 s2_cell_id = 1;
+  optional float elevation = 3;
+  optional float dist_to_curb = 4;
+  optional uint32 intensity = 5;
+  // 64 bit vector to represent if each voxel of height 0.2m from the elevation
+  // height is occupied, to represent 3D information.
+  optional uint64 z_occupancy = 6;
+
+  optional float intensity_deprecated = 2 [deprecated = true];
+}
+
+// Each imagery patch has the s2 cell level 14 (approx 600m x 600m).
+message ImageryPatch {
+  enum S2Level {
+    S2_LEVEL = 14;
+  };
+  optional uint64 s2_cell_id = 1;
+  repeated ImageryPixel pixels = 2;
+  // Supporting multilevel maps
+  optional int32 level_id = 3;
+}
+
+// TODO(lu): ImageryInfo is deprecated, either rename LocalMapInfo to
+// ImageryInfo, or remove this message
+message ImageryInfo {
+  optional bool use_intensity_nonlinear_mapping = 1 [default = false];
+  optional bool has_z_occupancy = 2 [default = false];
+}
+
+// Used by PNG map
+message LocalMapInfo {
+  optional double origin_lon = 1;
+  optional double origin_lat = 2;
+  optional double origin_alt = 3 [default = 0.];
+  // in meters
+  optional double patch_size = 4;
+  // number of pixels in a patch
+  optional uint32 pixel_num = 5;
+  // Elevation offset are encoded as uint16, the unit is used to convert it
+  // into meters in float. Same to dist_to_curb unit.
+  optional double elevation_offset_unit = 6 [default = 0.01];
+  optional double dist_to_curb_unit = 7 [default = 0.01];
+  optional double z_occupancy_bit_unit = 8 [default = 0.2];
+
+  optional double min_x = 9;
+  optional double max_x = 10;
+  optional double min_y = 11;
+  optional double max_y = 12;
+
+  optional bool use_intensity_nonlinear_mapping = 13 [default = true];
+  optional Region region = 14;
+  optional bool has_z_occupancy = 15;
+}
+
+message ImageryProto {
+  repeated ImageryPatch patches = 1;
+  optional ImageryInfo info = 2;
+}

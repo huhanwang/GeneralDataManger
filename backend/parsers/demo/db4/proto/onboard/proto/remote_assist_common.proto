@@ -1,0 +1,31 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/math/geometry/proto/affine_transformation.proto";
+
+message Heartbeat {
+  // The timestamp when sender sends the message.
+  optional int64 sender_ts = 1;
+  // The timestamp when receiver sends the message.
+  optional int64 receiver_ts = 2;
+  optional int64 rtt = 3;
+  optional int64 drift = 4;
+  optional Vec3dProto pos_smooth = 5;
+  optional Vec3dProto pos_global = 6;
+}
+
+message LaneChangeRequestProto {
+  enum Direction {
+    LEFT = 0;
+    RIGHT = 1;
+    CANCEL = 2;
+    STRAIGHT = 3;
+  }
+  optional Direction direction = 1;
+}
+
+message OutOfBlockedRoadRequestProto {
+  optional bool enable = 1;
+}

@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package snoah.mapping;
+option go_package = "qcraft-proto.ai/common/proto/semantic_map_modifier";
+
+import "onboard/common/proto/map_geometry.proto";
+
+message SemanticMapModifierProto {
+  message SpeedLimitModifierProto {
+    optional double max_speed_limit = 1;  // m/s.
+    message LaneIdModifier {
+      optional sfixed64 lane_id = 1;
+      optional double override_speed_limit = 2;  // m/s.
+    }
+    repeated LaneIdModifier lane_id_modifier = 2;
+    message RegionModifier {
+      // Only lanes which are completely inside the polygon will be modified.
+      optional GeoPolygonProto region = 1;
+      optional double override_speed_limit = 2;  // m/s.
+    }
+    repeated RegionModifier region_modifier = 3;
+  }
+  optional SpeedLimitModifierProto speed_limit_modifier = 1;
+}

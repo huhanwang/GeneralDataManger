@@ -1,0 +1,76 @@
+syntax = "proto2";
+
+package snoah;
+
+message AdasisV3ParamsProto {
+  message AutoNaviParamsProto {
+    optional string database_path = 1;
+    optional string sdk_log_path = 2;
+    optional bool enable_ota = 3;
+    optional bool enable_upload_log = 4;
+    optional string rtk_id = 5;
+  }
+  message NavInfoParamsProto {
+    optional bool sdk_log = 1;
+    optional bool log_to_console = 2;
+    optional string vehicle_factory = 3;
+    optional string vehicle_model = 4;
+    optional string vehicle_id = 5;
+    optional bool enable_external_route = 6;
+    optional bool external_route_as_subprocess = 7;
+    optional string gama_center_ip = 8;
+    optional string gama_client_ip = 9;
+    optional bool listen_sd_map_from_external = 10;
+  }
+  // 1 ~ 10 reserved for map vendor specific params
+  optional AutoNaviParamsProto autonavi_params = 1;
+  optional NavInfoParamsProto navinfo_params = 2;
+
+  message EhrParamsProto {
+    optional double location_update_frequency = 1;
+    optional bool use_map_location = 2;
+    optional bool pose_visualization = 3;
+    enum HdmapVendor {
+      SNOAH = 0;
+      AUTONAVI = 1;
+      NAVINFO = 2;
+    }
+    optional HdmapVendor hdmap_vendor = 4;
+    enum HdmapSdk {
+      ANY = 0;
+      AUTOSDK = 1;
+    }
+    optional HdmapSdk hdmap_sdk = 5;
+    optional string hardcoded_sd_route_json_file = 6;
+    optional string hardcoded_sd_route_proto_file = 7;
+    optional bool debug_log = 8;
+    optional bool record_raw_data = 9;
+    optional bool snoah_location_as_position_profile = 10;
+    optional bool update_tl_and_lane_binding = 11;
+    optional bool update_waiting_to_turn_left_tl = 12;
+    optional double update_proto_length = 13;
+    optional bool enable_filter_by_mpp_for_highway_noa = 14;
+    optional double forest_distance_ahead_ego_section = 15;
+    optional double forest_distance_behind_ego_section = 16;
+    optional double reserve_distance_ahead_ego_section = 17;
+    optional double reserve_distance_behind_ego_section = 18;
+    optional bool override_preferred_path_with_sd_route = 19;
+    optional string map_location_lane_blacklist = 20;
+    optional bool truncate_mpp_by_last_pocr_section = 21;
+    optional bool filter_intersection_lanes_by_pocr = 22;
+    optional bool filter_intersection_lanes_by_pocr_aggressive = 23;
+    optional bool treat_multiple_outgoing_section_as_intersection = 24;
+    optional bool map_location_ignore_non_pocr = 25;
+    optional bool verbose_debug_log = 26;
+    optional bool city_noa = 27;
+    optional bool recreate_ehr_if_invalid = 28;
+    optional double ehr_check_interval_secs = 29;
+    optional double map_max_pose_diff_secs = 30;
+  }
+  // 1 ~ 10 reserved for map vendor specific params
+  optional EhrParamsProto ehr_params = 11;
+}
+
+message MapParamsProto {
+  optional AdasisV3ParamsProto adasis_v3_params = 1;
+}

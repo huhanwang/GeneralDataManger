@@ -1,0 +1,77 @@
+
+syntax = "proto2";
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/system_state.proto";
+import "onboard/proto/lite_camera.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/uss.proto";
+import "onboard/proto/q_state_manager_info.proto";
+
+enum FunctionGroupType {
+  FUNCTION_GROUP_NONE = 0;
+  FUNCTION_GROUP_DRIVING = 1;
+  FUNCTION_GROUP_PARKING = 2;
+  FUNCTION_GROUP_CALIBRATION = 3;
+  FUNCTION_GROUP_RUN_NORMAL = 4;
+  FUNCTION_GROUP_RUN_IDLE = 5;
+  FUNCTION_GROUP_LOW_POWER = 6;
+  FUNCTION_GROUP_SENTRY = 7;
+  FUNCTION_GROUP_PRIMARY_DRIVING = 8;
+  FUNCTION_GROUP_PARKING_SEARCHING = 9;
+}
+
+message FunctionGroupState {
+  enum State {
+    NONE = 0;
+    START = 1;
+    RUN = 2;
+    STOP = 3;
+  }
+  optional State state = 1;
+}
+
+message FunctionGroupConfig {
+  message ModuleConfig {
+    optional LiteModuleName module_name = 1;
+    optional SystemModuleState.State state = 2;
+    optional string full_node_name = 3;
+  }
+  message CameraConfig {
+    optional CameraId camera_id = 1;
+    optional SensorState.State state = 2;
+    optional string full_node_name = 3;
+  }
+  message LidarConfig {
+    optional LidarId lidar_id = 1;
+    optional SensorState.State state = 2;
+    optional string full_node_name = 3;
+  }
+  message RadarConfig {
+    optional RadarId radar_id = 1;
+    optional SensorState.State state = 2;
+    optional string full_node_name = 3;
+  }
+  message UssRadarConfig {
+    optional UssRadarId uss_radar_id = 1;
+    optional SensorState.State state = 2;
+    optional string full_node_name = 3;
+  }
+  message NetConfig {
+    optional QSmNetInfo.Type type = 1;
+    optional QSmNetInfo.State state = 2;
+    optional string full_node_name = 3;
+  }
+  optional string fg_name = 1;
+  repeated ModuleConfig fg_modules = 2;
+  repeated CameraConfig fg_cameras = 3;
+  repeated LidarConfig fg_lidars = 4;
+  repeated RadarConfig fg_radars = 5;
+  repeated UssRadarConfig fg_uss_radars = 6;
+
+  optional FunctionGroupType fg_type = 7;
+
+  repeated NetConfig fg_nets = 8;
+}

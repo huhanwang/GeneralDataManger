@@ -1,0 +1,277 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/proto/lane_path.proto";
+import "onboard/proto/positioning.proto";
+import "onboard/proto/route_navigation.proto";
+import "onboard/common/proto/drive_mission.proto";
+import "onboard/common/proto/lane_point.proto";
+import "onboard/math/geometry/proto/affine_transformation.proto";
+import "onboard/planner/router/proto/composite_lane_path.proto";
+import "onboard/planner/router/proto/route_section_sequence.proto";
+
+message ReroutingRequestProto {
+  optional LiteHeader header = 1;
+  optional RoutingRequestProto routing_request = 2;
+  optional MultipleStopsRequestProto multi_stop_request = 4 [deprecated = true];
+  reserved 3;
+}
+
+message RouteProto {
+  repeated int64 lane_ids = 1;
+
+  // Fraction of the start point along the first lane.
+  optional double start_fraction = 2;
+
+  // Fraction of the end point along the second lane.
+  optional double end_fraction = 3;
+
+  // Alternative way to specify route: CompositeLanePathProto. Do not use with
+  // the three fields above.
+  optional CompositeLanePathProto lane_path = 4;
+
+  optional RoutingRequestProto routing_request = 5;
+
+  optional int64 update_id = 6;
+
+  optional RouteSectionSequenceProto route_section_sequence = 7;
+
+  // Include blacklist lanes by manual and bus_only lanes if current car is
+  // passenger car.
+  repeated sfixed64 avoid_lanes = 8;
+}
+
+enum RoutingType {
+  INIT_ROUTE = 0;
+  CHANGE_DESTINATION = 1;
+  LANE_CHANGE = 2;
+  ABORT_LANE_CHANGE = 3;
+  ALTERNATIVE_ROUTE = 4;
+  GENERAL_ROUTE = 5;  // Hailing and so on
+  PARKING_OFFROAD = 6;
+}
+
+message RouteTrackerDebugProto {
+  optional CompositeLanePathProto.CompositeIndexProto composite_index = 1;
+  optional mapping.LanePointProto lane_point = 2;
+  optional bool point_on_route_lane = 3;
+  optional sfixed64 route_lane_id = 4;
+  optional double travel_distance = 5;  // The dist from last record.
+  optional mapping.LanePointProto last_lane_point = 6;
+  optional bool success = 7;
+  repeated TrackerMatchProto candidates = 8;
+
+  message TrackerMatchProto {
+    optional mapping.LanePointProto lane_point = 5;
+    optional double project_dist = 2;     // UNIT=m
+    optional double travel_distance = 3;  // UNIT=m
+    optional bool selected = 4;
+    reserved 1;
+  }
+}
+
+message RouteManagerStateDebugProto {
+  optional RouteTrackerDebugProto route_tracker = 1;
+  optional bool is_new_route = 2;
+  optional bool is_internal_reroute = 3;  // Not client request but spontaneous
+  optional Vec2dProto start_next_route_pos = 4;  // global coords
+  optional int32 pending_next_destination_index = 5;
+  optional int32 reached_destination_index = 6;
+  optional int64 last_update_time = 7;
+  optional double route_s = 8;
+  optional int32 reached_dest_cnt = 9;
+  optional double distance_to_next_stop = 10;
+
+  optional double eta_secs_to_next_stop = 11;      // Not available yet.
+  optional double distance_to_next_viapoint = 12;  // -1 if no viapoint.
+  optional string next_destination_id = 13;        // may empty if no id
+
+  optional bool goto_next_stop = 14;
+}
+
+message RoutingStateProto {
+  optional LiteHeader header = 1;
+  enum RouteState {
+    START = 1;
+    REQUEST = 2;  // intermidate ephemeral state
+    RUNNING = 3;
+    ERROR = 4;
+    UNAVAILABLE = 5;  // Started but not ready to routing (missing necessite).
+    UNINITIALIZED = 6;
+  }
+  optional RouteState state = 2;
+  optional RouteManagerStateDebugProto route_mgr_state = 3;
+  optional RouteProto route_proto_from_current = 4;
+}
+
+message RouteLanePathInfoProto {
+  optional CompositeLanePathProto lane_path = 1;
+  optional double distance = 2;
+  optional double eta = 3;  // The estimate time of arrival.
+}
+
+message NaviSegmentProto {
+  repeated NaviActionProto navi_actions = 1;
+  optional double length = 2;  // meters, total length
+  optional RouteSectionSequenceProto route_section_sequence = 3;
+  repeated int32 coord_idx = 4 [packed = true];
+}
+
+message NaviPreviewProto {
+  repeated NaviSegmentProto navi_segments = 1;
+  optional int64 update_id = 2;
+}
+
+message RoutingResultProto {
+  optional LiteHeader header = 1;
+
+  optional int64 update_id = 2;
+
+  optional CompositeLanePathProto lane_path = 3;
+
+  optional RouteSectionSequenceProto route_section_sequence = 16;
+
+  // Starting from off-road.
+  optional mapping.LanePointProto link_lane_point = 13;
+
+  optional RoutingRequestProto routing_request = 4;
+
+  optional bool success = 5;
+
+  optional double cost = 6;
+
+  optional RoutingType routing_type = 7;
+
+  optional double distance = 8;  // The total distance
+  optional double eta = 9;       // The estimate time of arrival
+
+  repeated RouteLanePathInfoProto alternative_lane_path = 10;
+
+  // Preview info
+  repeated Vec2dProto path_points_from_current = 11;
+  repeated Vec2dProto path_points_overall = 12;
+
+  optional NaviPreviewProto navi_preview = 14;
+  optional NaviInstructionProto current_navi_instruction = 15;
+
+  message SuggestNaviAction {
+    enum NaviAction {
+      LC_NONE = 1;
+      LC_LEFT = 2;
+      LC_RIGHT = 3;
+    }
+    optional NaviAction action = 1;
+    optional float confidence = 2;
+  }
+  optional SuggestNaviAction suggest_navi_action = 17;
+  // Next ID: 18
+}
+
+message RecordedRouteProto {
+  optional LiteHeader header = 1;
+
+  optional CompositeLanePathProto lane_path = 2;
+
+  optional RoutingRequestProto routing_request = 3;
+}
+
+message PlannerRoutingRequestProto {
+  optional LiteHeader header = 1;
+
+  message InitRouteRequest {
+    optional PoseProto pose = 1;
+    optional RoutingRequestProto routing_request = 2;
+  }
+
+  message ChangeDestinationRequest {
+    optional PoseProto pose = 1;
+    optional RoutingRequestProto routing_request = 2;
+  }
+
+  message LaneChangeRequest {
+    optional mapping.LanePointProto start_point = 1;
+    optional RoutingRequestProto routing_request = 2;
+  }
+
+  message AbortLaneChangeRequest {
+    optional mapping.LanePathProto current_lane_path = 1;
+  }
+
+  message AlternativeRouteRequest {
+    optional PoseProto pose = 1;
+    optional RoutingResultProto current_route = 2;
+  }
+
+  oneof request {
+    InitRouteRequest init = 2;
+    ChangeDestinationRequest change_dest = 3;
+    LaneChangeRequest lane_change = 4;
+    AbortLaneChangeRequest abort_lane_change = 5;
+    AlternativeRouteRequest alt_route = 6;
+  }
+
+  optional uint64 request_id = 7;
+  optional RoutingType routing_type = 9;
+}
+
+enum RouteVehicleType {
+  bus = 1;
+  robo_taxi = 2;
+}
+
+message RouteServiceRequestProto {
+  optional LiteHeader header = 1;
+  optional RoutingRequestProto routing_request = 2;
+  optional string map = 3;         // FLAGS_map
+  optional bool use_map_repo = 4;  // FLAGS_use_map_repo, default true
+  // FLAGS_map_sha, if not provided, use the latest map.
+  optional string map_sha = 5;
+  optional RouteVehicleType vehicle_type = 6;
+}
+
+message PathRoutingResultProto {
+  optional LiteHeader header = 1;
+  optional RoutingResultProto routing_result = 2;
+  optional RouteServiceRequestProto route_service_request_proto = 3;
+}
+
+message SdRouteMatchRequstProto {
+  optional LiteHeader header = 1;
+  optional int64 update_id = 2;
+  repeated Vec2dProto points = 3;  // GCJ02
+  repeated sfixed64 link_ids = 4 [packed = true];
+}
+
+message AvoidLaneSegmentProto {
+  optional sfixed64 id = 1;
+  message LaneSegment {
+    optional double start_fraction = 1;
+    optional double end_fraction = 2;
+  }
+  repeated LaneSegment segments = 2;
+}
+
+message AvoidLaneSegmentMapProto {
+  optional LiteHeader header = 1;
+  repeated AvoidLaneSegmentProto avoid_lane_segment = 2;
+}
+
+message SdRouteNaviInfoProto {
+  optional LiteHeader header = 1;
+  enum LocStatus {
+    NORMAL = 1;
+    LOW_PRECISION = 2;
+    INVALID = 3;
+  }
+  optional LocStatus loc_status = 2;
+  message SpeedLimitRegion {
+    optional float speed_limit = 1;            // Kph.
+    optional float entry_region_distance = 2;  // m.
+    optional float exit_region_distance = 3;
+  }
+  optional SpeedLimitRegion geometry_speed_limit_region = 3;
+  // Next ID: 4.
+}

@@ -1,0 +1,61 @@
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/lite/proto/lite_common.proto";
+
+enum ShmMsgType {
+  SHM_UNKNOWN = 0;
+  SHM_LIDAR_FRAME = 2;
+  SHM_ENCODED_IMAGE = 3;
+  SHM_DECODED_IMAGE = 4;
+  SHM_ENCODED_LIDAR_FRAME = 5;
+  SHM_LARGE_MSG_FRAME = 6;
+  SHM_IMAGE_INFO = 7;
+
+  // Deprecated.
+  SHM_UNUSED = 1 [deprecated = true];
+};
+
+message ShmMessageMetadata {
+  optional LiteHeader header = 1;
+
+  // Share memory type.
+  optional ShmMsgType shm_msg_type = 6;
+
+  // Size in bytes.
+  optional int32 buffer_size = 2;
+
+  // True is reader false is writer.
+  optional bool reader_or_writer = 3;
+
+  // One process transport type.
+  message InnerProcTrans {
+    optional uint64 void_addr = 1;
+  }
+
+  // Cross process transport type.
+  message CrossProcTrans {
+    // Handle of raw data
+    optional uint64 handle = 1;
+    // Index of RW circle buffer
+    optional uint64 index = 2;
+    // Handle of ShmMessageMetadata
+    optional uint64 msg_handle = 3;
+    // Domain_channel's hash value of ShmMessageMetadata
+    optional uint64 msg_domain_channel_hash = 4;
+    // Queue index
+    optional int32 indicator_index = 5;
+
+    optional int32 handle_alloc_index = 6;
+
+    optional int32 msg_handle_alloc_index = 7;
+  }
+
+  oneof transport_type {
+    InnerProcTrans inner_proc = 4;
+    CrossProcTrans cross_proc = 5;
+  }
+
+  extensions 10000 to max;
+}

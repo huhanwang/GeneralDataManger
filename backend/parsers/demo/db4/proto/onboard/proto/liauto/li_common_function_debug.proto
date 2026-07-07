@@ -1,0 +1,134 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message DiagAeb {
+  optional int32 allow_longitudinal = 1;
+  optional int32 error_longitudinal = 2;
+}
+
+message DiagLateral {
+  optional int32 allow_lateral_new = 1;
+  optional int32 error_lateral_new = 2;
+}
+
+message DiagCorner {
+  optional int32 allow_corner = 1;
+  optional int32 error_corner = 2;
+}
+
+message DiagCtb {
+  optional uint32 allow_ctb = 1;
+  optional uint32 error_ctb = 2;
+}
+
+message DiagDebug {
+  optional uint32 AEB_inhibit0_flag = 1;
+  optional uint32 AEB_inhibit1_flag = 2;
+  optional uint32 fcw_inhibit0_flag = 3;
+  optional uint32 fcw_inhibit1_flag = 4;
+  optional uint32 ldw_inhibit0_flag = 5;
+  optional uint32 ldw_inhibit1_flag = 6;
+  optional uint32 ldp_inhibit0_flag = 7;
+  optional uint32 ldp_inhibit1_flag = 8;
+  optional uint32 elk_inhibit0_flag = 9;
+  optional uint32 elk_inhibit1_flag = 10;
+  optional uint32 elkta_inhibit0_flag = 11;
+  optional uint32 elkta_inhibit1_flag = 12;
+  optional uint32 esa_inhibit0_flag = 13;
+  optional uint32 esa_inhibit1_flag = 14;
+  optional uint32 bsd_inhibit0_flag = 15;
+  optional uint32 bsd_inhibit1_flag = 16;
+  optional uint32 dow_inhibit0_flag = 17;
+  optional uint32 dow_inhibit1_flag = 18;
+  optional uint32 fcta_inhibit0_flag = 19;
+  optional uint32 fcta_inhibit1_flag = 20;
+  optional uint32 all_Inhibit0_flag = 21;
+  optional uint32 all_Inhibit1_flag = 22;
+  optional uint32 all_Inhibit2_flag = 23;
+  optional uint32 all_Inhibit3_flag = 24;
+}
+
+message DiagFunctionDebug {
+  optional DiagAeb diag_aeb = 1;
+  optional DiagLateral diag_lateral = 2;
+  optional DiagCorner diag_corner = 3;
+  optional DiagDebug diag_debug = 4;
+  optional DiagCtb diag_ctb = 5;
+}
+
+message SceneAnalysis {
+  optional bool is_obstacle_on_right_front = 1;
+  optional bool is_obstacle_on_left_front = 2;
+  optional int32 aeb_society_scene = 3;
+  optional int32 fusion_society_scene = 4;
+  optional bool overTake_front_obstacle_scene = 5;
+  optional bool following_turnLeft_scene = 6;
+  optional bool overtaking_leftside_obstacle_scene = 7;
+  optional bool overtaking_rightside_obstacle_scene = 8;
+  optional bool is_lidaronly_object_close_roadedge = 9;
+  optional bool cipv_left_exists_freespace = 10;
+  optional bool cipv_right_exists_freespace = 11;
+  optional int32 scene_bit = 12;
+  optional bool cutin_vru_avoid_others_left = 13;
+  optional bool cutin_vru_avoid_others_right = 14;
+  optional bool ped_outside_uu_scene = 15;
+  optional bool narrow_road = 16;
+  optional int32 junction_scene = 17;
+  optional bool vru_outside_roadbound = 18;
+}
+
+message SceneAnalysisDebug {
+  optional uint32 moving_veh_nums = 1;
+  optional uint32 stat_veh_nums = 2;
+  optional uint32 front_ped_nums = 3;
+  optional uint32 front_bicycle_nums = 4;
+  optional bool ego_mov_status = 5;
+  optional uint32 obst_rf_delay_counter = 6;
+}
+
+message SceneAnalysisFuncDebug {
+  optional SceneAnalysis scene_analysis = 1;
+  optional SceneAnalysisDebug scene_analysis_debug = 2;
+}
+
+message TimeoutMonitor {
+  optional bool thread_deadloop = 1;
+  optional uint32 swc_monitor_bit = 2;
+  optional uint32 adapt_monitor_bit = 3;
+  repeated uint32 recv_msg_count = 4;
+}
+
+message SystemStatusDebug {
+  optional string git_hash_fsd_aebsafety = 1;
+  optional uint32 recv_topic_status = 2;
+  optional float software_run_time = 3;
+  optional TimeoutMonitor timeout_monitorer = 4;
+}
+
+message PsdTriggerDebug {
+  optional uint32 psd_trigger_flag_bit = 1;
+  optional uint32 psd_trigger_pub_bit = 2;
+}
+
+message ArbitrationDebug {
+  optional uint32 allSwcArbitRes = 1;
+  optional int32 finalBrakeID = 2;
+  optional int32 finalTurnID = 3;
+  optional int32 finalAccInhibitID = 4;
+  optional int32 finalWarnID = 5;
+  optional int32 final_lampwarn_id = 6;
+  optional int32 final_flasher_id = 7;
+  optional int32 final_haptic_id = 8;
+  optional int32 final_HUWrng_ID = 9;
+  optional int32 final_HUAEBStatus_ID = 10;
+}
+
+message CommonFunctionDebug {
+  optional DiagFunctionDebug diag_function_debug = 1;
+  optional SceneAnalysisFuncDebug scene_analysis_function = 2;
+  optional SystemStatusDebug system_status_debug = 3;
+  optional PsdTriggerDebug psd_trigger_debug = 4;
+  optional ArbitrationDebug arbitrationDebug = 5;
+}

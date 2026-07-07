@@ -1,0 +1,652 @@
+
+syntax = "proto2";
+
+package snoah.li;
+
+message AebFcwVcanTransIn {
+  optional bool multi_brakesourceconfirm = 1;
+  optional bool driver_pressing_brake_pedal = 2;
+  optional bool accbsc_autobrkreqd = 3;
+  optional float accbsc_accaccl = 4;
+  optional bool acc_engageactive = 5;
+  optional float whlgrndvlctylftnndrvn = 6;  // kph
+  optional float whlgrndvlctyrtnndrvn = 7;   // kph
+  optional float host_speed_kph_cib = 8;     // kph
+  optional float vehicle_speed_mps = 9;      // mps
+  optional uint32 bpdaps_bkpdrvapp = 10;     // kpa
+  optional float brkpdlpos = 11;             // percent
+  optional float accactpos = 12;             // percent
+  optional bool accpdlovrrdatv = 13;
+  optional float yaw_rate_deg = 14;            // degpersec
+  optional float strwhang_deg = 15;            // deg
+  optional float strwhangrate_deg = 16;        // degpersec
+  optional int32 elecprkbrkstat = 17;          // enum
+  optional int32 transestgear = 18;            // enum
+  optional int32 syspwrmd = 19;                // enum
+  optional float imulonaccpri = 20;            // m/ss
+  optional float imulataccpri = 21;            // m/ss
+  optional int32 colprsyscrntstng = 22;        // enum
+  optional int32 pedcolprsyscrntstng = 23;     // enum
+  optional int32 ja_colprsyscrntstng = 24;     // enum
+  optional int32 ja_pedcolprsyscrntstng = 25;  // enum
+  optional int32 fcwcustcrntsetngval = 26;     // enum
+  optional int32 vru_fcacrntsetngval = 27;     // enum
+  optional int32 fcwhdwystg = 28;
+  optional bool absatv = 29;
+  optional float estimated_radius_curvature = 30;  // m
+  optional float final_filtyawrate = 31;           // rad
+  optional float vcs_long_vel = 32;                // m/s
+  optional float vcs_lat_vel = 33;                 // m/s
+  optional float vcs_sideslip = 34;                // rad
+  optional float road_grade_accel = 35;            // m/ss
+  optional bool ego_vehicle_on_highwaw = 36;
+  optional int32 aebfunctioninhibitflag = 37;
+  optional int32 aebfunctioninhibitreason = 38;
+  optional double timestamp = 39;
+  optional bool lka_noa_active = 40;
+  optional int32 avh_state = 41;
+  optional bool seatbelt_unbuckled = 42;
+  optional uint64 transin_shadow_debug_flag = 43;
+}
+
+message AebFcwTransInDevLogger {
+  optional bool espfaultinhibit = 1;
+  optional bool bksovht = 2;
+  optional int32 strwhlangsencalstat = 3;
+  optional bool ddajrswatv = 4;
+  optional bool drsbltatc = 5;
+  optional bool vseact = 6;
+  optional bool tcsysatv = 7;
+  optional bool vmminhibit = 8;
+  optional bool awbnotavailableinhibit = 9;
+  optional bool abpnotavailableinhibit = 10;
+  optional bool abanotavailableinhibit = 11;
+  optional bool brakesysinhibit = 12;
+  optional bool brakelightinhibit = 13;
+  optional bool espoffinhibit = 14;
+  optional bool rearloadmodeinhibit = 15;
+  optional bool vehmodeinhibit = 16;
+  optional bool commupauseinhibit = 17;
+  optional int32 dia_aeb_error_status = 18;
+  optional int32 dia_fcw_error_status = 19;
+  optional int32 major_version = 20;
+  optional int32 minor_version = 21;
+}
+
+message AebFcwCommonOut {
+  optional bool allow_fca = 1;
+  optional bool allow_cib = 2;
+  optional bool degrade_fca = 3;
+  optional bool degrade_cib = 4;
+  optional bool fca_temp_unavailable = 5;
+  optional bool cib_unavailable_state = 6;
+  optional uint32 aebvru_inhibit_reason_code = 7;
+  optional uint32 aebc2c_inhibit_reason_code = 8;
+  optional uint32 aebvru_fail_reason_code = 9;
+  optional uint32 aebc2c_fail_reason_code = 10;
+  optional bool allow_fcw = 11;
+  optional bool allow_aeb = 12;
+  optional bool error_fcw = 13;
+  optional bool error_aeb = 14;
+}
+
+message AebFcwTranslateInDebug {
+  optional AebFcwVcanTransIn vcan_transin = 1;
+  optional AebFcwCommonOut common_out = 2;
+  optional AebFcwTransInDevLogger transin_dev_logger = 3;
+}
+
+message AebFcwDebugCipo {
+  optional uint32 timestamp = 1;
+  optional uint32 pca_track_id = 2;
+  optional int32 pca_track_index = 3;
+  optional float pca_l_long_rel = 4;
+  optional float pca_v_long_obj = 5;
+  optional float pca_a_long_obj = 6;
+  optional float pca_l_lat_rel = 7;
+  optional float pca_v_lat_obj = 8;
+  optional float pca_a_lat_obj = 9;
+  optional float pca_width = 10;
+  optional int32 pca_object_class = 11;
+  optional int32 pca_detection_sensor = 12;
+  optional int32 pca_movement = 13;
+  optional int32 pca_confidence = 14;
+  optional float pca_xolc = 15;
+  optional int32 pca_age = 16;
+  optional bool pca_partly_covered = 17;
+  optional int32 pca_postpone_scene = 18;
+  optional float pca_overlap_current = 19;
+  optional float pca_overlap_predicted = 20;
+  optional float pca_heading = 21;
+  optional float pca_length = 22;
+  optional int32 pca_behavior_scenario = 23;
+  optional int32 pca_refpoint_type = 24;
+  optional float pca_height = 25;
+  optional float pca_ttc = 26;
+  optional float pca_yawrate = 27;
+  optional int32 pca_behavior_scenario_addition = 28;
+  optional float pca_overlap_based_lane = 29;
+}
+
+message AebFcwDebugObject {
+  optional uint32 beb_object_id = 1;
+  optional int32 beb_object_index = 2;
+  optional int32 beb_stability_in_ego_lane = 3;
+  optional int32 beb_observation_conformity = 4;
+  optional int32 beb_lateral_velocity_conformity = 5;
+  optional int32 beb_overlap_current = 6;
+  optional int32 beb_movement_status = 7;
+  optional float beb_movement_speedthresh = 8;
+  optional uint32 beb_pcanotselected_reason_bits = 9;
+  optional uint32 beb_cutin = 10;
+  optional float beb_ttc = 11;
+  optional uint32 beb_general_obstacle_filter_result = 12;
+  optional uint32 beb_oncoming_obstacle_filter_result = 13;
+  optional uint32 bes_oncoming_obstacle_filter_result = 14;
+}
+
+message AebLmfDebug {
+  optional int32 lane_coeffi_c0 = 1;
+  optional int32 lane_coeffi_c1 = 2;
+  optional int32 lane_coeffi_c2 = 3;
+}
+
+message AebFcwBebDebug {
+  optional AebFcwDebugCipo aeb_debug_cips = 1;
+  optional AebFcwDebugCipo aeb_debug_cipv = 2;
+  optional AebFcwDebugObject aeb_debug_first_object = 3;
+  optional AebFcwDebugObject aeb_debug_second_object = 4;
+  optional AebLmfDebug aeb_debug_lmf = 5;
+  optional AebFcwDebugCipo aes_debug_cipv = 6;
+}
+
+message AebPedTselTgt {
+  optional float cibpedttc = 1;
+  optional float cibped_lat_est = 2;
+  optional uint32 cibped_trackid = 3;
+  optional float cibpedrangerate = 4;
+  optional float cibpedxpos = 5;
+  optional float cibpedypos = 6;
+  optional int32 cibped_obj_class = 7;
+  optional int32 cibped_match_conf = 8;
+  optional int32 cibped_detsensor = 9;
+  optional float cibped_latrate = 10;
+  optional bool cibped_movoutfun_holdsel = 11;
+  optional float cibped_xolc = 12;
+  optional uint32 cibped_age = 13;
+  optional bool cibped_oncoming = 14;
+  optional bool cibped_longbicyclist = 15;
+  optional bool cibped_stop = 16;
+  optional bool cibped_crossing = 17;
+  optional bool cibped_proceeding = 18;
+  optional bool cibped_oc_crossing = 19;
+  optional int32 cibped_ageed_movetypecur = 20;
+  optional int32 cibped_ageed_movetypepred = 21;
+  optional double timestamp = 22;
+  optional float cibped_xolc_lane = 23;
+  optional int32 cibped_scenario = 24;
+  optional int32 cibped_intension = 25;
+  optional bool cibped_bigobject = 26;
+  optional int32 cibped_dangerlevel = 27;
+  optional float cibped_yawrate = 28;
+}
+
+message FcwPedTselTgt {
+  optional float fcwped_range = 1;
+  optional float fcwped_rangerate = 2;
+  optional float fcwped_longpos = 3;
+  optional float fcwped_latpos = 4;
+  optional uint32 fcwped_trackid = 5;
+  optional int32 fcwped_match_conf = 6;
+  optional float fcwped_xolc = 7;
+  optional float fcwped_latrate = 8;
+  optional int32 fcwped_obj_class = 9;
+  optional float fcwped_angle = 10;
+  optional float fcwped_ttc = 11;
+  optional uint32 fcwped_age = 12;
+  optional bool fcwped_stop = 13;
+  optional bool fcwped_crossing = 14;
+  optional bool fcwped_proceeding = 15;
+  optional bool fcwped_oc_crossing = 16;
+  optional int32 fcwped_movetypecur = 17;
+  optional int32 fcwped_movetypepred = 18;
+  optional double timestamp = 19;
+  optional int32 fcwped_scenario = 20;
+}
+
+message AebFcwPedDebugInfo {
+  optional uint32 fcwped_fid = 1;
+  optional uint32 cibped_fid = 2;
+  optional int32 finalped_index = 3;
+  optional bool ped_visvruclutter = 4;
+  optional bool vru_moveable = 5;
+  optional bool vru_stop = 6;
+  optional bool vru_crossing = 7;
+  optional bool vru_proceeding = 8;
+  optional bool vru_oc_crossing = 9;
+  optional float cur_funnel_thres = 10;
+  optional float pred_funnel_thres = 11;
+  repeated uint32 cibtgt_reduceflag_v = 12;
+  optional int32 vru_tsel_major = 13;
+  optional int32 vru_tsel_minor = 14;
+  optional float roc = 15;
+  optional float junction_turn_angel = 16;
+  optional int32 drvmode_scenerio = 17;
+  optional bool ped_in_roi = 18;
+  optional uint32 vru_tsel_arc = 19;
+  optional uint32 cibtgt_crossfunuseflag = 20;
+  optional uint32 cibtgt_crossmanuverflag = 21;
+  optional float tgt_direc_incurnvcs_rad = 22;
+  optional float tgt_direc_inpredvcs_rad_v = 23;
+  optional float ped_long_pos = 24;
+  optional float ped_lat_pos = 25;
+  optional float md_xolc_v = 26;
+  optional float lateralestimate = 27;
+  optional float ped_long_vel = 28;
+  optional float ped_lat_vel_ground = 29;
+  optional int32 ped_obj_class = 30;
+  optional int32 tgt_move_type_incurvcs = 31;
+  optional int32 tgt_move_type_inpredvcs = 32;
+  optional uint32 fcwtgt_reduceflag = 33;
+  optional float yaw_based_rm_offset = 34;
+  optional float pure_pursuit_cuvrelatdist = 35;
+  optional float host_head_lat_movedist = 36;
+  optional float basic_ttc = 37;
+  optional float ackman_turnttc = 38;
+  optional int32 detectionsensor = 39;
+  optional int32 vru_confidence = 40;
+  optional uint32 vru_age = 41;
+  optional float ego_heading_attrgt = 42;
+  optional float latttc = 43;
+  optional bool tsel_poseidon_active1 = 44;
+  optional bool tsel_poseidon_active2 = 45;
+  optional double timestamp = 46;
+  optional int32 check_fail_reason = 47;
+  optional bool obj_est_xolc = 48;
+  optional float vru_est_xolc = 49;
+  optional float csta_distance = 50;
+  optional uint32 finalped_trkid = 51;
+  optional float vrucutinprob = 52;
+  optional float tgt_direc_inpredvcs_rad = 53;
+  optional uint64 vru_shadow_debug_flag = 54;
+}
+
+message AebFcwVehTselCipo {
+  optional uint32 cipv_trackid = 1;
+  optional float cipv_vcslongpos = 2;
+  optional float cipv_vcslatpos = 3;
+  optional float cipv_curvilongpos = 4;
+  optional float cipv_curvilatpos = 5;
+  optional float cipv_rangerate = 6;
+  optional float cipv_leadvel = 7;
+  optional float cipv_latrate = 8;
+  optional float cipv_leadaccel = 9;
+  optional float cipv_rangeaccel = 10;
+  optional float cipv_xolc = 11;
+  optional float cipv_width = 12;
+  optional float cipv_angle = 13;
+  optional float cipv_heading = 14;
+  optional float cipv_overlap = 15;
+  optional int32 cipv_obj_class = 16;
+  optional int32 cipv_match_conf = 17;
+  optional int32 cipv_movement = 18;
+  optional int32 cipv_detsensor = 19;
+  optional uint32 cipv_age = 20;
+  optional bool cipv_partlycovered = 21;
+  optional int32 cipv_postponescene = 22;
+  optional double timestamp = 23;
+  optional int32 cipv_checkfailreason = 24;
+  optional float cipv_overlap_ttc = 25;
+  optional float cipv_yawrate = 26;
+  optional int32 cipv_behavior_scenario_addition = 27;
+  optional float cipv_delta_crospoint_pred = 28;
+  optional float cipv_overlap_pred_roc = 29;
+  optional float cipv_overlap_lane = 30;
+  optional uint64 cipv_shadow_debug_flag = 31;
+}
+
+message AebFcwTpDebug {
+  optional AebPedTselTgt ped_tsel_aebtgt = 1;
+  optional FcwPedTselTgt ped_tsel_fcwtgt = 2;
+  optional AebFcwPedDebugInfo pedestrian_debug_info = 3;
+  optional AebFcwVehTselCipo veh_tsel_cipv = 4;
+  optional AebFcwVehTselCipo veh_tsel_cips = 5;
+}
+
+message FcwCommandOutDebug {
+  optional float caution = 1;
+  optional float leadaccel = 2;
+  optional int32 fca_warning_state = 3;
+  optional uint32 fca_target_id = 4;
+  optional bool chimesuppress = 5;
+  optional bool brakesuppr_out = 6;
+  optional int32 acute_warning_state = 7;
+  optional uint32 acute_target_id = 8;
+  optional double timestamp = 9;
+}
+
+message FcwDevLogger {
+  optional float reactiontime = 1;
+  optional float statwarnrange = 2;
+  optional float movwarnrange = 3;
+  optional int32 movcomponent = 4;
+  optional float leadrange = 5;
+  optional float leadspeed = 6;
+  optional float leadaccel = 7;
+  optional int32 statcomponent = 8;
+  optional int32 fca_warning_state = 9;
+  optional uint32 fca_target_id = 10;
+  optional float hostaccel = 11;
+  optional bool chimesuppress = 12;
+  optional float fcw_ref_ttc = 13;
+  optional float fcw_ttc = 14;
+  optional bool brakesuppr_out = 15;
+  optional int32 acute_warning_state = 16;
+  optional uint32 acute_target_id = 17;
+  optional int32 major_version = 18;
+  optional int32 minor_version = 19;
+  optional int32 fcw_arc = 20;
+  optional uint32 fcw_drvinhibitflag = 21;
+  optional float statreductionfactor = 22;
+  optional float movereductionfactor = 23;
+  optional double timestamp = 24;
+  optional uint32 fcw_drv_delay_flag = 25;
+  optional bool fcw_drv_delay = 26;
+}
+
+message FcwFunctionDebug {
+  optional FcwCommandOutDebug fcw_command_out = 1;
+  optional FcwDevLogger fcw_dev_logger = 2;
+}
+
+message AebCommandOutDebug {
+  optional bool aeb_trigger_alert = 1;
+  optional bool aeb_brkprfreq = 2;
+  optional bool aba_reqactive = 3;
+  optional bool aba2_reqactive = 4;
+  optional float aeb_ctrlacc = 5;
+  optional bool aeb_minusdecelactive = 6;
+  optional bool aeb_autobrkwithprefill_avitve = 7;
+  optional int32 aeb_autobrkreqtyp = 8;
+  optional bool vrubrakeactive = 9;
+  optional bool vrualertrequest = 10;
+  optional double timestamp = 11;
+  optional bool aeb_override = 12;
+  optional bool aeb_gaspedalor = 13;
+  optional bool aeb_steeringor = 14;
+  optional uint64 aeb_trkid = 15;
+  optional float aeb_trkttc = 16;
+  optional int32 aeb_trkclass = 17;
+  optional int32 aeb_trkmatchconf = 18;
+}
+
+message AebDevLogger {
+  optional float time_to_turn = 1;
+  optional float time_to_brake = 2;
+  optional float time_to_collision = 3;
+  optional uint32 cip_id = 4;
+  optional float cip_range = 5;
+  optional float cip_rangerate = 6;
+  optional float cip_latpos = 7;
+  optional float cip_rangeaccel = 8;
+  optional int32 cip_movement = 9;
+  optional int32 cip_match_conf = 10;
+  optional int32 cip_detsensor = 11;
+  optional int32 cip_class = 12;
+  optional float cip_latrate = 13;
+  optional bool cip_moveable = 14;
+  optional float traget_xolc = 15;
+  optional float cibped_lat_est = 16;
+  optional uint32 last_brake_age = 17;
+  optional float target_width = 18;
+  optional float fltvehiclespeed = 19;
+  optional float fltaccel = 20;
+  optional int32 drvengage = 21;
+  optional bool override = 22;
+  optional bool gaspedalor = 23;
+  optional bool steeringor = 24;
+  optional float imulonaccpri = 25;
+  optional float brkpedrateunfilt = 26;
+  optional float drvappdbrkprsrateunfilt = 27;
+  optional bool brakerateactive = 28;
+  optional bool brakepressureactive = 29;
+  optional uint32 highbraketimer = 30;
+  optional uint32 fullbraketimer = 31;
+  optional uint32 pcsalgorithmcounter = 32;
+  optional uint32 newtrackdatacounter = 33;
+  optional uint32 foreachtrackcounter = 34;
+  optional uint32 processcip = 35;
+  optional uint32 toidiscrimination = 36;
+  optional uint32 diag_brakediscrimination = 37;
+  optional uint32 diag_highbrakecounter = 38;
+  optional uint32 diag_lowbrakecounter = 39;
+  optional uint32 diag_prefillcounter = 40;
+  optional uint32 diag_flbacounter = 41;
+  optional uint32 diag_minstopcounter = 42;
+  optional uint32 diag_ibacounter = 43;
+  optional uint32 diag_fullcounter = 44;
+  optional int32 releasebrake = 45;
+  optional int32 pcs_brakerequestlevel = 46;
+  optional bool ta_aba_req = 47;
+  optional bool ta_aba2_req = 48;
+  optional float brakerequestaccel = 49;
+  optional bool brakerequestvalid = 50;
+  optional bool brakeprefill = 51;
+  optional bool aba_req = 52;
+  optional bool aba2_req = 53;
+  optional float neededdecel = 54;
+  optional float min_decelrequest = 55;
+  optional bool useped = 56;
+  optional float low_brake_annoying = 57;
+  optional float lowbrakeacceloffset = 58;
+  optional float highbrakeacceloffset = 59;
+  optional float prefill_thres = 60;
+  optional float low_brake_thres = 61;
+  optional float high_brake_thres = 62;
+  optional int32 junction_case = 63;
+  optional int32 colprsyscrntstng = 64;
+  optional int32 pedcolprsyscrntstng = 65;
+  optional uint32 aba_flag = 66;
+  optional uint32 prefill_flag = 67;
+  optional uint32 lowbrake_flag = 68;
+  optional uint32 highbrake_flag = 69;
+  optional uint32 fullbrake_flag = 70;
+  optional uint32 iba_flag = 71;
+  optional bool bigroadgrade = 72;
+  optional int32 major_version_aeb = 73;
+  optional int32 minor_version_aeb = 74;
+  optional int32 aeb_arc = 75;
+  optional bool aeb_poseidon_active1 = 76;
+  optional bool aeb_poseidon_active2 = 77;
+  optional bool closeovertaking = 78;
+  optional float aeb_reductionfactor = 79;
+  optional double timestamp = 80;
+  optional float iba_brake_thresh = 81;
+  optional float final_ttb_time = 82;
+  optional bool ccrb_scene = 83;
+  optional bool env_dayflag = 84;
+  optional uint32 low_overlap_disable_debug = 85;
+  optional float veh_decel_req_raw = 86;
+  optional float eba_pred_needed_decel = 87;
+  optional float eba_pred_needed_decel_thres = 88;
+  optional float eba_reduction_factor = 89;
+  optional bool useped_extend = 90;
+  optional uint64 cib_shadow_debug_flag = 91;
+}
+
+message AebCibModuleDebug {
+  optional AebCommandOutDebug aeb_command_out = 1;
+  optional AebDevLogger aeb_dev_logger = 2;
+}
+
+message AebCcftapDebug {
+  optional uint32 debug_ccftap_output_id = 1;
+  optional float debug_speed_direction = 2;
+  optional int32 debug_first_enter_area = 3;
+  optional int32 debug_last_enter_area = 4;
+  optional int32 debug_curr_enter_area = 5;
+  optional uint32 debug_invade_counter = 6;
+  optional float debug_ego_capcur = 7;
+  optional float debug_ego_lat_distance = 8;
+  optional float debug_lat_ttc = 9;
+  optional float debug_long_front_ttc = 10;
+  optional float debug_long_rear_ttc = 11;
+  optional float debug_delta_ttc = 12;
+  optional uint32 debug_state_counter = 13;
+  optional bool debug_enter_roi_flag = 14;
+  optional bool debug_enter_red_flag = 15;
+  optional float debug_acc_ped_rate = 16;
+  optional float debug_ego_steering_rate = 17;
+  optional bool debug_isdriver_notsharp_leftturn = 18;
+  optional bool debug_isdriver_wantto_accelerate = 19;
+  optional bool debug_isego_speed_toohigh = 20;
+  optional bool debug_isego_speed_toolow = 21;
+  optional float dubug_ego_accumulatedturnningangle = 22;
+  optional bool debug_isdriver_smallbrake = 23;
+  optional bool debug_ccftap_brake_command = 24;
+  optional float debug_brake_axtarget = 25;
+  optional uint32 debug_brake_object_id = 26;
+  optional int32 debug_ccftap_state = 27;
+  optional bool debug_ccftap_acc_override = 28;
+  optional bool debug_ccftap_steer_override = 29;
+  optional uint32 debug_ccftap_sm_transcondition = 30;
+  optional bool debug_ccftap_brake_hold_flag = 31;
+  optional float debug_ccftap_ttc = 32;
+  optional uint32 debug_ccftap_nontrigger_flag = 33;
+}
+
+message ScmDebug {
+  optional uint32 scm_bit_status = 1;
+  optional int32 scm_main_state = 2;
+  optional int32 scm_sub_state = 3;
+  optional float scm_ax_target = 4;
+  optional int32 scm_inhibit_accel = 5;
+  optional int32 scm_aeb_request = 6;
+  optional uint32 scm_target_fusion_id = 7;
+  optional float scm_target_px = 8;
+  optional float scm_target_py = 9;
+}
+
+message MaiObjectSelect {
+  optional uint32 mai_obj_fusionid = 1;
+  optional uint32 mai_obj_not_select_reason = 2;
+}
+
+message MaiDebug {
+  optional uint32 mai_bit_status = 1;
+  optional float mai_box_min_ttc = 2;
+  optional float mai_statyobj_min_ttc = 3;
+  optional float mai_intersect_min_ttc = 4;
+  optional uint32 mai_final_target_id = 5;
+  optional uint32 mai_staty_target_id = 6;
+  optional uint32 mai_move_target_id = 7;
+  optional uint32 mai_intersect_target_id = 8;
+  optional float mai_intersect_est_xloc = 9;
+  optional int32 mai_main_state = 10;
+  optional int32 mai_sub_state = 11;
+  optional int32 mai_accel_inhibit = 12;
+  optional float mai_accped_accum = 13;
+  optional int32 mai_accpedposlv1cnt_thres = 14;
+  optional int32 mai_accpedposlv2cnt_thres = 15;
+  optional int32 mai_accpedposlv1_cnt = 16;
+  optional int32 mai_accpedposlv2_cnt = 17;
+  optional uint32 mai_bit_sceneanaly = 18;
+  optional float mai_accpedposcnt_factor = 19;
+  optional float mai_accpedpos_factor = 20;
+  optional int32 mai_collision_hold = 21;
+  optional int32 mai_aeb_requset = 22;
+  repeated MaiObjectSelect mai_veh_select_flag = 23;
+  repeated MaiObjectSelect mai_vru_select_flag = 24;
+  optional float mai_veh_overlap = 25;
+  optional int32 mai_accpedposcnt_thres_veh = 26;
+  optional int32 mai_accpedposcnt_thres_vru = 27;
+  optional int32 mai_accpedposcnt_cur = 28;
+  optional int32 mai_accpedposcnt_last = 29;
+}
+
+message AlsAebOut {
+  optional float prim_tar_ttc = 1;
+  optional uint32 prim_tar_id = 2;
+  optional float alsaeb_ctrlacc = 3;
+  optional uint32 alsaeb_brk_enum = 4;
+  optional int32 alsaeb_state = 5;
+  optional bool alsaeb_cw_act = 6;
+  optional uint32 alscw_act_enum = 7;
+}
+
+message AlsAebLogger {
+  optional int32 prim_tar_type = 1;
+  optional float prim_tar_cen_lat = 2;
+  optional float prim_tar_cen_lgt = 3;
+  optional float prim_tar_heading = 4;
+  optional float prim_tar_length = 5;
+  optional float prim_tar_width = 6;
+  optional uint32 object_inpath_debug = 7;
+  optional float prim_tar_cllspintlgt = 8;
+  optional float prim_tar_overlaponttc = 9;
+  optional float lsaeb_red_fac = 10;
+  optional float lscw_red_fac = 11;
+  optional float lsaeb_trig_thres = 12;
+  optional float lscw_trig_thres = 13;
+  repeated uint32 object_inpath_debug_v = 14;
+  optional float prim_hostwidthclls_pintwid = 15;
+  optional uint32 prim_col_edge = 16;
+  repeated uint64 object_state_debug_v = 17;
+  optional uint64 prim_index = 18;
+}
+
+message AlsAebFunctionDebug {
+  optional AlsAebOut alsaeb_out = 1;
+  optional AlsAebLogger alsaeb_logger = 2;
+}
+
+message AebPcsReport {
+  optional uint32 pcs_bit_status = 1;
+  optional uint32 pcs_target_fusion_id = 2;
+  optional float pcs_target_px = 3;
+  optional float pcs_target_py = 4;
+  optional float pcs_target_vx = 5;
+  optional float pcs_target_vy = 6;
+  optional float pcs_target_ax = 7;
+  optional float pcs_target_ay = 8;
+  optional float pcs_target_width = 9;
+  optional float pcs_target_length = 10;
+  optional float pcs_target_height = 11;
+  optional uint32 pcs_target_type = 12;
+  optional uint32 pcs_target_class = 13;
+  optional uint32 pcs_target_type_ext = 14;
+  optional uint32 pcs_target_class_ext = 15;
+  optional float pcs_target_confidence = 16;
+  optional float pcs_target_angle = 17;
+  optional float pcs_target_angle_rate = 18;
+  optional float pcs_target_overlap = 19;
+  optional float pcs_target_ttc = 20;
+  optional float pcs_target_ttb = 21;
+  optional float pcs_target_ttp = 22;
+  optional float pcs_target_ttr = 23;
+  optional float pcs_target_tte = 24;
+  optional float pcs_target_ttcoll = 25;
+  optional float pcs_target_ttcoll_ext = 26;
+  optional float pcs_target_ttcoll_conf = 27;
+  optional float pcs_target_ttcoll_ext_conf = 28;
+  optional float pcs_target_ttcoll_ext2 = 29;
+  optional float pcs_target_ttcoll_ext2_conf = 30;
+  optional float pcs_target_ttcoll_ext3 = 31;
+  optional float pcs_target_ttcoll_ext3_conf = 32;
+  optional float pcs_target_ttcoll_ext4 = 33;
+  optional float pcs_target_ttcoll_ext4_conf = 34;
+  optional float pcs_target_ttcoll_ext5 = 35;
+  optional float pcs_target_ttcoll_ext5_conf = 36;
+}
+
+message AebFcwFunctionDebug {
+  optional AebFcwTranslateInDebug translate_in_debug = 1;
+  optional AebFcwBebDebug aeb_fcw_beb_debug = 2;
+  optional AebFcwTpDebug aeb_fcw_tp_debug = 3;
+  optional FcwFunctionDebug fcw_function_debug = 4;
+  optional AebCibModuleDebug aeb_cib_debug = 5;
+  optional AebCcftapDebug aeb_ccft_logger = 6;
+  optional ScmDebug scm_debug = 7;
+  optional MaiDebug mai_debug = 8;
+  optional AlsAebFunctionDebug alsaeb_function_debug = 9;
+}

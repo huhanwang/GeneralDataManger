@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/maps/map_match/proto/sd_localization.proto";
+import "onboard/proto/adasis.proto";
+
+package snoah.mapping;
+
+message ShortSdRouteInfoProto {
+  optional LiteHeader header = 1;
+  // keep prev and next default with 500 meters, keep link integrity also
+  optional SDRouteProto trim_sd_route_info = 2 [deprecated = true];
+  optional SdRouteLocalizationProto sd_route_localization = 3;
+  repeated SDLink trimmed_sd_route_links = 4;
+}

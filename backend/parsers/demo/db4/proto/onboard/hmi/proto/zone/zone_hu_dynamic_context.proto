@@ -1,0 +1,80 @@
+syntax = "proto2";
+
+package snoah.Qzone;
+
+import "onboard/lite/proto/lite_common.proto";
+// import "onboard/hmi/proto/zone/city_header.proto";
+// import "onboard/hmi/proto/zone/common.proto";
+import "onboard/hmi/proto/zone/zone_lane_line.proto";
+import "onboard/hmi/proto/zone/zone_traffic_participants.proto";
+import "onboard/hmi/proto/zone/zone_traffic_light.proto";
+import "onboard/hmi/proto/zone/zone_noa_guidelines.proto";
+// import "onboard/hmi/proto/zone/city_traffic_light.proto";
+// import "onboard/hmi/proto/zone/city_traffic_marking.proto";
+// import "onboard/hmi/proto/zone/city_lane_arrow_and_marking.proto";
+// import "onboard/hmi/proto/zone/traffic_unavailable_area.proto";
+// import "onboard/hmi/proto/zone/city_occupancy.proto";
+// import "onboard/hmi/proto/zone/city_polygon_oc_or_uu.proto";
+
+message ZoneTrafficParticipants {
+  optional uint64 time_stamp = 1;
+  optional uint32 cycle_counter = 2;
+  optional int32 status = 3;
+  repeated ZoneTrafficParticipant zone_traffic_participant = 4;
+}
+
+message ZoneStaticElements {
+  optional uint64 time_stamp = 1;
+  optional uint32 cycle_counter = 2;
+  optional int32 status = 3;
+  repeated ZoneStaticElement static_element = 4;
+}
+
+message ZoneHuDynamicContext {
+  optional LiteHeader header = 1;
+
+  //   optional CityHeader city_header = 2;
+
+  optional ZoneLaneLine zone_lane_lines = 3;           // 车道线们
+  optional ZoneNoaGuidelines zone_noa_guidelines = 4;  // NOA Guidelines
+
+  //   optional int32 lanes_of_same_driving_direction =
+  //       4;  // number of lanes 车道线数,预留
+
+  //   optional int32 vehicle_in_the_lane =
+  //       5;  // lane id of ego vehicle 自车位置，预留
+
+  //   optional EID_DISPLAY_SCENE eid_display_scene = 6;  // eid场景，预留
+
+  //   repeated Point2D noa_trajectory_line_points = 7;
+
+  //   optional int32 index_of_stop_point = 8;
+
+  //   optional bool brake_to_stop = 9;
+
+  //   repeated TrafficUnavailableArea city_unavailable_areas =
+  //       10;  // 不可行驶区域们
+
+  optional ZoneTrafficParticipants zone_traffic_participants =
+      11;  // 交通参与者&障碍物
+
+  optional ZoneStaticElements static_elements = 12;  // 静态元素
+
+  repeated ZoneTrafficLight traffic_lights = 13;  // 交通灯
+                                                  // 需要高度信息
+
+  //   repeated CityTrafficMarking city_traffic_markings = 13;  //
+  //   交通标线,停止线，斑马线
+
+  //   repeated CityLaneArrowAndMarking city_lane_arrow_and_markings =
+  //       14;  // 交通标识，车道箭头
+
+  //   repeated Point2D targetlane_middleline = 145;  // 路口目标车道中心线
+
+  //   optional BevOccuapncy city_occupancy = 16;  // reserved，not used
+
+  //   repeated UUorOC uuoroc_polygons = 17;
+
+  //   repeated Point2D ego_history_trajectory =
+  //       18;  // 自车历史轨迹，1m一个点，共20个，用于通勤noa
+}

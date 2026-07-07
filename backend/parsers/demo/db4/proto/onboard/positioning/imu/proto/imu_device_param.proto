@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snoah;
+
+message ImuDeviceParamProto {
+  optional double accel_noise_variance = 1;
+  optional double omega_noise_variance = 2;
+  optional double accel_bias_noise_variance = 3;
+  optional double omega_bias_noise_variance = 4;
+  optional double data_rate_hz = 5;
+}

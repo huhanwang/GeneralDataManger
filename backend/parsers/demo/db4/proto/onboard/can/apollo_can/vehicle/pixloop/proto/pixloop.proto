@@ -1,0 +1,207 @@
+syntax = "proto2";
+
+package apollo.canbus;
+
+message Auto_braking_18a {
+  // Control Message
+  // [] [0|1]
+  optional int32 braking_enable = 1;
+  // [] [0|1024]
+  optional int32 braking_value = 2;
+}
+
+message Auto_motor_status_feedback_199 {
+  // Report Message
+  // [] [0|0]
+  optional int32 speed_mode = 1;
+  // [] [0|0]
+  optional bool rr_steer_direction_feedback = 2;
+  // [] [0|0]
+  optional bool rf_steer_direction_feedback = 3;
+  // [] [0|0]
+  optional bool lr_steer_direction_feedback = 4;
+  // [] [0|0]
+  optional bool lf_steer_direction_feedback = 5;
+  // [] [0|0]
+  optional bool rr_status_feedback = 6;
+  // [] [0|0]
+  optional bool rf_status_feedback = 7;
+  // [] [0|0]
+  optional bool lr_status_feedback = 8;
+  // [] [0|0]
+  optional bool lf_status_feedback = 9;
+}
+
+message Auto_motor_speed_feedback_198 {
+  // Report Message
+  // [] [-32768|32767]
+  optional int32 rr_wheel_speed_feedback = 1;
+  // [] [-32768|32767]
+  optional int32 rf_wheel_speed_feedback = 2;
+  // [] [-32768|32767]
+  optional int32 lr_wheel_speed_feedback = 3;
+  // [] [-32768|32767]
+  optional int32 lf_wheel_speed_feedback = 4;
+}
+
+message Auto_status_feedback_194 {
+  // Report Message
+  // [] [0|0]
+  optional int32 discharge_current_feedback = 1;
+  // [] [0|0]
+  optional int32 battery_power_feedback = 2;
+}
+
+message Auto_steer_status_feedback_196 {
+  // Report Message
+  // [] [0|0]
+  optional int32 b_steer_status_feedback = 1;
+  // [] [0|0]
+  optional int32 f_steer_status_feedback = 2;
+  // [] [-300|300]
+  optional int32 b_steer_angle_feedback = 3;
+  // [] [-300|300]
+  optional int32 f_steer_angle_feedback = 4;
+}
+
+message Auto_data_feedback_193 {
+  // Report Message
+  // [] [0|0]
+  optional bool emergency_stop_feedback = 1;
+  // [] [0|0]
+  optional bool vehicle_mode_feedback = 2;
+  // [] [0|0]
+  optional bool vehicle_status_feedback = 3;
+  // [] [0|0]
+  optional bool braking_light_feedback = 4;
+  // [] [0|0]
+  optional bool tail_light_feedback = 5;
+  // [] [0|0]
+  optional bool r_steer_light_feedback = 6;
+  // [] [0|0]
+  optional bool l_steer_light_feedback = 7;
+  // [] [0|0]
+  optional int32 mode_feedback = 8;
+  // [] [0|3]
+  optional int32 gear_feedback = 9;
+  // [] [0|1000]
+  optional int32 braking_feedback = 10;
+  // [] [0|0]
+  optional int32 f_steer_feedback = 11;
+  // [] [-600|600]
+  optional int32 speed_feedback = 12;
+}
+
+message Auto_control_183 {
+  // Control Message
+  // [] [0|1]
+  optional bool self_driving_enable = 1;
+  // [] [0|1]
+  optional bool advanced_mode = 2;
+  // [] [0|0]
+  optional bool state_control = 3;
+  // [] [0|0]
+  optional bool speed_mode = 4;
+  // [] [0|0]
+  optional bool right_light = 5;
+  // [] [0|1]
+  optional bool left_light = 6;
+  // [] [0|0]
+  optional bool front_light = 7;
+  // [] [0|0]
+  optional bool epb = 8;
+  // [] [0|15]
+  optional int32 mode_selection = 9;
+  // [] [0|15]
+  optional int32 gear_shift = 10;
+  // [] [-32768|32767]
+  optional int32 steering = 11;
+  // [] [-1024|1024]
+  optional int32 braking = 12;
+  // [] [0|1024]
+  optional int32 speed = 13;
+}
+
+message Auto_steer_control_186 {
+  // Control Message
+  // [] [0|0]
+  optional int32 b_steer_angular_velocity = 1;
+  // [] [0|0]
+  optional int32 b_steer_angle = 2;
+  // [] [0|0]
+  optional int32 f_steer_angular_velocity = 3;
+  // [] [0|0]
+  optional int32 f_steer_angle = 4;
+}
+
+message Auto_steer_status_187 {
+  // Control Message
+  // [] [0|0]
+  optional int32 b_steer_enable = 1;
+  // [] [0|0]
+  optional int32 f_steer_enable = 2;
+}
+
+message Auto_motor_control_188 {
+  // Control Message
+  // [] [0|1024]
+  optional int32 rr_motor = 1;
+  // [] [0|1024]
+  optional int32 rf_motor = 2;
+  // [] [0|1024]
+  optional int32 lr_motor = 3;
+  // [] [0|1024]
+  optional int32 lf_motor = 4;
+}
+
+message Auto_motor_status_189 {
+  // Control Message
+  // [] [0|0]
+  optional int32 mode_feedback = 1;
+  // [] [0|1]
+  optional bool rr_steer_direction = 2;
+  // [] [0|1]
+  optional bool rf_steer_direction = 3;
+  // [] [0|1]
+  optional bool lr_steer_direction = 4;
+  // [] [0|1]
+  optional bool lf_steer_direction = 5;
+  // [] [0|1]
+  optional bool rr_enable = 6;
+  // [] [0|1]
+  optional bool rf_enable = 7;
+  // [] [0|1]
+  optional bool lr_enable = 8;
+  // [] [0|1]
+  optional bool lf_enable = 9;
+}
+
+message Auto_brak_feedback_19a {
+  // Report Message
+  // [] [0|0]
+  optional int32 braking_enable_feedback = 1;
+  // [] [0|0]
+  optional int32 braking_value_feedback = 2;
+}
+
+message Pixloop {
+  optional Auto_braking_18a auto_braking_18a = 1;  // control message
+  optional Auto_motor_status_feedback_199 auto_motor_status_feedback_199 =
+      2;  // report message
+  optional Auto_motor_speed_feedback_198 auto_motor_speed_feedback_198 =
+      3;  // report message
+  optional Auto_status_feedback_194 auto_status_feedback_194 =
+      4;  // report message
+  optional Auto_steer_status_feedback_196 auto_steer_status_feedback_196 =
+      5;                                                       // report message
+  optional Auto_data_feedback_193 auto_data_feedback_193 = 6;  // report message
+  optional Auto_control_183 auto_control_183 = 7;  // control message
+  optional Auto_steer_control_186 auto_steer_control_186 =
+      8;                                                     // control message
+  optional Auto_steer_status_187 auto_steer_status_187 = 9;  // control message
+  optional Auto_motor_control_188 auto_motor_control_188 =
+      10;                                                     // control message
+  optional Auto_motor_status_189 auto_motor_status_189 = 11;  // control message
+  optional Auto_brak_feedback_19a auto_brak_feedback_19a =
+      12;  // report message
+}

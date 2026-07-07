@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package snoah.LongCheng;
+
+import "onboard/hmi/proto/lc/common.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+message ParkingHmiRearMirrorControlProto {
+  optional LiteHeader header = 1;
+  optional HeaderLC header_lc = 2;
+  enum RearMirrorStatus {
+    NO_REQUEST = 0;
+    UNFOLD = 1;
+    FOLD = 2;
+  }
+  optional RearMirrorStatus rear_mirror_status = 3;
+  enum SrvControlSource {
+    HU = 0;
+    APP_FROM_MOBILE_PHONE = 1;
+    ADAS = 2;
+    VOICE = 3;
+  }
+  optional SrvControlSource source = 4;
+
+  enum FrontCam_Heat_Req {
+    FrontCam_NO_REQUEST = 0;
+    FrontCam_ON = 1;
+    FrontCam_OFF = 2;
+  }
+  optional FrontCam_Heat_Req srv_camr_heat_req = 5;
+}

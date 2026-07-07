@@ -1,0 +1,49 @@
+
+syntax = "proto2";
+
+package snoah;
+
+message StreamProto {
+  message Serial {
+    optional bytes device = 1;  // Something like "/dev/ttyXXX".
+    optional int32 baud_rate = 2;
+    // In general, we assumes no parity, 8 data bits, 1 stop bit, no
+    // handshaking, break detection enabled. If not, add more fields here.
+  }
+
+  message Tcp {
+    optional bytes address = 1;  // Something like "192.168.10.6".
+    optional int32 port = 2 [default = 3001];
+    optional uint32 timeout_us = 3 [default = 1000];
+  }
+
+  message Udp {
+    optional bytes address = 1;  // Something like "192.168.10.6".
+    // 'port' is the connected (server) port.
+    optional int32 port = 2 [default = 3001];
+    optional uint32 timeout_us = 3 [default = 1000];
+
+    // 'src_port' is the port of connnecting (client). This value is typically
+    // not required, so the default value is given as '0'. Some embeded devices
+    // (Starneto Newton M2 for instance) has the restriction on the client side
+    // to connect from a specific port, this can be done by specifying
+    // 'src_port'.
+    optional int32 src_port = 4 [default = 0];
+  }
+
+  message Ntrip {
+    optional bytes address = 1;  // Something like "1.1.1.1".
+    optional int32 port = 2 [default = 2101];
+    optional bytes mount_point = 3;  // Something like "demo".
+    optional bytes user = 4;
+    optional bytes password = 5;
+    optional uint32 timeout_s = 6 [default = 30];  // Internet connection
+  }
+
+  oneof type {
+    Serial serial = 1;
+    Tcp tcp = 2;
+    Udp udp = 3;
+    Ntrip ntrip = 4;
+  }
+}

@@ -1,0 +1,13 @@
+syntax = "proto2";
+package snoah.lidar_process.lidar;
+option go_package = "qcraft-proto.ai/onboard/perception/lidar_process/lidar/object_builder/proto/object_builder_config";
+
+message ObjectBuilderConfig {
+  optional string orientation_estimator = 1
+      [default = "MinBoxOrientationEstimator"];
+  optional double max_load_factor = 2 [default = 1];
+  optional int32 down_sample_num = 3 [default = 5];
+  optional int32 min_down_sample_cloud_size = 4 [default = 500];
+  optional bool gen_fg_occ_area = 5 [default = true];
+  optional bool gen_bg_occ_area = 6 [default = false];
+}

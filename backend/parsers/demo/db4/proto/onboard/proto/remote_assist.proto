@@ -1,0 +1,143 @@
+
+syntax = "proto2";
+
+package snoah;
+
+import "onboard/common/system/remote_assist.proto";
+import "onboard/proto/driving_style.proto";
+import "onboard/lite/proto/lite_common.proto";
+import "onboard/proto/route.proto";
+import "onboard/proto/remote_assist_common.proto";
+import "onboard/planner/assist/proto/external_command_status.proto";
+
+message ClearanceOverrideStatusProto {
+  optional double override_left_clearance = 1;
+  optional double override_right_clearance = 2;
+}
+
+message BlinkerOverrideProto {
+  optional bool on = 1;
+}
+
+message DoorOverrideProto {
+  optional bool open = 1;
+}
+
+message EnableFeatureOverrideProto {
+  // Set to true to enable stopping for traffic lights. Set to false to disable.
+  // Leave unset to not change the current status.
+  optional bool enable_traffic_light_stopping = 3;
+
+  // Set to true to enable lane change to avoid stationary obstacles
+  optional bool enable_lc_objects = 4;
+
+  optional bool enable_pull_over = 5;
+
+  reserved 1, 2;
+}
+
+message StopPointRequestProto {
+  optional double distance = 1;
+}
+
+message ForcedBrakeRequestProto {
+  optional double decel = 1;
+  optional double duration = 2;
+}
+
+message DrivingActionRequestProto {
+  optional StopPointRequestProto stop_point = 1 [deprecated = true];
+  optional LaneChangeRequestProto lane_change = 2;
+  optional ReroutingRequestProto rerouting = 3;
+  optional ForcedBrakeRequestProto forced_brake = 4 [deprecated = true];
+  optional OutOfBlockedRoadRequestProto out_of_blocked_road = 5;
+}
+
+message DrivableAgentUpdateRequestProto {
+  message Action {
+    optional double accel = 1;     // m/s/s.
+    optional double steering = 2;  // curvature.
+  }
+
+  message Update {
+    optional string agent_id = 1;
+    optional Action action = 2;
+  }
+
+  repeated Update updates = 1;
+}
+
+message PlayAudioRequestProto {
+  optional string audio_name = 1;
+}
+
+message StopVehicleProto {
+  optional double brake = 1;
+}
+
+message AebRequestProto {
+  enum Type {
+    AEB = 0;
+    AWB = 1;
+    EBA = 2;
+    ABA = 3;
+  }
+  optional double target_decel = 1;
+  optional bool enable_virtual_object = 2;
+  optional Type type = 3;
+}
+
+message RecordRunProto {
+  enum RecordRunAction {
+    NONE = 0;
+    START = 1;
+    STOP = 2;
+  }
+  optional RecordRunAction action = 1;
+}
+
+// NEXT ID: 22
+message RemoteAssistToCarProto {
+  optional LiteHeader header = 1;
+  oneof request {
+    Heartbeat heartbeat = 3;
+
+    // Planner requests.
+    BlinkerOverrideProto left_blinker_override = 8;
+    BlinkerOverrideProto right_blinker_override = 9;
+    BlinkerOverrideProto emergency_blinker_override = 15;
+
+    EnableFeatureOverrideProto enable_feature_override = 5;
+    DrivingActionRequestProto driving_action_request = 6;
+    DrivableAgentUpdateRequestProto drivable_agent_update_request = 7;
+    DoorOverrideProto door_override = 12;
+    LaneChangeStyle lane_change_style = 18;
+    bool enable_stop_polyline_stopping_override = 19;
+    bool use_manual_control_cmd = 14;
+    AebRequestProto aeb_request = 20;
+    RecordRunProto record_run = 21;
+
+    // HMI requests.
+    PlayAudioRequestProto play_audio_request = 11;
+    StopVehicleProto stop_vehicle = 16;
+  }
+
+  // Next id 21.
+  reserved 2, 4, 10, 13, 17;
+}
+
+message CarToRemoteAssistProto {
+  optional LiteHeader header = 1;
+  oneof request {
+    Heartbeat heartbeat = 3;
+  }
+
+  optional PlannerExternalCommandStatusProto planner_teleop_status = 4;
+
+  reserved 2;
+}
+
+message RemoteAssistStatusProto {
+  optional LiteHeader header = 1;
+  optional RemoteAssistStatusInfo status_info = 2;
+}

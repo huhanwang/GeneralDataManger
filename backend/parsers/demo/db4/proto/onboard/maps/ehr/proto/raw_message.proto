@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+import "onboard/maps/ehr/navinfo/aom/proto/navinfo_aom_raw_message.proto";
+import "onboard/maps/ehr/autonavi/proto/autonavi_raw_message.proto";
+import "onboard/maps/ehr/navinfo/autosdk/proto/navinfo_autosdk_raw_message.proto";
+import "onboard/maps/ehr/proto/zone/sd_navi_link_info_es39.proto";
+import "onboard/maps/ehr/proto/zone/sd_navi_link_list_es39.proto";
+import "onboard/maps/ehr/proto/zone/sd_semantic_signal_es39.proto";
+import "onboard/maps/sd/ehr/autonavi/proto/ehpv2_raw_message.proto";
+import "onboard/lite/proto/lite_common.proto";
+
+package snoah;
+
+message EhpRawMessagesProto {
+  optional LiteHeader header = 1;
+  oneof ehp_messages {
+    NavInfoAomRawMessages navinfo_aom_raw_messages = 2;
+    AutoNaviRawMessages autonavi_raw_messages = 3;
+    // use SdEhpRawMessages instead
+    AutoNaviEhpV2RawMessages autonavi_ehpv2_raw_messages = 4
+        [deprecated = true];
+    NavInfoAutoSdkRawMessages navinfo_autosdk_raw_messages = 5;
+  }
+}
+
+message SdEhpRawMessagesProto {
+  optional LiteHeader header = 1;
+  oneof ehp_messages {
+    AutoNaviEhpV2RawMessages autonavi_ehpv2_raw_messages = 2;
+  }
+}
+
+message ZOneSdRawMessage {
+  optional zone_data.NaviStatusInfo sd_navi_status_info_message = 1;
+  optional zone_data.SdSemanticSignalES39 sd_semantic_signal_message = 2;
+  optional zone_data.NaviRouteInfo sd_navi_route_info_message = 3;
+  optional zone_data.RouteLinkPointInfo sd_route_link_point_info_message = 4;
+  optional zone_data.NaviSegmentInfo sd_navi_segment_message = 5;
+};
+
+// 用于表达不同量产项目中接入的Sd源数据
+message SdRawMessagesProto {
+  optional LiteHeader header = 1;
+  oneof sd_raw_messages {
+    ZOneSdRawMessage zone_sd_raw_message = 2;
+  }
+}

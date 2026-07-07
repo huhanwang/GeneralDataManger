@@ -1,0 +1,1806 @@
+
+syntax = "proto2";
+
+package snoah;
+import "onboard/proto/perception/active_safety/active_safety_trackers_debug.proto";
+import "onboard/lite/proto/proto_field_option.proto";
+import "onboard/proto/offboard_planner_debug.proto";
+import "offboard/simulation/proto/modifier.proto";
+import "offboard/labeling/proto/label_frame.proto";
+import "onboard/eval/proto/qevents_lite.proto";
+import "onboard/lite/proto/shm_message.proto";
+import "onboard/proto/autonomy_state.proto";
+import "onboard/proto/buffered_log.proto";
+import "onboard/proto/brightness.proto";
+import "onboard/proto/can.proto";
+import "onboard/proto/charts.proto";
+import "onboard/proto/chassis_detail.proto";
+import "onboard/proto/chassis.proto";
+import "onboard/proto/control_cmd.proto";
+import "onboard/proto/control.proto";
+import "onboard/proto/counter.proto";
+import "onboard/proto/data_reflow.proto";
+import "onboard/proto/execution_issue.proto";
+import "onboard/proto/hobot_bole_raw.proto";
+import "onboard/proto/human_driving.proto";
+import "onboard/proto/gnss.proto";
+import "onboard/proto/image_overlay.proto";
+import "onboard/proto/lidar.proto";
+import "onboard/proto/localization.proto";
+import "onboard/proto/module_state.proto";
+import "onboard/proto/parking_spot_finder.proto";
+import "onboard/proto/pad_msg.proto";
+import "onboard/proto/perception.proto";
+import "onboard/proto/perf_trace.proto";
+import "onboard/proto/planner.proto";
+import "onboard/proto/yielding.proto";
+import "onboard/proto/positioning.proto";
+import "onboard/proto/radar.proto";
+import "onboard/proto/prediction.proto";
+import "onboard/proto/remote_assist.proto";
+import "onboard/proto/blind_spot_assist.proto";
+import "onboard/lane_support/blind_spot_assist/proto/bsa_debug.proto";
+import "onboard/proto/route.proto";
+import "onboard/proto/sim_augmentation.proto";
+import "onboard/proto/system_command.proto";
+import "onboard/proto/hil_system_command.proto";
+import "onboard/proto/system_info.proto";
+import "onboard/proto/system_state.proto";
+import "onboard/proto/trace.proto";
+import "onboard/proto/v2x.proto";
+import "onboard/proto/canvas.proto";
+import "onboard/proto/crash_log.proto";
+import "onboard/proto/rsim_stop.proto";
+import "onboard/planner/proto/planner_state.proto";
+import "onboard/planner/router/proto/route_manager_output.proto";
+import "onboard/proto/hmi_content.proto";
+import "onboard/proto/run_analysis_metadata.proto";
+import "onboard/proto/joystick.proto";
+import "onboard/node/proto/node_state.proto";
+import "onboard/proto/semantic_map_modification.proto";
+import "onboard/proto/q_run_events.proto";
+import "onboard/proto/update_run_params.proto";
+import "onboard/proto/cyber_message.proto";
+import "onboard/proto/emergency_brake.proto";
+import "onboard/proto/emergency_steering.proto";
+import "onboard/proto/lane_support.proto";
+import "onboard/proto/perception/parking/parking_spots.proto";
+import "onboard/proto/perception/parking/parking_freespace.proto";
+import "onboard/proto/perception/parking/uss.proto";
+import "onboard/lane_support/proto/lane_support_debug.proto";
+import "onboard/proto/trajectory.proto";
+import "onboard/lite/proto/lite_msg_simple.proto";
+import "onboard/proto/q_run_event_states.proto";
+import "onboard/proto/q_product_setting.proto";
+import "onboard/proto/lite_run_info.proto";
+import "onboard/maps/proto/online_semantic_map.proto";
+import "onboard/maps/proto/longcheng/road_horizon.proto";
+import "onboard/hmi/proto/alc.proto";
+import "onboard/planner/assist/proto/external_command_status.proto";
+import "onboard/proto/exit_timeout_stack.proto";
+import "onboard/proto/online_map.proto";
+import "onboard/proto/adasis.proto";
+import "onboard/emergency_brake/proto/emergency_brake_debug.proto";
+import "onboard/emergency_brake/emergency_steering/proto/emergency_steering_debug.proto";
+import "onboard/perception/proto/obstacle.proto";
+import "onboard/perception/proto/lidar_pipeline_debug.proto";
+import "onboard/proto/subscribe_command.proto";
+import "onboard/proto/server_request.proto";
+import "onboard/proto/module_state_list.proto";
+import "onboard/proto/module_startup_command.proto";
+import "onboard/proto/module_startup_state.proto";
+import "onboard/proto/online_calibration.proto";
+import "onboard/parking_spot_finder/proto/parking_spot_finder_debug.proto";
+import "onboard/parking_spot_finder/proto/parking_spot_finder_state.proto";
+import "onboard/perception/hma/proto/hma.proto";
+import "onboard/calibration/proto/calibration_response.proto";
+import "onboard/proto/perception/fusion/fusion_object.proto";
+import "onboard/logging/proto/q_rules_match.proto";
+import "onboard/proto/sd_map_route.proto";
+import "onboard/proto/fault_table.proto";
+import "onboard/proto/rear_collision_warning.proto";
+import "onboard/emergency_brake/rear_collision_warning/proto/rear_collision_warning_debug.proto";
+import "onboard/node/gac/proto/gac_node.proto";
+import "onboard/ml_planner/proto/ml_planner_output.proto";
+import "onboard/ml_planner/proto/ml_planner_debug.proto";
+import "onboard/proto/q_power_manager.proto";
+import "onboard/proto/q_state_manager_command.proto";
+import "onboard/proto/mcu_log.proto";
+import "onboard/maps/map_match/proto/match_data_flow.proto";
+import "onboard/maps/map_match/proto/sd_localization.proto";
+import "onboard/calibration/proto/calibration_data.proto";
+import "onboard/calibration/proto/calibration_evaluation.proto";
+import "onboard/calibration/proto/calibration_request.proto";
+import "onboard/proto/system_checker.proto";
+import "onboard/proto/trans_phase.proto";
+import "onboard/proto/gac_diag_msg.proto";
+import "onboard/maps/proto/sd_map.proto";
+import "onboard/maps/proto/baidu_map.proto";
+import "onboard/maps/map_fusion/proto/map_fusion_result.proto";
+import "onboard/proto/camera_pym_data.proto";
+import "onboard/proto/perception_obstacles.proto";
+import "onboard/proto/liauto/li_laneline.proto";
+import "onboard/maps/ehr/proto/raw_message.proto";
+import "onboard/maps/sd/turn_by_turn/proto/turn_by_turn.proto";
+import "onboard/maps/sd/proto/short_sd_info.proto";
+import "onboard/maps/sd/navinfo/nisdk/proto/nisdk_debug.proto";
+import "onboard/maps/proto/limap.proto";
+import "onboard/maps/proto/hpp_online_map.proto";
+import "onboard/proto/camera_calibration.proto";
+import "onboard/proto/imu_can_calibration.proto";
+import "onboard/lite/vehicle_params_manager/proto/param_service_ack.proto";
+import "onboard/proto/active_safety_a_to_m.proto";
+import "onboard/proto/active_safety_m_to_a.proto";
+import "onboard/active_safety/proto/active_safety_debug.proto";
+import "onboard/proto/safety_func_obstacle.proto";
+import "onboard/proto/safety_to_hui.proto";
+import "onboard/proto/hu_interface_info.proto";
+import "onboard/proto/calibration.proto";
+import "onboard/hmi/proto/lc/park_hmi_state.proto";
+import "onboard/hmi/proto/lc/park_hmi_command.proto";
+import "onboard/hmi/proto/lc/parking_hmi_limiters.proto";
+import "onboard/hmi/proto/lc/parking_hmi_rear_mirror_control.proto";
+import "onboard/hmi/proto/lc/hu_dynamic_context.proto";
+import "onboard/hmi/proto/lc/city_noa/city_hu_dynamic_context.proto";
+import "onboard/hmi/proto/lc/park_hu_dynamic_context.proto";
+import "onboard/hmi/proto/lc/park_avp_maps.proto";
+import "onboard/maps/dynamic_layer/proto/non_odd_events.proto";
+import "onboard/maps/dynamic_layer/proto/road_horizon_events.proto";
+import "onboard/maps/proto/ehp_speed_limit_range.proto";
+import "onboard/hmi/proto/lc/city_noa/city_noa_info.proto";
+import "onboard/maps/ehr/proto/dynamic_event.proto";
+import "onboard/proto/gnss_recv_send_main.proto";
+import "onboard/proto/liauto/pas_odometry.proto";
+import "onboard/maps/map_fusion/proto/map_road_reminder.proto";
+import "onboard/proto/perception/parking/li_parking_base.proto";
+import "onboard/calibration/proto/calibration_result_analyze_data.proto";
+import "onboard/proto/liauto/li_mcu_to_soa_failsafe.proto";
+import "onboard/hmi/proto/lc/rpa_state.proto";
+import "onboard/hmi/proto/lc/rpa/runtime_uploading.proto";
+import "onboard/hmi/proto/lc/rpa/rtu_traditional.proto";
+import "onboard/hmi/proto/lc/data_statistics.proto";
+import "onboard/proto/liauto/li_calibration.proto";
+import "onboard/proto/liauto/li_vehicle_and_setting_info.proto";
+import "onboard/planner/freespace/proto/li_parking_planner.proto";
+import "onboard/proto/liauto/li_sensor_can_fault_status.proto";
+import "onboard/proto/liauto/li_fisheye_object.proto";
+import "onboard/proto/liauto/li_preception_freespace.proto";
+import "onboard/proto/perception/lsaeb/grid_map.proto";
+import "onboard/proto/perception/lsaeb/lsaeb_freespace.proto";
+import "onboard/proto/suspension.proto";
+import "onboard/proto/liauto/li_suspension_mat4d.proto";
+import "onboard/hpp/hpp_mapping/protos/hpp_mapping_debug.proto";
+import "onboard/hpp/hpp_mapping/protos/hpp_mapping_request.proto";
+import "onboard/hpp/hpp_mapping/protos/hpp_parking_mode_request.proto";
+import "onboard/proto/serialized_data_wrapper.proto";
+import "onboard/proto/remote_drive_states.proto";
+import "onboard/proto/liauto/li_as_function_debug.proto";
+import "onboard/proto/liauto/li_as_planning_result.proto";
+import "onboard/proto/liauto/li_as_aes_result.proto";
+import "onboard/proto/liauto/li_active_safety_perception.proto";
+import "onboard/hpp/hpp_mapping/protos/hpp_mapping_state.proto";
+import "onboard/calibration/li_calibration/proto/li_calibration_response.proto";
+import "onboard/maps/sd/navinfo/nisdk/proto/nisdk.proto";
+import "onboard/logging/proto/can_log.proto";
+import "onboard/proto/cockpit.proto";
+import "onboard/proto/cockpit_vehicle_state.proto";
+import "onboard/hmi/proto/zone/zone_city_noa_info.proto";
+import "onboard/hmi/proto/zone/zone_hu_dynamic_context.proto";
+import "onboard/proto/cockpit_notify.proto";
+
+import "onboard/proto/perception/fusion/objects.proto";
+import "onboard/proto/perception/measurements/measurements.proto";
+import "onboard/proto/perception/fusion/tracker_debug.proto";
+import "onboard/proto/perception/lidar/track_classifier_debug.proto";
+import "onboard/proto/perception/vision/bev_road_geometry.proto";
+import "onboard/proto/perception/fusion/fused_bev_road_geometry.proto";
+import "onboard/proto/perception/lidar/lidar_perception_net_result.proto";
+
+import "onboard/maps/proto/raw_navigation.proto";
+
+// In lite communication system, all sub/pub messages has to list as one of a
+// optional fields in LiteMsg, otherwise the message won't be supported in
+// tranferring between modules.
+// Furthermore, the new msg has to be registered in the corresponding file under
+// onboard/lite/launch_config/module_configs
+// Use the commit number to set the field id to avoid confliction.
+message LiteMsgWrapper {
+  // The tag number of lite_msg to indicate which field is set. zero means
+  // nothing is set.
+  optional int32 tag_number = 1;
+
+  // *Do not* change tag number of defined fields below, always add new field
+  // with new non-conflict tag number.
+  // Please keep the field name same as proto name by using '_' connect words
+  // with lower cases.
+  // Must be a message type.
+  oneof lite_msg {
+    PoseProto pose_proto = 2;
+
+    TrajectoryProto trajectory_proto = 3;
+
+    SystemStatusProto system_status_proto = 5;
+
+    ShmMessageMetadata shm_message_metadata = 6;
+
+    GnssRawReadingProto gnss_raw_reading_proto = 10;
+
+    ImuRawReadingProto imu_raw_reading_proto = 7;
+
+    PandarPacketProto pandar_packet_proto = 8;
+
+    ObstaclesProto obstacles_proto = 9;
+
+    GnssImuDriverDebugProto gnss_imu_driver_debug_proto = 11;
+
+    CanDriverDebugProto can_driver_debug_proto = 14;
+
+    VehicleControlStatusProto vehicle_control_status_proto = 15;
+
+    VehicleOperationStatusProto vehicle_operation_status_proto = 16;
+
+    PoseEstimatorDebugProto pose_estimator_debug_proto = 17;
+
+    PositioningFilterStateProto positioning_filter_state_proto = 19;
+
+    DepthMapsProto depth_maps_proto = 20;
+
+    TrafficLightRegionsProto traffic_light_regions_proto = 21
+        [deprecated = true];
+
+    ChassisDetail chassis_detail = 22;
+
+    Chassis chassis = 23;
+
+    ControlCommand control_command = 24;
+
+    PadMessage pad_message = 25;
+
+    ExecutionIssueProto execution_issue_proto = 27;
+
+    AutonomyStateProto autonomy_state_proto = 28;
+
+    GuardianCmdProto guardian_cmd_proto = 29;
+
+    DriverAction driver_action = 30;
+
+    LocalizationDebugProto localization_debug_proto = 32;
+
+    ObjectsProto objects_proto = 33;
+
+    TrafficLightStatesProto traffic_light_states_proto = 34;
+
+    vis.vantage.ChartsDataProto charts_data_proto = 35;
+
+    ObjectsPredictionProto objects_prediction_proto = 37;
+
+    SegmentsInImageProto segments_in_image_proto = 40;
+
+    PointsInImageProto points_in_image_proto = 41;
+
+    PerfTrace perf_trace = 42 [deprecated = true];
+
+    PlannerDebugProto planner_debug_proto = 43;
+
+    ReroutingRequestProto rerouting_request_proto = 44;
+
+    RemoteAssistToCarProto remote_assist_to_car_proto = 45;
+
+    CarToRemoteAssistProto car_to_remote_assist_proto = 46;
+
+    CreateVirtualObjectsRequestProto create_virtual_objects_request_proto = 47;
+
+    LidarHostTimeDiffProto lidar_host_time_diff_proto = 48;
+
+    LocalizationPoseProto localization_pose_proto = 49;
+
+    AudioRecordProto audio_record_proto = 50;
+
+    TraceProto trace_proto = 51;
+
+    CounterProto counter_proto = 52;
+
+    SystemInfoProto system_info_proto = 53;
+
+    labeling.LabelFrameProto label_frame_proto = 54;
+
+    // DetectionObjectsProto is not used and its definition is removed
+    // DetectionObjectsProto detection_objects_proto = 55;
+
+    FenDetectionsProto fen_detections_proto = 56;
+
+    LogProto log_proto = 57;
+
+    PoseCorrectionProto pose_correction_proto = 58;
+
+    SemanticSegmentationResultsProto semantic_segmentation_results_proto = 59;
+
+    RoutingResultProto routing_result_proto = 60;
+
+    RecordedRouteProto recorded_route_proto = 61;
+
+    PlannerRoutingRequestProto planner_routing_request_proto = 62;
+
+    MockModuleStateProto mock_module_state_proto = 66;
+
+    MockModuleStateValidationProto mock_module_state_validation_proto = 67;
+
+    MeasurementsProto measurements_proto = 68;
+
+    TrackerDebugProto tracker_debug_proto = 69;
+
+    SystemStateProto system_state_proto = 70;
+
+    SystemCommandProto system_command_proto = 71;
+
+    PlannerExternalCommandStatusProto planner_external_command_status_proto =
+        72;
+
+    ControllerDebugProto controller_debug_proto = 73;
+
+    SceneProto scene_proto = 74;
+
+    GreenLightOptimalSpeedAdvisoryProto
+        green_light_optimal_speed_advisory_proto = 75;
+
+    CrashLogProto crash_log_proto = 77;
+
+    ClusterFilterDebugProto cluster_filter_debug_proto = 79;
+
+    HmiContentProto hmi_content_proto = 80;
+
+    HostVehicleProto host_vehicle_proto = 81;
+
+    RemoteVehiclesProto remote_vehicles_proto = 82;
+
+    InVehicleSignageProto in_vehicle_signage_proto = 83;
+
+    SpeedLimitWarningProto speed_limit_warning_proto = 84;
+
+    AbnormalVehicleWarningProto abnormal_vehicle_warning_proto = 85;
+
+    PcnRegionsProto pcn_regions_proto = 86;
+
+    RemoteAssistStatusProto remote_assist_status_proto = 87;
+
+    LocalizationTransformProto localization_transform_proto = 88;
+
+    RawRadarMessageVecProto raw_radar_message_vec_proto = 89;
+
+    RadarMeasurementsProto radar_measurements_proto = 90;
+
+    YieldingStatesProto yielding_states_proto = 91;
+
+    PoseCorrectionDebugProto pose_correction_debug_proto = 92;
+
+    CanvasBuffersProto canvas_buffers_proto = 93;
+
+    PredictionDebugProto prediction_debug_proto = 94;
+
+    GnssRawMessageProto gnss_raw_message_proto = 95;
+
+    EpochObservationProto epoch_observation_proto = 96;
+
+    GnssEphemerisProto gnss_ephemeris_proto = 97;
+
+    GnssHeadingProto gnss_heading_proto = 98;
+
+    planner.PlannerStateProto planner_state_proto = 100;
+
+    RangeImagesProto range_images_proto = 101;
+
+    TrafficParticipantsProto traffic_participants_proto = 102;
+
+    SegmentationObjectsProto segmentation_objects_proto = 103;
+
+    V2xProto v2x_proto = 104;
+
+    QEventsProto q_events_proto = 105;
+
+    RsimStopProto rsim_stop_proto = 107;
+
+    planner.RouteManagerOutputProto route_manager_output_proto = 108;
+
+    V2xRawInputProto v2x_raw_input_proto = 109;
+
+    RawRadarObjectsProto raw_radar_objects_proto = 110
+        [(matrix_skip_header) = true];
+
+    JoyStickProto joy_stick_proto = 113;
+
+    RoutingStateProto routing_state_proto = 114;
+
+    NodeStateProto node_state_proto = 115;
+
+    SemanticMapModificationProto semantic_map_modification_proto = 116;
+
+    TrackClassifierDebugProto track_classifier_debug_proto = 117;
+
+    UpdateRunParamsProto update_run_params_proto = 119;
+
+    CyberMessageProto cyber_message_proto = 120;
+
+    EmergencyBrakeProto emergency_brake_proto = 121;
+
+    UpdateSemanticMapProto update_semantic_map_proto = 122;
+
+    TrackerDebugProtoWithRollback tracker_debug_proto_with_rollback = 124;
+
+    QRunEventsProto q_run_events_proto = 125;
+
+    LiteMsgSimpleProto lite_msg_simple_proto = 126;
+
+    MultiCameraMono3dMeasurementsProto multi_camera_mono3d_measurements_proto =
+        127;
+
+    DepthEstimationResultsProto depth_estimation_results_proto = 129;
+
+    SensorFovsProto sensor_fovs_proto = 130;
+
+    QRunEventStatesProto q_run_event_states_proto = 131;
+
+    QProductSettingProto q_product_setting_proto = 132;
+
+    LitePerfTestMsgProto lite_perf_test_msg_proto = 133;
+
+    LiteRunInfoProto lite_run_info_proto = 134;
+
+    MultiCameraLanesProto multi_camera_lanes_proto = 135 [deprecated = true];
+
+    RunAnalysisMetadata run_analysis_metadata = 136;
+
+    MeasurementsGroupProto measurements_group_proto = 137;
+
+    RadarDebugProto radar_debug_proto = 138;
+
+    MultiCameraRoadGeometryProto multi_camera_road_geometry_proto = 139;
+
+    ObstacleSemanticGridProto obstacle_semantic_grid_proto = 140;
+
+    VisionBevResultsProto vision_bev_results_proto = 141;
+
+    DriverCommandProto driver_command_proto = 142 [deprecated = true];
+
+    DriverCommandResponseProto driver_command_response_proto = 143;
+
+    AlcFeedbackProto alc_feedback_proto = 144;
+
+    GpsdStatusProto gpsd_status_proto = 145;
+
+    AddModifierProto add_modifier_proto = 146;
+
+    LocalizationViewerDebugProto localization_viewer_debug_proto = 155;
+
+    mapping.OnlineSemanticMapProto online_semantic_map_proto = 147;
+
+    ExitTimeoutStackProto exit_timeout_stack_proto = 156;
+
+    LonControllerOutputProto lon_controller_output_proto = 157;
+
+    LaneSupportProto lane_support_proto = 158;
+
+    HumanDrivingControlCmdProto human_driving_control_cmd_proto = 159;
+
+    FusionObjectsProto fusion_objects_proto = 160;
+
+    VisionBevRoadGeometryProto vision_bev_road_geometry_proto = 161;
+
+    LaneSupportDebugProto lane_support_debug_proto = 162;
+
+    MppSectionsProto mpp_sections_proto = 163;
+
+    SDRouteProto s_d_route_proto = 164;
+
+    OnlineMapProto online_map_proto = 165;
+
+    HumanDrivingSpeedConfigProto human_driving_speed_config_proto = 166
+        [deprecated = true];
+
+    EmergencyBrakeDebugProto emergency_brake_debug_proto = 167;
+
+    HumanDrivingConfigProto human_driving_config_proto = 168;
+
+    OmniNetFeatureProto omni_net_feature_proto = 169;
+
+    SubscribeCommandProto subscribe_command_proto = 170;
+
+    HistoryMsgRequestProto history_msg_request_proto = 171;
+
+    HistoryMsgResponseProto history_msg_response_proto = 172;
+
+    PathRoutingResultProto path_routing_result_proto = 173;
+
+    RouteServiceRequestProto route_service_request_proto = 174;
+
+    WorkStateProto work_state_proto = 175;
+
+    ModuleStateListProto module_state_list_proto = 176;
+
+    ModuleStartupCommandProto module_startup_command_proto = 177;
+
+    ModuleStartupStateProto module_startup_state_proto = 178;
+
+    VisionFreespaceProto vision_freespace_proto = 179;
+
+    MultiCameraDet2dMeasurementsProto multi_camera_det2d_measurements_proto =
+        180;
+
+    TrafficSignAndIntelligentSpeedProto
+        traffic_sign_and_intelligent_speed_proto = 181;
+    MultiCameraImageAnomaliesProto multi_camera_image_anomalies_proto = 182;
+
+    VisionResultForHmaProto vision_result_for_hma_proto = 183;
+
+    OnlineCalibrationProto online_calibration_proto = 184;
+
+    ExecutionIssueRulesProto execution_issue_rules_proto = 185;
+
+    VisionBevOccupancyProto vision_bev_occupancy_proto = 186;
+
+    BlindSpotAssistProto blind_spot_assist_proto = 187;
+
+    HmaDebugProto hma_debug_proto = 188;
+
+    LaunchPlanModules launch_plan_modules = 189;
+
+    CalibrationProgressData calibration_progress_data = 190;
+
+    CalibrationResponse calibration_response = 191;
+
+    BlindSpotAssistDebugProto blind_spot_assist_debug_proto = 192;
+
+    MultiCameraTrafficSignAndIntelligentSpeedProto
+        multi_camera_traffic_sign_and_intelligent_speed_proto = 193;
+
+    HobotBoleRawProto hobot_bole_raw_proto = 194;
+
+    PositioningDebugProto positioning_debug_proto = 195;
+
+    OnlineMapDebugProto online_map_debug_proto = 196;
+
+    logging.RuleMatcherResultProto rule_matcher_result_proto = 197;
+
+    ParkingSpotFinderProto parking_spot_finder_proto = 198;
+
+    ParkingSpotFinderDebugProto parking_spot_finder_debug_proto = 199;
+
+    SdRouteMatchRequstProto sd_route_match_requst_proto = 200;
+
+    SdMapRouteProto sd_map_route_proto = 201;
+
+    SingleCameraFusedRoadGeometryProto single_camera_fused_road_geometry_proto =
+        202;
+    FaultTableProto fault_table_proto = 203;
+
+    RearCollisionWarningProto rear_collision_warning_proto = 204;
+
+    RearCollisionWarningDebugProto rear_collision_warning_debug_proto = 205;
+
+    ParkingSpotsProto parking_spots_proto = 206;
+
+    FusedBevRoadGeometryProto fused_bev_road_geometry_proto = 207;
+
+    FusionParkingSpotsProto fusion_parking_spots_proto = 208;
+
+    GacLaneBoundaryDebugProto gac_lane_boundary_debug_proto = 209;
+
+    FusedBevRoadGeometryDebugProto fused_bev_road_geometry_debug_proto = 210;
+
+    ParkingFreespaceProto parking_freespace_proto = 211;
+
+    FusionParkingFreespaceProto fusion_parking_freespace_proto = 214;
+
+    mlplanner.MlPlannerOutputProto ml_planner_output_proto = 215;
+    mlplanner.MlPlannerDebugProto ml_planner_debug_proto = 216;
+
+    QPowerManagerStateProto q_power_manager_state_proto = 217;
+
+    QStateManagerCommandProto q_state_manager_command_proto = 218;
+
+    UssProto uss_proto = 219 [(matrix_skip_header) = true];
+
+    LiteTestInnerColProto lite_test_inner_col_proto = 220;
+
+    McuLogProto mcu_log_proto = 221;
+    SdRouteMatchResultProto sd_route_match_result_proto = 222;
+
+    MapMatchResult map_match_result = 223;
+
+    RadarDataProto radar_data_proto = 224;
+
+    VisualLocalizationStateProto visual_localization_state_proto = 225;
+
+    CalibrationEvaluationProto calibration_evaluation_proto = 226;
+
+    CalibrationDetectionFrameProto calibration_detection_frame_proto = 227;
+
+    PostProcessingFrameProto post_processing_frame_proto = 228;
+
+    SdLocalizationProto sd_localization_proto = 229;
+
+    MultiCameraVisionFreespaceProto multi_camera_vision_freespace_proto = 230;
+
+    CalibrationRequest calibration_request = 231;
+
+    SystemCheckResultProto system_check_result_proto = 232;
+
+    SdRouteNaviInfoProto sd_route_navi_info_proto = 233;
+
+    FrontCameraTrackerDebugProto front_camera_tracker_debug_proto = 234;
+
+    MultiCameraFusedRoadGeometryProto multi_camera_fused_road_geometry_proto =
+        235;
+
+    GacAebDebugInfoProto gac_aeb_debug_info_proto = 236;
+
+    QTransPhaseProto q_trans_phase_proto = 237;
+
+    GacVehicleStateProto gac_vehicle_state_proto = 238;
+
+    GacImudProto gac_imud_proto = 239;
+
+    GacCalibrationProto gac_calibration_proto = 240;
+
+    GacDiagMsgProto gac_diag_msg_proto = 241;
+
+    mapping.SdMapProto sd_map_proto = 242;
+
+    mapping.MapFusionResultProto map_fusion_result_proto = 243;
+
+    VioPymBufferV2Proto vio_pym_buffer_v2_proto = 244;
+
+    PerceptionObstaclesProto perception_obstacles_proto = 245;
+
+    DynamicSubscribeProtos dynamic_subscribe_protos = 246;
+
+    DynamicNodeConfigProto dynamic_node_config_proto = 247;
+
+    DynamicNodeConfigAckProto dynamic_node_config_ack_proto = 248;
+
+    LiLanelineProto li_laneline_proto = 249;
+
+    planner.OffboardPlannerDebugProto offboard_planner_debug_proto = 250;
+
+    EhpRawMessagesProto ehp_raw_messages_proto = 251;
+
+    TurnByTurnProto turn_by_turn_proto = 252;
+
+    limap.LiMapTilesProto li_map_tiles_proto = 253;
+
+    CameraCalibrationProto camera_calibration_proto = 254;
+
+    ParamServiceAckProto param_service_ack_proto = 255;
+
+    MultiCameraIntrinsicsProto multi_camera_intrinsics_proto = 256;
+    mapping.HdFusionNaviResultProto hd_fusion_navi_result_proto = 257
+        [deprecated = true];
+    HilSystemCommandProto hil_system_command_proto = 258;
+
+    SdEhpRawMessagesProto sd_ehp_raw_messages_proto = 259;
+
+    LongChengImageQualityProto long_cheng_image_quality_proto = 260;
+
+    FusionOutputProto fusion_output_proto = 262;
+
+    ActiveSafetyAToMProto active_safety_a_to_m_proto = 263;
+
+    ActiveSafetyMToAProto active_safety_m_to_a_proto = 264;
+
+    SafetyToHuiProto safety_to_hui_proto = 265;
+
+    HuInterfaceInfoProto hu_interface_info_proto = 266;
+
+    LongCheng.ParkHmiState park_hmi_state = 267;
+
+    ParkingSpotFinderStateProto parking_spot_finder_state_proto = 268;
+
+    GacFusionObstacleProto gac_fusion_obstacle_proto = 269;
+
+    LongCheng.ParkHuDynamicContext park_hu_dynamic_context = 270;
+
+    LongCheng.HuDynamicContext hu_dynamic_context = 271;
+
+    LongCheng.CityHuDynamicContext city_hu_dynamic_context = 272;
+
+    mapping.non_odd.NonOddEventsProto non_odd_events_proto = 273;
+
+    LongCheng.ParkHmiCommand park_hmi_command = 274;
+
+    mapping.EhpSpeedLimitRangesProto ehp_speed_limit_ranges_proto = 275;
+
+    LongCheng.CityNoaInfo city_noa_info = 276;
+
+    ReadyToUploadFileProto ready_to_upload_file_proto = 277;
+
+    LongCheng.ApHmiTrajectory ap_hmi_trajectory = 278;
+
+    PerceptionSpeedLimitProto perception_speed_limit_proto = 279;
+
+    mapping.RoadTrafficEventsProto road_traffic_events_proto = 280;
+
+    mapping.LaneTrafficEventsProto lane_traffic_events_proto = 281;
+
+    HorizonIhbcHeaderProto horizon_ihbc_header_proto = 282;
+
+    AnonymizedBoxProto anonymized_box_proto = 283;
+
+    GnssFrameProto gnss_frame_proto = 284;
+
+    ActiveSafetyDebugProto active_safety_debug_proto = 285;
+
+    LiParkingFreespaceProto li_parking_freespace_proto = 286;
+
+    LiParkingSpotsProto li_parking_spots_proto = 287;
+
+    LiParkingLimitersProto li_parking_limiters_proto = 288;
+
+    mapping.MapRoadReminderProto map_road_reminder_proto = 289;
+
+    LongCheng.XApHmiState x_ap_hmi_state = 290;
+
+    DdsTriggerProto dds_trigger_proto = 291;
+
+    ImuCanCalibrationProto imu_can_calibration_proto = 292;
+
+    // GacVisionObstacleProto gac_vision_obstacle_proto = 293;
+
+    PasOdometryProto pas_odometry_proto = 294;
+
+    HorizonLightDebugProto horizon_light_debug_proto = 295;
+
+    LiMcuToSoaFailsafeProto li_mcu_to_soa_failsafe_proto = 296;
+
+    CalibrationResultInternal calibration_result_internal = 297;
+
+    LiParkingFreespaceMsgProto li_parking_freespace_msg_proto = 298;
+
+    LongCheng.LcSdRoadHorizonProto lc_sd_road_horizon_proto = 299;
+
+    LongCheng.RpaStateProto rpa_state_proto = 300;
+
+    LongCheng.ParkingHmiLimiters parking_hmi_limiters = 301;
+
+    // keep the name same as IDL definition
+    LongCheng.rpa.RuntimeUploadingProto runtime_uploading_proto = 302;
+    LongCheng.rpa.RtuTraditionalProto rtu_traditional_proto = 303;
+
+    PositioningStateProto positioning_state_proto = 304;
+
+    LiCalibrationUdsMsgProto li_calibration_uds_msg_proto = 305;
+
+    ActiveSafetyTrackersDebugProto active_safety_trackers_debug_proto = 306;
+
+    mapping.RoadHorizonTrafficEventsProto road_horizon_traffic_events_proto =
+        307;
+    ObjectProto object_proto = 308;
+    LiVehicleAndSettingInfo li_vehicle_and_setting_info = 309;
+
+    planner.LiParkingPlanningResultProto li_parking_planning_result_proto = 310;
+
+    LiSensorCanFaultStatusProto li_sensor_can_fault_status_proto = 311;
+
+    LongCheng.ParkingHmiRearMirrorControlProto
+        parking_hmi_rear_mirror_control_proto = 312;
+    LongCheng.DataStatistics data_statistics = 313;
+
+    SoaInsProto soa_ins_proto = 314;
+    LiFisheyeObjectProto li_fisheye_object_proto = 315;
+
+    OccupancyParkingProto occupancy_parking_proto = 316;
+
+    PerceptionFreespaceProto perception_freespace_proto = 317;
+
+    GridMapProto grid_map_proto = 318;
+
+    LsaebFreespaceProto lsaeb_freespace_proto = 319;
+
+    SuspensionProto suspension_proto = 320;
+
+    SuspensionHeightLevelSensorProto suspension_height_level_sensor_proto = 321;
+
+    LiSuspensionMat4dProto li_suspension_mat4d_proto = 322;
+
+    HppMappingDebugProto hpp_mapping_debug_proto = 324;
+
+    ExternalObjectsProto external_objects_proto = 325;
+
+    HppMappingRequestProto hpp_mapping_request_proto = 326;
+
+    FusionOccObjectsProto fusion_occ_objects_proto = 327;
+    HppOnlineMapProto hpp_online_map_proto = 328;
+
+    AdControlDebugProto ad_control_debug_proto = 329;
+
+    HppParkingModeRequestProto hpp_parking_mode_request_proto = 330;
+    SerializedDataWrapperProto serialized_data_wrapper_proto = 331;
+
+    RemoteDriveStatesProto remote_drive_states_proto = 332;
+
+    LidarFaultMessageProto lidar_fault_message_proto = 333;
+
+    IntegratedNavigationDebugProto integrated_navigation_debug_proto = 334;
+
+    li.AsFunctionDebugProto as_function_debug_proto = 335;
+
+    li.aeb.PlanningResultProto planning_result_proto = 336;
+
+    LidarPerceptionNetResultProto lidar_perception_net_result_proto = 337;
+
+    li.aeb.AesResultProto aes_result_proto = 338;
+
+    li.ActiveSafetyPerceptionProto active_safety_perception_proto = 339;
+
+    BevStaticPerceptionEgoTrajectoryProto
+        bev_static_perception_ego_trajectory_proto = 340;
+
+    HppMappingStateProto hpp_mapping_state_proto = 341;
+
+    EmergencySteeringProto emergency_steering_proto = 342;
+
+    EmergencySteeringDebugProto emergency_steering_debug_proto = 343;
+
+    LidarTrackerDebugProto lidar_tracker_debug_proto = 344;
+
+    MultiLidarIntrinsicsProto multi_lidar_intrinsics_proto = 345;
+
+    CameraLidarCalibrationProto camera_lidar_calibration_proto = 346;
+
+    LidarGridsInfoProto lidar_grids_info_proto = 347;
+
+    LidarSegmentObjectsProto lidar_segment_objects_proto = 348;
+
+    LiCalibrationRequestProto li_calibration_request_proto = 349;
+
+    LiCalibrationResponseProto li_calibration_response_proto = 350;
+
+    mapping.ShortSdRouteInfoProto short_sd_route_info_proto = 351;
+
+    NavInfoNiSdkProto nav_info_ni_sdk_proto = 352;
+
+    NiSdkDebugMessageProto ni_sdk_debug_message_proto = 353;
+
+    TrafficFormerStatesProto traffic_former_states_proto = 354;
+
+    LidarPointDenoiseResultProto lidar_point_denoise_result_proto = 355;
+
+    CanLogProto can_log_proto = 356;
+    SysLogProto sys_log_proto = 357;
+
+    BaiduNavInfoProto baidu_nav_info_proto = 358;
+
+    CockpitRawInputProto cockpit_raw_input_proto = 359;
+
+    CockpitControlCommandProto cockpit_control_command_proto = 360;
+
+    CockpitVehicleStatusesProto cockpit_vehicle_statuses_proto = 361;
+
+    CockpitVehicleListProto cockpit_vehicle_list_proto = 362;
+
+    CockpitTakeoverRequestProto cockpit_takeover_request_proto = 363;
+    snoah.Qzone.ZoneHuDynamicContext zone_hu_dynamic_context = 364;
+    snoah.Qzone.ZoneCityNoaInfo zone_city_noa_info = 365;
+
+    CockpitVehicleInfoProto cockpit_vehicle_info_proto = 366;
+
+    LongCheng.ParkAvpMaps park_avp_maps = 367;
+
+    LongCheng.ParkAvpMapsIndex park_avp_maps_index = 368;
+
+    SdRawMessagesProto sd_raw_messages_proto = 369;
+
+    ParkSceneProto park_scene_proto = 370;
+
+    BrightnessProto brightness_proto = 371;
+
+    CockpitNotifyProto cockpit_notify_proto = 372;
+
+    RawNavigationProto raw_navigation_proto = 373;
+
+    // NOTE(luzou): The tag number (id) must keep up with origin/master!
+    // Next id : 374
+  }
+  reserved 4, 12, 18, 26, 31, 36, 38, 39, 55, 63, 64, 65, 76, 78, 99, 111, 112,
+      118, 123, 128, 212, 213, 261;
+
+  // WARNING: DON'T use `reserved` to deprecate a field, above line is
+  // historical and should not be followed. Keep the field and mark it
+  // deprecated instead.([deprecated = true])
+}
+
+// A proto that contains all the lite message channels (not just different
+// types) as independent fields, instead of a oneof. This is suitable for
+// aggregating messages in the same channel over time. This proto is intended
+// for offline processing only.
+// Please keep this message in agreement with the LiteMsgWrapper proto above.
+// If you add a new lite message, please add it to both LiteMsgWrapper and
+// AggregateLiteMsgWrapper. If you add a new channel to an existing lite
+// message type, please add it to AggregateLiteMsgWrapper but not
+// LiteMsgWrapper. NextID: use the commit number to set the field id to avoid
+// confliction.
+message AggregateLiteMsgWrapper {
+  optional PoseProto pose_proto = 2;
+  // Pose from original log pose or localize module output, only exist in
+  // simulation.
+  optional PoseProto sensor_pose = 33;
+  optional PoseProto smooth_pose = 63 [deprecated = true];
+  optional PoseProto gnss_raw_pose = 64;
+  optional PoseProto smooth_localizer_pose = 65 [deprecated = true];
+  optional PoseProto vehicle_engine_pose_proto = 1;
+  optional PoseProto gnss_pose_proto = 13;
+
+  // Pose from the stf file.
+  optional PoseProto stf_pose_proto = 78;
+
+  optional TrajectoryProto trajectory_proto = 3;
+
+  optional SystemStatusProto system_status_proto = 5;
+
+  // TODO(Kun, Fang): Allow multiple channels of shared memory messages to
+  // coexist.
+  optional ShmMessageMetadata shm_message_metadata = 6;
+
+  optional GnssRawReadingProto gnss_raw_reading_proto = 10;
+
+  optional ImuRawReadingProto imu_raw_reading_proto = 7;
+
+  optional PandarPacketProto pandar_packet_proto = 8;
+
+  optional ObstaclesProto obstacles_proto = 9;
+
+  optional GnssImuDriverDebugProto gnss_imu_driver_debug_proto = 11;
+
+  optional CanDriverDebugProto can_driver_debug_proto = 14;
+
+  optional VehicleControlStatusProto vehicle_control_status_proto = 15;
+
+  optional VehicleOperationStatusProto vehicle_operation_status_proto = 16;
+
+  optional PoseEstimatorDebugProto pose_estimator_debug_proto = 17;
+
+  optional PositioningFilterStateProto positioning_filter_state_proto = 19;
+
+  optional DepthMapsProto depth_maps_proto = 20;
+
+  optional TrafficLightRegionsProto traffic_light_regions_proto = 21
+      [deprecated = true];
+
+  optional ChassisDetail chassis_detail = 22;
+
+  optional Chassis chassis = 23;
+
+  optional ControlCommand control_command = 24;
+
+  optional PadMessage pad_message = 25;
+
+  optional ExecutionIssueProto execution_issue_proto = 27;
+
+  optional AutonomyStateProto autonomy_state_proto = 28;
+
+  optional GuardianCmdProto guardian_cmd_proto = 29;
+
+  optional DriverAction driver_action = 30;
+
+  optional LocalizationDebugProto localization_debug_proto = 32;
+
+  optional ObjectsProto objects_proto = 34;
+
+  optional TrafficLightStatesProto traffic_light_states_proto = 35;
+
+  optional vis.vantage.ChartsDataProto charts_data_proto = 36;
+
+  optional ObjectsPredictionProto objects_prediction_proto = 37;
+
+  optional SegmentsInImageProto segments_in_image_proto = 40;
+
+  optional PointsInImageProto points_in_image_proto = 41;
+
+  optional PerfTrace perf_trace = 42 [deprecated = true];
+
+  optional PlannerDebugProto planner_debug_proto = 43;
+
+  optional ReroutingRequestProto rerouting_request_proto = 44;
+
+  optional RemoteAssistToCarProto remote_assist_to_car_proto = 45;
+
+  optional CarToRemoteAssistProto car_to_remote_assist_proto = 46;
+
+  optional CreateVirtualObjectsRequestProto
+      create_virtual_objects_request_proto = 47;
+
+  optional LidarHostTimeDiffProto lidar_host_time_diff_proto = 48;
+
+  optional LocalizationPoseProto localization_pose_proto = 49;
+
+  optional AudioRecordProto audio_record_proto = 50;
+
+  optional TraceProto trace_proto = 51;
+
+  optional CounterProto counter_proto = 52;
+
+  optional SystemInfoProto system_info_proto = 53;
+
+  optional labeling.LabelFrameProto label_frame_proto = 54;
+
+  // DetectionObjectsProto is not used and its definition is removed
+  // optional DetectionObjectsProto detection_objects_proto = 55;
+
+  optional FenDetectionsProto fen_detections_proto = 56;
+
+  optional LogProto log_proto = 57;
+
+  optional PoseCorrectionProto pose_correction_proto = 58;
+
+  optional SemanticSegmentationResultsProto
+      semantic_segmentation_results_proto = 59;
+
+  optional RoutingResultProto routing_result_proto = 60;
+
+  optional RecordedRouteProto recorded_route_proto = 61;
+
+  optional PlannerRoutingRequestProto planner_routing_request_proto = 62;
+
+  optional MockModuleStateProto mock_module_state_proto = 66;
+
+  optional MockModuleStateValidationProto mock_module_state_validation_proto =
+      67;
+
+  optional MeasurementsProto measurements_proto = 68;
+
+  optional TrackerDebugProto tracker_debug_proto = 69;
+
+  optional SystemStateProto system_state_proto = 70;
+
+  optional SystemCommandProto system_command_proto = 71;
+
+  optional PlannerExternalCommandStatusProto planner_teleop_status_proto =
+      72;  // For data compatibility.
+
+  optional ControllerDebugProto controller_debug_proto = 73;
+
+  optional SceneProto scene_proto = 74;
+
+  optional GreenLightOptimalSpeedAdvisoryProto
+      green_light_optimal_speed_advisory_proto = 75;
+
+  optional CrashLogProto crash_log_proto = 77;
+
+  optional ClusterFilterDebugProto cluster_filter_debug_proto = 79;
+
+  optional HmiContentProto hmi_content_proto = 80;
+
+  optional HostVehicleProto host_vehicle_proto = 81;
+
+  optional RemoteVehiclesProto remote_vehicles_proto = 82;
+
+  optional InVehicleSignageProto in_vehicle_signage_proto = 83;
+
+  optional SpeedLimitWarningProto speed_limit_warning_proto = 84;
+
+  optional AbnormalVehicleWarningProto abnormal_vehicle_warning_proto = 85;
+
+  optional PcnRegionsProto pcn_regions_proto = 86;
+
+  optional RemoteAssistStatusProto remote_assist_status_proto = 87;
+
+  optional LocalizationTransformProto localization_transform_proto = 88;
+
+  optional RawRadarMessageVecProto raw_radar_message_vec_proto = 89;
+
+  optional RadarMeasurementsProto radar_measurements_proto = 90;
+
+  optional YieldingStatesProto yielding_states_proto = 91;
+
+  optional PoseCorrectionDebugProto pose_correction_debug_proto = 92;
+
+  optional CanvasBuffersProto canvas_buffers_proto = 93;
+
+  optional PredictionDebugProto prediction_debug_proto = 94;
+
+  optional GnssRawMessageProto gnss_raw_message_proto = 95;
+
+  optional EpochObservationProto epoch_observation_proto = 96;
+
+  optional GnssEphemerisProto gps_ephemeris = 97;
+
+  optional GnssEphemerisProto bds_ephemeris = 98;
+
+  optional GnssEphemerisProto glo_ephemeris = 99;
+
+  optional GnssHeadingProto gnss_heading_proto = 100;
+
+  optional planner.PlannerStateProto planner_state_proto = 102;
+
+  optional RangeImagesProto range_images_proto = 103;
+
+  optional TrafficParticipantsProto traffic_participants_proto = 104;
+
+  optional GnssEphemerisProto gnss_ephemeris_proto = 105;
+
+  optional SegmentationObjectsProto segmentation_objects_proto = 106;
+
+  optional V2xProto v2x_proto = 107;
+
+  optional QEventsProto q_events_proto = 108;
+
+  optional planner.RouteManagerOutputProto route_manager_output_proto = 109;
+
+  optional Chassis shadow_chassis = 110;
+
+  optional V2xRawInputProto v2x_raw_input_proto = 111;
+
+  optional RawRadarObjectsProto raw_radar_objects_proto = 112;
+
+  optional AutonomyStateProto log_autonomy_state_proto = 114;
+
+  optional RunAnalysisMetadata run_analysis_metadata = 115;
+
+  optional JoyStickProto joy_stick_proto = 116;
+
+  optional RoutingStateProto routing_state_proto = 117;
+
+  optional NodeStateProto node_state_proto = 119;
+
+  optional SemanticMapModificationProto semantic_map_modification_proto = 120;
+
+  optional TrackClassifierDebugProto track_classifier_debug_proto = 121;
+
+  optional MeasurementsGroupProto measurements_group_proto = 123;
+
+  optional GnssRawReadingProto another_name = 124;
+
+  optional UpdateRunParamsProto update_run_params_proto = 125;
+
+  optional CyberMessageProto cyber_message_proto = 126;
+
+  optional EmergencyBrakeProto emergency_brake_proto = 127;
+
+  optional UpdateSemanticMapProto update_semantic_map_proto = 128;
+
+  optional TrackerDebugProtoWithRollback tracker_debug_proto_with_rollback =
+      130;
+
+  optional TrajectoryProto oracle_trajectory_proto = 131;
+
+  optional ObjectsPredictionProto oracle_objects_prediction_proto = 132;
+
+  optional MeasurementsProto laser_measurements = 133;
+
+  optional MeasurementsProto radar_measurements = 134;
+
+  optional MeasurementsProto camera_measurements = 135;
+
+  optional QRunEventsProto q_run_events_proto = 136;
+
+  optional LiteMsgSimpleProto lite_msg_simple_proto = 137;
+
+  optional MultiCameraMono3dMeasurementsProto
+      multi_camera_mono3d_measurements_proto = 138;
+
+  optional MeasurementsProto single_camera_tracker_measurements = 139;
+
+  optional DepthEstimationResultsProto depth_estimation_results_proto = 141;
+
+  optional SensorFovsProto sensor_fovs_proto = 142;
+
+  optional QRunEventStatesProto q_run_event_states_proto = 143;
+
+  optional QProductSettingProto q_product_setting_proto = 144;
+
+  optional LitePerfTestMsgProto lite_perf_test_msg_proto = 145;
+
+  optional LiteRunInfoProto lite_run_info_proto = 146;
+
+  optional MultiCameraLanesProto multi_camera_lanes_proto = 147
+      [deprecated = true];
+
+  optional RsimStopProto rsim_stop_proto = 148;
+
+  optional RadarDebugProto radar_debug_proto = 149;
+
+  optional planner.PlannerStateProto log_planner_state_proto = 150;
+
+  optional RawRadarMessageVecProto raw_radar_message_vec_proto_log = 151;
+
+  optional MultiCameraRoadGeometryProto multi_camera_road_geometry_proto = 152;
+
+  optional V2xProto hmi_v2x_proto = 153;
+
+  optional ObstacleSemanticGridProto obstacle_semantic_grid_proto = 154;
+
+  optional VisionBevResultsProto vision_bev_results_proto = 155;
+
+  optional DriverCommandProto driver_command_proto = 156 [deprecated = true];
+
+  optional DriverCommandResponseProto driver_command_response_proto = 157;
+
+  optional AlcFeedbackProto alc_feedback_proto = 158;
+
+  optional PlannerExternalCommandStatusProto
+      planner_external_command_status_proto = 159;
+
+  optional GpsdStatusProto gpsd_status_proto = 160;
+
+  optional AddModifierProto add_modifier_proto = 161;
+
+  optional MeasurementsProto vidar_measurements = 162;
+  optional MeasurementsProto camera3d_measurements = 163;
+  optional LocalizationTransformProto visual_localization_transform = 164
+      [deprecated = true];
+
+  optional ShmMessageMetadata encoded_image = 165;
+  optional ShmMessageMetadata decoded_image = 166;
+  optional ShmMessageMetadata raw_encoded_image = 167;
+  optional ShmMessageMetadata downsized_encoded_image = 168;
+  optional ShmMessageMetadata lidar_spin = 169;
+  optional ShmMessageMetadata encoded_lidar_frame = 170;
+  optional mapping.OnlineSemanticMapProto online_semantic_map_proto = 171;
+
+  optional LocalizationViewerDebugProto localization_viewer_debug_proto = 175;
+
+  optional ExitTimeoutStackProto exit_timeout_stack_proto = 176;
+
+  optional TrajectoryProto human_driving_trajectory_proto = 177;
+
+  optional LonControllerOutputProto lon_controller_output_proto = 178;
+
+  optional ControlCommand human_driving_control_cmd = 179 [deprecated = true];
+
+  optional ControllerDebugProto human_driving_controller_debug_proto = 180;
+
+  optional LaneSupportProto lane_support_proto = 181;
+
+  optional HumanDrivingControlCmdProto human_driving_control_cmd_proto = 182;
+
+  optional FusionObjectsProto fusion_objects_proto = 183;
+
+  optional VisionBevRoadGeometryProto vision_bev_road_geometry_proto = 184;
+
+  optional LaneSupportDebugProto lane_support_debug_proto = 185;
+
+  optional MeasurementsProto multi_camera_traffic_light_debug_measurements =
+      186;
+
+  optional MppSectionsProto mpp_sections_proto = 187;
+
+  optional SDRouteProto s_d_route_proto = 188;
+
+  optional OnlineMapProto online_map_proto = 189;
+
+  optional MultiCameraMono3dMeasurementsProto aeb_mono3d_measurements = 190;
+
+  optional MeasurementsProto front_camera_measurements = 191;
+
+  optional HumanDrivingSpeedConfigProto human_driving_speed_config_proto = 192
+      [deprecated = true];
+
+  optional RoutingResultProto log_routing_result_proto = 193;
+
+  optional RoutingStateProto log_routing_state_proto = 194;
+
+  optional EmergencyBrakeDebugProto emergency_brake_debug_proto = 195;
+
+  optional HumanDrivingConfigProto human_driving_config_proto = 196;
+
+  optional OmniNetFeatureProto omni_net_feature_proto = 197;
+
+  optional ImuRawReadingProto corrected_imu_proto = 198;
+
+  optional SubscribeCommandProto subscribe_command_proto = 199;
+
+  optional HistoryMsgRequestProto history_msg_request_proto = 200;
+
+  optional HistoryMsgResponseProto history_msg_response_proto = 201;
+
+  optional PathRoutingResultProto path_routing_result_proto = 202;
+
+  optional RouteServiceRequestProto route_service_request_proto = 203;
+
+  optional WorkStateProto work_state_proto = 204;
+
+  optional ModuleStateListProto module_state_list_proto = 205;
+
+  optional ModuleStartupCommandProto module_startup_command_proto = 206;
+
+  optional ModuleStartupStateProto module_startup_state_proto = 207;
+
+  optional VisionFreespaceProto vision_freespace_proto = 208;
+
+  optional MultiCameraDet2dMeasurementsProto
+      multi_camera_det2d_measurements_proto = 209;
+
+  optional TrafficSignAndIntelligentSpeedProto
+      traffic_sign_and_intelligent_speed_proto = 210;
+  optional MultiCameraImageAnomaliesProto multi_camera_image_anomalies_proto =
+      211;
+
+  optional VisionResultForHmaProto vision_result_for_hma_proto = 212;
+
+  optional TrackerDebugProtoWithRollback aeb_tracker_debug_proto = 213;
+
+  optional OnlineCalibrationProto online_calibration_proto = 214;
+
+  optional TrafficSignAndIntelligentSpeedProto tsr_fusion_proto = 215;
+
+  optional ExecutionIssueRulesProto execution_issue_rules_proto = 216;
+
+  optional VisionBevOccupancyProto vision_bev_occupancy_proto = 217;
+
+  optional MeasurementsProto fvp_front_camera_measurements = 218;
+
+  optional MeasurementsProto fvp_single_camera_tracker_measurements = 219;
+
+  optional BlindSpotAssistProto blind_spot_assist_proto = 220;
+
+  optional HmaDebugProto hma_debug_proto = 221;
+
+  optional LaunchPlanModules launch_plan_modules = 222;
+
+  optional CalibrationProgressData calibration_progress_data = 223;
+
+  optional CalibrationResponse calibration_response = 224;
+
+  optional BlindSpotAssistDebugProto blind_spot_assist_debug_proto = 225;
+
+  optional MultiCameraTrafficSignAndIntelligentSpeedProto
+      multi_camera_traffic_sign_and_intelligent_speed_proto = 226;
+
+  optional MultiCameraTrafficSignAndIntelligentSpeedProto tsr_tracking_proto =
+      227;
+
+  optional MeasurementsProto fvp_mono3d_front_camera_measurements = 228;
+
+  optional MeasurementsProto fvp_mono3d_single_camera_tracker_measurements =
+      229;
+
+  optional HobotBoleRawProto hobot_bole_raw_proto = 230;
+
+  optional PositioningDebugProto positioning_debug_proto = 231;
+
+  optional OnlineMapDebugProto online_map_debug_proto = 232;
+
+  optional logging.RuleMatcherResultProto rule_matcher_result_proto = 233;
+
+  optional ParkingSpotFinderProto parking_spot_finder_proto = 234;
+
+  optional ParkingSpotFinderDebugProto parking_spot_finder_debug_proto = 235;
+
+  optional SdRouteMatchRequstProto sd_route_match_requst_proto = 236;
+
+  optional SdMapRouteProto sd_map_route_proto = 237;
+
+  optional SingleCameraFusedRoadGeometryProto fused_front2d_road_geometry = 238;
+
+  optional FaultTableProto fault_table_proto = 239;
+
+  optional MultiCameraDet2dMeasurementsProto hma_det2d_tracking_proto = 240;
+
+  optional RearCollisionWarningProto rear_collision_warning_proto = 241;
+
+  optional RearCollisionWarningDebugProto rear_collision_warning_debug_proto =
+      242;
+  optional ExecutionIssueProto diag_issue_proto = 243;
+
+  optional ParkingSpotsProto parking_spots_proto = 244;
+
+  optional FusionParkingSpotsProto fusion_parking_spots_proto = 245;
+
+  optional FusedBevRoadGeometryProto fused_bev_road_geometry_proto = 246;
+
+  optional GacLaneBoundaryDebugProto gac_lane_boundary_debug_proto = 247;
+
+  optional FusedBevRoadGeometryDebugProto fused_bev_road_geometry_debug_proto =
+      248;
+
+  optional ParkingFreespaceProto parking_freespace_proto = 249;
+
+  optional FusionParkingFreespaceProto fusion_parking_freespace_proto = 251;
+
+  optional mlplanner.MlPlannerOutputProto ml_planner_output_proto = 253;
+  optional mlplanner.MlPlannerDebugProto ml_planner_debug_proto = 254;
+
+  optional QPowerManagerStateProto q_power_manager_state_proto = 255;
+
+  optional QStateManagerCommandProto q_state_manager_command_proto = 256;
+
+  optional FaultTableProto fault_table_proto_mcu = 257;
+
+  optional UssProto uss_proto = 258;
+
+  optional LiteTestInnerColProto lite_test_inner_col_proto = 259;
+
+  optional McuLogProto mcu_log_proto = 260;
+  optional SdRouteMatchResultProto sd_route_match_result_proto = 261;
+
+  optional MapMatchResult map_match_result = 262;
+
+  optional RadarDataProto radar_data_proto = 263;
+
+  optional VisualLocalizationStateProto visual_localization_state_proto = 264;
+
+  optional CalibrationEvaluationProto calibration_evaluation_proto = 265;
+
+  optional CalibrationDetectionFrameProto calibration_detection_frame_proto =
+      266;
+
+  optional PostProcessingFrameProto post_processing_frame_proto = 267;
+
+  optional SdLocalizationProto sd_localization_proto = 268;
+
+  optional MultiCameraVisionFreespaceProto multi_camera_vision_freespace_proto =
+      269;
+
+  optional CalibrationRequest calibration_request = 270;
+
+  optional SystemCheckResultProto system_check_result_proto = 271;
+
+  optional SdRouteNaviInfoProto sd_route_navi_info_proto = 272;
+
+  optional FrontCameraTrackerDebugProto front_camera_tracker_debug_proto = 273;
+
+  optional MultiCameraFusedRoadGeometryProto
+      multi_camera_fused_road_geometry_proto = 274;
+
+  optional GacAebDebugInfoProto gac_aeb_debug_info_proto = 275;
+
+  optional QTransPhaseProto q_trans_phase_proto = 276;
+
+  optional QPowerManagerStateProto q_power_manager_state_proto_mcu = 277;
+
+  optional MeasurementsProto post_processed_mono3d_measurements = 278;
+
+  optional ObjectsProto gac_fusion_objects = 279;
+
+  optional GacVehicleStateProto gac_vehicle_state_proto = 280;
+
+  optional GacImudProto gac_imud_proto = 281;
+
+  optional ShmMessageMetadata fusion_lidar_frame = 282;
+
+  optional GacCalibrationProto gac_calibration_proto = 283;
+
+  optional GacDiagMsgProto gac_diag_msg_proto = 284;
+
+  optional mapping.SdMapProto sd_map_proto = 285;
+
+  optional mapping.MapFusionResultProto map_fusion_result_proto = 286;
+
+  optional VioPymBufferV2Proto vio_pym_buffer_v2_proto = 287;
+
+  optional PerceptionObstaclesProto perception_obstacles_proto = 288;
+
+  optional DynamicSubscribeProtos dynamic_subscribe_protos = 289;
+
+  optional DynamicNodeConfigProto dynamic_node_config_proto = 290;
+
+  optional DynamicNodeConfigAckProto dynamic_node_config_ack_proto = 291;
+
+  optional LiLanelineProto li_laneline_proto = 292;
+
+  optional planner.OffboardPlannerDebugProto offboard_planner_debug_proto = 293;
+
+  optional MeasurementsProto gac_front_camera_measurements = 294;
+
+  optional EhpRawMessagesProto ehp_raw_messages_proto = 295;
+
+  optional TurnByTurnProto turn_by_turn_proto = 296;
+
+  optional limap.LiMapTilesProto li_map_tiles_proto = 297;
+
+  optional CameraCalibrationProto camera_calibration_proto = 298;
+
+  optional ParamServiceAckProto param_service_ack_proto = 299;
+
+  optional MultiCameraIntrinsicsProto multi_camera_intrinsics_proto = 300;
+
+  optional mapping.HdFusionNaviResultProto hd_fusion_navi_result_proto = 301
+      [deprecated = true];
+
+  optional HilSystemCommandProto hil_system_command_proto = 302;
+
+  optional SdEhpRawMessagesProto sd_ehp_raw_messages_proto = 303;
+
+  optional LongChengImageQualityProto long_cheng_image_quality_proto = 304;
+
+  optional ActiveSafetyAToMProto active_safety_a_to_m_proto = 306;
+
+  optional ActiveSafetyMToAProto active_safety_m_to_a_proto = 307;
+
+  optional FusionOutputProto fusion_output_proto = 308;
+
+  optional SafetyToHuiProto safety_to_hui_proto = 309;
+
+  optional HuInterfaceInfoProto hu_interface_info_proto = 310;
+
+  optional LongCheng.ParkHmiState park_hmi_state = 311;
+
+  optional ParkingSpotFinderStateProto parking_spot_finder_state_proto = 312;
+
+  optional TrafficLightStatesProto filtered_traffic_light_states_proto = 313;
+
+  optional GacFusionObstacleProto gac_fusion_obstacle_proto = 314;
+
+  optional LongCheng.ParkHuDynamicContext park_hu_dynamic_context = 315;
+
+  optional LongCheng.CityHuDynamicContext city_hu_dynamic_context = 317;
+
+  optional LongCheng.HuDynamicContext hu_dynamic_context = 316
+      [deprecated = true];
+
+  optional MeasurementsProto front_bev_tracker_measurements = 318;
+
+  optional MeasurementsProto front_mono3d_measurements = 319;
+
+  optional MeasurementsProto horizon_measurements = 320;
+
+  optional mapping.non_odd.NonOddEventsProto non_odd_events_proto = 321;
+
+  optional LongCheng.ParkHmiCommand park_hmi_command = 322;
+
+  optional mapping.EhpSpeedLimitRangesProto ehp_speed_limit_ranges_proto = 323;
+
+  optional LongCheng.CityNoaInfo city_noa_info = 324;
+
+  optional ReadyToUploadFileProto ready_to_upload_file_proto = 325;
+
+  optional LongCheng.ApHmiTrajectory ap_hmi_trajectory = 326;
+
+  optional PerceptionSpeedLimitProto perception_speed_limit_proto = 327;
+
+  optional FusedBevRoadGeometryProto horizon_mono_road_geometry = 328;
+
+  optional VisionBevResultsProto parking_vision_bev_results_proto = 329;
+
+  optional MeasurementsProto parking_camera_measurements = 330;
+
+  optional GacLaneBoundaryDebugProto gac_lane_boundary_points_debug_proto = 331;
+
+  optional mapping.RoadTrafficEventsProto road_traffic_events_proto = 332;
+
+  optional mapping.LaneTrafficEventsProto lane_traffic_events_proto = 333;
+
+  optional HorizonIhbcHeaderProto horizon_ihbc_header_proto = 334;
+
+  optional AnonymizedBoxProto anonymized_box_proto = 335;
+
+  optional GnssFrameProto gnss_frame_proto = 336;
+
+  optional ActiveSafetyMToAProto sim_active_safety_m_to_a_proto = 337;
+
+  optional ActiveSafetyDebugProto active_safety_debug_proto = 338;
+
+  optional LiParkingFreespaceProto li_parking_freespace_proto = 339;
+
+  optional LiParkingSpotsProto li_parking_spots_proto = 340;
+
+  optional LiParkingLimitersProto li_parking_limiters_proto = 341;
+
+  optional ParkingSpotsProto bev_parking_spots_proto = 342;
+
+  // NOTE(zuowei) : Reserve 339 to 341, waiting to sync with longcheng.
+  optional mapping.MapRoadReminderProto map_road_reminder_proto = 343;
+
+  optional LongCheng.XApHmiState x_ap_hmi_state = 344;
+
+  optional HmiContentProto map_fusion_hmi_content_proto = 345
+      [deprecated = true];
+
+  optional DdsTriggerProto dds_trigger_proto = 346;
+
+  optional PerceptionObstaclesProto perception_obstacles_proto_input = 347;
+
+  optional ImuCanCalibrationProto imu_can_calibration_proto = 348;
+
+  // optional GacVisionObstacleProto gac_vision_obstacle_proto = 349;
+
+  optional VisionBevRoadGeometryProto mapformer_bev_road_geometry_proto = 350;
+
+  optional PasOdometryProto pas_odometry_proto = 351;
+
+  optional HorizonLightDebugProto horizon_light_debug_proto = 352;
+
+  optional LiMcuToSoaFailsafeProto li_mcu_to_soa_failsafe_proto = 353;
+
+  optional CalibrationResultInternal calibration_result_internal = 354;
+
+  optional UpdateRunParamsProto params_for_reflow_data = 355;
+
+  optional LiParkingFreespaceMsgProto li_parking_model_freespace_proto = 356;
+
+  optional LiParkingSpotsProto li_parking_model_spots_proto = 357;
+
+  optional LongCheng.LcSdRoadHorizonProto lc_sd_road_horizon_proto = 358;
+
+  optional TrafficLightStatesProto snoah_traffic_light_states_proto = 359;
+
+  optional LongCheng.RpaStateProto rpa_state_proto = 360;
+
+  optional LongCheng.ParkingHmiLimiters parking_hmi_limiters = 361;
+
+  // keep the name same as IDL definition
+  optional LongCheng.rpa.RuntimeUploadingProto runtime_uploading_proto = 362;
+  optional LongCheng.rpa.RtuTraditionalProto rtu_traditional_proto = 363;
+
+  optional PositioningStateProto positioning_state_proto = 364;
+
+  optional LiCalibrationUdsMsgProto li_calibration_uds_msg_proto = 365;
+
+  optional TrafficLightStatesProto horizon_traffic_light_states_proto = 366;
+
+  optional ActiveSafetyTrackersDebugProto active_safety_trackers_debug_proto =
+      367;
+  optional mapping.RoadHorizonTrafficEventsProto
+      road_horizon_traffic_events_proto = 368;
+  optional ObjectProto object_proto = 369;
+
+  optional LiVehicleAndSettingInfo li_vehicle_and_setting_info = 370;
+
+  optional planner.LiParkingPlanningResultProto
+      li_parking_planning_result_proto = 371;
+
+  optional LiSensorCanFaultStatusProto li_sensor_can_fault_status_proto = 372;
+
+  optional LongCheng.ParkingHmiRearMirrorControlProto
+      parking_hmi_rear_mirror_control_proto = 373;
+
+  optional TrafficLightStatesProto fused_traffic_light_states_proto = 374;
+  optional LongCheng.DataStatistics data_statistics = 375;
+
+  optional SoaInsProto soa_ins_proto = 376;
+
+  optional LiFisheyeObjectProto li_fisheye_object_proto = 377;
+
+  optional OccupancyParkingProto occupancy_parking_proto = 378;
+
+  optional TrafficLightStatesProto snoah_raw_traffic_light_states_proto = 379;
+
+  optional ParkingSpotsProto bev_parking_spots_tracker_proto = 380;
+
+  optional PerceptionFreespaceProto perception_freespace_proto = 381;
+
+  optional GridMapProto grid_map_proto = 382;
+
+  optional LsaebFreespaceProto lsaeb_freespace_proto = 383;
+
+  optional SuspensionProto suspension_proto = 384;
+  optional SuspensionHeightLevelSensorProto
+      suspension_height_level_sensor_proto = 385;
+  optional LiSuspensionMat4dProto li_suspension_mat4d_proto = 386;
+  optional LiParkingSpotsProto li_parking_model_tracker_spots_proto = 387;
+
+  optional HppMappingDebugProto hpp_mapping_debug_proto = 388;
+  optional OccupancyParkingProto occupancy_driving_proto = 389;
+
+  optional ExternalObjectsProto external_objects_proto = 390;
+
+  optional HppMappingRequestProto hpp_mapping_request_proto = 391;
+  optional FusionOccObjectsProto fusion_occ_objects_proto = 392;
+
+  optional GnssFrameProto integrated_navigation_proto = 393;
+
+  optional HppOnlineMapProto hpp_online_map_proto = 394;
+
+  optional MeasurementsProto front_movable_fusion_measurements = 395;
+
+  optional AdControlDebugProto ad_control_debug_proto = 396;
+
+  optional OccupancyParkingProto fusion_occupancy_driving_proto = 397;
+
+  optional FusionOccObjectsProto occ_cipv_object_proto = 398;
+
+  optional MeasurementsProto crop_bevdet_tracker_measurements = 399;
+
+  optional HppParkingModeRequestProto hpp_parking_mode_request_proto = 400;
+
+  optional MeasurementsProto static_fused_measurements_proto = 401;
+
+  optional SerializedDataWrapperProto serialized_data_wrapper_proto = 402;
+
+  optional LiParkingSpotsProto li_parking_fusion_spots_proto = 403;
+
+  optional FusionOccObjectsProto tracker_occ_objects_proto = 404;
+
+  optional SerializedDataWrapperProto ad4_asfunc_output_proto = 405;
+  optional SerializedDataWrapperProto ad4_fusion_output_proto = 406;
+
+  optional RemoteDriveStatesProto remote_drive_states_proto = 407;
+
+  optional LidarFaultMessageProto lidar_fault_message_proto = 408;
+
+  optional IntegratedNavigationDebugProto integrated_navigation_debug_proto =
+      409;
+
+  optional li.AsFunctionDebugProto as_function_debug_proto = 410;
+
+  optional li.aeb.PlanningResultProto planning_result_proto = 411;
+
+  optional LidarPerceptionNetResultProto lidar_perception_net_result_proto =
+      412;
+  optional MeasurementsProto fisheye_bev_tracker_measurements = 413;
+
+  optional li.aeb.AesResultProto aes_result_proto = 414;
+
+  optional li.ActiveSafetyPerceptionProto active_safety_perception_proto = 415;
+
+  optional MeasurementsProto lidar_measurements_proto = 416;
+
+  optional BevStaticPerceptionEgoTrajectoryProto
+      bev_static_perception_ego_trajectory_proto = 417;
+
+  optional HppMappingStateProto hpp_mapping_state_proto = 418;
+
+  optional EmergencySteeringProto emergency_steering_proto = 419;
+
+  optional EmergencySteeringDebugProto emergency_steering_debug_proto = 420;
+
+  optional LidarTrackerDebugProto lidar_tracker_debug_proto = 421;
+
+  optional MultiLidarIntrinsicsProto multi_lidar_intrinsics_proto = 422;
+
+  optional CameraLidarCalibrationProto camera_lidar_calibration_proto = 423;
+
+  optional LidarGridsInfoProto lidar_grids_info_proto = 424;
+
+  optional LidarSegmentObjectsProto lidar_segment_objects_proto = 425;
+
+  optional LiCalibrationRequestProto li_calibration_request_proto = 426;
+
+  optional LiCalibrationResponseProto li_calibration_response_proto = 427;
+
+  optional mapping.ShortSdRouteInfoProto short_sd_route_info_proto = 428;
+
+  optional NavInfoNiSdkProto nav_info_ni_sdk_proto = 429;
+
+  optional NiSdkDebugMessageProto ni_sdk_debug_message_proto = 430;
+
+  optional LongChengImageQualityProto imgfail_single_frame_proto = 431;
+
+  optional FusedBevRoadGeometryProto fused_mapformer_bev_road_geometry_proto =
+      432;
+
+  optional TrafficFormerStatesProto traffic_former_states_proto = 433;
+
+  optional LidarPointDenoiseResultProto lidar_point_denoise_result_proto = 434;
+
+  optional CanLogProto can_log_proto = 435;
+  optional SysLogProto sys_log_proto = 436;
+
+  optional BaiduNavInfoProto baidu_nav_info_proto = 437;
+
+  optional CockpitRawInputProto cockpit_raw_input_proto = 438;
+
+  optional CockpitControlCommandProto cockpit_control_command_proto = 439;
+
+  optional CockpitVehicleStatusesProto cockpit_vehicle_statuses_proto = 440;
+
+  optional CockpitVehicleListProto cockpit_vehicle_list_proto = 441;
+
+  optional CockpitTakeoverRequestProto cockpit_takeover_request_proto = 442;
+
+  optional PredictionDebugProto offboard_prediction = 443;
+
+  optional snoah.Qzone.ZoneHuDynamicContext zone_hu_dynamic_context = 444;
+
+  optional snoah.Qzone.ZoneCityNoaInfo zone_city_noa_info = 445;
+
+  optional GnssRawReadingProto unencrypted_gnss = 446;
+
+  optional CockpitVehicleInfoProto cockpit_vehicle_info_proto = 447;
+
+  optional LongCheng.ParkAvpMaps park_avp_maps = 448;
+
+  optional LongCheng.ParkAvpMapsIndex park_avp_maps_index = 449;
+
+  optional SdRawMessagesProto sd_raw_messages_proto = 450;
+
+  optional ParkSceneProto park_scene_proto = 451;
+
+  optional BrightnessProto brightness_proto = 452;
+
+  optional CockpitNotifyProto cockpit_notify_proto = 453;
+
+  // Next id: 454
+  reserved 4, 12, 18, 26, 31, 38, 39, 55, 76, 101, 113, 122, 129, 140, 250, 252,
+      305;
+  // WARNING: DON'T use `reserved` to deprecate a field, above line is
+  // historical and should not be followed. Keep the field and mark it
+}
