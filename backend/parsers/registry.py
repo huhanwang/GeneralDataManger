@@ -187,30 +187,8 @@ class ParserRegistry:
         self._load_all()
 
     # ------------------------------------------------------------------
-    # 查询接口（供前端逐步筛选）
+    # 查询接口
     # ------------------------------------------------------------------
-
-    def list_organizations(self) -> list[str]:
-        """返回所有组织名称，去重排序。"""
-        return sorted({p.organization for p in self._parsers.values()})
-
-    def list_formats(self, organization: str) -> list[str]:
-        """返回指定组织下所有数据格式，去重排序。"""
-        return sorted({
-            p.format for p in self._parsers.values()
-            if p.organization == organization
-        })
-
-    def list_projects(self, organization: str, format: str) -> list[str]:
-        """
-        返回指定组织+格式下所有项目名称。
-        不包含空列表（通用解析器不属于特定项目）。
-        """
-        projects: set[str] = set()
-        for p in self._parsers.values():
-            if p.organization == organization and p.format == format:
-                projects.update(p.projects)
-        return sorted(projects)
 
     def find(
         self,
