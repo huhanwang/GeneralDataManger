@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.env
+
+# 生成的 proto 文件（.proto 原文件保留，生成的 _pb2.py 不提交）
+*_pb2.py
+*_pb2_grpc.py
+
+# 数据文件（录包太大，不提交）
+*.db3
+*.db4
+*.txt
+*.bag
+*.mcap
+
+# 测试缓存
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 前端
+node_modules/
+frontend/dist/
+frontend/.env.local
+
+# 系统
+.DS_Store
+Thumbs.db
