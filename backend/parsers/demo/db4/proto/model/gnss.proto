@@ -1,0 +1,108 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PositionStatus {
+  POS_ST_INVALID = 0;          // Invalid
+  POS_ST_DR = 1;               // DR
+  POS_ST_FIXED_2D = 2;         // 2D fixed
+  POS_ST_FIXED_3D = 3;         // 3D fixed
+  POS_ST_GNSS_DR = 4;          // GNSS + DR
+  POS_ST_ONLY_TIME_VALID = 5;  // Only time valid
+}
+
+enum PositingSystem {
+  POS_SM_GPS = 0;     // GPS
+  POS_SM_BEI_DOU = 1; // Bei dou
+  POS_SM_GLONASS = 2; // Glonass
+  POS_SM_GALILEO = 3; // Galileo
+  POS_SM_QZSS = 4;    // Qzss
+  POS_SM_SBAS = 5;    // Sbas
+  POS_SM_UNKNOWN = 6; // Unknown
+}
+
+message SatelliteInfo {
+  // Num in view (GnssNumInView)
+  uint32 num_in_view = 1;
+  // No (GnssSatPrn)
+  uint32 no = 2;
+  // Snr (GnssSatSnr)
+  uint32 snr = 3;
+  // Elevation(deg) (GnssSatElev)
+  uint32 elevation = 4;
+  // Azimuth(deg) (GnssSatAzimuth)
+  uint32 azimuth = 5;
+  // Positing system (GnssSatSystem)
+  PositingSystem positing_system = 6;
+}
+
+enum PoseType {
+  POS_TYPE_INVALID = 0;          // Invalid
+  POS_TYPE_SINGLE = 1;           // Single
+  POS_TYPE_DGPS = 2;             // DGPS
+  POS_TYPE_INVALID_PPS = 3;      // Invalid pps
+  POS_TYPE_RTK_FIXED = 4;        // Rtk fixed
+  POS_TYPE_RTK_FLOAT = 5;        // Rtk float
+  POS_TYPE_DEAD_RECKONING = 6;   // Dead reckoning
+}
+
+message Gnss {
+  uint64 utc_time = 1;
+  // Latitude(deg * 1e+07) (GnssLat)
+  int32 latitude = 2;
+  // Longitude(deg * 1e+07) (GnssLon)
+  int32 longitude = 3;
+  // Altitude(m) (GnssAlt)
+  float altitude = 4;
+  // Ellipsoid(m) (GnssEllipsoid)
+  float ellipsoid = 5;
+  // Pose Type (pose type)
+  PoseType pose_type = 6;
+  // Position status (GnssPosStatus)
+  PositionStatus position_status = 7;
+  // Num satellites (SatsNum)
+  uint32 num_satellites = 8;
+  // GnssVelNorth(m/s)
+  float gnss_vel_north = 9;
+  // GnssVelEast(m/s)
+  float gnss_vel_east = 10;
+  // GnssVelDown(m/s)
+  float gnss_vel_down = 11;
+  // Heading(deg) (GnssHeading)
+  float heading = 12;
+  // Course(deg) (GnssCourse)
+  float course = 13;
+  // Heading error(deg) (GnssHeadingErr)
+  float heading_error = 14;
+  // Course error(deg) (GnssCourseErr)
+  float course_error = 15;
+  // Horizon position error(m) (GnssHoriPosErr)
+  float horizon_position_error = 16;
+  // Vertical position error(m) (GnssVertPosErr)
+  float vertical_position_error = 17;
+  // Horizon velocity error(m/s) (GnssHoriVelErr)
+  float horizon_velocity_error = 18;
+  // Vertical velocity error(m/s) (GnssVertVelErr)
+  float vertical_velocity_error = 19;
+  // T DOP (GnssTdop)
+  float tdop = 20;
+  // H DOP (GnssHdop)
+  float hdop = 21;
+  // V DOP (GnssVdop)
+  float vdop = 22;
+  // Satellite sequence number
+  uint32 sat_seq_no = 23;
+  // Num gnss satellite info
+  uint32 num_gnss_satellite_info = 24;
+  // Satellite info
+  repeated SatelliteInfo statelline_info = 25;
+}
+
+message GnssMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // Gnss
+  Gnss gnss = 3;
+}

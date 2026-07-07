@@ -1,0 +1,185 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PilotLaneChangeState {
+  LC_STATE_COMPLETED = 0;
+  LC_STATE_PREPARE_LEFT = 1;
+  LC_STATE_PREPARE_RIGHT = 2;
+  LC_STATE_ACTIVE_LEFT = 3;
+  LC_STATE_ACTIVE_RIGHT = 4;
+  LC_STATE_CANCEL = 5;
+}
+
+enum LangeChangeReason {
+  LC_REASON_NONE = 0;
+  LC_REASON_DRIVER_REQ = 1;
+  LC_REASON_ROUTING_REQ = 2;
+  LC_REASON_MERGE = 3;
+  LC_REASON_OVERTAKE = 4;
+  LC_REASON_HIGHER_SPEED_LIMIT = 5;
+  LC_REASON_DRIVER_CANCEL = 6;
+  LC_REASON_AUTO_CANCEL = 7;
+}
+
+enum LangeChangeCommand {
+  LC_COMMAND_NONE = 0;
+  LC_COMMAND_LEFT = 1;
+  LC_COMMAND_RIGHT = 2;
+  LC_COMMAND_CANCEL = 3;
+}
+
+// LV0:not urgent; LV3:very very urgent
+enum LangeChangeUrgency {
+  LC_URGENCY_LV0 = 0;
+  LC_URGENCY_LV1 = 1;
+  LC_URGENCY_LV2 = 2;
+  LC_URGENCY_LV3 = 3;
+}
+
+message PilotPathPoint {
+  float x = 1;
+  float y = 2;
+  float theta = 3;
+  float kappa = 4;
+  float accum_s = 5;
+}
+
+message PilotTrajectoryPoint {
+  float t = 1;   // s
+  float v = 2;   // m/s
+  float a = 3;   // m/ss
+  PilotPathPoint path_point = 4;
+}
+
+message FuncIccPlanDebug {
+  float ego_a_filtered = 1;
+  float ego_yawrate_filtered = 2;
+  float set_speed_real = 3;
+  int32 lane_model_type = 4;
+  float main_tgt_s_gap = 5;
+  float main_tgt_l_gap = 6;
+  float main_tgt_time_buffer = 7;
+  float main_tgt_desired_s_gap = 8;
+  float main_tgt_vs = 9;
+  float main_tgt_abs_a = 10;
+  uint32 main_tgt_index = 11;
+  uint32 main_tgt_select_code = 12;
+  uint32 left_tgt_index = 13;
+  uint32 left_tgt_select_code = 14;
+  uint32 right_tgt_index = 15;
+  uint32 right_tgt_select_code = 16;
+  uint32 plan_curve_maxkappa_index = 17;
+  uint32 htg_trajectory_valid = 18;
+  float nudge_offset = 19;
+  float nudge_s_gap = 20;
+  float plan_desired_a = 21;
+  float plan_curve_a = 22;
+  float plan_cruise_a = 23;
+  float plan_follow_a = 24;
+  float plan_approch_a = 25;
+  float plan_curve_v = 26;
+  float plan_curve_maxkappa = 27;
+  float plan_curve_maxkappa_s = 28;
+  float decision_path_offset = 29;
+  float current_ego_l = 30;
+  float plan_target_l = 31;
+  float htg_final_cubic_poly_c0 = 32;
+  float htg_final_cubic_poly_c1 = 33;
+  float htg_final_cubic_poly_c2 = 34;
+  float htg_final_cubic_poly_c3 = 35;
+  float htg_trajectory_start_s = 36;
+  float htg_trajectory_end_s = 37;
+  uint32 htg_trajectory_disable_reason_0 = 38;
+  uint32 htg_trajectory_disable_reason_1 = 39;
+  uint32 htg_final_cubic_poly_id = 40;
+  PilotLaneChangeState lc_state = 41;
+  LangeChangeReason lc_reason = 42;
+  LangeChangeCommand lc_command = 43;
+  float lc_state_time = 44;  // s
+  LangeChangeUrgency lc_urgency = 45;
+  bool lc_enable_left = 46;
+  bool lc_enable_right = 47;
+  bool cancel_ability = 48;
+  bool cur_lane_jump = 49;
+  bool target_lane_jump = 50;
+  bool lc_abort_left = 51;
+  bool lc_abort_right = 52;
+  int32 target_lane_id = 53;
+  uint32 disable_reason_left = 54;
+  uint32 disable_reason_right = 55;
+  uint32 cancel_reason = 56;
+  float host_lane_c0 = 57;
+  float target_lane_c0 = 58;
+  float first_phase_slope = 59;
+  float second_phase_slope = 60;
+  float path_offset = 61;
+  float lane_shift_count = 62;
+  repeated float ref_line_cubic_poly = 63;
+  repeated PilotPathPoint ref_line = 64;
+  repeated PilotPathPoint ref_line_smoothed = 65;
+  repeated PilotTrajectoryPoint trajectory = 66;
+  float left_tgt_s_gap = 67;
+  float left_tgt_l_gap = 68;
+  float left_tgt_time_buffer = 69;
+  float left_tgt_desired_s_gap = 70;
+  float left_tgt_vs = 71;
+  float left_tgt_abs_a = 72;
+  float right_tgt_s_gap = 73;
+  float right_tgt_l_gap = 74;
+  float right_tgt_time_buffer = 75;
+  float right_tgt_desired_s_gap = 76;
+  float right_tgt_vs = 77;
+  float right_tgt_abs_a = 78;
+  float plan_map_spdlmt_a = 79;
+  float plan_map_curve_a = 80;
+  float plan_map_keypoint_a = 81;
+  float plan_lc_follow_a = 82;
+  float plan_lc_approch_a = 83;
+  uint32 plan_map_setspd_v = 84;
+  float plan_curve_radius = 85;
+}
+
+message FuncIccCtrlDebug {
+  float torque_req_raw = 1;   // Nm
+  float ctrl_force_ff = 2;    // N
+  float ctrl_force_fb_p = 3;  // N
+  float ctrl_force_fb_i = 4;  // N
+  float current_slope = 5;    // rad
+  float preview_curvature = 6;      // 1/m
+  float preview_lat_error = 7;      // m
+  float preview_heading_error = 8;  // rad
+  float ff_angle_output = 9;        // rad
+  float fb_angle_output = 10;       // rad
+  float fb_p_angle_output = 11;     // angle
+  float fb_i_angle_output = 12;     // angle
+  float fb_d_angle_output = 13;     // angle
+  float preview_lat_v_error = 14;
+  float preview_heading_v_error = 15;
+  float steer_angle_lat_err = 16;
+  float steer_angle_lat_v_err = 17;
+  float steer_angle_heading_err = 18;
+  float steer_angle_heading_v_err = 19;
+  uint32 lqr_num_iter = 20;
+}
+
+message FuncIccDebug {
+  FuncIccPlanDebug plan_debug = 1;
+  FuncIccCtrlDebug ctrl_debug = 2;
+}
+
+message PilotPncDebugInfo {
+  uint32 sequence = 1;
+  uint32 time_consumption = 2;  // us
+  uint32 build_time = 3;        // ex:2307131006
+  FuncIccDebug icc_debug = 4;
+}
+
+message PncInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // PilotPncDebugInfo
+  PilotPncDebugInfo pilot_debug_info = 3;
+}

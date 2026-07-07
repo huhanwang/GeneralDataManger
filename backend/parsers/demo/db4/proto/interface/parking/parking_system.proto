@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/system_type_base.proto";
+import "type/parking_event.proto";
+import "interface/parking/apa_working_status.proto";
+package autodrive.workflow.proto;
+
+enum ParkingOutDir {
+  KOutUnknow = 0;
+  KVerFrontLeft = 1;
+  KVerFrontCenter = 2;
+  KVerFrontRight = 3;
+  KVerRearLeft = 4;
+  KVerRearCenter = 5;
+  KVerRearRight = 6;
+  KHoriFrontLeft = 7;
+  KHoriFrontRight = 8;
+}
+
+enum ParkingInDir {
+  kParkingInUnknow = 0;
+  kParkingInFront = 1;
+  kParkingInBack = 2;
+}
+
+enum WorkModeType {
+  KWorkModeTypeNone = 0;
+  KWorkModeTypeVPA = 1;
+  KWorkModeTypeAPA = 2;
+  KWorkModeTypeRPA = 3;
+  KWorkModeTypeTRA = 4;
+  KWorkModeTypeNPA = 5;
+}
+
+enum PerceptionCtrlStatus {
+  kPerceptionCtrlStatusUnknown = 0;
+  kSwitchParking = 1;
+  kSwitchADAS = 2;
+  kParking = 3;
+  kADAS = 4;
+}
+
+message PsmExitReason {
+  ApaFunctionExitReason apa_exit_reason = 1;
+  VpaFunctionExitReason vpa_exit_reason = 2;
+  TraFunctionExitReason tra_exit_reason = 3;
+  NpaFunctionExitReason npa_exit_reason = 4;
+}
+
+message PsmPauseReason {
+  FunctionPauseReason apa_pause_reason = 1;
+  FunctionPauseReason vpa_pause_reason = 2;
+  FunctionPauseReason tra_pause_reason = 3;
+  FunctionPauseReason npa_pause_reason = 4;
+}
+
+enum ApaPlanStateType {
+  APA_PLAN_STATE_NONE = 0;
+  APA_PLAN_STANDY = 1;         // 后台模式
+  APA_PLAN_IDLE = 2;           // map trigger VPA功能后,等待指令
+  APA_PLAN_ROUTE_LOADING = 3;  // 进入VPA功能，但是用户没有点击开始泊车
+  APA_LOAD_ROUTE_DONE = 4;     // 加载地图完成
+  APA_PLAN_ACTIVE = 5;         // 开始泊车后的工作状态
+  APA_PLAN_PAUSE = 6;          // 暂停状态
+  APA_PLAN_COMPLETE = 7;       // 状态机通知泊车完成后的状态
+  APA_PLAN_TERMINATE = 8;      // terminate plan
+  APA_PLAN_FAILED = 9;         // 故障
+}
+
+enum PsmCornerSlotType {
+  PSM_UNKNOWN_CORNER_SLOT_TYPE = 0;
+  PSM_CORNER_SLOT_LEFT = 1;
+  PSM_CORNER_SLOT_RIGHT = 2;
+}
+
+enum MonitorException {
+  NO_EXCEPTION = 0;
+  ODO_EXCEPTION = 1;
+  VEH_BODY_EXCEPTION = 2;
+  VEH_CHASSIS_EXCEPTION = 3;
+  HANDSHAKE_EXCEPTION = 4;
+  FREESPACE_EXCEPTION = 5;
+  CERTIFY_SLOT = 6;
+}
+
+message ParkingSystemMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  LockIdType lock_id_type = 3;
+  int32 lock_id = 4;
+  ApaStateInfo apa_states = 5;
+  ParkingOutDir parking_out_dir = 6;
+  WorkModeType work_mode_type = 7;
+  UserSelectedParkingSlot usr_sel_ps = 8;
+  bool enable_backstage_searching = 9;
+  bool enable_normal_searching = 10;
+  bool enable_PEB_PrkgPerception = 11;
+  MirrFoldStsTyp mirr_fold_sts_at_driver = 12;
+  MirrFoldStsTyp mirr_fold_sts_at_pass = 13;
+  VpaStateDetailType vpa_state_detail = 14;
+  TraStateDetailType tra_state_detail = 15;
+  NpaStateDetailType npa_state_detail = 16;
+  PerceptionCtrlStatus perception_ctrl_status = 17;
+  PsmExitReason exit_reason = 18;
+  PsmPauseReason pause_reason = 19;
+  ApaPlanStateType apa_plan_state = 20;
+  ParkingWorkingStatus parking_working_status = 21;
+  int32 car_in_slot_id = 22;
+  ParkingInDir usr_sel_parking_in_dir = 23;
+  PsmCornerSlotType corner_slot = 24;
+  int32 parking_takes_time = 25;
+  MonitorException monitor_exception = 26;
+}

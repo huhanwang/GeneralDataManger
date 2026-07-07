@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/odometry_type.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message OdometryMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  Vector3d position = 3;
+  Vector3f orientation = 4;
+  float speed = 5;
+  float speed_scale = 6;
+  Vector2f acceleration = 7;
+  float yaw_rate = 8;
+  float yaw_rate_bias = 9;
+  float wheel_angle = 10;
+  float slope = 11;
+  StableDataPitch stable_pitch = 12;
+  float slope_confidence = 13;
+  uint32 diagnostic_code = 14;
+  Vector3d cov_translation = 15;
+  Vector3d cov_eular_angle = 16;
+  Vector3d position_hr = 17;
+  uint32 source = 18;
+  bool is_slope_available = 19;
+  OdometryDataType type = 20;
+  OdometryDataState state = 21;
+  OdometryDataErrorCode error_code = 22;
+  OdometryDataYawRateBiasEstimateState yaw_rate_bias_estimate_state = 23;
+  Vehicle vehicle_info = 24;
+  uint32 cur_layer_z = 25;
+}

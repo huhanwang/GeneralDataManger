@@ -1,0 +1,103 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/line.proto";
+package autodrive.workflow.proto;
+
+enum AreaType {
+  UNKNOWN = 0;
+  COMMUNITY = 1;
+}
+
+enum FormOfWay {
+  FORMOFWAY_UNKNOWN = 0;
+  FORMOFWAY_MULTIPLECARRIAGEWAY = 1;
+  FORMOFWAY_SINGLECARRIAGEWAY = 2;
+  FORMOFWAY_ROUNDABOUTCIRCLE = 3;
+  FORMOFWAY_SERVICE = 4;
+  FORMOFWAY_RAMPENTRY = 5;
+  FORMOFWAY_RAMPEXIT = 6;
+  FORMOFWAY_CROSSLINK = 7;
+  FORMOFWAY_JCT = 8;
+  FORMOFWAY_SLIPROAD = 9;
+  FORMOFWAY_SIDEROAD = 10;
+  FORMOFWAY_SLIPANDJCT = 11;
+  FORMOFWAY_TURNRIGHTLINEA = 12;
+  FORMOFWAY_TURNRIGHTLINEB = 13;
+  FORMOFWAY_TURNLEFTLINEA = 14;
+  FORMOFWAY_TURNLEFTLINEB = 15;
+  FORMOFWAY_TURNLEFTRIGHTLINE = 16;
+  FORMOFWAY_SERVICEANDSLIPROAD = 17;
+  FORMOFWAY_SERVICEANDJCT = 18;
+  FORMOFWAY_SERVICEANDSLIPROADANDJCT = 19;
+  FORMOFWAY_DIVISEDLINK = 20;
+  FORMOFWAY_OTHER = 21;
+}
+
+message Area {
+  uint32 id = 1;
+  repeated uint32 areapolygon_ids = 2;
+  NdmPolygon bounding_polygon = 3;
+  AreaType type = 4;
+  string name = 5;
+  repeated uint32 link_ids = 6;
+}
+
+message Parking {
+  uint32 id = 1;
+  uint32 parkingspace_id = 2;
+  repeated uint32 section_ids = 3;
+  repeated uint32 junction_ids = 4;
+  NdmPolygon bounding_polygon = 5;
+  string name = 6;
+  repeated uint32 link_ids = 7;
+}
+
+message RoadNode {
+  uint32 id = 1;
+  repeated uint32 include_ids = 2;
+  repeated uint32 in_link_ids = 3;
+  repeated uint32 out_link_ids = 4;
+  float probability = 5;
+  float turn_angle = 6;
+}
+
+message RoadEdge {
+  uint32 id = 1;
+  repeated Link sections = 2;
+}
+
+message Road {
+  uint32 id = 1;
+  string name = 2;
+  repeated Link forward_links = 3;
+  repeated Link backward_links = 4;
+  FormOfWay form = 5;
+  uint32 function = 6;
+  repeated Link links = 7;
+}
+
+message Tile {
+  uint32 id = 1;
+  Index index = 2;
+  NdmPoint min_point = 3;
+  enum TileRange {
+    T0 = 0;
+    T1 = 1;
+    T2 = 2;
+    T3 = 3;
+  }
+  TileRange range = 4;
+  repeated string childs = 5;
+  string utm_zone = 6;
+  repeated uint32 link_ids = 7;
+}
+
+message TopologicalLayer {
+  repeated NdmLine reflines = 1;
+  repeated Area areas = 2;
+  repeated Parking parkings = 3;
+  repeated Road roads = 4;
+  repeated Tile tiles = 5;
+  repeated RoadNode road_nodes = 6;
+  repeated RoadEdge road_edges = 7;
+}

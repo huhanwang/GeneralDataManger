@@ -1,0 +1,57 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ParkingDirectionType {
+  PARKING_DIRECTION_TYPE_UNKNOWN = 0;
+  PARKING_IN_DIRECTION_TYPE = 1;
+  PARKING_OUT_DIRECTION_TYPE = 2;
+}
+
+enum ParkingInDirectionType {
+  PARKING_IN_UNKNOWN = 0;
+  PARKING_IN_FRONT = 1;
+  PARKING_IN_BACK = 2;
+}
+
+enum ParkingOutDirectionType {
+  PARKING_OUT_UNKNOWN = 0;
+  PARKING_OUT_V_FR_LEFT = 1;    // vertical front left
+  PARKING_OUT_V_FR_CENTER = 2;  // vertical front center
+  PARKING_OUT_V_FR_RIGHT = 3;   // vertical front right
+  PARKING_OUT_V_RR_LEFT = 4;    // vertical rear left
+  PARKING_OUT_V_RR_CENTER = 5;  // vertical rear center
+  PARKING_OUT_V_RR_RIGHT = 6;   // vertical rear right
+  PARKING_OUT_H_FR_LEFT = 7;    // horizontal front left
+  PARKING_OUT_H_FR_RIGHT = 8;   // horizontal rear right
+}
+
+enum RecommendReason {
+  PARKING_RECOMMEND_UNKNOWN = 0;
+  PARKING_RECOMMEND_BOUNDARY = 1;
+  PARKING_RECOMMEND_MEMORY = 2;
+}
+
+message ParkingInInfo {
+  ParkingInDirectionType recommend_parking_in_direction = 1;
+  repeated ParkingInDirectionType parking_in_directions = 2;
+  int32 num_in_directions = 3;
+}
+
+message ParkingOutInfo {
+  ParkingOutDirectionType recommend_parking_out_direction = 1;
+  repeated ParkingOutDirectionType parking_out_directions = 2;
+  RecommendReason recommend_reason = 3;
+  int32 num_out_directions = 4;
+}
+
+message ParkingDirectionMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  int32 slot_id = 3;
+  ParkingDirectionType parking_direction_type = 4;
+  ParkingInInfo parking_in_info = 5;
+  ParkingOutInfo parking_out_info = 6;
+}

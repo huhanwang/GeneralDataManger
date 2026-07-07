@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PlanEventType {
+  PLAN_EVENT_NONE = 0;       // 清空当前状态
+  TURN_AHEAD = 1;            // 前方转弯慢行
+  DETOURING = 2;             // 绕行中
+  DANGEROUS_ROAD_AHEAD = 3;  // 前方路况危险
+  // 要求用户接管, 过一段时间退出VPA功能
+  IMPASSABLE_ROAD_AHEAD = 4;  // 前方路况不可通行
+  OBSTACLES_DETECTED = 5;     // 检测到障碍物
+}
+
+enum ApaEventType {
+  APA_EVENT_NONE = 0;       // 清空当前状态
+  PARKING_IN_SCENE = 1;     // 泊入场景
+  PARKING_OUT_SCENE = 2;    // 泊出场景
+}
+
+message PlanEventMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // plan upload keyinfo event
+  PlanEventType type = 3;
+  ApaEventType apa_event = 4;
+}

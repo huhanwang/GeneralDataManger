@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+package autodrive.workflow.proto;
+
+enum UssParkingInDir {
+  kUssParkingInUnknow = 0;
+  kUssParkingInFront = 1;
+  kUssParkingInBack = 2;
+}
+
+message UssTrackingMode {
+  PlvState plv_mode = 1;
+  PsuState psu_mode = 2;
+  OdoState odo_mode = 3;
+  PocState poc_mode = 4;
+  uint32 uss_ps_clear_distance = 5;
+  PerFusUssPs ps_correct = 6;
+  bool is_in_doorgarage = 7;
+  uint32 score_in_doorgarage = 8;
+  UssParkingInDir parking_in_dir = 9;
+}
+
+message UssTrackingMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  UssTrackingMode Ussps_tracking = 3;
+}

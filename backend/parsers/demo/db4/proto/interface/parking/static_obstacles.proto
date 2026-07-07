@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+
+package autodrive.workflow.proto;
+
+enum StaticObstacleType {
+  kStaticObstacleTypeUnknown = 0;
+  kStaticObstacleTypeTrafficCone = 1;
+  kStaticObstacleTypeParkLock = 2;
+  kStaticObstacleTypeTrafficSign = 3;
+  kStaticObstacleTypeTrafficLight = 4;
+  kStaticObstacleTypeVerticalPole = 5;
+  kStaticObstacleTypeParkColumn = 6;
+  kStaticObstacleTypeParkAFrameSign = 7;
+  kStaticObstacleTypeParkBox = 8;
+  kStaticObstacleTypeParkBarrel = 9;
+  kStaticObstacleTypeWaterBarrier = 10;
+  kStaticObstacleTypeTrafficBollard = 11;
+  kStaticObstacleTypeTrolley = 12;
+  kStaticObstacleTypeFireHydrant = 13;
+  kStaticObstacleTypeCementSphere = 14;
+  kStaticObstacleTypeChargingPile = 15;
+  kStaticObstacleTypeReflector = 16;
+  kStaticObstacleTypeDistributionBox = 17;
+  kStaticObstacleTypeFence = 18;
+  kStaticObstacleTypeParkLimiter = 19;
+  kParkLimiterPole = 20;
+  kTurnstile = 21;
+  kPipeline = 22;
+  kBushes = 23;
+}
+
+enum StaticObstacleSubType {
+  kStaticObstacleSubTypeParkLockTypeUnknown = 0;
+  kStaticObstacleSubTypeParkLockTypeOpen = 1;
+  kStaticObstacleSubTypeParkLockTypeClose = 2;
+  kStaticObstacleSubTypeFireHydrantTypeAir = 3;
+  kStaticObstacleSubTypeFireHydrantTypeGnd = 4;
+  kStaticObstacleSubTypeTurnstileOpen = 5;
+  kStaticObstacleSubTypeTurnstileClose = 6;
+}
+
+message StaticObstacleAttr {
+  int32 shape = 1;
+  float cycle_time = 2;
+  int32 traversable = 3;
+  float height = 4;
+  float radius = 5;
+  int32 status = 6;
+  string value = 7;
+  bool dynamic = 8;
+  perception_base.ImageSpace img_info = 9;
+}
+
+message StaticObstacle {
+  int32 id = 1;
+  int32 cam_id = 2;
+  int64 time_stamp = 3;
+  int32 conf = 4;
+  StaticObstacleType type = 5;
+  StaticObstacleSubType sub_type = 6;
+  perception_base.Polygon border = 7;
+  int32 life_time = 8;
+  int32 age = 9;
+  string str_id = 10;
+  StaticObstacleAttr attr = 11;
+  Vector3f position = 12;
+  int32 sensor_source = 13;
+}
+
+message StaticObstaclesMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  float conf_scale = 3;
+  repeated StaticObstacle static_obstacles = 4;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/image.proto";
+package autodrive.workflow.proto;
+
+message CameraMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Image
+  Image image = 3;
+}

@@ -1,0 +1,96 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum EventSource {
+  EVENT_SOURCE_APA = 0;
+  EVENT_SOURCE_VPA = 1;
+}
+
+enum ApaFunctionCtrl {
+  APA_FUNCTION_CTRL_NO_SELECT = 0;
+  APA_FUNCTION_CTRL_FUNC_ENTER = 1;
+  APA_FUNCTION_CTRL_CONTINUE = 2;
+  APA_FUNCTION_CTRL_CANCEL = 3;
+  APA_FUNCTION_CTRL_ENTER_PARKING = 4;
+  APA_FUNCTION_CTRL_ENTER_PARKINGOUT = 5;
+  APA_FUNCTION_CTRL_START_PARKING = 6;
+  APA_FUNCTION_CTRL_REMOTE_PARKING = 7;
+  APA_FUNCTION_CTRL_SELF_SELECT_SLOT = 8;
+}
+
+enum VpaFunctionCtrl {
+  CTRL_SIGNAL_NONE = 0;
+  CTRL_MAP_BUILD_WEAK_ACTIVE = 1;
+  CTRL_VPA_ACTIVE_SIGNAL = 2;
+  CTRL_MAP_BUILD_CONFIRM = 3;
+  CTRL_CHANGE_ROUTE = 4;
+  CTRL_START_PARKING_CONFIRM = 5;
+  CTRL_PARKING_IN_WEAK_ACTIVE = 6;
+  CTRL_CANCEL_VPA = 7;
+  CTRL_CONTINUE_VPA = 8;
+  CTRL_MAP_BUILD_COMPLETED = 9;
+  CTRL_VPA_OPEN = 10;
+  CTRL_VPA_CLOSE = 11;
+  CTRL_VPA_WEAK_ALERT_OPEN = 12;
+  CTRL_VPA_WEAK_ALERT_CLOSE = 13;
+  CTRL_LEARNING_COMPLETE = 14;
+  CTRL_CANCEL_WEAK_ACTIVE = 15;
+  CTRL_SCREEN_OCCUPIED = 16;
+}
+
+enum ApaWorkState {
+  APA_WORK_STATE_NONE = 0;
+  APA_WORK_STATE_STANDBY = 1;
+  APA_WORK_STATE_SEARCHING = 2;
+  APA_WORK_STATE_GUIDANCE = 3;
+  APA_WORK_STATE_FAILED = 4;
+  APA_WORK_STATE_COMPLETE = 5;
+  APA_WORK_STATE_DISABLE = 6;
+}
+
+enum VpaWorkType {
+  TYPE_NONE = 0;
+  TYPE_PREV_VPA = 1;
+  TYPE_START_MAP_BUILD = 2;
+  TYPE_START_VPA = 3;
+  TYPE_MAP_BUILDING = 4;
+  TYPE_MAP_BUILD_COMPLETED = 5;
+  TYPE_VPA_COMPLETED = 6;
+  TYPE_MAP_BUILD_FAILED = 7;
+  TYPE_VPA_FAILED = 8;
+}
+
+enum EventType {
+  FROM_USER = 0;
+  TO_USER = 1;
+}
+
+message EventFromUser {
+  EventSource source = 1;
+  ApaFunctionCtrl apa_function_ctrl = 2;
+  VpaFunctionCtrl vpa_function_ctrl = 3;
+  bool valid_slot_id = 4;
+  int32 slot_id = 5;
+}
+
+message EventToUser {
+  EventSource source = 1;
+  ApaWorkState apa_work_state = 2;
+  VpaWorkType vpa_work_state = 3;
+}
+
+message UserEvent {
+  EventType type = 1;
+  EventFromUser from_user = 2;
+  EventToUser to_user = 3;
+}
+
+message UserEventMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // UserEvent
+  UserEvent event = 3;
+}

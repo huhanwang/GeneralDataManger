@@ -1,0 +1,192 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/perception_base.proto";
+
+package autodrive.workflow.proto;
+
+enum DynamicObstacleType {
+  kObstacleTypeVehicleRear = 0;
+  kObstacleTypeVehicleFull = 1;
+  kObstacleTypePedestrian = 2;
+  kObstacleTypeCyclist = 3;
+  kObstacleTypeAnimal = 28;
+  kObstacleTypeUnknown = 50;
+}
+
+enum VehicleType {
+  kVehicleTypeUnknown = 0;
+  kVehicleTypeCar = 1;
+  kVehicleTypeSUV = 2;
+  kVehicleTypeVan = 3;
+  kVehicleTypeBus = 4;
+  kVehicleTypeTruck = 5;
+  kVehicleTypeAmbulance = 6;
+  kVehicleTypePoliceCar = 7;
+  kVehicleTypeFireTruck = 8;
+  kVehicleTypeTricycle = 9;
+  kVehicleTypeSpecialCar = 10;
+  kVehicleTypeTinyCar = 11;
+  kVehicleTypeMotor = 12;
+}
+
+enum DynamicObstacleMotionStatus {
+  kMotionStatusInvalid = 0;
+  kMotionStatusUnknown = 1;
+  kMotionStatusMoving = 2;
+  kMotionStatusStationary = 3;
+  kMotionStatusStopped = 4;
+  kMotionStatusMovingSlowly = 5;
+  kMotionStatusEnumSize = 6;
+}
+
+enum MotionCategory {
+  kMotionCategoryInvalid = 0;
+  kMotionCategoryUndefined = 1;
+  kMotionCategoryPassing = 2;
+  kMotionCategoryPassingIn = 3;
+  kMotionCategoryPassingOut = 4;
+  kMotionCategoryCloseCutIn = 5;
+  kMotionCategoryMovingIn = 6;
+  kMotionCategoryMovingOut = 7;
+  kMotionCategoryCrossing = 8;
+  kMotionCategoryLeftTurnAP = 9;
+  kMotionCategoryRightTurnAP = 10;
+  kMotionCategoryMoving = 11;
+  kMotionCategoryPreceding = 12;
+  kMotionCategoryOncoming = 13;
+  kMotionCategoryEnumSize = 14;
+}
+
+enum MotionOrientation {
+  kMotionOrientationUndefined = 0;
+  kMotionOrientationDriftingRight = 1;
+  kMotionOrientationCrossingRight = 2;
+  kMotionOrientationOncomingDriftRight = 3;
+  kMotionOrientationOncoming = 4;
+  kMotionOrientationOncomingDriftLeft = 5;
+  kMotionOrientationCrossingLeft = 6;
+  kMotionOrientationDriftingLeft = 7;
+  kMotionOrientationPreceding = 8;
+}
+
+enum VisibleSide {
+  kVisibleSideUnknown = 0;
+  kVisibleSideRight = 1;
+  kVisibleSideLeft = 2;
+}
+
+enum VisibleRect {
+  kVisibleRectUnknown = 0;
+  kVisibleRectFront = 1;
+  kVisibleRectBack = 2;
+}
+
+enum OutputObsPositionType {
+  kOutputObsPositionTypeUnknownPoint = 0;
+  kOutputObsPositionTypeRearLeftPoint = 1;
+  kOutputObsPositionTypeRearCenterPoint = 2;
+  kOutputObsPositionTypeRearRightPoint = 3;
+  kOutputObsPositionTypeFrontLeftPoint = 4;
+  kOutputObsPositionTypeFrontCenterPoint = 5;
+  kOutputObsPositionTypeFrontRightPoint = 6;
+  kOutputObsPositionTypeLeftCenterPoint = 7;
+  kOutputObsPositionTypeRightCenterPoint = 8;
+  kOutputObsPositionTypeCenterPoint = 9;
+}
+
+message DynamicObstVelocity {
+  float vx = 1;
+  float vy = 2;
+  float vz = 3;
+}
+
+message DynamicObstAccelerate {
+  float ax = 1;
+  float ay = 2;
+  float az = 3;
+}
+
+message ObstacleAngle {
+  float angle_left_v = 1;
+  float angle_left = 2;
+  float angle_middle_v = 3;
+  float angle_middle = 4;
+  float angle_right_v = 5;
+  float angle_right = 6;
+  float angle_side_v = 7;
+  float angle_side = 8;
+}
+
+message DynamicObstWorldSpaceInfo {
+  float yaw = 1;
+  float length = 2;
+  float width = 3;
+  float height = 4;
+  Vector3f position = 5;
+  float ttc = 6;
+  DynamicObstVelocity vel_abs_world = 7;
+  DynamicObstAccelerate acc_abs_world = 8;
+  DynamicObstacleMotionStatus motion_status = 9;
+  MotionCategory motion_category = 10;
+  OutputObsPositionType position_type = 11;
+  float yaw_rate = 12;
+  VisibleSide visible_side = 13;
+  MotionOrientation motion_orientation = 14;
+  repeated float sigma_vel = 15;
+  float sigma_yaw = 16;
+  float sigma_width = 17;
+  float sigma_height = 18;
+  float sigma_length = 19;
+  repeated float sigma_position = 20;
+  float sigma_yaw_rate = 21;
+  int32 head_rear_type = 22;
+  repeated float sigma_acc_ref = 23;
+  ObstacleAngle obj_angle = 24;
+  /* LaneAssignment
+  kLeftNextNext = -2;
+  kLeftNext = -1;
+  kEgoLane = 0;
+  kRightNext = 1;
+  kRightNextNext = 2;
+  kLaneUnknown = 3;
+  */
+  int32 lane_assignment = 25;
+  int32 traversable = 26;
+  DynamicObstVelocity vel = 27;
+  perception_base.Polygon poly = 28;
+  perception_base.Polygon poly_vcs = 29;
+  VisibleRect visible_rect = 30;
+  Vector3f rbc_position = 31;
+  repeated float sigma_rbc_position = 32;
+  int32 cipv = 33;
+}
+
+message DynamicObstacle {
+  uint32 id = 1;
+  int32 life_time = 2;
+  int32 cam_id = 3;
+  DynamicObstacleType type = 4;
+  VehicleType sub_type = 5;
+  int64 time_stamp = 6;
+  float conf = 7;
+  uint32 age = 8;
+  perception_base.ImageSpace img_info = 9;
+  DynamicObstWorldSpaceInfo world_info = 10;
+  int32 valid_info = 11;
+  int32 select_level = 12;
+  repeated perception_base.Category category = 13;
+  int32 sensor_source = 14;
+}
+
+message BevObstacle {
+  uint32 id = 1;
+  float conf = 2;
+  float yaw = 3;
+  float length = 4;
+  float width = 5;
+  float height = 6;
+  Vector3f position = 7;
+  perception_base.Polygon poly = 8;
+  Vector3f vel_abs_world = 9;
+  repeated perception_base.Category category = 10;
+}

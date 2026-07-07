@@ -1,0 +1,53 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum CameraType {
+  CameraType_PinHole = 0;  // 针孔相机
+  CameraType_FishEye = 1;      // 鱼眼相机
+}
+
+message CameraValidHeight {
+  int32 left_y = 1;   // 相机有效高度_left
+  int32 right_y = 2;  // 相机有效高度_right
+}
+
+message VcsParam {
+  repeated float rotation = 1;     // rotation relative to x, y, z axis
+  repeated float translation = 2;  // translation
+}
+
+message DistortParam {
+  repeated float distort = 1;   // 畸变系数,按照k1、k2、p1、p2、k3、k4、k5、k6依次填充,其中k1、k2、k3、k4、k5、k6为径向畸变系数,p1、p2为切向畸变系数
+}
+
+message CameraParam {
+  float focal_u = 1;     // 镜头水平焦距, unit: pixel
+  float focal_v = 2;     // 镜头垂直焦距, unit: pixel
+  float center_u = 3;    // 光轴中心点沿图像传感器水平的像素偏移值, unit: pixel
+  float center_v = 4;    // 光轴中心点沿图像传感器垂直的像素偏移值, unit: pixel
+  float camera_x = 5;    // 相机在标定坐标系x方向上的位置, unit: m
+  float camera_y = 6;    // 相机在标定坐标系y方向上的位置, unit: m
+  float camera_z = 7;    // 相机在标定坐标系z方向上的位置, unit: m
+  float pitch = 8;       // 相机在标定坐标系基于y轴旋转的角度, unit: rad
+  float yaw = 9;         // 相机在标定坐标系基于z轴旋转的角度, unit: rad
+  float roll = 10;       // 相机在标定坐标系基于x轴旋转的角度, unit: rad
+
+  CameraType type = 11;       // 相机类型, 默认为0, 枚举类型详细可见CameraType
+  float fov = 12;        // 相机水平视场角, 例如:60,120等, unit: degree
+  int32 cam_id = 13;     // 相机ID, 用于区分多相机
+  CameraValidHeight valid_height = 14; // 相机有效高度
+  VcsParam vcs_param = 15; // 相机到车体坐标系
+  DistortParam distort_param = 16; // 相机畸变参数
+  int32 image_height = 17;
+  int32 image_width = 18;
+}
+
+message CameraParamMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Param
+  repeated CameraParam camera_param = 3;
+}

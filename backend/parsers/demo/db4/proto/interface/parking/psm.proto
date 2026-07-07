@@ -1,0 +1,128 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/system_type_base.proto";
+package autodrive.workflow.proto;
+
+enum ApsWorkSts {
+  ApsWorkStsDisable = 0;
+  ApsWorkStsStandby = 1;
+  ApsWorkStsSearching = 2;
+  ApsWorkStsGuidance = 3;
+  ApsWorkStsCompleted = 4;
+  ApsWorkStsFailed = 5;
+  ApsWorkStsPause = 6;
+  ApsWorkStsTerminated = 7;
+  ApsWorkStsRestart = 8;
+}
+
+enum FadsFuncSts {
+  FadsFuncStsStandby = 0;
+  FadsFuncStsActive = 1;
+  FadsFuncStsDisable = 2;
+  FadsFuncStsReserved = 3;
+}
+
+enum RadsFuncSts {
+  RadsFuncStsStandby = 0;
+  RadsFuncStsActive = 1;
+  RadsFuncStsDisable = 2;
+  RadsFuncStsReserved = 3;
+}
+
+enum FunctWorkSts {
+  FunctWorkStsNONE = 0;
+  FunctWorkStsAPA = 1;
+  FunctWorkStsRPA = 2;
+  FunctWorkStsVPA = 3;
+  FunctWorkStsTRA = 4;
+  FunctWorkStsNPA = 5;
+}
+
+enum PsmApaState {
+  ApaStateState_none = 0;
+  ApaStateOff = 1;
+  ApaStateStanby = 2;
+  ApaStateFailed = 3;
+  ApaStateAbort = 4;
+  ApaStateSearching_parking_in = 5;
+  ApaStateSearching_parking_out = 6;
+  ApaStatePre_parking_in = 7;
+  ApaStatePre_parking_out = 8;
+  ApaStateParking_in = 9;
+  ApaStateParking_out = 10;
+  ApaStateSuspend_not_continue = 11;
+  ApaStateSuspend_continue = 12;
+  ApaStateComplete = 13;
+  ApaStatePre_parking_select = 14;
+  ApaStatePre_parking_rpa = 15;
+  ApaStateInvalid = 16;
+  ApaStatePre_parking_in_usr_selected = 17;
+  ApaStatePre_parking_out_usr_selected = 18;
+}
+
+enum VpaState {
+  VpaStateState_none = 0;
+  VpaStateRequest_map_weak_active = 1;
+  VpaStateInit_map = 2;              // init map funciton
+  VpaStateBuild_map_clickable = 3;   // request build map
+  VpaStateMap_build_running = 4;     // after user start map build
+  VpaStateMap_build_complete = 5;    // map build complete;
+  VpaStateMap_build_exit = 6;        // map build failed with reason
+  VpaStateMap_build_optimizing = 7;  // map save and optimizing
+  VpaStateMap_build_apa = 8;         // apa parking
+  VpaStateMap_build_drive_park = 9;  // drive parking
+  VpaStateRequest_vpa_weak_active = 10;
+  VpaStateInit_vpa = 11;             // init vpa function
+  VpaStateStart_vpa_clickable = 12;  // request start vpa
+  VpaStateVpa_running = 13;          // after user start vpa
+  VpaStateVpa_random_apa = 14;       // park random slot
+  VpaStateVpa_fix_apa = 15;          // park fix slot
+  VpaStateVpa_complete = 16;         // vpa complete
+  VpaStateVpa_exit = 17;             // vpa failed with reason
+  VpaStateVpa_pause = 18;            // vpa pause
+  VpaStateVpa_continue = 19;         // suspend recover; vpa continue
+  VpaStateVpa_eps_interrupt = 20;    // EPS suspend
+  VpaStateVpa_eps_continue = 21;     // EPS continue
+  VpaStateDiag = 22;                 // system diag with diag type
+  VpaStatePure_apa = 23;             // only apa
+  VpaStatePure_rpa = 24;             // only rpa
+  VpaStateMap_pause = 25;            // MAP apa suspend
+  VpaStateMap_continue = 26;         // MAP apa continue
+}
+
+enum VpaStateFunctionType {
+  VpaState_FunctionType_FUNCTION_TYPE_NONE = 0;
+  VpaState_FunctionType_FUNCTION_TYPE_MAP = 1;
+  VpaState_FunctionType_FUNCTION_TYPE_VPA = 2;
+}
+
+enum VcuReadyReqType {
+  VCUREADY_REQUEST_NONE = 0;
+  VCUREADY_REQUEST_ON = 1;
+  VCUREADY_REQUEST_OFF = 2;
+  VCUREADY_REQUEST_HOLD = 3;
+}
+
+message PsmStateMachine {
+  ApsWorkSts aps_work_sts = 1;
+  FadsFuncSts fads_func_sts = 2;
+  RadsFuncSts rads_funct_sts = 3;
+  FunctWorkSts funct_work_sts = 4;
+  PsmApaState apa_state = 5;
+  VpaState vpa_state = 6;
+  VpaStateFunctionType vpa_state_ft = 7;
+  uint32 odo_reset = 8;
+  uint32 odo_reset_count = 9;
+  TraStateDetailType tra_state = 10;
+  NpaStateDetailType npa_state = 11;
+  VcuReadyReqType vcu_ready_req = 12;
+}
+
+message PsmMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // StateMachine
+  PsmStateMachine state_machine = 3;
+}

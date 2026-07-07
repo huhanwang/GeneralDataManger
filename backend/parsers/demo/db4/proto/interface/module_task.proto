@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message ModuleTask {
+  // DAG id
+  uint32 dag_id = 1;
+  // module id
+  uint32 module_id = 2;
+  // loop start time
+  uint64 start_time = 3;
+  // loop end time
+  uint64 end_time = 4;
+}
+
+message ModuleTaskMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // ModuleTask
+  repeated ModuleTask module_task = 3;
+}

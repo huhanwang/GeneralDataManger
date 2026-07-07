@@ -1,0 +1,103 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum Shape {
+  SHAPE_UNKNOWN = 0;
+  SHAPE_RECTANGLE = 1;
+  SHAPE_TRIANGLE = 2;
+  SHAPE_ROUND = 3;
+  SHAPE_CYLINDER = 4;
+}
+
+enum TreStatus {
+  TRE_STATUS_UNKNOWN = 0;
+  TRE_STATUS_OFF = 1;
+  TRE_STATUS_INVALID = 2;
+  TRE_STATUS_VALID = 3;
+  TRE_STATUS_TRAFFIC_LIGHT_GREEN = 4;
+  TRE_STATUS_TRAFFIC_LIGHT_YELLOW = 5;
+  TRE_STATUS_TRAFFIC_LIGHT_RED = 6;
+  TRE_STATUS_OCCUPIED = 7;
+}
+
+message Object {
+  Shape shape = 1;
+  bool dynamic = 2;
+  bool traversable = 3;
+  uint32 cycle_time = 4;
+  string element = 5;
+  float height = 6;
+  float radius = 7;
+  TreStatus status = 8;
+}
+
+enum ObjectType {
+  OBJECT_TYPE_UNKNOWN = 0;
+  OBJECT_TYPE_TTRAFFIC_SIGN = 1;
+  OBJECT_TYPE_TTRAFFIC_LIGHT = 2;
+  OBJECT_TYPE_TTRAFFIC_LIGHT_BULB = 3;
+  OBJECT_TYPE_LANE_MARKING = 4;
+  OBJECT_TYPE_STOP_LINE = 5;
+  OBJECT_TYPE_SPEED_BUMP = 6;
+  OBJECT_TYPE_POLE = 7;
+  OBJECT_TYPE_CROSS_WALK = 8;
+  OBJECT_TYPE_ZONE = 9;
+  OBJECT_TYPE_PARKING_SLOT = 10;
+  OBJECT_TYPE_TRAFFIC_CONE = 11;
+}
+
+enum TreTrafficLightBulbSpotMode {
+  SPOT_MODE_UNKNOWN = 0;
+  SPOT_MODE_ON = 1;
+  SPOT_MODE_FLASH = 2;
+  SPOT_MODE_OFF = 3;
+}
+
+enum TreTrafficLightBulbType {
+  BULB_TYPE_UNKNOWN = 0;
+  BULB_TYPE_CIRCLE = 1;
+  BULB_TYPE_LEFT_ARROW = 2;
+  BULB_TYPE_RIGHT_ARROW = 3;
+  BULB_TYPE_UP_ARROW = 4;
+  BULB_TYPE_DOWN_ARROW = 5;
+  BULB_TYPE_UTURN = 6;
+  BULB_TYPE_FORWARD_AND_LEFT = 7;
+  BULB_TYPE_FORWARD_AND_RIGHT = 8;
+  BULB_TYPE_PEDESTRAIN = 9;
+  BULB_TYPE_NON_MOTOR = 10;
+  BULB_TYPE_TIME = 11;
+  BULB_TYPE_LEFT_AND_RETURN = 12;
+  BULB_TYPE_NO_DRIVE_INTO = 13;
+  BULB_TYPE_TEXT_OF_ALLOW_PED = 14;
+  BULB_TYPE_SIGN_OF_ALLOW_PED = 15;
+  BULB_TYPE_TEXT_OF_FORBID_PED = 16;
+  BULB_TYPE_SIGN_OF_FOPBID_PED = 17;
+}
+
+message Child {
+  uint32 id = 1;
+  TreTrafficLightBulbType child_light_bulb_type = 2;
+  TreStatus child_light_bulb_status = 3;
+  TreTrafficLightBulbSpotMode child_light_spot_mode = 4;
+}
+
+message TrafficElement {
+  uint32 id = 1;
+  ObjectType type = 2;
+  uint32 sub_type = 3;
+  uint32 confidence = 4;
+  uint32 life_time = 5;
+  uint32 age = 6;
+  uint32 drive_start_up = 7;
+  Object object = 8;
+  repeated Child childs = 9;
+  Vector3f position = 10;
+}
+
+message SensorTreMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  repeated TrafficElement traffic_elements = 3;
+}

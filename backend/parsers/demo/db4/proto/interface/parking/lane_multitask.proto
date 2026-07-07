@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+import "common/common_msg.proto";
+import "interface/parking/road_info.proto";
+import "type/basic.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+message LaneParsingImageData {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+  uint32 channel = 4;
+}
+
+message LaneMarkParsingData {
+  repeated float data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+  uint32 channel = 4;
+}
+
+message EdgePoint {
+  float x = 1;
+  float y = 2;
+  float prob = 3;
+  RoadBorderSide side = 4;
+  RoadBorderType type = 5;
+}
+
+message LaneTransitionPoint {
+  repeated TransitionPoints transition_points = 1;
+}
+
+message LaneEdgePoint {
+  repeated EdgePoint edge_points = 1;
+}
+
+message LineBasicInfoPts {
+  Vector2f pt = 1;
+  Vector2f pt_rle = 2;
+  Vector2f pt_oriimg = 3;
+  Vector2f pt_img = 4;
+  uint64 label = 5;
+  int32 conf = 6;
+}
+
+message LineExtraInfoPts {
+  int32 xstart = 1;
+  int32 xend = 2;
+  int32 y_parsing = 3;
+  int32 gray = 4;
+  Vector2f pt_rle_c = 5;
+  Vector2f width_info = 6;
+  bool flag_dash_endpt = 7;
+  bool horizontal = 8;
+}
+
+message LaneContour {
+  repeated LineBasicInfoPts basic_pts = 1;
+  repeated LineExtraInfoPts extra_pts = 2;
+}
+
+message LaneMultitaskMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  LaneTransitionPoint lane_transition_point = 3;
+  LaneEdgePoint lane_edge_point = 4;
+  repeated LaneParsingImageData lane_parsing_image = 5;
+  repeated LaneMarkParsingData edge_parsing_image = 6;
+  int32 camera_id = 7;
+  repeated LaneContour lane_contours = 8;
+  perception_base.Rect roi = 9;
+}

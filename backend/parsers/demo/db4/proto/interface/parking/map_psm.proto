@@ -1,0 +1,66 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message MapTriggerMsg {
+  enum MapTriggerType {
+    // 对于已经trigger过的情况，但是时机错过的情况，发送这个消息代表取消
+    TRIGGER_NONE = 0;
+    MAP = 1;
+    LOCATION = 2;
+  }
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // map tirgger msg to statemachine
+  MapTriggerType type = 4;
+}
+
+message MapEventMsg {
+  enum MapStateType {
+    MAP_STATE_NONE = 0;
+
+    PRE_MAP = 1;        // 建图判断不能支持点击开始建图btn
+    MAP_READY = 2;      // 建图判断可以支持点击开始建图btn
+    MAP_RUNNING = 3;    // 用户点击建图btn后建图的状态
+    MAP_WAIT_SLOT = 4;  // 建图自动停止建图优化结束后等待槽位
+    MAP_SAVING_OPTIMIZING = 5;  // 建图存储和全局优化中
+    MAP_BUILD_COMPLETE = 6;     // 建图完成
+    MAP_BUILD_FAILED = 7;       // 建图失败，需携带失败原因
+    MAP_ABORT = 8;              // 建图ABORT
+
+    PRE_LOCATION = 9;       // VPA trigger成功, 等待用户确认定位功能
+    LOCATION_READY = 10;    // 用户可以开始泊车的状态
+    LOCATION_RUNNING = 11;  // 用户点击开始泊车后的运行状态
+    LOCATION_COMPLETE = 12;  // 状态机通知定位VPA_COMPLETE之后的状态
+    LOCATION_FAILED = 13;    // 定位失败，定位失败的原因
+    LOCATION_ABORT = 14;     // 定位ABORT
+  }
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // map event to statemachine
+  MapStateType type = 3;
+  // if event type is MAP_BUILD_FAILED, reason is required;
+  // if event type is LOCATION_FAILED, reason is required;
+  int32 reason = 4;
+  MapStateType sub_type = 5; // 定位时，携带建图状态
+}
+
+message MapKeyInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // map keyinfo to statemachine
+  float build_dist = 3; // 已经建图的距离
+  int32 speedbump_num = 4; // 地图中减速带数量
+  float loc_remain_dist = 5; // 定位巡航剩余距离
+}

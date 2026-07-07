@@ -1,0 +1,50 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/common_type.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+message PredictionTrajectory {
+  float probability = 1;
+  repeated TrajectoryPoint points = 2;
+}
+
+message PredictionObstacle {
+  Obstacle obstacle = 1;
+  int32 predicted_period = 2;
+  ObstacleIntent intent = 3;
+  ObstaclePriority priority = 4;
+  bool is_static = 5;
+  repeated PredictionTrajectory trajectories = 6;
+}
+
+message HostInfo {
+  Vector3f position = 1;
+  Vector3f orientation = 2;
+}
+
+message Scenario {
+  ScenarioType type = 1;
+  repeated int32 junction_ids = 2;
+}
+
+message InputTimestamp {
+  int64 hdmap_timestamp = 1;
+  int64 pnc_timestamp = 2;
+  int64 planning_timestamp = 3;
+  int64 fusion_timestamp = 4;
+}
+
+message Prediction {
+  Scenario scenario = 1;
+  repeated PredictionObstacle obstacles = 2;
+  HostInfo host_info = 3;
+  InputTimestamp input_ts = 4;
+}
+
+message PredictionMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  Prediction prediction = 3;
+}

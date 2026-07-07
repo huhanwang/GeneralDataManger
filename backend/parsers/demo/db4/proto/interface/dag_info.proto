@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message ToModules {
+  repeated uint32 to_module_id = 1;
+  repeated bytes link_name = 2;
+}
+
+message DagInfo {
+  uint32 dag_id = 1;
+  uint32 status = 2;
+  repeated uint32 module_ids = 3;
+  repeated bytes module_names = 4;
+  repeated ToModules to_modules = 5;
+}
+
+message DagInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // DAG info
+  repeated DagInfo dag_info = 3;
+}

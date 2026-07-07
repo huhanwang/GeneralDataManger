@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+import "type/dynamic_obstacle.proto";
+import "type/perception_base.proto";
+import "type/common_type.proto";
+
+package autodrive.workflow.proto;
+
+enum Real3DType {
+  kReal3DTypePedestrian = 0;
+  kReal3DTypeVehicle = 1;
+  kReal3DTypeCyclist = 2;
+}
+
+enum Roi3DMapType {
+  kRoi3DMapTypePtUndistortMap = 0;
+  kRoi3DMapTypePtDistortMap = 1;
+  kRoi3DMapTypeEqflUMap = 2;
+  kRoi3DMapTypeEqflVMap = 3;
+}
+
+enum CoordinateType {
+  kCoordinateTypeUnknown = 0;
+  kCoordinateTypePinhole = 1;
+  kCoordinateTypeFisheye = 2;
+  kCoordinateTypeCyl = 3;
+  kCoordinateTypeVcs = 4;
+  kCoordinateTypeCamera = 5;
+  kCoordinateTypeCameraNew = 6;
+};
+
+message Real3DResult {
+  DynamicObstacle bev_obstacle = 1;
+  perception_base.Box3D img_3dbox = 2;
+  perception_base.Rect img_rect = 3;
+}
+
+message Real3DResults {
+  perception_base.Header header = 1;
+  Real3DType type = 2;
+  CoordinateType coordinate_type = 3;
+  repeated Real3DResult real3d_result = 4;
+}
+
+message Real3D {
+  perception_base.Header header = 1;
+  repeated Real3DResults real3d_results = 2;
+}
+
+message FullReal3DResult {
+  BevObstacle bev_obstacle = 1;
+  perception_base.Box3D img_3dbox = 2;
+  perception_base.Rect img_rect = 3;
+  VehicleSubType sub_type = 4;
+}
+
+message FullReal3DResults {
+  perception_base.Header header = 1;
+  Real3DType type = 2;
+  CoordinateType coordinate_type = 3;
+  repeated FullReal3DResult real3d_result = 4;
+}
+
+message FullReal3D {
+  perception_base.Header header = 1;
+  repeated FullReal3DResults real3d_results = 2;
+}

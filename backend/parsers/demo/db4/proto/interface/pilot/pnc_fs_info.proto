@@ -1,0 +1,163 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PilotAccState {
+  PILOT_ACC_OFF = 0;
+  PILOT_ACC_PASSIVE = 1;
+  PILOT_ACC_STANDBY = 2;
+  PILOT_ACC_ACTIVE = 3;
+  PILOT_ACC_FAULT = 4;
+}
+
+enum AccActiveSubState {
+  ACC_ACTIVE_NONE = 0;
+  ACC_ACTIVE_NORMAL = 1;
+  ACC_ACTIVE_PAUSE = 2;
+  ACC_ACTIVE_OVERRIDE = 3;
+}
+
+enum HeadwayLevel {
+  HEADWAY_LEVEL_INVALID = 0;
+  HEADWAY_LEVEL_NEAR = 1;
+  HEADWAY_LEVEL_MIDDLE = 2;
+  HEADWAY_LEVEL_FAR = 3;
+  HEADWAY_LEVEL_FARFAR = 4;
+}
+
+enum IccState {
+  ICC_OFF = 0;
+  ICC_PASSIVE = 1;
+  ICC_STANDBY = 2;
+  ICC_ACTIVE = 3;
+  ICC_PAUSE = 4;
+  ICC_PROHIBITION = 5;
+  ICC_FAULT = 6;
+}
+
+enum NOAState {
+  PILOT_NOA_STATE_OFF = 0;
+  PILOT_NOA_STATE_PASSIVE = 1;
+  PILOT_NOA_STATE_STANDBY = 2;
+  PILOT_NOA_STATE_ACTIVE = 3;
+  PILOT_NOA_STATE_PAUSE = 4;
+  PILOT_NOA_STATE_PROHIBITION = 5;
+  PILOT_NOA_STATE_FAULT = 6;
+}
+
+enum LssMode {
+  LSS_Disable = 0;
+  LSS_LDW = 1;
+  LSS_LKA = 2;
+  LSS_ELK = 3;
+}
+
+enum LssState {
+  LSS_OFF = 0;
+  LSS_STANDBY = 1;
+  LSS_ACTIVE = 2;
+  LSS_FAULT = 3;
+}
+
+enum AebState {
+  AEB_STATE_INIT = 0;
+  AEB_STATE_FAULT = 1;
+  AEB_STATE_OFF = 2;
+  AEB_STATE_PASSIVE = 3;
+  AEB_STATE_STANDBY = 4;
+  AEB_STATE_ACTIVE = 5;
+}
+
+enum AebEnableStatus {
+  AEB_ENABLE_NONE = 0;
+  AEB_ENABLE_FRONT = 1;
+  AEB_ENABLE_BACK = 2;
+  AEB_ENABLE_FRONT_AND_BACK = 3;
+}
+
+enum FvswState {
+  FVSW_OFF = 0;
+  FVSW_STANDBY = 1;
+  FVSW_ACTIVE = 2;
+  FVSW_FAULT = 3;
+  FVSW_WARNING = 4;
+}
+
+enum FvswSubState{
+  FVSW_ACTIVE_NONE = 0;
+  FVSW_ACTIVE_STANDBY = 1;
+  FVSW_ACTIVE_WARNING = 2;
+}
+
+message FuncAccState {
+  PilotAccState state = 1;
+  PilotAccState last_state = 2;
+  AccActiveSubState active_sub_state = 3;
+  bool activated_before = 4;
+  bool driveoff_tip = 5;  // driveoff tip after front car driveoff
+  HeadwayLevel headway_level = 6;
+  bool flag_acc_override = 7;
+  uint32 unavailable_reason = 8;
+  uint32 quit_reason = 9;
+  int32 set_speed_kph = 10;  // kph; expected vehicle speed on HMI
+}
+
+message FuncIccState {
+  IccState state = 1;
+  IccState last_state = 2;
+  bool hands_off_warn = 3;
+  bool hands_off_warn_lv1 = 4;
+  bool hands_off_warn_lv2 = 5;
+  uint32 unavailable_reason = 6;
+  uint32 quit_reason = 7;
+}
+
+message FuncNOAState {
+  NOAState state = 1;
+  NOAState last_state = 2;
+  uint32 unavailable_reason = 3;
+  uint32 quit_reason = 4;
+}
+
+message FuncLssState {
+  LssMode mode = 1;
+  LssState state = 2;
+  LssState last_state = 3;
+  uint32 sensitivity = 4;
+  uint32 unavailable_reason = 5;
+  uint32 quit_reason = 6;
+}
+
+message FuncAebState {
+  AebState state = 1;
+  AebState last_state = 2;
+  AebEnableStatus aeb_enable_status = 3;
+  uint32 fault_reason = 4;
+  uint32 unavailable_reason = 5;
+  uint32 quit_reason = 6;
+}
+
+message FuncFvswState {
+  FvswState state = 1;
+  FvswState last_state = 2;
+  uint32 unavaiable_reason = 3;
+  uint32 quit_reason = 4;
+}
+
+message PilotPncFuncState {
+  FuncAccState acc_state = 1;
+  FuncIccState icc_state = 2;
+  FuncLssState lss_state = 3;
+  FuncAebState aeb_state = 4;
+  FuncFvswState fvsw_state = 5;
+  FuncNOAState noa_state = 6;
+}
+
+message PncFsInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // PilotPncFuncState
+  PilotPncFuncState func_state = 3;
+}

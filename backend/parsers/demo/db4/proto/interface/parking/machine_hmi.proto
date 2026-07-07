@@ -1,0 +1,225 @@
+
+syntax = "proto3";
+import "type/basic.proto";
+import "interface/parking/hpa_state.proto";
+import "type/parking_event.proto";
+import "type/system_type_base.proto";
+package autodrive.workflow.proto;
+
+/**
+ * 功能开关， 正常情况下应该有HUT-> HMI-> 状态机
+ * 在故障的情况下，可能是状态机请求HUT关闭功能开关
+ */
+message FunctionSwitch {
+  bool vpa_func_ = 1; // vpa 功能总开关
+  bool apa_func_ = 2; // apa 功能总开关
+}
+
+message WorkMode {
+  enum WorkModeType {
+    MODE_NONE = 0;
+    VPA = 1; // VPA MODE
+    APA = 2; // PURE APA MODE
+    RPA = 3; // PURE RPA MODE
+    TRA = 4; //
+    NPA = 5;
+  }
+  WorkModeType type = 1;
+}
+
+/**
+ * 用户选择的apa车位
+ */
+message UserSelectSlot {
+  repeated int32 ids = 1; // mcu id
+  repeated int32 version_ids = 2;
+  uint64 timestamp = 3;
+}
+
+/**
+ * 用户选择的apa车位
+ */
+message UserSelectDirection {
+  enum Direction {
+    UNKNOW = 0;
+    FRONT = 1;
+    BACK = 2;
+  }
+  Direction direction = 1;
+  uint64 timestamp = 2;
+}
+
+message UserParkingOut {
+  enum ParkingOutDirection {
+    UNKNOW = 0;
+    V_FR_LEFT = 1;   // vertical front left
+    V_FR_CENTER = 2; // vertical front center
+    V_FR_RIGHT = 3;  // vertical front right
+    V_RR_LEFT = 4;   // vertical rear left
+    V_RR_CENTER = 5; // vertical rear center
+    V_RR_RIGHT = 6;  // vertical rear right
+    H_FR_LEFT = 7;   // horizontal front left
+    H_FR_RIGHT = 8;  // horizontal rear right
+  }
+  ParkingOutDirection parking_out_direction = 1;
+  uint64 timestamp = 2;
+  int32 slot_id = 3; // reserved
+}
+
+message UserSelfSelectSlot {
+  enum SlotType {
+    TYPE_UNKNOWN = 0;
+    VERTICAL_TYPE = 1;
+    PARALLEL_TYPE = 2;
+    OBLIQUE_TYPE = 3;
+  }
+
+  bool slot_valid = 1;
+  uint32 slot_id = 2;
+  uint64 timestamp = 3;
+  repeated Vector3f vcs_points = 4;
+  SlotType slot_type = 5;
+}
+
+/**
+ * reply msg format
+ * 在UserEvent 或者UserSelectSlot 上报的时候，状态机会检查是否允许此操作
+ * 拒绝的情况下回复原因
+ */
+message UnifiedResponse {
+  enum ErrorCode {
+    DEFAULT = 0; // only
+    OK = 1;
+    NOK = 2;
+  }
+  ErrorCode code = 1;
+  // 用户操作被拒绝的原因，建议使用reasons字段
+  OperaterRefusedType reason = 2;
+  string info = 3;
+  // 用户操作被拒绝的原因列表
+  repeated OperaterRefusedType reasons = 4;
+}
+
+/**
+ * 用户消息
+ */
+message UserMessage {
+  int32 user_event = 1;
+  UserSelectSlot selected_slot = 2;
+  UserSelectDirection selected_direction = 3;
+  UserParkingOut parking_out = 4;
+  UserSelfSelectSlot self_selected_slot = 5;
+}
+
+/**
+ * request from statemachine to hmi
+ */
+message ApaHmiState {
+  hpa_state.ApaState pre_state = 1;
+  hpa_state.ApaState cur_state = 2;
+  ApaFunctionExitReason exit_reason = 3;
+  DiagType diag = 4;
+  FunctionPauseReason pause_reason = 5;
+  ProcedureEventType procedure_event = 6;
+  repeated FunctionPauseReason pause_reasons = 7;
+  repeated OperaterRefusedType nok_reasons = 8;
+  WorkMode work_mode = 9;
+  repeated ProcedureEventType procedure_events = 10;
+}
+
+/**
+ * request from statemachine to hmi
+ */
+message MachineState {
+
+  hpa_state.VpaStateDetailType type = 1;
+  VpaFunctionExitReason exit_reason = 2;
+  DiagType diag = 3; // 未使用
+  // pause_reason建议使用pause_reasons代替
+  FunctionPauseReason pause_reason = 4;
+
+  ProcedureEventType procedure_event = 5;
+  // 定位时建图的状态
+  hpa_state.VpaStateDetailType sub_type = 6;
+  // 暂停原因列表
+  repeated FunctionPauseReason pause_reasons = 7;
+  // 在BUILD_MAP_CLICKABLE，START_VPA_CLICKABLE状态时，显示告知不能开始功能的原因
+  // 这里不采用pause_reasons， 是因为可能存在暂停之外的其他原因
+  repeated OperaterRefusedType nok_reasons = 8;
+  // 对应sub_type的nok_reasons，定位时建图的状态
+  repeated OperaterRefusedType sub_nok_reasons = 9;
+  // VPA下apa状态, 用于获取vpa下apa的各种状态, 例如暂停原因
+  ApaHmiState hpa_state = 10;
+
+  enum HandShakableType {
+    HANDSHAKABLE_ENABLE = 0;         // default
+    HANDSHAKABLE_DISABLE_SPEED = 1;  // speed not 0
+    HANDSHAKABLE_DISABLE_GEAR = 2;    // gear not D
+  };
+
+  HandShakableType handshakable = 11; // 是否可以握手的状态
+  repeated ProcedureEventType procedure_events = 12;
+}
+
+message TraStateHmi {
+  TraStateDetailType type = 1;
+  FunctionPauseReason pause_reason = 2;
+  ProcedureEventType procedure_event = 3;
+  TraFunctionExitReason exit_reason = 4;
+  repeated FunctionPauseReason pause_reasons = 5;
+  repeated OperaterRefusedType nok_reasons = 6;
+  repeated ProcedureEventType procedure_events = 7;
+}
+
+message NpaStateHmi {
+  NpaStateDetailType type = 1;
+  FunctionPauseReason pause_reason = 2;
+  ProcedureEventType procedure_event = 3;
+  NpaFunctionExitReason exit_reason = 4;
+  repeated FunctionPauseReason pause_reasons = 5;
+  repeated OperaterRefusedType nok_reasons = 6;
+  repeated ProcedureEventType procedure_events = 7;
+}
+
+enum Source {
+  SOURCE_UNKNOW = 0;
+  SOURCE_APA = 1;
+  SOURCE_VPA = 2;
+  SOURCE_TRA = 3;
+  SOURCE_NPA = 4;
+}
+
+message HmiUserMessage {
+  Source source = 1;
+  UserMessage user_massge = 2;
+}
+
+message HmiMachineState {
+  Source source = 1;
+  MachineState vpa_state = 2;
+}
+
+message HmiApaHmiState {
+  Source source = 1;
+  ApaHmiState apa_hmi_state = 2;
+}
+
+message HmiTraHmiState {
+  Source source = 1;
+  TraStateHmi tra_hmi_state = 2;
+}
+
+message HmiNpaHmiState {
+  Source source = 1;
+  NpaStateHmi npa_hmi_state = 2;
+}
+
+message HmiFunctionSwitch {
+  Source source = 1;
+  FunctionSwitch fswitch = 2;
+}
+
+message HmiUnifiedResponse {
+  Source source = 1;
+  UnifiedResponse response = 2;
+}

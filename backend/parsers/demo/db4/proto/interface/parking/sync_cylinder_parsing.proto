@@ -1,0 +1,58 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/parsing_base.proto";
+package autodrive.workflow.proto;
+
+enum CylinderParsingLabel {
+  kRoad = 0;
+  kSidewalk = 1;
+  kSky = 2;
+  kTerrain = 3;
+  kCurb = 4;
+  kFence = 5;
+  kTree = 6;
+  kPole = 7;
+  kTrafficSign = 8;
+  kVehicle = 9;
+  kThreeWheel = 10;
+  kTwoWheel = 11;
+  kPerson = 12;
+  kRider = 13;
+  kTrolley = 14;
+  kTrafficCone = 15;
+  kBollard = 16;
+  kFoldingWarningSign = 17;
+  kSingleWaterBarrier = 18;
+  kUntraversable = 19;
+  kParkingRod = 20;
+  kParkingLock = 21;
+  kCementColumn = 22;
+  kbackground = 23;
+  kFireHydrant = 24;
+  kPaintedWallRoot = 25;
+}
+
+message CylinderParsingImageData {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+  uint32 channel = 4;
+}
+
+message CylinderParsingData {
+  uint32 camera_idx = 1;
+  float scale = 2;
+  CylinderParsingImageData free_space = 3;
+  CylinderParsingImageData feature_map = 4;
+  RleCompressedData rle_parsing_compressed = 5;
+  perception_base.Rect roi_output = 6;
+}
+
+message SyncCylinderParsingMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  repeated CylinderParsingData cylinder_parsing_data = 3;
+}

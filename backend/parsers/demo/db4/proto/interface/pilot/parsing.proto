@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message ParsingImageData {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+  uint32 channel = 4;
+}
+
+enum ParsingFormat {
+  ParsingFormat_Raw = 0;             // 原始格式
+  ParsingFormat_Label = 1;           // 标签
+  ParsingFormat_Label_RLE = 2;       // 使用 RLE 压缩算法
+  ParsingFormat_Label_BPU_RLE = 3;   // 使用 BPU 的 RLE 压缩算法
+}
+
+message ParsingMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  ParsingImageData feature_map = 3;
+  ParsingFormat format = 4;
+}

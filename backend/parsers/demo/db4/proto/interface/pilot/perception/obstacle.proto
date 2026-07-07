@@ -1,0 +1,526 @@
+syntax = "proto3";
+import "interface/pilot/perception/ad_base.proto";
+import "type/base.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum ValidInfo {
+  VALID_INFO_TTC = 0;
+  VALID_INFO_DISTANCE = 1;
+  VALID_INFO_HMW = 2;
+  VALID_INFO_LDW = 3;
+  VALID_INFO_INFORWARDIR = 4;
+  VALID_INFO_POLY = 5;
+  VALID_INFO_YAW = 6;
+  VALID_INFO_LENGTH = 7;
+  VALID_INFO_WIDTH = 8;
+  VALID_INFO_HEIGHT = 9;
+  VALID_INFO_TRAVERSABLE = 10;
+  VALID_INFO_CURRLANE = 11;
+  VALID_INFO_MISSDETECTION = 12;
+  VALID_INFO_BOX3DIMG = 13;
+  VALID_INFO_DIST_CONVERGENCE = 14;
+  VALID_INFO_DIST_CONF_0 = 15;
+  VALID_INFO_MOTION_CATEGORY = 16;
+  VALID_INFO_MOTION_STATUS = 17;
+  VALID_INFO_MEASUREMENT_STATUS = 18;
+  VALID_INFO_UNSTABLE_OUTPUT = 19;
+}
+
+enum NdmObstacleType {
+  OBSTACLETYPE_VEHICLEREAR = 0;
+  OBSTACLETYPE_VEHICLEFULL = 1;
+  OBSTACLETYPE_PEDESTRIAN = 2;
+  OBSTACLETYPE_TRAFFICSIGN = 3;
+  OBSTACLETYPE_TRAFFICLIGHT = 4;
+  OBSTACLETYPE_PARKINGSLOT = 5;
+  OBSTACLETYPE_ROADSIGN = 6;
+  OBSTACLETYPE_CROSSWALKLINE = 7;
+  OBSTACLETYPE_TRAFFICARROW = 8;
+  OBSTACLETYPE_TRAFFICCONE = 9;
+  OBSTACLETYPE_BARREL = 10;
+  OBSTACLETYPE_YIELDMARK = 11;
+  OBSTACLETYPE_SPEEDMARK = 12;
+  OBSTACLETYPE_CHARACTER = 13;
+  OBSTACLETYPE_STOPLINE = 14;
+  OBSTACLETYPE_DIAMOND = 15;
+  OBSTACLETYPE_BICYCLESIGN = 16;
+  OBSTACLETYPE_SPEEDBUMPS = 17;
+  OBSTACLETYPE_CYCLIST = 18;
+  OBSTACLETYPE_PARKINGLOCK = 19;
+  OBSTACLETYPE_SPEEDCAMERA = 20;
+  OBSTACLETYPE_TRAFFICLIGHTLENS = 21;
+  OBSTACLETYPE_LEAKEDCAR = 22;
+  OBSTACLETYPE_UNKNOWN = 23;
+  OBSTACLETYPE_ANIMAL = 51;
+  OBSTACLETYPE_WARNINGTRIANGLE = 52;
+  OBSTACLETYPE_FENCE = 53;
+  OBSTACLETYPE_PEDHEAD = 54;
+  ObstacleType_Bicycle = 55;
+}
+
+enum MonoVehicleTypeFlag {
+  MONO_VEHICLE_TYPE_FLAG_REAR = 0;
+  MONO_VEHICLE_TYPE_FLAG_FULL = 1;
+  MONO_VEHICLE_TYPE_FLAG_REAR_AND_FULL = 2;
+}
+
+enum FovTruncatedType{
+  FOV_TRUNCATED_TYPE_UNSPECIFIED = 0;
+  FOV_TRUNCATED_TYPE_TOP = 1;
+  FOV_TRUNCATED_TYPE_BOTTOM = 2;
+  FOV_TRUNCATED_TYPE_RIGHT = 3;
+  FOV_TRUNCATED_TYPE_LEFT = 4;
+}
+
+enum ObsVehicleType {
+  VEHICLETYPE_UNKNOWN = 0;
+  VEHICLETYPE_CAR = 1;
+  VEHICLETYPE_SUV = 2;
+  VEHICLETYPE_VAN = 3;
+  VEHICLETYPE_BUS = 4;
+  VEHICLETYPE_TRUCK = 5;
+  VEHICLETYPE_AMBULANCE = 6;
+  VEHICLETYPE_POLICECAR = 7;
+  VEHICLETYPE_FIRETRUCK = 8;
+  VEHICLETYPE_TRICYCLE = 9;
+  VEHICLETYPE_SPECIALCAR = 10;
+  VEHICLETYPE_TINYCAR = 11;
+  VEHICLETYPE_LORRY = 12;
+  VEHICLETYPE_SMALLMEDIUMCAR = 13;
+  VEHICLETYPE_MOTORS = 14;
+  VEHICLETYPE_MINIVAN = 15;
+  VEHICLETYPE_IVECO = 16;
+  VEHICLETYPE_PICKUP = 17;
+  VEHICLETYPE_PANELVAN = 18;
+}
+
+enum NdmWorldSpaceInfoPositionType {
+  WORLDSPACEINFOPOSITIONTYPE_UNKNOWN = 0;
+  WORLDSPACEINFOPOSITIONTYPE_REARLEFT = 1;
+  WORLDSPACEINFOPOSITIONTYPE_REARCENTER = 2;
+  WORLDSPACEINFOPOSITIONTYPE_REARRIGHT = 3;
+  WORLDSPACEINFOPOSITIONTYPE_FRONTLEFT = 4;
+  WORLDSPACEINFOPOSITIONTYPE_FRONTCENTER = 5;
+  WORLDSPACEINFOPOSITIONTYPE_FRONTRIGHT = 6;
+  WORLDSPACEINFOPOSITIONTYPE_LEFTCENTER = 7;
+  WORLDSPACEINFOPOSITIONTYPE_RIGHTCENTER = 8;
+  WORLDSPACEINFOPOSITIONTYPE_CENTER = 9;
+}
+
+enum ObjCutInFlagType {
+  OBJCUTIN_DEFAULT = 0;
+  OBJCUTIN_CUTINHOSTLANE = 1;
+  OBJCUTIN_CUTINFOV = 2;
+}
+
+enum ObjCutInLaneType {
+  OBJCUTINLANE_DEFAULT = 0;
+  OBJCUTINLANE_MEASURED = 1;
+  OBJCUTINLANE_PREDICTED = 2;
+}
+
+enum TrafficLightProperty {
+  TLPROPERTY_TYPE = 0;
+  TLPROPERTY_COLOR = 1;
+}
+
+enum TrafficSignProperty {
+  TSPROPERTY_TYPE = 0;
+}
+
+enum RoadSignProperty {
+  RSPROPERTY_TYPE = 0;
+}
+
+enum FeatureMapType {
+  FEATUREMAPTRACKING = 0;
+  FEATUREMAPCONF = 1;
+}
+
+enum LaneRelationType{
+  LANERELATIONTYPE_UNKNOW = 0;
+  LANERELATIONTYPE_IRRELEVANT = 1;
+  LANERELATIONTYPE_RELEVANT = 2;
+}
+
+enum SensorSourceType {
+  SENSOR_SOURCE_TYPE_UNKNOWN = 0;
+  SENSOR_SOURCE_TYPE_CAMERA = 1;
+  SENSOR_SOURCE_TYPE_LIDAR = 2;
+  SENSOR_SOURCE_TYPE_RADAR = 3;
+  SENSOR_SOURCE_TYPE_FRONT_CAMERA = 4;
+  SENSOR_SOURCE_TYPE_FRONT_NEAR_CAMERA = 5;
+  SENSOR_SOURCE_TYPE_FRONT_FAR_CAMERA = 6;
+  SENSOR_SOURCE_TYPE_REAR_CAMERA = 7;
+  SENSOR_SOURCE_TYPE_MULTI_CAMERA = 8;
+  SENSOR_SOURCE_TYPE_FRONT_RADAR = 9;
+  SENSOR_SOURCE_TYPE_LEFT_FRONT_RADAR = 10;
+  SENSOR_SOURCE_TYPE_RIGHT_FRONT_RADAR = 11;
+  SENSOR_SOURCE_TYPE_REAR_RADAR = 12;
+  SENSOR_SOURCE_TYPE_LEFT_REAR_RADAR = 13;
+  SENSOR_SOURCE_TYPE_RIGHT_REAR_RADAR = 14;
+  SSMSENSOR_SOURCE_TYPE_MULTI_SENSOR = 15;
+}
+
+enum PredictedTrajType {
+  PREDICTED_TRAJ_TYPE_TRAJ_IN_BEV_VISION = 0;
+  PREDICTED_TRAJ_TYPE_BBOX_IN_FIRST_VISION = 1;
+  PREDICTED_TRAJ_TYPE_EXPAND_TRAJ_IN_BEV_VISION = 2;
+  PREDICTED_TRAJ_TYPE_NULL_TRAJ_IN_BEV_VISION = 3;
+  PREDICTED_TRAJ_TYPE_NULL_TRAJ_IN_FIRST_VISION = 4;
+}
+
+enum TrajPredStatusType {
+  TRAJ_PRED_STATUS_TYPE_NORMAL = 0;
+  TRAJ_PRED_STATUS_TYPE_EGO_ONLY = 1;
+  TRAJ_PRED_STATUS_TYPE_VEHICLE_ONLY = 2;
+  TRAJ_PRED_STATUS_TYPE_HISTORY_FRAME_NOT_ENOUGH = 3;
+  TRAJ_PRED_STATUS_TYPE_FUTURE_FRAME_NOT_ENOUGH = 4;
+  TRAJ_PRED_STATUS_TYPE_PED_LABEL_UNSTABLE = 5;
+  TRAJ_PRED_STATUS_TYPE_OBSTACLE_TOO_FAR = 6;
+  TRAJ_PRED_STATUS_TYPE_OBSTACLE_STATIONARY = 7;
+  TRAJ_PRED_STATUS_TYPE_OBSTACLE_DRIFTING = 8;
+  TRAJ_PRED_STATUS_TYPE_OBSTACLE_YAW_BOUNCING = 9;
+  TRAJ_PRED_STATUS_TYPE_REACH_MODEL_LIMIT_NUM = 10;
+  TRAJ_PRED_STATUS_TYPE_DENSE_PARKING_VEHICLE = 11;
+  TRAJ_PRED_STATUS_TYPE_VEHICLE_LATERAL_DRIFTING = 12;
+  TRAJ_PRED_STATUS_TYPE_NORMAL_TOO_CLOSS_CORRECT_YAW = 13;
+  TRAJ_PRED_STATUS_TYPE_FILT_BY_VALID_OBS_HEAD = 14;
+}
+
+enum ManeuverType {
+  MANEUVER_TYPE_PRE_CUTIN = 0;
+  MANEUVER_TYPE_LANE_CHANGE_LEFT = 1;
+  MANEUVER_TYPE_LANE_CHANGE_RIGHT = 2;
+  MANEUVER_TYPE_LANE_CHANGE_KEEP = 3;
+  MANEUVER_TYPE_LON_SPEED_UP = 4;
+  MANEUVER_TYPE_LON_SLOW_DOWN = 5;
+  MANEUVER_TYPE_LON_KEEP_VELO = 6;
+  MANEUVER_TYPE_COLLISION_RISK = 7;
+  MANEUVER_TYPE_PED_MOVE_LEFT = 8;
+  MANEUVER_TYPE_PED_MOVE_RIGHT = 9;
+  MANEUVER_TYPE_PED_MOVE_FORWARD = 10;
+  MANEUVER_TYPE_PED_MOVE_BACK = 11;
+  MANEUVER_TYPE_PED_LON_STOP = 12;
+  MANEUVER_TYPE_PED_LAT_STOP = 13;
+  MANEUVER_TYPE_COLLISION_RISK_IN_STA_SAFEAREA = 14;
+  MANEUVER_TYPE_COLLISION_RISK_IN_DYN_SAFEAREA = 15;
+}
+
+message Velocity {
+  float vx = 1;
+  float vy = 2;
+  float vz = 3;
+}
+
+message Accelerate {
+  float ax = 1;
+  float ay = 2;
+  float az = 3;
+}
+
+message ObjectConf {
+  float pos_conf = 1;
+  float yaw_conf = 2;
+  float speed_conf = 3;
+  float acc_conf = 4;
+}
+
+message ObjCornerPoint {
+  float objCornerPoint_x = 1;
+  float objCornerPoint_y = 2;
+  float objDistInLane = 3;
+  int32 objCutInFlag = 4;
+  int32 objCutInLane = 5;
+  ObjCutInLaneType ll_type = 6;
+  ObjCutInLaneType rr_type = 7;
+  float distance_to_ll = 8;
+  float distance_to_rr = 9;
+  float cutin_speed = 10;
+  int32 cutin_speed_valid =11;
+}
+
+message CutLaneStatus {
+  int32 id = 1;
+  int32 position = 2;
+  bool have_img_measure = 3;
+  BasePoint nearest_pt = 4;
+  BasePoint farthest_pt = 5;
+  float nearest_distance = 6;
+  float farthest_distance = 7;
+}
+
+message GNSSPosition {
+  double longitude = 1;
+  double latitude = 2;
+}
+
+message UTMPosition {
+  double x = 1;
+  double y = 2;
+}
+
+message ChangingLaneStatus {
+  bool is_changing_lane = 1;
+  int32 src = 2;
+  int32 dest = 3;
+}
+
+message ObjectAngle {
+  bool angle_left_v = 1;
+  float angle_left = 2;
+  bool angle_middle_v = 3;
+  float angle_middle = 4;
+  bool angle_right_v = 5;
+  float angle_right = 6;
+  bool angle_side_v = 7;
+  float angle_side = 8;
+}
+
+message WorldSpaceInfo {
+  float yaw = 1;
+  Velocity vel = 2;
+  float length = 3;
+  float width = 4;
+  float height = 5;
+  BasePolygon poly = 6;
+  BasePoint position = 7;
+  int32 traversable = 8;
+  float hmw = 9;
+  float ttc = 10;
+  int32 curr_lane = 11;
+  BasePoint position_obs = 12;
+  float ettc = 13;
+  float acc = 14;
+  int32 motion_state = 15;
+  Velocity vel_abs_world = 16;
+  Accelerate acc_abs_world = 17;
+  int32 motion_category = 18;
+  int32 position_type = 19;
+  float yaw_rate = 20;
+  float curvature = 21;
+  float sigma_yaw = 22;
+  repeated float sigma_vel = 23;
+  float sigma_width = 24;
+  float sigma_height = 25;
+  repeated float sigma_position = 26;
+  float sigma_length = 27;
+  float conf_yaw = 28;
+  int32 cipv = 29;
+  int32 measurement_status = 30;
+  float mid_angle = 31;
+  ObjCornerPoint obj_corner_point = 32;
+  BasePoint position_world = 33;
+  ObjectConf obj_conf = 34;
+  Accelerate acc_ref = 35;
+  repeated BasePoint multi_pts_vcs = 36;
+  repeated BasePoint multi_pts_img = 37;
+  int32 mcp = 38;
+  int32 curr_path = 39;
+  int32 cipv_debug_info_a = 40;
+  ChangingLaneStatus changing_lane_status = 41;
+  repeated CutLaneStatus cut_lane_status = 42;
+  float sigma_yaw_rate = 43;
+  int32 head_rear_type = 44;
+  repeated float sigma_acc_ref = 45;
+  float R_abc_world = 46;
+  float cover_ratio = 47;
+  ObjectAngle obj_angle = 48;
+  int32 extend_cipv = 49;
+  int32 pro_flag = 50;
+  int32 extend_cipv_debug_info_a = 51;
+  int32 vehicle_type_flag = 52;
+  int32 fov_truncated_type = 53;
+  enum StereoType {
+    STEREO_TYPE_EARTH_POINT = 0;
+    STEREO_TYPE_CENTER_POINT = 1;
+  }
+  StereoType stereo_type = 54;
+  bool is_danger = 55;
+  float cam_overlap_left = 56;
+  float cam_overlap_right = 57;
+}
+
+message ImageSpaceInfo {
+  Rect rect = 1;
+  Rect rect_sta = 2;
+  Box3D box = 3;
+  BasePolygon poly = 4;
+  float sigma_width = 5;
+  float sigma_height = 6;
+  float sigma_x = 7;
+  float sigma_y = 8;
+}
+
+message PropertyInfo {
+  CommonColor color = 1;
+}
+
+message ReleWithObst{
+  LaneRelationType relation_type = 1;
+  PerceptionLineType left_type = 2;
+  PerceptionLineType right_type = 3;
+}
+
+enum ObjectSelectLevel {
+  OTHER_LEVEL = 0;    // out of parsing
+  UNKNOW_LEVEL = 4;   // unknow vcs x/y
+  INIT_LEVEL = 5;     // init level
+  THIRD_LEVEL = 6;    // vcs y < 80m x -9~9m
+  SECOND_LEVEL = 7;   // vcs y < 60m x -5~5m
+  CIPV_LEVEL = 8;      // cipv
+}
+
+enum PilotVehicleType {
+  VehicleType_Unknown = 0;
+  VehicleType_Car = 1;
+  VehicleType_SUV = 2;
+  VehicleType_Van = 3;
+  VehicleType_Bus = 4;
+  VehicleType_Truck = 5;
+  VehicleType_Ambulance = 6;
+  VehicleType_PoliceCar = 7;
+  VehicleType_FireTruck = 8;
+  VehicleType_Tricycle = 9;
+  VehicleType_SpecialCar = 10;
+  VehicleType_TinyCar = 11;
+  VehicleType_Lorry = 12;
+}
+
+message NdmObstacle {
+  int32 id = 1;
+  int32 type = 2;
+  int32 conf = 3;
+  int32 life_time = 4;
+  int32 age = 5;
+  ImageSpaceInfo img_info = 6;
+  WorldSpaceInfo world_info = 7;
+  PropertyInfo prop_info = 8;
+  int32 rec_status = 9;
+  int32 valid_info = 10;
+  ReleWithObst lane_relevance = 11;
+  int32 serial_number = 12;
+  ObjectSelectLevel select_level = 13;
+  repeated int32 child_id = 14;
+  int32 mcp = 15;
+  repeated Category category = 16;
+  PilotVehicleType sub_type = 17;
+  int64 predict_time = 18;
+  int32 predict_frame = 19;
+  int32 sensor_ID = 20;
+  int32 matched_vision_id = 21;
+  int32 matched_frontradar_id = 22;
+  SensorSourceType sensor_source_type = 23;
+  repeated FusionSensorInfo fusion_sensor_info = 24;
+}
+
+message PredictPath {
+  repeated float odo_predict_path = 1;
+  repeated float fusion_predict_path = 2;
+};
+
+message FusionSensorInfo {
+  SensorSourceType sensor_source = 1;
+  int32 sensor_raw_object_id = 2;
+  int64 time_stamp = 3;
+  int32 obs_type = 4;
+  int32 veh_sub_type = 5;
+  BasePoint position = 6;
+  Velocity vel = 7;
+  Accelerate acc_ref = 8;
+  Velocity vel_abs_world = 9;
+  Accelerate acc_abs_world = 10;
+}
+
+message MultSensorObsFusionStatus {
+  int64 time_stamp = 1;
+  string source = 2;
+  bool is_normal = 3;
+  bool is_fusion = 4;
+  int32 fusion_mode = 5;
+  string invalid_sensor = 6;
+  int32 fusion_status = 7;
+}
+
+message Obstacles {
+  Header header = 1;
+  int32 cam_id = 2;
+  repeated NdmObstacle obstacle = 3;
+  float conf_scale = 4;
+  int32 cipv_id = 5;
+  int64 asyn_time_stamp = 6;
+  int64 vec_src_time = 7;
+  int64 ped_src_time = 8;
+  int32 mcp_id = 9;
+  int32 frame_id = 10;
+  int32 obstacle_num = 11;
+  SensorSourceType source_type = 12;
+  MultSensorObsFusionStatus mult_sensor_obs_fusion_status = 13;
+  string source = 14;
+  PredictPath predict_path = 15;
+  VehiclePose vehicle_pose = 16;
+}
+
+message PredictedTrajPoint {
+  Vector3f trajectory = 1;
+  repeated float covariance = 2;
+  Vector3f velocity = 3;
+  Vector3f acceleration = 4;
+  float yaw_vcs = 5;
+  Rect first_vision_bbox = 6;
+}
+
+message PredictedTraj {
+  repeated PredictedTrajPoint trajectory = 1;
+  float probability = 2;
+  int32 anchor_idx = 3;
+  float step_time = 4;
+  PredictedTrajType traj_type = 5;
+  repeated Vector3f static_safe_area = 6;
+  repeated Vector3f dynamic_safe_area = 7;
+}
+
+message PredictionStatus {
+  float traj_valid_prob = 1;
+  TrajPredStatusType traj_pred_status = 2;
+  repeated ManeuverInfo maneuvers = 3;
+  bool is_critical_obstacle = 4;
+}
+
+message ManeuverInfo {
+  ManeuverType type = 1;
+  bool flag = 2;
+  float conf = 3;
+  float maneuver_dist = 4;
+  float maneuver_time = 5;
+  int64 target_lane_index = 6;
+}
+
+message UsedInput {
+  Header header = 1;
+  Header prev_input = 2;
+}
+
+message ObstacleTrackRun {
+  Header header = 1;
+  Header used_state = 2;
+  repeated UsedInput used_inputs = 3;
+  repeated Header removed_inputs = 4;
+  int64 track_time = 5;
+  int64 veh_sensor_time = 6;
+  int64 veh_cross_time = 7;
+  int64 ped_sensor_time = 8;
+  int64 ped_cross_time = 9;
+}
+
+message ObstacleStateRun {
+  Header header = 1;
+  Header used_track = 2;
+  Header used_lane = 3;
+  int64 state_time = 4;
+  int64 veh_state_time = 5;
+  int64 veh_glbstate_time = 6;
+  int64 ped_state_time = 7;
+  int64 ped_glbstate_time = 8;
+}

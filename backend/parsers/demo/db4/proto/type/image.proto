@@ -1,0 +1,50 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+// Camera position
+enum Position {
+  IMAGE_UPLEFT = 0;
+  IMAGE_UPRIGHT = 1;
+  IMAGE_LOWER_LEFT = 2;
+  IMAGE_LOWER_RIGHT = 3;
+  AROUND_LEFT = 4;
+  AROUND_RIGHT = 5;
+  AROUND_FRONT = 6;
+  AROUND_REAR = 7;
+  IMAGE_FRONT = 8;
+  IMAGE_REAR = 9;
+}
+
+// camera type
+enum Type {
+  H265 = 0;
+  YUV420P = 1;
+  BGR = 2;
+  RGB = 3;
+  JPEG = 4;
+  H264 = 5;
+}
+
+// camera mode
+enum Mode {
+  ORIGINAL = 0;
+  STITCH = 1;
+  CYL = 2;
+}
+
+message Image {
+  // raw image data (BGR 8UC3)
+  bytes data = 1;
+  // image width
+  uint32 width = 2;
+  // image height
+  uint32 height = 3;
+  // element size
+  uint32 element_size = 4;
+  // position
+  Position pos = 5;
+  // camera mode
+  Mode mode = 6;
+  // type
+  Type type = 7;
+}

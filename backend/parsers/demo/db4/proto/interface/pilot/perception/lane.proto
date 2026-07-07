@@ -1,0 +1,70 @@
+syntax = "proto3";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+message LinePt {
+  Vector3f start_pt = 1;
+  Vector3f end_pt = 2;
+}
+
+message PilotLaneContour {
+  repeated Vector3f pts = 1;
+  int32 type = 2;
+  LinePt line = 3;
+}
+
+message LaneExtraPoints {
+  repeated Vector3f extra_points = 1;
+  repeated int32 extra_points_type = 2;
+}
+
+message Lane {
+  int32 id = 1;
+  int32 life_time = 2;
+  int32 gray = 3;
+  int32 coeffs_status = 4;
+  repeated float coeffs = 5;
+  repeated Vector3f end_points = 6;
+  int32 type = 7;
+  int32 source = 8;
+  repeated PilotLaneContour contours = 9;
+  float dist_to_front_wheel = 10;
+  float width = 11;
+  int32 type_sibling = 12;
+  float conf = 13;
+  float parsing_conf = 14;
+  float rmse = 15;
+  float vertical_conf = 16;
+  repeated float sigma_coeffs = 17;
+  LaneExtraPoints cross_points = 18;
+  int32 extra_type = 19;
+}
+
+message PitchInfoV1 {
+  bool host_lane_valid = 1;
+  bool left_lane_valid = 2;
+  bool right_lane_valid = 3;
+  bool fusion_pitch_valid = 4;
+  float fusion_pitch = 5;
+  repeated float group_pitches_cutPnt = 6;
+  repeated float group_pitches = 7;
+}
+
+message Lanes {
+  int32 cam_id = 1;
+  repeated Lane lines = 2;
+  float dtlc = 3;
+  float ttlc = 4;
+  int64 src_time_stamp = 5;
+  int64 asyn_time_stamp = 6;
+  int32 tag = 7;
+  repeated PilotLaneContour lane_sample_points = 8;
+  int32 frame_id = 9;
+  int32 line_num = 10;
+  int32 pitch_output_source = 11;
+  PitchInfoV1 pitch_info = 12;
+  float main_lane_width = 13;
+  int32 mal_pos_req = 14;
+  repeated float odo_predict_path = 15;
+  repeated float fusion_predict_path = 16;
+}

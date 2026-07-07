@@ -1,0 +1,163 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+enum VehicleSubType {
+  kVehicleSubTypeUnknown = 0;
+  kVehicleSubTypeCar = 1;
+  kVehicleSubTypeSUV = 2;
+  kVehicleSubTypeVan = 3;
+  kVehicleSubTypeBus = 4;
+  kVehicleSubTypeTruck = 5;
+  kVehicleSubTypeAmbulance = 6;
+  kVehicleSubTypePoliceCar = 7;
+  kVehicleSubTypeFireTruck = 8;
+  kVehicleSubTypeTricycle = 9;
+  kVehicleSubTypeSpecialCar = 10;
+  kVehicleSubTypeTinyCar = 11;
+  kVehicleType_Lorry = 12;
+  kVehicleType_SmallMediumCar = 13;
+  kVehicleType_Motors = 14;
+  kVehicleType_MiniVan = 15;
+  kVehicleType_Iveco = 16;
+  kVehicleType_Pickup = 17;
+  kVehicleType_PanelVan = 18;
+}
+
+message CovarianceMatrix {
+  repeated float covariance_matrix = 1;
+  int32 num_rows = 2;
+  int32 num_columns = 3;
+}
+
+message PathPoint {
+  Vector3f position = 1;
+  float theta = 2;
+  float kappa = 3;
+  float s = 4;
+  float dkappa = 5;
+  float ddkappa = 6;
+  int32 lane_id = 7;
+  float x_derivative = 8;
+  float y_derivative = 9;
+}
+
+message TrajectoryPoint {
+  PathPoint path_point = 1;
+  float speed = 2;
+  float acceleration = 3;
+  int32 relative_time = 4;
+  float derivative_acceleration = 5;
+  float steer_angle = 6;
+}
+
+message CovariancePoint {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  repeated float covariance_matrix = 4;
+}
+
+message Obstacle {
+  // whether is valid
+  bool is_valid = 1;
+  // whether type is changed
+  bool is_type_changed = 2;
+  // whether velocity is valid
+  bool is_velocity_valid = 3;
+  // whether acceleration is valid
+  bool is_acceleration_valid = 4;
+  // id
+  uint32 id = 5;
+  // vision id
+  uint32 vision_id = 6;
+  // tracking count
+  uint32 tracking_count = 7;
+  // obstacle type
+  ObstacleType type = 8;
+  // vehicle subtype
+  VehicleSubtype vehicle_subtype = 9;
+  // rider subtype
+  RiderSubtype rider_subtype = 10;
+  // pedestrian subtype
+  PedestrianSubtype pedestrian_subtype = 11;
+  // pedestrian orientation
+  PedestrianOrientation pedestrian_orientation = 12;
+  // pedestrian pose
+  PedestrianPose pedestrian_pose = 13;
+  // motion status
+  MotionStatus motion_status = 14;
+  // position zone
+  PositionZone position_zone = 15;
+  // CIPV type
+  CipvType cipv_type = 16;
+  // cut type
+  CutType cut_type = 17;
+  // turn indicator
+  TurnIndicator turn_indicator = 18;
+  // brake indicator
+  BrakeIndicator brake_indicator = 19;
+  // lane assignment
+  LaneAssignment lane_assignment = 20;
+  // tracking status
+  TrackingStatus tracking_status = 21;
+  // confidence
+  uint32 confidence = 22;
+  // feature target flag (flag & FeatureTargetFlag > 0 for feature)
+  uint32 feature_target_flag = 23;
+  // source flag (flag & SensorType > 0)
+  uint32 source_flag = 24;
+  // sensor sources
+  repeated uint32 sensor_sources = 25;
+  // nearest side
+  uint32 nearest_side = 26;
+  // traffic scenario
+  uint32 traffic_scenario = 27;
+  // Collision Mitigation by Braking primary confidence
+  uint32 cmbb_primary_confidence = 28;
+  // Collision Mitigation by Braking secondary confidence
+  uint32 cmbb_secondary_confidence = 29;
+  // FCW secondary confidence
+  uint32 fcw_confidence = 30;
+  // curvature
+  float curvature = 31;
+  // nearest point to ego car in relative coordinate
+  Vector2f nearest_point_rel = 32;
+  // nearest point standard deviation
+  Vector2f nearest_point_rel_sd = 33;
+  // heading in relative coordinate  (-pi, pi]
+  float heading_rel = 34;
+  // heading standard deviation
+  float heading_rel_sd = 35;
+  // velocity in relative coordinate (m/s)
+  Vector2f velocity_abs = 36;
+  /// @brief Absolute speed in host vehicle coordinate (!Scalar!) (m/s)
+  float speed_abs_scalar = 37;
+  // velocity standard deviation
+  Vector2f velocity_sd = 38;
+  // acceleration in relative coordinate (m/s^2)
+  Vector2f acceleration_abs = 39;
+  /// @brief Absolute acceleration in host vehicle coordinate (!Scalar!) (m/s)
+  float acceleration_abs_scalar = 40;
+  // acceleration standard deviation
+  Vector2f acceleration_sd = 41;
+  // length (m)
+  float length = 42;
+  // width (m)
+  float width = 43;
+  // height (m)
+  float height = 44;
+  // bounding box points
+  repeated Vector2f bounding_box_points = 45;
+  // Front radar id
+  uint32 f_radar_id = 46;
+  // Front-Right radar id
+  uint32 fr_radar_id = 47;
+  // Rear_Right radar id
+  uint32 rr_radar_id = 48;
+  // Rear_Left radar id
+  uint32 rl_radar_id = 49;
+  // Front_Left radar id
+  uint32 fl_radar_id = 50;
+}

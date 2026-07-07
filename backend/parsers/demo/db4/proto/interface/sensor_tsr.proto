@@ -1,0 +1,48 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+enum Relevancy {
+  RELEVANCY_UNKNOWN = 0;
+  RELEVANCY_IN_HOSTLANE_SIGN = 1;
+  RELEVANCY_NOT_IN_HOSTLANE = 2;
+  RELEVANCY_HIGHWAY_EXIT_SIGN = 3;
+  RELEVANCY_SIGN_ON_TURN = 4;
+  RELEVANCY_FAR_IRRELEVANT_SIGN = 5;
+  RELEVANCY_TSR_RAMP_RELEVANT = 6;
+}
+
+enum FilterType {
+  FILTER_TYPE_UNKNOWN = 0;
+  FILTER_TYPE_NOT_FILTERED = 1;
+  FILTER_TYPE_IRRELEVANT = 2;
+  FILTER_TYPE_TRUCK = 3;
+  FILTER_TYPE_EMBEDDED = 4;
+  FILTER_TYPE_RESERVED = 5;
+}
+
+enum ApprovedFlag {
+  APPROVED_FLAG_UNKNOWN = 0;
+  APPROVED_FLAG_NOT_APPROVED = 1;
+  APPROVED_FLAG_APPROVED = 2;
+}
+
+message TrafficSign {
+  uint32 id = 1;
+  uint32 confidence = 2;
+  uint32 road_mark_type = 3;
+  Relevancy relevancy = 4;
+  TrafficSignType type = 5;
+  FilterType filter_type = 6;
+  ApprovedFlag approved_flag = 7;
+  Vector3f position_rel = 8;
+}
+
+message SensorTsrMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  repeated uint32 internal_ids = 3;
+  repeated TrafficSign traffic_signs = 4;
+}

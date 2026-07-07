@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+enum LightSourceType {
+  LIGHT_SOURCE_HEADLIGHT = 0;
+  LIGHT_SOURCE_TAILLIGHT = 1;
+  LIGHT_SOURCE_STREETLIGHT = 2;
+  LIGHT_SOURCE_AMBIENTLIGHT = 3;
+  LIGHT_SOURCE_UNKNOWN = 4;
+  LIGHT_SOURCE_OTHER = 5;
+  LIGHT_SOURCE_NOLIGHT = 6;
+  LIGHT_SOURCE_REFLECTIVE = 7;
+  LIGHT_SOURCE_COUNT = 8;
+}
+
+message LightRectProperty {
+  Rect rect = 1;
+  LightSourceType type = 2;
+  float conf = 3;
+}
+
+message IhbcLight {
+  repeated LightRectProperty lights = 1;
+}
+
+message IhbcLightMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  IhbcLight ihbc_light = 3;
+}

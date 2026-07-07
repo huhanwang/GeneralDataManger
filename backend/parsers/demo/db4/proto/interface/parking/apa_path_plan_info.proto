@@ -1,0 +1,241 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum ExplandPathStatus {
+  kInvalid = 0;
+  kFinalPointKappaZero = 1;
+  kPrevPathAndNextPathKappaSame = 2;
+  kAddPathCollision = 3;
+  kAddClothoidFailTryAddLineSuccess = 4;
+  kAllPathOnlyOneSegment = 5;
+  kCurStateShakeOffDifficulty = 6;
+  kCurPathHaveNoPoints = 7;
+  kParallelStartPlanInSlot = 8;
+  kAddClothoidPathSuccess = 9;
+}
+
+enum PrevPathUsage {
+  kPrevPathUsageInvalid = 0;
+  kPrePathCanUse = 1;
+  kSlotChange = 2;
+  kPrePathIsNone = 3;
+  kParaParkingInSlot = 4;
+  kDynamicPlan = 5;
+  kCurPosDeviationBig = 6;
+  kParkTypeError = 7;
+  kNewPathSizeLittle = 8;
+  kPrePathSizeLittle = 9;
+  kNewPathLastLineLonger = 10;
+  kPrePathLastLineLonger = 11;
+  kPriorityNewPath = 12;
+  kPrePathCollision = 13;
+  kNowGoalMove = 14;
+  kPrePathCanUseButNot = 15;
+  kPrePathExsitSShape = 16;
+  kNewPathExsitSShape = 17;
+  kForcedUpwardTpmFlag = 18;
+  kPrevPathStartDirError = 19;
+  kPrevPathUsageMax = 20;
+}
+
+enum APAPlanErrorCode {
+  kAPAPlanErrorCodeNoError = 0;           // 无错误
+  kErrorParkType = 1;                     // 泊车类型错误
+  kErrorSlotType = 2;                     // 车位类型错误
+  kErrorDetectType = 3;                   // 车位探测类型错误
+  kErrorSlotSide = 4;                     // 车边位置错误
+  kErrorParkOutDir = 5;                   // 泊出方向错误
+  kErrorUssSide = 6;                      // USS单双边类型错误
+  kErrorSlotTypeAndParkTypeMatching = 7;  // 车位类型和泊车类型不匹配
+  kErrorSlotLength = 8;                   // 车位长度尺寸不满足
+  kErrorSlotWidth = 9;                    // 车位宽度尺寸不满足
+  kErrorSlotAngle = 10;                   // 车位角度不满足
+  kErrorSlotFrontRearBoundDis = 11; // 车位前后bound绝对长度不满足
+  kErrorGoalHasMaxMovingDis = 12;   // 垂直车位由于bounddary入侵，目标点达到最大移动值  // NOLINT
+  kErrorInitPoint = 13;             // 初始点位置异常
+  kErrorCalParkingInPoint = 14;     // 平行泊入点计算失败
+  kErrorObliSlotCollision = 15;     // 垂直车位目标点碰撞
+  kErrorSearchFail = 16;            // 搜索失败
+  kErrorExceedMaxTimes = 17;        // 超过最大泊车次数
+  kErrorPathNumChangeTooMuch = 18;  // 前后路径段数改变太大
+  kErrorDrivingDirInParaSlot = 19;  // 平行泊入车位行驶方向错误
+  kErrorInputPosInParaSlot = 20;    // 平行泊入车位位置输入错误
+  kErrorNewPlanInParaSlot = 21;     // 平行泊入车位重规划失败
+  kErrorStopInFixedPos = 22;   // 平行泊入无法行驶到目标位置附近
+  kErrorParkingOutPos = 23;    // 平行泊入出库点规划失败
+  kErrorWheelBarDis = 24;      // 挡轮杆到库位顶点长度不满足
+  kErrorParkingOutTPMPos = 25; //平行泊出TPM点错误
+  kErrorParkingOutFrontFree = 26;
+  kErrorGoalPointCollision = 27;
+  kErrorHybridAstarExceedMaxIter = 28;//混合A*超过最大搜索次数
+  kErrorPathSmoothFail = 29;          //混合A*超过最大搜索次数
+  kErrorInParallelSlotDrivingDirIsIncorrect = 30;
+  kErrorInParallelSlotPlanningInputVehicleCurYIsGreaterThan0 = 31;
+  kErrorInParallelSlotVehicleLargelyLocatedInsideOrOutside = 32;
+  kErrorInParallelSlotUnderLimitNumberVehicleYawCanNotLeveled = 33;
+  kErrorStartPointCollision = 34;
+  kErrorPlanningTimeOut = 35;
+  kAPAPlanErrorCodeMax = 36;
+}
+
+enum APAPlanningStatus {
+  kAPAPlanningStatusInvalid = 0;
+  kPlanOver = 1;     /*规划到位*/
+  kPlanSucc = 2;     /*规划成功*/
+  kPlanFail = 3;     /*规划结束*/
+  kPlanParaOutFirstStep = 4; /*平行泊出达到出库点*/
+  kPlanObliOutFirstStep = 5; /*垂直泊出达到出库点/探头点*/
+  kAPAPlanningStatusMax = 6;
+}
+
+message Point3d {
+  float x = 1;
+  float y = 2;
+  float yaw = 3;
+  float kappa = 4;
+  float dkappa = 5;
+  float speed = 6;
+  int32 drive_dir = 7;
+}
+
+message ApaPlanningInput {
+  Point3d veh_point = 1;
+  float depth = 2;
+  float width = 3;
+  float yaw = 4;
+  float delta_x_front_corner = 5;
+  float delta_y_front_corner = 6;
+  float delta_x_rear_corner = 7;
+  float delta_y_rear_corner = 8;
+  float x_in_map = 9;
+  float y_in_map = 10;
+  int32 dir = 11;
+  int32 slot_type = 12;
+  int32 park_type = 13;
+  int32 slot_detect_type = 14;
+  int32 park_out_dir = 15;
+  int32 uss_slot_side = 16;
+  float opt_delta_yaw = 17;
+  bool first_plan_flag = 18;
+  bool last_driving_flag = 19;
+  bool last_driving_of_hybrid_a_star_flag = 20;
+  bool start_plan_in_para_slot_flag = 21;
+  bool start_HAplan_out_para_slot_flag = 22;
+  bool uss_detect_front_edge_flag = 23;
+  bool uss_detect_rear_edge_flag = 24;
+  bool hit_wheel_bar_flag = 25;
+  int32 driving_direction = 26;
+  int32 prev_driving_direction = 27;
+  int32 gear_switch_count = 28;
+  int32 current_steps = 29;
+  int32 total_steps = 30;
+  int32 prev_hybrid_a_star_steps = 31;
+  Point3d prev_planning_point = 32;
+  Point3d relative_coordinate = 33;
+  int32 plan_type = 34;
+  float wheel_bar_dis = 35;
+  float veh_steering = 36;
+  int32 boundary_PM_type = 37;
+  int32 start_direction = 38;
+  int32 current_gear = 39;
+  float last_wheel_bar_dis = 40;
+  float last_tpm_move_dis = 41;
+  int32 pre_path_size = 42;
+  int32 prev_plan_path_init_dir = 43;
+  int32 uss_avoid_state = 44;
+  bool vpa_switch_apa_flag = 45;
+  bool isCornerslot = 46;
+  bool rod_valid = 47;
+  bool position_not_change_flag = 48;
+  bool is_yawvcs_toomuch = 49;
+  int64 plan_start_gridmap_time = 50;
+  float width_expand = 51;
+  int32 gridmap_width = 52;
+  int32 gridmap_height = 53;
+  float prev_slot_depth = 54;
+  float prev_slot_x_front_corner = 55;
+  float prev_slot_x_rear_corner = 56;
+  int32 enter_slot_times = 57;
+  int32 park_over_condition = 58;
+  int32 planner_counts = 59;
+  bool forced_upward_tpm_flag = 60;
+  bool need_direct_in_slot = 61;
+  bool oblique_tpm_force_up_flag = 62;
+  bool dynamic_shift_gear_flag = 63;
+  repeated int32 prev_path_points_num = 64;
+  repeated Vector2f real_time_slot_corners = 65;
+  float veh_speed = 66;
+  int32 prev_plan_cost_time = 67;
+  double oblique_history_goal_move_max_dis = 68;
+  repeated int32 history_path_drive_dirs = 69;
+  repeated float prev_plan_path_x = 70;
+  repeated float prev_plan_path_y = 71;
+}
+
+message ApaPlanningResult {
+  APAPlanningStatus plan_status = 1;
+  int32 total_path_size = 2;/*轨迹段数*/
+  int32 first_path_points_size = 3;/*第一段轨迹的轨迹点数量*/
+  int32 cur_path_driving_dir = 4;
+  int32 planner_counts = 5;//调用规划的次数（包括当前）
+  int32 add_clothoid_points_num = 6;//回旋线拓展的节点个数
+  int32 enter_slot_times = 7;//进入库位内的次数，影响泊车完成条件
+  int32 cur_plan_cost_time = 8;/*当前规划耗时*/
+  int32 history_max_plan_cost_time = 9;/*历史规划耗时最大值或者平均值*/
+  Point3d goal_point_in_slot = 10;  /*车位坐标系中的终点坐标*/
+  Point3d para_parking_in_point_in_slot = 11;  /*车位坐标系中的平行出库点坐标*/
+  Point3d parkout_1st_in_slot = 12;   /*车位坐标系中的泊出第一阶段终点坐标*/
+  Point3d path_first_point = 13;
+  Point3d path_final_point = 14;
+  bool use_prev_path_flag = 15;
+  bool geometric_plan_status = 16;
+  bool hybrid_a_plan_status = 17;
+  bool shake_off_difficulty_path_flag = 18;
+  bool tpm_press_line_flag = 19;
+  bool last_driving_flag = 20;
+  bool start_HAplan_out_para_slot_flag = 21;
+  bool start_plan_in_para_slot_flag = 22;
+  bool out_slot_enter_slot_flag = 23;
+  bool forced_change_dir_flag = 24;
+  bool forced_upward_tpm_flag = 25;
+  bool dynamic_gear_shift_flag = 26;
+  bool para_park_out_forced_success_flag = 27;
+  bool forced_search_plan_failed_flag = 28;
+  bool forced_clear_ooc_obs_flag = 29;
+  bool start_near_pos_obs_flag = 30;
+  float added_obli_length = 31;
+  float front_rear_boundary_dis = 32;
+  float CurTpmPointMoveDis = 33;
+  float LastTpmPointMoveDis = 34;
+  float LastTpmPointMoveDisMax = 35;
+  float min_steering_radius = 36;
+  float back_right_min_radius = 37;
+  float back_left_min_radius = 38;
+  float forward_right_min_radius = 39;
+  float forward_left_min_radius = 40;
+  Point3d veh_to_goal_error = 41;
+  Point3d park_condition_error_limit = 42;
+  Point3d veh_to_prev_path_error = 43;
+  Point3d veh_to_prev_path_error_limit = 44;
+  repeated Point3d path_key_points = 45;
+  ExplandPathStatus no_add_path_reason = 46;
+  APAPlanErrorCode error_code = 47;
+  PrevPathUsage unsusable_reason1 = 48;
+  PrevPathUsage unsusable_reason2 = 49;
+}
+
+message ApaPathPlanInfo {
+  ApaPlanningInput planning_input = 1;
+  ApaPlanningResult planning_reslut = 2;
+}
+
+message ApaPathPlanInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // ApaPathPlanInfo
+  ApaPathPlanInfo apa_path_plan_info = 3;
+}

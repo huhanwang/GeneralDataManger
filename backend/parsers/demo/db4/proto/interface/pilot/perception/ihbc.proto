@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package autodrive.workflow.proto;
+
+enum IhbcReason {
+  IHBC_REASON_NONE = 0;          // 非灯光原因
+  IHBC_REASON_ONCOMING = 1;      // 车头灯导致远光灯关闭
+  IHBC_REASON_PRECEDING = 2;     // 车尾灯导致远光灯关闭
+  IHBC_REASON_STREETLIGHT = 4;    // 路灯导致远光灯关闭
+}
+
+message LightSource {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float intensity = 4;
+  int32 type = 5;
+  int32 vehicle_id = 6;
+  int32 pedestrian_id = 7;
+  int32 cyclist_id = 8;
+}
+
+message IhbcResult {
+  bool light_on = 1;
+  float cal_lux_up = 2;
+  repeated LightSource light_source = 3;
+  repeated LightSource light_source_raw = 4;
+  int32 cam_id = 5;
+  int32 frame_id = 6;
+  int64 time_stamp = 7;
+  int32 object_num = 8;
+  float lux = 10;
+  int64 refer_time = 11;
+  IhbcReason light_reason = 12;
+}

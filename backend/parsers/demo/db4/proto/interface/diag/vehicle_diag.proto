@@ -1,0 +1,78 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum VehicleDiagStatus {
+  VehicleDiagStatusNormal = 0;
+  VehicleDiagStatusFAULT = 1;
+  VehicleDiagStatusReserved = 2;
+}
+
+enum FctSts {
+  FctSts_INIT = 0;                // 功能初始化
+  FctSts_NORMAL = 1;              // 正常状态，支持全功能
+  FctSts_UPDATING = 2;            // 升级
+  FctSts_PARKING = 3;             // 泊车中
+  FctSts_CAM_CALI_STATIC = 4;     // 下线标定
+  FctSts_CAM_CALI_AUTO = 5;       // 道路自动标定
+  FctSts_RESERVED = 8;
+}
+
+message CameraDiag {
+  // 摄像头状态
+  VehicleDiagStatus camera_front_sts = 1;
+  // 摄像头状态
+  VehicleDiagStatus camera_rear_sts = 2;
+  // 摄像头状态
+  VehicleDiagStatus camera_left_sts = 3;
+  // 摄像头状态
+  VehicleDiagStatus camera_right_sts = 4;
+}
+
+message UltrasonicDiag {
+  // 超声波雷达状态
+  VehicleDiagStatus rsr_error = 1;
+  // 超声波雷达状态
+  VehicleDiagStatus rrm_error = 2;
+  // 超声波雷达状态
+  VehicleDiagStatus rlm_error = 3;
+  // 超声波雷达状态
+  VehicleDiagStatus rsl_error = 4;
+  // 超声波雷达状态
+  VehicleDiagStatus fsl_error = 5;
+  // 超声波雷达状态
+  VehicleDiagStatus flm_error = 6;
+  // 超声波雷达状态
+  VehicleDiagStatus frm_error = 7;
+  // 超声波雷达状态
+  VehicleDiagStatus fsr_error = 8;
+  // 超声波雷达状态
+  VehicleDiagStatus fr_error = 9;
+  // 超声波雷达状态
+  VehicleDiagStatus fl_error = 10;
+  // 超声波雷达状态
+  VehicleDiagStatus rl_error = 11;
+  // 超声波雷达状态
+  VehicleDiagStatus rr_error = 12;
+}
+
+message VehicleDiag {
+  // 摄像头状态
+  CameraDiag camera_sts = 1;
+  // 超声波雷达状态
+  UltrasonicDiag ultrasonic_sts = 2;
+  // 泊车控制器状态
+  VehicleDiagStatus apa_controller_sts = 3;
+  // 外部通讯故障
+  VehicleDiagStatus external_sts = 4;
+  FctSts functional_status = 5;
+}
+
+message VehicleDiagMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Vehicle Diag
+  VehicleDiag vehicle_diag = 3;
+}

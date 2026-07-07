@@ -1,0 +1,95 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum SLOT_STATE {
+  SLOT_ST_NONE = 0x0;                  /* None */
+  SLOT_ST_VALID = 0x1;                 /* 可用 */
+  SLOT_ST_SELECT = 0x2;                /* 可用且被选中 */
+  SLOT_ST_INVALID_NO_BARRIER = 0x3;    /* 不可用-无障碍物 */
+  SLOT_ST_OCCUP_VEHICLE = 0x4;         /* 车位内有车 */
+  SLOT_ST_OCCUP_CONE_BARREL = 0x5;     /* 车位内有锥桶 */
+  SLOT_ST_OCCUP_LOCK = 0x6;            /* 车位内有地锁 */
+  SLOT_ST_VALID_NARROW = 0x7;          /* 窄车位 */
+  SLOT_ST_SELEC_NARROW = 0x8;          /* 窄车位被选中 */
+}
+
+message HmiSlotInfo {
+  int32 id = 1;
+  SLOT_STATE type = 2;     /* 0x277:APA_PrkgSlot_1_Sts: 车位状态*/
+  Vector2i point_A = 3;    /* 0x3C9:Slot1ACoorX: 车位坐标*/
+  Vector2i point_B = 4;
+  Vector2i point_C = 5;
+  Vector2i point_D = 6;
+}
+
+message HmiIccSlot {
+  uint32 valid_slot_num = 1;
+  HmiSlotInfo slot_target = 2;
+  repeated HmiSlotInfo slot_infos = 3;
+}
+
+message HmiIccSlotMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // HmiIccSlot
+  HmiIccSlot hmi_icc_slot = 3;
+}
+
+enum OBS_TYPE {
+  OBS_TS_STATIC_NONE = 0x0;
+  /* 静态类型 */
+  OBS_TS_LOCK = 0x1;           /* 地锁 */
+  OBS_TS_LIMIT_ROD = 0x2;      /* 限位杆 */
+  OBS_TS_LIMIT_BLOCK = 0x3;    /* 限位块 */
+  OBS_TS_CONE_BARREL = 0x4;    /* 锥桶 */
+  OBS_TS_UPRIGHT = 0x5;        /* 立柱 */
+  OBS_TS_WATER_BARRIER = 0x6;  /* 水马 */
+  OBS_TS_NO_STOP_SIGN = 0x7;   /* 禁停牌 */
+  OBS_TS_BUMP_POST = 0x8;      /* 防撞柱 */
+  /* 动态类型 */
+  OBS_TD_CAR = 0x21;           /* 小汽车 */
+  OBS_TD_PEDESTRIAN = 0x22;    /* 行人 */
+  OBS_TD_TUMBREL = 0x23;       /* 二轮车 */
+  OBS_TD_BUS = 0x24;           /* 巴士 */
+  OBS_TD_TRUCK = 0x25;         /* 卡车 */
+}
+
+enum OBS_DIR {
+  OBS_DIR_UP = 0x0;          /* 向上 */
+  OBS_DIR_DOWN = 0x1;        /* 向下 */
+  OBS_DIR_LEFT = 0x2;        /* 向左 */
+  OBS_DIR_RIGHT = 0x3;       /* 向右 */
+  OBS_DIR_LEFT_UP = 0x4;     /* 向左上 */
+  OBS_DIR_LEFT_DOWN = 0x5;   /* 向左下 */
+  OBS_DIR_RIGHT_UP = 0x6;    /* 向右上 */
+  OBS_DIR_RIGHT_DOWN = 0x7;  /* 向右下 */
+}
+
+message HmiObstacleInfo {
+  OBS_TYPE type = 1;      /* 278:AVAP_StcBarrier_1:   静态动态障碍物类型 */
+  OBS_DIR direction = 2;  /* 278:AVAP_StcBarrierDrct_1: 障碍物方向*/
+  Vector2i positions = 3; /* 278:AVAP_DynBarrier_5_X:   障碍物坐标 */
+}
+
+message HmiSpeedBumpInfo {
+  Vector2i point_A = 1;
+  Vector2i point_B = 2;
+}
+
+message HmiIccObstacle {
+  repeated HmiObstacleInfo obs_info = 1;
+  repeated HmiSpeedBumpInfo speed_info = 2;
+}
+
+message HmiIccObstacleMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // HmiIccObstacle
+  HmiIccObstacle hmi_icc_obs = 3;
+}

@@ -1,0 +1,152 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum FctbBrkReqS {
+  FCTB_BRK_NO_REQUEST = 0;
+  FCTB_BRK_REQUEST = 1;
+}
+
+enum FrontRadarFctbStatus {
+  FRONT_RADAR_FCTB_NO_ACTIVE = 0;
+  FRONT_RADAR_FCTB_ACTIVE = 1;
+}
+
+enum RightRadarRctbBrakingRequest {
+  RIGHT_RADAR_RCTB_NO_REQUEST = 0;
+  RIGHT_RADAR_RCTB_REQUEST = 1;
+}
+
+enum RaebRequestS {
+  RAEB_NO_REQUEST = 0;
+  RAEB_REQUEST = 1;
+}
+
+enum AccModeS {
+  ACC_NO_ACTIVE = 0;
+  ACC_ACTIVE = 1;
+}
+
+enum AebDecCtrlRequestS {
+  AEB_DEC_NO_REQUEST = 0;
+  AEB_DEC_REQUEST = 1;
+}
+
+enum AwbRequestS {
+  AWB_NO_REQUEST = 0;
+  AWB_REQUEST = 1;
+}
+
+enum IlcaSysStsS {
+  ILCA_NO_ACTIVE = 0;
+  ILCA_ACTIVE = 1;
+}
+
+enum DnpStatsS {
+  DNP_NO_ACTIVE = 0;
+  DNP_ACTIVE = 1;
+}
+
+enum TjaIcaFunctionStatusS {
+  TJA_ICA_NO_ACTIVE = 0;
+  TJA_ICA_ACTIVE = 1;
+}
+
+enum AccSwitchSignalS {
+  ACC_SWITCH_NO_REQUEST = 0;
+  ACC_SWITCH_REQUEST = 1;
+}
+
+enum DipilotSwitchSignalS {
+  DIPILOT_SWITCH_NO_REQUEST = 0;
+  DIPILOT_SWITCH_REQUEST = 1;
+}
+
+enum RightRadarRctbStatusS {
+  RIGHT_RADAR_RCTB_NO_ACTIVE = 0;
+  RIGHT_RADAR_RCTB_ACTIVE = 1;
+}
+
+enum ElkaWarningLeftS {
+  ELKA_LEFT_NO_ACTIVE = 0;
+  ELKA_LEFT_ACTIVE = 1;
+}
+
+enum ElkaWarningRightS {
+  ELKA_RIGHT_NO_ACTIVE = 0;
+  ELKA_RIGHT_ACTIVE = 1;
+}
+
+enum AebDecActive {
+  AEB_DEC_NO_ACTIVE = 0;
+  AEB_DEC_ACTIVE = 1;
+}
+
+enum PcwPreWarningS {
+  PCW_PRE_NO_ACTIVE = 0;
+  PCW_PRE_ACTIVE = 1;
+}
+
+enum PcwLatentWarningS {
+  PCW_LATENT_NO_ACTIVE = 0;
+  PCW_LATENT_ACTIVE = 1;
+}
+
+enum ReqEbaDecelCtrlS {
+  REQ_EBA_NO_REQUEST = 0;
+  REQ_EBA_REQUEST = 1;
+}
+
+enum NoaModeS {
+  NOA_NO_ACTIVE = 0;
+  NOA_ACTIVE = 1;
+}
+
+enum OddModeS {
+  ODD_NO_ACTIVE = 0;
+  ODD_ACTIVE = 1;
+}
+
+enum ReverseRadarRctbStatus {
+  REVERSE_RADAR_RCTB_NO_ACTIVE = 0;
+  REVERSE_RADAR_RCTB_ACTIVE = 1;
+}
+
+enum RaebDecActive {
+  RAEB_DEC_NO_ACTIVE = 0;
+  RAEB_DEC_ACTIVE = 1;
+}
+
+message FunctionState {
+  FctbBrkReqS fctb_brk_req_sts = 1;
+  RightRadarRctbBrakingRequest right_radar_rctb_braking_sts = 2;
+  AebDecCtrlRequestS aeb_dec_ctrl_sts = 3;
+  RaebRequestS raeb_request_sts = 4;
+  AwbRequestS awb_request_sts = 5;
+  ReqEbaDecelCtrlS req_eba_decel_ctrl_sts = 6;
+  AccSwitchSignalS acc_switch_signal_sts = 7;
+  DipilotSwitchSignalS dipilot_switch_signal_sts = 8;
+  FrontRadarFctbStatus front_radar_fctb_sts = 9;
+  ReverseRadarRctbStatus reverse_radar_fctb_sts = 10;
+  AebDecActive aeb_dec_active_sts = 11;
+  RaebDecActive raeb_dec_active_sts = 12;
+  PcwPreWarningS pcw_pre_warning_sts = 13;
+  PcwLatentWarningS pcw_latent_warning_sts = 14;
+  AccModeS acc_mode_sts = 15;
+  TjaIcaFunctionStatusS tja_ica_sts = 16;
+  IlcaSysStsS ilca_sys_sts = 17;
+  DnpStatsS dnp_sts = 18;
+  ElkaWarningLeftS elka_warning_left_sts = 19;
+  ElkaWarningRightS elka_warning_right_sts = 20;
+  NoaModeS noa_mode_sts = 21;
+  OddModeS odd_mode_sts = 22;
+}
+
+message AdasFunctionMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Function State
+  FunctionState function_state = 3;
+}

@@ -1,0 +1,165 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+message GlbTrajectory {
+  repeated Vector3f glb_trajectory_point = 1;
+  Vector3f start_point = 2;
+  Vector3f end_point = 3;
+}
+
+enum SlotType {
+  kReserve = 0;
+  kVertical = 1;
+  kHorizontal = 2;
+  kOblique = 3;
+}
+
+enum SlotStatus {
+  kSlotStatusEmpy = 0;
+  kSlotStatusUnknown = 1;
+  kSlotStatusPedestrianOcupy = 2;
+  kSlotStatusTwowheelscartOcupy = 3;
+  kSlotStatusConebarrelOcupy = 4;
+  kSlotStatusFloorlockOcupy = 5;
+  kSlotStatusNoparksignOcupy = 6;
+  kSlotStatusOtherObstaclesOcupy = 7;
+}
+
+message GlbPrkgSlot {
+  uint64 slot_id = 1;
+  SlotStatus slot_status = 2;
+  SlotType slot_type = 3;
+  repeated Vector3f slot_points = 4;
+  bool is_target_slot = 5;
+}
+
+message GlbPrcpPrkgSlots {
+  repeated GlbPrkgSlot glb_prkg_slots = 1;
+}
+
+enum RoadMarkType {
+  kRoadMarkTypeReserved = 0;
+  kStraight = 2;
+  kStrOrTurnL = 3;
+  kStrOrTurnR = 4;
+  kStrOrTurnA = 5;
+  kTurinLeft = 6;
+  kTurnLOrTurnA = 7;
+  kTurnLOrLConf = 8;
+  kTurnR = 9;
+  kTurnROrRConf = 10;
+  kTurnLR = 11;
+  kTurnA = 12;
+  kTurnLForb = 13;
+  kTurnRForb = 14;
+  kTurnAForb = 15;
+  kStrOrTurnLOrTrunR = 16;
+  kStrOrTurnLOrTrunA = 17;
+  kTurnROrTurnA = 18;
+  kDistConfLine = 22;
+  kStopyieldLine = 23;
+  kDecelyieldLine = 24;
+  kStopline = 25;
+  kNoParkArea = 26;
+  kCrossWalk = 27;
+  kSolidLaneLine = 28;
+  kDashedLaneLine = 29;
+  kZebraCrossing = 30;
+  kGridLine = 31;
+  kLeadingLine = 32;
+  kOthers = 99;
+}
+
+message GlbRoadMark {
+  Vector3f position = 1;
+  float odom_heading = 2;
+  uint64 roadmark_id = 3;
+  RoadMarkType roadmark_type = 4;
+  repeated Vector2f border = 5;
+}
+
+message GlbRoadMakMap {
+  repeated GlbRoadMark glb_road_mak_map = 1;
+}
+
+enum DangerLevel {
+  kNoDanger = 0;
+  kLevel1 = 1;
+  kLevel2 = 2;
+  kLevel3 = 3;
+}
+
+enum Map2HmiObstacleType {
+  kMap2HmiObstacleTypeReserved = 0;
+  kMap2HmiObstacleTypeWheelStopper = 1;
+  kMap2HmiObstacleTypeParkingLock = 2;
+  kMap2HmiObstacleTypePillars = 3;
+  kMap2HmiObstacleTypeSpeedBump = 4;
+  kMap2HmiObstacleTypeFireBox = 5;
+  kMap2HmiObstacleTypeAnticollisionBall = 6;
+  kMap2HmiObstacleTypeReflector = 7;
+  kMap2HmiObstacleTypeCurbStone = 8;
+  kMap2HmiObstacleTypeTrafficCone = 9;
+  kMap2HmiObstacleTypeParkingAFrameSign = 10;
+}
+
+message GlbObstacle {
+  Vector3f center_position = 1;
+  float odom_heading = 2;
+  Map2HmiObstacleType obstacle_type = 3;
+  DangerLevel danger_level = 4;
+  uint64 target_id = 5;
+  repeated Vector2f border = 6;
+}
+
+message GlbPrcpObstacle {
+  repeated GlbObstacle glb_prcp_obstacle = 1;
+}
+
+enum MapDataType {
+  // The real-time map info when mapping
+  kRealTimeMap = 0;
+  // Map info loaded from disk
+  kStoredMap = 1;
+}
+
+message MapCommonHeader {
+  // Id of the map, only valid for MapDataType.kStoredMap
+  int32 map_id = 1;
+  // Map type
+  MapDataType map_type = 2;
+  // Timestamp of map
+  uint64 utc_time = 3;
+  // Latitude (deg * 1e+07) of the map
+  int32 latitude = 4;
+  // Longitude (deg * 1e+07) of the map
+  int32 longitude = 5;
+  //num of trajectory_point
+  //trajectory_point
+  repeated Vector2f glb_trajectory_point = 6;
+}
+
+message MapInfo {
+  MapCommonHeader header = 1;
+  GlbTrajectory global_trajectory = 2;
+  GlbPrcpPrkgSlots global_percep_parking_slots = 3;
+  GlbRoadMakMap global_road_mark_map = 4;
+  GlbPrcpObstacle global_perception_obstacle = 5;
+  float map_distance = 6;
+  float rest_map_distance = 7;
+  uint32 num_speed_bumps = 8;
+}
+
+message MapDisplayMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  MapInfo map_info = 3;
+  /// @brief Choose update the map info or map headers
+  bool update_map_info = 4;
+  repeated MapCommonHeader all_map_headers = 5;
+}
+

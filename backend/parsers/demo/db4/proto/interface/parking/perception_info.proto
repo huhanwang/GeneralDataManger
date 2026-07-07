@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message PerceptionInfo {
+  // Unit ms
+  uint32 od_2d_runtime = 1;
+  uint32 od_2d_infer_looptime = 2;
+  uint32 od_2d_post_looptime = 3;
+  uint32 od_3d_runtime = 4;
+  uint32 od_3d_infer_looptime = 5;
+  uint32 od_3d_post_looptime = 6;
+  uint32 pcd_runtime = 7;
+  uint32 pcd_infer_looptime = 8;
+  uint32 psd_post_looptime = 9;
+  uint32 fs_runtime = 10;
+  uint32 fs_infer_looptime = 11;
+  uint32 fs_post_looptime = 12;
+  uint32 mos_runtime = 13;
+  uint32 mos_infer_looptime = 14;
+  uint32 mos_post_looptime = 15;
+}
+
+message PerceptionInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // PerceptionInfo
+  PerceptionInfo perception_info = 3;
+}

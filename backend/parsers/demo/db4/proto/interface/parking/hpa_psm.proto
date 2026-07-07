@@ -1,0 +1,175 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/apa_working_status.proto";
+package autodrive.workflow.proto;
+
+enum PlanStateType {
+  PLAN_STATE_NONE = 0;
+  PLAN_STANDY = 1;         // 后台模式
+  PLAN_IDLE = 2;           // map trigger VPA功能后,等待指令
+  PLAN_ROUTE_LOADING = 3;  // 进入VPA功能，但是用户没有点击开始泊车
+  LOAD_ROUTE_DONE = 4;  // 加载地图完成
+  PLAN_ACTIVE = 5;           // 开始泊车后的工作状态
+  PLAN_PAUSE = 6;            // 暂停状态
+  PLAN_COMPLETE = 7;         // 状态机通知泊车完成后的状态
+  PLAN_TERMINATE = 8;        // terminate plan
+  PLAN_FAILED = 9;        // 故障
+  PLAN_RECORDING = 10;    // 规控已进入记录路线状态
+  PLAN_NARROW_LANE_PASSABLE = 11; // 可以进入窄道通行控车
+  PLAN_VPA_AVAILABLE = 12;    // 规控vpa可控车状态
+}
+
+enum PlanStateSource {
+  PLAN_SOURCE_NONE = 0;
+  PLAN_SOURCE_APA = 1;
+  PLAN_SOURCE_VPA = 2;
+  PLAN_SOURCE_TRA = 3;
+  PLAN_SOURCE_NPA = 4;
+}
+
+enum CtrlStateType {
+  CONTROL_NONE = 0;  // default
+  CONTROL_NORMAL = 1;  // normal ctrl
+  CONTROL_AUTO_HOLD = 2; // speed 0 ctrl
+  CONTROL_WAITING = 3; // 发送true, 但是没控上车
+  CONTROL_RELEASE = 4; // 解握手, 发送false状态
+  CONTROL_INTERRUPT = 5; // EPS打断, 发送true
+}
+
+enum PlanExitReason {
+  PLAN_EXIT_REASON_NONE = 0;
+  PLAN_EXIT_REASON_SLOTID_INVALID = 1;
+}
+
+enum PlanPauseReason {
+  PLAN_PAUSE_REASON_NONE = 0;
+  PLAN_PAUSE_REASON_EPS_INTERRUPT = 1; // eps 打断（未使用）
+  PLAN_PAUSE_REASON_GEAR_INTERRUPT = 2; // 挡位 打断（未使用）
+  PLAN_PAUSE_REASON_LOCAL_PLAN_BLOCK = 3; // 局部规划block
+  PLAN_PAUSE_REASON_ESP_INTERRUPT = 4; // ESP 打断 / 刹车干预
+  PLAN_PAUSE_REASON_VEHICLE_SUSPEND = 5;          //  车辆礼让
+  PLAN_PAUSE_REASON_PEDESTRAIN_SUSPEND = 6;       //  行人礼让
+  PLAN_PAUSE_REASON_CYCLIST_SUSPEND = 7;          //  二轮车礼让（预留）
+}
+
+enum HandShakableType {
+  HANDSHAKABLE_ENABLE = 0; // default
+  HANDSHAKABLE_DISABLE_SPEED = 1; // speed not 0
+  HANDSHAKABLE_DISABLE_GEAR = 2; // gear not D
+}
+
+enum ApaPlanningErrorCode {
+  PLAN_NO_ERROR = 0;
+  PLAN_ERROR_PARK_TYPE = 1; //泊车类型错误
+  PLAN_ERROR_SLOT_TYPE = 2; //车位类型错误
+  PLAN_ERROR_DETECT_TYPE = 3; //车位探测类型错误
+  PLAN_ERROR_SLOT_SIDE = 4;  //车边位置错误
+  PLAN_ERROR_PARK_OUT_DIR = 5; //泊出方向错误
+  PLAN_ERROR_USS_SIDE = 6;  // USS单双边类型错误
+  PLAN_ERROR_SLOT_TYPE_AND_PARK_TYPE_MATCHING = 7; //车位类型和泊车类型不匹配
+  PLAN_ERROR_SLOT_SIZE = 8;  //车位尺寸不满足
+  PLAN_ERROR_INIT_POINT = 9; //初始点位置异常
+  PLAN_ERROR_CAL_PARKINGIN_POINT = 10; //平行泊入点计算失败
+  PLAN_ERROR_OBLI_SLOT_COLLISION = 11; //垂直车位目标点碰撞
+  PLAN_ERROR_SEARCH_FAIL = 12; //搜索失败
+  PLAN_ERROR_EXCEED_MAX_TIMES = 13;  //超过最大泊车次数
+  PLAN_ERROR_PATH_NUM_CHANGE_TOOMUCH = 14; //前后路径段数改变太大
+  PLAN_ERROR_DRIVING_DIR_IN_PARA_SLOT = 15;  //平行泊入车位行驶方向错误
+  PLAN_ERROR_INPUT_POS_IN_PARA_SLOT = 16; //平行泊入车位位置输入错误
+  PLAN_ERROR_NEW_PLAN_IN_PARA_SLOT = 17; //平行泊入车位重规划失败
+  PLAN_ERROR_STOP_IN_FIXED_POS = 18; //平行泊入无法行驶到目标位置附近
+  PLAN_ERROR_PARKING_OUT_POS = 19; //平行泊入出库点规划失败
+  PLAN_ERROR_SLOT_LENGTH = 20;  //车位长度尺寸不满足
+  PLAN_ERROR_SLOT_WIDTH = 21;  //车位宽度尺寸不满足
+  PLAN_ERROR_SLOT_ANGLE = 22; //车位角度不满足
+  PLAN_ERROR_SLOT_FRONT_REAR_BOUND_DIS = 23; //车位前后bound绝对长度不满足
+  PLAN_ERROR_GOAL_HAS_MAX_MOVING_DIS= 24; //垂直车位目标点达到移动值
+  PLAN_ERROR_WHEEL_BAR_DIS = 25;  //当轮杆长度不满足
+  PLAN_ERROR_PARK_OUT_FRONT_FREE = 26; //水平泊出前方路径通畅
+}
+
+enum ApaControlErrorCode {
+  CONTROL_NO_ERROR = 0;
+  CONTROL_ERROR_NO_DATA = 4; //规划数据为空
+  CONTROL_ERROR_INDEX_OUT = 5; //轨迹点序列出错
+  CONTROL_ERROR_TRACK_OUT = 6; //轨迹点跟踪失败
+  CONTROL_ERROR_AVOID_STOP_TIMEOUT = 7; //避障超时退出
+  CONTROL_ERROR_AVOID_STOP_CLIP = 8; //连续避障退出
+  CONTROL_ERROR_BUMP_STOP = 9; //路面状况差，行驶不能
+  CONTROL_ERROR_CONTROL_MODE = 10; //控制模式错误
+  CONTROL_ERROR_ERROR_HANDSHAKE_INTERRUPT = 11;
+  CONTROL_ERROR_ACCEL_PEDAL = 12; // 油门干预
+  CONTROL_ERROR_EPS_INTERRUPT = 13; // EPS干预
+  CONTROL_ERROR_GEAR_INTERRUPT = 14; // 挡位干预
+  CONTROL_ERROR_EPB_INTERRUPT = 15; // EPB干预
+  CONTROL_ERROR_EPS_TIMEOUT = 16; // 执行器响应超时
+  CONTROL_ERROR_ESP_TIMEOUT = 17; // 纵向执行器响应超时
+  CONTROL_ERROR_EPS_ERROR = 18;   // 横向握手失败
+  CONTROL_ERROR_ESP_ERROR = 19;   // 纵向握手失败
+  CONTROL_ERROR_SLOPE_TOO_STEEP = 20;    // 坡度过大
+  CONTROL_ERROR_STEP_DETECTED = 21;
+  CONTROL_ERROR_BRAKE_PEDAL_INTERRUPT = 22;
+}
+
+enum ApaDecisionErrorCode {
+  DECISION_NO_ERROR = 0;
+  DECISION_ERROR_ODO_TIMEOUT = 1; //odo超时
+  DECISION_ERROR_ODO_OVERFLOW = 2; //odo溢出
+  DECISION_ERROR_ODO_CHANGE_GREATLY = 3; //odo变化太大
+  DECISION_ERROR_FREESPACE_TIMEOUT = 4; //odo变化太大
+  DECISION_ERROR_FREESPACE_INVALID = 5; //freespace无效
+  DECISION_ERROR_SLOT_YAW = 6; //车位角度异常
+  DECISION_ERROR_SLOT_WIDTH = 7; //车位宽度异常
+  DECISION_ERROR_SLOT_BOUNDARY = 8; //车位边界异常
+  DECISION_ERROR_SLOT_TYPE = 9; //车位类型异常
+  DECISION_ERROR_CONTROL_FEEDBACK_INVALID = 10; //控制反馈错误
+  DECISION_ERROR_CONTROL_TIMEOUT = 11; //控制反馈超时
+  DECISION_ERROR_PLANNING_INVALID = 12; //规划反馈异常
+  DECISION_ERROR_INVALID_SLOTID = 13; //无效车位id号
+  DECISION_ERROR_NO_SLOTID = 14; //车位id缺失
+  DECISION_ERROR_INPUTMSG_NOT_READY = 15; //输入信息未准备好
+  DECISION_ERROR_OUTPUTMSG_NOT_READY = 16; //输出信息未准备好
+  DECISION_ERROR_ERROR_HANDSHAKE_INVALID = 17;
+  DECISION_ERROR_PARKING_TIMEOUT = 18; // 超过最大泊车时间
+  DECISION_ERROR_SLOT_OCCUPIED = 19; // 泊车过程中车位被占用
+  DECISION_ERROR_RA_ODO_QUEUE_EMPTY = 20; // 触发倒车循迹的轨迹为空
+  DECISION_ERROR_PATH_OFFSET_EXCEED = 21; // RA记忆路径时,R挡行驶路径和原路径偏移过大
+  DECISION_ERROR_ROAD_TOO_NARROW = 22; // 车道过窄导致NPA退出
+  DECISION_ERROR_RA_SPEED_TOO_HIGH = 23;
+  DECISION_ERROR_RA_WHEEL_ANGLE_OVER = 24;
+  DECISION_ERROR_VEHICLE_BLOCKED = 25; // 车辆无法移动
+}
+
+enum CornerSlotType {
+  UNKNOWN_CORNER_SLOT_TYPE = 0;
+  CORNER_SLOT_LEFT = 1;
+  CORNER_SLOT_RIGHT = 2;
+}
+
+message ApaPlanExitMsg {
+  ApaPlanningErrorCode plan_error_code = 1;
+  ApaControlErrorCode control_error_code = 2;
+  ApaDecisionErrorCode decision_error_code = 3;
+}
+
+message PlanStateMsg {
+  PlanStateType type = 1;
+  PlanExitReason exit_reason = 2;
+  PlanPauseReason pause_reason = 3;
+  int64 error_code = 4;
+  ApaPlanExitMsg apa_plan_exit_msg = 5;
+  CtrlStateType ctrl_state = 6;
+  HandShakableType handshakable = 7;
+  PlanStateSource state_source = 8;
+  ParkingWorkingStatus parking_working_status = 9;
+  CornerSlotType corner_slot = 10;
+}
+
+message HpaToStateMachineMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // plan upload state
+  PlanStateMsg state = 3;
+}

@@ -1,0 +1,202 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+message RadarFrameStatus {
+  uint32 comm_error = 1;       // 通信故障
+  uint32 dsp_time_stamp = 2;   // DSP时间戳
+  uint32 sgu_fail = 3;         // SGU系统故障位
+  uint32 sensor_dirty = 4;     // 传感器是否受到污染
+  uint32 hw_fail = 5;          // 硬件故障标志
+  int32 alignment_fail = 6;    // 对齐错误
+  float obj_latency = 7;       // 时延delay标志
+  uint32 time_stamp = 8;       // radar处理时间uint32
+  uint64 time_stamp_u64 = 9;   // radar处理时间uint64
+}
+
+message RadarObstacle {
+  int32 id = 1;                                  // 障碍物编号
+  uint32 age = 2;                                // 目标追踪持续时间
+  Vector3f pos = 3;            // 三维距离值
+  Vector3f velocity = 4;       // 三维速度值
+  Vector3f acc = 5;            // 三维加速度值
+  float rcs = 6;                                 // rcs反射振幅
+  float obstacle_prob = 7;                       // 障碍物概率
+  float exist_prob = 8;                          // 目标存在概率
+  enum RadarObstacleType {
+    RADAR_OBSTACLE_UNCERTAIN = 0;        // 不确定
+    RADAR_OBSTACLE_TRUCK = 1;            // 卡车
+    RADAR_OBSTACLE_CAR = 2;              // 汽车
+    RADAR_OBSTACLE_BICYCLE = 3;          // 自行车
+    RADAR_OBSTACLE_PEDESTRAIN = 4;       // 行人
+    RADAR_OBSTACLE_GENERAL = 5;          // 一般物体
+    RADAR_OBSTACLE_ANIMAL = 6;           // 动物
+    RADAR_OBSTACLE_MOTORBIKE = 7;        // 摩托车
+    RADAR_OBSTACLE_VAN = 8;              // 厢式车
+    RADAR_OBSTACLE_DYNAMIC = 9;          // 动态目标
+    RADAR_OBSTACLE_INIT = 10;            // 初始状态
+    RADAR_OBSTACLE_BARRIER = 11;         // 栅栏
+  }
+  RadarObstacleType type = 9;                    // 障碍物类型
+  enum RadarTargetStatus {
+    NO_TARGET = 0;                       // 无目标
+    NEW_TARGET = 1;                      // 新检测出目标
+    NEW_UPDATED_TARGET = 2;              // 新更新出目标
+    UPDATED_TARGET = 3;                  // 追踪和测量出的目标 tracked, measured
+    COASTED_TARGET = 4;                  // 预测出的目标 predicted
+    MERGED_TARGET = 5;                   // 融合目标
+    INVALID_COASTED_TARGET = 6;          // 无效的预测目标
+    NEW_COASTED_TARGET = 7;              // 新预测的目标
+    UNKNOWN_TARGET = 8;                  // 未知目标
+    RESERVE_TARGET = 9;                  // 预留位
+  }
+  RadarTargetStatus target_status = 10;          // 目标状态
+  enum RadarDynamicStatus {
+    RADAR_DYNAMIC_STATE_MOVING = 0;      // 运动
+    RADAR_DYNAMIC_STATE_STATIONARY = 1;  // 静止
+    RADAR_DYNAMIC_STATE_ONCOMING = 2;    // 对向而来
+    RADAR_DYNAMIC_STATE_CROSS_TRAFFIC = 3;  // 横穿
+    RADAR_DYNAMIC_STATE_UNKNOWN = 4;     // 未知
+    RADAR_DYNAMIC_STATE_STOP = 5;        // 停止
+    RADAR_DYNAMIC_STATE_RESERVE = 6;     // 预留位
+  }
+  RadarDynamicStatus dynamic_status = 11;        // 运动状态
+  string dev_name = 12;                          // 雷达名
+  Vector3f pos_dev = 13;       // 位置标准差
+  Vector3f velocity_dev = 14;  // 速度标准差
+  Vector3f acc_dev = 15;       // 加速度标准差
+  // 障碍物坐标参考点类别
+  enum RadarReferencePoint {
+    RADAR_REFERENCE_POINT_UNCERTAIN = 0;
+    RADAR_REFERENCE_POINT_FRONT_LEFT = 1;
+    RADAR_REFERENCE_POINT_FRONT_MIDDLE = 2;
+    RADAR_REFERENCE_POINT_FRONT_RIGHT = 3;
+    RADAR_REFERENCE_POINT_MIDDLE_LEFT = 4;
+    RADAR_REFERENCE_POINT_MIDDLE_RIGHT = 5;
+    RADAR_REFERENCE_POINT_REAR_LEFT = 6;
+    RADAR_REFERENCE_POINT_REAR_MIDDLE = 7;
+    RADAR_REFERENCE_POINT_REAR_RIGHT = 8;
+    RADAR_REFERENCE_POINT_CENTER = 9;
+  }
+  // 障碍物坐标参考点
+  RadarReferencePoint reference_point = 16;
+  // 含义：障碍物长度 单位: 米 范围: 参考dbc文件
+  float object_length = 17;
+  // 含义：障碍物宽度 单位: 米 范围: 参考dbc文件
+  float object_width = 18;
+  // 含义：障碍物偏航角 单位: rad 范围: 参考dbc文件
+  float object_yaw = 19;
+  // 含义：障碍物偏航角方差 单位: rad^2 范围: 参考dbc文件
+  float object_yawstd = 20;
+  // 含义：障碍物方向角 单位: rad 范围: 参考dbc文件
+  float object_azimuth = 21;
+  // 含义：障碍物方向角 单位: rad^2 范围: 参考dbc文件
+  float object_azimuthstd = 22;
+  // 含义：障碍物高度 单位: m 范围: 参考dbc文件
+  float object_height = 23;
+  // 含义：绝对/相对的flag，按照bit位的0/1来确定 单位：无
+  // bit0 是否使能参考点RadarReferencePoint，1表示开启
+  // 0代表相对 1代表绝对
+  // bit1 velocity.x bit2 velocity.y bit3 velocity.z
+  // bit4 acc.x bit5 acc.y bit6 acc.z
+  // 存在关系 0不存在 1存在
+  enum RadarRelFlag {
+    // 含义： 是否存在参考点
+    RADAR_RELFLAG_UNSPECIFIED = 0;                // 0
+    // 含义： 是否存在参考点
+    RADAR_RELFLAG_REFERENCE_POINT = 1;            // 1 << 0
+    // 含义： 是否存在障碍物的长度信息
+    RADAR_RELFLAG_OBJECT_LENGTH = 2;              // 1 << 1
+    // 含义： 是否存在障碍物的宽度信息
+    RADAR_RELFLAG_OBJECT_WIDTH = 4;               // 1 << 2
+    // 含义： 是否存在障碍物的yaw角信息
+    RADAR_RELFLAG_OBJECT_YAW = 8;                 // 1 << 3
+    // 含义： Vx是否是相对速度
+    RADAR_RELFLAG_VELOCITY_X = 16;                // 1 << 4
+    // 含义： Vy是否是相对速度
+    RADAR_RELFLAG_VELOCITY_Y = 32;                // 1 << 5
+    // 含义： Vz是否是相对速度
+    RADAR_RELFLAG_VELOCITY_Z = 64;                // 1 << 6
+    // 含义： Ax是否是相对加速度
+    RADAR_RELFLAG_ACC_X = 128;                    // 1 << 7
+    // 含义： Ay是否是相对加速度
+    RADAR_RELFLAG_ACC_Y = 256;                    // 1 << 8
+    // 含义： Az是否是相对加速度
+    RADAR_RELFLAG_ACC_Z = 512;                    // 1 << 9
+    // 含义： 是否存在Vx
+    RADAR_RELFLAG_EXIST_VELOCITY_X = 1024;        // 1 << 10
+    // 含义： 是否存在Vy
+    RADAR_RELFLAG_EXIST_VELOCITY_Y = 2048;        // 1 << 11
+    // 含义： 是否存在Vz
+    RADAR_RELFLAG_EXIST_VELOCITY_Z = 4096;        // 1 << 12
+    // 含义： 是否存在Ax
+    RADAR_RELFLAG_EXIST_ACC_X = 8192;             // 1 << 13
+    // 含义： 是否存在Ay
+    RADAR_RELFLAG_EXIST_ACC_Y = 16384;            // 1 << 14
+    // 含义： 是否存在Az
+    RADAR_RELFLAG_EXIST_ACC_Z = 32768;            // 1 << 15
+    // 含义： 是否存在exist_prob数值
+    RADAR_RELFLAG_EXIST_EXIST_PROB = 65536;       // 1 << 16
+    // 含义： 是否存在obstacle_prob数值
+    RADAR_RELFLAG_EXIST_OBSTACLE_PROB = 131072;   // 1 << 17
+    // 含义： 是否存在dynamic_status数值
+    RADAR_RELFLAG_EXIST_DYNAMIC_STATUS = 262144;  // 1 << 18
+    // 含义： 是否存在target_status数值
+    RADAR_RELFLAG_EXIST_TARGET_STATUS = 524288;   // 1 << 19
+  }
+  uint32 rel_flag = 24;
+}
+
+message RadarTrack {
+  float range_rate = 1;                  // 范围变化率
+  uint32 med_range_mode = 2;
+  float range_accel = 3;                 // 距离加速度
+  float width = 4;                       // 宽度
+  uint32 rolling_count = 5;              // 滚动计数器
+  uint32 bridge_object = 6;              // 网桥对象
+  float range = 7;                       // 距离
+  float angle = 8;                       // 角度
+  uint32 status = 9;                     // 状态
+  uint32 oncomming = 10;                 // 接近状态
+  uint32 grouping_changed = 11;          // 分组改变
+  float lat_rate = 12;                   // 延迟速率
+  float amplitude = 13;                  // 振幅
+  int32 valid_level = 14;                // 置信度
+  //RadarObstacle object = 15;             // 目标
+}
+
+message RadarTrackMotionPower {
+  uint32 power = 1;                      // 静止物体
+  uint32 moving = 2;                     // 移动的物体
+  uint32 movable_slow = 3;               // 缓慢移动物体
+  uint32 movable_fast = 4;               // 迅速移动物体
+}
+
+message RadarFrame {
+  int64 sensor_stamp = 1;                // 传感器时间, 该周期第一个can/canfd帧的MCU时间戳
+  int64 sample_stamp = 2;                // 采样时间, 该周期第一个can/canfd帧的本地时间戳
+  string model = 3;                      // 类型,毫米波雷达的型号
+  uint32 channel_id = 4;                 // 通道号
+  uint32 sensor_type = 5;
+
+  
+  // 时间源
+  // ts_src = 1, header.sync_ts = sample_stamp
+  // ts_src = 0, header.sync_ts = sensor_stamp
+  uint32 ts_src = 6;
+  float pitch = 7;                       // 标定参数pitch
+  float yaw = 8;                         // 标定参数yaw
+  float roll = 9;                       // 标定参数roll
+  float x_offset = 10;                   // 标定参数x_offset
+  float y_offset = 11;                   // 标定参数y_offset
+  float z_offset = 12;                   // 标定参数z_offset
+  RadarFrameStatus status = 13;               // 状态，毫米波雷达自身状态
+  repeated RadarTrack tracks = 14;                // 毫米波障碍物数据
+  bool frame_valid = 15;
+}
+
+message RadarFrames {
+  Header header = 1;
+  repeated RadarFrame radar_frames = 2;
+}

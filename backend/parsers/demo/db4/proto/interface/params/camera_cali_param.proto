@@ -1,0 +1,83 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+// ConvertRT
+message ConvertRT {
+  repeated float rotation = 1;
+  repeated float translation = 2;
+}
+
+// Intrinsic
+message IntrinsicParam {
+  uint32 camera_index = 1;
+  float center_u = 2;
+  float center_v = 3;
+  repeated float distort = 4;
+  float focal_u = 5;
+  float focal_v = 6;
+  float xi = 7;
+}
+
+// Extrinsic
+message ExtrinsicParam {
+  float camera_x = 1;
+  float camera_y = 2;
+  float camera_z = 3;
+  float yaw = 4;
+  float roll = 5;
+  float pitch = 6;
+}
+
+// Param
+message KbParam {
+  uint32 camera_index = 1;
+  uint32 fov = 2;
+  uint32 image_height = 3;
+  uint32 image_width = 4;
+  uint32 type = 5;
+  repeated float valid_height = 6;
+  IntrinsicParam intri = 7;
+  ConvertRT local2vcs = 8;
+  ExtrinsicParam cam2local = 9;
+  ExtrinsicParam cam2vcs = 10;
+  uint32 version = 11;
+  string vendor = 12;
+}
+
+message ScaraCameraInt {
+  uint32 type = 1;
+  uint32 flag = 2;
+  uint32 width = 3;
+  uint32 height = 4;
+  repeated float direct_mapping = 5;
+  repeated float invers_mapping = 6;
+  repeated float int_param = 7;
+}
+
+// Scara Param
+message ScaraParam {
+  float yaw = 1;
+  float roll = 2;
+  float pitch = 3;
+  repeated float camera_ext = 4;
+  ScaraCameraInt camera_int = 5;
+}
+
+enum CameraModel {
+  MODEL_KB = 0;     // KB
+  MODEL_SCARA = 1;  // SCARA
+}
+
+message CameraCaliParamMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Param
+  repeated KbParam camr_cali_kb_param = 3;
+  // Scara Param
+  repeated ScaraParam camr_cali_scara_param = 4;
+  // Camera Model
+  CameraModel camera_model = 5;
+}

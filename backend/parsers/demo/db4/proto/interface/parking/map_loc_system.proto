@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum AVP_LPState {
+  AVPOff = 0;
+  kAbort = 1;
+  kStandby = 2;
+  kMapLearning = 3;
+  kParkinPreActive = 4;
+  kCruising = 5;
+  kParkInProcess = 6;
+  kSuspend = 7;
+  kFunctionComplete = 8;
+}
+
+enum ControlCmd {
+  kDefault = 0;
+  /// @brief Get all the map headers
+  kGetAllMapHeader = 1;
+  /// @brief Get one map info
+  kGetOneMapInfo = 2;
+  /// @brief delete one map
+  kDeleteOneMap = 3;
+  /// @brief delete all maps
+  kDeleteAllMap = 4;
+  /// @brief 发送目标车位
+  kSendTargetParkingSlot = 5;
+  /// @brief start cruising
+  kStartCruising = 6;
+  /// @brief start path learning
+  kStartPathLearning = 7;
+  /// @brief finish cruising
+  kFinishCruising = 8;
+  /// @brief finish path learning
+  kFinishPathLearning = 9;
+  /// @brief abort path learning
+  kAbortPathLearning = 10;
+}
+
+message MapLocSystemMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  AVP_LPState avp_lp_state = 3;
+  ControlCmd control_cmd = 4;
+  uint32 target_parking_slot_id = 5;
+  uint32 map_id = 6;
+}

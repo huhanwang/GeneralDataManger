@@ -1,0 +1,122 @@
+syntax = "proto2";
+package autodrive.workflow.proto;
+
+message InVector2f {
+  required float x = 1;
+  required float y = 2;
+}
+
+enum InParkType {
+  IN_PARK_TYPE_VIRTUAL = 0;
+  IN_PARK_TYPE_PARALLEL = 1;
+  IN_PARK_TYPE_CROSS = 2;
+  IN_PARK_TYPE_DIAGNOAL = 3;
+}
+
+enum MovingDirection {
+  MOVING_DIRECTION_STANDSTILL = 0;
+  MOVING_DIRECTION_FORWARD = 1;
+  MOVING_DIRECTION_BACKWARD = 2;
+  MOVING_DIRECTION_UNKNOWN = 3;
+}
+
+message InputParkingPark {
+  // PSID
+  required uint32 id = 1;
+  // PSType
+  required InParkType type = 2;
+  // P1xPos, P1yPos; P2xPos, P2yPos
+  repeated InVector2f points = 3;
+  // PSOrientation
+  required float orientation = 4;
+  // PSLength
+  required float length = 5;
+  // PSDepth
+  required float depth = 6;
+  // TPMxPos
+  required float x_pos = 7;
+  // TPMyPos
+  required float y_pos = 8;
+  // TPMheadangle
+  required float headangle = 9;
+}
+
+enum OperatingMode {
+  OPERATING_MODE_INACTIVE = 0;
+  OPERATING_MODE_ACTIVE = 1;
+  OPERATING_MODE_UPDATE = 2;
+}
+
+enum SystemStatus {
+  SYSTEM_STATUS_OFF = 0;
+  SYSTEM_STATUS_STANDBY = 1;
+  SYSTEM_STATUS_SEARCHING = 2;
+  SYSTEM_STATUS_GUIDANCE = 3;
+  SYSTEM_STATUS_GUIDANCE_RECOVERY = 4;
+  SYSTEM_STATUS_TERMINATED = 5;
+  SYSTEM_STATUS_COMPLETED = 6;
+  SYSTEM_STATUS_FAILURE = 7;
+}
+
+message VehicleStatus {
+  // timestamp
+  required uint32 high_timestamp = 1;
+  required uint32 low_timestamp = 2;
+  // VehDir
+  required MovingDirection moving_direction = 3;
+  // DirDist
+  required float driven_distance = 4;
+  // VehXPos, VehYPos
+  required InVector2f position = 5;
+  // VehHeadangle
+  required float heading = 6;
+  // VehKappa
+  required float kappa = 7;
+  // VehRadius
+  required float radius = 8;
+}
+
+message ObjectInfo {
+  // DspObjInfo_Counter
+  required uint32 counter = 1;
+  // DspObjInfo_ObjType
+  required uint32 type = 2;
+  // DspObjInfo_DspMode
+  required uint32 mode = 3;
+  // DspObjInfo_ID
+  required uint32 id = 4;
+  // DspObjInfo_X
+  required uint32 x = 5;
+  // DspObjInfo_Y
+  required uint32 y = 6;
+  // DspObjInfo_A
+  required uint32 a = 7;
+}
+
+message InputParkingMsg {
+  required uint32 high_timestamp = 1;
+  required uint32 low_timestamp = 2;
+  // frame id
+  required uint32 frame_id = 3;         // message counter, 发送一次自加 1
+  // SPS_L1PSInfo_st, SPS_L2PSInfo_st,
+  // SPS_L3PSInfo_st, SPS_R1PSInfo_st,
+  // SPS_R2PSInfo_st, SPS_R3PSInfo_st,
+  repeated InputParkingPark parkings = 4;
+  // SPS_SelectPSInfo_st
+  required InputParkingPark selected_parking = 5;
+  // reserved interface
+  required OperatingMode operating_mode = 6;
+  // APHMI_Sts
+  required SystemStatus system_status = 7;
+  // VHMInfo_st
+  required VehicleStatus vehicle_status = 8;
+  // LeftDspObjInfo_0, LeftDspObjInfo_1
+  // LeftDspObjInfo_2, LeftDspObjInfo_3
+  // LeftDspObjInfo_4, LeftDspObjInfo_5
+  // LeftDspObjInfo_6, LeftDspObjInfo_7
+  // RightDspObjInfo_0, RightDspObjInfo_1
+  // RightDspObjInfo_2, RightDspObjInfo_3
+  // RightDspObjInfo_4, RightDspObjInfo_5
+  // RightDspObjInfo_6, RightDspObjInfo_7
+  repeated ObjectInfo objects = 9;
+}

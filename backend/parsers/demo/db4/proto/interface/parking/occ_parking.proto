@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum OccHeightMapType {
+  kNotOccupied = 0;
+  kOccupiedLow = 1;
+  kOccupiedMiddle = 2; 
+  kOccupiedMiddleHigh = 3; 
+  kOccupiedHigh = 4; 
+  kOccupiedHighMore = 5; 
+  kNull = 255;
+}
+
+message OccGridMapHeight {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+}
+
+message OccHeightMap {
+  float high_occ_gridmap_resolution = 1;
+  float high_occ_height_resolution = 2;
+  float low_occ_gridmap_resolution = 3; // 0.1f = ;
+  float low_occ_height_resolution = 4; //0.1f = ;
+  OccGridMapHeight high_occ_height_map = 5;
+  OccGridMapHeight low_occ_height_map = 6;
+}
+
+message OccParkingMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // OccHeightMap
+  OccHeightMap occ_height_map = 3;
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum CaliMode {
+  ENTER_CALI = 0;
+  EXIT_CALI = 1;
+}
+
+enum ParkFunReq {
+  PARK_NO_REQUEST = 0;
+  APA_REQUEST = 1;
+  HPA_REQUEST = 2;
+}
+
+enum ReqType {
+  ReqType_UNKNOWN_TYPE = 0;
+  CALI_REQ = 1;
+  PARK_FUN_REQ = 2;
+}
+
+message ReqData {
+  CaliMode cali_mode = 1;
+  ParkFunReq park_fun_req = 2;
+}
+
+message TsmClientReqMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Req Data
+  ReqData req_data = 3;
+  // Req Type
+  ReqType req_type = 4;
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/bev_road_geometry.proto";
+package autodrive.workflow.proto;
+
+message BevStaticMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  BevRoadGeometry bev_road_geometry = 3;
+}

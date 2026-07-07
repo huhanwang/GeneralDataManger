@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+
+package autodrive.workflow.proto.perception_base;
+
+message Rect {
+  float left = 1;
+  float top = 2;
+  float right = 3;
+  float bottom = 4;
+}
+
+message RectInt {
+  int32 left = 1;
+  int32 top = 2;
+  int32 right = 3;
+  int32 bottom = 4;
+}
+
+message ImageSpace {
+  RectInt rect = 1;
+}
+
+message Polygon {
+  repeated Vector3f polygon_points = 1;
+}
+
+message RoiMap {
+  Rect model_roi = 1;
+  int32 model_id = 2;
+}
+
+message Header {
+  int32 cam_idx = 1;
+  int64 frame_id = 2;
+  int64 time_stamp = 3;
+}
+
+message Category {
+  int32 property_type = 1;
+  int32 property = 2;
+  float property_conf = 3;
+}
+
+enum ImageId {
+  kImageIdCylinderRear = 0;
+  kImageIdCylinderFront = 1;
+  kImageIdCylinderLeft = 2;
+  kImageIdCylinderRight = 3;
+  kImageIdIpm = 4;
+  kImageIdRear = 5;
+  kImageIdFront = 6;
+  kImageIdCount = 7;
+}
+
+enum VehProperty {
+  kVehPropertyType = 0;
+  kVehPropertyClassification = 1;
+  kVehPropertyLight = 2;
+  kVehProperty3DBox = 3;
+  kVehPropertyKeyPoints = 4;
+  kVehPropertyVehBBox = 5;
+  kVehPropertyKeyPointsConf = 6;
+  kVehPropertyBigSmallCls = 7;
+  kVehPropertyPoliceLight = 8;
+  kVehPropertyOcclusion = 9;
+  kVehPropertyPose = 10;
+  kVehPropertyVehFull = 11;
+  kVehPropertyOritationCls = 12;
+  kVehPropertyOritationRe = 13;
+  kVehProperty12KeyPoints = 14;
+  kVehProperty12KeyPointsConf = 15;
+  kVehproperty12KeyPointsCls = 16;
+  kVehPropertyTruncation = 17;
+  kVehPropertyLeftDoor = 18;
+  kVehPropertyRightDoor = 19;
+  kVehPropertyTrunkDoor = 20;
+  kVehPropertyEmergency = 21;
+  kVehPropertyRearFuzzy = 22;
+  kVehPropertyPollution = 23;
+  kVehPropertyCnt = 24;
+}
+
+enum PedProperty {
+  kPedPropertyOrientation = 0;
+  kPedPropertyCyclist = 1;
+  kPedPropertyAge = 2;
+  kPedPropertyPose = 3;
+  kPedPropertyPosNeg = 4;
+  kPedPropertyBBox = 5;
+  kPedPropertyOcclusion = 6;
+  kPedPropertyPosNegOcc = 7;
+  kPedProperty2PEDet = 8;
+  kPedPropertyCnt = 9;
+}
+
+enum VehRearProperty {
+  kVehRearPropertyOcclusion = 0;
+  kVehRearPropertyPart = 1;
+  kVehRearPropertyBBox = 2;
+  kVehRearPropertyLmks3 = 3;
+  kVehRearPropertyScaleRe = 4;
+  kVehRearPropertyPlate = 5;
+  kVehRearPropertyCnt = 6;
+}
+
+message Box3D {
+  Vector3f lower_lt = 1;
+  Vector3f lower_lb = 2;
+  Vector3f lower_rb = 3;
+  Vector3f lower_rt = 4;
+  Vector3f upper_lt = 5;
+  Vector3f upper_lb = 6;
+  Vector3f upper_rb = 7;
+  Vector3f upper_rt = 8;
+  float conf = 9;
+}

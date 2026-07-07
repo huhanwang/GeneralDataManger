@@ -1,0 +1,100 @@
+syntax = "proto2";
+package autodrive.workflow.proto;
+
+message OutVector2f {
+  required float x = 1;
+  required float y = 2;
+}
+
+enum OutParkType {
+  OUT_PARK_TYPE_VIRTUAL = 0;
+  OUT_PARK_TYPE_PARALLEL = 1;
+  OUT_PARK_TYPE_CROSS = 2;
+  OUT_PARK_TYPE_DIAGNOAL = 3;
+}
+
+enum ParkSide {
+  PARK_SIDE_IDLE = 0;
+  PARK_SIDE_LEFT = 1;
+  PARK_SIDE_RIGHT = 2;
+  PARK_SIDE_FRONT = 3;
+  PARK_SIDE_REAR = 4;
+}
+
+enum ParkPointSource {
+  PARK_POINT_SOURCE_INITIAL = 0;
+  PARK_POINT_SOURCE_SOLIDLINE = 1;
+  PARK_POINT_SOURCE_DOTLINE = 2;
+  PARK_POINT_SOURCE_OBJECT = 3;
+  PARK_POINT_SOURCE_CALCULATED = 4;
+}
+
+enum LateralReferenceType {
+  LATERAL_REFERENCE_TYPE_INITIAL = 0;
+  LATERAL_REFERENCE_TYPE_VIRTUAL = 1;
+  LATERAL_REFERENCE_TYPE_TRAVERSAL = 2;
+  LATERAL_REFERENCE_TYPE_LOW = 3;
+  LATERAL_REFERENCE_TYPE_HIGH = 4;
+  LATERAL_REFERENCE_TYPE_SOLID_LINE = 5;
+  LATERAL_REFERENCE_TYPE_DOT_LINE = 6;
+  LATERAL_REFERENCE_TYPE_UNKNOWN = 7;
+}
+
+message ParkPoint {
+  // SVS_L0PSPoint1_1XPos_f, SVS_L0PSPoint1_1YPos_f
+  required OutVector2f position = 1;
+  // SVS_L0PSPoint1_1Cond_ub
+  required uint32 confidence = 2;
+  // SVS_L0PSPoint1_1Source_en
+  required ParkPointSource source = 3;
+}
+
+message OutputParking {
+  // SVS_L0PSTimeStamp_u16
+  required uint32 high_timestamp = 1;
+  required uint32 low_timestamp = 2;
+  // SVS_L0PSID_ub
+  required uint32 id = 3;
+  // SVS_L0PSType_en
+  required OutParkType type = 4;
+  // SVS_L0PSSide_en
+  required ParkSide side = 5;
+  // false, SVS_SelectedPSInfo_st::SVS_SelectedPSUpdate_b
+  required bool is_updated = 6;
+  // SVS_L0PSPoint1_1, SVS_L0PSPoint1_2
+  // SVS_L0PSPoint2_1, SVS_L0PSPoint2_2
+  repeated ParkPoint points = 7;
+  // SVS_L0PSLength_f
+  required float length = 8;
+  // SVS_L0PSDepth_f
+  required float depth = 9;
+  // SVS_L0StreetOrientation_f
+  required float street_orientation = 10;
+  // SVS_L0Line1Orientation_f, SVS_L0Line2Orientation_f
+  repeated float line_orientations = 11;
+  // SVS_L0PSOrientation_f
+  required float orientation = 12;
+  // SVS_L0PSLateralRef1Orientation_f, SVS_L0PSLateralRef2Orientation_f
+  // SVS_L0PSLateralRef3Orientation_f
+  repeated float lateral_ref_orientations = 13;
+  // SVS_L0PSLateralRef1_en, SVS_L0PSLateralRef2_en
+  // SVS_L0PSLateralRef3_en
+  repeated LateralReferenceType lateral_ref_types = 14;
+  // SVS_L0PSObstable_bl, SVS_L1PSObstable_bl,
+  // SVS_R0PSObstable_bl, SVS_R1PSObstable_bl,
+  // SVS_SelectedPSObstable_bl
+  required bool valid_obstacle = 15;
+}
+
+message OutputParkingMsg {
+  // SVS_L0PSTimeStamp_u16
+  required uint32 high_timestamp = 1;
+  required uint32 low_timestamp = 2;
+  // frame id
+  required uint32 frame_id = 3;         // message counter, 发送一次自加 1
+  // SVS_L0PSInfo_st, SVS_L1PSInfo_st
+  // SVS_R0PSInfo_st, SVS_R1PSInfo_st
+  repeated OutputParking parkings = 4;
+  // SVS_SelectedPSInfo_st
+  required OutputParking selected_parking = 5;
+}

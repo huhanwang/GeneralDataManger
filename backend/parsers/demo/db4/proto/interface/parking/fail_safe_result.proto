@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+enum SeverityLevel {
+  kSeverityLevelNone = 0;
+  kSeverityLevelMild = 1;
+  kSeverityLevelModerate = 2;
+  kSeverityLevelSevere = 3;
+}
+
+enum OutOfCalibTsrBs {
+  kTSROutOfCalib = 0;
+  kTSROutOfCalibAEB = 1;
+  kTSROutOfCalibYaw = 2;
+  kTSROutOfCalibHorizon = 3;
+}
+
+message FailSafeLevel {
+  SeverityLevel rain_severity_level = 1;
+  SeverityLevel full_blockage_severity_level = 2;
+  SeverityLevel blurred_image_severity_level = 3;
+  SeverityLevel splashes_severity_level = 4;
+  SeverityLevel low_sun_severity_level = 5;
+  SeverityLevel sun_ray_severity_level = 6;
+  bool out_of_focus_severity_level = 7;
+  bool out_of_calibration_severity_level = 8;
+  SeverityLevel partial_blockage_severity_level = 9;
+  SeverityLevel frozen_windshield_severity_level = 10;
+  SeverityLevel fog_severity_level = 11;
+  bool free_sight = 12;
+  OutOfCalibTsrBs out_of_calib_tsr_bs = 13;
+}
+
+message FailSafeResult {
+  perception_base.ImageId image_id = 1;
+  FailSafeLevel fail_safe_result = 2;
+}
+
+message FailSafeResults{
+  repeated FailSafeResult fail_safe_result_data = 1;
+}
+
+message FailsafeResultMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  FailSafeResults safe_results = 3;
+}

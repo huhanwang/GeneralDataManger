@@ -1,0 +1,58 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+message RtkPose {
+  // number of satellites
+  uint32 num_satellites = 1;
+  // HDOP
+  float hdop = 2;
+  // Pos type
+  PosType pos_type = 3;
+  // latitude
+  double latitude = 4;
+  // longitude
+  double longitude = 5;
+  // altitude
+  float altitude = 6;
+  // latitude standard deviation (m)
+  float latitude_deviation = 7;
+  // longitude standard deviation (m)
+  float longitude_deviation = 8;
+  // altitude standard deviation (m)
+  float altitude_deviation = 9;
+  // orientation euler (roll, pitch, yaw/azimuth)
+  Vector3f orientation_euler = 10;
+   // orientation deviation (roll, pitch, yaw/azimuth)
+  Vector3f orientation_deviation = 11;
+}
+
+message RtkMotion {
+  // velocity (north, east, up) (m/s)
+  Vector3f velocity = 1;
+  // velocity standard deviation (north, east, up) (m/s)
+  Vector3f velocity_deviation = 2;
+  // angular velocity (north, east, up) (rad/s)
+  Vector3f angular_velocity = 3;
+  // angular velocity deviation (north, east, up) (rad/s)
+  Vector3f angular_velocity_deviation = 4;
+  // acceleration (north, east, up) (m/s^2)
+  Vector3f acceleration = 5;
+  // acceleration deviation (north, east, up) (m/s^2)
+  Vector3f acceleration_deviation = 6;
+}
+
+message RtkMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Ins status
+  InsStatus ins_status = 3;
+  // pose
+  RtkPose pose = 4;
+  // motion
+  RtkMotion motion = 5;
+}

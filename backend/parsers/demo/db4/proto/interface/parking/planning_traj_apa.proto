@@ -1,0 +1,67 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/control_point.proto";
+package autodrive.workflow.proto;
+
+enum ParkingPlanVcsStatus {
+  PARK_PLAN_STATUS_INVALID = 0;
+  PARK_PLAN_STATUS_PLAN_OVER = 1;
+  PARK_PLAN_STATUS_PLAN_SUCCEED = 2;
+  PARK_PLAN_STATUS_PLAN_FAILED = 3;
+  PARK_PLAN_STATUS_PLAN_PARA_OUT_FIRST_STEP = 4;
+  PARK_PLAN_STATUS_MAX = 5;
+}
+
+enum APAPlanningErrorCode {
+  NO_ERROR = 0;                            // 无错误
+  ERROR_PARK_TYPE = 1;                     // 泊车类型错误
+  ERROR_SLOT_TYPE = 2;                     // 车位类型错误
+  ERROR_DETECT_TYPE = 3;                   // 车位探测类型错误
+  ERROR_SLOT_SIDE = 4;                     // 车边位置错误
+  ERROR_PARK_OUTDIR = 5;                   // 泊出方向错误
+  ERROR_USS_SIDE = 6;                      // USS单双边类型错误
+  ERROR_SLOT_TYPE_AND_PARK_TYPE_MATCHING = 7;  // 车位类型和泊车类型不匹配
+  ERROR_SLOT_LENGTH = 8;                   // 车位长度尺寸不满足
+  ERROR_SLOT_WIDTH = 9;                    // 车位宽度尺寸不满足
+  ERROR_SLOT_ANGLE = 10;                   // 车位角度不满足
+  ERROR_SLOT_FRONT_REAR_BOUND_DIS = 11;    // 车位前后bound绝对长度不满足
+  ERROR_GOAL_HAS_MAX_MOVING_DIS = 12;   // 垂直车位由于bounddary入侵，目标点达到最大移动值  // NOLINT
+  ERROR_INIT_POINT = 13;             // 初始点位置异常
+  ERROR_CAL_PARKING_IN_POINT = 14;     // 平行泊入点计算失败
+  ERROR_OBLI_SLOT_COLLISION = 15;     // 垂直车位目标点碰撞
+  ERROR_SEARCH_FAIL = 16;            // 搜索失败
+  ERROR_EXCEED_MAX_TIMES = 17;        // 超过最大泊车次数
+  ERROR_PATH_NUM_CHANGE_TOO_MUCH = 18;  // 前后路径段数改变太大
+  ERROR_DRIVING_DIR_IN_PARA_SLOT = 19;  // 平行泊入车位行驶方向错误
+  ERROR_INPUT_POS_IN_PARA_SLOT = 20;    // 平行泊入车位位置输入错误
+  ERROR_NEW_PLAN_IN_PARA_SLOT = 21;     // 平行泊入车位重规划失败
+  ERROR_STOP_IN_FIXED_POS = 22;  // 平行泊入无法行驶到目标位置附近
+  ERROR_PARKING_OUT_POS = 23;   // 平行泊入出库点规划失败
+  ERROR_WHEEL_BAR_DIS = 24;     // 挡轮杆到库位顶点长度不满足
+  ERROR_PARKING_OUT_TPM_POS = 25; //平行泊出TPM点错误
+  ERROR_PARKING_OUT_FRONT_FREE = 26;
+  APA_PLANNING_ERROR_MAX = 27;
+}
+
+message PlanningTrajVcs {
+  repeated CtrlPoint track = 1;
+  repeated CtrlPoint track_hmi = 2;
+  ParkingPlanVcsStatus status = 3;
+  int32 switch_flag = 4;
+  APAPlanningErrorCode err_code = 5;
+  int32 current_steps = 6;
+  int32 first_traj_size = 7;
+  int32 last_driving_flag = 8;
+  uint64 frecespace_capture_ts = 9;
+  uint64 freespace_recv_ts = 10;
+  int32 num_track = 11;
+}
+
+message PlanningTrajVcsMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // PlanningTrajVcs
+  PlanningTrajVcs planning_traj_vcs = 3;
+}

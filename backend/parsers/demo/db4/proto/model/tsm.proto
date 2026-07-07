@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum TopProceState {
+  DEFAULT_MODE = 0;
+  ADAS_L_MODE = 1;
+  ADAS_H_MODE = 2;
+  PRE_HPA_MODE = 3;
+  PARK_APA_MODE = 4;
+  PARK_HPA_MODE = 5;
+  FAULT_MODE = 6;
+  INIT_MODE = 7;
+  CALI_MODE = 8;
+  PRE_ADAS_H_MODE = 9;
+  PARKING_BACKSTAGE_SEARCH = 10;
+}
+
+message TsmMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Top Proce State
+  TopProceState top_proce_sts = 3;
+}

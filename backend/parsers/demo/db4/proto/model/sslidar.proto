@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message SolidStateLidar {
+  // lidar id
+  uint32 lidar_id = 1;
+  // status
+  uint32 status = 2;
+  // whether is dirty
+  bool is_dirty = 3;
+  // angular velocity
+  Vector3f angular_velocity = 4;
+  // acceleration
+  Vector3f acceleration = 5;
+  // point cloud
+  bytes point_cloud = 6;
+  // point num
+  uint32 num_points = 7;
+}
+
+message SslidarMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // SolidStateLidar
+  SolidStateLidar solid_state_lidar = 3;
+}

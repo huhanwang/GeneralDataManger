@@ -1,0 +1,58 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/parsing_base.proto";
+package autodrive.workflow.proto;
+
+enum ParkingSlotPointType {
+  kParkingSlotPointTypeTruncated = 0;
+  kParkingSlotPointTypeCorner = 1;
+}
+
+enum ParkingSlotType {
+  kParkingSlotTypeUnknown = 0;
+  kParkingSlotTypeVertical = 1;
+  kParkingSlotTypeParallel = 2;
+  kParkingSlotTypeOblique = 3;
+}
+
+enum ParkingSlotSpecificType {
+  kParkingSlotSpecificTypeNormal = 0;
+  kParkingSlotSpecificTypeUnNormal = 1;
+  KParkingSlotSpecificTypeMaxType = 2;
+}
+
+message ParkingSlotPoint {
+  Vector2f point = 1;
+  float score = 2;
+  ParkingSlotPointType point_type = 3;
+  bool visibility = 4;
+  float point_orientation_x = 5;
+  float point_orientation_y = 6;
+}
+
+message IpmParkingRodInfo {
+  repeated Vector2i end_points_img = 1;
+  bool valid = 2;
+}
+
+message ParkingSlotRaw {
+  repeated ParkingSlotPoint slot_points = 1;
+  float score = 2;
+  bool occupancy = 3;
+  ParkingSlotType slot_type = 4;
+  float slot_orientation_x = 5;
+  float slot_orientation_y = 6;
+  int32 corner_match_flag = 7;
+  IpmParkingRodInfo parking_rod = 8;
+  ParkingSlotSpecificType slot_specific_type = 9;
+}
+
+message IpmMultiTaskMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  repeated ParkingSlotRaw slots_raw = 3;
+  IpmParsingImageData feature_map = 4;
+}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PlanningStatus {
+  SUCCESS_NEAR_THE_END = 0;
+  SUCCESS_ON_THE_WAY = 1;
+  FAIL_USE_HISTORY = 2;
+  FAIL_HISTORY_COLLIDE = 3;
+  PLANNING_INVALID = 100;
+}
+
+message PlanningTrajPoint {
+  int64 timestamp = 1;
+  float pt_x = 2;
+  float pt_y = 3;
+  float pt_z = 4;
+  float pt_yaw = 5;
+  float pt_pitch = 6;
+  float pt_roll = 7;
+  float pt_s = 8;
+  float pt_l = 9;
+  float pt_k = 10;
+  float pt_speed = 11;
+  float pt_acc = 12;
+  float pt_jerk = 13;
+  float pt_speed_limit = 14;
+  int32 pt_gear = 15;
+  int32 pt_direction = 16;
+  int32 pt_detect_status = 17;
+  float pt_dk_ds = 18;
+  float pt_dl_ds = 19;
+  float pt_ddl_ds2 = 20;
+  float pt_ds_dt = 21;
+  float pt_dds_dt2 = 22;
+}
+
+message Traj {
+  // trajectory
+  repeated PlanningTrajPoint trajectory = 1;
+  // planning status
+  PlanningStatus planning_status = 2;
+  // method
+  int32 method = 3;
+}
+
+message PlanningTrajMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Traj
+  Traj traj = 3;
+}

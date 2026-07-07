@@ -1,0 +1,137 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum HmiObjectType {
+  MAIN_CAR_TYPE     = 0;   //自车
+  CAR_TYPE          = 1;
+  SUV_TYPE          = 2;
+  VAN_TYPE          = 3;   //厢式货车
+  BUS_TYPE          = 4;   //公共汽车
+  TRUCK_TYPE        = 5;   //卡车
+  AMBULANCE_TYPE    = 6;   //救护车
+  POLICE_CAR_TYPE   = 7;   //警车
+  FIRE_TRUCK_TYPE   = 8;   //消防车
+  TRICYCLE_TYPE     = 9;   //三轮车
+  SPECIAL_CAR_TYPE  = 10;  //特殊的车
+  PEDESTRIAN_TYPE   = 11;  //行人
+  BICYCLE_TYPE      = 12;  //骑行人
+  TRAFFIC_CONE_TYPE = 13;  //锥桶
+}
+
+enum LockStatus {
+  LOCK_STATUS_UNKNOWN = 0;
+  LOCK_STATUS_OPEN = 1;
+  LOCK_STATUS_CLOSE = 2;
+}
+
+enum OccupancyStatus {
+  OCCUPANCY_STATUS_UNKNOWN = 0;
+  OCCUPANCY_STATUS_OCCUPIED = 1;
+  OCCUPANCY_STATUS_NOT_OCCUPIED = 2;
+}
+
+enum ParkingPillarType {
+  PARKING_PILLAR_TYPE_UNKNOWN = 0;
+  PARKING_PILLAR_TYPE_CYLINDER = 1;
+  PARKING_PILLAR_TYPE_CUBOID = 2;
+}
+
+enum GearTypes {
+  GEAR_N = 0;  // gear position Neutral
+  GEAR_P = 1;  // gear position Parking
+  GEAR_R = 2;  // gear position Reverse
+  GEAR_D = 3;  // gear position Drive
+  GEAR_INVALID = 4;  // gear position invalid
+  GEAR_COUNT = 5;    // gear types totol count
+}
+
+message HmiOdometry {
+  Vector4d quaternion4d = 1;
+  Vector3f position = 2;
+  float yaw = 3;
+}
+
+message HmiObject {
+  int32 id = 1;
+  HmiOdometry odometry = 2;
+  HmiObjectType type = 3;
+  int64 time_stamp = 4;
+}
+
+message ParkingLock {
+  LockStatus sts = 1;
+}
+
+message Polygon {
+  repeated Vector3f pts = 1;
+}
+
+message HmiParkingSlotInfo {
+  int32 id = 1;
+  Polygon poly = 2;
+  HmiOdometry odometry = 3;
+  OccupancyStatus occupy_status = 4;
+  bool available = 5;
+  bool recommend = 6;
+  bool fixed = 7;
+  ParkingLock lock = 8;
+  int64 time_stamp = 9;
+  int32 mapid = 10;
+}
+
+message ParkingPillarInfo {
+  ParkingPillarType type = 1;
+  Vector3f center = 2;
+  float radius = 3;
+  int64 time_stamp = 4;
+}
+
+message SpeedBumpInfo {
+  int32 id = 1;
+  repeated Vector3f pts = 2;
+  int64 time_stamp = 3;
+}
+
+message StaticElemInfo {
+  repeated HmiParkingSlotInfo slot_info = 1;
+  repeated SpeedBumpInfo speed_bump_info = 2;
+  repeated ParkingPillarInfo pillar_info = 3;
+}
+
+message DynamicElemInfo {
+  repeated HmiObject objects = 1;
+}
+
+message HmiVehicleData {
+  HmiOdometry odometry = 1;
+  float left_path_dis = 2;
+  GearTypes gear = 3;
+  int32 speed = 4;
+  uint64 time_stamp = 5;
+  int32 speed_bump_num = 6;
+}
+
+message ParkingGlobalPath {
+  repeated Vector3f points = 1;
+}
+
+message ParkingDisplayInfo {
+  StaticElemInfo static_elem_info = 1;
+  DynamicElemInfo dynamic_elem_info = 2;
+}
+
+message ParkingMapEnvInfo {
+  StaticElemInfo static_elem_info = 1;
+}
+
+message PadParkingInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  ParkingDisplayInfo display_info = 3;
+  HmiVehicleData vehicle_info = 4;
+  ParkingMapEnvInfo map_env_info = 5;
+}

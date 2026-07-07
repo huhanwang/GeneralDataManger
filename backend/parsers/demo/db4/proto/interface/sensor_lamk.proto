@@ -1,0 +1,102 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_types.proto";
+import "type/base.proto";
+import "type/common_type.proto";
+package autodrive.workflow.proto;
+
+// Line position
+enum LamkLinePosition {
+  LINE_POSITION_INVALID = 0;          // Invalid
+  LINE_POSITION_LEFT_FIRST = 1;       // Left first
+  LINE_POSITION_RIGHT_FIRST = 2;      // Right first
+  LINE_POSITION_LEFT_SECOND = 3;      // Left second
+  LINE_POSITION_RIGHT_SECOND = 4;     // Right second
+  LINE_POSITION_LEFT_THIRD = 5;       // Left third
+  LINE_POSITION_RIGHT_THIRD = 6;      // Right third
+  LINE_POSITION_LEFT_FOURTH = 7;      // Left fourth
+  LINE_POSITION_RIGHT_FOURTH = 8;     // Right fourth
+  LINE_POSITION_LEFT_OUTSIDE = 9;     // Left outside
+  LINE_POSITION_RIGHT_OUTSIDE = 10;    // Right outside
+}
+
+enum LineSourceCross {
+  LINE_SOURCE_CROSS_UNKNOWN = 0;
+  LINE_SOURCE_CROSS_CROSSING = 1;
+  LINE_SOURCE_CROSS_OBSTACLE_BLOCKED = 2;
+  LINE_SOURCE_CROSS_HISTORY_BASED = 3;
+  LINE_SOURCE_CROSS_EXTRAPOLATION = 4;
+}
+
+// Line source tracking status
+enum LineSourceTracking {
+  LINE_SOURCE_TRACKING_UNKNOWN = 0;      // Unknown
+  LINE_SOURCE_TRACKING_NEW = 1;          // New
+  LINE_SOURCE_TRACKING_MEASURED = 2;     // Measured
+  LINE_SOURCE_TRACKING_PREDICTED = 3;    // Predicted
+  LINE_SOURCE_TRACKING_INVALID = 4;       // Invalid
+}
+
+enum LineSourceCone {
+  LINE_SOURCE_TCONE_UNKNOWN = 0;
+  LINE_SOURCE_TCONE_LEFT = 1;
+  LINE_SOURCE_TCONE_RIGHT = 2;
+}
+
+enum LineSourceRoadEdge {
+  LINE_SOURCE_ROAD_EDGE_UNKNOWN = 0;
+  LINE_SOURCE_ROAD_EDGE_CURB = 1;
+  LINE_SOURCE_ROAD_EDGE_GUARDRAIL  = 2;
+  LINE_SOURCE_ROAD_EDGE_CONCRET_BARRIER = 3;
+  LINE_SOURCE_ROAD_EDGE_WALL = 4;
+  LINE_SOURCE_ROAD_EDGE_CANOPY = 5;
+  LINE_SOURCE_ROAD_EDGE_CONE = 6;
+  LINE_SOURCE_ROAD_EDGE_OTHER = 7;
+  LINE_SOURCE_ROAD_EDGE_PARKEDCAR = 8;
+}
+
+enum LineSourceStopLine {
+  LINE_SOURCE_STOP_LINE_UNKNOWN = 0;
+  LINE_SOURCE_STOP_LINE_STOPLINE = 1;
+}
+
+enum LineSourceSeparate {
+  LINE_SOURCE_SEPARATE_UNPALLEL = 0;
+  LINE_SOURCE_SEPARATE_PALLEL = 1;
+}
+
+message LaneSegment {
+  LaneMarkerColor color = 1;
+  LaneMarkerType type = 2;
+  LineSourceCross line_cross = 3;
+  LineSourceTracking line_tracking = 4;
+  LineSourceCone line_cone = 5;
+  LineSourceRoadEdge line_road_edge = 6;
+  LineSourceStopLine line_stop_line = 7;
+  LineSourceSeparate line_separate = 8;
+  int32 quality = 9;
+  float width = 10;
+  float c0_position = 11;
+  float c1_heading = 12;
+  float c2_curvature = 13;
+  float c3_curvature_derivative = 14;
+  float start_rel_x = 15;
+  float end_rel_x = 16;
+}
+
+message LaneMarker {
+  LineType type = 1;
+  LamkLinePosition position = 2;
+  repeated LaneSegment segments = 3;
+  repeated CovariancePoint extra_points = 4;
+  repeated ExtraPointType extra_point_types = 5;
+  uint32 track_id = 6;
+}
+
+message SensorLamkMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  SensorType sensor_type = 3;
+  uint32 sensor_id = 4;
+  repeated LaneMarker lane_markers = 5;
+}

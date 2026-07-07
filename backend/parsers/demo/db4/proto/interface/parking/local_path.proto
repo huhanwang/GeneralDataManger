@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/common_type.proto";
+import "type/control_point.proto";
+package autodrive.workflow.proto;
+
+message LocPosWithStamp {
+  Vector3f location_point = 1;
+  uint64 loc_stamp = 2;
+}
+
+message HpaTrajectoryPoint {
+  TrajectoryPoint path_point = 1;
+  int32 dir = 2;
+}
+
+message DiscretizedTrajectory {
+  repeated HpaTrajectoryPoint trajectory_points = 1;
+}
+
+message LocalPath {
+  repeated CtrlPoint points = 1;
+  int32 result = 2;
+  bool goal = 3;
+  int32 switch_flag = 4;
+  LocPosWithStamp loc_point = 5;
+  uint64 grid_map_timestamp = 6;
+  repeated DiscretizedTrajectory trajectories = 7;
+}
+
+message LocalPathMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // local_path
+  LocalPath local_path = 3;
+}

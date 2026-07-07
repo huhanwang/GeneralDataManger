@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/parsing_base.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message ParkingPoint {
+  uint32 id = 1;
+  uint32 confidence = 3;
+  Vector2i point_pcs_min = 4;
+  Vector2i point_pcs_max = 5;
+}
+
+message MosMultiTaskMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  /// ParkingPoint
+  repeated ParkingPoint parking_ponts = 3;
+  IpmParsingImageData feature_map = 4;
+}

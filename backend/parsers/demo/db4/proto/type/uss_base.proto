@@ -1,0 +1,247 @@
+syntax = "proto3";
+
+package autodrive.workflow.proto;
+
+enum UssHeaderGroupIdEn {
+  kUssHeaderGroupIdEnNone = 0;
+  kUssHeaderGroupIdEn1 = 1;
+  kUssHeaderGroupIdEn2 = 2;
+  kUssHeaderGroupIdEn3 = 3;
+  kUssHeaderGroupIdEn4 = 4;
+  kUssHeaderGroupIdEnMax = 5;
+}
+
+enum FreqModeEn {
+  kFreqModeEnNone = 0;
+  kFreqModeEnFixed = 1;
+  kFreqModeEnChirp = 2;
+  kFreqModeEnMax = 3;
+}
+
+enum PlvState {
+  kPlvStateNone = 0;
+  kPlvStateOff = 1;
+  kPlvStateActive = 2;
+  kPlvStateMax = 3;
+}
+
+enum PsuState {
+  kPsuStateNone = 0;
+  kPsuStateOff = 1;
+  kPsuStateActive = 2;
+  kPsuStateMax = 3;
+}
+
+enum OdoState {
+  kOdoStateNone = 0;
+  kOdoStateReset = 1;
+  kOdoStateParkingInActive = 2;
+  kOdoStateParkingOutActive = 3;
+  kOdoStateResetSuccess = 4;
+  kOdoStateMax = 5;
+}
+
+enum PocState {
+  kPocStateNone = 0;
+  kPocStateOff = 1;
+  kPocStateActive = 2;
+  kPocStateMax = 4;
+};
+
+message PerFusUssHeader {
+  int64 mcu_send_stamp_si64 = 1;
+  int64 mcu_send_wave_stamp_si64 = 2;
+  uint32 mesa_group_tx_mask_ui16 = 3;
+  uint32 mesa_group_rx_mask_ui16 = 4;
+  UssHeaderGroupIdEn uss_header_group_id = 5;
+  FreqModeEn uss_header_freq_mode = 6;
+}
+
+message UssPoint {
+  int32 x_si32 = 1;
+  int32 y_si32 = 2;
+  int32 id = 3;
+}
+
+message StateMachine {
+  PlvState plv_state = 1;
+  PsuState psu_state = 2;
+  OdoState odo_state = 3;
+}
+
+enum UssPsStatusEn {
+  kUssPsStatusEnNone = 0;
+  kUssPsStatusEnSearch = 1;
+  kUssPsStatusEnCorret = 2;
+  kUssPsStatusEnMax = 3;
+}
+
+enum UssPsTypeEn {
+  kUssPsTypeEnNone = 0;
+  kUssPsTypeEnParallel = 1;
+  kUssPsTypeEnCross = 2;
+  kUssPsTypeEnDiagonal = 3;
+  kUssPsTypeEnMax = 4;
+}
+
+enum UssPsOrientationEn {
+  kUssPsOrientationEnNone = 0;
+  kUssPsOrientationEnLeft = 1;
+  kUssPsOrientationEnRight = 2;
+  kUssPsOrientationEnMax = 3;
+}
+
+enum UssPsBoundaryTypeEn {
+  kPerFusUssPsBoundaryTypeVirtual = 0;
+  kPerFusUssPsBoundaryTypeLow = 1;
+  kPerFusUssPsBoundaryTypeHigh = 2;
+  kPerFusUssPsBoundaryTypeWall = 3;
+  kPerFusUssPsBoundaryTypeCurb = 4;
+  kPerFusUssPsBoundaryTypeMax = 5;
+}
+
+enum UssPsBoundaryExternTypeEn {
+  kUssPsBoundaryExternTypeEnInitial = 0;
+  kUssPsBoundaryExternTypeEnVirtual = 1;
+  kUssPsBoundaryExternTypeEnWall = 2;
+  kUssPsBoundaryExternTypeEnCurb = 3;
+  kUssPsBoundaryExternTypeEnBush = 4;
+  kUssPsBoundaryExternTypeEnParallelCar = 5;
+  kUssPsBoundaryExternTypeEnCrossCar = 6;
+  kUssPsBoundaryExternTypeEnRoundPillar = 7;
+  kUssPsBoundaryExternTypeEnCeiling = 8;
+  kUssPsBoundaryExternTypeEnPedestrian = 9;
+  kUssPsBoundaryExternTypeEnPillar = 10;
+  kUssPsBoundaryExternTypeEnTruck = 11;
+  kUssPsBoundaryExternTypeEnSolidLine = 12;
+  kUssPsBoundaryExternTypeEnDotline = 13;
+  kUssPsBoundaryExternTypeEnPillarCar = 14;
+  kUssPsBoundaryExternTypeEnUnknown = 15;
+};
+
+enum DetectStatus {
+  kDetectStatusNotDetect = 0;
+  kDetectStatusOutScope = 1;
+  kDetectStatusAlarm = 2;
+  kDetectStatusUnstable = 3;
+  kDetectStatusStable = 4;
+  kDetectStatusReject = 5;
+  kDetectStatusResidual = 6;
+  kDetectStatusPerFusSnsIDMax = 7;
+};
+
+enum CloudPointType {
+  kCloudPointTypeDetect = 0;
+  kCloudPointTypeTrack = 1;
+  kCloudPointTypeAuxiliary = 2;
+  kCloudPointTypeReserved = 3;
+  kCloudPointTypeDeleted = 4;
+  kCloudPointTypePerFusSnsIDMax = 5;
+};
+
+message UssRodInfo {
+  repeated UssPoint end_points_vcs = 1;
+  bool valid = 2;
+}
+
+message PerFusUssPs {
+  uint32 uss_ps_id_ui8 = 1;
+  UssPsStatusEn uss_ps_status_en = 2;
+  UssPsTypeEn uss_ps_type_en = 3;
+  UssPsOrientationEn uss_ps_orientation_en = 4;
+
+  UssPsBoundaryTypeEn uss_ps_1st_boundary_type_en = 5;
+  UssPsBoundaryTypeEn uss_ps_2nd_boundary_type_en = 6;
+  UssPsBoundaryTypeEn uss_ps_cross_boundary_type_en = 7;
+
+  uint32 uss_ps_depth_ui16 = 8;
+  uint32 uss_ps_length_ui16 = 9;
+  int32 uss_ps_angle_i16 = 10;
+
+  UssPoint uss_ps_1st_corner = 11;
+  UssPoint uss_ps_2nd_corner = 12;
+  UssPoint uss_ps_3st_corner = 13;
+  UssPoint uss_ps_4nd_corner = 14;
+  UssPoint uss_ps_1st_corner_gcs = 15;
+  UssPoint uss_ps_2nd_corner_gcs = 16;
+  UssPoint uss_ps_3st_corner_gcs = 17;
+  UssPoint uss_ps_4nd_corner_gcs = 18;
+
+  UssPoint uss_ps_boundary_1st_info = 19;
+  UssPoint uss_ps_boundary_2nd_info = 20;
+  int64 uss_ps_finish_timestamp = 21;
+  UssPsBoundaryExternTypeEn uss_ps_1st_boundary_ext_type_en = 22;
+  UssPsBoundaryExternTypeEn uss_ps_2nd_boundary_ext_type_en = 23;
+  UssPsBoundaryExternTypeEn uss_ps_cross_boundary_ext_type_en = 24;
+  UssPoint uss_ps_boundary_3rd_info = 25;
+  UssPsBoundaryTypeEn uss_ps_cross_second_boundary_type_en = 26;
+  UssPoint uss_ps_boundary_4th_info = 27;
+  float uss_ps_1st_angle = 28;
+  float uss_ps_2nd_angle = 29;
+  float uss_ps_3st_depth = 30;
+  float uss_ps_4th_depth = 31;
+  int32 vison_ps_id = 32;
+  UssRodInfo uss_rod_info = 33;
+}
+
+enum PerFusSnsID {
+  kPerFusSnsIDNone = 0;
+  kPerFusSnsID1 = 1;
+  kPerFusSnsID2 = 2;
+  kPerFusSnsID3 = 3;
+  kPerFusSnsID4 = 4;
+  kPerFusSnsID5 = 5;
+  kPerFusSnsID6 = 6;
+  kPerFusSnsID7 = 7;
+  kPerFusSnsID8 = 8;
+  kPerFusSnsID9 = 9;
+  kPerFusSnsID10 = 10;
+  kPerFusSnsID11 = 11;
+  kPerFusSnsID12 = 12;
+  kPerFusSnsIDMax = 13;
+}
+
+enum UssLpTypeGenEn {
+  /// @brief Default invalid value
+  kUssLpTypeEnNone = 0;
+  /// @brief Single DE obstacle location
+  kUssLpTypeEnDe = 1;
+  /// @brief Double DE obstacle location
+  kUssLpTypeEnDeDe = 2;
+  /// @brief Single CE obstacle location
+  kUssLpTypeEnCe = 3;
+  /// @brief DE+CE obstacle location
+  kUssLpTypeEnDeCe = 4;
+  /// @brief Column (circular surface)
+  kUssLpTypeEnRound = 5;
+  /// @brief Other
+  kUssLpTypeEnOther = 6;
+  kUssLpTypeEnMax = 7;
+}
+
+enum UssHeightEn {
+  /// @brief Default invalid value
+  kUssPointHeightEnNone = 0;
+  /// @brief Low height < 30CM
+  kUssPointHeightEnLow = 1;
+  /// @brief High height > 1M (estimated, also related to sensor installation
+  /// height)
+  kUssPointHeightEnHigh = 2;
+  /// @brief Height unknown, other distance
+  kUssPointHeightEnUnknow = 3;
+  kUssPointHeightEnMax = 4;
+};
+
+message UssPointWholeSi16 {
+  int32 x_si16 = 1;
+  int32 y_si16 = 2;
+  UssLpTypeGenEn point_gen_type = 3;
+  PerFusSnsID point_send_sensor = 4;
+  PerFusSnsID point_recive_sensor = 5;
+  uint32 group_id = 6;
+  uint32 tracking_time = 7;
+  uint32 life_time = 8;
+  DetectStatus detect_status = 9;
+  CloudPointType type = 10;
+  UssHeightEn height = 11;
+}

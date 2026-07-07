@@ -1,0 +1,67 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum CameraState {
+  CAMERA_UNINITED = 0;
+  CAMERA_INITED = 1;
+  CAMERA_FAULT = 2;
+}
+
+enum AdasProceState {
+  ADAS_MODE = 0;
+  PARK_HPA = 1;
+}
+
+enum OddState {
+  EXIT_ODD = 0;
+  ENTER_ODD = 1;
+}
+
+enum GeoFenceState {
+  GeoFenceState_INVALID = 0;
+  GeoFenceState_VALID = 1;
+}
+
+enum ParkProceState {
+  ParkProceState_DEFAULT = 0;
+  ADAS_L = 1;
+  ADAS_H = 2;
+  PARK_APA_HPA = 3;
+}
+
+enum ParkFunMode {
+  ParkFunMode_PARK_UNACTIVE = 0;
+  ParkFunMode_APA_ACTIVE = 1;
+  ParkFunMode_HPA_ACTIVE = 2;
+}
+
+enum StateType {
+  UNKNOWN_STATE = 0;
+  CAMERA_STATE = 1;
+  ODD_STATE = 2;
+  ADAS_PROCE_STATE = 3;
+  PARK_PROCE_STATE = 4;
+  PARK_FUN_MODE = 5;
+  GEO_FENCE_STATE = 6;
+}
+
+message StateData {
+  CameraState camera_state = 1;
+  OddState odd_state = 2;
+  AdasProceState adas_proce_state = 3;
+  ParkProceState park_proce_state = 4;
+  ParkFunMode park_fun_mode = 5;
+  GeoFenceState geo_fence_state = 6;
+}
+
+message TsmClientStateMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // State Data
+  StateData state_data = 3;
+  // State Type
+  StateType state_type = 4;
+}

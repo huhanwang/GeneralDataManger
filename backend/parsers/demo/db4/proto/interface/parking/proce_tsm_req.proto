@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ProceFunReq {
+  PROCE_NO_REQUEST = 0;
+  ENTER_ADAS_REQUEST = 1;
+  EXIT_ADAS_REQUEST = 2;
+  ENTER_APA_REQUEST = 3;
+  EXIT_APA_REQUEST = 4;
+  ENTER_HPA_REQUEST = 5;
+  EXIT_HPA_REQUEST = 6;
+}
+
+message ProceReqData {
+  ProceFunReq proce_fun_req = 1;
+}
+
+message ProceTsmReqMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Req Data
+  ProceReqData req_data = 3;
+}

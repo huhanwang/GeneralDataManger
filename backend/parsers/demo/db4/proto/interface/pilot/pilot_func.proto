@@ -1,0 +1,325 @@
+
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+// enum for pilot func state
+enum ACCMode {
+  ACC_OFF_mode = 0;
+  ACC_Passive_mode = 1;
+  ACC_StandBy_mode = 2;
+  ACC_ActiveControl_mode = 3;
+  ACC_BrakeOnly_mode = 4;
+  ACC_Override_mode = 5;
+  ACC_StandWait_mode = 6;
+  ACC_Failure_mode = 7;
+}
+
+enum TakeOverReq {
+  TakeOverReqNo_request = 0;
+  lTakeOverReqLevel_1_request = 1;
+  TakeOverReqLevel_2_request = 2;
+  TakeOverReqReserved = 3;
+}
+
+enum ADSState {
+  ADS_OFF = 0;
+  ADS_ACC = 1;
+  ADS_IACC = 2;
+  ADS_HWA = 3;
+  ADS_TJP = 4;
+  ADS_NID = 5;
+}
+
+enum ACCObjValid {
+  ACCObjValidNo_object = 0;
+  object_detected = 1;
+}
+
+enum ACCTimeGap {
+  no_display = 0;
+  time_gap_1 = 1;
+  time_gap_2 = 2;
+  time_gap_3 = 3;
+  time_gap_4 = 4;
+}
+
+enum ACCDistanceLevel {
+  ACCDistanceLevelNo_display = 0;
+  dis_level1 = 1;
+  dis_level2 = 2;
+  dis_level3 = 3;
+}
+
+enum ACCTargetType {
+  ACCTargetTypeNo_display = 0;
+  sedan = 1;
+  motorcycle = 2;
+  pedestrian = 3;
+  bicycle = 4;
+  bus = 5;
+  van = 6;
+  truck = 7;
+}
+
+enum ACCTextInfo {
+  ACCTextInfoNo_display = 0;
+  unable_to_activate_ACC = 1;
+  acc_active_control_is_cancelled = 2;
+  acc_error_by_Front_Radar = 3;
+  acc_temporarily_unavailable_by_others = 4;
+  epb_activate = 5;
+  no_forward_gear = 6;
+  seatbelt_unbuckled = 7;
+  engine_no_running = 8;
+  esp_off = 9;
+  bonnet_is_open = 10;
+  speed_over_150kph = 11;
+  acc_error_by_EMS_VCU_TCU = 12;
+  ACCTextInfoReserved = 13;
+  acc_error_by_EPBI = 14;
+  acc_unintended_exit_warning = 15;
+  door_is_open = 16;
+  brake_pedal_is_applied = 17;
+  speed_reduce_by_ramp = 18;
+  speed_reduce_by_tunnel = 19;
+  acc_error_by_Front_Camera = 20;
+  speed_reduce_by_condition = 21;
+  speed_reduce_by_SpdLimited = 22;
+  ACCTextInfoReserved_1 = 23;
+  speed_reduce_by_Tollstation = 24;
+  acc_cannot_active_by_snow_mode = 25;
+  steering_angle_is_over = 26;
+  emergency_brake_suddenly = 27;
+}
+
+enum ACCHostTargetDetection {
+  no_detection = 0; // no detection
+  ip_display = 1;   // IP display
+  front_target = 2; // Front target
+  iacc_target = 3;  // IACC target
+  aeb_target = 4;   // AEB target
+  other_target = 5; // dangerous target  ELK  UDLC  RCW;etc
+}
+
+enum ACCTargetDirection {
+  forward = 0;
+  oncoming = 1;
+  left = 2;
+  right = 3;
+  unknown = 4;
+  ACCTargetDirectionNo_display = 5;
+}
+
+enum ALCDirection {
+  ALCDirectionInvalid = 0;
+  leftchange = 1;
+  rightchange = 2;
+  ALCDirectionReserved = 3;
+}
+
+enum UDLCStatus {
+  lc_not_ready = 0;
+  lc_ready = 1;
+  lc_active_wait = 2;
+  lc_active_delay = 3;
+  lc_active = 4;
+  lc_not_active_by_obj = 5;
+}
+
+enum LaneChangeState {
+  LC_OFF = 0;
+  LC_PASSIVE = 1;
+  LC_ACTIVE = 2;
+  LC_RETURN_TO_LANE_BY_DRIVER = 3;
+  LC_RETURN_TO_LANE_BY_SYSTEM = 4;
+  LC_MANUAL_OVERRIDE = 5;
+  LC_FAILURE = 6;
+  LC_LANE_CHANGE_COMPLETE = 7;
+  LC_TAKEOVER = 8;
+  LC_STANDBY = 9;
+}
+
+enum UDLCTurnLightReq {
+  UDLCTurnLightReqNo_request = 0;
+  left_request_off = 1;
+  right_request_off = 2;
+  left_request_on = 3;
+  right_request_on = 4;
+}
+
+enum LaneColor {
+  LaneColorNo_display = 0;
+  white = 1;
+  blue = 2; // alc
+  red = 3;
+  gray = 4;
+}
+
+enum IACCHWAMode {
+  hwamode_off = 0;
+  hwamode_standby = 1;
+  hwamode_active = 2;
+  hwamode_suspend = 3;
+  hwamode_prohibition = 4;
+  hwamode_reserved = 5;
+  hwamode_failure = 6;
+}
+
+enum Voiceinfo {
+  no_voice = 0;
+  latent_warning_voice = 1;
+  fcw_aeb_voice = 2;
+  acc_object_detect_voice = 3;
+  acc_object_disappeared_voice = 4;
+  acc_iacc_takeover_request_voice = 5;
+  lane_left_dangerous_warning_voice = 6;
+  lane_right_dangerous_warning_voice = 7;
+  VoiceinfoReserved = 8;
+  iacc_active_voice = 9;
+  iacc_exit_voice = 10;
+  VoiceinfoReserved_1 = 11;
+  VoiceinfoReserved_2 = 12;
+  cruise_unintended_exit = 13;
+  traffic_warning = 14;
+}
+
+enum PilotLaneMarkerType {
+  dashed = 0;
+  solid = 1;
+  road_edge = 2;
+  double_lane_mark = 3;
+  botts_dots = 4;
+  other = 5;
+  fence = 6;
+  LaneMarkerTypeNo_display = 7;
+}
+
+enum NextLaneDetection {
+  not_detected = 0;
+  NextLaneDetectionDashed = 1;
+  NextLaneDetectionSolid = 2;
+  fence_road_edge = 3;
+}
+
+enum HandsOnReq {
+  HandsOnReqNo_request = 0;
+  level_1_request = 1;
+  level_2_request = 2;
+  level_3_request = 3;
+  level_4_request = 4;
+}
+
+enum HostLaneStatus {
+  HostLaneStatusNo_display = 0;
+  tracking = 1;
+  intervention = 2;
+  warning = 3;
+  centering = 4;
+  crossing = 5;
+  udlc_request_active = 6;
+  HostLaneStatusReserved = 7;
+  udlc_not_active_by_obj = 8;
+}
+
+enum PathShowStatus {
+  PathShowStatusNo_display = 0;
+  lane_change_try_path = 1;       // 换道等待
+  normal_lane_change_path = 2;   // 换道过程
+  lane_change_return_path = 3;   // 换道回退
+  can_not_change_lane_path = 4;  // 换道等待或保持本车道行驶
+  smart_bias_path = 5;           // 智慧避让
+  follow_vehicle_drive_path = 6; // 跟车行驶路径
+  recommend_path = 7;            // 规划路径
+}
+
+enum LaneEquationStatus {
+  LaneEquationStatusNo_display = 0;
+  left_lane = 1;
+  right_lane = 2;
+  LaneEquationStatusReserved = 3;
+}
+
+// struct def
+message ACC_StateInfo {
+  ACCMode hmi_accmode = 1;
+  ACCTimeGap acc_time_gap = 2;
+  ACCDistanceLevel acc_distance_level = 3;
+  TakeOverReq acc_takeover_req = 4;
+  uint32 acc_setspeed = 5;
+  ACCTextInfo acc_text_info = 6;
+  Voiceinfo acc_voice_info = 7;
+}
+
+message IACC_StateInfo {
+  ADSState ads_state = 1;
+  IACCHWAMode iacc_hw_mode = 2;
+  HandsOnReq hands_on_req = 3;
+  TakeOverReq lat_takeover_req = 4;
+  TakeOverReq lng_takeover_req = 5;
+}
+
+message IACC_TargetInfo {
+  ACCObjValid acc_obj_valid = 1;
+  ACCHostTargetDetection acc_target_detection = 2;
+  ACCTargetType acc_target_type = 3;
+  ACCTargetDirection acc_target_direction = 4;
+  uint32 acc_target_id = 5;  // 0-255
+  float acc_target_rel_vel = 6;
+  float acc_target_rel_lngdist = 7;
+  float acc_target_rel_latdist = 8;
+}
+
+message IACC_LaneInfo {
+  float iacc_llane_dis = 1;   // unit: m
+  float iacc_lllane_dis = 2;  // unit: m
+  float iacc_rlane_dis = 3;   // unit: m
+  float iacc_rrlane_dis = 4;  // unit: m
+  float iacc_pathshow_c1 = 5;
+  float iacc_pathshow_c2 = 6;
+  float iacc_pathshow_c3 = 7;
+  float iacc_pathshow_lngrange = 8;
+  float iacc_laneequation_c1 = 9;
+  float iacc_laneequation_c2 = 10;
+  float iacc_laneequation_c3 = 11;
+  float iacc_laneequation_lanequality = 12;  // 0-1
+  float iacc_latpath_dy = 13;
+  float iacc_latpath_heading = 14;
+  LaneColor iacc_llane_color = 15;
+  LaneColor iacc_rlane_color = 16;
+  PilotLaneMarkerType iacc_llane_markertype = 17;
+  PilotLaneMarkerType iacc_rlane_markertype = 18;
+  NextLaneDetection iacc_lllane_detection = 19;
+  NextLaneDetection iacc_rrlane_detection = 20;
+  PathShowStatus iacc_pathshow_status = 21;
+  LaneEquationStatus iacc_laneequation_status = 22;
+  HostLaneStatus iacc_hostllane_status = 23;
+  HostLaneStatus iacc_hostrlane_status = 24;
+}
+
+message IACC_LaneChangeInfo {
+  LaneChangeState lanechange_state = 1;
+  ALCDirection lanechange_alc_deirection = 2;
+  UDLCStatus lanechange_ludlc_status = 3;
+  UDLCStatus lanechange_rudlc_status = 4;
+  UDLCTurnLightReq lanechange_udlc_trunlight = 5;
+  bool lanechange_ludlc_req = 6;
+  bool lanechange_rudlc_req = 7;
+}
+
+message PilotFuncState {
+  ACC_StateInfo acc_state_info = 1;
+  IACC_StateInfo iacc_state_info = 2;
+  IACC_TargetInfo iacc_target_info = 3;
+  IACC_LaneInfo iacc_lane_info = 4;
+  IACC_LaneChangeInfo iacc_lanechange_info = 5;
+}
+
+message PilotFuncMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // PilotFuncState
+  PilotFuncState pilot_func_state = 3;
+}

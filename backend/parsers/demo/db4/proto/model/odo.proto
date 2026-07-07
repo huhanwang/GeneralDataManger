@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum VehDir {
+  kVehDirStandstill = 0;
+  kVehDirForward = 1;
+  kVehDirBackward = 2;
+  kVehDirUnknown = 3;
+}
+
+message Odo {
+  uint32 high_timestamp = 1;
+  uint32 low_timestamp = 2;
+  float x = 3;
+  float y = 4;
+  float z = 5;
+  float yaw = 6;
+  float speed = 7;
+  float yawrate = 8;
+  float radius = 9;
+  float veh_drv_dist = 10;
+  float veh_init_x_pos = 11;
+  float veh_init_y_pos = 12;
+  float veh_drv_dist_init = 13;
+  float veh_yaw_init = 14;
+  float slope = 15;
+  float lgt_acc = 16;
+  float lat_acc = 17;
+  float roll = 18;
+  float pitch = 19;
+  uint32 source = 20;
+  bool odo_init_req = 21;
+  VehDir dir = 22;
+  uint32 valid = 23;
+}
+
+message OdoMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  Odo odo = 3;
+}

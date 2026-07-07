@@ -1,0 +1,280 @@
+syntax = "proto3";
+import "type/base.proto";
+import "type/odometry_type.proto";
+import "interface/pilot/perception/runtime.proto";
+package autodrive.workflow.proto;
+
+enum NdmLineType {
+  LINETYPE_UNKNOWN = 0;
+  LINETYPE_LANELINE = 1;
+  LINETYPE_CURB = 2;
+  LINETYPE_CENTER = 3;
+  LINETYPE_GUARDRAIL = 4;
+  LINETYPE_CONCRETEBARRIER = 5;
+  LINETYPE_FENCE = 6;
+  LINETYPE_WALL = 7;
+  LINETYPE_CANOPY = 8;
+  LINETYPE_VIRTUAL = 9;
+  LINETYPE_CONE = 10;
+}
+
+enum DashSolidType {
+  DASHSOLIDTYPE_UNKNOWN = 0;
+  DASHSOLIDTYPE_NONE = 1;
+  DASHSOLIDTYPE_INNERDASH_OUTERSOLID = 2;
+  DASHSOLIDTYPE_INNERSOLID_OUTERDASH = 3;
+}
+
+enum NdmCurveType {
+  CURVETYPE_UNKNOWN = 0;
+  CURVETYPE_ADAS = 1;
+  CURVETYPE_CUBIC = 2;
+  CURVETYPE_BEZIER = 3;
+}
+
+enum LineColor {
+  LINECOLOR_UNKNOWN = 0;
+  LINECOLOR_WHITE = 1;
+  LINECOLOR_YELLOW = 2;
+  LINECOLOR_ORANGE = 3;
+  LINECOLOR_BLUE = 4;
+  LINECOLOR_GREEN = 5;
+  LINECOLOR_GRAY = 6;
+  LINECOLOR_LETF_GRAY_RIGHT_YELLOW = 7;
+  LINECOLOR_LETF_YELLOW_RIGHT_WHITE = 8;
+}
+
+enum LineMarking {
+  LINEMARKING_UNKNOWN = 0;
+  LINEMARKING_SOLIDLINE = 1;
+  LINEMARKING_DASHEDLINE = 2;
+  LINEMARKING_SHORTDASHEDLINE = 3;
+  LINEMARKING_DOUBLESOLIDLINE = 4;
+  LINEMARKING_DOUBLEDASHEDLINE = 5;
+  LINEMARKING_LEFTSOLIDRIGHTDASHED = 6;
+  LINEMARKING_RIGHTSOLIDLEFTDASHED = 7;
+  LINEMARKING_SHADEDAREA = 8;
+  LINEMARKING_LANEVIRTUALMARKING = 9;
+  LINEMARKING_INTERSECTIONVIRUALMARKING = 10;
+  LINEMARKING_CURBVIRTUALMARKING = 11;
+  LINEMARKING_UNCLOSEDROAD = 12;
+  LINEMARKING_ROADVIRTUALLINE = 13;
+  LINEMARKING_DDECELERATIONSOLIDLINE = 14;
+  LINEMARKING_DDECELERATIONDAHLINE = 15;
+  LINEMARKING_WAITINGDASHEDLINE = 16;
+  LINEMARKING_SHORTSOLIDLINE = 17;
+}
+
+enum LineSource {
+  LINE_SOURCE_CROSSSING = 0;
+  LINE_SOURCE_OBSTACLE_BLOCKED = 1;
+  LINE_SOURCE_HISTORY_BASED = 2;
+  LINE_SOURCE_EXTRAPOLATION = 3;
+  LINE_SOURCE_UNKNOWN = 4;
+  LINE_SOURCE_NEW = 5;
+  LINE_SOURCE_MEASURED = 6;
+  LINE_SOURCE_PREDICTED = 7;
+  LINE_SOURCE_OBSTACLE_LEFT = 8;
+  LINE_SOURCE_OBSTACLE_RIGHT = 9;
+  LINE_EDGE_CURB = 10;
+  LINE_EDGE_GUARDRAIL = 11;
+  LINE_EDGE_CONCRET_BARRIER = 12;
+  LINE_EDGE_WALL = 13;
+  LINE_EDGE_CANOPY = 14;
+  LINE_EDGE_CONE = 15;
+  LINE_EDGE_OTHER = 16;
+  LINE_EDGE_PARKEDCAR = 17;
+  LINE_SOURCE_STOPLINE = 18;
+  LINE_SOURCE_SEPARATE = 19;
+}
+
+enum LinePosition {
+  LINEPOSITION_LEFT = 0;
+  LINEPOSITION_RIGHT = 1;
+  LINEPOSITION_LEFTLEFT = 2;
+  LINEPOSITION_RIGHTRIGHT = 3;
+  LINEPOSITION_LEFTOutside = 4;
+  LINEPOSITION_RIGHTOutside = 5;
+  LINEPOSITION_LEFTLEFTLEFT = 6;
+  LINEPOSITION_RIGHTRIGHTRIGHT = 7;
+}
+
+enum LineDirectType {
+  LINE_DIRECT_TYPE_UNKNOWN = 0;
+  LINE_DIRECT_TYPE_UNIDIRECTION = 1;
+  LINE_DIRECT_TYPE_BIDIRECTION = 2;
+}
+
+
+message Contour {
+  repeated NdmPoint pts = 1;
+  int32 type = 2;
+}
+
+message PitchInfo {
+  bool valid = 1;
+  float pitch = 2;
+}
+
+message AttributeInterval {
+  NdmPoint start_pt = 1;
+  NdmPoint end_pt = 2;
+  float attr_value = 3;
+}
+
+message AttributeProfile {
+  int32 attr_type = 1;
+  repeated AttributeInterval attr_intervals = 2;
+}
+
+message CurveLine {
+  repeated NdmPoint points = 1;
+  NdmPoint pred_point = 2;
+  NdmPoint succ_point = 3;
+  float width = 4;
+  repeated uint32 vir_to_real_index = 5;
+  repeated uint32 real_to_vir_index = 6;
+  repeated double t = 7;
+  int32 type = 8;
+  NdmPoint start_pt = 9;
+  repeated double x_coeff = 10;
+  repeated double y_coeff = 11;
+  repeated double z_coeff = 12;
+  repeated NdmPoint up_points = 13;
+  repeated double h_coeff = 14;
+  double t_max = 15;
+  int32 color = 16;
+  int32 marking = 17;
+  float parsing_conf = 18;
+  float rmse = 19;
+  bool visible = 20;
+  repeated AttributeProfile attributes = 21;
+}
+
+message NdmLine {
+  uint32 id = 1;
+  int32 life_time = 2;
+  repeated CurveLine lines_3d = 3;
+  int32 type = 4;
+  int32 source = 5;
+  int32 position = 6;
+  float conf = 7;
+  int32 direct_type = 8;
+  ExtraPoints cross_points = 9;
+  int32 extra_type = 10;
+  int32 submap_id = 11;
+  uint32 section_id = 12;
+  int32 age = 13;
+  bool pass_road_edge = 14;
+}
+
+message Lines {
+  Header header = 1;
+  repeated NdmLine lines = 2;
+  float dtlc = 3;
+  float ttlc = 4;
+  int64 src_time_stamp = 5;
+  int64 asyn_time_stamp = 6;
+  int32 tag = 7;
+  repeated Contour lane_sample_points = 8;
+  PitchInfo pitch_info = 9;
+  int32 lane_scene = 10;
+}
+
+message UpdateCache {
+  repeated int32 sensor_ids = 1;
+  repeated int64 timestamps = 2;
+}
+
+message LaneRuntime {
+  Odometry fw3_odo = 1;
+  repeated int64 fw3_timestamps = 2;
+  int64 fw4_fixed_line_ts = 3;
+  int64 fw4_nofixed_line_ts = 4;
+  Odometry fw4_trigger_odo = 5;
+  Odometry fw4_output_msg_odo = 6;
+  int64 fw4_front_msg_ts = 7;
+  int64 front_timestamp = 8;
+  repeated Odometry put_output_odos = 9;
+  repeated UpdateCache update_msgs = 10;
+  Odometry trigger_odo = 11;
+}
+
+message PointWithSource {
+  BasePoint pt = 1;
+  int32 source_cam_id = 2;
+}
+
+message BasicInfoPts {
+  PointWithSource pt = 1;
+  BasePoint pt_rle = 2;
+  BasePoint pt_oriimg = 3;
+  BasePoint pt_img = 4;
+  uint64 label = 5;
+  uint64 parsing_label = 6;
+  int32 conf = 7;
+  int32 score = 8;
+  float parsing_conf = 9;
+}
+
+message LaneSegInfo {
+  PointWithSource start_pt = 1;
+  PointWithSource end_pt = 2;
+  BasePoint start_pt_img = 3;
+  BasePoint end_pt_img = 4;
+  float length = 5;
+  bool lanemaking = 6;
+}
+
+message ExtraInfoPts {
+  int32 xstart = 1;
+  int32 xend = 2;
+  int32 y_parsing = 3;
+  BasePoint pt_rle_c = 4;
+  BasePoint width_info = 5;
+  int32 gray = 6;
+  int32 u_value = 7;
+  int32 v_value = 8;
+  bool color_flag = 9;
+  bool flag_dash_endpt = 10;
+  bool horizontal = 11;
+}
+
+message ContourExtend {
+  uint64 label = 1;
+  uint64 extra_label = 2;
+  int32 sample_coordinate = 3;
+  int32 type = 4;
+  int32 region_idx = 5;
+  float dis = 6;
+  float width = 7;
+  float norm_chord_length = 8;
+  repeated BasicInfoPts basic_pts = 9;
+  repeated BasicInfoPts basic_pts_above_vp = 10;
+  repeated LaneSegInfo lane_segs = 11;
+  int32 intersect_source = 12;
+  int32 intersect_idx = 13;
+  int32 intersect_pt_type = 14;
+  int32 cross_pt_type = 15;
+  float confidence = 16;
+  float cross_pt_confidence = 17;
+  bool predict_update = 18;
+  int32 double_inner_dash = 19;
+  bool cross_pt_updated = 20;
+  bool cross_pt_valid = 21;
+  BasePoint intersect_pt = 22;
+  BasePoint cross_pt = 23;
+  repeated ExtraInfoPts extra_pts = 24;
+  repeated ExtraInfoPts extra_pts_above_vp = 25;
+  repeated BasePoint control_pts = 26;
+  repeated BasePoint whole_pts_img = 27;
+  repeated BasePoint pts_instri = 28;
+  repeated BasePoint pts_out_img = 29;
+}
+
+message ContourMsg {
+  repeated ContourExtend contours = 1;
+  repeated ExtendInfo ct_infos = 2;
+  int32 cam_id = 3;
+  int32 source = 4;
+}

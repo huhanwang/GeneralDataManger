@@ -1,0 +1,159 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum MapDeletingStage {
+  kMapDeletingStageDefault = 0;
+  kMapDeletingStageDeleting = 1;
+  kMapDeletingStageDeleteSucessful = 2;
+  kMapDeletingStageDeleteFailed = 3;
+}
+
+enum MapSavingStage {
+  kMapSavingStageDefault = 0;
+  kMapSavingStageSaving = 1;
+  kMapSavingStageSaveSucessful = 2;
+  kMapSavingStageSaveFailed = 3;
+}
+
+enum MappingOddType {
+    kMappingOddDefault = 0;
+    kMappingOddOk = 1;
+    kMappingOddNokNotIndoor = 2;
+    kMappingOddNokNotUndergroundPark = 3;
+    kMappingOddNokSpeedOutOfLimit = 4;
+    kMappingOddNokNoSemanticInfo = 5;
+    kMappingOddNokNotEnoughSemanticInfo = 6;
+    kMappingOddNokLightnessNok = 7;
+    kMappingOddNokRainFallNok = 8;
+    kMappingOddNokSlopeOutOfLimit = 9;
+    kMappingOddNokPreConditionCheck = 10;
+    kMappingOddNokReserved = 11;
+}
+
+enum LocOddType {
+    kLocOddDefault = 0;
+    kLocOddOk = 1;
+    kLocOddNokNotIndoor = 2;
+    kLocOddNokNotUndergroundPark = 3;
+    kLocOddNokSpeedOutOfLimit = 4;
+    kLocOddNokNoSemanticInfo = 5;
+    kLocOddNokNotEnoughSemanticInfo = 6;
+    kLocOddNokLightnessNok = 7;
+    kLocOddNokRainFallNok = 8;
+    kLocOddNokSlopeOutOfLimit = 9;
+    kLocOddNokPreConditionCheck = 10;
+    kLocOddNokReserved = 11;
+}
+enum LocalLocStage {
+  kLocalLocStageNO = 0;
+  kLocalLocStageOngoing = 1;
+  kLocalLocStageSuccess = 2;
+  kLocalLocStageFailed = 3;
+}
+
+enum ErrorCode {
+  kNoError = 0;
+  kErrorInsufficientDiskFreespace = 1;
+  kErrorTsReset = 1000;
+  kErrorNoPerception = 1001;
+  kError3dOdoAbnormal = 1002;
+  kErrorOdomError = 1003;
+  kErrorNoSyncGnss = 1004;
+  kErrorInvalidGnss = 1005;
+  kErrorWaitForSlotTooLong = 2000;
+  kErrorOutdoorInMapping = 2001;
+  kErrorMapUnsuitableForLocalization = 2002;
+  kErrorMapOptimizationTimeOut = 2003;
+  kErrorMappingDistTooLong = 2004;
+  kErrorMappingDistTooShort = 2005;
+  kErrorMapPlanningFailed = 2006;
+  kErrorMapSaveFailed = 2007;
+  kErrorMappingCrossFloor = 2008;
+  kErrorMapLoopClosure = 2009;
+  kErrorDeleteNotExistMap = 2010;
+  kErrorOverSpeed = 2011;
+  kErrorOverSpeedTimeOut = 2012;
+  kErrorOverSlope = 2013;
+  kErrorGearRDistanceTooLong = 2014;
+  kErrorNoAvaliableMapFound = 2015;
+  kErrorNotInParkingSlot = 2016;
+  kErrorLocDeviationFromNavigation = 3000;
+  kErrorMapMatchingError = 3001;
+  kErrorOutOfMap = 3002;
+  kErrorMissMapKeyElements = 3003;
+  kErrorPoseOdomInconsistency = 3004;
+  kErrorMapError = 3005;
+  kErrorNoMap = 3006;
+  kErrorMapFileError = 3007;
+}
+
+enum HPAState {
+  kHPAStateDefault = 0;
+  kHPAStateOff = 1;
+  kHPAStateStandby = 2;
+  kHPAStatePathLearning = 3;
+  kHPAStateCruising = 4;
+  kHPAStatekPreConditionCheck = 5;
+}
+
+enum VPAEventType {
+  kVPAEventTypeDefault = 0;
+  kVPAEventTypeErrorEvent = 1;
+  kVPAEventTypeRequestMappingEvent = 2;
+  kVPAEventTypeRequestLocalizationEvent = 3;
+  kVPAEventTypeLocOddEvent = 4;
+  kVPAEventTypeMappingOddEvent = 5;
+  kVPAEventTypeHpaStateEvent = 6;
+  kVPAEventTypeMapSavingStageEvent = 7;
+  kVPAEventTypeLocalLocStageEvent = 8;
+  kVPAEventTypeFirstTimeMappingEvent = 9;
+  kVPAEventTypeFirstTimeCurParkingMappingEvent = 10;
+  kVPAEventTypeFindAvailableMapEvent = 11;
+  kVPAEventTypeMapDeleteStageEvent = 12;
+  kVPAEventTypeEnterUndergroundParkingEvent = 13;
+  kInParkingSlotEvent = 14;
+  kMappingStageEvent = 15;
+  /// @brief Mapping optimize event,check MapOptimizeStage for details
+  kMappingOptimizeStageEvent = 16;
+  /// @brief out under ground parking event
+  kOutUndergroundParkingEvent = 17;
+  /// @brief find valid gnss event
+  kFindValidGNSSEvent = 18;
+  /// @brief Send this event when request mapping parking out
+  kRequestMappingParkingOutEvent = 19;
+  /// @brief Send this event when request location parking out
+  kRequestLocalizationParkingOutEvent = 20;
+}
+  enum  MappingStage  {
+    kDefaultMappingStage = 0;        // 默认状态
+    kMapping = 1;       // 正在进行建图
+    kMappingSuccess = 2;  // 建图成功
+    kMappingFailed = 3;    // 建图失败
+  }
+
+  enum  MapOptimizeStage {
+    kDefaultMapOptimizeStage = 0;         // 默认状态
+    kOptimizing = 1;       // 优化中
+    kOptimizeSuccess = 2;  // 优化成功
+    kOptimizeFailed = 3;   // 优化失败
+  }
+message VpaStateMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  VPAEventType vpa_event = 3;
+  HPAState hpa_state = 4;
+  MappingOddType mapping_odd_type = 5;
+  LocOddType loc_odd_type = 6;
+  MapSavingStage map_saving_stage = 7;
+  LocalLocStage local_loc_stage = 8;
+  MapDeletingStage map_deleted_stage = 9;
+  MappingStage map_stage = 10;
+  MapOptimizeStage map_optimized_stage = 11;
+  ErrorCode error_code = 12;
+  int32 target_parking_slot_id = 13;
+  uint32 map_saving_progress = 14;
+  uint32 avaliable_map_id = 15;
+}

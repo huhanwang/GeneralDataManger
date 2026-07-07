@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message Imu {
+  /// @brief Imu time
+  uint64 utc_time = 1;
+  /// @brief Heading(deg) (AngleHeading)
+  float heading = 2;
+  /// @brief Pitch(deg) (AnglePitch)
+  float pitch = 3;
+  /// @brief Roll(deg) (AngleRoll)
+  float roll = 4;
+  /// @brief IMU raw acceleration(m/s/s) (AccelRawX, AccelRawY, AccelRawZ)
+  float raw_acceleration_x = 5;
+  float raw_acceleration_y = 6;
+  float raw_acceleration_z = 7;
+  /// @brief IMU raw angular rate(deg/s) (AngRateRawX, AngRateRawY, AngRateRawZ)
+  float raw_angular_rate_x = 8;
+  float raw_angular_rate_y = 9;
+  float raw_angular_rate_z = 10;
+};
+
+message ImuMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // imu
+  Imu imu = 3;
+}

@@ -1,0 +1,160 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/parking_slot.proto";
+import "common/common_msg.proto";
+import "interface/parking/fusion_obstacle.proto";
+package autodrive.workflow.proto;
+
+enum FusionParsingType {
+  PARSING_TYPE_ROAD = 0;
+  PARSING_TYPE_LANE_LINE = 1;
+  PARSING_TYPE_PARKING_LINE = 2;
+  PARSING_TYPE_PARKING_SLOT = 3;
+  PARSING_TYPE_ARROW = 4;
+  PARSING_TYPE_GUIDE_LINE = 5;
+  PARSING_TYPE_CROSSWALK_LINE = 6;
+  PARSING_TYPE_NO_PARKING_LINE = 7;
+  PARSING_TYPE_STOP_LINE = 8;
+  PARSING_TYPE_SPEED_BUMP = 9;
+  PARSING_TYPE_OTHERS = 10;
+  PARSING_TYPE_PARKING_LOCK_OPEN = 11;
+  PARSING_TYPE_PARKING_LOCK_CLOSED = 12;
+  PARSING_TYPE_TRAFFIC_CONE = 13;
+  PARSING_TYPE_PARKING_ROD = 14;
+  PARSING_TYPE_CURB = 15;
+  PARSING_TYPE_CEMENT_COLUMN = 16;
+  PARSING_TYPE_IMMOVABLE_OBSTACLE = 17;
+  PARSING_TYPE_MOVABLE_OBSTACLE = 18;
+  PARSING_TYPE_BACKGROUND = 19;
+  PARSING_TYPE_SIDEWALK = 20;
+  PARSING_TYPE_PAINTED_WALL_ROOT = 21;
+  PARSING_TYPE_PEDESTRIAN = 50;
+  PARSING_TYPE_DYNAMIC_OBSTACLE = 51;
+  PARSING_TYPE_OBSTACLE_PEDESTRIAN = 52;
+  PARSING_TYPE_OBSTACLE_CYCLIST = 53;
+  PARSING_TYPE_STOPPED_VEHICLE = 54;
+  PARSING_TYPE_MOVING_VEHICLE = 55;
+  PARSING_TYPE_USS_OBJ = 27;
+  PARSING_TYPE_USS_CROSSPOINT = 28;
+  PARSING_TYPE_UNKNOWN = 100;
+  PARSING_TYPE_MONO_ROAD = 110;
+  PARSING_TYPE_MONO_IMMOVABLE_OBSTACLE = 120;
+  PARSING_TYPE_MONO_MOVABLE_OBSTACLE = 130;
+  PARSING_TYPE_MONO_CONE = 140;
+  PARSING_TYPE_DEFORMATION = 150;
+}
+
+enum PtCloudSource {
+  POINT_MAP = 0;
+  POINT_USS = 1;
+  POINT_PARSING = 2;
+  OBJ_USS_PT = 3;
+  OBJ_USS_TWO_PT = 4;
+  POINT_REAL3D = 5;
+  POINT_GNDROOT = 6;
+  POINT_FREESPACE = 7;
+  POINT_NUM = 8;
+}
+
+enum BoundaryNeighbourType {
+  BD_TYPE_UNKNOWN = 0;
+  BD_TYPE_VEHICLE = 1;
+  BD_TYPE_PILLAR = 2;
+}
+
+message BoundPoint {
+  Vector2f bound_pt = 1;
+  Vector2f bound_pt_delta = 2;
+  float bound_height = 3;
+  parking_slot.BoundaryStatus bound_status = 4;
+  parking_slot.BoundaryFixStatus bound_fix_status = 5;
+  FusionParsingType bound_label_x = 6;
+  FusionParsingType bound_label_y = 7;
+  PtCloudSource bound_source_x = 8;
+  PtCloudSource bound_source_y = 9;
+  BoundaryNeighbourType bound_neighbour_type = 10;
+}
+
+message SlotAvialCntSas {
+  float score = 1;
+  float is_cur_veh_iou_score = 2;
+  float is_cur_cylist_iou_score = 3;
+  int32 occupy_cnt = 4;
+  int32 back_occupy_cnt = 5;
+  int32 slot_veh_occupy_cnt = 6;
+  int32 slot_ped_occupy_cnt = 7;
+  int32 slot_cylist_occupy_cnt = 8;
+  int32 slot_static_lock_occupy_cnt = 9;
+  int32 slot_static_traffice_cone_occupy_cnt = 10;
+  int32 cur_parsing_back_movable_obs_cnt = 11;
+  int32 cur_parsing_back_immovable_obs_cnt = 12;
+  int32 cur_parsing_back_parking_lock_cnt = 13;
+  int32 cur_parsing_back_traffic_cone_cnt = 14;
+  int32 cur_parsing_back_cement_column_cnt = 15;
+  bool is_cur_has_open_parking_lock = 16;
+  bool is_cur_has_traffic_cone = 17;
+  bool is_cur_has_no_parking_board = 18;
+  bool is_cur_has_other_obs = 19;
+  bool is_cur_has_veh = 20;
+  bool is_cur_has_ped = 21;
+  bool is_cur_has_cylist = 22;
+  parking_slot.OccupancyStatus status = 23;
+  FusionObstacleType occupy_obj_type = 24;
+}
+
+message FusionParkingSlotInfo {
+  /// Parking slot id
+  int32 id = 1;
+  /// Parking valid information
+  int32 valid = 2;
+  /// Parking source slot id
+  int32 source_id = 3;
+  /// occupy cnt of obs
+  int32 occupy_obs_cnt = 4;
+  /// occupy cnt of psd
+  int32 occupy_psd_cnt = 5;
+  /// occupy cnt of best position
+  int32 occupy_best_cnt = 6;
+  /// occupy cnt of pointcloud
+  int32 occupy_pointcloud_cnt = 7;
+  /// occupy cnt of slot
+  int32 occupy_cnt = 8;
+  /// latest occupy status
+  parking_slot.OccupancyStatus occupy_status = 9;
+  bool is_slot_occupy_in_ipm = 10;
+  bool is_slot_occupy_vice_best_pos = 11;
+  bool is_slot_occupy_best_pos = 12;
+  repeated bool is_fixed_prev = 13;
+  repeated int32 bd_buffer_size = 14;
+  repeated int32 fix_stat_cur = 15;
+  repeated int32 fix_stat_prev = 16;
+  repeated BoundPoint boundary_prev = 17;
+  repeated BoundPoint slot_boundary = 18;
+  repeated BoundPoint vice_boundary = 19;
+  repeated int32 match_cnt = 20;
+  repeated int32 vice_match_cnt = 21;
+  repeated float distance_curr_to_prev = 22;
+  repeated float distance_curr_to_vice = 23;
+  SlotAvialCntSas slot_occupy_sas_cnt = 24;
+}
+
+message FusionParkingInfo {
+  repeated FusionParkingSlotInfo info = 1;
+  int64 ipm_frame_id = 2;
+  int64 vision_ps_frame_id = 3;
+  int64 odo_frame_id = 4;
+  float odo_position_x = 5;
+  float odo_position_y = 6;
+  float odo_position_yaw = 7;
+  int32 parking_out_slot_id = 8;
+  parking_slot.ParkingSlotInfo fusion_lock_id_slot = 9;
+}
+
+message FusionParkingInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // FusionParkingInfo
+  FusionParkingInfo fusion_parking_info = 3;
+}

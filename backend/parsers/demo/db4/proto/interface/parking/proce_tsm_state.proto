@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ProceFunMode {
+  PARK_UNACTIVE = 0;
+  APA_ACTIVE = 1;
+  HPA_ACTIVE = 2;
+}
+
+message ProceStateData {
+  ProceFunMode proce_fun_mode = 1;
+}
+
+message ProceTsmStateMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // State Data
+  ProceStateData state_data = 3;
+}

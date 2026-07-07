@@ -1,0 +1,86 @@
+/**
+ * apa state and stage.
+ *
+ * This proto is used to pub apa state
+ *
+ */
+
+syntax = "proto3";
+package hpa_state;
+
+
+enum VpaStateDetailType {
+  STATE_NONE = 0;
+  // request map weak active signal util user click or map stop trigger
+  REQUEST_MAP_WEAK_ACTIVE = 1;
+  INIT_MAP = 2;             // init map funciton
+  BUILD_MAP_CLICKABLE = 3;  // request build map
+  MAP_BUILD_RUNNING = 4;    // after user start map build
+  MAP_BUILD_COMPLETE = 5;   // map build complete;
+  MAP_BUILD_EXIT = 6;       // map build failed with reason
+  MAP_BUILD_OPTIMIZING = 7; // map save and optimizing(用户倒车入库)
+  MAP_BUILD_APA = 8;        // APA 泊车入库
+  MAP_BUILD_DRIVE_PARK = 9; // 驾驶员倒车入库
+
+  // request vap active signal util user click or map stop trigger
+  REQUEST_VPA_WEAK_ACTIVE = 10;
+  INIT_VPA = 11;            // init vpa function
+  START_VPA_CLICKABLE = 12; // request start vpa
+  VPA_RUNNING = 13;         // after user start vpa
+  VPA_RANDOM_APA = 14;      // 任意车位泊车
+  VPA_FIX_APA = 15;         // 记忆车位泊车
+  VPA_COMPLETE = 16;        // vpa complete;
+  VPA_EXIT = 17;            // vpa failed with reason
+  VPA_PAUSE = 18;           // 各种原因的暂停
+  VPA_CONTINUE = 19;        // 修复暂停原因后的可继续状态
+  VPA_EPS_INTERRUPT = 20;   // EPS打断
+  VPA_EPS_CONTINUE = 21;    // EPS可继续
+
+  DIAG = 22; // system diag with diag type
+
+  PURE_APA = 23; // 纯apa状态
+  PURE_RPA = 24; // 纯rpa状态
+
+  MAP_PAUSE = 25;    // MAP apa 的暂停
+  MAP_CONTINUE = 26; // MAP APA的可继续状态
+}
+
+/**
+ * Represents apa state and stage.
+ * topic "apa_state"
+ */
+message ApaState {
+
+  enum ApaFunctionStage {
+    FUNCTION_NONE = 0;
+    APA_SEARCHING = 1; // 后台寻库
+    APA_PRE_PARKING = 2; // 泊车前,hmi有前台显示
+    APA_PARKING = 3; // 正在泊车
+    APA_COMPLETE= 4; // 泊车完成
+    APA_ABORT = 5; // 泊车终止
+    APA_SUSPEND = 6; // 泊车暂停
+    APA_FAILED = 7; // 故障
+    APA_OTHER = 8;
+  }
+  enum ApaStateDetailType {
+    STATE_NONE = 0;
+    OFF = 1; //上电自检中或下电状态
+    STANBY = 2; // 上电自检通过
+    FAILED = 3; // 故障
+    ABORT = 4; // 功能退出
+    SEARCHING_PARKING_IN = 5; // 后台寻库中，场景判断为泊入场景
+    SEARCHING_PARKING_OUT = 6; // 后台寻库中，场景判断为泊出场景
+    PRE_PARKING_IN = 7; // 泊入前，hmi有前台显示
+    PRE_PARKING_OUT = 8; // 泊出前,hmi有前台显示 
+    PARKING_IN = 9; // 正在泊入
+    PARKING_OUT = 10; // 正在泊出
+    SUSPEND_NOT_CONTINUE = 11; // apa功能暂停且不可继续状态
+    SUSPEND_CONTINUE = 12; // apa功能暂停且可继续状态
+    COMPLETE = 13; // 泊车完成
+    PRE_PARKING_SELECT = 14; // 自选车位泊入前,hmi有前台显示 
+  }
+  // 当前功能阶段
+  ApaFunctionStage function_stage = 1;
+  // apa状态详情
+  ApaStateDetailType state_detail = 2;
+}

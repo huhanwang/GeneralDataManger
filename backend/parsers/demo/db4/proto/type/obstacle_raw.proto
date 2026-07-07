@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+enum VehPropertyPerceptionType {
+  kVehPerceptionTypeLicensePlate = 0;
+  kVehPerceptionTypeWheel = 1;
+  kVehPerceptionTypeRearLmks3 = 2;
+  kVehPerceptionTypeRear = 3;
+  kVehPerceptionTypeVehFull = 4;
+  kVehPerceptionTypeVehFullFast = 5;
+  kVehPerceptionTypeVehRearFast = 6;
+  kVehPerceptionTypeCnt = 7;
+}
+
+enum PedProperyPerceptionType {
+  kPedPerceptionTypeHead = 0;
+  kPedPerceptionTypePedFast = 1;
+  kPedPerceptionTypePedPedCycFast = 2;
+  kPedPerceptionTypeCycPedCycFast = 3;
+  kPedPerceptionTypePedPedCyc2PE = 4;
+  kPedPerceptionTypeCycPedCyc2PE = 5;
+  kPedPerceptionTypeFace = 6;
+  kPedPerceptionTypeTricyclistPedCyc2PE = 7;
+  kPedPerceptionTypeMotocyclistPedCyc2PE = 8;
+  kPedPerceptionTypePedPedAeb2PE = 9;
+  kPedPerceptionTypePedPedNormal2PE = 10;
+  kPedPerceptionTypeObjDepth = 11;
+  kPedPerceptionTypeCnt = 12;
+}
+
+message PropertyPerceptionBBox {
+  perception_base.Rect rect = 1;
+  float conf = 2;
+  int32 type = 3;
+  repeated perception_base.Category category = 4;
+}
+
+message ObstacleRawKeyPoint {
+  Vector3f pt = 1;
+  float type = 2;
+  float conf = 3;
+  float boundary_conf_x = 4;
+  float boundary_conf_y = 5;
+}
+
+message TrackingFeatureRaw {
+  int32 model_id = 1;
+  repeated int32 data = 2;
+}
+
+message PoseNetRaw {
+  float roll_raw = 1;
+  float roll_filter = 2;
+  float pitch_raw = 3;
+  float pitch_filter = 4;
+  float yaw_raw = 5;
+  float yaw_filter = 6;
+  int32 type = 7;
+  float conf = 8;
+}
+
+enum ObstacleRawModelType {
+  kObstacleRawModelCar = 0;
+  kObstacleRawModelFullCar = 1;
+  kObstacleRawModelPed = 2;
+  kObstacleRawModelHead = 3;
+  kObstacleRawModelRare = 4;
+  kObstacleRawModelTrafficSign = 5;
+  kObstacleRawModelTrafficLight = 6;
+  kObstacleRawModelLane = 7;
+  kObstacleRawModelFrontWheel = 8;
+  kObstacleRawModelRearWheel = 9;
+  kObstacleRawModelRoadSign = 10;
+  kObstacleRawModelTrafficArrow = 11;
+  kObstacleRawModelYieldMark = 12;
+  kObstacleRawModelTrafficCone = 13;
+  kObstacleRawModelBarrel = 14;
+  kObstacleRawModelSpeedMark = 15;
+  kObstacleRawModelCyclist = 16;
+  kObstacleRawModelParkingLock = 17;
+  kObstacleRawModelSpeedCamera = 18;
+  kObstacleRawModelTrafficLightLens = 19;
+  kObstacleRawModelBushes = 20;
+  kObstacleRawModelParkingSlot = 22;
+  kObstacleRawModelFace = 34;
+  kObstacleRawModelVehiclePlat = 35;
+  kObstacleRawModelLaneCrossPoints = 37;
+  kObstacleRawModelVerticalPolePoints = 38;
+  kObstacleRawModelTollgate = 39;
+  kObstacleRawModelParkingLockClose = 40;
+  kObstacleRawModelParkingLockOpen = 41;
+  kObstacleRawModelParkingColumn = 42;
+  kObstacleRawModelParkingAFrameSign = 43;
+  kObstacleRawModelTrafficBollard = 44;
+  kObstacleRawModelParkingObstacles = 45;
+  kObstacleRawModelParkingLimiter = 46;
+  kObstacleRawModelParkingLimiterPole = 47;
+  kObstacleRawModelTurnstileClose = 48;
+  kObstacleRawModelTurnstileOpen = 49;
+  kObstacleRawModelHydrant = 50;
+  kObstacleRawModelPipeline = 51;
+  kObstacleRawModelHpp = 52;
+}
+
+message KpsClsRaw {
+  repeated int32 id = 1;
+  repeated float conf = 2;
+  repeated string name = 3;
+  int32 type = 4;
+}
+
+message KeyPointsRaw {
+  int32 task_type = 1;
+  repeated ObstacleRawKeyPoint key_points = 2;
+}
+
+enum Global2peResultType {
+  kGlobal2PeResultTypeWeather = 0;
+  kGlobal2PeResultTypeLight = 1;
+  kGlobal2PeResultTypeScene = 2;
+  kGlobal2PeResultTypeTime = 3;
+  kGlobal2PeResultTypeVanishPoint = 4;
+  kGlobal2PeResultTypePosenet = 5;
+  kGlobal2PeResultTypeBlockcls = 6;
+  kGlobal2PeResultTypeBlurcls = 7;
+  kGlobal2PeResultTypeGlarecls = 8;
+  kGlobal2PeResultTypePrFromDepth = 9;
+}
+
+message PRFromGround {
+  float roll = 1;
+  float pitch = 2;
+  Global2peResultType type = 3;
+}
+
+message ObstacleRaw {
+  perception_base.Rect rect = 1;
+  float conf = 2;
+  int32 model = 3;
+  int32 source = 4;
+  repeated perception_base.Category category = 5;
+  repeated PropertyPerceptionBBox property_bbox = 6;
+  repeated ObstacleRawKeyPoint key_points = 7;
+  float depth = 8;
+  int32 expand = 9;
+  perception_base.Rect input_roi = 10;
+  repeated KeyPointsRaw key_points_raw = 11;
+  repeated KpsClsRaw kps_cls_raw = 12;
+}
+
+message ObstacleRawsData {
+  perception_base.Header header = 1;
+  perception_base.Category category = 2;
+  float conf_scale = 3;
+  repeated ObstacleRaw obstacle_raws = 4;
+}

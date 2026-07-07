@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/psm_unified_res.proto";
+package autodrive.workflow.proto;
+
+message MapControlMsg {
+  enum MapControlType {
+    NONE = 0;
+    EPS_INTERRUPT = 1;  // EPS 打断
+    VPA_ABORT = 2;      // VPA中止
+    START_MAP = 3;      // 开始建图
+    OPTIMIZE_MAP = 4;   // 开始泊入车位后的存储和优化地图
+    START_VPA = 5;      // 开始VPA
+    VPA_COMPLETE = 6;   // VPA 结束
+    REBUILD_MAP = 7;    // 重新建图
+    MAP_ABORT = 8;      // 建图中止
+  }
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // statemachine control to map
+  MapControlType type = 3;
+}
+
+message ParkingSlotMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // statemachine parking slot to map
+  PsmParkingSlot slot = 3;
+}

@@ -1,0 +1,88 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+// 2D vector
+message Vector2f {
+  // x
+  float x = 1;
+  // y
+  float y = 2;
+}
+
+// 2D vector
+message Vector2d {
+  // x
+  double x = 1;
+  // y
+  double y = 2;
+}
+
+// 2D vector
+message Vector2 {
+  // x
+  double x = 1;
+  // y
+  double y = 2;
+}
+
+// 2D vector
+message Vector2i {
+  // x
+  int32 x = 1;
+  // y
+  int32 y = 2;
+}
+
+// 3D vector
+message Vector3f {
+  // x
+  float x = 1;
+  // y
+  float y = 2;
+  //z
+  float z = 3;
+}
+
+// 3D vector
+message Vector3d {
+  // x
+  double x = 1;
+  // y
+  double y = 2;
+  //z
+  double z = 3;
+}
+
+// euler
+message Euler {
+  // roll
+  double roll = 1;
+  // pitch
+  double pitch = 2;
+  // yaw
+  double yaw = 3;
+}
+
+// 4D vector
+message Vector4f {
+  // w
+  float w = 1;
+  // x
+  float x = 2;
+  // y
+  float y = 3;
+  // z
+  float z = 4;
+}
+
+// 4D vector
+message Vector4d {
+  // w
+  double w = 1;
+  // x
+  double x = 2;
+  // y
+  double y = 3;
+  // z
+  double z = 4;
+}

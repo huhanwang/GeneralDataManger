@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+message HisTrajectoryPoint {
+  // position
+  Vector2f position = 1;
+  // speed
+  float speed = 2;
+  // heading
+  float heading = 3;
+}
+
+message HisTjaObject {
+  // object id
+  uint32 id = 1;
+  // confidence
+  uint32 confidence = 2;
+  // history points
+  repeated HisTrajectoryPoint history_points = 3;
+}
+
+message HisTjaData {
+  // objects
+  repeated HisTjaObject objects = 1;
+}
+
+message HistoryPointMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  HisTjaData tja_data = 3;
+}

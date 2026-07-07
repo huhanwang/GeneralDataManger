@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+message EgoLayer {
+  uint64 id = 1;
+  uint64 stamp = 2;
+  NdmBaseVehicleType vehicle_type = 3;
+  NdmPoint lwh = 4;
+  float weight = 5;
+  string licence_plate = 6;
+  NdmTrajectory relative_traj = 7;
+  NdmTrajectory absolute_traj = 8;
+  bool fixed = 9;
+}

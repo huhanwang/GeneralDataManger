@@ -1,0 +1,90 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message Mask {
+  repeated int32 data = 1;
+  int32 height = 2;
+  int32 width = 3;
+}
+
+message Point { // unit: pixel
+  float x = 1;
+  float y = 2;
+}
+
+message Line {
+  Point pt0 = 1;
+  Point pt1 = 2;
+}
+
+message Corner {
+  Point point = 1;
+  int32 pos = 2;
+  int32 line_valid = 3;
+  int32 line_angle = 4;
+  int32 line_length = 5;
+  int32 is_entry = 6;
+}
+
+message VHM {
+  int32 x = 1;
+  int32 y = 2;
+  int32 head_angle = 3;
+}
+
+
+message Orientation {
+  int32 street = 1;
+  int32 line1 = 2;
+  int32 line2 = 3;
+  int32 ps = 4;
+}
+
+message ParkCorner {
+  Point entry_corner_near = 1;
+  Point entry_corner_far = 2;
+  Point end_corner_near = 3;
+  Point end_corner_far = 4;
+}
+
+message Park {
+  bool is_valid = 1;
+  int32 id = 2;
+  int32 pos = 3;
+  int32 type = 4;
+  int32 length = 5;
+  int32 depth = 6;
+  ParkCorner ccs_corners = 7;
+  Orientation ccs_orientations = 8;
+  ParkCorner vcs_corners = 9;
+  Orientation vcs_orientations = 10;
+  bool gcs_valid = 11;
+  ParkCorner gcs_corners = 12;
+  Orientation gcs_orientations = 13;
+  bool pcs_valid = 14;
+  ParkCorner pcs_corners = 15;
+  Orientation pcs_orientations = 16;
+}
+
+
+message HoughEdges {
+  Point corner = 1;                  // point
+  repeated Point edges = 2;                   // edges
+}
+
+message CameraApaMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  VHM vhm = 3;
+  Mask mask_point = 4;
+  Mask mask_line = 5;
+  repeated Corner corners = 6;
+  repeated Point edges = 7;
+  repeated Line entries = 8;
+  repeated HoughEdges hough_edges = 9;
+  repeated Line hough_lines = 10;
+  repeated Park parks = 11;
+}

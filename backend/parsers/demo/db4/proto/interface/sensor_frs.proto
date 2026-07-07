@@ -1,0 +1,10 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/freespace_point.proto";
+package autodrive.workflow.proto;
+
+message SensorFrsMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  repeated FreespacePoint freespace_points = 3;
+}

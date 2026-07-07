@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message Ascs {
+  float vf_ascs_set_speed = 1;
+  bool vb_ascs_change_set_spd = 2;
+  bool vb_ascs_lsl_on_off = 3;
+  bool vb_ascs_lsl_over_speed_warning = 4;
+  bool vb_ascs_set_speed_warning = 5;
+  float vf_ascs_current_speed_limit = 6;
+  bool vb_ascs_key_point_warning = 7;
+  uint32 veascs_enable_limit = 8;
+  bool vb_ascs_bvrw_on_off = 9;
+  bool vb_ascs_pre_dec_warning = 10;
+  float vf_ascs_spd_limit = 11;
+  float vf_ascs_accel_limit = 12;
+  float vf_ascs_time_gap = 13;
+  bool vb_ascs_dec_reject_by_driver = 14;
+
+  /* order: PCS,MSA,KSL,HAL,BvRW */
+  repeated uint32 vt_ascs_all_func_state = 15;
+
+  /* order: PCS,MSA,KSL,HAL,BvRW */
+  repeated float vt_ascs_all_func_accel = 16;
+}
+
+message AscsMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Ascs
+  Ascs ascs = 3;
+}

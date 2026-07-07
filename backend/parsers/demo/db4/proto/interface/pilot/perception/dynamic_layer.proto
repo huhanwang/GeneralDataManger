@@ -1,0 +1,117 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/obstacle.proto";
+package autodrive.workflow.proto;
+
+message ObjectAttribute {
+  repeated uint32 rgb = 1;
+  NdmPoint lwh = 2;
+  repeated NdmPoint key_points = 3;
+  repeated NdmPoint polygon_points = 4;
+  enum ObjectType {
+    UNKNOWN = 0;
+    VEHICLE = 1;
+    TWOWHEEL = 2;
+    PEDESTRIAN = 3;
+  }
+  ObjectType type = 5;
+  uint32 class_ind = 6;
+  uint32 action_ind = 7;
+  uint32 behavior_ind = 8;
+  uint32 intention_ind = 9;
+  uint32 identity = 10;
+}
+
+message TrafficLightBulbState {
+  uint64 stamp = 1;
+  uint32 seq_id = 2;
+  int32 color = 3;
+  bool is_flashing = 4;
+}
+
+message TrafficLightBulbSequence {
+  uint32 id = 1;
+  uint64 stamp = 2;
+  uint32 seq_id = 3;
+  float life_time = 4;
+  uint64 associate_trafficlightbulb_id = 5;
+  repeated TrafficLightBulbState bulb_states = 6;
+}
+
+message TrafficLightDynamicState {
+  uint32 id = 1;
+  uint64 stamp = 2;
+  uint32 seq_id = 3;
+  float life_time = 4;
+  uint64 associate_trafficlight_id = 5;
+  repeated TrafficLightBulbSequence bulb_seqs = 6;
+}
+
+message ParkingSlotState {
+  uint32 id = 1;
+  uint64 stamp = 2;
+  uint32 seq_id = 3;
+  float life_time = 4;
+  uint64 associate_parkingslot_id = 5;
+  bool is_occupied = 6;
+}
+
+message TrafficCone {
+  uint32 id = 1;
+  NdmPolygon border = 2;
+  Number height = 3;
+  int32 type = 4;
+}
+
+message ConstructionZone {
+  uint32 id = 1;
+  uint64 stamp = 2;
+  uint32 seq_id = 3;
+  float life_time = 4;
+  NdmPolygon border = 5;
+  repeated uint64 associate_ids = 6;
+}
+
+message RestrictedZone {
+  uint32 id = 1;
+  uint64 stamp = 2;
+  uint32 seq_id = 3;
+  float life_time = 4;
+  NdmPolygon border = 5;
+  repeated uint64 associate_ids = 6;
+}
+
+message StaticODD {
+  uint32 id = 1;
+  bool is_odd = 2;
+  uint32 type = 3;
+  uint32 action = 4;
+  uint64 reason = 5;
+  repeated Link links = 6;
+}
+
+message TrafficEvent {
+  uint32 id = 1;
+  TrafficEventType eventType = 2;
+  uint32 reliability = 3;
+  repeated Link links = 4;
+}
+
+message TrafficFlow {
+  uint32 id = 1;
+  TrafficFlowStatus flowStatus = 2;
+  uint32 reliability = 3;
+  repeated Link links = 4;
+}
+
+message DynamicLayer {
+  repeated TrafficLightDynamicState trafficlight_states = 1;
+  repeated ParkingSlotState parkingslot_states = 2;
+  repeated ConstructionZone construction_zones = 3;
+  repeated RestrictedZone restricted_zone = 4;
+  repeated TrafficCone cones = 5;
+  repeated StaticODD static_odds = 6;
+  repeated TrafficEvent traffic_events = 7;
+  repeated TrafficFlow traffic_flows = 8;
+  repeated NdmObstacle obstacles = 9;
+}

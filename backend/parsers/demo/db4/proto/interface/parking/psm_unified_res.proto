@@ -1,0 +1,59 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message PsmParkingSlot {
+  bool slotid_valid = 1;  // slotid valid flag
+  int32 slotid = 2;       // map:vision id / plan:apa id
+  repeated Vector3f vcs_points = 3;   // slot corner points
+  uint64 timestamp = 4;
+}
+
+message PsmVpaState {
+  enum FunctionType {
+    FUNCTION_TYPE_NONE = 0;
+    FUNCTION_TYPE_MAP = 1;  // 建图功能过程
+    FUNCTION_TYPE_VPA = 2;  // VPA功能过程
+  }
+
+  enum FunctionStage {
+    FUNCTION_STAGE_NONE = 0;
+    FUNCTION_STAGE_PRE_MAP = 1;
+    FUNCTION_STAGE_MAP_BUILDING = 2;
+    FUNCTION_STAGE_MAP_COMPLETE = 3;
+    FUNCTION_STAGE_MAP_EXIT = 4;
+    FUNCTION_STAGE_PRE_VPA = 5;
+    FUNCTION_STAGE_CURSING = 6;
+    FUNCTION_STAGE_VPA_COMPLETE = 7;
+    FUNCTION_STAGE_VPA_EXIT = 8;
+    FUNCTION_STAGE_APA = 9;
+    FUNCTION_STAGE_OTHER = 10;
+  }
+
+  // 当前功能类型
+  FunctionType ft = 1;
+  // 当前功能阶段
+  FunctionStage fs = 2;
+}
+
+/**
+ * reply msg format
+ */
+message PsmUnifiedResponseMsg {
+  enum ErrorCode {
+    DEFAULT = 0;  // just mean msg received, default value
+    OK = 1;       // means request is processed properly
+    NOT_OK = 2;   // error happened when process request
+    ALLOW = 3;    // allow to open map/location function
+    REFUSED = 4;  // refuse to open map/location funciton
+  }
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  ErrorCode code = 3;
+  string info = 4;
+}

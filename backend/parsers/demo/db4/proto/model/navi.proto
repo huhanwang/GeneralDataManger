@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+message NaviInfo {
+  int32 navi_index = 1;
+  int32 navi_action = 2;
+  int32 navi_assist = 3;
+  int32 speed_limit = 4;
+  repeated Vector2f navi_trajectorys = 5;
+}
+
+message Navi {
+  uint32 cur_navi_index = 1;
+  float vehicle_heading = 2;
+  Vector2f vehicle_pos = 3;
+  repeated NaviInfo navi_infos = 4;
+}
+
+message NaviMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // Navi
+  Navi navi = 3;
+}

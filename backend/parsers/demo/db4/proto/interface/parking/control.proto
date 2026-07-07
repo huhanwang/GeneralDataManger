@@ -1,0 +1,81 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum FuncState {
+  FuncState_Parking = 0;
+  FuncState_Pilot = 1;
+  FuncState_Laeb = 2;
+}
+
+enum AccState {
+  ACC_STATE_OFF = 0;
+  ACC_STATE_PASSIVE = 1;
+  ACC_STATE_STANDBY = 2;
+  ACC_STATE_ACTIVE = 3;
+  ACC_STATE_FAULT = 4;
+}
+
+message VelocityControl {
+  bool enable = 1;
+  float velocity = 2;
+  float distance = 3;
+}
+
+message SteerControl {
+  bool enable = 1;
+  int32 method = 2;
+  float torque = 3;
+  float angle = 4;
+  float rate = 5;
+}
+
+message GearControl {
+  bool enable = 1;
+  int32 gear = 2;
+}
+
+message CtlState {
+  FuncState state = 1;
+}
+
+message AccControl {
+  bool enable = 1;
+  AccState acc_state = 2;
+  float acc = 3;
+  float trq = 4;
+  bool trq_req_active = 5;
+  bool dec_to_stop = 6;
+  bool drive_off = 7;
+  bool epb_request = 8;
+}
+
+message BcmControl {
+  bool enable = 1;
+  bool turn_left_light = 2;
+  bool turn_right_light = 3;
+  bool emergency_light = 4;
+  bool brake_light = 5;
+  bool high_beam = 6;
+  bool low_beam = 7;
+  bool horn = 8;
+  int32 wiper = 9;
+}
+
+message Control {
+  VelocityControl vel_control = 1;
+  SteerControl steer_control = 2;
+  GearControl gear_control = 3;
+  AccControl acc_control = 4;
+  BcmControl bcm_control = 5;
+  CtlState func_state = 6;
+}
+
+message ControlMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Control
+  Control datas = 3;
+};

@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message Csrs {
+  float vf_csrs_accel = 1;
+  repeated uint32 vt_csrs_choose_space_id = 2;
+  uint32 ve_csrs_state = 3;
+}
+
+message CsrsMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Csrs
+  Csrs csrs = 3;
+}

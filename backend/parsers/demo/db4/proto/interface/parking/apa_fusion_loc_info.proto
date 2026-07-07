@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum VisionStatus {
+  kNone = 0;
+  kUsed = 1;
+  kUnused = 2;
+}
+
+message ApaFusLocInfo {
+  float frame_diff_yaw = 1;
+  float mapslot_diff_yaw = 2;
+  float vision_slot_width = 3;
+  float last_slot_entrance_err = 4;
+  float last_slot_tail_err = 5;
+  float position_coefficient = 6;
+  VisionStatus vision_status = 7;
+  bool deep_in_slot = 8;
+}
+
+message ApaFusLocInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // ApaFusLocInfo
+  ApaFusLocInfo apa_fus_loc_info = 3;
+}

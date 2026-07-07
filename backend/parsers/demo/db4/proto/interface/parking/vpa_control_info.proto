@@ -1,0 +1,87 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message RefPoint {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float yaw = 4;
+  float pitch = 5;
+  float roll = 6;
+  float s = 7;
+  float l = 8;
+  float k = 9;
+  float speed = 10;
+  float acc = 11;
+  float jerk = 12;
+  float speed_limit = 13;
+  int32 gear = 14;
+  int32 time = 15;
+}
+
+message VpaCtrlInfo {
+  uint64 timestamp = 1;
+  RefPoint near_pnt = 2;
+  RefPoint extra_pnt = 3;
+  RefPoint lon_pnt = 4;
+  float lon_err = 5;
+  float lat_err = 6;
+  float hdg_err = 7;
+  float ds = 8;
+  float lat_errdot = 9;
+  float steer_fdf = 10;
+  float steer_fdb = 11;
+  float eta = 12;
+  float alpha = 13;
+  float eps = 14;
+  float sigma = 15;
+  float steer_raw = 16;
+  float steer_smt = 17;
+  float vmax_raw = 18;
+  float v_obsv_err = 19;
+  float v_err = 20;
+  float acc_raw = 21;
+  RefPoint final_pnt = 22;
+  float yaw_err = 23;
+  float spd_err = 24;
+  float s_dot = 25;
+  float l_dot = 26;
+  float steer_cmd = 27;
+  float stop_dist_raw = 28;
+  float stop_dist_cmd = 29;
+  float vmax_cmd = 30;
+  float acc_cmd = 31;
+  RefPoint lat_pnt = 32;
+  repeated RefPoint prvw_pnts = 33;
+  RefPoint init_pnt = 34;
+  repeated RefPoint ref_pnts = 35;
+  repeated RefPoint mpc_pnts = 36;
+  repeated float dt_vec = 37;
+  repeated float ds_vec = 38;
+  float elapsed_t = 39;
+  uint64 near_idx = 40;
+  bool is_succeed = 41;
+  float lon_v_err = 42;
+  float lon_v_int = 43;
+  float lon_v_dif = 44;
+  float lon_v_p_term = 45;
+  float lon_v_i_term = 46;
+  float lon_v_d_term = 47;
+  float lon_a_err = 48;
+  float lon_a_int = 49;
+  float lon_a_dif = 50;
+  float lon_a_p_term = 51;
+  float lon_a_i_term = 52;
+  float lon_a_d_term = 53;
+  float acc_by_difv = 54;
+}
+
+message VpaCtrlInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // VpaCtrlInfo
+  VpaCtrlInfo vpa_ctrl_info = 3;
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message DbgHandShake {
+  uint32 outEPS_Sts_Handshake_u = 1;
+  uint32 outESP_Sts_Handshake_en = 2;
+  uint32 VeHD_APA_Control_Sts_en = 3;
+  bool outAPA_GearReqEnable = 4;
+  bool outAPA_GearReqValid = 5;
+  uint32 outAPA_GearReq = 6;
+  uint32 outAPA_EPBrequest = 7;
+  bool outAPA_EPBrequestValid = 8;
+  float outEPS_APS_ReqEPSTgtAng = 10;
+  float VfHD_VelocityControl_distance = 11;
+  float VfHD_Long_PtTrqReq = 12;
+  float VfHD_long_TargetAcceleration = 13;
+  uint32 outEPS_APS_ReqCtrlEPS = 9;
+  bool VbHD_VelocityControl_enable = 14;
+  bool VbHD_GearControl_enable = 15;
+  bool VbHD_SteerControl_enable = 16;
+  float VfHD_SteerControl_angle = 17;
+  uint32 VfHD_GearControl_gear = 18;
+  uint32 VeHD_FunctionWorkSts = 19;
+  uint32 VeHD_Apa_State = 20;
+}
+
+message DbgHandShakeMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Handshake
+  DbgHandShake handshake = 3;
+}
+

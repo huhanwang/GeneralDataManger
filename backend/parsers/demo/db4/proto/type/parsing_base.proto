@@ -1,0 +1,51 @@
+syntax = "proto3";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+enum RLEContourMode {
+  kRLEContourModeRetrExternal = 0;
+  kRLEContourModeRetrList = 1;
+}
+
+message IpmParsingImageData {
+  bytes data = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+  uint32 channel = 4;
+}
+
+message Rle {
+  int32 y = 1;
+  int32 xstart = 2;
+  int32 xend = 3;
+  int32 length = 4;
+  int32 value = 5;
+}
+
+message RleContourPointer {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message ConnectRegion {
+  perception_base.Rect boundbox = 1;
+  int32 nArea = 2;
+  repeated Rle rle_list_region = 3;
+  repeated RleContourPointer contour_points = 4;
+}
+
+message RleCompressedData {
+  int32 valid_height = 1;
+  int32 width = 2;
+  int32 height = 3;
+  uint32 free_label = 4;
+  bool inited = 5;
+  repeated Rle rle_list_buf = 6;
+  repeated ConnectRegion connect_regions = 7;
+  int32 begin_y = 8;
+  int32 end_y = 9;
+  int32 begin_x = 10;
+  int32 end_x = 11;
+  int32 step = 12;
+  bool valid_build_connect_region = 13;
+}

@@ -1,0 +1,88 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message DbgLongCtrl {
+  uint32 obMS_BehaviorSt_en = 1;
+  uint32 obMS_DriveOffState_en = 2;
+  uint32 obMS_SpeedCtrlSt_en = 3;
+  bool obMS_VehDirReverse_Flag = 35;
+  float AccTqCmd = 4;
+  float obMS_MVTqCmdNormal = 5;
+  float obMS_MVSpdCtrlIItem = 6;
+  float obMS_MVSpdCtrlPreTq = 7;
+  float obMS_MVSpdCtrlPItemLimit = 8;
+  float obMS_MVSpdCtrlDItem = 9;
+  float obMS_MVTqCmdStride = 10;
+  float obMS_AccTqCmdActiveOut_f = 11;
+  float obMS_BrkDaccCmdActiveOut_f = 12;
+  float obMS_BrkDaccEmergency = 13;
+  float obMS_BrkDaccPRE = 14;
+  float obMS_DEBrkDaccSum = 15;
+  float obMS_DEDaccCmd_f = 16;
+  float obMS_DEFeedForwardBrk_f = 17;
+  float obMS_DETargetDesAcc_f = 18;
+  float obMS_DOPreDriveTqRaw_f = 19;
+  float obMS_DORelBrkTarget_f = 20;
+  float obMS_MVFeedForwardBrk_f = 21;
+  float obMS_MVFeedForwardTq_f = 22;
+  float obMS_MVRoadBlockBrk = 23;
+  float obMS_MVTqCmd = 24;
+  float obMS_MVVehSpdDes_f = 25;
+  float obMS_PreDriveTq_f = 26;
+  float obMS_RemainDistOvd_f = 27;
+  float obMS_RoadSlope_f = 28;
+  float obMS_StandStillBrkCmd_f = 29;
+  float obMS_StaticSafeDis_f = 30;
+  float obMS_StopDisOverride_f = 31;
+  float obMS_VehFricEst_f = 32;
+  float obMS_VehMotionAcc_f = 33;
+  float obMS_MVVehSpdDesRaw_f = 36;
+  float obMS_MVBrkDaccCmd = 37;
+  float obMS_DEAccCmd_f = 38;
+  float obMS_DEDaccCmdRawcalc = 39;
+  float obMS_BrkDaccCmdActiveOutPress_f = 40;
+  float VfRTEA_ESP_APA_ActBrkPress = 41;
+  float inESP_VehSpd_f = 42;
+  float obMS_MVSpdError = 43;
+  float VfHD_Long_PtTrqReq = 44;
+  float VfHD_long_TargetAcc_MS = 45;
+  float obMS_RoadSlope2Raw_f = 47;
+  float obMS_LongCtrlVehSpd = 50;
+  float obMS_VehMotionAccDiffV = 53;
+  float obMS_DOTqCmd = 59;
+  float obMS_MVSpdCtrlPItem = 60;
+  float obMS_MVBrkCtrlDItem = 61;
+  float obMS_MVBrkCtrlIItem = 62;
+  float obMS_MVBrkCtrlPItem = 63;
+  float obMS_MVDaccCmdRaw_f = 64;
+  float obMS_MVDaccCmdRaw_f1 = 65;
+  float obMS_DETargetDesAccRaw_f = 69;
+  float obMS_MVBrkAccPidCmdFin = 66;
+  float obMS_DODaccCmd = 67;
+  float obMS_DEDAcc_error = 68;
+  float obMS_DEDaccCtrlDItem = 70;
+  float obMS_DEDaccCtrlPItem = 71;
+  float obMS_DEDaccCtrlIItem = 72;
+  float obMS_MVStopTimer = 74;
+  bool VfHD_long_TargetAcc_MS_In = 46;
+  uint32 DETqMode_DePhase = 49;
+  uint32 obMS_BlockFlag_b = 51;
+  uint32 obMS_VehSliding = 52;
+  uint32 obMS_VehStrideTimerEnable_b = 54;
+  uint32 obMS_VehStrideTimerReset_b = 55;
+  uint32 obMS_MVStrideTqActive_b = 56;
+  uint32 obMS_VehInsidePSFlag_b = 57;
+  uint32 obms_MVInit_InoRefresh = 58;
+  uint32 obMS_SlopeFastUpdateActive_b = 75;
+  uint32 obMS_SlopeUpdateActive_b = 76;
+}
+
+message DbgLongCtrlMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  DbgLongCtrl long_ctrl = 3;
+}
+

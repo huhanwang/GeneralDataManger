@@ -1,0 +1,249 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "interface/parking/hpa_psm.proto";
+package autodrive.workflow.proto;
+
+enum VpaRequestType {
+  VpaRequestTypeObs_None = 0;
+  VpaRequestTypeObs_Stop = 1;
+  VpaRequestTypeObs_Follow = 2;
+  VpaRequestTypeObs_StopSide = 3;
+  VpaRequestTypeObs_Autohold = 4;
+  VpaRequestTypeObs_Override_Random = 5;
+  VpaRequestTypeObs_Override_Left = 6;
+  VpaRequestTypeObs_Override_Right = 7;
+  VpaRequestTypeBackward_planning = 8;
+  VpaRequestTypeObs_Oncoming_PreAvoid = 9;
+  VpaRequestTypeObs_Oncoming_Meeting = 10;
+}
+
+
+enum BypassDirection {
+  BypassDirectionNone = 0;
+  BypassDirectionLeft = 1;
+  BypassDirectionRight = 2;
+}
+
+message BypassInfo {
+  bool bypass_flag = 1;
+  int32 bypass_obs_id = 2;
+}
+
+message VpaObsCornerPointsWithTime {
+  int32 obs_id = 1;
+  int64 timestamp = 2;
+  repeated Vector2f corner_points = 3;
+}
+
+message VpaObsCornerPointsWithTimeInfo {
+  repeated VpaObsCornerPointsWithTime obs_corner_points_with_time_list = 1;
+}
+
+message SL_point {
+  float s = 1;
+  float l = 2;
+}
+
+enum VpaDecisionType {
+  VpaDecisionNone = 0;
+  VpaObjectStop = 1;
+  VpaObjectFollow = 2;
+  VpaObjectOncoming = 3;
+  VpaObjectCrossing = 4;
+  VpaObjectOverrding = 5;
+}
+
+enum VpaDecisionStopReason {
+  VpaObjectStopReason = 0;
+  VpaObjectCrossingReason = 1; // 正在横穿参考线
+  VpaObjectCrossingImidiate = 2; // 有横穿意图，但还没有在参考线上
+  VpaObjectOncomingReason = 3;
+  VpaObjectReversing = 4;
+  VpaObjectCutIn = 5;
+  VpaFollowdistanceTooshort = 6;
+  VpaPedestrainForwardSameDirection = 7;
+  VpaPedestrainCrossing = 8;
+  VpaPedestrainOncoming = 9;
+  VpaObjectPBBlocking = 10;
+}
+
+message VpaDecisionStop {
+  int32 id = 1;
+  float distance_s = 2;// 需要停下来的s位置
+  float current_dis = 3; //当前与前车的距离
+  VpaDecisionStopReason stop_reason = 4;
+}
+
+message VpaDecisionOncoming {
+  int32 id = 1;
+  float distance_s = 2;// 需要停下来的s位置
+  float current_dis = 3; //当前与前车的距离
+}
+
+message VpaDecisionCrossing {
+  int32 id = 1;
+  float distance_s = 2;// 需要停下来的s位置
+  float current_dis = 3; //当前与前车的距离
+}
+
+message VpaDecisionFollow {
+  int32 id = 1;
+  float vmax = 2;        //跟随障碍物的当前速度
+  float follow_s = 3; // 需要到达follow速度的s位置
+  float current_dis = 4; //当前与前车的距离
+  float collison_distance = 5;//车头到前车车尾的距离
+  float relative_distance = 6;//车头到前车后轴中心的距离
+}
+
+message DecisionNudge {
+  int32 id = 1;
+  float distance_s = 2;// 障碍物当前的s位置
+  float current_l = 3; //障碍物当前l位置
+}
+
+message VpaObjectDecision {
+  int32 id = 1;
+  VpaDecisionType type = 2;
+  VpaDecisionStop stop_decision = 3;
+  VpaDecisionFollow follow_decision = 4;
+  VpaDecisionOncoming oncoming_decision = 5;
+  VpaDecisionCrossing crossing_decision = 6;
+  int64 timestamp = 7;
+}
+
+message ObjectDecisonMsg {
+  VpaRequestType request_type = 1;
+  BypassDirection bypass_direction = 2;
+  bool pedestrian_nudge_flag = 3;
+  bool need_decelerate = 4; // 绕障过程中是否需要减速
+  VpaObjectDecision decision = 5;
+  BypassInfo bypass_info = 6;
+  VpaObsCornerPointsWithTimeInfo obs_corner_points_with_time = 7;
+  repeated SL_point pedestrian_nudge_points_left = 8;
+  repeated SL_point pedestrian_nudge_points_right = 9;
+}
+
+message ObjectSelectionInfo {
+  repeated VpaDecisionStop vehicle_stop_list = 1;    // 停止障碍物筛选
+  repeated VpaDecisionFollow vehicle_follow_list = 2;  // 跟随障碍物筛选
+  repeated VpaDecisionOncoming vehicle_oncoming_list = 3; // 侧方停车
+  repeated VpaDecisionStop crossing_stop_list = 4; // 横在参考线上的障碍物
+  repeated VpaDecisionStop crossing_imidiate_stop_list = 5; // 有横穿意图，但还没有在参考线上
+  VpaObjectDecision object_decision_vehicle_tmp = 6; // 当前帧最近的障碍物筛选结果
+  repeated VpaDecisionStop pedestrain_stop_list = 7; // 停止行人筛选
+  repeated DecisionNudge pedestrain_nudge_list = 8; // 碰撞行人筛选
+}
+
+enum StateMachineMainState {
+  STATE_NONE = 0;
+  STATE_FORWARD = 1;
+  STATE_STOP_BEHIND = 2;
+  STATE_STOP_SIDE = 3;
+  STATE_AUTO_HOLD = 4;
+  STATE_PRE_BACKWARD = 5;
+  STATE_BACKWARD_RUNNING = 6;
+  STATE_BACKWARD_WAITING = 7;
+  STATE_ONCOMING = 8;
+}
+
+enum StateMachineSubState {
+  SUB_STATE_FOLLOW = 0;
+  SUB_STATE_PRE_OVERRIDING = 1;
+  SUB_STATE_OVERRIDING = 2;
+  SUB_STATE_PREAVOID = 3;
+  SUB_STATE_MEETING = 4;
+  SUB_STATE_STOPSIDE = 5;
+}
+
+message ObjectStateMachineInfo {
+  StateMachineMainState main_state = 1;
+  StateMachineSubState sub_state = 2;
+  VpaObjectDecision object_decision = 3;
+}
+
+message PathBoundInfo {
+  bool pb_block_flag = 1;
+  int32 path_bound_direction_dynamic = 2;
+  int32 path_bound_direction = 3;
+  uint32 pb_block_deactivate = 4;
+  uint32 pb_block_activate = 5;
+  VpaDecisionStop pb_block_decision = 6;
+}
+
+message CrossingDecisionInfo {
+  bool crossing_flag = 1;
+  uint32 crossing_Stop_deactivate = 2;
+  uint32 crossing_Stop_activate = 3;
+  VpaDecisionStop crossing_stop_decision = 4;
+}
+
+
+message PedestrianDecisionInfo {
+  bool pedestrian_flag = 1;
+  uint32 pedestrian_Stop_deactivate = 2;
+  uint32 pedestrian_Stop_activate = 3;
+  VpaDecisionStop pedestrian_stop_decision = 4;
+}
+
+message ObstacleStatusInfo {
+  int32 id = 1;
+  bool is_interest_forward_flag = 2;
+  bool valid = 3; // jump maturity
+  bool is_backward = 4; // 是否在倒车
+  bool is_parking_in = 5;
+  bool is_parking_out = 6;
+  bool is_in_slot = 7;
+}
+
+message ObstacleStatusInfoList {
+  repeated ObstacleStatusInfo obstacle_status_info_list = 1; // 障碍物状态信息列表
+}
+
+message PlanningResult {
+  int32 plan_result = 1;
+  int32 switch_flag = 2;
+  int32 stitch_success_flag = 3;
+  int32 stitch_complete = 4;
+  int32 stitch_has_planned = 5;
+  bool reach_goal_flag = 6;
+}
+
+enum HpaControlCmdType {
+  kHpaControlCmdTypeStandby = 0;
+  kHpaControlCmdTypeNormal = 1;
+  kHpaControlCmdTypeGoal = 2;
+  kHpaControlCmdTypeInterrupt = 3;
+  kHpaControlCmdTypeComfBrk = 4;
+  kHpaControlCmdTypeEmergBrk = 5;
+  kHpaControlCmdTypeApaInCharge = 6;
+}
+
+message VpaPlanStateInfo {
+  PlanStateType state = 1;
+  CtrlStateType ctrl_state = 2;
+  PlanPauseReason pause_code = 3;
+}
+
+message VpaDecisionInfo {
+  VpaPlanStateInfo vpa_plan_state_info = 1; // 当前帧决策的状态信息
+  HpaControlCmdType hpa_control_cmd_type = 2; // 当前帧决策向控制下发的指令类型
+  PlanningResult planning_result = 3; // 当前帧接收到的规划结果
+  ObjectStateMachineInfo object_state_machine_info = 4; // 障碍物状态机信息
+  PedestrianDecisionInfo pedestrian_decision_info = 5; // 行人刹停决策信息
+  CrossingDecisionInfo crossing_decision_info = 6; // 横穿刹停决策信息
+  PathBoundInfo path_bound_info = 7; // 车道边界信息
+  ObjectDecisonMsg final_object_decision_msg = 8;//决策最终输出的障碍物决策
+  SL_point match_point = 9; // 定位对应的sl坐标
+  ObjectSelectionInfo obstacle_selection_info = 10; // 障碍物筛选信息
+  ObstacleStatusInfoList obstacle_status_info_list = 11;
+}
+
+message VpaDecisionInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // VpaDecisionInfo
+  VpaDecisionInfo vpa_decision_info = 3;
+}

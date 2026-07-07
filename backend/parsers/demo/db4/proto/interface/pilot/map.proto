@@ -1,0 +1,94 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "interface/pilot/host_loc.proto";
+package autodrive.workflow.proto;
+
+enum LaneMarkerChangeType {
+  UNKNOWN_CHANGE_TYPE = 0;
+  NONE = 1;
+  SOLID_LINE = 2;
+  DASHED_LINE = 3;
+  DOUBLE_SOLID_LINE = 4;
+  DOUBLE_DASHED_LINE = 5;
+  LEFT_SOLID_RIGHT_DASHED_CHANGE_TYPE = 6;
+  RIGHT_SOLID_LEFT_DASHED = 7;
+  DASHED_BLOCKS = 8;
+  SHADED_AREA = 9;
+  PHYSICAL_DIVIDER = 10;
+}
+
+message LaneMarkerChange {
+  LaneMarkerChangeType type = 1;
+  uint32 offset = 2;
+};
+
+message LaneWidth {
+  float value = 1;
+  uint32 offset = 2;
+};
+
+message LaneInfo {
+  uint32 lane_id = 1;
+  uint32 center_line_id = 2;
+  uint32 left_line_id = 3;
+  uint32 right_line_id = 4;
+  KeyPoint key_point = 5;
+  MapLaneType lane_type = 6;
+  uint32 lane_no = 7;
+  repeated HostLocSpeedLimit speed_limits = 8;
+  repeated LaneMarkerChange left_lane_markers = 9;
+  repeated LaneMarkerChange right_lane_markers = 10;
+  repeated LaneWidth lane_widths = 11;
+};
+
+message CenterLinePoint {
+  Vector2f Position = 1;
+  float heading = 2;
+  float curvature = 3;
+  uint32 offset = 4;
+};
+
+message CenterLine {
+  repeated CenterLinePoint center_line_points = 1;
+  uint32 id_line = 2;
+};
+
+enum MapLaneMarkerType {
+  UNKNOWN_MARKER_TYPE = 0;
+  NONE_MARKER_TYPE = 1;
+  SOLID_LINE_MARKER_TYPE = 2;
+  DASHED_LINE_MARKER_TYPE = 3;
+  DOUBLE_SOLID_LINE_MARKER_TYPE = 4;
+  DOUBLE_DASHED_LINE_MARKER_TYPE = 5;
+  LEFT_SOLID_RIGHT_DASHED_MARKER_TYPE = 6;
+  RIGHT_SOLID_LEFT_DASHED_MARKER_TYPE = 7;
+  DASHED_BLOCKS_MARKER_TYPE = 8;
+  SHADED_AREA_MARKER_TYPE = 9;
+  PHYSICAL_DIVIDER_MARKER_TYPE = 10;
+  CURB_MARKER_TYPE = 11;
+}
+
+message LaneBoundary {
+  repeated Vector2f curves = 1;
+  uint32 id_line = 2;
+  bool is_virtual = 3;
+  MapLaneMarkerType lane_boundary_type = 4;
+};
+
+message MapGeometryInfo {
+  uint32 map_status = 1;
+  uint32 map_index = 2;
+  repeated LaneInfo lanes = 3;
+  repeated CenterLine center_lines = 4;
+  repeated LaneBoundary lane_boundaries = 5;
+}
+
+message MapMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // MapGeometryInfo
+  MapGeometryInfo map_geometry_info = 3;
+  }

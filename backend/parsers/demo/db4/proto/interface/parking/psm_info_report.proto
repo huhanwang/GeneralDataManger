@@ -1,0 +1,99 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/machine_hmi.proto";
+import "interface/parking/map_psm.proto";
+import "interface/parking/hpa_psm.proto";
+import "interface/parking/car_in_slot.proto";
+package autodrive.workflow.proto;
+
+message ExitReason {
+  int32 code = 1;
+  string info = 2;
+}
+
+message PsmAppsState {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  ApaHmiState apa = 3;
+  MachineState vpa = 4;
+  MapEventMsg map = 5;
+  PlanStateMsg plan = 6;
+  ExitReason apa_last_exit_reason = 7;
+  ExitReason vpa_last_exit_reason = 8;
+}
+
+message ConnectStatus {
+  enum ConnectType {
+    EVENT_NONE = 0;
+    EVENT_CONNECTED = 1;
+    EVENT_CONNECT_FAILED = 2;
+    EVENT_DISCONNECTED = 3;
+  }
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  ConnectType map = 3;
+  ConnectType plan = 4;
+  ConnectType perception = 5;
+  ConnectType hmi = 6;
+  ConnectType mcu = 7;
+}
+
+message VpaCanInfo {
+  enum GearStatusEnum {
+    N = 0;
+    P = 1;
+    R = 2;
+    D = 3;
+  };
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  float speed = 3;
+  GearStatusEnum gear = 4;
+}
+
+message SceneStatus {
+  message SceneIntent {
+    enum SceneIntentType {
+      NONE = 0;
+      DRIVE_PARK = 1;
+      QUIT_DRIVE_PARK = 2;
+      CAR_IN_SLOT = 3;
+      ARRIVE_FIXSLOT = 4;
+      CROSS_TRACK = 5;
+      CAR_NOT_IN_SLOT = 6;
+      PARKABLE_SLOT = 7; // 有认证车位
+      QUIT_BG_SEARCHING = 8; // quit background searching mode
+    }
+    SceneIntentType type = 1;
+  }
+
+  message ArriveFixSlot {
+    ParkingSlotInfo slot = 1;      // 目的车位
+    ParkingSlotInfo bak_slot = 2;  // 备用车位
+    float distance = 3;  // 离目的车位距离
+  }
+
+  message CrossTrack {  // 偏航
+    float cross_track_distance = 1;
+  }
+
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  SceneIntent intent = 3;
+  CarInSlotMsg car_in_slot = 4;
+  ArriveFixSlot arrive_fix_slot = 5;
+  CrossTrack off_track = 6;
+}

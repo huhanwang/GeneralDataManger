@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "common/common_msg.proto";
+import "interface/parking/lane_multitask.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+message SingleCamLane {
+  int32 camera_id = 1;
+  repeated LaneParsingImageData lane_parsing_image = 2;
+  perception_base.Rect parsing_roi = 3;
+}
+
+message LaneOnlCalibMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  repeated SingleCamLane camera_lane = 3;
+}

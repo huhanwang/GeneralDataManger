@@ -1,0 +1,148 @@
+syntax = "proto3";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum OdometryDataSource {
+  kOdometrySourceUnknown = 0;  // Solve the compilation problem and make a placeholder
+  kOdometrySourceTwoWheel = 1;
+  kOdometrySourceFourWheel = 2;
+  kOdometrySourceSpeed = 4;
+  kOdometrySourceYawRate = 8;
+  kOdometrySourceSteeringAngle = 16;
+  kOdometrySourceWheelSpeed = 32;
+  kOdometrySourceWheelPulse = 64;
+  kOdometrySourceGear = 128;
+}
+
+enum OdometryDataType {
+  kOdometryDataTypeCan = 0;
+  kOdometryDataTypeOfflineOptimized = 1;
+  kOdometryDataTypeOnlineIns = 2;
+}
+
+enum OdometryDataState {
+  kOdometryDataStateNormal = 0;
+  kOdometryDataStateUnnormal = 1;
+  kOdometryDataStateReset = 2;
+}
+
+enum OdometryDataErrorCode {
+  kOdometryDataErrorCodeNoError = 0;
+  kOdometryDataErrorCodeErrorCanTimeout = 1;
+  kOdometryDataErrorCodeErrorCanOdomOutrange = 2;
+  kOdometryDataErrorCodeErrorCanHugeDiff = 3;
+  kOdometryDataErrorCodeErrorCanAbnormalValue = 4;
+  kOdometryDataErrorCodeErrorNoImu = 5;
+  kOdometryDataErrorCodeErrorNoGnss = 6;
+  kOdometryDataErrorCodeErrorNoCan = 7;
+  kOdometryDataErrorCodeErrorNoImage = 8;
+  kOdometryDataErrorCodeErrorGnssLost = 9;
+  kOdometryDataErrorCodeErrorImageTimestamp = 10;
+}
+
+enum OdometryDataYawRateBiasEstimateState {
+  kYawRateBiasEstimateStateNormal = 0;
+  kYawRateBiasEstimateStateStaticUpdate = 1;
+  kYawRateBiasEstimateStateLaneUpdate = 2;
+  kYawRateBiasEstimateStateOnCurve = 3;
+  kYawRateBiasEstimateStateLaneNotSatisfied = 4;
+}
+
+enum Gear {
+  kGearTypeN = 0;
+  KGearTypeP = 1;
+  kGearTypeR = 2;
+  kGearTypeD = 3;
+}
+
+message StableDataPitch {
+  float pitch = 1;
+  bool is_valid = 2;
+  bool is_jitter = 3;
+}
+
+enum LightIntensityValidity {
+  kUndefinedDataAccuracy = 0;
+  kTemporaryUndefinedData = 1;
+  kDataAccuracyNotWithinSpecification = 2;
+  kAccurateData = 3;
+}
+
+enum TurningLightStatus {
+  kOff = 0;
+  kOn = 1;
+  kError = 2;
+  kReserved = 3;
+}
+
+enum RainFallLevel {
+  kAmntSnsrAmnt = 0;
+  kAmntSnsrInitValue = 14;
+  kAmntSnsrError = 15;
+}
+
+message Vehicle {
+  uint32 light_brightness_raw = 1;
+  LightIntensityValidity lignt_validity = 2;
+  TurningLightStatus left_turning_light_status = 3;
+  TurningLightStatus right_turning_light_status = 4;
+  RainFallLevel rain_fall_level = 5;
+  Gear gear = 6;
+  repeated uint32 whl_pulse = 7;
+  repeated uint32 whl_pulse_valid = 8;
+  repeated float whl_speed = 9;
+  uint32 yaw_rate_valid =10;
+  uint32 speed_valid =11;
+  uint32 gear_valid =12;
+}
+
+message Odometry {
+  Vector3d position = 1;
+  Vector3f orientation = 2;
+  float speed = 3;
+  float speed_scale = 4;
+  Vector2f acceleration = 5;
+  float yaw_rate = 6;
+  float yaw_rate_bias = 7;
+  float wheel_angle = 8;
+  float slope = 9;
+  StableDataPitch stable_pitch = 10;
+  float slope_confidence = 11;
+  uint32 diagnostic_code = 12;
+  Vector3d cov_translation = 13;
+  Vector3d cov_eular_angle = 14;
+  Vector3d position_hr = 15;
+  uint32 source = 16;
+  bool is_slope_available = 17;
+  OdometryDataType type = 18;
+  OdometryDataState state = 19;
+  OdometryDataErrorCode error_code = 20;
+  OdometryDataYawRateBiasEstimateState yaw_rate_bias_estimate_state = 21;
+  uint32 cur_layer_z = 22;
+}
+
+message OdometryEx {
+  Vector3d position = 1;
+  Vector3f orientation = 2;
+  float speed = 3;
+  float speed_scale = 4;
+  Vector2f acceleration = 5;
+  float yaw_rate = 6;
+  float yaw_rate_bias = 7;
+  float wheel_angle = 8;
+  float slope = 9;
+  StableDataPitch stable_pitch = 10;
+  float slope_confidence = 11;
+  uint32 diagnostic_code = 12;
+  Vector3d cov_translation = 13;
+  Vector3d cov_eular_angle = 14;
+  Vector3d position_hr = 15;
+  uint32 source = 16;
+  bool is_slope_available = 17;
+  OdometryDataType type = 18;
+  OdometryDataState state = 19;
+  OdometryDataErrorCode error_code = 20;
+  OdometryDataYawRateBiasEstimateState yaw_rate_bias_estimate_state = 21;
+  Vehicle vehicle_info = 22;
+  uint32 cur_layer_z = 23;
+}

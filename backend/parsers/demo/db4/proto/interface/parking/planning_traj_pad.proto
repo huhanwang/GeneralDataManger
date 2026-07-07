@@ -1,0 +1,56 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ParkingPlanStatus {
+  INVALID = 0;
+  PLANOVER = 1;
+  PLANSUCCEED = 2;
+  PLANFAIL = 3;
+  MAX = 4;
+}
+
+message PlanningPoint {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float yaw = 4;
+  float pitch = 5;
+  float roll = 6;
+  float s = 7;
+  float l = 8;
+  float k = 9;  // curvature for apa-prj
+  float speed = 10;
+  float acc = 11;
+  float jerk = 12;
+  float speed_limit = 13;
+  int32 gear = 14;
+  int64 timestamp = 15;
+  int32 direction = 16;   // forward or backward for apa-prj
+  int32 detect_status = 17;  // apa-prj
+  float dk_ds = 18;
+  float dl_ds = 19;
+  float ddl_ds2 = 20;
+  float ds_dt = 21;
+  float dds_dt2 = 22;
+}
+
+message PlanningTrajPadMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // trajectory
+  repeated PlanningPoint trajectory = 3;
+  // planning status
+  ParkingPlanStatus planning_status = 4;
+  // path
+  repeated PlanningPoint path = 5;
+  // remaining distance
+  float remain_dist = 6;
+  // ra total dist
+  float ra_total_dist = 7;
+  // apa total dist
+  float apa_total_dist = 8;
+  uint32 predict_finish_time = 9;
+}

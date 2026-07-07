@@ -1,0 +1,247 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+enum RoadBorderSide {
+  kRoadBorderSideLeftEdge = 0;
+  kRoadBorderSideRightEdge = 1;
+}
+
+enum RoadBorderType {
+  kRoadBorderTypeCurb = 0;
+  kRoadBorderTypeRoadEdge = 1;
+  kRoadBorderTypeBarrier = 2;
+  kRoadBorderTypeCone = 3;
+  kRoadBorderTypeParkedCars = 4;
+  kRoadBorderTypeWall = 5;
+  kRoadBorderTypeGuardRail = 6;
+  kRoadBorderTypeOther = 7;
+}
+
+enum RoadInfoLineSource {
+  kRoadConfNotAvailable = 0;
+  kRoadConfPredicted = 1;
+  kRoadConfDetected = 2;
+}
+
+enum RoadInfoCurveType {
+  kCurveTypeUnknown = 0;
+  kCurveTypeAdas = 2;
+  kCurveTypeCubic = 4;
+  kCurveTypeBezier = 8;
+}
+
+enum RoadInfoLineType {
+  kLineTypeUndecided = 0;
+  kLineTypeSolidLine = 1;
+  kLineTypeDashedLine = 2;
+  kLineTypeDoubleLine = 3;
+  kLineTypeDecelerationLine = 4;
+}
+
+enum DlmType {
+  kDlmNotDlm = 0;
+  kDlmSolidDashed = 1;
+  kDlmDashedSolid = 2;
+  kDlmSolidSolid = 3;
+  kDlmDashedDashed = 4;
+  kDlmUndecided = 5;
+}
+
+enum DecelType {
+  kDecelNotDecel = 0;
+  kDecelSolid = 1;
+  kDecelDashed = 2;
+  kDecelUndecided = 3;
+  kDecelInvalid = 4;
+}
+
+enum RoadInfoLineColor {
+  kLineColorUnknown = 0;
+  kLineColorWhite = 1;
+  kLineColorYellow = 2;
+  kLineColorBlue = 3;
+  kLineColorGreen = 4;
+}
+
+enum RoadInfoLinePosition {
+  kLinePositionUnknown = 0;
+  kLinePositionLeft = 1;
+  kLinePositionRight = 2;
+  kLinePositionLeftLeft = 3;
+  kLinePositionRightRight = 4;
+  kLinePositionLeftOutside = 5;
+  kLinePositionRightOutside = 6;
+  kLinePositionLeftRight = 7;
+  kLinePositionRightLeft = 8;
+  kLinePositionLeftLeftLeft = 9;
+  kLinePositionRightRightRight = 10;
+}
+
+enum TransitionType {
+  kTransitionTypeSplit = 0;
+  kTransitionTypeMerge = 1;
+  kTransitionTypeExit = 2;
+}
+
+enum StopLineStatus {
+  kStopLineStatusUnknown = 0;
+  kStopLineStatusInImage = 1;
+  kStopLineStatusPredicted = 2;
+}
+
+enum StopLineType {
+  kStopLineTypeStopLine = 0;
+  kStopLineTypeDashedStopLine = 1;
+  kStopLineTypeDoubleStopLine = 2;
+  kStopLineTypeDashedSolidStopLine = 3;
+  kStopLineTypeSolidDashedStopLine = 4;
+  kStopLineTypeDoubleDashedStopLine = 5;
+  kStopLineTypeTriangularStopLine = 6;
+}
+
+enum StopLineColorType {
+  kStopLineColorTypeGreenBlue = 0;
+  kStopLineColorTypeWhite = 1;
+  kStopLineColorTypeYellowOrangeRed = 2;
+}
+
+enum CrossingsType {
+  kCrossingsTypeCrossings = 0;
+}
+
+enum LaneChange {
+  kLaneChangeNoChange = 0;
+  kLaneChangeToLeft = 1;
+  kLaneChangeToRight = 2;
+  kLaneChangeToUnknown = 3;
+}
+
+enum LineRole {
+  kLineRoleUnknown = 0;
+  kLineRoleLeft = 1;
+  kLineRoleRight = 2;
+  kLineRoleLeftLeft = 3;
+  kLineRoleRightRight = 4;
+  kLineRoleLeftEdge = 5;
+  kLineRoleRightEdge = 6;
+}
+
+message RoadInfoCurveLine {
+  float start = 1;
+  float end = 2;
+  float rmse = 3;
+  RoadInfoCurveType type = 4;
+  repeated Vector3d points = 5;
+  repeated double t = 6;
+  double t_max = 7;
+  Vector3d start_pt = 8;
+  repeated double x_coeff = 9;
+  repeated double y_coeff = 10;
+  float length = 11;
+}
+
+message Border {
+  RoadBorderSide border_side = 1;
+  RoadBorderType border_type = 2;
+  RoadInfoLineSource conf_level = 3;
+  RoadInfoCurveLine curve = 4;
+  float conf = 5;
+  float border_height = 6;
+}
+
+message RoadBorders {
+  repeated Border borders = 1;
+}
+
+message TransitionPoints {
+  float long_position = 1;
+  float lat_position = 2;
+  float prob = 3;
+  TransitionType type = 4;
+  LineRole relate_line = 5;
+}
+
+message RoadInfoLine {
+  int32 id = 1;
+  string str_id = 2;
+  repeated RoadInfoCurveLine curve_segs = 3;
+  int32 life_time = 4;
+  float start = 5;
+  float end = 6;
+  float conf = 7;
+  float width = 8;
+  RoadInfoLinePosition position = 9;
+  RoadInfoLineSource conf_level = 10;
+  RoadInfoLineColor line_color = 11;
+  RoadInfoLineType type = 12;
+  DlmType dlm_type = 13;
+  DecelType decel_type = 14;
+  uint32 road_prediction = 15;
+  float length = 16;
+}
+
+message HighWayJunctionInfo {
+  bool highway_exit_left = 1;
+  bool highway_exit_right = 2;
+  bool highway_entry_left = 3;
+  bool highway_entry_right = 4;
+}
+
+message NumberOfLanes {
+  uint32 range_0m = 1;
+  uint32 range_35m = 2;
+}
+
+message RoadInfoLines {
+  repeated RoadInfoLine lines = 1;
+  int64 src_time_stamp = 2;
+  int64 asyn_time_stamp = 3;
+  uint32 ambiguous_line_pattern_left = 4;
+  uint32 ambiguous_line_pattern_right = 5;
+  uint32 construction_area = 6;
+  LaneChange lane_change = 7;
+  enum DrivingSide {
+    kDrivingSideLeftSide = 0;
+    kDrivingSideRightSide = 1;
+  }
+  DrivingSide driving_side = 8;
+  repeated TransitionPoints transition_points = 9;
+  HighWayJunctionInfo highway_junction_info = 10;
+  NumberOfLanes number_of_lanes = 11;
+  float host_width = 12;
+}
+
+message StopLines {
+  float lateral_distance = 1;
+  float longitudinal_distance = 2;
+  float angle = 3;
+  float confidence = 4;
+  uint32 id = 5;
+  StopLineStatus stop_line_status = 6;
+  StopLineType stop_line_type = 7;
+  StopLineColorType stop_line_color = 8;
+}
+
+message Crossings {
+  float lateral_position = 1;
+  float longitudinal_position = 2;
+  float confidence = 3;
+  uint32 id = 4;
+  CrossingsType corssings_type = 5;
+}
+
+message RoadInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  RoadBorders road_borders = 3;
+  RoadInfoLines lane_lines = 4;
+  StopLines stop_lines = 5;
+  Crossings crossings = 6;
+  int32 camera_id = 7;
+}

@@ -1,0 +1,62 @@
+syntax = "proto3";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+enum BevCoarseLaneLineType {
+  kCoarseLane = 0;
+  kCoarseCurb = 1;
+  kCoarseStopLine = 2;
+  kCoarseUnknown = 127;
+}
+
+enum BevLaneLineType {
+  kWhiteSolidLine = 0;
+  kWhiteDashedLine = 1;
+  kYellowSolidLine = 2;
+  kYellowDashedLine = 3;
+  kLeftDashedRightSolidLine = 4;
+  kRightDashedLeftSolidLine = 5;
+  kYellowDoubleSolidLine = 6;
+  kBevLaneLineTypeCurb = 7;
+  kStopLine = 8;
+  kCurbBarrier = 9;
+  kSpeedBump = 10;
+  kMovableCurb = 11;
+  kWhiteDoubleSolidLine = 12;
+  kWhiteDoubleDashedLine = 13;
+  kYellowDoubleDashedLine = 14;
+  kHorizontalCurb = 15;
+  kTripleLine = 16;
+  kQuadrupleLine = 17;
+  kLeftTurnWaitLine = 18;
+  kBevLaneLineTypeUnknown = 127;
+}
+
+enum BevLaneLineGroup {
+  kUnknowGroup = 0;
+  kSingleGroup = 1;
+  kDoubleGroup = 2;
+  kTripleGroup = 3;
+  kQuadrupleGroup = 4;
+}
+
+enum BevLaneVisibilityType {
+  kUnknowVisibilityType = 0;
+  kVisibleType = 1;
+  kInferentialType = 2;
+  kInvisibleType = 3;
+}
+
+enum CurbType {
+  NOT_CURB = 0;
+  FLAT_CURB = 1;
+  LOW_CURB = 2;
+  HIGH_CURB = 3;
+}
+
+message PointConfidence {
+  BasePoint coord = 1;
+  float score = 2;
+  float type_score = 3;
+  BevLaneLineType vision_lane_type = 4;
+}

@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "type/odometry_type.proto";
+import "common/common_msg.proto";
+import "type/base.proto";
+import "interface/parking/map_display.proto";
+
+package autodrive.workflow.proto;
+
+enum RefObjectType {
+  kRefObjectTypeUnknown = 0;
+  kRefObjectTypeTrafficSign = 1;
+  kRefObjectTypeTrafficLight = 2;
+  kRefObjectTypeTrafficLightBulb = 3;
+  kRefObjectTypeLaneMarking = 4;
+  kRefObjectTypeStopLine = 5;
+  kRefObjectTypeSpeedBump = 6;
+  kRefObjectTypePole = 7;
+  kRefObjectTypeCrossWalk = 8;
+  kRefObjectTypeZone = 9;
+  kRefObjectTypeParkingSlot = 10;
+  kRefObjectTypeTrafficCone = 11;
+  kRefObjectTypeParkingLockClose = 12;
+  kRefObjectTypeParkingLockOpen = 13;
+  kRefObjectTypeParkingColumn = 14;
+  kRefObjectTypeParkingAFrameSign = 15;
+  kRefObjectTypeJunction = 16;
+  kRefObjectTypeParkingLock = 17;
+  kRefObjectTypeCementColumn_Yes = 18; // Connected to the wall
+  kRefObjectTypeCementColumn_No = 19;   // Not connected to the wall
+  kRefObjectTypeFence = 20;
+}
+
+enum WaypointDir {
+  kWaypointDirForward = 0;
+  kWaypointDirBackward = 1;
+}
+
+message RefLineWayPointGlobal {
+  Vector3f waypoint_position = 1;
+  float waypoint_yaw = 2;
+  float waypoint_curv = 3;
+  float waypoint_curvrate = 4;
+  float waypoint_speed = 5;
+  uint32 waypoint_num = 6;
+  float waypoint_dist = 7;
+  WaypointDir waypoint_dir = 8;
+  bool waypoint_locked = 9;
+  bool is_map_origin = 10;
+  bool is_intersection = 11;
+  TurningLightStatus left_turning_light_status = 12;
+  TurningLightStatus right_turning_light_status = 13;
+  int32 slope_dir = 14;
+  float offset = 15;
+  float left_border = 16;
+  float right_border = 17;
+  int32 type = 18;
+  RefObjectType left_border_label= 19;
+  RefObjectType right_border_label = 20;
+}
+
+message RefLineWayPointFrameGlobal {
+  uint32 waypoint_id = 1;
+  repeated RefLineWayPointGlobal way_points = 2;
+  uint32 num_waypoints = 3;
+}
+
+message ReferenceLinePoint {
+  Odometry odo = 1;
+  float pitch = 2;
+  int32 num_sates = 3;
+  int32 floor_num = 4;
+  VertexType vertex_type = 5;
+  bool valid_map = 6;
+  bool init_loc_region = 7;
+}
+
+message RefLine {
+  int32 map_floor_num = 1;
+  repeated ReferenceLinePoint reference_points = 2;
+}
+
+message ReferenceLinesMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  RefLineWayPointFrameGlobal waypoint_frame_global_raw = 3;
+  RefLineWayPointFrameGlobal waypoint_frame_global = 4;
+  GlbPrkgSlot parking_slot = 5;
+  RefLine reference_line = 6;
+  NdmHeader ndm_header = 7;
+}

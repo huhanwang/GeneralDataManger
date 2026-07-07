@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parking_slot.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+message ObserverInfo {
+  int64 frame_id = 1;
+  parking_slot.ParkingType type = 2;
+  repeated float polygon_conf = 3;
+  repeated Vector2f polygon_world = 4;
+}
+
+message SlotInfo {
+  int32 slot_id = 1;
+  int32 continues_obs_num = 2;
+  int32 continues_no_obs_num = 3;
+  parking_slot.ParkingType type = 4;
+  repeated int64 obs_win_ids = 5;
+  repeated ObserverInfo obs_all = 6;
+}
+
+message SlotsPostprocInfo {
+  repeated SlotInfo slots_info = 1;
+}
+
+message SlotsPostprocInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // SlotsPostprocInfo
+  SlotsPostprocInfo slots_postproc_info = 3;
+}
+  

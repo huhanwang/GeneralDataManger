@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message DbgWrapperOut {
+  uint32 VfRTE_AngReqFunction = 1;
+  bool VfRTE_AngReqState = 2;
+  bool VfRTE_AngReqAvailable = 4;
+  uint32 VfRTE_VCU_ADASCtrlMod = 6;
+  float VfRTE_AngReqValue = 3;
+  float VfRTE_StinsReq = 5;
+  float VfRTE_VCU_TgtTorqRqstValue = 10;
+  float VfRTE_DstToStop = 9;
+  float VfRTE_ADASBrakRqstPres = 13;
+  bool VfRTE_VCU_ADASCtrlModRqst = 7;
+  bool VfRTE_ADASRdyKp = 8;
+  uint32 VfRTE_ADASBrakRqstMod = 11;
+  bool VfRTE_ADASBrakRqstModValid = 12;
+  uint32 VfRTE_TgtGear = 14;
+  bool VfRTE_GearRqst = 15;
+  uint32 VfRTE_EPB_ADASPrkngRqst = 16;
+  bool VfRTE_EPB_ADASCtrlRqst = 17;
+  bool VfRTE_VCU_TgtAccRqst = 18;
+  float VfRTE_VCU_TgtAccRqstValue = 19;
+  bool VfRTE_VCU_TgtSpdRqst = 20;
+}
+
+message DbgWrapperOutMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  DbgWrapperOut wrapper_out = 3;
+}
+

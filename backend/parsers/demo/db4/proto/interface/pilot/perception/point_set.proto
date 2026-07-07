@@ -1,0 +1,98 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+enum OmType {
+  OM_TYPE_UNSPECIFIED = 0;
+  OM_TYPE_LANE = 1;
+  OM_TYPE_ROADEDGE = 2;
+  OM_TYPE_CROSSWALK = 3;
+  OM_TYPE_NUM = 4;
+}
+
+enum OmSubType {
+  OM_SUB_TYPE_SUBTYPE_UNSPECIFIED = 0;
+  OM_SUB_TYPE_LANE_UNSPECIFIED = 32;
+  OM_SUB_TYPE_LANE_GENERAL = 33;
+  OM_SUB_TYPE_LANE_STAY = 34;
+  OM_SUB_TYPE_LANE_TIDE = 35;
+  OM_SUB_TYPE_LANE_THREE_COLOR = 36;
+  OM_SUB_TYPE_LANE_BUS = 37;
+  OM_SUB_TYPE_LANE_BOOTS_DOTS = 38;
+  OM_SUB_TYPE_LANE_DIVERSION_LEFT = 39;
+  OM_SUB_TYPE_LANE_DIVERSION_RIGHT = 40;
+  OM_SUB_TYPE_ROADEDGE_UNSPECIFIED = 64;
+  OM_SUB_TYPE_ROADEDGE_GROUND_SIDE = 65;
+  OM_SUB_TYPE_ROADEDGE_ROAD_SIDE = 66;
+  OM_SUB_TYPE_ROADEDGE_CONE = 67;
+  OM_SUB_TYPE_ROADEDGE_WATER_HORSE = 68;
+  OM_SUB_TYPE_ROADEDGE_GUARDRAIL = 69;
+  OM_SUB_TYPE_CROSSWALK_UNSPECIFIED = 96;
+}
+
+enum OmDirection {
+  OM_DIRECTION_UNSPECIFIED = 0;
+  OM_DIRECTION_UP = 1;
+  OM_DIRECTION_DOWN = 2;
+  OM_DIRECTION_LEFT = 3;
+  OM_DIRECTION_RIGHT = 4;
+  OM_DIRECTION_BIDIRECTION = 5;
+  OM_DIRECTION_NUM = 6;
+}
+
+enum OmLaneAttribute {
+  OM_LANE_ATTR_NON = 0;
+  OM_LANE_ATTR_KNOWN = 1;
+  OM_LANE_ATTR_DOTTED = 2;
+  OM_LANE_ATTR_FISHBONE = 4;
+  OM_LANE_ATTR_DIRECTIONAL = 8;
+  OM_LANE_ATTR_DOUBLE = 16;
+  OM_LANE_ATTR_WIDE = 32;
+  OM_LANE_ATTR_DOUBLE_DASH = 64;
+  OM_LANE_ATTR_DOUBLE_SOLID = 128;
+  OM_LANE_ATTR_LEFT_SOLID_RIGHT_DASH = 256;
+  OM_LANE_ATTR_LEFT_DASH_RIGHT_SOLID = 512;
+}
+
+enum OmLaneColor {
+  OM_LANE_COLOR_UNSPECIFIED = 0;
+  OM_LANE_COLOR_WHITE = 1;
+  OM_LANE_COLOR_YELLOW = 2;
+  OM_LANE_COLOR_BLUE = 3;
+  OM_LANE_COLOR_ORANGE = 4;
+  OM_LANE_COLOR_RED = 5;
+  OM_LANE_COLOR_OTHER = 6;
+  OM_LANE_COLOR_NUM = 7;
+}
+
+message InstancePointParam {
+  int32 bev_w = 1;  // coord in bev map
+  int32 bev_h = 2;  // coord in bev map
+  float sin = 3;
+  float cos = 4;
+  OmSubType sub_type = 5;
+  OmLaneAttribute lane_attribute = 6;
+  OmDirection lane_direction = 7;
+  uint32 score = 8;
+  OmLaneColor lane_color = 9;
+  OmType type = 10;
+};
+
+message PointSetPoint {
+  int32 x = 1;     // VCS point with scale
+  int32 y = 2;     // VCS point with scale
+  int32 id = 3;    // According to the Instance.id
+  InstancePointParam params = 4;
+};
+
+message Instance {
+  int32 id = 1;                         // 实例id
+  repeated float embedding_vector = 2;  // 嵌入向量
+  int32 section = 3;
+};
+
+message PointSet {
+  int32 scale = 1;                      // 尺寸
+  repeated Instance instances = 2;      // 实例
+  int32 point_bytes = 3;                // sizeof(struct Point)
+  repeated PointSetPoint point = 4;
+};

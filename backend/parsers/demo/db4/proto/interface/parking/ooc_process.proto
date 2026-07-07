@@ -1,0 +1,51 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum DistanceStatus {
+  kSafe = 0;
+  kDangerous = 1;
+  kVerydang = 2;
+  kStopped = 3;
+  kBlindArea = 4;
+}
+
+enum PhaseBlindState {
+  kInit = 0;
+  kShortDist = 1;
+  kBlind = 2;
+}
+
+message USSProjectionPoint {
+  int64 raw_timestamp = 1;
+  int32 group_num = 2;
+  Vector2f collision_point = 3;
+  repeated Vector2f points = 4;
+}
+
+message OocProcess {
+  USSProjectionPoint uss_proj_point = 1;
+  int64 blind_reset_timer = 2;
+  float remain_dist = 3;
+  uint32 uss_id = 4;
+  DistanceStatus avoid_status = 5;
+  PhaseBlindState blind_state = 6;
+  bool ooc_blind_flag = 7;
+  bool dec_short = 8;
+  bool dist_inc = 9;
+  bool gear_change = 10;
+  bool space_parall = 11;
+  float remain_dist_parallel_boundary = 12;
+  float remain_dist_wheel_bar = 13;
+  uint32 fusion_id = 14;
+};
+
+message OocProcessMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // OocProcess
+  OocProcess occ_process = 3;
+}

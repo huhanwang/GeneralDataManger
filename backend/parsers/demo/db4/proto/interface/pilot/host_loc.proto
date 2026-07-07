@@ -1,0 +1,144 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package autodrive.workflow.proto;
+
+enum KeyPointType {
+  UNKNOWN = 0;
+  SPLIT_UNKNOWN = 1;
+  Y_SPLIT_TO_LEFT = 2;
+  Y_SPLIT_TO_RIGHT = 3;
+  SPLIT_CONTINUATION_ON_LEFT = 4;
+  SPLIT_CONTINUATION_ON_RIGHT = 5;
+  SPLIT_NON_CONTINUATION_ON_LEFT = 6;
+  SPLIT_NON_CONTINUATION_ON_RIGHT = 7;
+  MERGE_UNKNOWN = 8;
+  MERGE_FROM_LEFT_TYPE = 9;
+  MERGE_FROM_RIGHT_TYPE = 10;
+  MERGE_CONTINUATION_ON_LEFT = 11;
+  MERGE_CONTINUATION_ON_RIGHT = 12;
+  Y_MERGE_FROM_LEFT = 13;
+  Y_MERGE_FROM_RIGHT = 14;
+  ENTRANCE_UNKNOWN = 15;
+  ENTRANCE_CONTINUATION_ON_RIGHT = 16;
+  ENTRANCE_MERGE_FROM_LEFT = 17;
+  ENTRANCE_MERGE_FROM_RIGHT = 18;
+  ENTRANCE_CONTINUATION_ON_LEFT = 19;
+  ENTRANCE_NON_MERGE_TO_RIGHT = 20;
+  ENTRANCE_NON_MERGE_ON_RIGHT = 21;
+  ENTRANCE_NON_MERGE_ON_LEFT = 22;
+  ENTRANCE_NON_MERGE_TO_LEFT = 23;
+  EXIT_UNKNOWN = 24;
+  EXIT_TO_RIGHT = 25;
+  EXIT_TO_LEFT = 26;
+  EXIT_CONTINUATION_ON_LEFT = 27;
+  EXIT_CONTINUATION_ON_RIGHT = 28;
+}
+
+enum MapLaneType {
+  NORMAL = 0;
+  EXIT = 1;
+  ENTRY = 2;
+  EMERGENCY = 3;
+  RAMP_TYPE = 4;
+  LEFT_ACCELERATE = 5;
+  LEFT_DECELERATE = 6;
+  RIGHT_ACCELERATE = 7;
+  RIGHT_DECELERATE = 8;
+  EMERGENCY_PARKING_STRIP = 9;
+  DIVERSION = 10;
+  SHOULDER = 11;
+  UNKNOWN_TYPE = 255;
+}
+
+enum HostLocLaneChangeType {
+  LANE_FOLLOW = 0;
+  LEFT_LANE_CHANGE = 1;
+  RIGHT_LANE_CHANGE = 2;
+  LANE_FOLLOW_CROSS_LEFT = 3;
+  LANE_FOLLOW_CROSS_RIGHT = 4;
+  HIGHT_SPEED_LEFT_LANE_CHANGE = 5;
+  LANE_FOLLOW_CROSS_LEFT_BY_SPLIT = 6;
+  LANE_FOLLOW_CROSS_RIGHT_BY_SPLIT = 7;
+}
+
+enum LaneChangeReason {
+  NO_REASON = 0;
+  LANE_DISAPPEAR = 1;
+  JCT_ENTRY_AHEAD = 2;
+  ENTER_JCT = 3;
+  JCT_EXIT_AHEAD = 4;
+  EXIT_JCT = 5;
+  ROAD_TYPE_Y = 6;
+  IC_ENTRY_AHEAD = 10;
+  ENTER_IC = 11;
+  IC_EXIT_AHEAD = 12;
+  EXIT_IC = 13;
+  OTHERS = 14;
+}
+
+message NaviLaneChange {
+  HostLocLaneChangeType type = 1;
+  LaneChangeReason reason = 2;
+  MapLaneType lane_type = 3;
+  uint32 speed_limit = 4;
+  uint32 offset = 5;
+}
+
+message KeyPoint {
+  Vector2f position = 1;
+  KeyPointType type = 2;
+  uint32 offset = 3;
+};
+
+message HostLocSpeedLimit {
+  uint32 value = 1;
+  MapLaneType lane_type = 2;
+  uint32 offset = 3;
+};
+
+message InhibitStatus {
+  bool inhibit_flag = 1;
+  uint32 inhibit_reason = 2;
+}
+
+message HostLocNaviLaneInfo {
+  InhibitStatus left_inhibit_host = 1;
+  InhibitStatus right_inhibit_host = 2;
+  InhibitStatus left_inhibit_nudge = 3;
+  InhibitStatus right_inhibit_nudge = 4;
+  uint32 center_line_id = 5;
+  NaviLaneChange cur_navi_info = 6;
+  repeated KeyPoint key_points = 7;
+  repeated HostLocSpeedLimit speed_limits = 8;
+  repeated NaviLaneChange next_navi_lane_changes = 9;
+}
+
+message HostLocInfo {
+  Vector3f position = 1;
+  Vector3f orientation = 2;
+  float latitude = 3;
+  float longitude = 4;
+  uint32 start_lat = 5;
+  uint32 start_lon = 6;
+  uint32 offset = 7;
+  uint32 loc_status = 8;
+  uint32 ref_map_index = 9;
+  bool navi_lane_change_cross_lane = 10;
+  bool is_in_defined_geofence = 11;
+  HostLocNaviLaneInfo navi_lane = 12;
+  uint32 host_lane_id = 13;
+  uint32 left_lane_id = 14;
+  uint32 right_lane_id = 15;
+  uint32 next_left_lane_id = 16;
+  uint32 next_right_lane_id = 17;
+}
+
+message HostLocMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // HostLocInfo
+  HostLocInfo host_loc_info = 3;
+}

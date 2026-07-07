@@ -1,0 +1,106 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ChassisValid {
+  ChassisInvalid = 0;
+  ChassisVaild = 1;
+  ChassisReserved = 2;
+}
+
+enum BrakePedalPosition {
+  BrakePedalPositionNotPressed = 0;
+  BrakePedalPositionPressed = 1;
+  BrakePedalPositionReserved = 2;
+}
+
+enum VehicleGear {
+  VehicleGearP = 0;
+  VehicleGearR = 1;
+  VehicleGearN = 2;
+  VehicleGearD = 3;
+  VehicleGearReserved = 4;
+}
+
+enum WheelpulseDir {
+  WheelpulseDirUndefinable = 0;
+  WheelpulseDirForward = 1;
+  WheelpulseDirBackward = 2;
+  WheelpulseDirStop = 3;
+}
+
+message VehicleChassis {
+  // 刹车踏板有效性
+  ChassisValid brake_pedal_valid = 1;
+  // 踏板位置
+  BrakePedalPosition brake_pedal_position = 2;
+  // 车速有效性
+  ChassisValid speed_valid = 3;
+  // 加速度有效性
+  ChassisValid acc_valid = 4;
+  // 横向加速度有效性
+  ChassisValid acc_lateral_valid = 5;
+  // Yaw rate有效性
+  ChassisValid yaw_rate_valid = 6;
+  // 方向盘角度有效性
+  ChassisValid wheel_angle_valid = 7;
+  // 档位
+  VehicleGear gear = 8;
+  // 车速
+  float speed = 9;
+  // 纵向加速度
+  float acc = 10;
+  // 横向加速度
+  float acc_lateral = 11;
+  // Yaw rate
+  float yaw_rate = 12;
+  // 方向盘角度
+  float wheel_angle = 13;
+  // 左前轮速脉冲
+  uint32 wheel_pulse_fl = 14;
+  // 右前轮速脉冲
+  uint32 wheel_pulse_fr = 15;
+  // 左后轮速脉冲
+  uint32 wheel_pulse_rl = 16;
+  // 右后轮速脉冲
+  uint32 wheel_pulse_rr = 17;
+  // 左前轮指向
+  WheelpulseDir wheel_pulse_fl_dir = 18;
+  // 右前轮指向
+  WheelpulseDir wheel_pulse_fr_dir = 19;
+  // 左后轮指向
+  WheelpulseDir wheel_pulse_rl_dir = 20;
+  // 右后轮指向
+  WheelpulseDir wheel_pulse_rr_dir = 21;
+  // 左前轮速 km/h
+  float wheel_speed_fl = 22;
+  // 右前轮速 km/h
+  float wheel_speed_fr = 23;
+  // 左后轮速 km/h
+  float wheel_speed_rl = 24;
+  // 右后轮速 km/h
+  float wheel_speed_rr = 25;
+  // 左前轮速有效性
+  ChassisValid wheel_speed_fl_vld = 26;
+  // 右前轮速有效性
+  ChassisValid wheel_speed_fr_vld = 27;
+  // 左后轮速有效性
+  ChassisValid wheel_speed_rl_vld = 28;
+  // 右后轮速有效性
+  ChassisValid wheel_speed_rr_vld = 29;
+  // Curvature ,左正右负
+  float curvature = 30;
+  // 方向盘角速率,左正右负，deg/sec
+  float steering_angle_rate = 31;
+  // 轮速脉冲有效性
+  ChassisValid wheel_speed_pulse_vld = 32;
+}
+
+message VehicleChassisMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Vehicle Chassis
+  VehicleChassis vehicle_chassis = 3;
+}

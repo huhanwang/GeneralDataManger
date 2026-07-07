@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum CaliRequestType {
+  CALI_REQ_UNKNOWN = 0;
+  STATIC_ENTRY = 1;
+  STATIC_EXIT = 2;
+  DYNAMIC_ENTRY = 3;
+  DYNAMIC_EXIT = 4;
+}
+
+message CaliReqMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Cali request
+  CaliRequestType req = 3;
+}

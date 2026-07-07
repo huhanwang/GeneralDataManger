@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ProjectInfo {
+  ProjectInfo_UNKNOWN = 0;
+  T68_G_RELEASE_023 = 1;   //  弃用
+  T68_G = 2;
+  T68_G_TDA4VEN_DV = 3;    //  弃用
+  GAC = 4;
+  T88_G3 = 5;
+  T60_G2 = 6;
+  C66TB = 7;
+  total_update = 8;
+}
+
+message ProjectConfig {
+  ProjectInfo project_id = 1;
+  bool corefile_enable = 2;
+  uint32 subversion = 3; //  子版本动态调整信号
+  string project_info = 4;
+  string subversion_info = 5;
+}
+
+message ProjectConfigMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // ProjectConfig
+  ProjectConfig project_config = 3;
+}  

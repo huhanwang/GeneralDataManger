@@ -1,0 +1,47 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parsing_base.proto";
+import "type/perception_base.proto";
+package autodrive.workflow.proto;
+
+enum IpmParsingLabel {
+  kIpmParsingLabelRoad = 0;
+  kIpmParsingLabelTrafficLine = 1;
+  kIpmParsingLabelParkingLine = 2;
+  kIpmParsingLabelParkingSpace = 3;
+  kIpmParsingLabelTrafficArrow = 4;
+  kIpmParsingLabelGuideLine = 5;
+  kIpmParsingLabelCrosswalkLine = 6;
+  kIpmParsingLabelNoParkingSignLine = 7;
+  kIpmParsingLabelStopLine = 8;
+  kIpmParsingLabelSpeedBump = 9;
+  kIpmParsingLabelSignLine = 10;
+  kIpmParsingLabelParkingLockOpen = 11;
+  kIpmParsingLabelParkingLockClosed = 12;
+  kIpmParsingLabelTrafficCone = 13;
+  kIpmParsingLabelParkingRod = 14;
+  kIpmParsingLabelCurb = 15;
+  kIpmParsingLabelColumn = 16;
+  kIpmParsingLabelImmovableObstacle = 17;
+  kIpmParsingLabelMovableObstacle = 18;
+  kIpmParsingLabeMechanicalParkingSpace = 19;
+  kIpmParsingLabeSidewalk = 20;
+  kIpmParsingLabePaintedWallRoot = 21;
+  kIpmParsingLabePedsetrain = 22;
+  kIpmParsingLabeOther = 23;
+}
+
+message IpmParsingMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  IpmParsingImageData free_space = 3;
+  IpmParsingImageData feature_map = 4;
+  // RLE compressed parsing results
+  RleCompressedData rle_parsing_compressed = 5;
+  // Parsing scale comparing to camera img width
+  float scale = 6;
+  // Valid roi on parsing img(not camera image)
+  perception_base.Rect roi_output = 7;
+}

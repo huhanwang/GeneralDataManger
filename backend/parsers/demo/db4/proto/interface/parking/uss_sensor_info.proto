@@ -1,0 +1,53 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message UssPulse {
+  uint32 de_distance = 1;
+  uint32 ce_left_distance = 2;
+  uint32 ce_right_distance = 3;
+  uint32 de_width = 4;
+  uint32 ce_left_width = 5;
+  uint32 ce_right_width = 6;
+  uint32 de_height = 7;
+  uint32 ce_left_height = 8;
+  uint32 ce_right_height = 9;
+}
+
+message UssPulseData {
+  repeated UssPulse uss_pulse = 1;
+}
+
+message UssStatusInfo {
+  uint32 uss_ring_time = 1;
+  uint32 customer_bits = 2;
+  uint32 uss_err_st1 = 3;
+  uint32 uss_err_st2 = 4;
+  uint32 uss_noise = 5;
+}
+
+message UssRawDataFrame {
+  uint64 uss_raw_data_timestamp = 1;
+  uint32 uss_polling_channel = 2;
+  repeated UssPulseData uss_pulse_data_info = 3;
+}
+
+message UssStatusFrame {
+  uint64 uss_status_timestamp = 1;
+  uint32 uss_drv_version = 2;
+  uint32 uss_hw_supplier = 3;
+  repeated UssStatusInfo uss_status_info = 4;
+}
+
+message UssSensorRawInfo {
+  UssRawDataFrame uss_raw_data_frame = 1;
+  UssStatusFrame uss_status_frame = 2;
+}
+
+message UssSensorInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  UssSensorRawInfo uss_sensor_raw_info = 3;
+}

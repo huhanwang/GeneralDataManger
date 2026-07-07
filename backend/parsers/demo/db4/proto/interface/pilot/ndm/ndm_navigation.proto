@@ -1,0 +1,155 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+enum NaviAction {
+  NAVIACTION_INVALID= 0;
+  NAVIACTION_STRAIGHT = 1;
+  NAVIACTION_HALFRIGHT = 2;
+  NAVIACTION_RIGHT = 3;
+  NAVIACTION_MUCHRIGHT = 4;
+  NAVIACTION_UTURN = 5;
+  NAVIACTION_LEFT = 6;
+  NAVIACTION_HALFLEFT = 7;
+  NAVIACTION_NONE = 8;
+  NAVIACTION_KEEPRIGHT = 9;
+  NAVIACTION_KEEPLEFT = 10;
+}
+
+enum SpecialRoadType {
+  SPECIALROADTYPE_UNKNOWN = 0;
+  SPECIALROADTYPE_JUNCTION = 1;
+  SPECIALROADTYPE_MERGE = 2;
+  SPECIALROADTYPE_FORK = 3;
+}
+
+enum TFLPassState {
+  TFLPASSSTATE_NON_TFL_LANE = 0;
+  TFLPASSSTATE_UNKNOWN = 1;
+  TFLPASSSTATE_GREEN = 2;
+  TFLPASSSTATE_YELLOW = 3;
+  TFLPASSSTATE_RED = 4;
+}
+
+enum SegmentType {
+  SEGMENTTYPE_UNKNOWN = 0;
+  SEGMENTTYPE_PASSABLE = 1;
+  SEGMENTTYPE_CONE_OCCUPIED = 2;
+  SEGMENTTYPE_CONSTRUCTION_OCCUPIED = 3;
+  SEGMENTTYPE_OTHER_OCCUPIED = 4;
+}
+
+message NdmRoadRoute {
+  int64 id = 1;
+  uint64 stamp = 2;
+  repeated int64 link_ids = 3;
+  float time_cost_in_minutes = 4;
+  float distance_cost_in_meters = 5;
+}
+
+message LaneRoute {
+  int64 id = 1;
+  uint64 stamp = 2;
+  repeated int64 lane_ids = 3;
+  int64 road_route_id = 4;
+  float time_cost_in_minutes = 5;
+  float distance_cost_in_meters = 6;
+  uint32 recommendation = 7;
+}
+
+message LaneOrientation {
+  bool uturn_able = 1;
+  bool left_able = 2;
+  bool straight_able = 3;
+  bool right_able = 4;
+  bool bus_only = 5;
+  bool change_able = 6;
+  bool right_uturn = 7;
+  bool highlight = 8;
+}
+
+message SpeedLimitGuidance {
+  float speed_limit_distance = 1;
+  float next_speed_limit = 2;
+}
+
+message SpecialRoadGuidance {
+  SpecialRoadType special_road_type = 1;
+  NaviAction navi_action = 2;
+  float distance = 3;
+}
+
+message NaviGuideInfo {
+  NaviAction navi_action = 1;
+  float speed_limit = 2;
+  float remain_distance = 3;
+  string next_road_name = 4;
+  repeated SpecialRoadGuidance special_road_guidances = 5;
+  repeated SpeedLimitGuidance speed_limit_guidances = 6;
+}
+
+message RecommendLane {
+  uint32 idx = 1;
+  LaneOrientation lane_orientation = 2;
+}
+
+message NaviLaneInfo {
+  uint32 total_lane_num = 1;
+  repeated RecommendLane recommend_lanes = 2;
+}
+
+message RoadNavi {
+  int64 id = 1;
+  uint64 stamp = 2;
+  NaviGuideInfo navi_guide_info = 3;
+  NaviLaneInfo navi_lane_info = 4;
+}
+
+message NdmLaneSegment {
+  float start_offset = 1;
+  float end_offset = 2;
+  SegmentType segment_type = 3;
+}
+
+message NaviLane {
+  int64 lane_id = 1;
+  TFLPassState tfl_pass_state = 2;
+  repeated NdmLaneSegment passable_segments = 3;
+  repeated NdmLaneSegment occupied_segments = 4;
+  float end_distance = 5;
+  bool valid = 6;
+  repeated int64 stop_line_ids = 7;
+  repeated int64 stop_line_yaws = 8;
+}
+
+message NaviRoad {
+  int64 road_id = 1;
+  repeated NaviLane navi_lanes = 2;
+}
+
+message AdapLaneNav {
+  int64 id = 1;
+  uint64 stamp = 2;
+  repeated NaviRoad navi_roads = 3;
+}
+
+message NdmNavigation {
+  int64 id = 1;
+  uint64 stamp = 2;
+  NdmPoint start_location = 3;
+  NdmPoint destination = 4;
+  repeated NdmRoadRoute road_routes = 5;
+  repeated LaneRoute lane_routes = 6;
+  RoadNavi road_navi = 7;
+  uint32 status = 8;
+  uint32 diag_code = 9;
+  AdapLaneNav adap_lane_nav = 10;
+}
+
+message NdmNavigationMsg {
+  MsgHeader header = 1;
+	Error error = 2;
+  NdmHeader ndm_header = 3;
+  NdmNavigation navigation = 4;
+}

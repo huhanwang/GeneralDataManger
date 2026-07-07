@@ -1,0 +1,45 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/bev_lane_base.proto";
+package autodrive.workflow.proto;
+  
+message PointWithLaneType {
+  BasePoint coord = 1;
+  BevCoarseLaneLineType bev_coarse_lane_type = 2;
+  BevLaneLineType bev_lane_type = 3;
+  bool slowdown = 4;
+}
+  
+message BevLaneLine {
+  BevCoarseLaneLineType bev_coarse_lane_type = 1;
+  BevLaneLineType bev_lane_type = 2;
+  bool slowdown_type = 3;
+  BevLaneLineGroup lane_line_group = 4;
+  int32 bev_next_lane_id = 5;
+  BevLaneVisibilityType lane_visibility_type = 6;
+  repeated PointConfidence bev_lane_points = 7;
+  repeated PointWithLaneType bev_lane_points_with_lane_type = 8;
+}
+  
+message BevMarkingBox {
+  float x = 1;
+  float y = 2;
+  float w = 3;
+  float l = 4;
+  float yaw = 5;
+  float score = 6;
+  int32 label = 7;
+}
+  
+message BevCrossPoint {
+  float x = 1;
+  float y = 2;
+  float score = 3;
+}
+  
+message BevRoadGeometry {
+  repeated BevLaneLine bev_lanes = 1;
+  repeated BevMarkingBox bev_markings = 2;
+  repeated BevCrossPoint bev_crosspoints = 3;
+}
+  

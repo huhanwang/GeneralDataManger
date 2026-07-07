@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/psm_unified_res.proto";
+import "interface/parking/psm_hpa.proto";
+package autodrive.workflow.proto;
+
+message SelectedParkingSlotMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // statemachine selected parking slot to perception
+  PsmParkingSlot slot = 3;
+}
+
+message PerceptionVpaStateMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // statemachine vpa state to perception
+  PsmVpaState vpa_state = 3;
+}
+
+message ParkingOutMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+
+  // statemachine parking out direction to perception
+  int32 slot_id = 3;
+  ParkingOutDirection out_direction = 4;
+}

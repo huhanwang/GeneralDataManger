@@ -1,0 +1,21 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message GridMetaData {
+  float step = 1;
+  int32 width = 2;
+  int32 height = 3;
+  string data = 4;
+  uint64 timestamp = 5;
+  uint64 recv_ts = 6;
+}
+
+message GridMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // GridMsg
+  GridMetaData info = 3;
+}

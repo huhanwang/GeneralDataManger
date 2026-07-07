@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "common/common_msg.proto";
+
+package autodrive.workflow.proto;
+
+enum WallLikeObstacleType {
+  kWallLikeObstacleTypeUnknown = 0;
+  kWallLikeObstacleTypeWall = 1;
+  kWallLikeObstacleTypeCurb = 2;
+}
+
+message LineSegment {
+  Vector2f start_point = 1;
+  Vector2f end_point = 2;
+}
+
+message WallLikeObstacle {
+  int32 id = 1;
+  int32 conf = 2;
+  WallLikeObstacleType type = 3;
+  repeated LineSegment line_segments = 4;
+}
+
+message WallLikeObstaclesMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  repeated WallLikeObstacle wall_like_obstacles = 3;
+}

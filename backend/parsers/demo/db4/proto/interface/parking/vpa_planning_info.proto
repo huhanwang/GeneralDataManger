@@ -1,0 +1,199 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message VpaInfoPlanningPoint {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float yaw = 4;
+  float pitch = 5;
+  float roll = 6;
+  float s = 7;
+  float l = 8;
+  float k = 9;
+  float speed = 10;
+  float acc = 11;
+  float jerk = 12;
+  float speed_limit = 13;
+  int32 gear = 14;
+  int32 direction = 15;
+  int32 detect_status = 16;
+  int32 slope_dir = 17;
+  float dk_ds = 18;
+  float dl_ds = 19;
+  float ddl_ds2 = 20;
+  float ds_dt = 21;
+  float dds_dt2 = 22;
+  float offset = 23;
+  float time = 24;
+  bool is_backward = 25;
+}
+
+message VpaInfoVehicleStatus {
+  float current_veh_speed = 1;
+  float current_steer_wheel_deg = 2;
+  float current_veh_acc = 3;
+  int32 gear = 4;
+}
+
+enum DecisionType {
+  HPADecisionNone= 0;
+  HPAObjectStop= 1;
+  HPAObjectFollow= 2;
+  HPAObjectOncoming= 3;
+  HPAObjectCrossing= 4;
+  HPAObjectOverrding= 5;
+}
+
+message DecisionFollow {
+  int32 id = 1;
+  float vmax = 2;
+  float follow_s = 3;
+  float current_dis = 4;
+  float collison_distance = 5;
+  float relative_distance = 6;
+}
+
+enum VpaInfoStopReason {
+  ObjectStop= 0;
+  ObjectCrossing= 1;
+  ObjectOncoming= 2;
+  ObjectReversing= 3;
+  ObjectCutIn= 4;
+  FollowdistanceTooshort= 5;
+  HPAPedestrainForwardSameDirection= 6;
+  HPAPedestrainCrossing= 7;
+  HPAPedestrainOncoming= 8;
+}
+
+message DecisionStop {
+  int32 id = 1;
+  float distance_s = 2;
+  float current_dis = 3;
+  VpaInfoStopReason stop_reason = 4;
+}
+
+message DecisionOncoming {
+  int32 id = 1;
+  float distance_s = 2;
+  float current_dis = 3;
+  float current_l = 4;
+}
+
+message DecisionCrossing {
+  int32 id = 1;
+  float distance_s = 2;
+  float current_dis = 3;
+}
+
+message VpaInfoPoint {
+  float x = 1;
+  float y = 2;
+  float yaw = 3;
+}
+
+message DecisionOverring {
+  int64 timestamp = 1;
+  float vcs_speed_x_axis = 2;
+  float vcs_speed_y_axis = 3;
+  repeated VpaInfoPoint corner_vcs = 4;
+}
+
+enum RequestType {
+  Obs_None = 0;
+  Obs_Stop = 1;
+  Obs_Follow = 2;
+  Obs_StopSide = 3;
+  Obs_Autohold = 4;
+  Obs_Override_Random = 5;
+  Obs_Override_Left = 6;
+  Obs_Override_Right = 7;
+  Backward_planning = 8;
+}
+
+message ObsCornerPointsWithTime {
+  int64 timestamp = 1;
+  float obs_s = 2;
+  repeated VpaInfoPoint corner_points = 3;
+}
+
+message ObjectDecision {
+  DecisionStop stop_decision = 1;
+  DecisionFollow follow_decision = 2;
+  DecisionOncoming oncoming_decision = 3;
+  DecisionCrossing crossing_decision = 4;
+  DecisionOverring overriding_decision = 5;
+  ObsCornerPointsWithTime oncoming_predict_obs_info = 6;
+  int32 id = 7;
+  int32 need_decelerate = 8;
+  DecisionType type = 9;
+  RequestType request_type = 10;
+  bool is_release_obstacle  = 11;
+  bool is_follow_stop_switch = 12;
+  repeated ObsCornerPointsWithTime obs_vcs_corner = 13;
+}
+
+message DestinationSlotInfo {
+  uint64 timestamp = 1;
+  int32 id = 2;
+  int32 slot_type = 3;
+  float length = 4;
+  float width = 5;
+  float yaw = 6;
+  bool isRecievedDestSlot = 7;
+  bool isStitchSuccess = 8;
+  bool isStitchComplete = 9;
+  repeated VpaInfoPoint slot_points = 10;
+}
+
+message BypassPlanresult {
+  bool is_bypass_plan_success = 1;
+  int32 bypass_direction = 2;
+  float obj_velocity = 3;
+}
+
+message ReversePlanresult {
+  bool is_plan_success = 1;
+  bool is_reverse_completed = 2;
+}
+
+message PlanningResultsForDecision{
+  int32 id = 1;
+  int32 plan_result = 2;
+  BypassPlanresult bypass_plan_result = 3;
+  ReversePlanresult backward_plan_result = 4;
+}
+
+message PlanningInput {
+  VpaInfoPlanningPoint current_loc_point = 1;
+  VpaInfoVehicleStatus vehicle_status = 2;
+  ObjectDecision object_decision = 3;
+  DestinationSlotInfo destination_slot_info = 4;
+  uint64 loc_timestamp = 5;
+  uint64 grid_map_timestamp = 6;
+  int32 vpa_cur_state = 7;
+  bool isStitchSucc = 8;
+  bool first_plan_flag = 9;
+  repeated VpaInfoPlanningPoint last_trajectory = 10;
+}
+
+message PlanningOutput {
+  PlanningResultsForDecision override_plan_result = 1;
+  PlanningResultsForDecision random_plan_result = 2;
+  int32 result = 3;
+  int32 goal = 4;
+  bool isStitchSucc = 5;
+  bool isReceivedSlot = 6;
+  int32 switch_flag = 7;
+  repeated VpaInfoPlanningPoint current_trajectory = 8;
+}
+
+message VpaPlanningInfoMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  PlanningInput planning_input = 3;
+  PlanningOutput planning_output = 4;
+}

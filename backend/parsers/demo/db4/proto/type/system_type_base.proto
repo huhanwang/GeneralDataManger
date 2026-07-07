@@ -1,0 +1,142 @@
+syntax = "proto3";
+import "type/parking_slot.proto";
+package autodrive.workflow.proto;
+
+enum ApaFunctionStage {
+  kApaFunctionStageNone = 0;
+  kApaFunctionStageSearching = 1;
+  kApaFunctionStagePreParking = 2;
+  kApaFunctionStageParking = 3;
+  kApaFunctionStageComplete = 4;
+  kApaFunctionStageAbort = 5;
+  kApaFunctionStageSuspend = 6;
+  kApaFunctionStageFailed = 7;
+  kApaFunctionStageOther = 8;
+}
+
+enum ApaStateDetailType {
+  kApaStateDetailTypeNone = 0;
+  kApaStateDetailTypeOff = 1;
+  kApaStateDetailTypeStandby = 2;
+  kApaStateDetailTypeFailed = 3;
+  kApaStateDetailTypeAbort = 4;
+  kApaStateDetailTypeSearchingParkingIn = 5;
+  kApaStateDetailTypeSearchingParkingOut = 6;
+  kApaStateDetailTypePreParkingIn = 7;
+  kApaStateDetailTypePreParkingOut = 8;
+  kApaStateDetailTypeParkingIn = 9;
+  kApaStateDetailTypeParkingOut = 10;
+  kApaStateDetailTypeSuspendNotContinue = 11;
+  kApaStateDetailTypeSuspendContinue = 12;
+  kApaStateDetailTypeComplete = 13;
+  kApaStateDetailTypePreParkingSelect = 14;
+  kApaStateDetailTypePreParkingRpa = 15;
+  kApaStateDetailTypeInvalid = 16;
+  kApaStateDetailTypePreParkingInUsrSelected = 17;
+  kApaStateDetailTypePreParkingOutUsrSelected = 18;
+}
+
+enum VpaStateDetailType {
+  kStateNone = 0;
+  // request map weak active signal util user click or map stop trigger
+  kRequestMapWeakActive = 1;
+  kInitMap = 2;             // init map funciton
+  kBuildMapClickable = 3;  // request build map
+  kMapBuildRunning = 4;    // after user start map build
+  kMapBuildComplete = 5;   // map build complete;
+  kMapBuildExit = 6;       // map build failed with reason
+  kMapBuildOptimizing = 7; // map save and optimizing(用户倒车入库)
+  kMapBuildApa = 8;        // APA 泊车入库
+  kMapBuildDrivePark = 9; // 驾驶员倒车入库
+
+  // request vap active signal util user click or map stop trigger
+  kRequestVpaWeakActive = 10;
+  kInitVpa = 11;            // init vpa function
+  kStartVpaClickable = 12; // request start vpa
+  kVpaRunning = 13;         // after user start vpa
+  kVpaRandomApa = 14;      // 任意车位泊车
+  kVpaFixApa = 15;         // 记忆车位泊车
+  kVpaComplete = 16;        // vpa complete;
+  kVpaExit = 17;            // vpa failed with reason
+  kVpaPause = 18;           // 各种原因的暂停
+  kVpaContinue = 19;        // 修复暂停原因后的可继续状态
+  kVpaEpsInterrupt = 20;   // EPS打断
+  kVpaEpsContinue = 21;    // EPS可继续
+
+  kDiag = 22; // system diag with diag type
+
+  kPureApa = 23; // 纯apa状态
+  kPureRpa = 24; // 纯rpa状态
+
+  kMapPause = 25;    // MAP apa 的暂停
+  kMapContinue = 26; // MAP APA的可继续状态
+}
+
+message ApaStateInfo {
+  ApaStateDetailType state_type = 1;
+  ApaFunctionStage func_stage = 2;
+}
+
+enum MirrFoldStsTyp {
+  MirrFoldStsTyp_MirrFoldPosnUndefd = 0;
+  MirrFoldStsTyp_MirrNotFoldPosn = 1;
+  MirrFoldStsTyp_MirrFoldPosn = 2;
+  MirrFoldStsTyp_MirrMovgToNotFold = 3;
+  MirrFoldStsTyp_MirrMovgToFold = 4;
+}
+
+enum SelectedType {
+  KSelectedTypeNone = 0;
+  KSelectedTypeParkingIn = 1;
+  KSelectedTypeParkingOutVision = 2;
+  KSelectedTypeParkingOutUss = 3;
+  KSelectedTypeParkingRSPA = 4;
+  kSelectedTypeParkingMemory = 5;
+  kSelectedTypeParkingVirtual = 6;
+}
+
+message UserSelectedParkingSlot {
+  bool user_sel_parking_slot_received = 1;
+  parking_slot.ParkingSlotInfo usersel_parking_slot = 2;
+  SelectedType selected_type = 3;
+}
+
+enum LockIdType {
+  KNone = 0;
+  KParkingIn = 1;
+  KParkingOutVision = 2;
+  KParkingOutUss = 3;
+  KParkingRSPA = 4;
+  kParkingMemory = 5;
+  kParkingVirtual = 6;
+}
+
+enum TraStateDetailType {
+  kTraStateStateNone = 0;
+  kTraStateOff = 1;
+  kTraStateStandby = 2;
+  kTraStateAbort = 3;
+  kTraStateFault = 4;
+  kTraStateInvalid = 5;
+  kTraStateTrackingRecording = 6;
+  kTraStateTrackingReverseClickable = 7;
+  kTraStateTrackingReverse = 8;
+  kTraStateComplete = 9;
+  kTraStateSuspendNotContinue = 10;
+  kTraStateSuspendContinue = 11;
+}
+
+enum NpaStateDetailType {
+  kNpaStateStateNone = 0;
+  kNpaStateOff = 1;
+  kNpaStateStandby = 2;
+  kNpaStateAbort = 3;
+  kNpaStateFault = 4;
+  kNpaStateInvalid = 5;
+  kNpaStateNarrowLaneAuxiliary = 6;
+  kNpaStateNarrowLanePassingClickable = 7;
+  kNpaStateNarrowLanePassing = 8;
+  kNpaStateComplete = 9;
+  kNpaStateSuspendNotContinue = 10;
+  kNpaStateSuspendContinue = 11;
+}

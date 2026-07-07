@@ -1,0 +1,60 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+message IhcsSceneCondition {
+  IhcsRoadType road_type = 1;
+  Weather weather = 2;
+  bool tunnel_detection = 3;
+  bool construction_area_detection = 4;
+  bool approaching_junction_detection = 5;
+  float current_environment_lux = 6;
+}
+
+message HlbDecision {
+  bool decision = 1;
+  HlbRunningMode running_mode = 2;
+  HlbInactiveReason inactive_reason = 3;
+}
+
+message HlbReason {
+  bool preceding = 1;
+  bool oncoming = 2;
+  bool street_light = 3;
+  bool load_balance = 4;
+  bool low_speed = 5;
+  bool lit_night = 6;
+  bool preceding_grace = 7;
+  bool oncoming_grace = 8;
+  bool street_light_grace = 9;
+  bool sharp_curve = 10;
+  bool bright_scene = 11;
+}
+
+message HighLowBeam {
+  HlbDecision decision = 1;
+  HlbReason reason = 2;
+}
+
+message IhcsObject {
+  bool is_valid = 1;
+  IhcsObjectType type = 2;
+  float couple_width = 3;
+  float distance = 4;
+  float angle = 5;
+  float angle_bottom = 6;
+}
+
+
+message IhcsData {
+  IhcsSceneCondition scene_condition = 1;
+  HighLowBeam high_low_beam = 2;
+  repeated IhcsObject objects = 3;
+}
+
+message SensorIhcsMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  IhcsData ihcs_data = 3;
+}

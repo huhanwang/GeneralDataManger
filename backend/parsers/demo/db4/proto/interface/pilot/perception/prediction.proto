@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "type/base.proto";
+import "type/perception_types.proto";
+package autodrive.workflow.proto;
+
+message PredictionPointProto {
+  BasePolygon polygon_contour = 1;
+  BasePoint position = 2;
+  BasePoint speed = 3;
+}
+
+message PredictionTrajectoryProto {
+  repeated PredictionPointProto point_array = 1;
+  string targrt_lane_id = 2;
+  float probability = 3;
+}
+
+message PredictionObjectProto {
+  int32 id = 1;
+  float length = 2;  // m
+  float width = 3;   // m
+  float height = 4;  // m
+  BasePolygon polygon_contour = 5;
+  BasePoint position = 6;
+  BasePoint heading_direction = 7;
+  BasePoint speed = 8;
+  BasePoint acceleration = 9;
+  repeated PredictionTrajectoryProto trajectory_array = 10;
+  ObstacleType type = 11;
+}

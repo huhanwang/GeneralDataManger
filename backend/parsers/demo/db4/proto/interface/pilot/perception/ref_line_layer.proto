@@ -1,0 +1,65 @@
+syntax = "proto3";
+import "type/base.proto";
+import "type/odometry_type.proto";
+import "interface/pilot/perception/object.proto";
+package autodrive.workflow.proto;
+
+message WayPointGlobal {
+  float waypoint_x = 1;
+  float waypoint_y = 2;
+  float waypoint_yaw = 3;
+  float waypoint_curv = 4;
+  float waypoint_curvrate = 5;
+  int32 waypoint_dir = 6;
+  float waypoint_speed = 7;
+  uint32 waypoint_num = 8;
+  bool waypoint_locked = 9;
+  float waypoint_dist = 10;
+  int32 submap_id = 11;
+  uint32 section_id = 12;
+  int64 frame_ts = 13;
+  int32 terrain_type = 14;
+  bool has_confirmed_map = 15;
+  float waypoint_z = 16;
+  float waypoint_lb = 17;
+  float waypoint_rb = 18;
+}
+
+message WayPointFrameGlobal {
+  uint32 waypoint_num = 1;
+  uint32 waypoint_id = 2;
+  repeated WayPointGlobal waypoints = 3;
+}
+
+message ReferencePoint {
+  Odometry odo = 1;
+  float pitch = 2;
+  int32 num_sates = 3;
+  int32 vertex_type = 4;
+  int32 floor_num = 5;
+  bool has_map = 6;
+  repeated uint64 str_obj_id = 7;
+  bool init_loc_region = 8;
+  int32 submap_id = 9;
+  uint32 section_id = 10;
+  bool is_rtk_point = 11;
+  float rtk_score = 12;
+  int32 utm_zone = 13;
+  float utm_pos_x = 14;
+  float utm_pos_y = 15;
+  int32 terrain_type = 16;
+}
+
+message ReferenceLine {
+  string header = 1;
+  repeated ReferencePoint reference_points = 2;
+  int32 map_floor_num = 3;
+}
+
+message RefLineLayer {
+  WayPointFrameGlobal waypoint_frame_global_raw = 1;
+  WayPointFrameGlobal waypoint_frame_global = 2;
+  NdmObject parking_slot = 3;
+  ReferenceLine reference_line = 4;
+  NdmHeader header = 5;
+}

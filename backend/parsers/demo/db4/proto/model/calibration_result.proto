@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+package autodrive.workflow.proto;
+
+enum CalDetail {
+  CALIB_STATE_NONE = 0;
+  CALIB_STATE_RUN = 1;
+  CALIB_STATE_SUCCESS = 2;
+  CALIB_STATE_MODE_ERRROR = 3;
+  CALIB_STATE_PATTERN_ERROR = 4;
+  CALIB_STATE_INTERNAL_PARAM_ERROR = 5;
+  CALIB_STATE_IMG_ERRROR = 6;
+  CALIB_STATE_FIND_CORNERS_ERROR = 7;
+  CALIB_STATE_REPROJECTION_ERROR = 8;
+  CALIB_STATE_PITCH_OUTOF_RANGE = 9;
+  CALIB_STATE_ROLL_OUTOF_RANGE = 10;
+  CALIB_STATE_YAW_OUTOF_RANGE = 11;
+}
+
+message CalibrationResult {
+  CameraID cam_id = 1;
+  CalDetail detail = 2;
+}
+
+message CalibrationResultMsg {
+  // Header
+	MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // Calibration
+  repeated CalibrationResult results = 3;
+}

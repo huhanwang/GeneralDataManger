@@ -1,0 +1,147 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+import "type/perception_types.proto";
+import "type/common_type.proto";
+package autodrive.workflow.proto;
+
+enum FusionObstacleType {
+  kFusionObstacleTypeVehicle = 0;
+  kFusionObstacleTypePedestrain = 1;
+  kFusionObstacleTypeCyclist = 2;
+  kFusionObstacleTypeAnimal = 3;
+  kFusionObstacleTypeCyclistNoPed = 4;
+  kFusionObstacleTypeTrafficCone = 50;
+  kFusionObstacleTypeCementColumn = 51;
+  kFusionObstacleTypeParkingLock = 52;
+  kFusionObstacleTypeAFrameSign = 53;
+  kFusionObstacleTypeCurb = 54;
+  kFusionObstacleTypeFence = 55;
+  kFusionObstacleTypeWaterBarrier = 56;
+  kFusionObstacleTypeTrolley = 57;
+  kFusionObstacleTypeWall = 58;
+  kFusionObstacleTypeParkLimiter = 59;
+  kFusionObstacleTypeParkLimiterPole = 60;
+  kFusionObstacleTypeSpeedBump = 61;
+  kFusionObstacleTypeRodeEdge = 62;
+  kFusionObstacleTypeTrafficBollard = 63;
+  kFusionObstacleTypeMovableObstacle = 64;
+  kFusionObstacleTypeImmovableObstacle = 65;
+  kFusionObstacleTypeUnknown = 100;
+}
+
+enum ObstacleMotionStatus {
+  kObstacleMotionStatusUnknown = 0;
+  kObstacleMotionStatusSyntropyMoving = 1;
+  kObstacleMotionStatusOncomingMoving = 2;
+  kObstacleMotionStatusStationary = 3;
+  kObstacleMotionStatusSyntropyStopped = 4;
+  kObstacleMotionStatusOncomingStopped = 5;
+  kObstacleMotionStatusCrossing = 6;
+  kObstacleMotionStatusCutIn = 7;
+  kObstacleMotionStatusCutOut = 8;
+}
+
+
+enum FusionObstacleStaticSubType {
+  kSubTypeParkLockTypeUnknown = 0;
+  kSubTypeParkLockTypeOpen = 1;
+  kSubTypeParkLockTypeClose = 2;
+  kSubTypeFireHydrantTypeAir = 3;
+  kSubTypeFireHydrantTypeGnd = 4;
+}
+
+message TwoPoints {
+  // uss_only using ,default value will set
+  Vector3f pos1 = 1;
+  Vector3f pos2 = 2;
+}
+
+message USSObjId {
+  uint32 uss_obj_id = 1;
+  uint32 uss_point_start_index = 2;
+  uint32 uss_point_end_index = 3;
+  TrackingStatus tracking_status = 4;
+  uint32 age = 5;
+}
+
+message FusionObstacleOutPut {
+  bool is_updated = 1;
+  // Bit1:IPM; Bit2:USS; Bit3:Mono;
+  // For example,IPM only: uint8_t(1);IPM+USS: uint8_t(3);
+  uint32 sensor_source = 2;
+  // Fusion id
+  uint32 id = 3;
+  // Vision id
+  uint32 vision_id = 4;
+  // Uss id
+  uint32 uss_id = 5;
+  uint32 mono_id = 6;
+  // Position [x, y] center point only for fusion and vision
+  Vector3f pos = 7;
+  // Velocity [x, y], uss_only will give default value 0
+  Vector3f vel = 8;
+  // Acceleration [x, y],uss_only will give default value 0
+  Vector3f acc = 9;
+  // Heading for this object
+  float heading = 10;
+  // Obstacle Probability
+  float obstacle_conf = 11;
+  // [m] only for fusion and vision
+  float width = 12;
+  // [m] only for fusion and vision
+  float length = 13;
+  // [m] only for fusion and vision
+  float height = 14;
+  // Type
+  FusionObstacleType type = 15;
+  // Vehicle subtype
+  VehicleSubType veh_sub_type = 16;
+  FusionObstacleStaticSubType static_sub_type = 17;
+  // Motion stats, uss_only set default value unkown
+  ObstacleMotionStatus motion_state = 18;
+  // Two point uss_only usinng
+  TwoPoints uss_pos = 19;
+  uint32 age = 20;
+  CipvType cipv_type = 21;
+  CutType cut_type = 22;
+  uint32 tracking_count = 23;
+  uint32 f_radar_id = 24;
+  uint32 fr_radar_id = 25;
+  uint32 rr_radar_id = 26;
+  uint32 rl_radar_id = 27;
+  uint32 fl_radar_id = 28;
+  PedestrianSubtype pedestrian_subtype = 29;
+  PedestrianOrientation pedestrian_orientation = 30;
+  BrakeIndicator brake_indicator = 31;
+  TurnIndicator turn_indicator = 32;
+  LaneAssignment lane_assignment = 33;
+  TrackingStatus tracking_status = 34;
+  uint32 uss_obj_start_index = 35;
+  uint32 uss_obj_end_index = 36;
+  Vector3f vel_abs = 37;
+  Vector3f acc_abs = 38;
+  uint32 detect_type = 39;
+  repeated USSObjId uss_obj_id = 40;
+  uint32 uss_age = 41;
+}
+
+message FusionObstacles {
+  int64 timestamp = 1;
+  repeated FusionObstacleOutPut obstacle_list = 2;
+}
+
+message FusionUssPoints {
+  int64 timestamp = 1;
+  repeated UssPointWholeSi16 uss_obj_points = 2;
+}
+
+message FusionObstacleMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  FusionObstacles fusion_obstacles = 3;
+  FusionUssPoints fusion_uss_points = 4;
+}

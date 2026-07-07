@@ -1,0 +1,18 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+message CtrlPoint {
+  double x = 1;
+  double y = 2;
+  double yaw = 3;
+  double l = 4;
+  double kappa = 5;
+  double d_kappa = 6;
+  double s = 7;
+  double speed = 8;
+  double dis = 9;
+  bool flag = 10;
+  int32 driving_direction = 11;
+  int64 time = 12;
+  int32 measure_status = 13;
+}

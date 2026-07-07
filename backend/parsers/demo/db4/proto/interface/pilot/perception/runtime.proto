@@ -1,0 +1,35 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+message ExtendInfo {
+  string name = 1;
+  float data = 2;
+}
+
+message ForwardInfo {
+  int32 forward_index = 1;
+  int32 frame_id = 2;
+  uint64 beg_stamp = 3;
+  uint64 end_stamp = 4;
+  repeated ExtendInfo extends = 5;
+}
+
+message ModuleInfo {
+  string module_name = 1;
+  repeated ForwardInfo forwards = 2;
+}
+
+message RuntimeProto {
+  int32 version = 1;
+  repeated ModuleInfo modules = 2;
+}
+
+message TopicFreqInfo {
+  string topic = 1;
+  float freq = 2;
+}
+
+message TopicFreqStatistics {
+  uint64 time_stamp = 1;
+  repeated TopicFreqInfo topics_freq = 2;
+}

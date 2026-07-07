@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+package autodrive.workflow.proto;
+
+message UssParkingSlotsMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  int32 version = 3;
+  repeated PerFusUssHeader uss_header = 4;
+  repeated PerFusUssPs uss_ps = 5;
+  PerFusUssPs uss_correct_ps = 6;
+  StateMachine state_machine = 7;
+  int64 sensor_stamp = 8;
+  int64 sample_stamp = 9;
+  bytes raw_array = 10;
+  uint32 uss_correct_times = 11;
+}
+
+

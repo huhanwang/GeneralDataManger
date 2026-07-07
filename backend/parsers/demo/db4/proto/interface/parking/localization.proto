@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "type/basic.proto";
+import "common/common_msg.proto";
+import "type/odometry_type.proto";
+import "type/base.proto";
+package autodrive.workflow.proto;
+
+message SpLocation {
+  enum SpLocationState {
+    kSpLocationStateUninit = 0;
+    kSpLocationStateIniting = 1;
+    kSpLocationStateLocNormal = 2;
+    kSpLocationStateLocUnnormal = 3;
+    kSpLocationStateLocLowPrecision = 4;
+  }
+  Odometry loc_odom = 1;
+  SpLocationState state = 2;
+  Vector3f velocity = 3;
+  Vector3f angular_vel = 4;
+}
+
+message LocalizationMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  NdmHeader ndm_header = 3;
+  SpLocation location = 4;
+}

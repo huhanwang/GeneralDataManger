@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum DataType {
+  DATA_TYPE_UNKNOWN = 0;
+  DATA_TYPE_STRUCT = 1;
+  DATA_TYPE_PROTO = 2;
+  DATA_TYPE_IDL = 3;
+}
+
+message Epitome {
+  // Vin
+  string vin = 1;
+  // Protocol type: eg:(PROTO)
+  DataType data_type = 2;
+  // Interface version: eg:(v1.0.0)
+  string message_version = 3;
+  // Protocol stack version: eg:(3.5.1) for protobuf
+  string protocol_version = 4;
+  // Software version
+  string software_version = 5;
+  // Software platform
+  string software_platform = 6;
+  // Subcribe current position
+  string position = 7;
+}
+
+message EpitomeMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Epitome
+  Epitome epitome = 3;
+}

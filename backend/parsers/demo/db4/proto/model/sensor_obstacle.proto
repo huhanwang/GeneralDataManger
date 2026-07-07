@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/perception_types.proto";
+import "type/common_type.proto";
+package autodrive.workflow.proto;
+
+enum CipvFlag {
+  CIPV_FALG_UNKNOWN = 0;
+  CIPV_FALG_SELECTED = 1;
+  CIPV_FALG_UNSELECTED = 2;
+}
+
+enum CurrentLaneAssign {
+  CURRENT_ASSIGN_UNKNOWN = 0;
+  CURRENT_ASSIGN_LEFT_LEFT = 1;
+  CURRENT_ASSIGN_LEFT = 2;
+  CURRENT_ASSIGN_HOST = 3;
+  CURRENT_ASSIGN_RIGHT = 4;
+  CURRENT_ASSIGN_RIGHT_RIGHT = 5;
+}
+
+enum VehicleLightStatus {
+  LEFT_TURN_LIGHT_ON = 0;
+  RIGHT_TURN_LIGHT_ON = 1;
+  BRAKE_LIGHT_ON = 2;
+  ALL_OFF = 3;
+  LEFT_TURN_AND_BRAKE_LIGHT_ON = 4;
+  RIGHT_TURN_AND_BRAKE_LIGHT_ON = 5;
+  CLEARANCE_LAMP_ON = 6;
+}
+
+enum WorldSpaceInfoPositionType {
+	WorldSpaceInfoPositionType_Unknown = 0;
+	WorldSpaceInfoPositionType_RearLeft = 1;
+	WorldSpaceInfoPositionType_RearCenter = 2;
+	WorldSpaceInfoPositionType_RearRight = 3;
+	WorldSpaceInfoPositionType_FrontLeft = 4;
+	WorldSpaceInfoPositionType_FrontCenter = 5;
+	WorldSpaceInfoPositionType_FrontRight = 6;
+	WorldSpaceInfoPositionType_LeftCenter = 7;
+	WorldSpaceInfoPositionType_RightCenter = 8;
+	WorldSpaceInfoPositionType_Center = 9;
+}
+
+enum CutInFlagType {
+  CutInFlagType_DEFAULT = 0;
+  CutInFlagType_CUT_IN_HOST_LANE = 1;
+  CutInFlagType_CUT_IN_FOV = 2;
+}
+
+enum CutInLaneType {
+  CutInLaneType_DEFAULT = 0;
+  CutInLaneType_MEASURED = 1;
+  CutInLaneType_PREDICTED = 2;
+}
+
+message CutInStatus {
+  CutInFlagType cut_in_flag = 1;
+  CutInLaneType cut_in_lane = 2;
+  float cut_in_dist = 3;
+}
+
+message SensorObstacle {
+  int32 id = 1;
+  int32 age = 2;
+  TrackingStatus tracking_status= 3;
+  bool is_velocity_valid = 4;
+  bool is_acceleration_valid = 5;
+  CoordinateSystemType cs_type = 6;
+  WorldSpaceInfoPositionType prp_type = 7;
+  ObstacleType type = 8;
+  ObstacleSubType sub_type = 9;
+  MotionStatus motion_status = 10;
+  int32 probability = 11;
+  int32 existence_quality = 12;
+  int32 source_bitmap = 13;
+  CipvFlag cipv_flag = 14;
+  CurrentLaneAssign current_lane_assign = 15;
+  VehicleLightStatus vehicle_light_status = 16;
+  Vector2f position = 17;
+  float yaw_rate = 18;
+  float yaw_rate_var = 19;
+  float heading = 20;
+  float heading_var = 21;
+  float heading_yawrate_covariance = 22;
+  Vector2f velocity = 23;
+  Vector2f acceleration = 24;
+  CovarianceMatrix p_matrix = 25;
+  float length = 26;
+  float width = 27;
+  float height = 28;
+  repeated Vector2f bounding_box_points = 29;
+  uint32 head_rear_type = 30;
+  CutInStatus cut_in_status = 31;
+  Vector2f position_var = 32;
+  Vector2f velocity_var = 33;
+  Vector2f velocity_abs = 34;
+  Vector2f acceleration_abs = 35;
+}
+
+enum VisionType {
+  VISION_TYPE_UNKNOWN = 0;
+  VISION_TYPE_BEV = 1;
+  VISION_TYPE_FRONT = 2;
+}
+
+message SensorObstacleMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  SensorType sensor_type = 3;
+  uint32 sensor_id = 4;
+  repeated SensorObstacle obstacles = 5;
+  VisionType vision_type = 6;
+}

@@ -1,0 +1,619 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum Valid {
+  Invalid = 0;
+  Vaild = 1;
+  Valid_Reserved = 2;
+}
+
+enum PowerMode {
+  PowerModeInvalid = 0;
+  PowerModeOFF = 1;
+  PowerModeACC = 2;
+  PowerModeON = 3;
+  PowerModeRreserved = 4;
+}
+
+enum DoorStatus {
+  DoorStatusInvalid = 0;
+  DoorStatusClose = 1;
+  DoorStatusOpen = 2;
+  DoorStatusReserved = 3;
+}
+
+enum MirrorStatus {
+  MirrorStatusInvalid = 0;
+  MirrorStatusFolded = 1;
+  MirrorStatusExpanded= 2;
+  MirrorStatusReserved = 3;
+}
+
+enum VehicleStandstillStatus {
+  VehicleStandstillStatusInvalid = 0;
+  VehicleStandstillStatusNotStandstill = 1;
+  VehicleStandstillStatusStandstill = 2;
+  VehicleStandstillStatusReserved = 3;
+}
+
+enum DriverBuckleStatus {
+  DriverBuckleStatusInvalid = 0;
+  DriverBuckleStatusUnlock = 1;
+  DriverBuckleStatusBuckle = 2;
+  DriverBuckleStatusReserved = 3;
+}
+
+enum EpsepbCtrActive {
+  EpsepbCtrActiveReleasing = 0;
+  EpsepbCtrActiveReleased = 1;
+  EpsepbCtrActiveApplying = 2;
+  EpsepbCtrActiveApplied = 3;
+  EpsepbCtrActiveReserved = 4;
+}
+
+enum BleConnStatus {
+  BleConnStatusDisconnect = 0;
+  BleConnStatusConnect = 1;
+  BleConnStatusReserved = 2;
+}
+
+enum EpsapStatus {
+  EpsapStatusTemporaryInhibited = 0;
+  EpsapStatusAvailableForControl = 1;
+  EpsapStatusActive = 2;
+  EpsapStatusPermanentInhibited = 3;
+  EpsapStatusReserved = 4;
+}
+
+enum ApcFailCtrStatus {
+  ApcFailCtrStatusAxCapblFull = 0;
+  ApcFailCtrStatusUnexpectedGear = 1;
+  ApcFailCtrStatusAxCapblVehBlocked = 2;
+  ApcFailCtrStatusEpbTimeOutOverride = 3;
+  ApcFailCtrStatusReserved = 4;
+}
+
+enum ScuStatus {
+  ScuStatusNormal = 0;
+  ScuStatusAbnormal = 1;
+  ScuStatusReserved = 2;
+}
+
+enum BleFaultStatus {
+  BleFaultStatusNoError = 0;
+  BleFaultStatusError = 1;
+  BleFaultStatusReserved = 2;
+}
+
+enum AltitudeStatus {
+  AltitudeStatusNormal = 0;
+  FAltitudeStatusailure = 1;
+  AltitudeStatusReserved = 2;
+}
+
+enum PadAvmStatus {
+  PadAvmStatusNormal = 0;
+  PadAvmStatusCalibrationFail = 1;
+  PadAvmStatusNoImage = 2;
+  PadAvmStatusReserved = 3;
+}
+
+enum ReadyIndicatLight {
+  ReadyIndicatLightDoNotDisplay = 0;
+  ReadyIndicatLightDisplay = 1;
+  ReadyIndicatLightReserved = 2;
+}
+
+enum BmcChargeStatus {
+  BmcChargeStatusNotConnected = 0;
+  BmcChargeStatusAcChargingGunConnection = 1;
+  BmcChargeStatusDcChargingGunConnection = 2;
+  BmcChargeStatusAcChargingGunAndDcChargingGunConnectedAtTheSameTime = 3;
+  BmcChargeStatusVtolDischargeGunConnection = 4;
+  BmcChargeStatusObcccConnection = 5;
+  BmcChargeStatusChargingCompleted = 6;
+  BmcChargeStatusChargingMalfunction = 7;
+  BmcChargeStatusWirelessCharging = 8;
+  BmcChargeStatusReserved = 9;
+}
+
+enum EpsInterferdetd {
+  EpsInterferdetdNoInterruption = 0;
+  EpsInterferdetdDriverInterruption = 1;
+  EpsInterferdetdEpsTemporaryError = 2;
+  EpsInterferdetdEpsPermanentError = 3;
+  EpsInterferdetdApaSingleAbsentReserved = 4;
+  EpsInterferdetdApaTargetAngleOverLimit = 5;
+  EpsInterferdetdApaTargetAngleVelocityOverLimit = 6;
+  EpsInterferdetdApaSignalError = 7;
+  EpsInterferdetdVehicleSpeedOverLimit = 8;
+  EpsInterferdetdVehicleSpeedSignalError = 9;
+  EpsInterferdetdVehicleSpeedSignalAbsentReserved = 10;
+  EpsInterferdetdTasAngleError = 11;
+  EpsInterferdetdIncorrectHandshaking = 12;
+  EpsInterferdetdOverAngleMaxValue = 13;
+  EpsInterferdetdOverAngleVelocity = 14;
+  EpsInterferdetdReserved = 15;
+}
+
+enum SuspHeightAdjustProc {
+  SuspHeightAdjustProcInvalid = 0;
+  SuspHeightAdjustProcTheBodyIsRising = 1;
+  SuspHeightAdjustProcTheBodyIsFalling = 2;
+  SuspHeightAdjustProcAdjustmentCompleted = 3;
+  SuspHeightAdjustProcAdjustmentInterrupt = 4;
+  SuspHeightAdjustProcReserved = 5;
+}
+
+enum VcuGoalRoadMode {
+  VcuGoalRoadModeInvalid = 0;
+  VcuGoalRoadModeNormalMode = 1;
+  VcuGoalRoadModeGrassGravelGroundSnow = 2;
+  VcuGoalRoadModeMuddyGroundRutGround = 3;
+  VcuGoalRoadModeSand = 4;
+  VcuGoalRoadModeReserved = 5;
+}
+
+enum SrsCollSignal {
+  SrsCollSignalTheVehicleIsNormal = 0;
+  SrsCollSignalTheVehicleCollides = 1;
+  SrsCollSignalReserved = 2;
+}
+
+enum Active {
+  ActiveNoActive = 0;
+  ActiveActive = 1;
+  ActiveReserved = 2;
+}
+
+enum TarSuspHeightMode {
+  TarSuspHeightModeLow = 0;
+  TarSuspHeightModeNormal = 1;
+  TarSuspHeightModeHigh = 2;
+  TarSuspHeightModeExHigh = 3;
+  TarSuspHeightModeExtraLow = 4;
+  TarSuspHeightModeReserved = 5;
+}
+
+enum ScuDrvrIntrvnActive {
+  ScuDrvrIntrvnActiveNoPperationIsNotControlled = 0;
+  ScuDrvrIntrvnActiveNormalOperationNormalControl = 1;
+  ScuDrvrIntrvnActiveDriverGearInterferenceDriverInterferenceGearControl = 2;
+  ScuDrvrIntrvnActiveReserved = 3;
+}
+
+enum PadParkMode {
+  PadParkModeIdle = 0;
+  PadParkModeParkIn = 1;
+  PadParkModeParkOut = 2;
+  PadParkModeSelected = 3;
+  PadParkModeReserved = 4;
+}
+
+enum PadPslSelected {
+  PadPslSelectedNone = 0;
+  PadPslSelectedNumber1 = 1;
+  PadPslSelectedNumber2 = 2;
+  PadPslSelectedNumber3 = 3;
+  PadPslSelectedNumber4 = 4;
+  PadPslSelectedNumber5 = 5;
+  PadPslSelectedNumber6 = 6;
+  PadPslSelectedNumber7 = 7;
+  PadPslSelectedNumber8 = 8;
+}
+
+enum SelectParkOutDir {
+  SelectParkOutDirNone = 0;
+  SelectParkOutDirFrontLeftCross = 1;
+  SelectParkOutDirFrontLeftParallel = 2;
+  SelectParkOutDirFrontOut = 3;
+  SelectParkOutDirFrontRightCross = 4;
+  SelectParkOutDirFrontRightParallel = 5;
+  SelectParkOutDirBackOut = 6;
+  SelectParkOutDirBackLeftCross = 7;
+  SelectParkOutDirBackRightCross = 8;
+  SelectParkOutDirReserved = 9;
+}
+
+enum Request {
+  RequestNoRequest = 0;
+  RequestRequest = 1;
+  RequestReserved = 2;
+}
+
+enum PadAppStatus {
+  PadAppStatusNormal = 0;
+  PadAppStatusPadFault = 1;
+  PadAppStatusAppFault = 2;
+  PadAppStatusAppConnectFault = 3;
+  PadAppStatusReserved = 4;
+}
+
+enum ApaMode {
+  ApaModeInvalid = 0;
+  ApaModeEnterAutomaticParkingMode = 1;
+  ApaModeExitAutomaticParkingMode = 2;
+  ApaModeReserved = 3;
+}
+
+enum RemoteModeStatus {
+  RemoteModeStatusInvalid = 0;
+  RemoteModeStatusClosed = 1;
+  RemoteModeStatusOpen = 2;
+  RemoteModeStatusReserved = 3;
+}
+
+enum PrkgSlidRmt {
+  PrkgSlidRmtRdNotReady = 0;
+  PrkgSlidRmtRdReady = 1;
+  PrkgSlidRmtReserved = 2;
+}
+
+enum WheelHubParam {
+  WheelHubParamInch20 = 0;
+  WheelHubParamInch19 = 1;
+  WheelHubParamReserved = 2;
+}
+
+enum BodyValid {
+  BodyInvalid = 0;
+  BodyVaild = 1;
+  BodyReserved = 2;
+}
+
+enum GearPos {
+  N = 0;
+  D1 = 1;
+  D2 = 2;
+  D3 = 3;
+  D4 = 4;
+  D5 = 5;
+  D6 = 6;
+  D7 = 7;
+  D8 = 8;
+  D9 = 9;
+  D10 = 10;
+  D11 = 11;
+  D12 = 12;
+  R = 13;
+  P = 14;
+  Reserved = 15;
+}
+
+enum PadParkingStatus {
+  Normal = 0;
+  CalibrationFail = 1;
+  NoImage = 2;
+  Status_Reserved = 3;
+}
+
+enum VcuInterferdetd {
+  VcuInterferdetdNoInterruption = 0;
+  VcuInterferdetdDriverInterruption = 1;
+  VcuInterferdetdReserved = 2;
+}
+
+enum EspStatus {
+  EspStatusNormal = 0;
+  EspStatusAbnormal = 1;
+  EspStatusReserved = 2;
+}
+
+enum TurnLightStatus {
+  TurnLightStatusClose = 0;
+  TurnLightStatusTurnLeft = 1;
+  TurnLightStatusTurnRight = 2;
+  TurnLightStatusBoth = 3;
+}
+
+enum VcuBpStatus {
+  VcuBpNotReady = 0;
+  VcuBpReady = 1;
+  VcuBpReserved = 2;
+}
+
+enum DispSpdUnitType {
+  DispSpdUnitTypeInit = 0;
+  DispSpdUnitTypeKm = 1;
+  DispSpdUnitTypeMile = 2;
+  DispSpdUnitTypeInvalid = 3;
+  DispSpdUnitTypeReserved = 4;
+}
+
+message VehiclePadParking {
+  // 蓝牙连接状态
+  BleConnStatus ble_conn_sts = 1;
+  // AVM状态
+  PadParkingStatus pad_parking_sts = 2;
+  // APA泊车模式选择开关
+  PadParkMode pad_apa_park_mode_state = 3;
+  // RPA泊车模式选择开关
+  PadParkMode pad_rpa_park_mode_state = 4;
+  // 用户选择的车位
+  PadPslSelected pad_psl_selected = 5;
+  // 用户选择的泊出方向
+  SelectParkOutDir sel_prkg_out_dir_req = 6;
+  // 开始泊入按钮
+  Request pad_park_instart_req = 7;
+  // 开始泊出按钮
+  Request pad_parkout_start_req = 8;
+  // 暂停按钮
+  Request pad_pause_req = 9;
+  // 继续按钮
+  Request contn_prkg_req = 10;
+  // 确定按钮
+  Request pad_confirm_req = 11;
+  // PAD和APP故障状态
+  PadAppStatus pad_app_sts = 12;
+  // 自动泊车模式
+  ApaMode apa_mode = 13;
+  // RPA开始, 暂停泊车信号
+  RemoteModeStatus remote_mode_sts = 14;
+  // RPA泊出方向选择
+  SelectParkOutDir prkout_mode_sel_rmt = 15;
+  // RPA取消泊车按键
+  Request park_abort_req_rmt = 16;
+  // 自选车位x坐标
+  int32 x_cordofoptsp = 17;
+  // 自选车位y坐标
+  int32 y_cordofoptsp = 18;
+  // 自选车位角度
+  int32 opt_park_ang = 19;
+  // RPA手势控制
+  PrkgSlidRmt prkg_slid_req_rmt = 20;
+  // RPA开始泊车按键
+  Request prkg_sync_strt_req_rmt = 21;
+}
+
+message VehiclePadDriving {
+  /* AEBS main switch */
+  bool BCM_AEBSMainSwitch = 1;
+  /* Signal of trunk  (0:closed 1:open) */
+  bool BCM_BackTrunkStatus = 2;
+  /* Signal of front hatch cover (0:closed 1:open) */
+  bool BCM_FrontHoodStatus = 3;
+    /* Brake light status */
+  bool BCM_BrakeLightStatus = 4;
+  bool BCM_FrontFrogLight = 5;
+  bool BCM_RearFrogLight = 6;
+  /* FCW main swtich */
+  bool BCM_FCWSMainSwitch = 7;
+  /* 0:Reserved 1:Level1 2:Level2 3:Level3 */
+  uint32 BCM_FCWSensiLevel = 8;
+  /* 0:Reserved 1:Level1 2:Level2 3:Level3 */
+  uint32 LDWSensiSet = 9;
+  /* LKA main switch */
+  bool BCM_LKASMainSwitch = 10;
+  /* LDW main switch */
+  bool BCM_LDWSMainSwitch = 11;
+  /* LCA main switch */
+  bool BCM_LCASMainSwitch = 12;
+  /* LCC main switch */
+  bool BCM_LCCS_MainSwitch = 13;
+  /*ELK main switch 0:off 1:on */
+  bool BCM_ELK_MainSwitch = 14;
+  /* BSD main switch */
+  bool BCM_BSDSMainSwitch = 15;
+  /* RCTA main switch */
+  bool BCM_RCTAMainSwtich = 16;
+  /* FCTA main switch */
+  bool BCM_FCTAMainSwitch = 17;
+  /* DOW main switch */
+  bool BCM_DOWSMainSwitch = 18;
+  /* RCW main switch */
+  bool BCM_RCW_MainSwitch = 19;
+  /* IHBC main switch */
+  bool BCM_IHC_MainSwitch = 20;
+  /* TSR main switch */
+  bool TSR_MainSwitch= 21;
+  /* AutoLaneChange main switch */
+  bool BCM_ALC_MainSwitch = 22;
+  /* NOP main switch */
+  bool BCM_NOP_MainSwitch = 23;
+  /* AutoLaneChange need driver confirm or not? 1:yes;0:NO*/
+  bool BCM_ALC_ReqDrvConfirmSWSet = 24;
+  /*BCM_CruiseModeSwSet--中控上设置的巡航功能状态0：acc;1：IACC，2：off*/
+  uint32 BCM_CruiseModeSwSet = 25;
+  /* Indicate the cruise switch */
+  bool BCM_CruiseSwValid = 26;
+  /* BCM_CruiseSwCancel */
+  bool BCM_CruiseSwCancel = 27;
+  /* Cruise Resume Switch;Speed Up */
+  bool BCM_CruiseSwResume = 28;
+  /* Cruise Set Switch;Speed Down */
+  bool BCM_CruiseSwSet = 29;
+  /* To increase the TimeGapSet */
+  bool BCM_CruiseSwTimeGapPlus = 30;
+  /* To decrease the TimeGapSet */
+  bool BCM_CruiseSwTimeGapMinus = 31;
+  /* BCM_ACC MainSwitchStatus */
+  bool BCM_CruiseSwMain = 32;
+  /* BCM_LIMMainSwitchSts */
+  bool BCM_CruiseSwLimitMain = 33;
+  /* AutoLaneChange driver confirm button*/
+  bool BCM_ALC_DrvConfirmButtonSt = 34;
+  /* BCM_DM_TargetModeReq(0:Normal;1:Sport; 2:Eco;other:Reserve) */
+  uint32 BCM_DriveMode = 35;
+  /* BCM_PositionLight */
+  bool BCM_PositionLight = 36;
+  bool esp_raeb_available = 37;
+  bool esp_raeb_active = 38;
+  uint32 bcm_raeb_switch = 39;
+  uint32 esp_vdc_fault_sts = 40;
+  uint32 bcm_usage_mode = 41;
+  bool bcm_kl15_sts = 42;
+  uint32 bcm_veh_mode_sts = 43;
+  uint32 bcm_supply_voltage_fault_sts = 44;
+}
+
+message VehicleBody {
+  // 电源状态
+  PowerMode power_mode = 1;
+  // 左前门
+  DoorStatus fl_door_sts = 2;
+  // 右前门
+  DoorStatus fr_door_sts = 3;
+  // 左后门
+  DoorStatus rl_door_sts = 4;
+  // 右后门
+  DoorStatus rr_door_sts = 5;
+  // 引擎盖
+  DoorStatus hood_ajar_sts = 6;
+  // 后备箱
+  DoorStatus trunk_sts = 7;
+  // 后视镜
+  MirrorStatus rview_mirror_sts = 8;
+  // 车辆是否静止
+  VehicleStandstillStatus veh_standstill_sts = 9;
+  // 安全带
+  DriverBuckleStatus driver_buckle_sts = 10;
+  // EPB状态
+  EpsepbCtrActive espepb_ctr_active = 11;
+  // EPS故障状态
+  EpsapStatus epsap_sts = 12;
+  // 纵向控制故障状态
+  ApcFailCtrStatus apc_fail_ctr_sts = 13;
+  // 档位系统状态
+  ScuStatus scu_avlbly = 14;
+  // 蓝牙控制器故障状态标志位
+  BleFaultStatus ble_fault_sts = 15;
+  // 悬架高度标定状态
+  AltitudeStatus altitude_uncalibrated = 16;
+  // READY指示灯
+  ReadyIndicatLight dyvcu_ready_indicat_light = 17;
+  // 充电枪连接状态
+  BmcChargeStatus bmc_charge_guncon_sts = 18;
+  // EPS驾驶员干预状态
+  EpsInterferdetd epsinterferdetd = 19;
+  // 油门深度信号有效性
+  BodyValid acc_pedal_position_valid = 20;
+  // 油门深度
+  float acc_pedal_position = 21;
+  // 悬架高度调节过程
+  SuspHeightAdjustProc susp_height_adjust_proc = 22;
+  // 目标路面模式
+  VcuGoalRoadMode vcu_goal_road_mode = 23;
+  // 碰撞信号
+  SrsCollSignal srs_coll_signal = 24;
+  // 防抱死制动系统激活状态
+  Active abs_actv = 25;
+  // 牵引力控制系统激活状态
+  Active ptc_actv = 26;
+  // ESP激活状态
+  Active esp_actv = 27;
+  // 电子制动力分配系统激活状态
+  Active ebd_actv = 28;
+  // 车辆动态控制系统激活
+  Active vdc_actv = 29;
+  // 悬架是否配置信号
+  Active suspension_config = 30;
+  // 悬架高度信号
+  TarSuspHeightMode tar_susp_height_mode = 31;
+  // 驾驶员档位干预
+  ScuDrvrIntrvnActive scu_drvr_intrvn_active = 32;
+  // 轮胎尺寸
+  WheelHubParam wheel_hub_para = 33;
+  /*灯光开关状态*/
+  bool BCM_AutoLighStatus = 34;
+  /* Low beam status */
+  bool BCM_LowBeamSwitch = 35;
+  /* High beam status */
+  bool BCM_HighBeamSwitch = 36;
+    /* Left turning signal status */
+  bool BCM_LeftTurningLightState = 37;
+  /* Right turning signal status */
+  bool BCM_RightTurningLightState = 38;
+  /* Wiper Switch */
+  bool BCM_WiperSwitch = 39;
+  /* 0:off  1:low  speed  2:high speed */
+  uint32 BCM_WiperStatus = 40;
+  bool DayNightStatus = 41;
+  float BCM_display_speed = 42;  /*表显车速kph*/
+  float BCM_Vf_km_ODO = 43;/**仪表里程数km*/
+  /* Hazard flashing status */
+  bool BCM_HazardFlasingStatus = 44;
+  bool BCM_CrashStatus = 45; //
+  // 驱动系统最大扭矩
+  float PCU_EngineTrqLmtMax = 46;
+  // 驱动系统最小扭矩
+  float PCU_EngineTrqLmtMin = 47;
+  /* 驱动系统转速 Engine speed */
+  float PCU_EngineSpeed = 48;
+  /* 驾驶员期望输出扭矩 Driver's desired torque */
+  float PCU_DriverDemandTorque = 49;
+  /* 驱动系统实际扭矩Actual engine torque */
+  float PCU_ActualEngineTorque = 50;
+  /* 加速踏板位置 Actual pedal opening degree， unit % */
+  float PCU_ActualAccelPedalPosition = 51;
+  /* 加速踏板位置有效性Accelerator pedal Valid */
+  Valid PCU_AccelPedalValid = 52;
+  /* indicating the torque demanded by the driver is higher than the torque demanded by ESP-VLC. */
+  bool PCU_AccelPedalOverride = 53;
+  /* 0-Reset Start/Stop not active(any engine condition possible)... */
+  uint32 PCU_StartStopStatus = 54;
+  /* 驱动系统响应状态Whether torque control respond */
+  bool PCU_PowerControlResponse = 55;
+  // 变速箱实际挡位
+  GearPos actual_gear_position = 56;
+  //变速箱目标挡位
+  GearPos target_gear_position = 57;
+  //变速箱出于换挡过程中
+  bool TCU_Shift_InProgress = 58;
+  // 转向系统响应状态
+  bool EPS_SteeringControlResponse = 59;
+  // 驾驶员手力矩，左正右负，N.M
+  float steering_wheel_torque = 60;
+  // 制动主缸压力
+  float brake_mas_cyl_pressure = 61;
+  bool esp_tcs_active = 62;
+  bool pcu_acc_available = 63;
+  bool pcu_acc_active = 64;
+  bool esp_driver_override = 65;
+  bool esp_hands_off_error = 66;
+  bool esp_driver_hands_off = 67;
+  bool esp_available= 68;
+  // 制动控制系统是否支持
+  Valid esp_system_valid = 69;
+  // 转向控制系统是否支持
+  Valid eps_system_valid = 70;
+  // 换档控制系统是否支持
+  Valid vcu_system_valid = 71;
+  // 动力控制系统是否支持
+  Valid powertrain_control_system_valid = 72;
+  // 车身控制系统是否支持
+  Valid vehicle_body_system_valid = 73;
+  // VCU驾驶员干预油门
+  VcuInterferdetd vcu_interferdetd = 74;
+  // 泊车坡度超限
+  bool parking_slope_limit = 75;
+  // 制动系统故障状态
+  EspStatus esp_status = 76;
+  // 转向拨杆
+  TurnLightStatus turn_light = 77;
+  // VCU防盗认证状态
+  VcuBpStatus vcu_bp_ready_flg = 78;
+  // 表显车速有效性
+  Valid BCM_display_speed_valid = 79;
+  // 表显车速类型
+  DispSpdUnitType disp_spd_unit_type = 80;
+  // 超声静音激活
+  Active avh_actv = 81;
+  // 主驾座状态
+  Active front_seat_sts = 82;
+  // 动力电池电量百分比
+  uint32 power_bat_soc = 83;
+}
+
+message VehicleBodyMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Vehicle parking
+  VehiclePadParking vehicle_parking = 3;
+  // Vehicle drive
+  VehiclePadDriving vehicle_driving = 4;
+  // Vehicle Body
+  VehicleBody vehicle_body = 5;
+}

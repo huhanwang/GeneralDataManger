@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/freespace_point.proto";
+package autodrive.workflow.proto;
+
+enum FreespaceSensorType {
+  PIN_HOLE = 0;
+  FISH_EYE = 1;
+}
+
+message CamFreespacePoint {
+  FreespacePoint base_info = 1;
+  // point in the undistort image
+  Vector2f pt_im = 2;
+  // point in the distort image
+  Vector2f pt_distort_im = 3;
+  // point angle in Camera coordinate system
+  float cam_angle = 4;
+  // point distance in Camera coordinate system
+  float cam_ray_length = 5;
+}
+
+message FreespaceMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Sensor type
+  FreespaceSensorType sensor_type = 3;
+  // FreespacePoint
+  repeated CamFreespacePoint freespace_points = 4;
+}

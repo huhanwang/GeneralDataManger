@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum SocHeartbeat_SOC_DEV_CHN {
+  SocHeartbeat_SOC_DEV_CHN_TDA4 = 0;
+  SocHeartbeat_SOC_DEV_CHN_TTLNUM = 1;
+}
+
+message SocHeartbeat {
+  uint32 heartbeat_counter = 1;
+  SocHeartbeat_SOC_DEV_CHN soc_chnid = 2;
+  uint32 cpu_core0_usage = 3;
+  uint32 cpu_core1_usage = 4;
+  uint32 cpu_core2_usage = 5;
+  uint32 cpu_core3_usage = 6;
+  uint32 cpu_core4_usage = 7;
+  uint32 cpu_core5_usage = 8;
+  sint32 cpu_temprature = 9;
+  uint32 ddr_avg_rate = 10;
+  uint32 mem_total = 11;
+  uint32 mem_used = 12;
+  uint32 mem_free = 13;
+  uint32 mem_buff = 14;
+  uint32 mem_availabe = 15;
+  uint32 ddr_read_load = 16;
+  uint32 ddr_write_load = 17;
+  string sw_ver_ecu_ext = 18;
+  string sw_ver_soc_int = 19;
+  string hw_ver_ecu_ext = 20;
+  string sw_ver_mcu_int = 21;
+  string sw_tim_soc_bud = 22;
+}
+
+message SocHeartbeatMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // Heartbeat
+  SocHeartbeat soc_heartbeat = 3;
+}

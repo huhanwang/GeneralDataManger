@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/common_type.proto";
+package autodrive.workflow.proto;
+
+message Cipv {
+  // CIPV front time to collision (ms)
+  uint32 front_ttc = 1;
+  // CIPV front left time to collision (ms)
+  uint32 front_left_ttc = 2;
+  // @brief CIPV front right time to collision (ms)
+  uint32 front_right_ttc = 3;
+}
+
+message FusedObj {
+  // Latency
+  uint32 latency = 1;
+  // CIPV
+  Cipv cipv = 2;
+  // Obstacles
+  repeated Obstacle obstacles = 3;
+}
+
+message FusedObjMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  FusedObj fused_obj = 3;
+}

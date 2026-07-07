@@ -1,0 +1,75 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum PlanControlType {
+  PLAN_CONTROL_NONE = 0;
+  WAKEUP = 1;          // map trigger / enter apa searching
+  LOAD_ROUTE = 2;      // click map trigger
+  START_HUMAN = 3;     // start function human in car
+  START_NO_HUMAN = 4;  // start function human not in car
+  PAUSE = 5;           // pause function
+  CONTINUE = 6;        // Continue when in pause state
+  ABORT_EPS = 7;       // plan interrupt by eps
+  ABORT = 9;           // plan abort
+  RELEASE = 10;        // release plan
+  COMPLETE = 11;       // complete function
+  START_PARKING_IN = 12; // apa: start parking in, vpa: brake for apa
+  START_PARKING_OUT = 13; // start parking out
+  START_REMOTE_PARKING_IN = 14; // rpa: start remote parking in
+  START_REMOTE_PARKING_OUT = 15; // rpa: start remote parking out
+  START_RECORDING = 16; // tra: start recording route
+  STOP_RECORDING = 17;  // tra: stop recording route
+  START_NARROW_LANE_ASSISTANCE = 18; // npa: start narrow lane assistance
+  START_NARROW_LANE_PASSING = 19; // npa: start narrow lane passing
+  LOAD_ROUTE_OUT = 20; // vpa: ready to parking out
+}
+
+enum PlanControlSource {
+  PLAN_CONTROL_SOURCE_NONE = 0;
+  PLAN_CONTROL_SOURCE_APA = 1;
+  PLAN_CONTROL_SOURCE_VPA = 2;
+  PLAN_CONTROL_SOURCE_TRA = 3;
+  PLAN_CONTROL_SOURCE_NPA = 4;
+}
+
+enum ParkingInDirection {
+  IN_UNKNOW = 0;
+  PARKING_IN_DIRECTION_FRONT = 1;
+  PARKING_IN_DIRECTION_BACK = 2;
+}
+
+enum ParkingOutDirection {
+  OUT_UNKNOW = 0;
+  V_FR_LEFT = 1;    // vertical front left
+  V_FR_CENTER = 2;  // vertical front center
+  V_FR_RIGHT = 3;   // vertical front right
+  V_RR_LEFT = 4;    // vertical rear left
+  V_RR_CENTER = 5;  // vertical rear center
+  V_RR_RIGHT = 6;   // vertical rear right
+  H_FR_LEFT = 7;    // horizontal front left
+  H_FR_RIGHT = 8;   // horizontal front right
+}
+
+message ParkingSlotId {
+  bool slotid_valid = 1;  // slotid valid flag
+  int32 slotid = 2;       // map:vision id / plan:apa id
+  uint64 timestamp = 4;
+}
+
+message PlanControlMsg {
+  PlanControlType type = 1;
+  ParkingSlotId slot_id = 2;
+  ParkingInDirection in_direction = 3;
+  ParkingOutDirection out_direction = 4;
+  PlanControlSource source = 5;
+}
+
+message StateMachineToHpaMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // statemachine control plan
+  PlanControlMsg control = 3;
+}

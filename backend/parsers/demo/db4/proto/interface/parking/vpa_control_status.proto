@@ -1,0 +1,61 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum CtrlStatusType {
+  VPA_CTL_IDLE = 0;
+  VPA_CTL_RUNNING = 1;
+  VPA_CTL_BRAKING = 2;
+  VPA_CTL_STOPPED = 3;
+  VPA_CTL_WAITING = 4;
+  VPA_CTL_SWITCH = 5;
+  VPA_CTL_TO_EXIT = 6;
+  VPA_CTL_GRAY = 7;
+  VPA_CTL_ERR_HANDSHAKE = 8;
+  VPA_CTL_ERR_TRACKING = 9;
+}
+
+enum ToExitType {
+  EPS = 0;
+  GR = 1;
+}
+
+enum GrayType {
+  RESET = 0;
+  STILL = 1;
+  GEAR = 2;
+}
+
+enum HandshakeErrType {
+  WRG_GEAR = 0;
+  WRG_LON = 1;
+  WRG_LAT = 2;
+  GEAR_DROP = 3;
+  AC_DROP = 4;
+  EPS_DROP = 5;
+  ESP_DROP = 6;
+}
+
+enum TrackingErrType {
+  TRAJ_EMPTY = 0;
+  TRAJ_LOST = 1;
+  TRACK_OUT = 2;
+  LEN_SHORT = 3;
+}
+
+message VpaCtrlStatus {
+  CtrlStatusType type = 1;
+  ToExitType exit_reason = 2;
+  GrayType gray_reason = 3;
+  HandshakeErrType hs_err_reason = 4;
+  TrackingErrType track_err_reason = 5;
+}
+
+message VpaCtrlStatusMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // VpaCtrlStatus
+  VpaCtrlStatus vpa_ctrl_status = 3;
+}

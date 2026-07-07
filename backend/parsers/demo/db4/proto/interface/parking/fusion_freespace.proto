@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/freespace_point.proto";
+package autodrive.workflow.proto;
+
+message FreespaceFusion {
+  int64 timestamp = 1;
+  repeated FreespacePoint freespace_points = 2;
+}
+
+message FreespaceFusionMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  FreespaceFusion fusion_freespace = 3;
+}

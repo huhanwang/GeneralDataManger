@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+import "model/camera_extrinsics.proto";
+package autodrive.workflow.proto;
+
+message ChessboardData {
+  CameraID camera_id = 1;
+  float top_left_x = 2;
+  float top_left_y = 3;
+  float height_interval = 4;
+  float width_interval = 5;
+}
+
+message CircleGridData {
+  CameraID camera_id = 1;
+  float basic_pt_z = 2;
+  float height_interval = 3;
+  float width_interval = 4;
+}
+
+message VehicleExtrinsicData {
+  float wheelbase = 1;
+  repeated Extrinsic ori_extrinsic = 2;
+}
+
+message EolInitialMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  VehicleExtrinsicData vehicle_data = 3;
+  repeated ChessboardData cb_data = 4;
+  repeated CircleGridData cg_data = 5;
+}

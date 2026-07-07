@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum ParkingWorkingStatus {
+  PARK_WORK_STATUS_PER_FREE_STATUS = 0;
+  PARK_WORK_STATUS_FREE_STATUS = 1;
+  PARK_WORK_STATUS_UPDATED = 2;
+  PARK_WORK_STATUS_PERPARING = 3;
+  PARK_WORK_STATUS_WORKING = 4;
+  PARK_WORK_STATUS_PARKING_ERR = 5;
+  PARK_WORK_STATUS_PARKING_OVER = 6;
+  PARK_WORK_STATUS_PER_RUNNING_FREE_STATUS = 7;
+  PARK_WORK_STATUS_RUNNING_FREE_STATUS = 8;
+  PARK_WORK_STATUS_RUNNING_UPDATED = 9;
+  PARK_WORK_STATUS_BREAKING = 10;
+  PARK_WORK_STATUS_PARKING_SUCC = 11;
+  PARK_WORK_STATUS_WAITING = 12;
+  PARK_WORK_STATUS_WAITING_FINISH = 13;
+  PARK_WORK_STATUS_PARKING_TIMEOUT = 14;
+  PARK_WORK_STATUS_WORKING_ADJUST = 15;
+}
+
+message ParkingWorkingStatusMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // ParkingWorkingStatusMsg
+  int32 parking_working_status = 3;
+}
+

@@ -1,0 +1,289 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+enum LaneBehavior {
+  LANE_BEHAVIOR_UNKNOWN = 0;
+  LANE_BEHAVIOR_KEEP = 1;
+  LANE_BEHAVIOR_LEFT = 2;
+  LANE_BEHAVIOR_RIGHT = 3;
+}
+
+enum MotionState {
+  MOTION_STATE_MOVING = 0;
+  MOTION_STATE_STATIONARY = 1;
+  MOTION_STATE_ONCOMING = 2;
+  MOTION_STATE_STATIONARY_CANDIDATE = 3;
+  MOTION_STATE_UNKNOWN = 4;
+  MOTION_STATE_CROSSING_STATIONARY = 5;
+  MOTION_STATE_CROSSING_MOVING = 6;
+  MOTION_STATE_STOPPED = 7;
+}
+
+enum MeasState {
+  MEAS_STATE_DELETED = 0;
+  MEAS_STATE_NEW = 1;
+  MEAS_STATE_MEASURED = 2;
+  MEAS_STATE_PREDICTED = 3;
+  MEAS_STATE_DELETED_FOR = 4;
+  MEAS_STATE_NEW_FROM_MERGE = 5;
+}
+
+enum CommonColor {
+  COMMON_COLOR_WHITE = 0;
+  COMMON_COLOR_RED = 1;
+  COMMON_COLOR_GREEN = 2;
+  COMMON_COLOR_YELLOW = 3;
+}
+
+enum ColorType {
+  COLOR_TYPE_UNKNOWN = 0;
+  COLOR_TYPE_WHITE = 1;
+  COLOR_TYPE_RED = 2;
+  COLOR_TYPE_GREEN = 3;
+  COLOR_TYPE_YELLOW = 4;
+}
+enum DataSource {
+  DATA_SOURCE_UNKNOWN = 0;
+  DATA_SOURCE_SENSOR = 1;
+  DATA_SOURCE_TRACKING = 2;
+  DATA_SOURCE_HDMAP = 3;
+  DATA_SOURCE_INFER = 4;
+}
+
+enum SideType {
+  SIDE_TYPE_UNKNOWN = 0;
+  SIDE_TYPE_ROAD = 1;
+  SIDE_TYPE_FENCE = 2;
+  SIDE_TYPE_CONE = 3;
+}
+
+enum LineModel {
+  LINE_MODEL_RAW = 0;
+  LINE_MODEL_ROAD = 1;
+  LINE_MODEL_POAL = 2;
+  LINE_MODEL_ROAD_UNPARALLEL = 3;
+}
+
+enum LineDiversion {
+  UNKNOWN_LINE_DIVERSION = 0;
+  INSIDE_LINE_DIVERSION = 1;
+  OUTSIDE_LINE_DIVERSION = 2;
+}
+
+enum NdmBaseLineType {
+  BASE_LINE_TYPE_UNKNOWN = 0;
+  BASE_LINE_TYPE_DASH = 1;
+  BASE_LINE_TYPE_SOLID = 2;
+  BASE_LINE_TYPE_DOUBLE_DASH = 3;
+  BASE_LINE_TYPE_DOUBLE_SOLID = 4;
+  BASE_LINE_TYPE_DASH_SOLID = 5;
+  BASE_LINE_TYPE_SOLID_DASH = 6;
+  BASE_LINE_TYPE_DASH_FISH_BONES = 7;
+  BASE_LINE_TYPE_SOLID_FISH_BONES = 8;
+  BASE_LINE_TYPE_DIVERSION = 9;
+  BASE_LINE_TYPE_VIRTUAL = 10;
+  BASE_LINE_TYPE_SHORT_DASH = 11;
+}
+
+enum NdmLaneType {
+  LANE_TYPE_UNKNOWN = 0;
+  LANE_TYPE_NORMAL = 1;
+  LANE_TYPE_PASSING = 2;
+  LANE_TYPE_BUS = 3;
+  LANE_TYPE_HOV = 4;
+  LANE_TYPE_UTURN = 5;
+  LANE_TYPE_DECELERATION = 6;
+  LANE_TYPE_ACCElERATION = 7;
+  LANE_TYPE_CROSSING = 8;
+  LANE_TYPE_MIX = 9;
+  LANE_TYPE_DANGER = 10;
+  LANE_TYPE_TURN_WAITING = 11;
+  LANE_TYPE_STRAIGHT_WAITING = 12;
+  LANE_TYPE_BICYCLE = 13;
+  LANE_TYPE_SIDEWALK = 14;
+  LANE_TYPE_PARKING = 15;
+  LANE_TYPE_RAMP = 16;
+  LANE_TYPE_EMERGENCY = 17;
+}
+
+enum NOADegradeReason {
+  NOA_DEGRADE_REASON_NONE = 0;
+  NOA_DEGRADE_REASON_NOT_VEHICLE_STATUS = 1;
+  NOA_DEGRADE_REASON_NOT_NDM_LOC = 2;
+  NOA_DEGRADE_REASON_LOC_LOW_PRECISION = 3;
+  NOA_DEGRADE_REASON_NOT_NDM_MAP = 4;
+  NOA_DEGRADE_REASON_NOT_NDM_NAV = 5;
+  NOA_DEGRADE_REASON_HAS_LOC_NOT_NDM_MAP = 6;
+  NOA_DEGRADE_REASON_TOLLBOOTH = 7;
+  NOA_DEGRADE_REASON_CONSTRUCTION = 8;
+}
+
+enum OutOddReason {
+  OUT_ODD_REASON_NONE = 0;
+  OUT_ODD_REASON_TOllBOOTH = 1;
+  OUT_ODD_REASON_ROAD_CONSTRUCTION = 2;
+  OUT_ODD_REASON_OUT_MAP = 3;
+}
+
+enum TakeOverReason {
+  TAKE_OVER_REASON_NONE = 0;
+  TAKE_OVER_REASON_VISION_LINE_INVALID = 1;
+  TAKE_OVER_REASON_FUSION_OBJS_INVALID = 2;
+  TAKE_OVER_REASON_EMPTY_TRAJ = 3;
+  TAKE_OVER_REASON_LON_EMERGENCY = 4;
+}
+
+enum USSDistanceWarning {
+  USS_DISTANCE_WARNINGN_SAFE = 0;
+  USS_DISTANCE_WARNINGN_DANGEROUS = 1;
+  USS_DISTANCE_WARNINGN_VERYDANG = 2;
+  USS_DISTANCE_WARNINGN_STOPPED = 3;
+}
+
+message BasePointD {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+}
+
+message NdmPose {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  double roll = 4;
+  double pitch = 5;
+  double yaw = 6;
+}
+
+message PointSL {
+  double s = 1;
+  double l = 2;
+}
+
+message PointSV {
+  double s = 1;
+  double v = 2;
+}
+
+message PointTS {
+  double t = 1;
+  double s = 2;
+}
+
+message PointTSFloat {
+  float t = 1;
+  float s = 2;
+}
+
+message EulerAngle {
+  double roll = 1;
+  double pitch = 2;
+  double yaw = 3;
+}
+
+message FrenetPoint {
+  double s = 1;
+  double l = 2;
+  double k = 3;
+  double dk_ds = 4;
+  double dl_ds = 5;
+  double ddl_ds2 = 6;
+  double ds_dt = 7;
+  double dds_dt2 = 8;
+}
+
+message LinePoint {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  float yaw = 4;
+  float pitch = 5;
+  float roll = 6;
+  float s = 7;
+  float k = 8;
+  float l = 9;
+  float dk_ds = 10;
+  float dl_ds = 11;
+  float ddl_ds = 12;
+}
+
+message PoseWithCovariance {
+  NdmPose pose = 1;
+  repeated float covariance = 2;
+}
+
+message Twist {
+  BasePointD linear = 1;
+  BasePointD angular = 2;
+}
+
+message BaseOdometry {
+  string child_frame_id = 2;
+  PoseWithCovariance pose = 3;
+  Twist twist = 4;
+}
+
+message Color {
+  ColorType type = 1;
+  float r = 2;
+  float g = 3;
+  float b = 4;
+  float a = 5;
+}
+
+message BasePolygonD {
+  repeated BasePointD points = 1;
+}
+
+message PairStartEndS {
+  float start_s = 1;
+  float end_s = 2;
+}
+
+message PairSLineType {
+  float s = 1;
+  NdmBaseLineType type = 2;
+}
+
+message PairSV {
+  float s = 1;
+  float min_v = 2;
+  float max_v = 3;
+}
+
+message PairSId {
+  float s = 1;
+  string id = 2;
+}
+
+message PairSLaneType {
+  float s = 1;
+  NdmLaneType type = 2;
+}
+
+message PairSOutOdd {
+  float s = 1;
+  float noa_degrade_s = 2;
+  OutOddReason out_odd_reason = 3;
+}
+
+message NOAOddWarning {
+  bool out_odd_warning_flag = 1;
+  repeated PairSOutOdd out_odd_reasons = 2;
+}
+
+message TakeOverEmergency {
+  bool take_over_flag = 1;
+  repeated TakeOverReason take_over_reasons = 2;
+}
+
+message USSWarning {
+  int32 source = 1;
+  USSDistanceWarning distance_warning = 2;
+}
+
+message WarningEmergencyStatus {
+  NOAOddWarning noa_odd_warning = 1;
+  TakeOverEmergency take_over_emergency = 2;
+  USSWarning uss_warning = 3;
+}

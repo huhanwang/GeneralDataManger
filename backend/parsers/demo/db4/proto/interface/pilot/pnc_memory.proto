@@ -1,0 +1,56 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum SensorCailbSts {
+  SENSOR_NO_CALIB = 0;
+  SENSOR_CALIB_FAILED = 1;
+  SENSOR_CALIB_SUCCESSED = 2;
+}
+
+enum SensorSts {
+  SENSOR_INIT = 0;
+  SENSOR_CALIBING = 1;
+  SENSOR_WORK = 2;
+  SENSOR_ERROR = 3;
+}
+
+message PncSoftware {
+  uint32 sys_fault = 1;
+  uint32 sys_node_state = 2;
+  uint32 sys_node_cksm_error = 3;
+  uint32 sys_signal_invaild = 4;
+  uint32 sys_vision_sensor_status = 5;
+  SensorCailbSts sys_vision_calib_sts = 6;
+  SensorSts sys_fradar_sensor_status = 7;
+  SensorCailbSts sys_fradar_calib_sts = 8;
+  bool sys_acc_main_switch = 9;
+  bool sys_icc_main_switch = 10;
+  bool sys_ldw_main_switch = 11;
+  bool sys_lka_main_switch = 12;
+  bool sys_elk_main_switch = 13;
+  bool sys_fcw_main_switch = 14;
+  bool sys_aeb_main_switch = 15;
+  bool sys_sla_main_switch = 16;
+  bool sys_ihc_main_switch = 17;
+  uint32 sys_ldw_sensitivity = 18; 
+  uint32 sys_ldw_warn_mode = 19;
+  uint32 sys_fcw_sensitivity = 20;
+  uint32 sys_slif_speed_limit = 21;
+  uint32 sys_acc_set_speed = 22;
+  uint32 sys_acc_headway_level = 23;
+  uint32 sys_scf_main_switch = 24;
+  bool sys_sla_slif_switch = 25;
+  bool sys_sla_slwf_switch = 26;
+  uint32 sys_sla_slwf_mode = 27;
+  bool sys_sla_slif_change_switch = 28;
+  uint32 sys_sla_slwf_offset_switch = 29;
+  float sys_sla_slwf_offset_value = 30;
+  float sys_sla_slwf_offset_percent = 31;
+}
+
+message PncMemoryMsg {
+  MsgHeader header = 1;
+  Error error = 2;
+  PncSoftware pnc_software = 3;
+}

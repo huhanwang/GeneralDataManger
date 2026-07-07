@@ -1,0 +1,16 @@
+syntax = "proto3";
+package autodrive.workflow.proto;
+
+message MsgHeader {
+  // frame id
+  int64 frame_id = 1;
+  // raw timestamp (us)
+  int64 raw_timestamp = 2;
+  // local timestamp (us)
+  int64 local_timestamp = 3;
+}
+
+message Error {
+  int32 error_code = 1;
+  string error_msg = 2;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "type/parking_slot.proto";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+message FusionParkingSlotsMsg {
+  // Header
+  MsgHeader header = 1;
+  // Error
+  Error error = 2;
+  // parking_slots
+  repeated parking_slot.ParkingSlotInfo parking_slots_info = 3;
+  // certified_slots
+  repeated int32 certified_slots = 4;
+  // num_parking_slots
+  int32 num_parking_slots = 5;
+  bool is_in_doorgarage = 6; // is car in doorgarage or not;
+  uint32 score_in_doorgarage = 7; // the score of the car
+}

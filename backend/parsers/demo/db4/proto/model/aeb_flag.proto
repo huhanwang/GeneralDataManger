@@ -1,0 +1,51 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package autodrive.workflow.proto;
+
+enum AebObjType {
+  AEB_OBJ_INVALID = 0;
+  AEB_OBJ_CAR = 1;
+  AEB_OBJ_TRUCK = 2;
+  AEB_OBJ_MOTORS = 3;
+  AEB_OBJ_PED = 4;
+  AEB_OBJ_CYCLIST = 5;
+}
+
+enum AebType {
+  AEB_TYPE_LATENT_WARN = 0;
+  AEB_TYPE_PREWARN = 1;
+  AEB_TYPE_PREFILL = 2;
+  AEB_TYPE_JERK = 3;
+  AEB_TYPE_PARTIAL_BREAKE = 4;
+  AEB_TYPE_FULL_BRAKE = 5;
+  AEB_TYPE_EBA = 6;
+  AEB_TYPE_HOLD = 7;
+}
+
+enum FlagBit {
+  FLAG_BIT_NO_SET = 0;
+  FLAG_BIT_SET = 1;
+}
+
+message AebFlag {
+  AebType type = 1;
+  FlagBit flag_bit = 2;
+  uint32 obj_id = 3;
+  AebObjType obj_type = 4;
+  float ttc_time = 5;
+}
+
+message AebFlagMsg {
+  // Header
+	MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // brake deceleration
+  float aeb_brake_decel_req = 3;
+  // Forward collision warning
+  uint32 fcw_supp_reason = 4;
+  // Autonomous emergency braking
+  uint32 aeb_supp_reasion = 5;
+  // Aeb structured data
+  repeated AebFlag flags = 6;
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+package autodrive.workflow.proto;
+
+message Intrinsic {
+  float cx = 1;
+  float cy = 2;
+  float fx = 3;
+  float fy = 4;
+  CameraID cam_id = 5;
+  repeated float k = 6;
+  repeated float p = 7;
+  repeated float s = 8;
+}
+
+message CameraIntrinsicsMsg {
+  // Header
+	MsgHeader header = 1;
+  // Error
+	Error error = 2;
+  // Intrinsics
+  repeated Intrinsic intrinsics = 3;
+}
