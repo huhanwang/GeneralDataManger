@@ -1,0 +1,196 @@
+syntax = "proto3";
+import "type/system_type_base.proto";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PlanStateSource
+{
+    PlanStateSource_PLAN_SOURCE_NONE = 0;
+    PlanStateSource_PLAN_SOURCE_APA = 1;
+    PlanStateSource_PLAN_SOURCE_VPA = 2;
+    PlanStateSource_PLAN_SOURCE_TRA = 3;
+    PlanStateSource_PLAN_SOURCE_NPA = 4;
+}
+
+enum PlanStateType
+{
+    PlanStateType_PLAN_STATE_NONE = 0;
+    PlanStateType_PLAN_STANDY = 1;
+    PlanStateType_PLAN_IDLE = 2;
+    PlanStateType_PLAN_ROUTE_LOADING = 3;
+    PlanStateType_LOAD_ROUTE_DONE = 4;
+    PlanStateType_PLAN_ACTIVE = 5;
+    PlanStateType_PLAN_PAUSE = 6;
+    PlanStateType_PLAN_COMPLETE = 7;
+    PlanStateType_PLAN_TERMINATE = 8;
+    PlanStateType_PLAN_FAILED = 9;
+    PlanStateType_PLAN_RECORDING = 10;
+    PlanStateType_PLAN_NARROW_LANE_PASSABLE = 11;
+    PlanStateType_PLAN_VPA_AVAILABLE = 12;
+}
+
+enum CtrlStateType
+{
+    CtrlStateType_CONTROL_NONE = 0;
+    CtrlStateType_CONTROL_NORMAL = 1;
+    CtrlStateType_CONTROL_AUTO_HOLD = 2;
+    CtrlStateType_CONTROL_WAITING = 3;
+    CtrlStateType_CONTROL_RELEASE = 4;
+    CtrlStateType_CONTROL_INTERRUPT = 5;
+}
+
+enum PlanExitReason
+{
+    PlanExitReason_PLAN_EXIT_REASON_NONE = 0;
+    PlanExitReason_PLAN_EXIT_REASON_SLOTID_INVALID = 1;
+}
+
+enum PlanPauseReason
+{
+    PlanPauseReason_PLAN_PAUSE_REASON_NONE = 0;
+    PlanPauseReason_PLAN_PAUSE_REASON_EPS_INTERRUPT = 1;
+    PlanPauseReason_PLAN_PAUSE_REASON_GEAR_INTERRUPT = 2;
+    PlanPauseReason_PLAN_PAUSE_REASON_LOCAL_PLAN_BLOCK = 3;
+    PlanPauseReason_PLAN_PAUSE_REASON_ESP_INTERRUPT = 4;
+    PlanPauseReason_PLAN_PAUSE_REASON_VEHICLE_SUSPEND = 5;
+    PlanPauseReason_PLAN_PAUSE_REASON_PEDESTRAIN_SUSPEND = 6;
+    PlanPauseReason_PLAN_PAUSE_REASON_CYCLIST_SUSPEND = 7;
+}
+
+enum ApaPlanningErrorCode
+{
+    ApaPlanningErrorCode_PLAN_NO_ERROR = 0;
+    ApaPlanningErrorCode_PLAN_ERROR_PARK_TYPE = 1;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_TYPE = 2;
+    ApaPlanningErrorCode_PLAN_ERROR_DETECT_TYPE = 3;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_SIDE = 4;
+    ApaPlanningErrorCode_PLAN_ERROR_PARK_OUT_DIR = 5;
+    ApaPlanningErrorCode_PLAN_ERROR_USS_SIDE = 6;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_TYPE_AND_PARK_TYPE_MATCHING = 7;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_SIZE = 8;
+    ApaPlanningErrorCode_PLAN_ERROR_INIT_POINT = 9;
+    ApaPlanningErrorCode_PLAN_ERROR_CAL_PARKINGIN_POINT = 10;
+    ApaPlanningErrorCode_PLAN_ERROR_OBLI_SLOT_COLLISION = 11;
+    ApaPlanningErrorCode_PLAN_ERROR_SEARCH_FAIL = 12;
+    ApaPlanningErrorCode_PLAN_ERROR_EXCEED_MAX_TIMES = 13;
+    ApaPlanningErrorCode_PLAN_ERROR_PATH_NUM_CHANGE_TOOMUCH = 14;
+    ApaPlanningErrorCode_PLAN_ERROR_DRIVING_DIR_IN_PARA_SLOT = 15;
+    ApaPlanningErrorCode_PLAN_ERROR_INPUT_POS_IN_PARA_SLOT = 16;
+    ApaPlanningErrorCode_PLAN_ERROR_NEW_PLAN_IN_PARA_SLOT = 17;
+    ApaPlanningErrorCode_PLAN_ERROR_STOP_IN_FIXED_POS = 18;
+    ApaPlanningErrorCode_PLAN_ERROR_PARKING_OUT_POS = 19;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_LENGTH = 20;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_WIDTH = 21;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_ANGLE = 22;
+    ApaPlanningErrorCode_PLAN_ERROR_SLOT_FRONT_REAR_BOUND_DIS = 23;
+    ApaPlanningErrorCode_PLAN_ERROR_GOAL_HAS_MAX_MOVING_DIS = 24;
+    ApaPlanningErrorCode_PLAN_ERROR_WHEEL_BAR_DIS = 25;
+    ApaPlanningErrorCode_PLAN_ERROR_PARK_OUT_FRONT_FREE = 26;
+}
+
+enum ApaControlErrorCode
+{
+    ApaControlErrorCode_CONTROL_NO_ERROR = 0;
+    ApaControlErrorCode_CONTROL_ERROR_NO_DATA = 4;
+    ApaControlErrorCode_CONTROL_ERROR_INDEX_OUT = 5;
+    ApaControlErrorCode_CONTROL_ERROR_TRACK_OUT = 6;
+    ApaControlErrorCode_CONTROL_ERROR_AVOID_STOP_TIMEOUT = 7;
+    ApaControlErrorCode_CONTROL_ERROR_AVOID_STOP_CLIP = 8;
+    ApaControlErrorCode_CONTROL_ERROR_BUMP_STOP = 9;
+    ApaControlErrorCode_CONTROL_ERROR_CONTROL_MODE = 10;
+    ApaControlErrorCode_CONTROL_ERROR_ERROR_HANDSHAKE_INTERRUPT = 11;
+    ApaControlErrorCode_CONTROL_ERROR_EPS_INTERRUPT = 13;
+    ApaControlErrorCode_CONTROL_ERROR_GEAR_INTERRUPT = 14;
+    ApaControlErrorCode_CONTROL_ERROR_EPB_INTERRUPT = 15;
+    ApaControlErrorCode_CONTROL_ERROR_EPS_TIMEOUT = 16;
+    ApaControlErrorCode_CONTROL_ERROR_ESP_TIMEOUT = 17;
+    ApaControlErrorCode_CONTROL_ERROR_EPS_ERROR = 18;
+    ApaControlErrorCode_CONTROL_ERROR_ESP_ERROR = 19;
+    ApaControlErrorCode_CONTROL_ERROR_SLOPE_TOO_STEEP = 20;
+    ApaControlErrorCode_CONTROL_ERROR_STEP_DETECTED = 21;
+}
+
+enum ApaDecisionErrorCode
+{
+    ApaDecisionErrorCode_DECISION_NO_ERROR = 0;
+    ApaDecisionErrorCode_DECISION_ERROR_ODO_TIMEOUT = 1;
+    ApaDecisionErrorCode_DECISION_ERROR_ODO_OVERFLOW = 2;
+    ApaDecisionErrorCode_DECISION_ERROR_ODO_CHANGE_GREATLY = 3;
+    ApaDecisionErrorCode_DECISION_ERROR_FREESPACE_TIMEOUT = 4;
+    ApaDecisionErrorCode_DECISION_ERROR_FREESPACE_INVALID = 5;
+    ApaDecisionErrorCode_DECISION_ERROR_SLOT_YAW = 6;
+    ApaDecisionErrorCode_DECISION_ERROR_SLOT_WIDTH = 7;
+    ApaDecisionErrorCode_DECISION_ERROR_SLOT_BOUNDARY = 8;
+    ApaDecisionErrorCode_DECISION_ERROR_SLOT_TYPE = 9;
+    ApaDecisionErrorCode_DECISION_ERROR_CONTROL_FEEDBACK_INVALID = 10;
+    ApaDecisionErrorCode_DECISION_ERROR_CONTROL_TIMEOUT = 11;
+    ApaDecisionErrorCode_DECISION_ERROR_PLANNING_INVALID = 12;
+    ApaDecisionErrorCode_DECISION_ERROR_INVALID_SLOTID = 13;
+    ApaDecisionErrorCode_DECISION_ERROR_NO_SLOTID = 14;
+    ApaDecisionErrorCode_DECISION_ERROR_INPUTMSG_NOT_READY = 15;
+    ApaDecisionErrorCode_DECISION_ERROR_OUTPUTMSG_NOT_READY = 16;
+    ApaDecisionErrorCode_DECISION_ERROR_ERROR_HANDSHAKE_INVALID = 17;
+    ApaDecisionErrorCode_DECISION_ERROR_PARKING_TIMEOUT = 18;
+    ApaDecisionErrorCode_DECISION_ERROR_SLOT_OCCUPIED = 19;
+    ApaDecisionErrorCode_DECISION_ERROR_RA_ODO_QUEUE_EMPTY = 20;
+    ApaDecisionErrorCode_DECISION_ERROR_PATH_OFFSET_EXCEED = 21;
+    ApaDecisionErrorCode_DECISION_ERROR_ROAD_TOO_NARROW = 22;
+    ApaDecisionErrorCode_DECISION_ERROR_RA_SPEED_TOO_HIGH = 23;
+    ApaDecisionErrorCode_DECISION_ERROR_RA_WHEEL_ANGLE_OVER = 24;
+    ApaDecisionErrorCode_DECISION_ERROR_VEHICLE_BLOCKED = 25;
+}
+
+enum ParkingWorkingStatus
+{
+    ParkingWorkingStatus_PARK_WORK_STATUS_PER_FREE_STATUS = 0;
+    ParkingWorkingStatus_PARK_WORK_STATUS_FREE_STATUS = 1;
+    ParkingWorkingStatus_PARK_WORK_STATUS_UPDATED = 2;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PERPARING = 3;
+    ParkingWorkingStatus_PARK_WORK_STATUS_WORKING = 4;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_ERROR = 5;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_OVER = 6;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PER_RUNNING_FREE_STATUS = 7;
+    ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_FREE_STATUS = 8;
+    ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_UPDATED = 9;
+    ParkingWorkingStatus_PARK_WORK_STATUS_BREAKING = 10;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_SUCCESS = 11;
+    ParkingWorkingStatus_PARK_WORK_STATUS_WAITTING = 12;
+    ParkingWorkingStatus_PARK_WORK_STATUS_WAITTING_FINISH = 13;
+    ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_TIMEOUT = 14;
+    ParkingWorkingStatus_PARK_WORK_STATUS_WORKING_ADJUST = 15;
+}
+
+enum CornerSlotType
+{
+    CornerSlotType_UNKNOWN_CORNER_SLOT_TYPE = 0;
+    CornerSlotType_CORNER_SLOT_LEFT = 1;
+    CornerSlotType_CORNER_SLOT_RIGHT = 2;
+}
+
+message ApaPlanExit
+{
+    ApaPlanningErrorCode plan_error_code = 1;
+    ApaControlErrorCode control_error_code = 2;
+    ApaDecisionErrorCode decision_error_code = 3;
+}
+
+message PlanState
+{
+    PlanStateType type = 1;
+    PlanStateSource state_source = 2;
+    PlanExitReason exit_reason = 3;
+    PlanPauseReason pause_reason = 4;
+    CtrlStateType ctrl_state = 5;
+    HandShakableType handshakable = 6;
+    ParkingWorkingStatus parking_working_status = 7;
+    CornerSlotType corner_slot = 8;
+    sint64 error_code = 9;
+    ApaPlanExit apa_plan_exit = 10;
+}
+
+message HpaToStateMachineMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PlanState plan_state = 2;
+}
+

@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/prediction_object_base.proto";
+package idrive.workflow.proto;
+
+message PredictionObject_PredictionObjects
+{
+    uint32 num_prediction_obj = 1;
+    repeated PredictionObject prediction_obj = 2;
+}
+
+message PredictionObjectMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PredictionObject_PredictionObjects prediction_objects = 2;
+}
+

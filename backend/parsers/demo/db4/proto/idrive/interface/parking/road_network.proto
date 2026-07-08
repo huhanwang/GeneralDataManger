@@ -1,0 +1,83 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum RoadNetwork_KeyPointType
+{
+    RoadNetwork_KeyPointType_kUnknown = 0;
+    RoadNetwork_KeyPointType_kNormal = 1;
+    RoadNetwork_KeyPointType_kTJunction = 2;
+    RoadNetwork_KeyPointType_kCrossroad = 3;
+}
+
+message RoadNetwork_CenterPoint
+{
+    Vector3f point = 1;
+    float offset = 2;
+}
+
+message RoadNetwork_CenterLine
+{
+    uint32 line_id = 1;
+    uint32 num_points = 2;
+    repeated RoadNetwork_CenterPoint points = 3;
+}
+
+message RoadNetwork_BoundaryLine
+{
+    uint32 line_id = 1;
+    uint32 num_points = 2;
+    repeated Vector3f points = 3;
+}
+
+message RoadNetwork_LaneInfo
+{
+    uint32 lane_id = 1;
+    uint32 road_id = 2;
+    uint32 lane_no = 3;
+    float lane_width = 4;
+    uint32 center_line_id = 5;
+    uint32 left_boundary_id = 6;
+    uint32 right_boundary_id = 7;
+}
+
+message RoadNetwork_RoadInfo
+{
+    uint32 road_id = 1;
+    uint32 num_lanes = 2;
+    repeated RoadNetwork_LaneInfo lanes = 3;
+}
+
+message RoadNetwork_KeyPoint
+{
+    Vector3f position = 1;
+    float offset = 2;
+    RoadNetwork_KeyPointType type = 3;
+}
+
+message RoadNetwork_CrossInfo
+{
+    RoadNetwork_KeyPoint key_point = 1;
+    uint32 num_cross_roads = 2;
+    repeated RoadNetwork_RoadInfo cross_roads = 3;
+}
+
+message RoadNetwork_RoadNetwork
+{
+    RoadNetwork_RoadInfo road_info = 1;
+    repeated RoadNetwork_CrossInfo cross_infos = 2;
+    repeated RoadNetwork_CenterLine center_lines = 3;
+    repeated RoadNetwork_BoundaryLine boundary_lines = 4;
+    uint32 host_center_line_id = 5;
+    uint32 num_cross = 6;
+    uint32 num_center_lines = 7;
+    uint32 num_boundary_lines = 8;
+}
+
+message RoadNetworkMsg
+{
+    CommonMsgMsg common_msg = 1;
+    RoadNetwork_RoadNetwork road_network = 2;
+}
+

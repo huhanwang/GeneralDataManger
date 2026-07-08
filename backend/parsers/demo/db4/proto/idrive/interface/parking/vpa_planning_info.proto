@@ -1,0 +1,228 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VpaPlanningInfo_DecisionType
+{
+    VpaPlanningInfo_DecisionType_HPADecisionNone = 0;
+    VpaPlanningInfo_DecisionType_HPAObjectStop = 1;
+    VpaPlanningInfo_DecisionType_HPAObjectFollow = 2;
+    VpaPlanningInfo_DecisionType_HPAObjectOncoming = 3;
+    VpaPlanningInfo_DecisionType_HPAObjectCrossing = 4;
+    VpaPlanningInfo_DecisionType_HPAObjectOverrding = 5;
+}
+
+enum VpaPlanningInfo_StopReason
+{
+    VpaPlanningInfo_StopReason_ObjectStop = 0;
+    VpaPlanningInfo_StopReason_ObjectCrossing = 1;
+    VpaPlanningInfo_StopReason_ObjectOncoming = 2;
+    VpaPlanningInfo_StopReason_ObjectReversing = 3;
+    VpaPlanningInfo_StopReason_ObjectCutIn = 4;
+    VpaPlanningInfo_StopReason_FollowdistanceTooshort = 5;
+    VpaPlanningInfo_StopReason_HPAPedestrainForwardSameDirection = 6;
+    VpaPlanningInfo_StopReason_HPAPedestrainCrossing = 7;
+    VpaPlanningInfo_StopReason_HPAPedestrainOncoming = 8;
+}
+
+enum VpaPlanningInfo_RequestType
+{
+    VpaPlanningInfo_RequestType_Obs_None = 0;
+    VpaPlanningInfo_RequestType_Obs_Stop = 1;
+    VpaPlanningInfo_RequestType_Obs_Follow = 2;
+    VpaPlanningInfo_RequestType_Obs_StopSide = 3;
+    VpaPlanningInfo_RequestType_Obs_Autohold = 4;
+    VpaPlanningInfo_RequestType_Obs_Override_Random = 5;
+    VpaPlanningInfo_RequestType_Obs_Override_Left = 6;
+    VpaPlanningInfo_RequestType_Obs_Override_Right = 7;
+    VpaPlanningInfo_RequestType_Backward_planning = 8;
+}
+
+message VpaPlanningInfo_PlanningPoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float yaw = 4;
+    float pitch = 5;
+    float roll = 6;
+    float s = 7;
+    float l = 8;
+    float k = 9;
+    float speed = 10;
+    float acc = 11;
+    float jerk = 12;
+    float speed_limit = 13;
+    sint32 gear = 14;
+    sint32 direction = 15;
+    sint32 detect_status = 16;
+    sint32 slope_dir = 17;
+    float dk_ds = 18;
+    float dl_ds = 19;
+    float ddl_ds2 = 20;
+    float ds_dt = 21;
+    float dds_dt2 = 22;
+    float offset = 23;
+    float time = 24;
+    bool is_backward = 25;
+}
+
+message VpaPlanningInfo_VehicleStatus
+{
+    float current_veh_speed = 1;
+    float current_steer_wheel_deg = 2;
+    float current_veh_acc = 3;
+    sint32 gear = 4;
+}
+
+message VpaPlanningInfo_DecisionFollow
+{
+    sint32 id = 1;
+    float vmax = 2;
+    float follow_s = 3;
+    float current_dis = 4;
+    float collison_distance = 5;
+    float relative_distance = 6;
+}
+
+message VpaPlanningInfo_DecisionStop
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+    VpaPlanningInfo_StopReason stop_reason = 4;
+}
+
+message VpaPlanningInfo_DecisionOncoming
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+    float current_l = 4;
+}
+
+message VpaPlanningInfo_DecisionCrossing
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+}
+
+message VpaPlanningInfo_Point
+{
+    float x = 1;
+    float y = 2;
+    float yaw = 3;
+}
+
+message VpaPlanningInfo_DecisionOverring
+{
+    sint64 timestamp = 1;
+    float vcs_speed_x_axis = 2;
+    float vcs_speed_y_axis = 3;
+    repeated VpaPlanningInfo_Point corner_vcs = 4;
+    uint32 num_corner_vcs_point = 5;
+}
+
+message VpaPlanningInfo_ObsCornerPointsWithTime
+{
+    sint64 timestamp = 1;
+    float obs_s = 2;
+    uint32 num_corner_points = 3;
+    repeated VpaPlanningInfo_Point corner_points = 4;
+}
+
+message VpaPlanningInfo_ObjectDecision
+{
+    VpaPlanningInfo_DecisionStop stop_decision = 1;
+    VpaPlanningInfo_DecisionFollow follow_decision = 2;
+    VpaPlanningInfo_DecisionOncoming oncoming_decision = 3;
+    VpaPlanningInfo_DecisionCrossing crossing_decision = 4;
+    VpaPlanningInfo_DecisionOverring overriding_decision = 5;
+    VpaPlanningInfo_ObsCornerPointsWithTime oncoming_predict_obs_info = 6;
+    sint32 id = 7;
+    sint32 need_decelerate = 8;
+    VpaPlanningInfo_DecisionType type = 9;
+    VpaPlanningInfo_RequestType request_type = 10;
+    bool is_release_obstacle = 11;
+    bool is_follow_stop_switch = 12;
+    uint32 num_obs_vcs_corner = 13;
+    repeated VpaPlanningInfo_ObsCornerPointsWithTime obs_vcs_corner = 14;
+}
+
+message VpaPlanningInfo_DestinationSlotInfo
+{
+    uint64 timestamp = 1;
+    sint32 id = 2;
+    sint32 slot_type = 3;
+    float length = 4;
+    float width = 5;
+    float yaw = 6;
+    bool isRecievedDestSlot = 7;
+    bool isStitchSuccess = 8;
+    bool isStitchComplete = 9;
+    uint32 num_slot_points = 10;
+    repeated VpaPlanningInfo_Point slot_points = 11;
+}
+
+message VpaPlanningInfo_BypassPlanresult
+{
+    bool is_bypass_plan_success = 1;
+    sint32 bypass_direction = 2;
+    float obj_velocity = 3;
+}
+
+message VpaPlanningInfo_ReversePlanresult
+{
+    bool is_plan_success = 1;
+    bool is_reverse_completed = 2;
+}
+
+message VpaPlanningInfo_PlanningResultsForDecision
+{
+    sint32 id = 1;
+    sint32 plan_result = 2;
+    VpaPlanningInfo_BypassPlanresult bypass_plan_result = 3;
+    VpaPlanningInfo_ReversePlanresult backward_plan_result = 4;
+}
+
+message VpaPlanningInfo_PlanningInput
+{
+    VpaPlanningInfo_PlanningPoint current_loc_point = 1;
+    VpaPlanningInfo_VehicleStatus vehicle_status = 2;
+    VpaPlanningInfo_ObjectDecision object_decision = 3;
+    VpaPlanningInfo_DestinationSlotInfo destination_slot_info = 4;
+    uint64 loc_timestamp = 5;
+    uint64 grid_map_timestamp = 6;
+    sint32 vpa_cur_state = 7;
+    bool isStitchSucc = 8;
+    bool first_plan_flag = 9;
+    uint32 num_last_trajectory_point = 10;
+    repeated VpaPlanningInfo_PlanningPoint last_trajectory = 11;
+}
+
+message VpaPlanningInfo_PlanningOutput
+{
+    VpaPlanningInfo_PlanningResultsForDecision override_plan_result = 1;
+    VpaPlanningInfo_PlanningResultsForDecision random_plan_result = 2;
+    sint32 result = 3;
+    sint32 goal = 4;
+    bool isStitchSucc = 5;
+    bool isReceivedSlot = 6;
+    sint32 switch_flag = 7;
+    uint32 num_current_trajectory_point = 8;
+    repeated VpaPlanningInfo_PlanningPoint current_trajectory = 9;
+}
+
+message VpaPlanningInfo_VpaPlanningInfo
+{
+    VpaPlanningInfo_PlanningInput planning_input = 1;
+    VpaPlanningInfo_PlanningOutput planning_output = 2;
+}
+
+message VpaPlanningInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaPlanningInfo_VpaPlanningInfo planning_info = 2;
+}
+

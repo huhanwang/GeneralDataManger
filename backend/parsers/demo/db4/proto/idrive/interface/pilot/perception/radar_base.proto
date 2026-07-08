@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum RadarObstacle_RadarObstacleType
+{
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_UNCERTAIN = 0;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_TRUCK = 1;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_CAR = 2;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_BICYCLE = 3;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_PEDESTRAIN = 4;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_GENERAL = 5;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_ANIMAL = 6;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_MOTORBIKE = 7;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_VAN = 8;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_DYNAMIC = 9;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_INIT = 10;
+    RadarObstacle_RadarObstacleType_RadarObstacle_RadarObstacleType_RADAR_OBSTACLE_BARRIER = 11;
+}
+
+enum RadarModelType
+{
+    RadarModelType_RadarModelType_Unknown = 0;
+    RadarModelType_RadarModelType_Conti_Ars513 = 1;
+    RadarModelType_RadarModelType_Byd = 2;
+    RadarModelType_RadarModelType_ID4 = 3;
+}
+
+message RadarObstacle
+{
+    sint32 id = 1;
+    uint32 age = 2;
+    float rcs = 3;
+    float obstacle_prob = 4;
+    float exist_prob = 5;
+    sint32 type = 6;
+    sint32 target_status = 7;
+    sint32 dynamic_status = 8;
+    sint32 reference_point = 9;
+    float object_length = 10;
+    float object_width = 11;
+    float object_yaw = 12;
+    float object_yawstd = 13;
+    float object_azimuth = 14;
+    float object_azimuthstd = 15;
+    float object_height = 16;
+    uint32 rel_flag = 17;
+    Vector3f pos = 18;
+    Vector3f velocity = 19;
+    Vector3f acc = 20;
+    Vector3f pos_dev = 21;
+    Vector3f velocity_dev = 22;
+    Vector3f acc_dev = 23;
+}
+
+message RadarTrack
+{
+    float range_rate = 1;
+    uint32 med_range_mode = 2;
+    float range_accel = 3;
+    float width = 4;
+    uint32 rolling_count = 5;
+    uint32 bridge_object = 6;
+    float range = 7;
+    float angle = 8;
+    uint32 status = 9;
+    uint32 oncomming = 10;
+    uint32 grouping_changed = 11;
+    float lat_rate = 12;
+    float amplitude = 13;
+    sint32 valid_level = 14;
+    RadarObstacle object = 15;
+}
+
+message RadarStatus
+{
+    uint32 comm_error = 1;
+    uint32 dsp_time_stamp = 2;
+    uint32 sgu_fail = 3;
+    uint32 sensor_dirty = 4;
+    uint32 hw_fail = 5;
+    sint32 alignment_fail = 6;
+    float obj_latency = 7;
+    uint32 time_stamp = 8;
+    uint64 time_stamp_u64 = 9;
+}
+
+message RadarFrame
+{
+    sint64 sensor_stamp = 1;
+    sint64 sample_stamp = 2;
+    uint32 channel_id = 3;
+    uint32 ts_src = 4;
+    float pitch = 5;
+    float yaw = 6;
+    float roll = 7;
+    float x_offset = 8;
+    float y_offset = 9;
+    float z_offset = 10;
+    sint64 rev_data_ts = 11;
+    uint64 version = 12;
+    RadarModelType model = 13;
+    uint32 sensor_type = 14;
+    uint32 radar_track_num = 15;
+    bool frame_valid = 18;
+    repeated RadarTrack tracks = 16;
+    RadarStatus status = 17;
+}
+
+message RadarFrames
+{
+    uint32 num_radar_frame = 1;
+    repeated RadarFrame radar_frames = 2;
+}
+

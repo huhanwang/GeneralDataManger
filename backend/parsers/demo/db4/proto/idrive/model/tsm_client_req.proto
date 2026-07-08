@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum TsmClientReq_CaliMode
+{
+    TsmClientReq_CaliMode_ENTER_CALI = 0;
+    TsmClientReq_CaliMode_EXIT_CALI = 1;
+}
+
+enum TsmClientReq_ParkFunReq
+{
+    TsmClientReq_ParkFunReq_NO_REQUEST = 0;
+    TsmClientReq_ParkFunReq_APA_REQUEST = 1;
+    TsmClientReq_ParkFunReq_HPA_REQUEST = 2;
+}
+
+enum TsmClientReq_ReqType
+{
+    TsmClientReq_ReqType_UNKNOWN = 0;
+    TsmClientReq_ReqType_CALI_MODE = 1;
+    TsmClientReq_ReqType_PARK_FUN_REQ = 2;
+}
+
+message TsmClientReq_ReqData
+{
+    TsmClientReq_CaliMode cali_mode = 1;
+    TsmClientReq_ParkFunReq park_fun_req = 2;
+}
+
+message TsmClientReq_ClientReqData
+{
+    TsmClientReq_ReqData datas = 1;
+    TsmClientReq_ReqType req_type = 2;
+}
+
+message TsmClientReqMsg
+{
+    CommonMsgMsg common_msg = 1;
+    TsmClientReq_ClientReqData client_req_data = 2;
+}
+

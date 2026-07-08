@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message HistoryPoint_TrajectoryPoint
+{
+    Vector2f position_rel = 1;
+    float speed = 2;
+    float heading_rel = 3;
+}
+
+message HistoryPoint_TjaObject
+{
+    uint32 id = 1;
+    uint32 confidence = 2;
+    uint32 num_history_points = 3;
+    repeated HistoryPoint_TrajectoryPoint history_points = 4;
+}
+
+message HistoryPoint_TjaData
+{
+    repeated HistoryPoint_TjaObject objects = 1;
+    uint32 num_objects = 2;
+}
+
+message HistoryPointMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HistoryPoint_TjaData tja_data = 2;
+}
+

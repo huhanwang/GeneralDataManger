@@ -1,0 +1,212 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum DIALOG_TYPE 
+{
+    DIALOG_TYPE_NONE = 0;
+    DIALOG_TYPE_UPDATE = 1;
+}
+
+enum DIALOG_SUB_TYPE 
+{
+    DIALOG_SUB_TYPE_NONE = 0;
+    DIALOG_SUB_TYPE_MCU = 1;
+    DIALOG_SUB_TYPE_SOC = 2;
+    DIALOG_SUB_TYPE_ECU = 3;
+}
+
+enum Switch 
+{
+    Switch_Inactive = 0;
+    Switch_On = 1;
+    Switch_Off = 2;
+}
+
+enum Lucent 
+{
+    Lucent_Inactive = 0;
+    Lucent_NotLucent = 1;
+    Lucent_Translucent = 2;
+    Lucent_Lucent = 3;
+}
+
+enum Display 
+{
+    Display_Inactive = 0;
+    Display_FloatWindow = 1;
+    Display_FullScreen = 2;
+}
+
+message AvmParams
+{
+    Switch trigger_by_turnlight = 1;
+    Switch trigger_by_obstacle = 2;
+    Switch trigger_by_steering = 3;
+    Switch trigger_by_starting = 4;
+    Switch bsd_display_switch = 5;
+    Switch move_object_switch = 6;
+    Lucent transparent_chassis = 7;
+    Display display_mode_cfg = 8;
+}
+
+enum HmiEvent_EVENT_TYPE 
+{
+    HmiEvent_EVENT_TYPE_NONE = 0;
+    HmiEvent_EVENT_TYPE_EXPORT_LOG = 1;
+    HmiEvent_EVENT_TYPE_UPDATE_CAM = 2;
+    HmiEvent_EVENT_TYPE_CALPARA_EXPORT = 3;
+    HmiEvent_EVENT_TYPE_CALPARA_IMPORT = 4;
+}
+
+message HmiEvent_HmiEvent
+{
+    HmiEvent_EVENT_TYPE event_type = 1;
+}
+
+message HmiEventMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiEvent_HmiEvent hmi_event = 2;
+}
+
+enum HmiDialog_DIALOG_BTN 
+{
+    HmiDialog_DIALOG_BTN_NONE = 0;
+    HmiDialog_DIALOG_BTN_CONFIRM_CANCEL = 1;
+    HmiDialog_DIALOG_BTN_PROGRESS = 2;
+}
+
+message HmiDialog_HmiDialog
+{
+    DIALOG_TYPE type = 1;
+    DIALOG_SUB_TYPE sub_type = 2;
+    HmiDialog_DIALOG_BTN btn_type = 3;
+    uint32 progress = 4;
+    string main_text = 5;
+    string sub1_text = 6;
+    string sub2_text = 7;
+    string progress_text = 8;
+}
+
+message HmiDialogMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiDialog_HmiDialog hmi_dialog = 2;
+}
+
+enum HmiDialogOpt_DIALOG_BTN 
+{
+    HmiDialogOpt_DIALOG_BTN_CONFIRM = 0;
+    HmiDialogOpt_DIALOG_BTN_CANCEL = 1;
+    HmiDialogOpt_DIALOG_BTN_KNOW = 2;
+}
+
+message HmiDialogOpt_HmiDialogOpt
+{
+    DIALOG_TYPE type = 1;
+    DIALOG_SUB_TYPE sub_type = 2;
+    HmiDialogOpt_DIALOG_BTN button = 3;
+}
+
+message HmiDialogOptMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiDialogOpt_HmiDialogOpt hmi_dialog_opt = 2;
+}
+
+enum HmiObstacle_OBS_T 
+{
+    HmiObstacle_OBS_T_S_STATIC_NONE = 0;
+    HmiObstacle_OBS_T_S_LOCK = 0x01;
+    HmiObstacle_OBS_T_S_LIMIT_ROD = 0x02;
+    HmiObstacle_OBS_T_S_LIMIT_BLOCK = 0x03;
+    HmiObstacle_OBS_T_S_CONE_BARREL = 0x04;
+    HmiObstacle_OBS_T_S_UPRIGHT = 0x05;
+    HmiObstacle_OBS_T_S_WATER_BARRIER = 0x06;
+    HmiObstacle_OBS_T_S_NO_STOP_SIGN = 0x07;
+    HmiObstacle_OBS_T_S_BUMP_POST = 0x08;
+    HmiObstacle_OBS_T_D_CAR = 0x21;
+    HmiObstacle_OBS_T_D_PEDESTRIAN = 0x22;
+    HmiObstacle_OBS_T_D_TUMBREL = 0x23;
+    HmiObstacle_OBS_T_D_BUS = 0x24;
+    HmiObstacle_OBS_T_D_TRUCK = 0x25;
+}
+
+enum HmiObstacle_OBS_DIR 
+{
+    HmiObstacle_OBS_DIR_UP = 0;
+    HmiObstacle_OBS_DIR_DOWN = 1;
+    HmiObstacle_OBS_DIR_LEFT = 2;
+    HmiObstacle_OBS_DIR_RIGHT = 3;
+    HmiObstacle_OBS_DIR_LEFT_UP = 4;
+    HmiObstacle_OBS_DIR_LEFT_DOWN = 5;
+    HmiObstacle_OBS_DIR_RIGHT_UP = 6;
+    HmiObstacle_OBS_DIR_RIGHT_DOWN = 7;
+}
+
+message HmiObstacle_HmiObstacleInfo
+{
+    HmiObstacle_OBS_T type = 1;
+    HmiObstacle_OBS_DIR direction = 2;
+    Vector2i positions = 3;
+}
+
+message HmiObstacle_HmiSpeedBumpInfo
+{
+    Vector2i point_A = 1;
+    Vector2i point_B = 2;
+}
+
+message HmiObstacle_HmiIccObstacle
+{
+    uint32 obs_numb = 1;
+    uint32 speed_bump_numb = 2;
+    repeated HmiObstacle_HmiObstacleInfo obs_info = 3;
+    repeated HmiObstacle_HmiSpeedBumpInfo speed_info = 4;
+}
+
+message HmiObstacleMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiObstacle_HmiIccObstacle hmi_icc_obstacle = 2;
+}
+
+enum HmiIccSlot_SLOT_ST 
+{
+    HmiIccSlot_SLOT_ST_NONE = 0;
+    HmiIccSlot_SLOT_ST_VALID = 1;
+    HmiIccSlot_SLOT_ST_SELECT = 2;
+    HmiIccSlot_SLOT_ST_INVALID_NO_BARRIER = 3;
+    HmiIccSlot_SLOT_ST_OCCUP_VEHICLE = 4;
+    HmiIccSlot_SLOT_ST_OCCUP_CONE_BARREL = 5;
+    HmiIccSlot_SLOT_ST_OCCUP_LOCK = 6;
+    HmiIccSlot_SLOT_ST_VALID_NARROW = 7;
+    HmiIccSlot_SLOT_ST_SELEC_NARROW = 8;
+}
+
+message HmiIccSlot_HmiSlotInfo
+{
+    sint32 id = 1;
+    HmiIccSlot_SLOT_ST type = 2;
+    Vector2i point_A = 3;
+    Vector2i point_B = 4;
+    Vector2i point_C = 5;
+    Vector2i point_D = 6;
+}
+
+message HmiIccSlot_HmiIccSlot
+{
+    uint32 slot_num = 1;
+    uint32 valid_slot_num = 2;
+    HmiIccSlot_HmiSlotInfo slot_target = 3;
+    repeated HmiIccSlot_HmiSlotInfo slot_infos = 4;
+}
+
+message HmiIccSlotMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiIccSlot_HmiIccSlot hmi_icc_slot = 2;
+}
+

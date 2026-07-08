@@ -1,0 +1,312 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+enum Wrapper_SensorCailbSts
+{
+    Wrapper_SensorCailbSts_SENSOR_NO_CALIB = 0;
+    Wrapper_SensorCailbSts_SENSOR_CALIB_FAILED = 1;
+    Wrapper_SensorCailbSts_SENSOR_CALIB_SUCCESSED = 2;
+}
+
+enum Wrapper_SensorSts
+{
+    Wrapper_SensorSts_SENSOR_INIT = 0;
+    Wrapper_SensorSts_SENSOR_CALIBING = 1;
+    Wrapper_SensorSts_SENSOR_WORK = 2;
+    Wrapper_SensorSts_SENSOR_ERROR = 3;
+}
+
+message Wrapper_AlgDbgSoftwareInfo
+{
+    uint32 sys_fault = 1;
+    uint32 sys_node_state = 2;
+    uint32 sys_node_cksm_error = 3;
+    uint32 sys_signal_invaild = 4;
+    uint32 sys_vision_sensor_status = 5;
+    Wrapper_SensorCailbSts sys_vision_calib_sts = 6;
+    Wrapper_SensorSts sys_fradar_sensor_status = 7;
+    Wrapper_SensorCailbSts sys_fradar_calib_sts = 8;
+    bool sys_acc_main_switch = 9;
+    bool sys_icc_main_switch = 10;
+    bool sys_fvsw_main_switch = 11;
+    bool sys_ldw_main_switch = 12;
+    bool sys_lka_main_switch = 13;
+    bool sys_elk_main_switch = 14;
+    bool sys_fcw_main_switch = 15;
+    bool sys_aeb_main_switch = 16;
+    bool sys_sla_main_switch = 17;
+    bool sys_ihc_main_switch = 18;
+    uint32 sys_ldw_sensitivity = 19;
+    uint32 sys_ldw_warn_mode = 20;
+    uint32 sys_fcw_sensitivity = 21;
+    uint32 sys_slif_speed_limit = 22;
+    uint32 sys_acc_set_speed = 23;
+    uint32 sys_acc_headway_level = 24;
+    uint32 sys_scf_main_switch = 25;
+    bool sys_sla_slif_switch = 26;
+    bool sys_sla_slwf_switch = 27;
+    uint32 sys_sla_slwf_mode = 28;
+    bool sys_sla_slif_change_switch = 29;
+    uint32 sys_sla_slwf_offset_switch = 30;
+    uint32 sys_sla_slwf_offset_value = 31;
+    uint32 sys_sla_slwf_offset_percent = 32;
+}
+
+message Wrapper_AlgDebugMotionStatus
+{
+    float speed = 1;
+    float acc_x = 2;
+    float acc_y = 3;
+    float yaw_rate = 4;
+    float accx_by_difv = 5;
+    uint32 motion_direction = 6;
+    uint32 motion_debug_reserved_1 = 7;
+    uint32 motion_debug_reserved_2 = 8;
+}
+
+message Wrapper_AlgDebugSteerOffset
+{
+    float steer_angel_offset = 1;
+    float target_steer_offset = 2;
+    bool Valid = 3;
+    uint32 error_reason = 4;
+}
+
+message Wrapper_AlgDebugNavInfo
+{
+    uint32 nav_spd_limit_status = 1;
+    uint32 nav_spd_limit = 2;
+    uint32 nav_spd_limit_uint = 3;
+    uint32 nav_current_road_type = 4;
+}
+
+message Wrapper_AlgDebugBodyStatus
+{
+    uint32 veh_spd_disp = 1;
+    uint32 gear_lever = 2;
+    uint32 drive_mode = 3;
+    bool power_mode = 4;
+    uint32 tcu_actual_gear = 5;
+    bool tcu_shift_progress = 6;
+    bool tcu_error = 7;
+    bool brake_pressed = 8;
+    float brake_travel_dist = 9;
+    float brake_mas_cyl_pressure = 10;
+    float acc_pedal_pos = 11;
+    float acc_pedal_pos_driver = 12;
+    bool acc_pedal_override = 13;
+    uint32 epb_status = 14;
+    bool esc_esc_fault = 15;
+    bool esc_esc_on = 16;
+    bool esc_acc_available = 17;
+    bool esc_acc_active = 18;
+    bool esc_acc_standstill = 19;
+    bool esc_aeb_available = 20;
+    bool esc_aeb_active = 21;
+    bool esc_epb_available = 22;
+    bool esc_epb_active = 23;
+    bool esc_avh_available = 24;
+    bool esc_avh_active = 25;
+    bool esc_awb_available = 26;
+    bool esc_awb_active = 27;
+    bool esc_aba_available = 28;
+    bool esc_aba_active = 29;
+    bool esc_abp_available = 30;
+    bool esc_abp_active = 31;
+    uint32 esc_whlmovgdir_lf = 32;
+    uint32 esc_whlmovgdir_rf = 33;
+    uint32 esc_whlmovgdir_lr = 34;
+    uint32 esc_whlmovgdir_rr = 35;
+    float esc_whl_spd_lf = 36;
+    float esc_whl_spd_rf = 37;
+    float esc_whl_spd_lr = 38;
+    float esc_whl_spd_rr = 39;
+    bool esc_slope_valid = 40;
+    float esc_slope = 41;
+    float esc_estimate_weight = 42;
+    bool asr_active = 43;
+    bool rop_active = 44;
+    bool yc_active = 45;
+    bool vdc_on = 46;
+    bool vdc_active = 47;
+    bool abs_on = 48;
+    bool abs_active = 49;
+    bool tcs_on = 50;
+    bool tcs_active = 51;
+    bool hdc_on = 52;
+    bool hdc_active = 53;
+    bool egy_recovr_active = 54;
+    bool ems_acc_available = 55;
+    bool ems_acc_active = 56;
+    float ems_driver_torq_req = 57;
+    float ems_real_engine_torq = 58;
+    float ems_torque_loss = 59;
+    float ems_torque_max = 60;
+    float ems_torque_min = 61;
+    float ems_torque_constant = 62;
+    float ems_engine_speed = 63;
+    bool ems_engine_status = 64;
+    uint32 ems_start_stop_status = 65;
+    bool no_brake_force = 66;
+    float steer_angle = 67;
+    float steer_speed = 68;
+    float steer_driver_torq = 69;
+    bool eps_icc_available = 70;
+    bool eps_icc_active = 71;
+    uint32 handsoff_status = 72;
+    bool door_open_FL = 73;
+    bool door_open_FR = 74;
+    bool door_open_RL = 75;
+    bool door_open_RR = 76;
+    bool door_open_rear = 77;
+    bool hood_open = 78;
+    bool driver_belt_locked = 79;
+    uint32 front_wipper = 80;
+    bool srs_crash = 81;
+    Wrapper_AlgDebugSteerOffset steer_offset = 82;
+    bool low_beam_status = 83;
+    bool high_beam_status = 84;
+    bool front_fog_lamp_on = 85;
+    bool rear_fog_lamp_on = 86;
+    bool trailer_mode_active = 87;
+    bool maintenance_mode_active = 88;
+    bool brake_disc_temp_high = 89;
+    Wrapper_AlgDebugNavInfo nav_info = 90;
+}
+
+message Wrapper_AlgDebugSwitchStatus
+{
+    bool turn_left = 1;
+    bool turn_right = 2;
+    bool hazard_light = 3;
+    bool headlight_on = 4;
+    bool high_beam = 5;
+    bool acc_active_bt = 6;
+    bool icc_active_bt = 7;
+    bool acc_cancel = 8;
+    uint32 acc_set_reduce = 9;
+    uint32 acc_resume_plus = 10;
+    bool acc_headway_level_plus = 11;
+    bool acc_headway_level_reduce = 12;
+    uint32 icc_enable = 13;
+    uint32 alc_enable = 14;
+    uint32 func_acc_bt = 15;
+    uint32 func_icc_bt = 16;
+    uint32 func_fvsw_bt = 17;
+    uint32 func_fcw_bt = 18;
+    uint32 func_aeb_bt = 19;
+    uint32 func_raeb_bt = 20;
+    uint32 func_ldw_bt = 21;
+    uint32 func_lka_bt = 22;
+    uint32 func_elk_bt = 23;
+    uint32 func_sla_bt = 24;
+    uint32 func_ihb_bt = 25;
+    uint32 func_fcw_sen_bt = 26;
+    uint32 func_ldw_sen_bt = 27;
+    uint32 ldw_warn_mode = 28;
+    uint32 sys_scf_main_switch = 29;
+    bool sys_sla_slif_switch = 30;
+    bool sys_sla_slwf_switch = 31;
+    uint32 sys_sla_slwf_mode = 32;
+    uint32 sys_sla_slif_change_switch = 33;
+    uint32 sys_sla_slwf_offset_switch = 34;
+    uint32 sys_sla_slwf_offset_value = 35;
+    uint32 sys_sla_slwf_offset_percent = 36;
+}
+
+message Wrapper_AlgDebugCRELKInfo
+{
+    bool FL_ELK_Collision_flag = 1;
+    bool FL_ELK_Collision_flag_valid = 2;
+    uint32 FL_ELK_BlockCount = 3;
+    bool FR_ELK_Collision_flag = 4;
+    bool FR_ELK_Collision_flag_valid = 5;
+    uint32 FR_ELK_BlockCount = 6;
+    bool RL_ELK_Collision_flag = 7;
+    bool RL_ELK_Collision_flag_valid = 8;
+    uint32 RL_ELK_BlockCount = 9;
+    bool RR_ELK_Collision_flag = 10;
+    bool RR_ELK_Collision_flag_valid = 11;
+    uint32 RR_ELK_BlockCount = 12;
+}
+
+message Wrapper_AlgDebugCornerRadarStatus
+{
+    uint32 FCTA_Warn = 1;
+    uint32 RCTA_Warn = 2;
+    uint32 FCTB_Warn = 3;
+    uint32 RCTB_Warn = 4;
+    uint32 RCW_Warn = 5;
+    uint32 DOW_Warn = 6;
+    uint32 BSD_Warn = 7;
+    uint32 ELK_Collision_Status = 8;
+    uint32 ELK_Collision_Status_Valid = 9;
+    Wrapper_AlgDebugCRELKInfo CR_ELK_Info = 10;
+    uint32 reserved_1 = 11;
+    uint32 reserved_2 = 12;
+}
+
+message Wrapper_FrameIdDebug
+{
+    uint64 frame_id_ihbc = 1;
+    uint64 frame_id_obs = 2;
+    uint64 frame_id_sla = 3;
+    uint64 frame_id_lanes = 4;
+}
+
+message Wrapper_DelayDebug
+{
+    uint32 delay_trans = 1;
+    uint32 delay_all = 2;
+}
+
+message Wrapper_SensorDebug
+{
+    Wrapper_FrameIdDebug frame_id_debug = 1;
+    Wrapper_DelayDebug delay_ihbc = 2;
+    Wrapper_DelayDebug delay_obs = 3;
+    Wrapper_DelayDebug delay_sla = 4;
+    Wrapper_DelayDebug delay_lanes = 5;
+}
+
+message Wrapper_AlgDebugWrapperVehInfo
+{
+    uint64 time_stamp = 1;
+    Wrapper_SensorDebug sensor_debug = 2;
+    Wrapper_AlgDebugMotionStatus motion_status = 3;
+    Wrapper_AlgDebugBodyStatus body_status = 4;
+    Wrapper_AlgDebugSwitchStatus switch_status = 5;
+    Wrapper_AlgDebugCornerRadarStatus corner_radar_Status = 6;
+}
+
+message Wrapper_AlgDebugLocalizationInfo
+{
+    uint32 status = 1;
+    uint32 loc_info_reserved_1 = 2;
+    uint32 loc_info_reserved_2 = 3;
+    float pos_x = 4;
+    float pos_y = 5;
+    float theta = 6;
+    float speed = 7;
+    float acceleration = 8;
+    float yawrate = 9;
+    float travel_dist = 10;
+}
+
+message Wrapper_AlgDebugWrapper
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    Wrapper_AlgDbgSoftwareInfo alg_software_info = 3;
+    Wrapper_AlgDebugWrapperVehInfo vehicle_info = 4;
+    Wrapper_AlgDebugLocalizationInfo localization = 5;
+}
+
+message WrapperMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Wrapper_AlgDebugWrapper alg_debug_wrapper = 2;
+}
+

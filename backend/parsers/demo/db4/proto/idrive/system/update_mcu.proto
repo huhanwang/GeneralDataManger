@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum McuUpdate_MCU_UPDATE_CMD 
+{
+    McuUpdate_MCU_UPDATE_CMD_NONE = 0;
+    McuUpdate_MCU_UPDATE_CMD_SOC_REQ = 1;
+    McuUpdate_MCU_UPDATE_CMD_MCU_REP = 2;
+    McuUpdate_MCU_UPDATE_CMD_DATA_REQ = 3;
+    McuUpdate_MCU_UPDATE_CMD_DATA_REP = 4;
+    McuUpdate_MCU_UPDATE_CMD_SOC_RESULT = 5;
+    McuUpdate_MCU_UPDATE_CMD_MCU_RESULT = 6;
+}
+
+message McuUpdate_McuUpdate
+{
+    McuUpdate_MCU_UPDATE_CMD Command = 1;
+    uint32 FileType = 2;
+    uint32 Result = 3;
+    uint32 BlkIndex = 4;
+    uint32 Length = 5;
+    uint32 crc32 = 6;
+    string AppVersion = 7;
+    string BuildStamp = 8;
+    bytes data = 9;
+}
+
+message McuUpdateMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    McuUpdate_McuUpdate mcu_update = 2;
+}
+

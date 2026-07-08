@@ -1,0 +1,16 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message RleParsingCompressed_Rle
+{
+    sint32 num_data = 1;
+    bytes data = 2;
+}
+
+message RleParsingCompressedMsg
+{
+    CommonMsgMsg common_msg = 1;
+    RleParsingCompressed_Rle rle = 2;
+}
+

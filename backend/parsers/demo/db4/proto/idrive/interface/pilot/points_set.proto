@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/point_set.proto";
+package idrive.workflow.proto;
+
+message PointSetMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PointSet point_set = 2;
+}
+

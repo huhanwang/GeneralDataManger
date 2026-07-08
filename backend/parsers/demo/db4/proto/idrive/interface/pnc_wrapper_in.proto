@@ -1,0 +1,194 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PncWrapperIn_Valid 
+{
+    PncWrapperIn_Valid_Invalid = 0;
+    PncWrapperIn_Valid_Vaild = 1;
+    PncWrapperIn_Valid_Reserved = 2;
+}
+
+enum PncWrapperIn_Active 
+{
+    PncWrapperIn_Active_NoActive = 0;
+    PncWrapperIn_Active_Active = 1;
+    PncWrapperIn_Active_Reserved = 2;
+}
+
+enum PncWrapperIn_BrakePedalPosition 
+{
+    PncWrapperIn_BrakePedalPosition_NotPressed = 0;
+    PncWrapperIn_BrakePedalPosition_Pressed = 1;
+    PncWrapperIn_BrakePedalPosition_Reserved = 2;
+}
+
+enum PncWrapperIn_Gear 
+{
+    PncWrapperIn_Gear_P = 0;
+    PncWrapperIn_Gear_R = 1;
+    PncWrapperIn_Gear_N = 2;
+    PncWrapperIn_Gear_D = 3;
+    PncWrapperIn_Gear_Reserved = 4;
+}
+
+enum PncWrapperIn_WheelpulseDir 
+{
+    PncWrapperIn_WheelpulseDir_Undefinable = 0;
+    PncWrapperIn_WheelpulseDir_Forward = 1;
+    PncWrapperIn_WheelpulseDir_Backward = 2;
+    PncWrapperIn_WheelpulseDir_Stop = 3;
+}
+
+enum PncWrapperIn_VehicleStandstillStatus 
+{
+    PncWrapperIn_VehicleStandstillStatus_Invalid = 0;
+    PncWrapperIn_VehicleStandstillStatus_NotStandstill = 1;
+    PncWrapperIn_VehicleStandstillStatus_Standstill = 2;
+    PncWrapperIn_VehicleStandstillStatus_Reserved = 3;
+}
+
+enum PncWrapperIn_VcuE2eSts 
+{
+    PncWrapperIn_VcuE2eSts_No_Error = 0;
+    PncWrapperIn_VcuE2eSts_Main_Net_E2E_Error = 1;
+    PncWrapperIn_VcuE2eSts_Sub_Net_E2E_Error = 2;
+    PncWrapperIn_VcuE2eSts_Both_Net_E2E_Error = 3;
+}
+
+enum PncWrapperIn_EpsRespSts 
+{
+    PncWrapperIn_EpsRespSts_Not_Ready = 0;
+    PncWrapperIn_EpsRespSts_Ready = 1;
+    PncWrapperIn_EpsRespSts_Active_100Pct = 2;
+    PncWrapperIn_EpsRespSts_Active_50Pct = 3;
+    PncWrapperIn_EpsRespSts_Failed = 4;
+}
+
+enum PncWrapperIn_EpbSts 
+{
+    PncWrapperIn_EpbSts_Release = 0;
+    PncWrapperIn_EpbSts_Apply = 1;
+    PncWrapperIn_EpbSts_Releasing = 2;
+    PncWrapperIn_EpbSts_Applying = 3;
+    PncWrapperIn_EpbSts_Disengaged = 4;
+    PncWrapperIn_EpbSts_Reversed1 = 5;
+    PncWrapperIn_EpbSts_Reversed2 = 6;
+    PncWrapperIn_EpbSts_Fault = 7;
+}
+
+enum PncWrapperIn_PwrMod 
+{
+    PncWrapperIn_PwrMod_Invalid = 0;
+    PncWrapperIn_PwrMod_Off = 1;
+    PncWrapperIn_PwrMod_Acc = 2;
+    PncWrapperIn_PwrMod_On = 3;
+    PncWrapperIn_PwrMod_Reserved = 4;
+}
+
+enum PncWrapperIn_TurnLightSts 
+{
+    PncWrapperIn_TurnLightSts_NotActive = 0;
+    PncWrapperIn_TurnLightSts_Off = 1;
+    PncWrapperIn_TurnLightSts_On = 2;
+}
+
+enum PncWrapperIn_RainLevel 
+{
+    PncWrapperIn_RainLevel_NoRain = 0;
+    PncWrapperIn_RainLevel_Level_1 = 1;
+    PncWrapperIn_RainLevel_Level_2 = 2;
+    PncWrapperIn_RainLevel_Level_3 = 3;
+    PncWrapperIn_RainLevel_Level_4 = 4;
+    PncWrapperIn_RainLevel_Level_5 = 5;
+    PncWrapperIn_RainLevel_Level_6 = 6;
+    PncWrapperIn_RainLevel_Level_7 = 7;
+    PncWrapperIn_RainLevel_Level_8 = 8;
+    PncWrapperIn_RainLevel_Reserved = 9;
+}
+
+enum PncWrapperIn_WiperSts 
+{
+    PncWrapperIn_WiperSts_Off = 0;
+    PncWrapperIn_WiperSts_Int = 1;
+    PncWrapperIn_WiperSts_LowSpeed = 2;
+    PncWrapperIn_WiperSts_HighSpeed = 3;
+    PncWrapperIn_WiperSts_Auto = 4;
+}
+
+message PncWrapperIn_WrapperIn
+{
+    uint32 wheel_pulse_fl = 1;
+    uint32 wheel_pulse_fr = 2;
+    uint32 wheel_pulse_rl = 3;
+    uint32 wheel_pulse_rr = 4;
+    float wheel_speed_fl = 5;
+    float wheel_speed_fr = 6;
+    float wheel_speed_rl = 7;
+    float wheel_speed_rr = 8;
+    PncWrapperIn_WheelpulseDir wheel_pulse_fl_dir = 9;
+    PncWrapperIn_WheelpulseDir wheel_pulse_fr_dir = 10;
+    PncWrapperIn_WheelpulseDir wheel_pulse_rl_dir = 11;
+    PncWrapperIn_WheelpulseDir wheel_pulse_rr_dir = 12;
+    PncWrapperIn_Valid wheel_speed_fl_vld = 13;
+    PncWrapperIn_Valid wheel_speed_fr_vld = 14;
+    PncWrapperIn_Valid wheel_speed_rl_vld = 15;
+    PncWrapperIn_Valid wheel_speed_rr_vld = 16;
+    PncWrapperIn_Valid wheel_speed_pulse_fl_vld = 17;
+    PncWrapperIn_Valid wheel_speed_pulse_fr_vld = 18;
+    PncWrapperIn_Valid wheel_speed_pulse_rl_vld = 19;
+    PncWrapperIn_Valid wheel_speed_pulse_rr_vld = 20;
+    PncWrapperIn_Valid brake_pedal_valid = 21;
+    PncWrapperIn_BrakePedalPosition brake_pedal_position = 22;
+    PncWrapperIn_Valid brake_plunger_pressure_sts = 23;
+    PncWrapperIn_Valid speed_valid = 24;
+    PncWrapperIn_Valid acc_valid = 25;
+    PncWrapperIn_Valid acc_lateral_valid = 26;
+    PncWrapperIn_Valid yaw_rate_valid = 27;
+    PncWrapperIn_VehicleStandstillStatus veh_standstill_sts = 28;
+    float speed = 29;
+    float acc = 30;
+    float acc_lateral = 31;
+    float yaw_rate = 32;
+    PncWrapperIn_Active gear_intrvn_active = 33;
+    PncWrapperIn_Gear gear = 34;
+    PncWrapperIn_Valid gear_shift_valid = 35;
+    PncWrapperIn_Valid vcu_resp_valid = 36;
+    PncWrapperIn_Valid vcu_tq_resp_valid = 37;
+    PncWrapperIn_Valid vcu_tq_valid = 38;
+    PncWrapperIn_VcuE2eSts vcu_e2e_fb = 39;
+    PncWrapperIn_Valid vcu_rdy_sts = 40;
+    float vcu_act_wheel_tq = 41;
+    PncWrapperIn_Valid vcu_system_valid = 42;
+    PncWrapperIn_Valid eps_ctrl_valid = 43;
+    PncWrapperIn_EpsRespSts eps_resp_sts = 44;
+    PncWrapperIn_Active eps_override_sts = 45;
+    float eps_steering_angle = 46;
+    float eps_steering_angle_rate = 47;
+    PncWrapperIn_Valid eps_steering_angle_valid = 48;
+    PncWrapperIn_EpbSts epb_sts = 49;
+    PncWrapperIn_Active epb_override_sts = 50;
+    PncWrapperIn_Valid epb_valid = 51;
+    PncWrapperIn_Valid esp_system_valid = 52;
+    PncWrapperIn_Active esp_avh_sts = 53;
+    PncWrapperIn_Valid esp_avh_valid = 54;
+    PncWrapperIn_Valid esp_brk_valid = 55;
+    float esp_tq_value = 56;
+    PncWrapperIn_Valid esp_tq_valid = 57;
+    PncWrapperIn_PwrMod power_mode = 58;
+    PncWrapperIn_Valid ambnt_tmpr_valid = 59;
+    float ambnt_tmpr = 60;
+    PncWrapperIn_TurnLightSts turn_light_left = 61;
+    PncWrapperIn_TurnLightSts turn_light_right = 62;
+    PncWrapperIn_RainLevel rain_level = 63;
+    PncWrapperIn_WiperSts wiper_sts = 64;
+    float AccPedalPstForMRR = 65;
+    uint32 AccPedalPstForMRRVD = 66;
+}
+
+message PncWrapperInMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    PncWrapperIn_WrapperIn wrapper_in = 2;
+}
+

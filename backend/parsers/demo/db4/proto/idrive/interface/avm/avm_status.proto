@@ -1,0 +1,40 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/avm/avm_control.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum AvmStatus_AvmResp 
+{
+    AvmStatus_AvmResp_NONE = 0;
+    AvmStatus_AvmResp_NO_OPEN_OVERSPEED = 1;
+    AvmStatus_AvmResp_NO_CLOSE_R = 2;
+    AvmStatus_AvmResp_NO_OPEN_AVM_ERR = 3;
+}
+
+enum AvmStatus_LutsState 
+{
+    AvmStatus_LutsState_NONE = 0;
+    AvmStatus_LutsState_READY = 1;
+    AvmStatus_LutsState_SAVING = 2;
+    AvmStatus_LutsState_SAVED = 3;
+    AvmStatus_LutsState_FAILED = 4;
+}
+
+message AvmStatus_AvmStatus
+{
+    VisionCtrl avm_vision = 8;
+    uint32 self_slot_state = 2;
+    uint32 self_slot_type = 3;
+    uint32 avm_init_status = 4;
+    AvmStatus_AvmResp avm_resp = 6;
+    AvmStatus_LutsState luts_state = 7;
+    repeated Vector3f self_slot_point = 5;
+}
+
+message AvmStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    AvmStatus_AvmStatus status = 2;
+}
+

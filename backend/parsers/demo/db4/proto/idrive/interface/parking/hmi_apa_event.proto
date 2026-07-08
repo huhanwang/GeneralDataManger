@@ -1,0 +1,51 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum HmiApaEvent_ApaFunctionCtrl
+{
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_NO_SELECT = 0;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_FUNC_ENTER = 1;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_CONTINUE = 2;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_CANCEL = 3;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_ENTER_PARKING = 4;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_ENTER_PARKINGOUT = 5;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_START_PARKING = 6;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_REMOTE_PARKING = 7;
+    HmiApaEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_SELF_SELECT_SLOT = 8;
+}
+
+enum HmiApaEvent_ParkingOutDirection
+{
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_NO_SELECT = 0;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_FRONT = 1;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_REAR = 2;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_LEFT = 3;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_RIGHT = 4;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_HORIZONTAL_FRONT_LEFT = 5;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_HORIZONTAL_FRONT_RIGHT = 6;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_VERTICAL_FRONT_LEFT = 7;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_VERTICAL_REAR_LEFT = 8;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_VERTICAL_FRONT_RIGHT = 9;
+    HmiApaEvent_ParkingOutDirection_PARKING_OUT_DIRECTION_VERTICAL_REAR_RIGHT = 10;
+}
+
+message HmiApaEvent_UserSlotInfo
+{
+    sint32 slotid = 1;
+    sint64 timestamp = 2;
+}
+
+message HmiApaEvent_ApaUserCtrlEvent
+{
+    HmiApaEvent_ApaFunctionCtrl function_ctrl = 1;
+    HmiApaEvent_ParkingOutDirection out_direction = 2;
+    HmiApaEvent_UserSlotInfo slot_info = 3;
+}
+
+message HmiApaEventMsg
+{
+    CommonMsgMsg common_msg = 1;
+    HmiApaEvent_ApaUserCtrlEvent apa_user_event = 2;
+}
+

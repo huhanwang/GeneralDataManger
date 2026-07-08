@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message OdoForMcu_OdoForMcu
+{
+    float x = 1;
+    float y = 2;
+    float raw = 3;
+}
+
+message OdoForMcuMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    OdoForMcu_OdoForMcu odo_for_mcu = 2;
+}
+

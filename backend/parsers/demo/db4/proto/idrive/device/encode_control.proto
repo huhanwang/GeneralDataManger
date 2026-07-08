@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum EncodeControl_Chn 
+{
+    EncodeControl_Chn_BirdView = 0;
+    EncodeControl_Chn_PlaneView = 1;
+    EncodeControl_Chn_FloatView = 2;
+    EncodeControl_Chn_DvrView = 3;
+    EncodeControl_Chn_SentinelView = 4;
+}
+
+enum EncodeControl_Cmd 
+{
+    EncodeControl_Cmd_Invalid = 0;
+    EncodeControl_Cmd_Enable = 1;
+    EncodeControl_Cmd_Disable = 2;
+}
+
+message EncodeControl_Control
+{
+    EncodeControl_Chn chn = 1;
+    EncodeControl_Cmd cmd = 2;
+}
+
+message EncodeControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EncodeControl_Control control = 2;
+}
+

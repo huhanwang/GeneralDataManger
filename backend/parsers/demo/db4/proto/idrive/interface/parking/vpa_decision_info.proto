@@ -1,0 +1,282 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "interface/parking/hpa_psm.proto";
+package idrive.workflow.proto;
+
+enum VpaDecisionInfo_RequestType
+{
+    VpaDecisionInfo_RequestType_Obs_None = 0;
+    VpaDecisionInfo_RequestType_Obs_Stop = 1;
+    VpaDecisionInfo_RequestType_Obs_Follow = 2;
+    VpaDecisionInfo_RequestType_Obs_StopSide = 3;
+    VpaDecisionInfo_RequestType_Obs_Autohold = 4;
+    VpaDecisionInfo_RequestType_Obs_Override_Random = 5;
+    VpaDecisionInfo_RequestType_Obs_Override_Left = 6;
+    VpaDecisionInfo_RequestType_Obs_Override_Right = 7;
+    VpaDecisionInfo_RequestType_Backward_planning = 8;
+    VpaDecisionInfo_RequestType_Obs_Oncoming_PreAvoid = 9;
+    VpaDecisionInfo_RequestType_Obs_Oncoming_Meeting = 10;
+}
+
+enum VpaDecisionInfo_BypassDirection
+{
+    VpaDecisionInfo_BypassDirection_None = 0;
+    VpaDecisionInfo_BypassDirection_Left = 1;
+    VpaDecisionInfo_BypassDirection_Right = 2;
+}
+
+enum VpaDecisionInfo_DecisionType
+{
+    VpaDecisionInfo_DecisionType_HPADecisionNone = 0;
+    VpaDecisionInfo_DecisionType_HPAObjectStop = 1;
+    VpaDecisionInfo_DecisionType_HPAObjectFollow = 2;
+    VpaDecisionInfo_DecisionType_HPAObjectOncoming = 3;
+    VpaDecisionInfo_DecisionType_HPAObjectCrossing = 4;
+    VpaDecisionInfo_DecisionType_HPAObjectOverrding = 5;
+}
+
+enum VpaDecisionInfo_StopReason
+{
+    VpaDecisionInfo_StopReason_ObjectStop = 0;
+    VpaDecisionInfo_StopReason_ObjectCrossing = 1;
+    VpaDecisionInfo_StopReason_ObjectCrossingImidiate = 2;
+    VpaDecisionInfo_StopReason_ObjectOncoming = 3;
+    VpaDecisionInfo_StopReason_ObjectReversing = 4;
+    VpaDecisionInfo_StopReason_ObjectCutIn = 5;
+    VpaDecisionInfo_StopReason_FollowdistanceTooshort = 6;
+    VpaDecisionInfo_StopReason_HPAPedestrainForwardSameDirection = 7;
+    VpaDecisionInfo_StopReason_HPAPedestrainCrossing = 8;
+    VpaDecisionInfo_StopReason_HPAPedestrainOncoming = 9;
+    VpaDecisionInfo_StopReason_ObjectPBBlocking = 10;
+}
+
+enum VpaDecisionInfo_StateMachineMainState
+{
+    VpaDecisionInfo_StateMachineMainState_STATE_NONE = 0;
+    VpaDecisionInfo_StateMachineMainState_STATE_FORWARD = 1;
+    VpaDecisionInfo_StateMachineMainState_STATE_STOP_BEHIND = 2;
+    VpaDecisionInfo_StateMachineMainState_STATE_STOP_SIDE = 3;
+    VpaDecisionInfo_StateMachineMainState_STATE_AUTO_HOLD = 4;
+    VpaDecisionInfo_StateMachineMainState_STATE_PRE_BACKWARD = 5;
+    VpaDecisionInfo_StateMachineMainState_STATE_BACKWARD_RUNNING = 6;
+    VpaDecisionInfo_StateMachineMainState_STATE_BACKWARD_WAITING = 7;
+    VpaDecisionInfo_StateMachineMainState_STATE_ONCOMING = 8;
+}
+
+enum VpaDecisionInfo_StateMachineSubState
+{
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_FOLLOW = 0;
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_PRE_OVERRIDING = 1;
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_OVERRIDING = 2;
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_PREAVOID = 3;
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_MEETING = 4;
+    VpaDecisionInfo_StateMachineSubState_SUB_STATE_STOPSIDE = 5;
+}
+
+enum VpaDecisionInfo_HpaControlCmdType
+{
+    VpaDecisionInfo_HpaControlCmdType_kStandby = 0;
+    VpaDecisionInfo_HpaControlCmdType_kNormal = 1;
+    VpaDecisionInfo_HpaControlCmdType_kGoal = 2;
+    VpaDecisionInfo_HpaControlCmdType_kInterrupt = 3;
+    VpaDecisionInfo_HpaControlCmdType_kComfBrk = 4;
+    VpaDecisionInfo_HpaControlCmdType_kEmergBrk = 5;
+    VpaDecisionInfo_HpaControlCmdType_kApaInCharge = 6;
+}
+
+message VpaDecisionInfo_BypassInfo
+{
+    bool bypass_flag = 1;
+    sint32 bypass_obs_id = 2;
+}
+
+message VpaDecisionInfo_ObsCornerPointsWithTime
+{
+    sint32 obs_id = 1;
+    sint64 timestamp = 2;
+    repeated Vector2f corner_points = 3;
+}
+
+message VpaDecisionInfo_ObsCornerPointsWithTimeInfo
+{
+    repeated VpaDecisionInfo_ObsCornerPointsWithTime obs_corner_points_with_time_list = 1;
+    uint32 num_obs_corner_points_with_time = 2;
+}
+
+message VpaDecisionInfo_SL_point
+{
+    float s = 1;
+    float l = 2;
+}
+
+message VpaDecisionInfo_DecisionStop
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+    VpaDecisionInfo_StopReason stop_reason = 4;
+}
+
+message VpaDecisionInfo_DecisionOncoming
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+}
+
+message VpaDecisionInfo_DecisionCrossing
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_dis = 3;
+}
+
+message VpaDecisionInfo_DecisionFollow
+{
+    sint32 id = 1;
+    float vmax = 2;
+    float follow_s = 3;
+    float current_dis = 4;
+    float collison_distance = 5;
+    float relative_distance = 6;
+}
+
+message VpaDecisionInfo_DecisionNudge
+{
+    sint32 id = 1;
+    float distance_s = 2;
+    float current_l = 3;
+}
+
+message VpaDecisionInfo_ObjectDecision
+{
+    sint32 id = 1;
+    VpaDecisionInfo_DecisionType type = 2;
+    VpaDecisionInfo_DecisionStop stop_decision = 3;
+    VpaDecisionInfo_DecisionFollow follow_decision = 4;
+    VpaDecisionInfo_DecisionOncoming oncoming_decision = 5;
+    VpaDecisionInfo_DecisionCrossing crossing_decision = 6;
+    sint64 timestamp = 7;
+}
+
+message VpaDecisionInfo_ObjectDecisonMsg
+{
+    VpaDecisionInfo_RequestType request_type = 1;
+    VpaDecisionInfo_BypassDirection bypass_direction = 2;
+    bool pedestrian_nudge_flag = 3;
+    bool need_decelerate = 4;
+    VpaDecisionInfo_ObjectDecision decision = 5;
+    VpaDecisionInfo_BypassInfo bypass_info = 6;
+    VpaDecisionInfo_ObsCornerPointsWithTimeInfo obs_corner_points_with_time = 7;
+    repeated VpaDecisionInfo_SL_point pedestrian_nudge_points_left = 8;
+    repeated VpaDecisionInfo_SL_point pedestrian_nudge_points_right = 9;
+}
+
+message VpaDecisionInfo_ObjectSelectionInfo
+{
+    uint32 vehicle_stop_num = 1;
+    uint32 vehicle_follow_num = 2;
+    uint32 vehicle_oncoming_num = 3;
+    uint32 vehicle_crossing_num = 4;
+    uint32 vehicle_crossing_imidiate_num = 5;
+    uint32 pedestrain_stop_num = 6;
+    uint32 pedestrain_nudge_num = 7;
+    repeated VpaDecisionInfo_DecisionStop vehicle_stop_list = 8;
+    repeated VpaDecisionInfo_DecisionFollow vehicle_follow_list = 9;
+    repeated VpaDecisionInfo_DecisionOncoming vehicle_oncoming_list = 10;
+    repeated VpaDecisionInfo_DecisionStop crossing_stop_list = 11;
+    repeated VpaDecisionInfo_DecisionStop crossing_imidiate_stop_list = 12;
+    VpaDecisionInfo_ObjectDecision object_decision_vehicle_tmp = 13;
+    repeated VpaDecisionInfo_DecisionStop pedestrain_stop_list = 14;
+    repeated VpaDecisionInfo_DecisionNudge pedestrain_nudge_list = 15;
+}
+
+message VpaDecisionInfo_ObjectStateMachineInfo
+{
+    VpaDecisionInfo_StateMachineMainState main_state = 1;
+    VpaDecisionInfo_StateMachineSubState sub_state = 2;
+    VpaDecisionInfo_ObjectDecision object_decision = 3;
+}
+
+message VpaDecisionInfo_PathBoundInfo
+{
+    bool pb_block_flag = 1;
+    sint32 path_bound_direction_dynamic = 2;
+    sint32 path_bound_direction = 3;
+    uint32 pb_block_deactivate = 4;
+    uint32 pb_block_activate = 5;
+    VpaDecisionInfo_DecisionStop pb_block_decision = 6;
+}
+
+message VpaDecisionInfo_CrossingDecisionInfo
+{
+    bool crossing_flag = 1;
+    uint32 crossing_Stop_deactivate = 2;
+    uint32 crossing_Stop_activate = 3;
+    VpaDecisionInfo_DecisionStop crossing_stop_decision = 4;
+}
+
+message VpaDecisionInfo_PedestrianDecisionInfo
+{
+    bool pedestrian_flag = 1;
+    uint32 pedestrian_Stop_deactivate = 2;
+    uint32 pedestrian_Stop_activate = 3;
+    VpaDecisionInfo_DecisionStop pedestrian_stop_decision = 4;
+}
+
+message VpaDecisionInfo_ObstacleStatusInfo
+{
+    sint32 id = 1;
+    bool is_interest_forward_flag = 2;
+    bool valid = 3;
+    bool is_backward = 4;
+    bool is_parking_in = 5;
+    bool is_parking_out = 6;
+    bool is_in_slot = 7;
+}
+
+message VpaDecisionInfo_ObstacleStatusInfoList
+{
+    uint32 num_obstacle_status_info = 1;
+    repeated VpaDecisionInfo_ObstacleStatusInfo obstacle_status_info_list = 2;
+}
+
+message VpaDecisionInfo_PlanningResult
+{
+    sint32 plan_result = 1;
+    sint32 switch_flag = 2;
+    sint32 stitch_success_flag = 3;
+    sint32 stitch_complete = 4;
+    sint32 stitch_has_planned = 5;
+    bool reach_goal_flag = 6;
+}
+
+message VpaDecisionInfo_VpaPlanStateInfo
+{
+    PlanStateType state = 1;
+    CtrlStateType ctrl_state = 2;
+    PlanPauseReason pause_code = 3;
+}
+
+message VpaDecisionInfo_VpaDecisionInfo
+{
+    VpaDecisionInfo_VpaPlanStateInfo vpa_plan_state_info = 1;
+    VpaDecisionInfo_HpaControlCmdType hpa_control_cmd_type = 2;
+    VpaDecisionInfo_PlanningResult planning_result = 3;
+    VpaDecisionInfo_ObjectStateMachineInfo object_state_machine_info = 4;
+    VpaDecisionInfo_PedestrianDecisionInfo pedestrian_decision_info = 5;
+    VpaDecisionInfo_CrossingDecisionInfo crossing_decision_info = 6;
+    VpaDecisionInfo_PathBoundInfo path_bound_info = 7;
+    VpaDecisionInfo_ObjectDecisonMsg final_object_decision_msg = 8;
+    VpaDecisionInfo_SL_point match_point = 9;
+    VpaDecisionInfo_ObjectSelectionInfo obstacle_selection_info = 10;
+    VpaDecisionInfo_ObstacleStatusInfoList obstacle_status_info_list = 11;
+}
+
+message VpaDecisionInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaDecisionInfo_VpaDecisionInfo vpa_decision_info = 2;
+}
+

@@ -1,0 +1,147 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+import "type/common_type.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Prediction_ObstacleIntent 
+{
+    Prediction_ObstacleIntent_UNKNOWN = 0;
+    Prediction_ObstacleIntent_STOP = 1;
+    Prediction_ObstacleIntent_STATIONARY = 2;
+    Prediction_ObstacleIntent_MOVING = 3;
+    Prediction_ObstacleIntent_CHANGE_LANE = 4;
+    Prediction_ObstacleIntent_LOW_ACCELERATION = 5;
+    Prediction_ObstacleIntent_HIGH_ACCELERATION = 6;
+    Prediction_ObstacleIntent_LOW_DECELERATION = 7;
+    Prediction_ObstacleIntent_HIGH_DECELERATION = 8;
+}
+
+enum Prediction_ObstaclePriority 
+{
+    Prediction_ObstaclePriority_INVALID = 0;
+    Prediction_ObstaclePriority_CAUTION = 1;
+    Prediction_ObstaclePriority_NORMAL = 2;
+    Prediction_ObstaclePriority_IGNORE = 3;
+}
+
+enum Prediction_ScenarioType 
+{
+    Prediction_ScenarioType_UNKNOWN = 0;
+    Prediction_ScenarioType_CRUISE = 1;
+    Prediction_ScenarioType_CRUISE_URBAN = 2;
+    Prediction_ScenarioType_CRUISE_HIGHWAY = 3;
+    Prediction_ScenarioType_JUNCTION = 4;
+    Prediction_ScenarioType_JUNCTION_TRAFFIC_LIGHT = 5;
+    Prediction_ScenarioType_JUNCTION_STOP_SIGN = 6;
+}
+
+message Prediction_Obstacle
+{
+    bool is_valid = 1;
+    bool is_type_changed = 2;
+    bool is_velocity_valid = 3;
+    bool is_acceleration_valid = 4;
+    uint32 id = 5;
+    uint32 tracking_count = 6;
+    uint32 vision_id = 7;
+    uint32 f_radar_id = 8;
+    uint32 fr_radar_id = 9;
+    uint32 rr_radar_id = 10;
+    uint32 rl_radar_id = 11;
+    uint32 fl_radar_id = 12;
+    ObstacleType type = 13;
+    VehicleSubType vehicle_subtype = 14;
+    RiderSubtype rider_subtype = 15;
+    PedestrianSubtype pedestrian_subtype = 16;
+    PedestrianOrientation pedestrian_orientation = 17;
+    PedestrianPose pedestrian_pose = 18;
+    MotionStatus motion_status = 19;
+    PositionZone position_zone = 20;
+    CipvType cipv_type = 21;
+    CutType cut_type = 22;
+    TurnIndicator turn_indicator = 23;
+    BrakeIndicator brake_indicator = 24;
+    LaneAssignment lane_assignment = 25;
+    TrackingStatus tracking_status = 26;
+    uint32 confidence = 27;
+    uint32 feature_target_flag = 28;
+    uint32 source_flag = 29;
+    bytes sensor_sources = 30;
+    uint32 nearest_side = 31;
+    uint32 traffic_scenario = 32;
+    uint32 cmbb_primary_confidence = 33;
+    uint32 cmbb_secondary_confidence = 34;
+    uint32 fcw_confidence = 35;
+    float curvature = 36;
+    float speed_abs_scalar = 37;
+    Vector2f nearest_point_rel = 38;
+    Vector2f nearest_point_rel_sd = 39;
+    float heading_rel = 40;
+    float heading_rel_sd = 41;
+    Vector2f velocity_abs = 42;
+    Vector2f velocity_sd = 43;
+    Vector2f acceleration_abs = 44;
+    Vector2f acceleration_sd = 45;
+    float acceleration_abs_scalar = 46;
+    float height = 47;
+    float length = 48;
+    float width = 49;
+    repeated Vector2f bounding_box_points = 50;
+}
+
+message Prediction_PredictionTrajectory
+{
+    float probability = 1;
+    uint32 num_points = 2;
+    repeated TrajectoryPoint points = 3;
+}
+
+message Prediction_PredictionObstacle
+{
+    Prediction_Obstacle obstacle = 1;
+    sint32 predicted_period = 2;
+    Prediction_ObstacleIntent intent = 3;
+    Prediction_ObstaclePriority priority = 4;
+    bool is_static = 5;
+    uint32 num_trajectories = 6;
+    repeated Prediction_PredictionTrajectory trajectories = 7;
+}
+
+message Prediction_HostInfo
+{
+    Vector3f position = 1;
+    Vector3f orientation = 2;
+}
+
+message Prediction_Scenario
+{
+    Prediction_ScenarioType type = 1;
+    uint32 num_junction_id = 2;
+    bytes junction_ids = 3;
+}
+
+message Prediction_InputTimestamp
+{
+    sint64 hdmap_timestamp = 1;
+    sint64 pnc_timestamp = 2;
+    sint64 planning_timestamp = 3;
+    sint64 fusion_timestamp = 4;
+}
+
+message Prediction_Prediction
+{
+    Prediction_Scenario scenario = 1;
+    repeated Prediction_PredictionObstacle obstacles = 2;
+    uint32 num_obstacles = 3;
+    Prediction_HostInfo host_info = 4;
+    Prediction_InputTimestamp input_ts = 5;
+}
+
+message PredictionMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Prediction_Prediction prediction = 2;
+}
+

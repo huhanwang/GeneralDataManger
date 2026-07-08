@@ -1,0 +1,276 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/avm/avm_control.proto";
+import "message/hmi.proto";
+package idrive.workflow.proto;
+
+enum BTN_STATE 
+{
+    BTN_STATE_ENABLE = 0;
+    BTN_STATE_DISABLE = 1;
+}
+
+enum BTN_OFFER 
+{
+    BTN_OFFER_NONE = 0;
+    BTN_OFFER_ENABLE = 1;
+    BTN_OFFER_DISABLE = 2;
+}
+
+enum ICC_RESP 
+{
+    ICC_RESP_INACTIVE = 0;
+    ICC_RESP_NO_OPEN_OVERSPEED = 1;
+    ICC_RESP_NO_CLOSE_R = 2;
+    ICC_RESP_NO_OPEN_AVM_ERR = 3;
+}
+
+enum VIEW_MODE 
+{
+    VIEW_MODE_NONE = 0;
+    VIEW_MODE_VIEW_2D = 1;
+    VIEW_MODE_VIEW_3D = 2;
+}
+
+enum PARK_MODE 
+{
+    PARK_MODE_NONE = 0;
+    PARK_MODE_PARK_IN = 1;
+    PARK_MODE_PARK_OUT = 2;
+    PARK_MODE_PARK_CUS_SEL = 3;
+}
+
+enum PARKOUT_DIR 
+{
+    PARKOUT_DIR_INACTIVE = 0;
+    PARKOUT_DIR_HALF_VEHICLE_LEFT = 1;
+    PARKOUT_DIR_HALF_VEHICLE_RIGHT = 2;
+    PARKOUT_DIR_VERT_FORWARD = 3;
+    PARKOUT_DIR_VERT_BACKWARD = 4;
+    PARKOUT_DIR_VERT_HEAD_LEFT = 5;
+    PARKOUT_DIR_VERT_HEAD_RIGHT = 6;
+    PARKOUT_DIR_VERT_TRUNK_LEFT = 7;
+    PARKOUT_DIR_VERT_TRUNK_RIGHT = 8;
+}
+
+enum PATH_SELE 
+{
+    PATH_SELE_INACTIVE = 0;
+    PATH_SELE_VEHI_HEAD = 1;
+    PATH_SELE_VEHI_TAIL = 2;
+    PATH_SELE_INVALID = 3;
+}
+
+enum ABORT_TYPE 
+{
+    ABORT_TYPE_NONE = 0;
+    ABORT_TYPE_ABORT_2A = 0x2A;
+}
+
+enum RPA_ST 
+{
+    RPA_ST_OFF = 0;
+    RPA_ST_IN_STANDBY = 1;
+    RPA_ST_OUT_STANDBY = 2;
+    RPA_ST_IN_READY = 3;
+    RPA_ST_IN_OPERATING = 4;
+    RPA_ST_IN_SUSPEND = 5;
+    RPA_ST_IN_ABORT = 6;
+    RPA_ST_IN_SUCCESS = 7;
+    RPA_ST_OUT_SUCCESS = 8;
+    RPA_ST_FAULT = 9;
+    RPA_ST_OUT_READY = 10;
+    RPA_ST_OUT_OPERATING = 11;
+    RPA_ST_OUT_SUSPEND = 12;
+    RPA_ST_OUT_ABORT = 13;
+    RPA_ST_NOT_AVAILABLE = 14;
+}
+
+message MsgToHmi_CanMsg1BA
+{
+    uint32 ScrnCoordX = 1;
+    uint32 ScrnCoordY = 2;
+    uint32 ApaTouchScrnCmd = 3;
+}
+
+message MsgToHmi_CanMsg3FE
+{
+    uint32 ApaSwt = 1;
+    uint32 ApaParkModSet = 2;
+    uint32 ApaParkOutDirSet = 3;
+    uint32 ApaTragParkSwt = 4;
+    uint32 ApaParkStrtSet = 5;
+    uint32 ApaSlotSet = 6;
+    uint32 AdasApaSocOffSwt = 7;
+    uint32 ApaPathSet = 8;
+    uint32 AvmSwt = 9;
+    uint32 BsdDispSwt = 10;
+    uint32 AvmViewModSet = 11;
+    uint32 AvmDispModSwt = 12;
+    uint32 AvmTrigByTurnSwt = 13;
+    uint32 AvmFullScrnSwt = 14;
+    uint32 AvmViewSet = 15;
+    uint32 PasLoSpdAutoSwt = 16;
+    uint32 AvmVehLctSet = 17;
+    uint32 AvmChasLctSet = 18;
+    uint32 AvmMoveObjRcnSwt = 19;
+    uint32 OvlyDispSwt = 20;
+    uint32 ObstclViewSwt = 21;
+    uint32 AvmTrigByObstclSwt = 22;
+    uint32 AvmTrigBySteerSwt = 23;
+    uint32 ICC_NarlaneAsisSwt = 24;
+    uint32 ICC_NarlaneDrivSwt = 25;
+    uint32 AVMVehSrtSwt = 26;
+    uint32 ICC_3DCrs_Swt = 27;
+    uint32 SdwAudioSwt = 28;
+    uint32 ICC_FeaReqVehColor = 29;
+    uint32 ICC_RestoreDftSettings = 30;
+    uint32 ICC_CfmResmKey = 31;
+    uint32 ICC_PauseResuKey = 32;
+}
+
+message MsgToHmi_CanMsg31F
+{
+    uint32 ICC_AvaperrReason = 1;
+    uint32 ICC_avmSetpageSts = 2;
+    uint32 ICC_CrtTi_Day = 3;
+    uint32 ICC_CrtTi_Hr = 4;
+    uint32 ICC_CrtTi_Mins = 5;
+    uint32 ICC_CrtTi_Yr = 6;
+    uint32 ICC_CrtTi_Mth = 7;
+    uint32 ICC_CrtTi_Sec = 8;
+}
+
+message MsgToHmi_CanMsg1F8
+{
+    uint32 BleDrvrMtnIndcn = 1;
+    uint32 BleRpaStrtFlg = 2;
+    uint32 BlePrkgInTypReq = 3;
+    uint32 BleBluStsFlg = 4;
+    uint32 BleRpaOnFlg = 5;
+    uint32 BleParkAbortReq = 6;
+    uint32 BleParkAuthentStrtReq = 7;
+    uint32 BleLastStep = 8;
+    uint32 BleNextStep = 9;
+    uint32 BleParkoutModSel = 10;
+    uint32 BleBdcRpaModReq = 11;
+}
+
+message MsgToHmiMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    MsgToHmi_CanMsg1BA can_msg_1ba = 2;
+    MsgToHmi_CanMsg3FE can_msg_3fe = 3;
+    MsgToHmi_CanMsg31F can_msg_31f = 4;
+    MsgToHmi_CanMsg1F8 can_msg_1f8 = 5;
+}
+
+enum MsgFromHmi_DISPLAY_TYPE 
+{
+    MsgFromHmi_DISPLAY_TYPE_NONE = 0;
+    MsgFromHmi_DISPLAY_TYPE_AVM = 0x01;
+    MsgFromHmi_DISPLAY_TYPE_OFF = 0x02;
+    MsgFromHmi_DISPLAY_TYPE_AVM_ERROR = 0x03;
+    MsgFromHmi_DISPLAY_TYPE_ADAS = 0x04;
+    MsgFromHmi_DISPLAY_TYPE_NPA_AUXILIARY = 0x05;
+    MsgFromHmi_DISPLAY_TYPE_AVM_FLOAT = 0x06;
+    MsgFromHmi_DISPLAY_TYPE_ADAS_FLOAT = 0x07;
+    MsgFromHmi_DISPLAY_TYPE_APA_NO_CONDITION = 0x11;
+    MsgFromHmi_DISPLAY_TYPE_APA_SEARCH = 0x12;
+    MsgFromHmi_DISPLAY_TYPE_APA_SELECT_SLOT = 0x13;
+    MsgFromHmi_DISPLAY_TYPE_APA_SELECT_PATH = 0x14;
+    MsgFromHmi_DISPLAY_TYPE_APA_PROGRESS = 0x15;
+    MsgFromHmi_DISPLAY_TYPE_APA_SUCCESS = 0x16;
+    MsgFromHmi_DISPLAY_TYPE_APA_SUSPEND = 0x17;
+    MsgFromHmi_DISPLAY_TYPE_APA_ABORT = 0x18;
+    MsgFromHmi_DISPLAY_TYPE_SELF_APA = 0x19;
+    MsgFromHmi_DISPLAY_TYPE_SELF_APA_INSPACE = 0x1A;
+    MsgFromHmi_DISPLAY_TYPE_SELF_APA_PARK = 0x1B;
+    MsgFromHmi_DISPLAY_TYPE_SELF_APA_FAIL = 0x1C;
+    MsgFromHmi_DISPLAY_TYPE_APA_SELECT_OUT_DIR = 0x1D;
+    MsgFromHmi_DISPLAY_TYPE_APA_CONFIM_OUT_DIR = 0x1F;
+    MsgFromHmi_DISPLAY_TYPE_SPEED_TOO_HIGH = 0x20;
+    MsgFromHmi_DISPLAY_TYPE_RPA_PREPARE = 0x21;
+    MsgFromHmi_DISPLAY_TYPE_TRA_BEGIN = 0x24;
+    MsgFromHmi_DISPLAY_TYPE_TRA_SUCCESS = 0x25;
+    MsgFromHmi_DISPLAY_TYPE_TRA_SUSPEND = 0x26;
+    MsgFromHmi_DISPLAY_TYPE_TRA_ABORT = 0x27;
+    MsgFromHmi_DISPLAY_TYPE_TRA_CONFIRM = 0x28;
+    MsgFromHmi_DISPLAY_TYPE_TRA_PROCESS = 0x29;
+    MsgFromHmi_DISPLAY_TYPE_NAP_PASSAGE_INIT = 0x32;
+    MsgFromHmi_DISPLAY_TYPE_NAP_PASSAGE_PROCESS = 0x33;
+    MsgFromHmi_DISPLAY_TYPE_NAP_PASSAGE_SUCCESS = 0x34;
+    MsgFromHmi_DISPLAY_TYPE_NAP_AUXILIARY_SUSPEND = 0x35;
+    MsgFromHmi_DISPLAY_TYPE_NAP_AUXILIARY_ABORT = 0x36;
+}
+
+enum MsgFromHmi_AVM_SYS_STATE 
+{
+    MsgFromHmi_AVM_SYS_STATE_STANDBY = 0;
+    MsgFromHmi_AVM_SYS_STATE_AVM_ON = 1;
+    MsgFromHmi_AVM_SYS_STATE_ADAS_ON = 2;
+}
+
+message MsgFromHmi_HmiAvapState
+{
+    float AvapTragRemnDst = 1;
+    MsgFromHmi_DISPLAY_TYPE AVAP_DispReq = 2;
+    uint32 AvapTxtVoicBrdtReq = 3;
+    uint32 ApaTragParkSts = 4;
+    uint32 AVAP_NarlaneAsisSts = 5;
+    uint32 ApaSts = 6;
+}
+
+message MsgFromHmi_HmiAvmState
+{
+    MsgFromHmi_AVM_SYS_STATE AvmSts = 1;
+    BTN_OFFER Avm_ExitAvl = 2;
+    ICC_RESP AvmIccResp = 3;
+    VIEW_MODE AvmViewModSts = 4;
+    VisionCtrl AvmViewMod = 5;
+}
+
+message MsgFromHmi_HmiApaState
+{
+    float ApaRemnDst = 1;
+    uint32 ApaSlotSts = 2;
+    uint32 CustSlecSlotSts = 3;
+    uint32 Avap_ExitCfmReq = 4;
+    BTN_OFFER Avap_ParkinCfmAvl = 5;
+    BTN_OFFER Avap_ParkoutCfmAvl = 6;
+    BTN_OFFER Avap_RpaCfmAvl = 7;
+    BTN_OFFER APA_SuspendAvl = 8;
+    BTN_OFFER APA_ResuAvl = 9;
+    BTN_STATE APAParkin = 10;
+    BTN_STATE APAParkout = 11;
+    BTN_STATE CustSelSlot = 12;
+    PARK_MODE ApaParkModSts = 13;
+    PARKOUT_DIR ApaParkOutDirSts = 14;
+    PATH_SELE ApaPathSts = 15;
+    ABORT_TYPE ApaAbordReason = 16;
+    RPA_ST RpaSts = 17;
+    uint32 RpaTxtDisp = 18;
+    BTN_STATE DirHalfLeAvl = 19;
+    BTN_STATE DirHalfRiAvl = 20;
+    BTN_STATE DirVertFwdAvl = 21;
+    BTN_STATE DirVertBwdAvl = 22;
+    BTN_STATE DirVertHdLeAvl = 23;
+    BTN_STATE DirVertHdRiAvl = 24;
+    BTN_STATE DirVertTrLeAvl = 25;
+    BTN_STATE DirVertTrRiAvl = 26;
+}
+
+message MsgFromHmi_MsgFromHmi
+{
+    MsgFromHmi_HmiAvmState avm_state = 1;
+    MsgFromHmi_HmiApaState apa_state = 2;
+    MsgFromHmi_HmiAvapState avap_state = 3;
+    AvmParams avm_param = 4;
+}
+
+message MsgFromHmiMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    MsgFromHmi_MsgFromHmi msg_from_hmi = 2;
+}
+

@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum StaticObstacles_StaticObstacleType
+{
+    StaticObstacles_StaticObstacleType_kUnknown = 0;
+    StaticObstacles_StaticObstacleType_kTrafficCone = 1;
+    StaticObstacles_StaticObstacleType_kParkLock = 2;
+    StaticObstacles_StaticObstacleType_kTrafficSign = 3;
+    StaticObstacles_StaticObstacleType_kTrafficLight = 4;
+    StaticObstacles_StaticObstacleType_kVerticalPole = 5;
+    StaticObstacles_StaticObstacleType_kParkColumn = 6;
+    StaticObstacles_StaticObstacleType_kParkAFrameSign = 7;
+    StaticObstacles_StaticObstacleType_kParkBox = 8;
+    StaticObstacles_StaticObstacleType_kParkBarrel = 9;
+    StaticObstacles_StaticObstacleType_kWaterBarrier = 10;
+    StaticObstacles_StaticObstacleType_kTrafficBollard = 11;
+    StaticObstacles_StaticObstacleType_kTrolley = 12;
+    StaticObstacles_StaticObstacleType_kFireHydrant = 13;
+    StaticObstacles_StaticObstacleType_kCementSphere = 14;
+    StaticObstacles_StaticObstacleType_kChargingPile = 15;
+    StaticObstacles_StaticObstacleType_kReflector = 16;
+    StaticObstacles_StaticObstacleType_kDistributionBox = 17;
+    StaticObstacles_StaticObstacleType_kFence = 18;
+    StaticObstacles_StaticObstacleType_kParkLimiter = 19;
+    StaticObstacles_StaticObstacleType_kParkLimiterPole = 20;
+    StaticObstacles_StaticObstacleType_kTurnstile = 21;
+    StaticObstacles_StaticObstacleType_kPipeline = 22;
+    StaticObstacles_StaticObstacleType_kBushes = 23;
+}
+
+enum StaticObstacles_Orientation
+{
+    StaticObstacles_Orientation_kUnknown = 0;
+    StaticObstacles_Orientation_kBack = 1;
+    StaticObstacles_Orientation_kSide = 2;
+    StaticObstacles_Orientation_kFront = 3;
+}
+
+enum StaticObstacles_ObjectStage
+{
+    StaticObstacles_ObjectStage_kUninit = 0;
+    StaticObstacles_ObjectStage_kUnconverged = 1;
+    StaticObstacles_ObjectStage_kConverged = 2;
+    StaticObstacles_ObjectStage_kUpdateError = 3;
+    StaticObstacles_ObjectStage_kLost = 4;
+    StaticObstacles_ObjectStage_kFixed = 5;
+}
+
+enum StaticObstacles_StaticObstacleSubType
+{
+    StaticObstacles_StaticObstacleSubType_kParkLockTypeUnknown = 0;
+    StaticObstacles_StaticObstacleSubType_kParkLockTypeOpen = 1;
+    StaticObstacles_StaticObstacleSubType_kParkLockTypeClose = 2;
+    StaticObstacles_StaticObstacleSubType_kFireHydrantTypeAir = 3;
+    StaticObstacles_StaticObstacleSubType_kFireHydrantTypeGnd = 4;
+    StaticObstacles_StaticObstacleSubType_kTurnstileOpen = 5;
+    StaticObstacles_StaticObstacleSubType_kTurnstileClose = 6;
+}
+
+enum StaticObstacles_StaticObstacleShape
+{
+    StaticObstacles_StaticObstacleShape_kUnknown = 0;
+    StaticObstacles_StaticObstacleShape_kRectangle = 1;
+    StaticObstacles_StaticObstacleShape_kTriangle = 2;
+    StaticObstacles_StaticObstacleShape_kRound = 3;
+    StaticObstacles_StaticObstacleShape_kCylinder = 4;
+}
+
+message StaticObstacles_StaticObstacleAttr
+{
+    sint32 shape = 1;
+    float cycle_time = 2;
+    sint32 traversable = 3;
+    float height = 4;
+    float radius = 5;
+    sint32 status = 6;
+    string value = 7;
+    uint32 num_value = 8;
+    bool dynamic = 9;
+    ImageSpace img_info = 10;
+}
+
+message StaticObstacles_StaticObstacle
+{
+    sint32 id = 1;
+    sint32 cam_id = 2;
+    sint64 time_stamp = 3;
+    sint32 conf = 4;
+    StaticObstacles_StaticObstacleType type = 5;
+    StaticObstacles_StaticObstacleSubType sub_type = 6;
+    uint32 sensor_source = 7;
+    Polygon border = 8;
+    sint32 life_time = 9;
+    sint32 age = 10;
+    StaticObstacles_StaticObstacleAttr attr = 11;
+    Vector3f position = 12;
+}
+
+message StaticObstacles_StaticObstacles
+{
+    float conf_scale = 1;
+    uint32 num_static_obstacles = 2;
+    repeated StaticObstacles_StaticObstacle static_obstacles = 3;
+}
+
+message StaticObstaclesMsg
+{
+    CommonMsgMsg common_msg = 1;
+    StaticObstacles_StaticObstacles static_obstacles = 2;
+}
+

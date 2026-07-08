@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CanRaw_CanInfo
+{
+    sint64 frame_time = 1;
+    sint64 frame_id = 2;
+}
+
+message CanRaw_CanFrameData
+{
+    uint32 can_id = 1;
+    bytes can_data = 2;
+}
+
+message CanRaw_CanDataPkg
+{
+    CanRaw_CanInfo inform = 1;
+    repeated CanRaw_CanFrameData data_pkg = 2;
+}
+
+message CanRawMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CanRaw_CanDataPkg can_data = 2;
+}
+

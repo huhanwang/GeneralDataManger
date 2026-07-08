@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "message/hmi.proto";
+package idrive.workflow.proto;
+
+message HmiParamsMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    AvmParams params = 2;
+}
+

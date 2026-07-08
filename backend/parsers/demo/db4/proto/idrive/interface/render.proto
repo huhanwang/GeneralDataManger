@@ -1,0 +1,73 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum RenderApa_APA_SELECT 
+{
+    RenderApa_APA_SELECT_APA_SELECT_NONE = 0;
+    RenderApa_APA_SELECT_APA_SELECT_PSC_DETECTED = 1;
+    RenderApa_APA_SELECT_APA_SELECT_PSC_OPTIONAL = 2;
+    RenderApa_APA_SELECT_APA_SELECT_POC_DIRECTION = 3;
+    RenderApa_APA_SELECT_APA_SELECT_NUMBER = 4;
+}
+
+enum RenderApa_APA_POC_DIRECT 
+{
+    RenderApa_APA_POC_DIRECT_APA_POC_NONE = 0;
+    RenderApa_APA_POC_DIRECT_APA_POC_LEFT = 1;
+    RenderApa_APA_POC_DIRECT_APA_POC_RIGHT = 2;
+    RenderApa_APA_POC_DIRECT_APA_POC_NUMBER = 3;
+}
+
+message RenderApa_ApaPscInform
+{
+    uint32 id = 1;
+    uint32 certified = 2;
+    repeated float position = 3;
+}
+
+message RenderApa_ApaSelectInfo
+{
+    bool ready = 1;
+    RenderApa_APA_SELECT apa_select = 2;
+    RenderApa_APA_POC_DIRECT poc_direct = 3;
+    RenderApa_ApaPscInform psc_inform = 4;
+}
+
+message RenderApaMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    RenderApa_ApaSelectInfo apa_select_info = 2;
+}
+
+message RenderMouse_HmiMouseState
+{
+    uint32 x = 1;
+    uint32 y = 2;
+    sint32 state = 3;
+}
+
+message RenderMouseMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    RenderMouse_HmiMouseState hmi_mouse_state = 2;
+}
+
+enum NotifyRender_NotifyDataType 
+{
+    NotifyRender_NotifyDataType_NotifyDataType_NONE = 0;
+    NotifyRender_NotifyDataType_NotifyDataType_DISPL_MAP = 1;
+}
+
+message NotifyRender_HmiNotifyRenderState
+{
+    NotifyRender_NotifyDataType type = 1;
+    sint32 disp_map_id = 2;
+}
+
+message NotifyRenderMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    NotifyRender_HmiNotifyRenderState hmi_notify_render_state = 2;
+}
+

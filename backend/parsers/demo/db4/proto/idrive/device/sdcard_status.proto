@@ -1,0 +1,50 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum SdcardStatus_State 
+{
+    SdcardStatus_State_Removed = 0;
+    SdcardStatus_State_Unmount = 1;
+    SdcardStatus_State_Normal = 2;
+    SdcardStatus_State_ReadOnly = 3;
+    SdcardStatus_State_FormatError = 4;
+    SdcardStatus_State_TooSmall = 5;
+    SdcardStatus_State_TooSlow = 6;
+}
+
+enum SdcardStatus_FsType 
+{
+    SdcardStatus_FsType_Inactive = 0;
+    SdcardStatus_FsType_FAT = 1;
+    SdcardStatus_FsType_FAT32 = 2;
+    SdcardStatus_FsType_EXFAT = 3;
+    SdcardStatus_FsType_NTFS = 4;
+    SdcardStatus_FsType_NTFS_SB = 5;
+}
+
+message SdcardStatus_Info
+{
+    uint32 magic = 1;
+    uint64 block_size = 2;
+    uint64 total_size = 3;
+    uint64 used_size = 4;
+    uint64 free_size = 5;
+}
+
+message SdcardStatus_Status
+{
+    string device_path = 1;
+    SdcardStatus_State state = 2;
+    SdcardStatus_FsType fstype = 3;
+    bool formatting = 4;
+    bool unmounting = 5;
+    SdcardStatus_Info sdcard_info = 6;
+}
+
+message SdcardStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    SdcardStatus_Status status = 2;
+}
+

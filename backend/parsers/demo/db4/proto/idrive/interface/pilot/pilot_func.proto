@@ -1,0 +1,349 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PilotFunc_ACCMode
+{
+    PilotFunc_ACCMode_ACC_OFF_mode = 0;
+    PilotFunc_ACCMode_ACC_Passive_mode = 1;
+    PilotFunc_ACCMode_ACC_StandBy_mode = 2;
+    PilotFunc_ACCMode_ACC_ActiveControl_mode = 3;
+    PilotFunc_ACCMode_ACC_BrakeOnly_mode = 4;
+    PilotFunc_ACCMode_ACC_Override_mode = 5;
+    PilotFunc_ACCMode_ACC_StandWait_mode = 6;
+    PilotFunc_ACCMode_ACC_Failure_mode = 7;
+}
+
+enum PilotFunc_TakeOverReq
+{
+    PilotFunc_TakeOverReq_no_request = 0;
+    PilotFunc_TakeOverReq_level_1_request = 1;
+    PilotFunc_TakeOverReq_level_2_request = 2;
+    PilotFunc_TakeOverReq_reserved = 3;
+}
+
+enum PilotFunc_ADSState
+{
+    PilotFunc_ADSState_ADS_OFF = 0;
+    PilotFunc_ADSState_ADS_ACC = 1;
+    PilotFunc_ADSState_ADS_IACC = 2;
+    PilotFunc_ADSState_ADS_HWA = 3;
+    PilotFunc_ADSState_ADS_TJP = 4;
+    PilotFunc_ADSState_ADS_NID = 5;
+}
+
+enum PilotFunc_ACCObjValid
+{
+    PilotFunc_ACCObjValid_no_object = 0;
+    PilotFunc_ACCObjValid_object_detected = 1;
+}
+
+enum PilotFunc_ACCTimeGap
+{
+    PilotFunc_ACCTimeGap_no_display = 0;
+    PilotFunc_ACCTimeGap_time_gap_1 = 1;
+    PilotFunc_ACCTimeGap_time_gap_2 = 2;
+    PilotFunc_ACCTimeGap_time_gap_3 = 3;
+    PilotFunc_ACCTimeGap_time_gap_4 = 4;
+}
+
+enum PilotFunc_ACCDistanceLevel
+{
+    PilotFunc_ACCDistanceLevel_no_display = 0;
+    PilotFunc_ACCDistanceLevel_dis_level1 = 1;
+    PilotFunc_ACCDistanceLevel_dis_level2 = 2;
+    PilotFunc_ACCDistanceLevel_dis_level3 = 3;
+}
+
+enum PilotFunc_ACCTargetType
+{
+    PilotFunc_ACCTargetType_no_display = 0;
+    PilotFunc_ACCTargetType_sedan = 1;
+    PilotFunc_ACCTargetType_motorcycle = 2;
+    PilotFunc_ACCTargetType_pedestrian = 3;
+    PilotFunc_ACCTargetType_bicycle = 4;
+    PilotFunc_ACCTargetType_bus = 5;
+    PilotFunc_ACCTargetType_van = 6;
+    PilotFunc_ACCTargetType_truck = 7;
+}
+
+enum PilotFunc_ACCTextInfo
+{
+    PilotFunc_ACCTextInfo_no_display = 0;
+    PilotFunc_ACCTextInfo_unable_to_activate_ACC = 1;
+    PilotFunc_ACCTextInfo_acc_active_control_is_cancelled = 2;
+    PilotFunc_ACCTextInfo_acc_error_by_Front_Radar = 3;
+    PilotFunc_ACCTextInfo_acc_temporarily_unavailable_by_others = 4;
+    PilotFunc_ACCTextInfo_epb_activate = 5;
+    PilotFunc_ACCTextInfo_no_forward_gear = 6;
+    PilotFunc_ACCTextInfo_seatbelt_unbuckled = 7;
+    PilotFunc_ACCTextInfo_engine_no_running = 8;
+    PilotFunc_ACCTextInfo_esp_off = 9;
+    PilotFunc_ACCTextInfo_bonnet_is_open = 10;
+    PilotFunc_ACCTextInfo_speed_over_150kph = 11;
+    PilotFunc_ACCTextInfo_acc_error_by_EMS_VCU_TCU = 12;
+    PilotFunc_ACCTextInfo_reserved = 13;
+    PilotFunc_ACCTextInfo_acc_error_by_EPBI = 14;
+    PilotFunc_ACCTextInfo_acc_unintended_exit_warning = 15;
+    PilotFunc_ACCTextInfo_door_is_open = 16;
+    PilotFunc_ACCTextInfo_brake_pedal_is_applied = 17;
+    PilotFunc_ACCTextInfo_speed_reduce_by_ramp = 18;
+    PilotFunc_ACCTextInfo_speed_reduce_by_tunnel = 19;
+    PilotFunc_ACCTextInfo_acc_error_by_Front_Camera = 20;
+    PilotFunc_ACCTextInfo_speed_reduce_by_condition = 21;
+    PilotFunc_ACCTextInfo_speed_reduce_by_SpdLimited = 22;
+    PilotFunc_ACCTextInfo_reserved_1 = 23;
+    PilotFunc_ACCTextInfo_speed_reduce_by_Tollstation = 24;
+    PilotFunc_ACCTextInfo_acc_cannot_active_by_snow_mode = 25;
+    PilotFunc_ACCTextInfo_steering_angle_is_over = 26;
+    PilotFunc_ACCTextInfo_emergency_brake_suddenly = 27;
+}
+
+enum PilotFunc_ACCHostTargetDetection
+{
+    PilotFunc_ACCHostTargetDetection_no_detection = 0;
+    PilotFunc_ACCHostTargetDetection_ip_display = 1;
+    PilotFunc_ACCHostTargetDetection_front_target = 2;
+    PilotFunc_ACCHostTargetDetection_iacc_target = 3;
+    PilotFunc_ACCHostTargetDetection_aeb_target = 4;
+    PilotFunc_ACCHostTargetDetection_other_target = 5;
+}
+
+enum PilotFunc_ACCTargetDirection
+{
+    PilotFunc_ACCTargetDirection_forward = 0;
+    PilotFunc_ACCTargetDirection_oncoming = 1;
+    PilotFunc_ACCTargetDirection_left = 2;
+    PilotFunc_ACCTargetDirection_right = 3;
+    PilotFunc_ACCTargetDirection_unknown = 4;
+    PilotFunc_ACCTargetDirection_no_display = 5;
+}
+
+enum PilotFunc_ALCDirection
+{
+    PilotFunc_ALCDirection_invalid = 0;
+    PilotFunc_ALCDirection_leftchange = 1;
+    PilotFunc_ALCDirection_rightchange = 2;
+    PilotFunc_ALCDirection_reserved = 3;
+}
+
+enum PilotFunc_UDLCStatus
+{
+    PilotFunc_UDLCStatus_lc_not_ready = 0;
+    PilotFunc_UDLCStatus_lc_ready = 1;
+    PilotFunc_UDLCStatus_lc_active_wait = 2;
+    PilotFunc_UDLCStatus_lc_active_delay = 3;
+    PilotFunc_UDLCStatus_lc_active = 4;
+    PilotFunc_UDLCStatus_lc_not_active_by_obj = 5;
+}
+
+enum PilotFunc_LaneChangeState
+{
+    PilotFunc_LaneChangeState_LC_OFF = 0;
+    PilotFunc_LaneChangeState_LC_PASSIVE = 1;
+    PilotFunc_LaneChangeState_LC_ACTIVE = 2;
+    PilotFunc_LaneChangeState_LC_RETURN_TO_LANE_BY_DRIVER = 3;
+    PilotFunc_LaneChangeState_LC_RETURN_TO_LANE_BY_SYSTEM = 4;
+    PilotFunc_LaneChangeState_LC_MANUAL_OVERRIDE = 5;
+    PilotFunc_LaneChangeState_LC_FAILURE = 6;
+    PilotFunc_LaneChangeState_LC_LANE_CHANGE_COMPLETE = 7;
+    PilotFunc_LaneChangeState_LC_TAKEOVER = 8;
+    PilotFunc_LaneChangeState_LC_STANDBY = 9;
+}
+
+enum PilotFunc_UDLCTurnLightReq
+{
+    PilotFunc_UDLCTurnLightReq_no_request = 0;
+    PilotFunc_UDLCTurnLightReq_left_request_off = 1;
+    PilotFunc_UDLCTurnLightReq_right_request_off = 2;
+    PilotFunc_UDLCTurnLightReq_left_request_on = 3;
+    PilotFunc_UDLCTurnLightReq_right_request_on = 4;
+}
+
+enum PilotFunc_LaneColor
+{
+    PilotFunc_LaneColor_no_display = 0;
+    PilotFunc_LaneColor_white = 1;
+    PilotFunc_LaneColor_blue = 2;
+    PilotFunc_LaneColor_red = 3;
+    PilotFunc_LaneColor_gray = 4;
+}
+
+enum PilotFunc_IACCHWAMode
+{
+    PilotFunc_IACCHWAMode_hwamode_off = 0;
+    PilotFunc_IACCHWAMode_hwamode_standby = 1;
+    PilotFunc_IACCHWAMode_hwamode_active = 2;
+    PilotFunc_IACCHWAMode_hwamode_suspend = 3;
+    PilotFunc_IACCHWAMode_hwamode_prohibition = 4;
+    PilotFunc_IACCHWAMode_hwamode_reserved = 5;
+    PilotFunc_IACCHWAMode_hwamode_failure = 6;
+}
+
+enum PilotFunc_Voiceinfo
+{
+    PilotFunc_Voiceinfo_no_voice = 0;
+    PilotFunc_Voiceinfo_latent_warning_voice = 1;
+    PilotFunc_Voiceinfo_fcw_aeb_voice = 2;
+    PilotFunc_Voiceinfo_acc_object_detect_voice = 3;
+    PilotFunc_Voiceinfo_acc_object_disappeared_voice = 4;
+    PilotFunc_Voiceinfo_acc_iacc_takeover_request_voice = 5;
+    PilotFunc_Voiceinfo_lane_left_dangerous_warning_voice = 6;
+    PilotFunc_Voiceinfo_lane_right_dangerous_warning_voice = 7;
+    PilotFunc_Voiceinfo_reserved = 8;
+    PilotFunc_Voiceinfo_iacc_active_voice = 9;
+    PilotFunc_Voiceinfo_iacc_exit_voice = 10;
+    PilotFunc_Voiceinfo_reserved_1 = 11;
+    PilotFunc_Voiceinfo_reserved_2 = 12;
+    PilotFunc_Voiceinfo_cruise_unintended_exit = 13;
+    PilotFunc_Voiceinfo_traffic_warning = 14;
+}
+
+enum PilotFunc_LaneMarkerType
+{
+    PilotFunc_LaneMarkerType_dashed = 0;
+    PilotFunc_LaneMarkerType_solid = 1;
+    PilotFunc_LaneMarkerType_road_edge = 2;
+    PilotFunc_LaneMarkerType_double_lane_mark = 3;
+    PilotFunc_LaneMarkerType_botts_dots = 4;
+    PilotFunc_LaneMarkerType_other = 5;
+    PilotFunc_LaneMarkerType_fence = 6;
+    PilotFunc_LaneMarkerType_no_display = 7;
+}
+
+enum PilotFunc_NextLaneDetection
+{
+    PilotFunc_NextLaneDetection_not_detected = 0;
+    PilotFunc_NextLaneDetection_dashed = 1;
+    PilotFunc_NextLaneDetection_solid = 2;
+    PilotFunc_NextLaneDetection_fence_road_edge = 3;
+}
+
+enum PilotFunc_HandsOnReq
+{
+    PilotFunc_HandsOnReq_no_request = 0;
+    PilotFunc_HandsOnReq_level_1_request = 1;
+    PilotFunc_HandsOnReq_level_2_request = 2;
+    PilotFunc_HandsOnReq_level_3_request = 3;
+    PilotFunc_HandsOnReq_level_4_request = 4;
+}
+
+enum PilotFunc_HostLaneStatus
+{
+    PilotFunc_HostLaneStatus_no_display = 0;
+    PilotFunc_HostLaneStatus_tracking = 1;
+    PilotFunc_HostLaneStatus_intervention = 2;
+    PilotFunc_HostLaneStatus_warning = 3;
+    PilotFunc_HostLaneStatus_centering = 4;
+    PilotFunc_HostLaneStatus_crossing = 5;
+    PilotFunc_HostLaneStatus_udlc_request_active = 6;
+    PilotFunc_HostLaneStatus_reserved = 7;
+    PilotFunc_HostLaneStatus_udlc_not_active_by_obj = 8;
+}
+
+enum PilotFunc_PathShowStatus
+{
+    PilotFunc_PathShowStatus_no_display = 0;
+    PilotFunc_PathShowStatus_lane_change_try_path = 1;
+    PilotFunc_PathShowStatus_normal_lane_change_path = 2;
+    PilotFunc_PathShowStatus_lane_change_return_path = 3;
+    PilotFunc_PathShowStatus_can_not_change_lane_path = 4;
+    PilotFunc_PathShowStatus_smart_bias_path = 5;
+    PilotFunc_PathShowStatus_follow_vehicle_drive_path = 6;
+    PilotFunc_PathShowStatus_recommend_path = 7;
+}
+
+enum PilotFunc_LaneEquationStatus
+{
+    PilotFunc_LaneEquationStatus_no_display = 0;
+    PilotFunc_LaneEquationStatus_left_lane = 1;
+    PilotFunc_LaneEquationStatus_right_lane = 2;
+    PilotFunc_LaneEquationStatus_reserved = 3;
+}
+
+message PilotFunc_ACC_StateInfo
+{
+    PilotFunc_ACCMode hmi_accmode = 1;
+    PilotFunc_ACCTimeGap acc_time_gap = 2;
+    PilotFunc_ACCDistanceLevel acc_distance_level = 3;
+    PilotFunc_TakeOverReq acc_takeover_req = 4;
+    uint32 acc_setspeed = 5;
+    PilotFunc_ACCTextInfo acc_text_info = 6;
+    PilotFunc_Voiceinfo acc_voice_info = 7;
+}
+
+message PilotFunc_IACC_StateInfo
+{
+    PilotFunc_ADSState ads_state = 1;
+    PilotFunc_IACCHWAMode iacc_hw_mode = 2;
+    PilotFunc_HandsOnReq hands_on_req = 3;
+    PilotFunc_TakeOverReq lat_takeover_req = 4;
+    PilotFunc_TakeOverReq lng_takeover_req = 5;
+}
+
+message PilotFunc_IACC_TargetInfo
+{
+    PilotFunc_ACCObjValid acc_obj_valid = 1;
+    PilotFunc_ACCHostTargetDetection acc_target_detection = 2;
+    PilotFunc_ACCTargetType acc_target_type = 3;
+    PilotFunc_ACCTargetDirection acc_target_direction = 4;
+    uint32 acc_target_id = 5;
+    float acc_target_rel_vel = 6;
+    float acc_target_rel_lngdist = 7;
+    float acc_target_rel_latdist = 8;
+}
+
+message PilotFunc_IACC_LaneInfo
+{
+    float iacc_llane_dis = 1;
+    float iacc_lllane_dis = 2;
+    float iacc_rlane_dis = 3;
+    float iacc_rrlane_dis = 4;
+    float iacc_pathshow_c1 = 5;
+    float iacc_pathshow_c2 = 6;
+    float iacc_pathshow_c3 = 7;
+    float iacc_pathshow_lngrange = 8;
+    float iacc_laneequation_c1 = 9;
+    float iacc_laneequation_c2 = 10;
+    float iacc_laneequation_c3 = 11;
+    float iacc_laneequation_lanequality = 12;
+    float iacc_latpath_dy = 13;
+    float iacc_latpath_heading = 14;
+    PilotFunc_LaneColor iacc_llane_color = 15;
+    PilotFunc_LaneColor iacc_rlane_color = 16;
+    PilotFunc_LaneMarkerType iacc_llane_markertype = 17;
+    PilotFunc_LaneMarkerType iacc_rlane_markertype = 18;
+    PilotFunc_NextLaneDetection iacc_lllane_detection = 19;
+    PilotFunc_NextLaneDetection iacc_rrlane_detection = 20;
+    PilotFunc_PathShowStatus iacc_pathshow_status = 21;
+    PilotFunc_LaneEquationStatus iacc_laneequation_status = 22;
+    PilotFunc_HostLaneStatus iacc_hostllane_status = 23;
+    PilotFunc_HostLaneStatus iacc_hostrlane_status = 24;
+}
+
+message PilotFunc_IACC_LaneChangeInfo
+{
+    PilotFunc_LaneChangeState lanechange_state = 1;
+    PilotFunc_ALCDirection lanechange_alc_deirection = 2;
+    PilotFunc_UDLCStatus lanechange_ludlc_status = 3;
+    PilotFunc_UDLCStatus lanechange_rudlc_status = 4;
+    PilotFunc_UDLCTurnLightReq lanechange_udlc_trunlight = 5;
+    bool lanechange_ludlc_req = 6;
+    bool lanechange_rudlc_req = 7;
+}
+
+message PilotFunc_PilotFuncState
+{
+    PilotFunc_ACC_StateInfo acc_state_info = 1;
+    PilotFunc_IACC_StateInfo iacc_state_info = 2;
+    PilotFunc_IACC_TargetInfo iacc_target_info = 3;
+    PilotFunc_IACC_LaneInfo iacc_lane_info = 4;
+    PilotFunc_IACC_LaneChangeInfo iacc_lanechange_info = 5;
+}
+
+message PilotFuncMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PilotFunc_PilotFuncState pilot_func_state = 2;
+}
+

@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/freespace_point.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Freespace_SensorType
+{
+    Freespace_SensorType_PIN_HOLE = 0;
+    Freespace_SensorType_FISH_EYE = 1;
+}
+
+message Freespace_CamFreespacePoint
+{
+    FreespacePoint base_info = 1;
+    Vector2f pt_im = 2;
+    Vector2f pt_distort_im = 3;
+    float cam_angle = 4;
+    float cam_ray_length = 5;
+}
+
+message Freespace_Freespace
+{
+    Freespace_SensorType sensor_type = 1;
+    uint32 num_freespace_points = 2;
+    repeated Freespace_CamFreespacePoint freespace_points = 3;
+}
+
+message FreespaceMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Freespace_Freespace freespace = 2;
+}
+

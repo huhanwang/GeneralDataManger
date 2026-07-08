@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraCylinder_Param
+{
+    uint32 gdc_inputs_size_height = 1;
+    uint32 gdc_inputs_size_width = 2;
+    double pitch = 3;
+    double roll = 4;
+    double yaw = 5;
+    double focal_length = 6;
+    double cx = 7;
+    double cy = 8;
+    double hfov = 9;
+    double vfov = 10;
+}
+
+message CameraCylinderMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_params = 2;
+    repeated CameraCylinder_Param params = 3;
+}
+

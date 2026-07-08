@@ -1,0 +1,139 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum FaultStatus_Id_idx 
+{
+    FaultStatus_Id_idx_MAP_APA_DTC_TTL_INFO = 0;
+    FaultStatus_Id_idx_MAP_APA_TEMPER_ABNORMAL = 1;
+    FaultStatus_Id_idx_MAP_APA_VOLTAGE_ABNORMAL = 2;
+    FaultStatus_Id_idx_MAP_CAN_NODE0_BUSOFF = 3;
+    FaultStatus_Id_idx_MAP_EPS_E2E_ERROR = 4;
+    FaultStatus_Id_idx_MAP_ETHERNET_LINK_OFF = 5;
+    FaultStatus_Id_idx_MAP_PHY_INIT_FAILURE = 6;
+    FaultStatus_Id_idx_MAP_ETHERNET_SIGNAL_LOW = 7;
+    FaultStatus_Id_idx_MAP_FRONTCAMERA_VOLTAGE_ABNORMAL = 8;
+    FaultStatus_Id_idx_MAP_INVALID_ESP_SIGNAL = 9;
+    FaultStatus_Id_idx_MAP_LEFTCAMERA_VOLTAGE_ABNORMAL = 10;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_FREQFAULT = 11;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_CORNER_NOSIGNAL = 12;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_CORNER_TIMEFAULT = 13;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_CORNER_FREQFAULT = 14;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_CORNER_ERROR = 15;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_FREQFAULT = 16;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_ERROR = 17;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_NOSIGNAL = 18;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_SHORT_BAT = 19;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_SHORT_GROUND = 20;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_MIDDLE_TIMEFAULT = 21;
+    FaultStatus_Id_idx_MAP_NODEMISS_BDCU = 22;
+    FaultStatus_Id_idx_MAP_NODEMISS_BMS = 23;
+    FaultStatus_Id_idx_MAP_NODEMISS_EGSM = 24;
+    FaultStatus_Id_idx_MAP_NODEMISS_EPB = 25;
+    FaultStatus_Id_idx_MAP_NODEMISS_EPS = 26;
+    FaultStatus_Id_idx_MAP_NODEMISS_ESP = 27;
+    FaultStatus_Id_idx_MAP_NODEMISS_ICC = 28;
+    FaultStatus_Id_idx_MAP_NODEMISS_ICM = 29;
+    FaultStatus_Id_idx_MAP_NODEMISS_PKC = 30;
+    FaultStatus_Id_idx_MAP_NODEMISS_SDM = 31;
+    FaultStatus_Id_idx_MAP_NODEMISS_TBOX = 32;
+    FaultStatus_Id_idx_MAP_NODEMISS_VCU = 33;
+    FaultStatus_Id_idx_MAP_CALI_PANORAMIC_LOST = 34;
+    FaultStatus_Id_idx_MAP_REARCAMERA_VOLTAGE_ABNORMAL = 35;
+    FaultStatus_Id_idx_MAP_RIGHTCAMERA_VOLTAGE_ABNORMAL = 36;
+    FaultStatus_Id_idx_MAP_STEERWHLAGVLD_INVALID_VALUES = 37;
+    FaultStatus_Id_idx_MAP_FRONTCAMERA_NOSIGNAL = 38;
+    FaultStatus_Id_idx_MAP_FRONTCAMERA_SHORT_GROUND = 39;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_NOSIGNAL = 40;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_TIMEFAULT = 41;
+    FaultStatus_Id_idx_MAP_LEFTCAMERA_NOSIGNAL = 42;
+    FaultStatus_Id_idx_MAP_LEFTCAMERA_SHORT_GROUND = 43;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_ERROR = 44;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_SHORT_BAT = 45;
+    FaultStatus_Id_idx_MAP_LEFTFRONT_SHORT_GROUND = 46;
+    FaultStatus_Id_idx_MAP_LF_FR_CORNER_SHORT_BAT = 47;
+    FaultStatus_Id_idx_MAP_LF_FR_CORNER_SHORT_GROUND = 48;
+    FaultStatus_Id_idx_MAP_LEFTREAR_FREQFAULT = 49;
+    FaultStatus_Id_idx_MAP_LEFTREAR_ERROR = 50;
+    FaultStatus_Id_idx_MAP_LEFTREAR_NOSIGNAL = 51;
+    FaultStatus_Id_idx_MAP_LEFTREAR_SHORT_BAT = 52;
+    FaultStatus_Id_idx_MAP_LEFTREAR_SHORT_GROUND = 53;
+    FaultStatus_Id_idx_MAP_LEFTREAR_TIMEFAULT = 54;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_FREQFAULT = 55;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_ERROR = 56;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_NOSIGNAL = 57;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_SHORT_BAT = 58;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_SHORT_GROUND = 59;
+    FaultStatus_Id_idx_MAP_LEFTREAR_CORNER_TIMEFAULT = 60;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_FREQFAULT = 61;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_ERROR = 62;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_NOSIGNAL = 63;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_SHORT_BAT = 64;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_SHORT_GROUND = 65;
+    FaultStatus_Id_idx_MAP_LEFTREAR_MIDDLE_TIMEFAULT = 66;
+    FaultStatus_Id_idx_MAP_REARCAMERA_NOSIGNAL = 67;
+    FaultStatus_Id_idx_MAP_REARCAMERA_SHORT_GROUND = 68;
+    FaultStatus_Id_idx_MAP_RIGHTCAMERA_NOSIGNAL = 69;
+    FaultStatus_Id_idx_MAP_RIGHTCAMERA_SHORT_GROUND = 70;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_FREQFAULT = 71;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_ERROR = 72;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_NOSIGNAL = 73;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_SHORT_BAT = 74;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_SHORT_GROUND = 75;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_TIMEFAULT = 76;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_FREQFAULT = 77;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_ERROR = 78;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_NOSIGNAL = 79;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_SHORT_BAT = 80;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_SHORT_GROUND = 81;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_CORNER_TIMEFAULT = 82;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_FREQFAULT = 83;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_ERROR = 84;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_NOSIGNAL = 85;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_SHORT_BAT = 86;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_SHORT_GROUND = 87;
+    FaultStatus_Id_idx_MAP_RIGHTFRONT_MIDDLE_TIMEFAULT = 88;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_FREQFAULT = 89;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_ERROR = 90;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_NOSIGNAL = 91;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_SHORT_BAT = 92;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_SHORT_GROUND = 93;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_TIMEFAULT = 94;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_FREQFAULT = 95;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_ERROR = 96;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_NOSIGNAL = 97;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_SHORT_BAT = 98;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_SHORT_GROUND = 99;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_CORNER_TIMEFAULT = 100;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_FREQFAULT = 101;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_ERROR = 102;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_NOSIGNAL = 103;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_SHORT_BAT = 104;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_SHORT_GROUND = 105;
+    FaultStatus_Id_idx_MAP_RIGHTREAR_MIDDLE_TIMEFAULT = 106;
+    FaultStatus_Id_idx_MAP_MAX_NUM = 107;
+}
+
+enum FaultStatus_State 
+{
+    FaultStatus_State_Passed = 0;
+    FaultStatus_State_Failed = 1;
+    FaultStatus_State_Unknown = 255;
+}
+
+message FaultStatus_Status
+{
+    FaultStatus_Id_idx dtcid = 1;
+    FaultStatus_State state = 2;
+    uint32 occurring = 3;
+    uint32 restrained = 4;
+    uint32 condition_ptr = 5;
+}
+
+message FaultStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_status = 2;
+    repeated FaultStatus_Status status = 3;
+}
+

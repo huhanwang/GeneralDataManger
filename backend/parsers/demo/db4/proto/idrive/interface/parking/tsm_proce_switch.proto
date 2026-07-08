@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum TsmProceSwitch_ProceSW
+{
+    TsmProceSwitch_ProceSW_SW_DEFAULT_MODE = 0;
+    TsmProceSwitch_ProceSW_SW_ADAS_MODE = 1;
+    TsmProceSwitch_ProceSW_SW_APA_MODE = 2;
+    TsmProceSwitch_ProceSW_SW_HPA_MODE = 3;
+}
+
+message TsmProceSwitch_SwitchData
+{
+    TsmProceSwitch_ProceSW proce_sw = 1;
+}
+
+message TsmProceSwitchMsg
+{
+    CommonMsgMsg common_msg = 1;
+    TsmProceSwitch_SwitchData switch_data = 2;
+}
+

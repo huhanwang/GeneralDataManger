@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/obstacle_raw.proto";
+package idrive.workflow.proto;
+
+message Real2D_Real2DCameraValid
+{
+    ImageId sensor_id = 1;
+    bool obstacle_valid = 2;
+}
+
+message Real2D_Real2D
+{
+    uint32 num_camera_flag_data = 1;
+    uint32 num_obstacle_raw_data = 2;
+    repeated Real2D_Real2DCameraValid camera_flag_data = 3;
+    repeated FullObstacleRawsData obstacle_raw_data = 4;
+}
+
+message Real2DMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Real2D_Real2D real2d = 2;
+}
+

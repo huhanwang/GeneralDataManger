@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message ImagePath_Path
+{
+    bool reinjection_flg = 1;
+    uint32 num_front_path = 2;
+    uint32 num_rear_path = 3;
+    uint32 num_left_path = 4;
+    uint32 num_right_path = 5;
+    uint32 num_ipm_path = 6;
+    string front_path = 7;
+    string rear_path = 8;
+    string left_path = 9;
+    string right_path = 10;
+    string ipm_path = 11;
+}
+
+message ImagePathMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ImagePath_Path path = 2;
+}
+

@@ -1,0 +1,52 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum HmiNvm_TransparentChassisSet 
+{
+    HmiNvm_TransparentChassisSet_open = 0;
+    HmiNvm_TransparentChassisSet_close = 1;
+    HmiNvm_TransparentChassisSet_low = 2;
+    HmiNvm_TransparentChassisSet_middle = 3;
+    HmiNvm_TransparentChassisSet_high = 4;
+}
+
+enum HmiNvm_LanguageType 
+{
+    HmiNvm_LanguageType_NotUsed = 0;
+    HmiNvm_LanguageType_Chinese = 1;
+    HmiNvm_LanguageType_English = 2;
+    HmiNvm_LanguageType_Russian = 3;
+    HmiNvm_LanguageType_Arabic = 4;
+}
+
+enum HmiNvm_VisionMode 
+{
+    HmiNvm_VisionMode_NoCommand = 0;
+    HmiNvm_VisionMode__2D = 1;
+    HmiNvm_VisionMode__3D = 2;
+    HmiNvm_VisionMode_WideAngle = 3;
+    HmiNvm_VisionMode_SetupOption = 4;
+}
+
+message HmiNvm_Nvm
+{
+    bool Exit_P = 1;
+    bool RadarActivationAVM = 2;
+    bool TurnLlightActivationAVM = 3;
+    bool PAS_ButtonPress = 4;
+    bool SetupOptionConfig_Trajectory = 5;
+    HmiNvm_TransparentChassisSet SetupOptionConfig_TransparentChassis = 6;
+    HmiNvm_LanguageType LanguageTypeSet = 7;
+    HmiNvm_VisionMode FunctioningPatternReq = 8;
+    uint32 Display2DConfig = 9;
+    uint32 Display3DConfig = 10;
+    uint32 WideAngleDisplayConfig = 11;
+}
+
+message HmiNvmMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    HmiNvm_Nvm nvm = 2;
+}
+

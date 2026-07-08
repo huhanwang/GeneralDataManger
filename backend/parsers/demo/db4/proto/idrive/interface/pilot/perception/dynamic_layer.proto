@@ -1,0 +1,143 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/obstacle.proto";
+package idrive.workflow.proto;
+
+message ObjectAttribute
+{
+    uint32 num_rgb = 1;
+    repeated uint32 rgb = 2;
+    Point lwh = 3;
+    uint32 num_key_points = 4;
+    repeated Point key_points = 5;
+    uint32 num_polygon_points = 6;
+    repeated Point polygon_points = 7;
+    ObjectType type = 8;
+    uint32 class_ind = 9;
+    uint32 action_ind = 10;
+    uint32 behavior_ind = 11;
+    uint32 intention_ind = 12;
+    uint32 identity = 13;
+}
+
+message TrafficLightBulbState
+{
+    uint64 stamp = 1;
+    uint32 seq_id = 2;
+    sint32 color = 3;
+    bool is_flashing = 4;
+}
+
+message TrafficLightBulbSequence
+{
+    uint32 id = 1;
+    uint64 stamp = 2;
+    uint32 seq_id = 3;
+    float life_time = 4;
+    uint64 associate_trafficlightbulb_id = 5;
+    uint32 num_bulb_states = 6;
+    repeated TrafficLightBulbState bulb_states = 7;
+}
+
+message TrafficLightDynamicState
+{
+    uint32 id = 1;
+    uint64 stamp = 2;
+    uint32 seq_id = 3;
+    float life_time = 4;
+    uint64 associate_trafficlight_id = 5;
+    uint32 num_bulb_seqs = 6;
+    repeated TrafficLightBulbSequence bulb_seqs = 7;
+}
+
+message ParkingSlotState
+{
+    uint32 id = 1;
+    uint64 stamp = 2;
+    uint32 seq_id = 3;
+    float life_time = 4;
+    uint64 associate_parkingslot_id = 5;
+    bool is_occupied = 6;
+}
+
+message TrafficCone
+{
+    uint32 id = 1;
+    NdmPolygon border = 2;
+    Number height = 3;
+    sint32 type = 4;
+}
+
+message ConstructionZone
+{
+    uint32 id = 1;
+    uint64 stamp = 2;
+    uint32 seq_id = 3;
+    float life_time = 4;
+    NdmPolygon border = 5;
+    uint32 num_associate_ids = 6;
+    repeated uint64 associate_ids = 7;
+}
+
+message RestrictedZone
+{
+    uint32 id = 1;
+    uint64 stamp = 2;
+    uint32 seq_id = 3;
+    float life_time = 4;
+    NdmPolygon border = 5;
+    uint32 num_associate_ids = 6;
+    repeated uint64 associate_ids = 7;
+}
+
+message StaticODD
+{
+    uint32 id = 1;
+    bool is_odd = 2;
+    uint32 type = 3;
+    uint32 action = 4;
+    uint64 reason = 5;
+    uint32 num_links = 6;
+    repeated Link links = 7;
+}
+
+message TrafficEvent
+{
+    uint32 id = 1;
+    TrafficEventType eventType = 2;
+    uint32 reliability = 3;
+    uint32 num_links = 4;
+    repeated Link links = 5;
+}
+
+message TrafficFlow
+{
+    uint32 id = 1;
+    TrafficFlowStatus flowStatus = 2;
+    uint32 reliability = 3;
+    uint32 num_links = 4;
+    repeated Link links = 5;
+}
+
+message DynamicLayer
+{
+    uint32 num_trafficlight_states = 1;
+    uint32 num_parkingslot_states = 2;
+    uint32 num_construction_zones = 3;
+    uint32 num_restricted_zone = 4;
+    uint32 num_cones = 5;
+    uint32 num_static_odds = 6;
+    uint32 num_traffic_events = 7;
+    uint32 num_traffic_flows = 8;
+    uint32 num_obstacles = 9;
+    repeated TrafficLightDynamicState trafficlight_states = 10;
+    repeated ParkingSlotState parkingslot_states = 11;
+    repeated ConstructionZone construction_zones = 12;
+    repeated RestrictedZone restricted_zone = 13;
+    repeated TrafficCone cones = 14;
+    repeated StaticODD static_odds = 15;
+    repeated TrafficEvent traffic_events = 16;
+    repeated TrafficFlow traffic_flows = 17;
+    repeated Obstacle obstacles = 18;
+}
+

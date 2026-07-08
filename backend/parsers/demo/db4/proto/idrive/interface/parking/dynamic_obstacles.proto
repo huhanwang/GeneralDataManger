@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/dynamic_obstacle.proto";
+package idrive.workflow.proto;
+
+message DynamicObstacles_DynamicObstacles
+{
+    sint32 cipv_id = 1;
+    uint32 num_obstacles = 2;
+    repeated DynamicObstacle obstacles = 3;
+}
+
+message DynamicObstaclesMsg
+{
+    CommonMsgMsg common_msg = 1;
+    DynamicObstacles_DynamicObstacles dynamic_obstacles = 2;
+}
+

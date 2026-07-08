@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message McuHeartbeat_Status
+{
+    uint32 heartbeat_counter = 1;
+    uint32 cpu_core0_usage = 2;
+    uint32 cpu_core1_usage = 3;
+    uint32 cpu_core2_usage = 4;
+    uint32 cpu_core3_usage = 5;
+    uint32 cpu_core4_usage = 6;
+    sint32 cpu_temprature = 7;
+    uint32 fault_code = 8;
+    string sw_ver_ecu_ext = 9;
+    string sw_ver_soc_int = 10;
+    string vin_code = 11;
+    string hw_ver_ecu_ext = 12;
+    string sw_ver_mcu_int = 13;
+    string sw_tim_mcu_bud = 14;
+}
+
+message McuHeartbeatMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    McuHeartbeat_Status status = 2;
+}
+

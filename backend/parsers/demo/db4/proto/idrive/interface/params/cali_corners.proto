@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message CaliCorners_CaliCorners
+{
+    repeated Vector2i fl = 1;
+    repeated Vector2i fr = 2;
+    repeated Vector2i bl = 3;
+    repeated Vector2i br = 4;
+    repeated Vector2i lf = 5;
+    repeated Vector2i lb = 6;
+    repeated Vector2i rf = 7;
+    repeated Vector2i rb = 8;
+}
+
+message CaliCornersMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliCorners_CaliCorners cali_corners = 2;
+}
+

@@ -1,0 +1,85 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum OutputParking_ParkType
+{
+    OutputParking_ParkType_PARK_TYPE_VIRTUAL = 0;
+    OutputParking_ParkType_PARK_TYPE_PARALLEL = 1;
+    OutputParking_ParkType_PARK_TYPE_CROSS = 2;
+    OutputParking_ParkType_PARK_TYPE_DIAGNOAL = 3;
+}
+
+enum OutputParking_ParkSide
+{
+    OutputParking_ParkSide_PARK_SIDE_IDLE = 0;
+    OutputParking_ParkSide_PARK_SIDE_LEFT = 1;
+    OutputParking_ParkSide_PARK_SIDE_RIGHT = 2;
+    OutputParking_ParkSide_PARK_SIDE_FRONT = 3;
+    OutputParking_ParkSide_PARK_SIDE_REAR = 4;
+}
+
+enum OutputParking_ParkPointSource
+{
+    OutputParking_ParkPointSource_PARK_POINT_SOURCE_INITIAL = 0;
+    OutputParking_ParkPointSource_PARK_POINT_SOURCE_SOLIDLINE = 1;
+    OutputParking_ParkPointSource_PARK_POINT_SOURCE_DOTLINE = 2;
+    OutputParking_ParkPointSource_PARK_POINT_SOURCE_OBJECT = 3;
+    OutputParking_ParkPointSource_PARK_POINT_SOURCE_CALCULATED = 4;
+}
+
+enum OutputParking_LateralReferenceType
+{
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_INITIAL = 0;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_VIRTUAL = 1;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_TRAVERSAL = 2;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_LOW = 3;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_HIGH = 4;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_SOLID_LINE = 5;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_DOT_LINE = 6;
+    OutputParking_LateralReferenceType_LATERAL_REFERENCE_TYPE_UNKNOWN = 7;
+}
+
+message OutputParking_Point
+{
+    float x = 1;
+    float y = 2;
+}
+
+message OutputParking_ParkPoint
+{
+    OutputParking_Point position = 1;
+    uint32 confidence = 2;
+    OutputParking_ParkPointSource source = 3;
+}
+
+message OutputParking_OutputParking
+{
+    uint32 id = 1;
+    sint64 timestamp = 2;
+    OutputParking_ParkType type = 3;
+    OutputParking_ParkSide side = 4;
+    bool is_updated = 5;
+    uint32 num_points = 6;
+    repeated OutputParking_ParkPoint points = 7;
+    float length = 8;
+    float depth = 9;
+    float street_orientation = 10;
+    uint32 num_line_orientations = 11;
+    repeated float line_orientations = 12;
+    float orientation = 13;
+    uint32 num_lateral_ref_orientations = 14;
+    repeated float lateral_ref_orientations = 15;
+    uint32 num_lateral_types = 16;
+    repeated OutputParking_LateralReferenceType lateral_ref_types = 17;
+    bool valid_obstacle = 18;
+}
+
+message OutputParkingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 num_output_parkings = 2;
+    repeated OutputParking_OutputParking output_parkings = 3;
+    OutputParking_OutputParking selected_parking = 4;
+}
+

@@ -1,0 +1,48 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message PncWrapperOut_WrapperOut
+{
+    uint32 FctSts = 1;
+    uint32 ElecBrkFnSwitch = 2;
+    uint32 ActTrqReqEnable = 3;
+    uint32 DrvTarTqMod2EPB = 4;
+    uint32 BrkHoldReq = 5;
+    uint32 BrkTarTqMod = 6;
+    bool BrkTarTqVld = 7;
+    bool ActTrqReqVD = 9;
+    float BrkTarTq = 8;
+    float ActTrqReq = 10;
+    float StrAngleReq = 12;
+    uint32 AngReqSt = 11;
+    bool EpbModReqVld = 13;
+    uint32 PAA2EPBEpbReq = 14;
+    bool PAAGrarLvlReqEnable = 15;
+    bool TarGearReqVld = 16;
+    uint32 PAAGrarLvlReq = 17;
+    uint32 AngReqAvl = 18;
+    uint32 PAA2EPBEpbReqSt = 20;
+    float TotalRefTorque = 19;
+    bool BrkTarTqEna = 21;
+    uint32 AngReqFunction = 22;
+    uint32 CCUReqVD = 23;
+    uint32 LongCtrlTypReq = 24;
+    float SACMotorTorLimExtMax = 25;
+    float SACMotorTorLimExtMin = 26;
+    uint32 TurnLightReq = 27;
+    uint32 ReqIFCForward = 28;
+    uint32 raeb_sts = 29;
+    bool raeb_acc_enable = 30;
+    float raeb_acc_value = 31;
+    bool raeb_gear_enable = 32;
+    uint32 raeb_gear_value = 33;
+    uint32 DrvTarTqMod2EPB_176 = 34;
+}
+
+message PncWrapperOutMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    PncWrapperOut_WrapperOut wrapper_out = 2;
+}
+

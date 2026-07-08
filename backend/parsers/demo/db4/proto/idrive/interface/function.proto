@@ -1,0 +1,174 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Function_FctbBrkReqS 
+{
+    Function_FctbBrkReqS_NO_REQUEST = 0;
+    Function_FctbBrkReqS_REQUEST = 1;
+}
+
+enum Function_FrontRadarFctbStatus 
+{
+    Function_FrontRadarFctbStatus_NO_ACTIVE = 0;
+    Function_FrontRadarFctbStatus_ACTIVE = 1;
+}
+
+enum Function_RightRadarRctbBrakingRequest 
+{
+    Function_RightRadarRctbBrakingRequest_NO_REQUEST = 0;
+    Function_RightRadarRctbBrakingRequest_REQUEST = 1;
+}
+
+enum Function_RaebRequestS 
+{
+    Function_RaebRequestS_NO_REQUEST = 0;
+    Function_RaebRequestS_REQUEST = 1;
+}
+
+enum Function_AccModeS 
+{
+    Function_AccModeS_NO_ACTIVE = 0;
+    Function_AccModeS_ACTIVE = 1;
+}
+
+enum Function_AebDecCtrlRequestS 
+{
+    Function_AebDecCtrlRequestS_NO_REQUEST = 0;
+    Function_AebDecCtrlRequestS_REQUEST = 1;
+}
+
+enum Function_AwbRequestS 
+{
+    Function_AwbRequestS_NO_REQUEST = 0;
+    Function_AwbRequestS_REQUEST = 1;
+}
+
+enum Function_IlcaSysStsS 
+{
+    Function_IlcaSysStsS_NO_ACTIVE = 0;
+    Function_IlcaSysStsS_ACTIVE = 1;
+}
+
+enum Function_DnpStatsS 
+{
+    Function_DnpStatsS_NO_ACTIVE = 0;
+    Function_DnpStatsS_ACTIVE = 1;
+}
+
+enum Function_TjaIcaFunctionStatusS 
+{
+    Function_TjaIcaFunctionStatusS_NO_ACTIVE = 0;
+    Function_TjaIcaFunctionStatusS_ACTIVE = 1;
+}
+
+enum Function_AccSwitchSignalS 
+{
+    Function_AccSwitchSignalS_NO_REQUEST = 0;
+    Function_AccSwitchSignalS_REQUEST = 1;
+}
+
+enum Function_DipilotSwitchSignalS 
+{
+    Function_DipilotSwitchSignalS_NO_REQUEST = 0;
+    Function_DipilotSwitchSignalS_REQUEST = 1;
+}
+
+enum Function_RightRadarRctbStatusS 
+{
+    Function_RightRadarRctbStatusS_NO_ACTIVE = 0;
+    Function_RightRadarRctbStatusS_ACTIVE = 1;
+}
+
+enum Function_ElkaWarningLeftS 
+{
+    Function_ElkaWarningLeftS_NO_ACTIVE = 0;
+    Function_ElkaWarningLeftS_ACTIVE = 1;
+}
+
+enum Function_ElkaWarningRightS 
+{
+    Function_ElkaWarningRightS_NO_ACTIVE = 0;
+    Function_ElkaWarningRightS_ACTIVE = 1;
+}
+
+enum Function_AebDecActive 
+{
+    Function_AebDecActive_NO_ACTIVE = 0;
+    Function_AebDecActive_ACTIVE = 1;
+}
+
+enum Function_PcwPreWarningS 
+{
+    Function_PcwPreWarningS_NO_ACTIVE = 0;
+    Function_PcwPreWarningS_ACTIVE = 1;
+}
+
+enum Function_PcwLatentWarningS 
+{
+    Function_PcwLatentWarningS_NO_ACTIVE = 0;
+    Function_PcwLatentWarningS_ACTIVE = 1;
+}
+
+enum Function_ReqEbaDecelCtrlS 
+{
+    Function_ReqEbaDecelCtrlS_NO_REQUEST = 0;
+    Function_ReqEbaDecelCtrlS_REQUEST = 1;
+}
+
+enum Function_NoaModeS 
+{
+    Function_NoaModeS_NO_ACTIVE = 0;
+    Function_NoaModeS_ACTIVE = 1;
+}
+
+enum Function_OddModeS 
+{
+    Function_OddModeS_NO_ACTIVE = 0;
+    Function_OddModeS_ACTIVE = 1;
+}
+
+enum Function_ReverseRadarRctbStatus 
+{
+    Function_ReverseRadarRctbStatus_NO_ACTIVE = 0;
+    Function_ReverseRadarRctbStatus_ACTIVE = 1;
+}
+
+enum Function_RaebDecActive 
+{
+    Function_RaebDecActive_NO_ACTIVE = 0;
+    Function_RaebDecActive_ACTIVE = 1;
+}
+
+message Function_FunctionState
+{
+    Function_FctbBrkReqS fctb_brk_req_sts = 1;
+    Function_RightRadarRctbBrakingRequest right_radar_rctb_braking_sts = 2;
+    Function_AebDecCtrlRequestS aeb_dec_ctrl_sts = 3;
+    Function_RaebRequestS raeb_request_sts = 4;
+    Function_AwbRequestS awb_request_sts = 5;
+    Function_ReqEbaDecelCtrlS req_eba_decel_ctrl_sts = 6;
+    Function_AccSwitchSignalS acc_switch_signal_sts = 7;
+    Function_DipilotSwitchSignalS dipilot_switch_signal_sts = 8;
+    Function_FrontRadarFctbStatus front_radar_fctb_sts = 9;
+    Function_ReverseRadarRctbStatus reverse_radar_fctb_sts = 10;
+    Function_AebDecActive aeb_dec_active_sts = 11;
+    Function_RaebDecActive raeb_dec_active_sts = 12;
+    Function_PcwPreWarningS pcw_pre_warning_sts = 13;
+    Function_PcwLatentWarningS pcw_latent_warning_sts = 14;
+    Function_AccModeS acc_mode_sts = 15;
+    Function_TjaIcaFunctionStatusS tja_ica_sts = 16;
+    Function_IlcaSysStsS ilca_sys_sts = 17;
+    Function_DnpStatsS dnp_sts = 18;
+    Function_ElkaWarningLeftS elka_warning_left_sts = 19;
+    Function_ElkaWarningRightS elka_warning_right_sts = 20;
+    Function_NoaModeS noa_mode_sts = 21;
+    Function_OddModeS odd_mode_sts = 22;
+}
+
+message FunctionMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Function_FunctionState function_state = 2;
+}
+

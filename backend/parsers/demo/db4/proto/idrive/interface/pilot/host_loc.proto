@@ -1,0 +1,155 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum HostLoc_KeyPointType
+{
+    HostLoc_KeyPointType_UNKNOWN = 0;
+    HostLoc_KeyPointType_SPLIT_UNKNOWN = 1;
+    HostLoc_KeyPointType_Y_SPLIT_TO_LEFT = 2;
+    HostLoc_KeyPointType_Y_SPLIT_TO_RIGHT = 3;
+    HostLoc_KeyPointType_SPLIT_CONTINUATION_ON_LEFT = 4;
+    HostLoc_KeyPointType_SPLIT_CONTINUATION_ON_RIGHT = 5;
+    HostLoc_KeyPointType_SPLIT_NON_CONTINUATION_ON_LEFT = 6;
+    HostLoc_KeyPointType_SPLIT_NON_CONTINUATION_ON_RIGHT = 7;
+    HostLoc_KeyPointType_MERGE_UNKNOWN = 8;
+    HostLoc_KeyPointType_MERGE_FROM_LEFT = 9;
+    HostLoc_KeyPointType_MERGE_FROM_RIGHT = 10;
+    HostLoc_KeyPointType_MERGE_CONTINUATION_ON_LEFT = 11;
+    HostLoc_KeyPointType_MERGE_CONTINUATION_ON_RIGHT = 12;
+    HostLoc_KeyPointType_Y_MERGE_FROM_LEFT = 13;
+    HostLoc_KeyPointType_Y_MERGE_FROM_RIGHT = 14;
+    HostLoc_KeyPointType_ENTRANCE_UNKNOWN = 15;
+    HostLoc_KeyPointType_ENTRANCE_CONTINUATION_ON_RIGHT = 16;
+    HostLoc_KeyPointType_ENTRANCE_MERGE_FROM_LEFT = 17;
+    HostLoc_KeyPointType_ENTRANCE_MERGE_FROM_RIGHT = 18;
+    HostLoc_KeyPointType_ENTRANCE_CONTINUATION_ON_LEFT = 19;
+    HostLoc_KeyPointType_ENTRANCE_NON_MERGE_TO_RIGHT = 20;
+    HostLoc_KeyPointType_ENTRANCE_NON_MERGE_ON_RIGHT = 21;
+    HostLoc_KeyPointType_ENTRANCE_NON_MERGE_ON_LEFT = 22;
+    HostLoc_KeyPointType_ENTRANCE_NON_MERGE_TO_LEFT = 23;
+    HostLoc_KeyPointType_EXIT_UNKNOWN = 24;
+    HostLoc_KeyPointType_EXIT_TO_RIGHT = 25;
+    HostLoc_KeyPointType_EXIT_TO_LEFT = 26;
+    HostLoc_KeyPointType_EXIT_CONTINUATION_ON_LEFT = 27;
+    HostLoc_KeyPointType_EXIT_CONTINUATION_ON_RIGHT = 28;
+}
+
+enum HostLoc_MapLaneType
+{
+    HostLoc_MapLaneType_NORMAL = 0;
+    HostLoc_MapLaneType_EXIT = 1;
+    HostLoc_MapLaneType_ENTRY = 2;
+    HostLoc_MapLaneType_EMERGENCY = 3;
+    HostLoc_MapLaneType_RAMP = 4;
+    HostLoc_MapLaneType_LEFT_ACCELERATE = 5;
+    HostLoc_MapLaneType_LEFT_DECELERATE = 6;
+    HostLoc_MapLaneType_RIGHT_ACCELERATE = 7;
+    HostLoc_MapLaneType_RIGHT_DECELERATE = 8;
+    HostLoc_MapLaneType_EMERGENCY_PARKING_STRIP = 9;
+    HostLoc_MapLaneType_DIVERSION = 10;
+    HostLoc_MapLaneType_SHOULDER = 11;
+    HostLoc_MapLaneType_UNKNOWN = 255;
+}
+
+enum HostLoc_LaneChangeType
+{
+    HostLoc_LaneChangeType_LANE_FOLLOW = 0;
+    HostLoc_LaneChangeType_LEFT_LANE_CHANGE = 1;
+    HostLoc_LaneChangeType_RIGHT_LANE_CHANGE = 2;
+    HostLoc_LaneChangeType_LANE_FOLLOW_CROSS_LEFT = 3;
+    HostLoc_LaneChangeType_LANE_FOLLOW_CROSS_RIGHT = 4;
+    HostLoc_LaneChangeType_HIGHT_SPEED_LEFT_LANE_CHANGE = 5;
+    HostLoc_LaneChangeType_LANE_FOLLOW_CROSS_LEFT_BY_SPLIT = 6;
+    HostLoc_LaneChangeType_LANE_FOLLOW_CROSS_RIGHT_BY_SPLIT = 7;
+}
+
+enum HostLoc_LaneChangeReason
+{
+    HostLoc_LaneChangeReason_NO_REASON = 0;
+    HostLoc_LaneChangeReason_LANE_DISAPPEAR = 1;
+    HostLoc_LaneChangeReason_JCT_ENTRY_AHEAD = 2;
+    HostLoc_LaneChangeReason_ENTER_JCT = 3;
+    HostLoc_LaneChangeReason_JCT_EXIT_AHEAD = 4;
+    HostLoc_LaneChangeReason_EXIT_JCT = 5;
+    HostLoc_LaneChangeReason_ROAD_TYPE_Y = 6;
+    HostLoc_LaneChangeReason_IC_ENTRY_AHEAD = 10;
+    HostLoc_LaneChangeReason_ENTER_IC = 11;
+    HostLoc_LaneChangeReason_IC_EXIT_AHEAD = 12;
+    HostLoc_LaneChangeReason_EXIT_IC = 13;
+    HostLoc_LaneChangeReason_OTHERS = 14;
+}
+
+message HostLoc_KeyPoint
+{
+    Vector2f position = 1;
+    HostLoc_KeyPointType type = 2;
+    uint32 offset = 3;
+}
+
+message HostLoc_SpeedLimit
+{
+    uint32 value = 1;
+    HostLoc_MapLaneType lane_type = 2;
+    uint32 offset = 3;
+}
+
+message HostLoc_NaviLaneChange
+{
+    HostLoc_LaneChangeType type = 1;
+    HostLoc_LaneChangeReason reason = 2;
+    HostLoc_MapLaneType lane_type = 3;
+    uint32 speed_limit = 4;
+    uint32 offset = 5;
+}
+
+message HostLoc_InhibitStatus
+{
+    bool inhibit_flag = 1;
+    uint32 inhibit_reason = 2;
+}
+
+message HostLoc_NaviLaneInfo
+{
+    HostLoc_InhibitStatus left_inhibit_host = 1;
+    HostLoc_InhibitStatus right_inhibit_host = 2;
+    HostLoc_InhibitStatus left_inhibit_nudge = 3;
+    HostLoc_InhibitStatus right_inhibit_nudge = 4;
+    uint32 center_line_id = 5;
+    HostLoc_NaviLaneChange cur_navi_info = 6;
+    uint32 num_key_points = 7;
+    uint32 num_speed_limits = 8;
+    uint32 num_next_navi_lane_changes = 9;
+    repeated HostLoc_KeyPoint key_points = 10;
+    repeated HostLoc_SpeedLimit speed_limits = 11;
+    repeated HostLoc_NaviLaneChange next_navi_lane_changes = 12;
+}
+
+message HostLoc_HostLocInfo
+{
+    Vector3f position = 1;
+    Vector3f orientation = 2;
+    float latitude = 3;
+    float longitude = 4;
+    uint32 start_lat = 5;
+    uint32 start_lon = 6;
+    uint32 offset = 7;
+    uint32 loc_status = 8;
+    uint32 ref_map_index = 9;
+    bool navi_lane_change_cross_lane = 10;
+    bool is_in_defined_geofence = 11;
+    HostLoc_NaviLaneInfo navi_lane = 12;
+    uint32 host_lane_id = 13;
+    uint32 left_lane_id = 14;
+    uint32 right_lane_id = 15;
+    uint32 next_left_lane_id = 16;
+    uint32 next_right_lane_id = 17;
+}
+
+message HostLocMsg
+{
+    CommonMsgMsg common_msg = 1;
+    HostLoc_HostLocInfo host_loc_info = 2;
+}
+

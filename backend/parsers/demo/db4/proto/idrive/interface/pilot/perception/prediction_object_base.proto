@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "type/perception_base.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+message PredictionPoint
+{
+    Polygon polygon_contour = 1;
+    Point position = 2;
+    Point speed = 3;
+}
+
+message PredictionTrajectory
+{
+    repeated PredictionPoint point_array = 1;
+    string targrt_lane_id = 2;
+    float probability = 3;
+    uint32 num_point_array = 4;
+    uint32 num_targrt_lane_id = 5;
+}
+
+message PredictionObject
+{
+    sint32 id = 1;
+    float length = 2;
+    float width = 3;
+    float height = 4;
+    Polygon polygon_contour = 5;
+    Point position = 6;
+    Point heading_direction = 7;
+    Point speed = 8;
+    Point acceleration = 9;
+    repeated PredictionTrajectory trajectory_array = 10;
+    uint32 num_trajectory_array = 11;
+    ObstacleType type = 12;
+}
+

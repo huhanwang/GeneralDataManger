@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DmaInfo_Info
+{
+    uint32 dma_fd_front = 1;
+    uint32 dma_fd_rear = 2;
+    uint32 dma_fd_left = 3;
+    uint32 dma_fd_right = 4;
+}
+
+message DmaInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    DmaInfo_Info info = 2;
+}
+

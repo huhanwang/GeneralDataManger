@@ -1,0 +1,62 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CaliControl_Cmd 
+{
+    CaliControl_Cmd_NONE = 0;
+    CaliControl_Cmd_START = 1;
+    CaliControl_Cmd_RUN = 2;
+    CaliControl_Cmd_SERV_CTRL = 3;
+    CaliControl_Cmd_CONFIRM = 4;
+    CaliControl_Cmd_CANCEL = 5;
+    CaliControl_Cmd_QUIT = 6;
+    CaliControl_Cmd_NUM = 7;
+}
+
+enum CaliControl_Mode 
+{
+    CaliControl_Mode_NONE = 0;
+    CaliControl_Mode_FACT = 1;
+    CaliControl_Mode_SERV = 2;
+    CaliControl_Mode_AUTO = 3;
+    CaliControl_Mode_SERC = 4;
+    CaliControl_Mode_NUM = 5;
+}
+
+enum CaliControl_Vision 
+{
+    CaliControl_Vision_NONE = 0;
+    CaliControl_Vision_FRONT = 1;
+    CaliControl_Vision_REAR = 2;
+    CaliControl_Vision_LEFT = 3;
+    CaliControl_Vision_RIGHT = 4;
+    CaliControl_Vision_MOSAIC = 5;
+}
+
+enum CaliControl_Direct 
+{
+    CaliControl_Direct_NONE = 0;
+    CaliControl_Direct_UP = 1;
+    CaliControl_Direct_DOWN = 2;
+    CaliControl_Direct_LEFT = 3;
+    CaliControl_Direct_RIGHT = 4;
+}
+
+message CaliControl_CaliControl
+{
+    CaliControl_Cmd cmd = 1;
+    CaliControl_Mode mode = 2;
+    CaliControl_Vision vision = 3;
+    CaliControl_Direct direct = 4;
+    uint32 vehicle_color = 5;
+    uint32 points = 6;
+    uint32 pixels = 7;
+}
+
+message CaliControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliControl_CaliControl cali_control = 2;
+}
+

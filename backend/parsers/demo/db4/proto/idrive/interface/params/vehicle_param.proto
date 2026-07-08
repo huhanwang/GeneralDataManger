@@ -1,0 +1,55 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VehicleParam_Color 
+{
+    VehicleParam_Color_DEFAULT = 0;
+    VehicleParam_Color_Black = 1;
+    VehicleParam_Color_WHITE = 2;
+    VehicleParam_Color_GREY = 3;
+    VehicleParam_Color_SILVER = 4;
+    VehicleParam_Color_RED = 5;
+    VehicleParam_Color_ORANGE = 6;
+    VehicleParam_Color_YELLOW = 7;
+    VehicleParam_Color_GREEN = 8;
+    VehicleParam_Color_CYAN = 9;
+    VehicleParam_Color_BLUE = 10;
+    VehicleParam_Color_PURPLE = 11;
+}
+
+message VehicleParam_Point
+{
+    sint32 x = 1;
+    sint32 y = 2;
+}
+
+message VehicleParam_VehicleParam
+{
+    float length = 1;
+    float width = 2;
+    sint32 pulse_counter_max_value = 3;
+    float front_overhang = 4;
+    float rear_overhang = 5;
+    float wheel_base = 6;
+    float wheel_width = 7;
+    sint32 ackerman_num = 8;
+    sint32 ackerman_id = 9;
+    float pos_error = 10;
+    float max_left_angle = 12;
+    float max_right_angle = 13;
+    VehicleParam_Color color = 14;
+    uint32 param_status = 15;
+    uint32 num_tread = 16;
+    repeated float tread = 17;
+    repeated float ackerman_coe = 18;
+    VehicleParam_Point img_rear_axle = 19;
+    repeated VehicleParam_Point img_vehicle_corner = 20;
+}
+
+message VehicleParamMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    VehicleParam_VehicleParam vehicle_param = 2;
+}
+

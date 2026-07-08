@@ -1,0 +1,118 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/parking_hmi.proto";
+import "interface/parking/map_psm.proto";
+import "interface/parking/hpa_psm.proto";
+import "interface/parking/car_in_slot.proto";
+package idrive.workflow.proto;
+
+message PsmAppsState_ExitReason
+{
+    sint32 code = 1;
+    uint32 num_info = 2;
+    string info = 3;
+}
+
+message PsmAppsState_PsmAppsState
+{
+    ApaHmiState apa_state = 1;
+    VpaState vpa_state = 2;
+    MapState map_state = 3;
+    PlanState plan_state = 4;
+    PsmAppsState_ExitReason vpa_last_exit_reason = 5;
+    PsmAppsState_ExitReason apa_last_exit_reason = 6;
+}
+
+message PsmAppsStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PsmAppsState_PsmAppsState apps_state = 2;
+}
+
+enum ConnectStatus_ConnectType
+{
+    ConnectStatus_ConnectType_EVENT_NONE = 0;
+    ConnectStatus_ConnectType_EVENT_CONNECTED = 1;
+    ConnectStatus_ConnectType_EVENT_CONNECT_FAILED = 2;
+    ConnectStatus_ConnectType_EVENT_DISCONNECTED = 3;
+}
+
+message ConnectStatus_ConnectStatus
+{
+    ConnectStatus_ConnectType map = 1;
+    ConnectStatus_ConnectType plan = 2;
+    ConnectStatus_ConnectType perception = 3;
+    ConnectStatus_ConnectType hmi = 4;
+    ConnectStatus_ConnectType mcu = 5;
+}
+
+message ConnectStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ConnectStatus_ConnectStatus conn_status = 2;
+}
+
+enum VpaCanInfo_GearStatusEnum
+{
+    VpaCanInfo_GearStatusEnum_N = 0;
+    VpaCanInfo_GearStatusEnum_P = 1;
+    VpaCanInfo_GearStatusEnum_R = 2;
+    VpaCanInfo_GearStatusEnum_D = 3;
+}
+
+message VpaCanInfo_VpaCanInfo
+{
+    float speed = 1;
+    VpaCanInfo_GearStatusEnum gear = 2;
+}
+
+message VpaCanInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaCanInfo_VpaCanInfo can_info = 2;
+}
+
+enum SceneStatus_SceneIntentType
+{
+    SceneStatus_SceneIntentType_NONE = 0;
+    SceneStatus_SceneIntentType_DRIVE_PARK = 1;
+    SceneStatus_SceneIntentType_QUIT_DRIVE_PARK = 2;
+    SceneStatus_SceneIntentType_CAR_IN_SLOT = 3;
+    SceneStatus_SceneIntentType_ARRIVE_FIXSLOT = 4;
+    SceneStatus_SceneIntentType_CROSS_TRACK = 5;
+    SceneStatus_SceneIntentType_CAR_NOT_IN_SLOT = 6;
+    SceneStatus_SceneIntentType_PARKABLE_SLOT = 7;
+    SceneStatus_SceneIntentType_QUIT_BG_SEARCHING = 8;
+}
+
+message SceneStatus_SceneIntent
+{
+    SceneStatus_SceneIntentType type = 1;
+}
+
+message SceneStatus_ArriveFixSlot
+{
+    CarInParkingSlotInfo slot = 1;
+    CarInParkingSlotInfo bak_slot = 2;
+    float distance = 3;
+}
+
+message SceneStatus_CrossTrack
+{
+    float cross_track_distance = 1;
+}
+
+message SceneStatus_SceneStatus
+{
+    SceneStatus_SceneIntent intend = 1;
+    CarInSlot car_in_slot = 2;
+    SceneStatus_ArriveFixSlot arrive_fix_slot = 3;
+    SceneStatus_CrossTrack off_track = 4;
+}
+
+message SceneStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    SceneStatus_SceneStatus scene_status = 2;
+}
+

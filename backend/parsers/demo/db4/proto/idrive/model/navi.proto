@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message Navi_NaviInfo
+{
+    sint32 navi_index = 1;
+    uint32 navi_action = 2;
+    uint32 num_navi_trajectorys = 3;
+    sint32 navi_assist = 4;
+    sint32 speed_limit = 5;
+    repeated Vector2f navi_trajectorys = 6;
+}
+
+message Navi_Navi
+{
+    uint32 cur_navi_index = 1;
+    uint32 num_navi_infos = 2;
+    float vehicle_heading = 3;
+    Vector2f vehicle_pos = 4;
+    repeated Navi_NaviInfo navi_infos = 5;
+}
+
+message NaviMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Navi_Navi navi = 2;
+}
+

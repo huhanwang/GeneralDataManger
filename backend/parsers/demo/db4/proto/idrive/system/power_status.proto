@@ -1,0 +1,104 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Ignition_State 
+{
+    Ignition_State_Invalid = 0;
+    Ignition_State_Off = 1;
+    Ignition_State_Acc = 2;
+    Ignition_State_Run = 3;
+}
+
+enum Ignition_Source 
+{
+    Ignition_Source_Invalid = 0;
+    Ignition_Source_CAN = 1;
+    Ignition_Source_GPIO = 2;
+    Ignition_Source_ADC = 3;
+}
+
+message Ignition_Status
+{
+    Ignition_State state = 1;
+    Ignition_Source source = 2;
+    uint64 holdtime = 3;
+}
+
+message IgnitionMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Ignition_Status status = 2;
+}
+
+enum Voltages_Chn 
+{
+    Voltages_Chn_Bat12v = 0;
+    Voltages_Chn_Ecu5v = 1;
+    Voltages_Chn_Vdd3v3 = 2;
+    Voltages_Chn_Vda1v8 = 3;
+    Voltages_Chn_Vcc1v2 = 4;
+    Voltages_Chn_Cpuavs = 5;
+    Voltages_Chn_Vdd0v8 = 6;
+    Voltages_Chn_Cam_F = 7;
+    Voltages_Chn_Cam_R = 8;
+    Voltages_Chn_Cam_D = 9;
+    Voltages_Chn_Cam_P = 10;
+    Voltages_Chn_Uss_F = 11;
+    Voltages_Chn_Uss_R = 12;
+    Voltages_Chn_Emmc_temp = 13;
+    Voltages_Chn_Ddr_temp = 14;
+    Voltages_Chn_Ldo_temp = 15;
+    Voltages_Chn_Hw_ver = 16;
+}
+
+enum Voltages_State 
+{
+    Voltages_State_Invalid = 0;
+    Voltages_State_Normal = 1;
+    Voltages_State_Low = 2;
+    Voltages_State_Over = 3;
+    Voltages_State_LowReset = 4;
+    Voltages_State_Burned = 5;
+}
+
+message Voltages_Status
+{
+    Voltages_Chn chn = 1;
+    Voltages_State state = 2;
+    float value = 3;
+}
+
+message VoltagesMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_status = 2;
+    repeated Voltages_Status status = 3;
+}
+
+enum PowerStatus_Chn 
+{
+    PowerStatus_Chn_ECU = 0;
+    PowerStatus_Chn_SOC = 1;
+}
+
+enum PowerStatus_State 
+{
+    PowerStatus_State_Invalid = 0;
+    PowerStatus_State_On = 1;
+    PowerStatus_State_Off = 2;
+}
+
+message PowerStatus_Status
+{
+    PowerStatus_Chn chn = 1;
+    PowerStatus_State state = 2;
+}
+
+message PowerStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_status = 2;
+    repeated PowerStatus_Status status = 3;
+}
+

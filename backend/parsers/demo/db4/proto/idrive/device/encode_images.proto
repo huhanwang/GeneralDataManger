@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum EncodeImage_Chn 
+{
+    EncodeImage_Chn_None = 0;
+    EncodeImage_Chn_FisheyeFront = 1;
+    EncodeImage_Chn_FisheyeRear = 2;
+    EncodeImage_Chn_FisheyeLeft = 3;
+    EncodeImage_Chn_FisheyeRight = 4;
+    EncodeImage_Chn_Avm = 5;
+    EncodeImage_Chn_Ipm = 6;
+}
+
+enum EncodeImage_Type 
+{
+    EncodeImage_Type_H264 = 0;
+    EncodeImage_Type_H265 = 1;
+    EncodeImage_Type_MJPEG = 2;
+}
+
+message EncodeImage_Image
+{
+    bytes data = 1;
+    uint32 size = 2;
+    uint32 width = 3;
+    uint32 height = 4;
+    uint32 pitch = 5;
+    EncodeImage_Chn chn = 6;
+    EncodeImage_Type type = 7;
+}
+
+message EncodeImageMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EncodeImage_Image image = 2;
+}
+

@@ -1,0 +1,284 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum RoadInfo_RoadBorderSide
+{
+    RoadInfo_RoadBorderSide_kLeftEdge = 0;
+    RoadInfo_RoadBorderSide_kRightEdge = 1;
+}
+
+enum RoadInfo_RoadBorderType
+{
+    RoadInfo_RoadBorderType_kCurb = 0;
+    RoadInfo_RoadBorderType_kRoadEdge = 1;
+    RoadInfo_RoadBorderType_kBarrier = 2;
+    RoadInfo_RoadBorderType_kCone = 3;
+    RoadInfo_RoadBorderType_kParkedCars = 4;
+    RoadInfo_RoadBorderType_kWall = 5;
+    RoadInfo_RoadBorderType_kGuardRail = 6;
+    RoadInfo_RoadBorderType_kOther = 7;
+}
+
+enum RoadInfo_RoadInfoLineSource
+{
+    RoadInfo_RoadInfoLineSource_kRoadConfNotAvailable = 0;
+    RoadInfo_RoadInfoLineSource_kRoadConfPredicted = 1;
+    RoadInfo_RoadInfoLineSource_kRoadConfDetected = 2;
+}
+
+enum RoadInfo_RoadInfoCurveType
+{
+    RoadInfo_RoadInfoCurveType_kUnknown = 0;
+    RoadInfo_RoadInfoCurveType_kAdas = 2;
+    RoadInfo_RoadInfoCurveType_kCubic = 4;
+    RoadInfo_RoadInfoCurveType_kBezier = 8;
+}
+
+enum RoadInfo_RoadInfoLineType
+{
+    RoadInfo_RoadInfoLineType_kUndecided = 0;
+    RoadInfo_RoadInfoLineType_kSolidLine = 1;
+    RoadInfo_RoadInfoLineType_kDashedLine = 2;
+    RoadInfo_RoadInfoLineType_kDoubleLine = 3;
+    RoadInfo_RoadInfoLineType_kDecelerationLine = 4;
+}
+
+enum RoadInfo_DlmType
+{
+    RoadInfo_DlmType_kDlmNotDlm = 0;
+    RoadInfo_DlmType_kDlmSolidDashed = 1;
+    RoadInfo_DlmType_kDlmDashedSolid = 2;
+    RoadInfo_DlmType_kDlmSolidSolid = 3;
+    RoadInfo_DlmType_kDlmDashedDashed = 4;
+    RoadInfo_DlmType_kDlmUndecided = 5;
+}
+
+enum RoadInfo_DecelType
+{
+    RoadInfo_DecelType_kDecelNotDecel = 0;
+    RoadInfo_DecelType_kDecelSolid = 1;
+    RoadInfo_DecelType_kDecelDashed = 2;
+    RoadInfo_DecelType_kDecelUndecided = 3;
+    RoadInfo_DecelType_kDecelInvalid = 4;
+}
+
+enum RoadInfo_RoadInfoLineColor
+{
+    RoadInfo_RoadInfoLineColor_kUnknown = 0;
+    RoadInfo_RoadInfoLineColor_kWhite = 1;
+    RoadInfo_RoadInfoLineColor_kYellow = 2;
+    RoadInfo_RoadInfoLineColor_kBlue = 3;
+    RoadInfo_RoadInfoLineColor_kGreen = 4;
+}
+
+enum RoadInfo_RoadInfoLinePosition
+{
+    RoadInfo_RoadInfoLinePosition_kUnknown = 0;
+    RoadInfo_RoadInfoLinePosition_kLeft = 1;
+    RoadInfo_RoadInfoLinePosition_kRight = 2;
+    RoadInfo_RoadInfoLinePosition_kLeftLeft = 3;
+    RoadInfo_RoadInfoLinePosition_kRightRight = 4;
+    RoadInfo_RoadInfoLinePosition_kLeftOutside = 5;
+    RoadInfo_RoadInfoLinePosition_kRightOutside = 6;
+    RoadInfo_RoadInfoLinePosition_kLeftRight = 7;
+    RoadInfo_RoadInfoLinePosition_kRightLeft = 8;
+    RoadInfo_RoadInfoLinePosition_kLeftLeftLeft = 9;
+    RoadInfo_RoadInfoLinePosition_kRightRightRight = 10;
+}
+
+enum RoadInfo_TransitionType
+{
+    RoadInfo_TransitionType_kTransitionTypeSplit = 0;
+    RoadInfo_TransitionType_kTransitionTypeMerge = 1;
+    RoadInfo_TransitionType_kTransitionTypeExit = 2;
+}
+
+enum RoadInfo_LineRole
+{
+    RoadInfo_LineRole_kUnknown = 0;
+    RoadInfo_LineRole_kLeft = 1;
+    RoadInfo_LineRole_kRight = 2;
+    RoadInfo_LineRole_kLeftLeft = 3;
+    RoadInfo_LineRole_kRightRight = 4;
+    RoadInfo_LineRole_kLeftEdge = 5;
+    RoadInfo_LineRole_kRightEdge = 6;
+}
+
+enum RoadInfo_DrivingSide
+{
+    RoadInfo_DrivingSide_kLeftSide = 0;
+    RoadInfo_DrivingSide_kRightSide = 1;
+}
+
+enum RoadInfo_LaneChange
+{
+    RoadInfo_LaneChange_kNoChange = 0;
+    RoadInfo_LaneChange_kChangeToLeft = 1;
+    RoadInfo_LaneChange_kChangeToRight = 2;
+    RoadInfo_LaneChange_kChangeToUnknown = 3;
+}
+
+enum RoadInfo_StopLineStatus
+{
+    RoadInfo_StopLineStatus_kUnknown = 0;
+    RoadInfo_StopLineStatus_kInImage = 1;
+    RoadInfo_StopLineStatus_kPredicted = 2;
+}
+
+enum RoadInfo_StopLineType
+{
+    RoadInfo_StopLineType_kStopLine = 0;
+    RoadInfo_StopLineType_kDashedStopLine = 1;
+    RoadInfo_StopLineType_kDoubleStopLine = 2;
+    RoadInfo_StopLineType_kDashedSolidStopLine = 3;
+    RoadInfo_StopLineType_kSolidDashedStopLine = 4;
+    RoadInfo_StopLineType_kDoubleDashedStopLine = 5;
+    RoadInfo_StopLineType_kTriangularStopLine = 6;
+}
+
+enum RoadInfo_StopLineColorType
+{
+    RoadInfo_StopLineColorType_kGreenBlue = 0;
+    RoadInfo_StopLineColorType_kWhite = 1;
+    RoadInfo_StopLineColorType_kYellowOrangeRed = 2;
+}
+
+enum RoadInfo_CrossingsType
+{
+    RoadInfo_CrossingsType_kCrossings = 0;
+}
+
+message RoadInfo_RoadInfoCurveLine
+{
+    float start = 1;
+    float end = 2;
+    float length = 3;
+    float rmse = 4;
+    RoadInfo_RoadInfoCurveType type = 5;
+    uint32 num_points = 6;
+    uint32 num_t = 7;
+    uint32 num_x_coeff = 8;
+    uint32 num_y_coeff = 9;
+    repeated Vector3d points = 10;
+    repeated double t = 11;
+    double t_max = 12;
+    Vector3d start_pt = 13;
+    repeated double x_coeff = 14;
+    repeated double y_coeff = 15;
+}
+
+message RoadInfo_Border
+{
+    RoadInfo_RoadBorderSide border_side = 1;
+    RoadInfo_RoadBorderType border_type = 2;
+    RoadInfo_RoadInfoLineSource conf_level = 3;
+    RoadInfo_RoadInfoCurveLine curve = 4;
+    float conf = 5;
+    float border_height = 6;
+}
+
+message RoadInfo_RoadBorders
+{
+    sint32 nums_borders = 1;
+    repeated RoadInfo_Border borders = 2;
+}
+
+message RoadInfo_TransitionPoints
+{
+    float long_position = 1;
+    float lat_position = 2;
+    float prob = 3;
+    RoadInfo_TransitionType type = 4;
+    RoadInfo_LineRole relate_line = 5;
+}
+
+message RoadInfo_RoadInfoLine
+{
+    sint32 id = 1;
+    uint32 num_curve_segs = 2;
+    repeated RoadInfo_RoadInfoCurveLine curve_segs = 3;
+    sint32 life_time = 4;
+    float start = 5;
+    float end = 6;
+    float length = 7;
+    float conf = 8;
+    float width = 9;
+    RoadInfo_RoadInfoLinePosition position = 10;
+    RoadInfo_RoadInfoLineSource conf_level = 11;
+    RoadInfo_RoadInfoLineColor line_color = 12;
+    RoadInfo_RoadInfoLineType type = 13;
+    RoadInfo_DlmType dlm_type = 14;
+    RoadInfo_DecelType decel_type = 15;
+    uint32 road_prediction = 16;
+}
+
+message RoadInfo_HighWayJunctionInfo
+{
+    bool highway_exit_left = 1;
+    bool highway_exit_right = 2;
+    bool highway_entry_left = 3;
+    bool highway_entry_right = 4;
+}
+
+message RoadInfo_NumberOfLanes
+{
+    uint32 range_0m = 1;
+    uint32 range_35m = 2;
+}
+
+message RoadInfo_RoadInfoLines
+{
+    repeated RoadInfo_RoadInfoLine lines = 1;
+    sint32 num_lines = 2;
+    sint64 src_time_stamp = 3;
+    sint64 asyn_time_stamp = 4;
+    uint32 ambiguous_line_pattern_left = 5;
+    uint32 ambiguous_line_pattern_right = 6;
+    uint32 construction_area = 7;
+    RoadInfo_LaneChange lane_change = 8;
+    RoadInfo_DrivingSide driving_side = 9;
+    repeated RoadInfo_TransitionPoints transition_points = 10;
+    sint32 num_transition_points = 11;
+    float host_width = 12;
+    RoadInfo_HighWayJunctionInfo highway_junction_info = 13;
+    RoadInfo_NumberOfLanes number_of_lanes = 14;
+}
+
+message RoadInfo_StopLines
+{
+    float lateral_distance = 1;
+    float longitudinal_distance = 2;
+    float angle = 3;
+    float confidence = 4;
+    uint32 id = 5;
+    RoadInfo_StopLineStatus stop_line_status = 6;
+    RoadInfo_StopLineType stop_line_type = 7;
+    RoadInfo_StopLineColorType stop_line_color = 8;
+}
+
+message RoadInfo_Crossings
+{
+    float lateral_position = 1;
+    float longitudinal_position = 2;
+    float confidence = 3;
+    uint32 id = 4;
+    RoadInfo_CrossingsType corssings_type = 5;
+}
+
+message RoadInfo_RoadInfo
+{
+    RoadInfo_RoadBorders road_borders = 1;
+    RoadInfo_RoadInfoLines lane_lines = 2;
+    RoadInfo_StopLines stop_lines = 3;
+    RoadInfo_Crossings crossings = 4;
+}
+
+message RoadInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    sint32 camera_id = 2;
+    RoadInfo_RoadInfo road_info_data = 3;
+}
+

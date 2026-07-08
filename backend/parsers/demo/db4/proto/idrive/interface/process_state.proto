@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ProcessState_Process 
+{
+    ProcessState_Process_HDM = 0;
+    ProcessState_Process_FUSN = 1;
+    ProcessState_Process_HMI = 2;
+    ProcessState_Process_PSM = 3;
+    ProcessState_Process_PLAN = 4;
+    ProcessState_Process_VISION = 5;
+    ProcessState_Process_MAPLOC = 6;
+    ProcessState_Process_NOAFUSN = 7;
+}
+
+enum ProcessState_State 
+{
+    ProcessState_State_RUNNING = 0;
+    ProcessState_State_STOPPED = 1;
+    ProcessState_State_EXCEPTION = 2;
+    ProcessState_State_DISABLE = 3;
+}
+
+message ProcessState_StateInfo
+{
+    ProcessState_Process process = 1;
+    ProcessState_State state = 2;
+}
+
+message ProcessState_ProcessState
+{
+    repeated ProcessState_StateInfo state_info = 1;
+    uint32 num_process = 2;
+}
+
+message ProcessStateMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    ProcessState_ProcessState process_state = 2;
+}
+

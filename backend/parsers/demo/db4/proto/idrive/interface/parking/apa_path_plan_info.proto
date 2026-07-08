@@ -1,0 +1,249 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum ApaPathPlanInfo_ExplandPathStatus
+{
+    ApaPathPlanInfo_ExplandPathStatus_kInvalid = 0;
+    ApaPathPlanInfo_ExplandPathStatus_kFinalPointKappaZero = 1;
+    ApaPathPlanInfo_ExplandPathStatus_kPrevPathAndNextPathKappaSame = 2;
+    ApaPathPlanInfo_ExplandPathStatus_kAddPathCollision = 3;
+    ApaPathPlanInfo_ExplandPathStatus_kAddClothoidFailTryAddLineSuccess = 4;
+    ApaPathPlanInfo_ExplandPathStatus_kAllPathOnlyOneSegment = 5;
+    ApaPathPlanInfo_ExplandPathStatus_kCurStateShakeOffDifficulty = 6;
+    ApaPathPlanInfo_ExplandPathStatus_kCurPathHaveNoPoints = 7;
+    ApaPathPlanInfo_ExplandPathStatus_kParallelStartPlanInSlot = 8;
+    ApaPathPlanInfo_ExplandPathStatus_kAddClothoidPathSuccess = 9;
+}
+
+enum ApaPathPlanInfo_PrevPathUsage
+{
+    ApaPathPlanInfo_PrevPathUsage_kInvalid = 0;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathCanUse = 1;
+    ApaPathPlanInfo_PrevPathUsage_kSlotChange = 2;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathIsNone = 3;
+    ApaPathPlanInfo_PrevPathUsage_kParaParkingInSlot = 4;
+    ApaPathPlanInfo_PrevPathUsage_kDynamicPlan = 5;
+    ApaPathPlanInfo_PrevPathUsage_kCurPosDeviationBig = 6;
+    ApaPathPlanInfo_PrevPathUsage_kParkTypeError = 7;
+    ApaPathPlanInfo_PrevPathUsage_kNewPathSizeLittle = 8;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathSizeLittle = 9;
+    ApaPathPlanInfo_PrevPathUsage_kNewPathLastLineLonger = 10;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathLastLineLonger = 11;
+    ApaPathPlanInfo_PrevPathUsage_kPriorityNewPath = 12;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathCollision = 13;
+    ApaPathPlanInfo_PrevPathUsage_kNowGoalMove = 14;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathCanUseButNot = 15;
+    ApaPathPlanInfo_PrevPathUsage_kPrePathExsitSShape = 16;
+    ApaPathPlanInfo_PrevPathUsage_kNewPathExsitSShape = 17;
+    ApaPathPlanInfo_PrevPathUsage_kForcedUpwardTpmFlag = 18;
+    ApaPathPlanInfo_PrevPathUsage_kPrevPathStartDirError = 19;
+    ApaPathPlanInfo_PrevPathUsage_kPrevPathUsageMax = 20;
+}
+
+enum ApaPathPlanInfo_APAPlanErrorCode
+{
+    ApaPathPlanInfo_APAPlanErrorCode_kNoError = 0;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorParkType = 1;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotType = 2;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorDetectType = 3;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotSide = 4;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorParkOutDir = 5;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorUssSide = 6;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotTypeAndParkTypeMatching = 7;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotLength = 8;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotWidth = 9;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotAngle = 10;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSlotFrontRearBoundDis = 11;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorGoalHasMaxMovingDis = 12;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInitPoint = 13;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorCalParkingInPoint = 14;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorObliSlotCollision = 15;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorSearchFail = 16;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorExceedMaxTimes = 17;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorPathNumChangeTooMuch = 18;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorDrivingDirInParaSlot = 19;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInputPosInParaSlot = 20;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorNewPlanInParaSlot = 21;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorStopInFixedPos = 22;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorParkingOutPos = 23;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorWheelBarDis = 24;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorParkingOutTPMPos = 25;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorParkingOutFrontFree = 26;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorGoalPointCollision = 27;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorHybridAstarExceedMaxIter = 28;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorPathSmoothFail = 29;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInParallelSlotDrivingDirIsIncorrect = 30;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInParallelSlotPlanningInputVehicleCurYIsGreaterThan0 = 31;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInParallelSlotVehicleLargelyLocatedInsideOrOutside = 32;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorInParallelSlotUnderLimitNumberVehicleYawCanNotLeveled = 33;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorStartPointCollision = 34;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorPlanningTimeOut = 35;
+    ApaPathPlanInfo_APAPlanErrorCode_kErrorPlanningMax = 36;
+}
+
+enum ApaPathPlanInfo_APAPlanningStatus
+{
+    ApaPathPlanInfo_APAPlanningStatus_kInvalid = 0;
+    ApaPathPlanInfo_APAPlanningStatus_kPlanOver = 1;
+    ApaPathPlanInfo_APAPlanningStatus_kPlanSucc = 2;
+    ApaPathPlanInfo_APAPlanningStatus_kPlanFail = 3;
+    ApaPathPlanInfo_APAPlanningStatus_kPlanParaOutFirstStep = 4;
+    ApaPathPlanInfo_APAPlanningStatus_kPlanObliOutFirstStep = 5;
+    ApaPathPlanInfo_APAPlanningStatus_kAPAPlanningStatusMax = 6;
+}
+
+message ApaPathPlanInfo_Point3d
+{
+    float x = 1;
+    float y = 2;
+    float yaw = 3;
+    float kappa = 4;
+    float dkappa = 5;
+    float speed = 6;
+    sint32 drive_dir = 7;
+}
+
+message ApaPathPlanInfo_ApaPlanningInput
+{
+    ApaPathPlanInfo_Point3d veh_point = 1;
+    float depth = 2;
+    float width = 3;
+    float yaw = 4;
+    float delta_x_front_corner = 5;
+    float delta_y_front_corner = 6;
+    float delta_x_rear_corner = 7;
+    float delta_y_rear_corner = 8;
+    float x_in_map = 9;
+    float y_in_map = 10;
+    sint32 dir = 11;
+    sint32 slot_type = 12;
+    sint32 park_type = 13;
+    sint32 slot_detect_type = 14;
+    sint32 park_out_dir = 15;
+    sint32 uss_slot_side = 16;
+    float opt_delta_yaw = 17;
+    bool first_plan_flag = 18;
+    bool last_driving_flag = 19;
+    bool last_driving_of_hybrid_a_star_flag = 20;
+    bool start_plan_in_para_slot_flag = 21;
+    bool start_HAplan_out_para_slot_flag = 22;
+    bool uss_detect_front_edge_flag = 23;
+    bool uss_detect_rear_edge_flag = 24;
+    bool hit_wheel_bar_flag = 25;
+    sint32 driving_direction = 26;
+    sint32 prev_driving_direction = 27;
+    sint32 gear_switch_count = 28;
+    sint32 current_steps = 29;
+    sint32 total_steps = 30;
+    sint32 prev_hybrid_a_star_steps = 31;
+    ApaPathPlanInfo_Point3d prev_planning_point = 32;
+    ApaPathPlanInfo_Point3d relative_coordinate = 33;
+    sint32 plan_type = 34;
+    float wheel_bar_dis = 35;
+    float veh_steering = 36;
+    sint32 boundary_PM_type = 37;
+    sint32 start_direction = 38;
+    sint32 current_gear = 39;
+    float last_wheel_bar_dis = 40;
+    float last_tpm_move_dis = 41;
+    sint32 pre_path_size = 42;
+    sint32 prev_plan_path_init_dir = 43;
+    sint32 uss_avoid_state = 44;
+    bool vpa_switch_apa_flag = 45;
+    bool isCornerslot = 46;
+    bool rod_valid = 47;
+    bool position_not_change_flag = 48;
+    bool is_yawvcs_toomuch = 49;
+    sint64 plan_start_gridmap_time = 50;
+    float width_expand = 51;
+    sint32 gridmap_width = 52;
+    sint32 gridmap_height = 53;
+    float prev_slot_depth = 54;
+    float prev_slot_x_front_corner = 55;
+    float prev_slot_x_rear_corner = 56;
+    sint32 enter_slot_times = 57;
+    sint32 park_over_condition = 58;
+    sint32 planner_counts = 59;
+    bool forced_upward_tpm_flag = 60;
+    bool need_direct_in_slot = 61;
+    bool oblique_tpm_force_up_flag = 62;
+    bool dynamic_shift_gear_flag = 63;
+    uint32 num_prev_path_points_num = 64;
+    repeated sint32 prev_path_points_num = 65;
+    repeated Vector2f real_time_slot_corners = 66;
+    float veh_speed = 67;
+    sint32 prev_plan_cost_time = 68;
+    double oblique_history_goal_move_max_dis = 69;
+    repeated sint32 history_path_drive_dirs = 70;
+    uint32 num_prev_plan_path = 71;
+    repeated float prev_plan_path_x = 72;
+    repeated float prev_plan_path_y = 73;
+}
+
+message ApaPathPlanInfo_ApaPlanningResult
+{
+    ApaPathPlanInfo_APAPlanningStatus plan_status = 1;
+    sint32 total_path_size = 2;
+    sint32 first_path_points_size = 3;
+    sint32 cur_path_driving_dir = 4;
+    sint32 planner_counts = 5;
+    sint32 add_clothoid_points_num = 6;
+    sint32 enter_slot_times = 7;
+    sint32 cur_plan_cost_time = 8;
+    sint32 history_max_plan_cost_time = 9;
+    ApaPathPlanInfo_Point3d goal_point_in_slot = 10;
+    ApaPathPlanInfo_Point3d para_parking_in_point_in_slot = 11;
+    ApaPathPlanInfo_Point3d parkout_1st_in_slot = 12;
+    ApaPathPlanInfo_Point3d path_first_point = 13;
+    ApaPathPlanInfo_Point3d path_final_point = 14;
+    bool use_prev_path_flag = 15;
+    bool geometric_plan_status = 16;
+    bool hybrid_a_plan_status = 17;
+    bool shake_off_difficulty_path_flag = 18;
+    bool tpm_press_line_flag = 19;
+    bool last_driving_flag = 20;
+    bool start_HAplan_out_para_slot_flag = 21;
+    bool start_plan_in_para_slot_flag = 22;
+    bool out_slot_enter_slot_flag = 23;
+    bool forced_change_dir_flag = 24;
+    bool forced_upward_tpm_flag = 25;
+    bool dynamic_gear_shift_flag = 26;
+    bool para_park_out_forced_success_flag = 27;
+    bool forced_search_plan_failed_flag = 28;
+    bool forced_clear_ooc_obs_flag = 29;
+    bool start_near_pos_obs_flag = 30;
+    float added_obli_length = 31;
+    float front_rear_boundary_dis = 32;
+    float CurTpmPointMoveDis = 33;
+    float LastTpmPointMoveDis = 34;
+    float LastTpmPointMoveDisMax = 35;
+    float min_steering_radius = 36;
+    float back_right_min_radius = 37;
+    float back_left_min_radius = 38;
+    float forward_right_min_radius = 39;
+    float forward_left_min_radius = 40;
+    ApaPathPlanInfo_Point3d veh_to_goal_error = 41;
+    ApaPathPlanInfo_Point3d park_condition_error_limit = 42;
+    ApaPathPlanInfo_Point3d veh_to_prev_path_error = 43;
+    ApaPathPlanInfo_Point3d veh_to_prev_path_error_limit = 44;
+    repeated ApaPathPlanInfo_Point3d path_key_points = 45;
+    ApaPathPlanInfo_ExplandPathStatus no_add_path_reason = 46;
+    ApaPathPlanInfo_APAPlanErrorCode error_code = 47;
+    ApaPathPlanInfo_PrevPathUsage unsusable_reason1 = 48;
+    ApaPathPlanInfo_PrevPathUsage unsusable_reason2 = 49;
+}
+
+message ApaPathPlanInfo_ApaPathPlanInfo
+{
+    ApaPathPlanInfo_ApaPlanningInput planning_input = 1;
+    ApaPathPlanInfo_ApaPlanningResult planning_reslut = 2;
+}
+
+message ApaPathPlanInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ApaPathPlanInfo_ApaPathPlanInfo apa_path_plan_info = 2;
+}
+

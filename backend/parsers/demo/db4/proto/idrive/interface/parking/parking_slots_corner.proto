@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message ParkingSlotsCorner_ParkingPoint
+{
+    uint32 id = 1;
+    uint32 confidence = 2;
+    Vector2i point_pcs_min = 3;
+    Vector2i point_pcs_max = 4;
+}
+
+message ParkingSlotsCorner_ParkingPoints
+{
+    uint32 num_parking_ponts = 1;
+    repeated ParkingSlotsCorner_ParkingPoint parking_ponts = 2;
+}
+
+message ParkingSlotsCornerMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ParkingSlotsCorner_ParkingPoints parking_corner = 2;
+}
+

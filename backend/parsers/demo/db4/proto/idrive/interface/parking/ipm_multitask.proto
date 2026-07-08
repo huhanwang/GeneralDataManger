@@ -1,0 +1,63 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum IpmMultiTask_ParkingSlotPointType
+{
+    IpmMultiTask_ParkingSlotPointType_kTruncated = 0;
+    IpmMultiTask_ParkingSlotPointType_kCorner = 1;
+}
+
+enum IpmMultiTask_ParkingSlotType
+{
+    IpmMultiTask_ParkingSlotType_kUnknown = 0;
+    IpmMultiTask_ParkingSlotType_kVertical = 1;
+    IpmMultiTask_ParkingSlotType_kParallel = 2;
+    IpmMultiTask_ParkingSlotType_kOblique = 3;
+}
+
+enum IpmMultiTask_ParkingSlotSpecificType
+{
+    IpmMultiTask_ParkingSlotSpecificType_kNormal = 0;
+    IpmMultiTask_ParkingSlotSpecificType_kUnNormal = 1;
+    IpmMultiTask_ParkingSlotSpecificType_KMaxType = 2;
+}
+
+message IpmMultiTask_ParkingRodInfo
+{
+    repeated Vector2i end_points_img = 1;
+    uint32 num_end_points = 2;
+    bool valid = 3;
+}
+
+message IpmMultiTask_ParkingSlotPoint
+{
+    Vector2f point = 1;
+    float score = 2;
+    IpmMultiTask_ParkingSlotPointType point_type = 3;
+    bool visibility = 4;
+    float point_orientation_x = 5;
+    float point_orientation_y = 6;
+}
+
+message IpmMultiTask_ParkingSlotRaw
+{
+    repeated IpmMultiTask_ParkingSlotPoint slot_points = 1;
+    float score = 2;
+    sint32 corner_match_flag = 3;
+    bool occupancy = 4;
+    IpmMultiTask_ParkingSlotType slot_type = 5;
+    IpmMultiTask_ParkingSlotSpecificType slot_specific_type = 9;
+    float slot_orientation_x = 6;
+    float slot_orientation_y = 7;
+    IpmMultiTask_ParkingRodInfo parking_rod = 8;
+}
+
+message IpmMultiTaskMsg
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 num_slots_raw = 2;
+    repeated IpmMultiTask_ParkingSlotRaw slots_raw = 3;
+}
+

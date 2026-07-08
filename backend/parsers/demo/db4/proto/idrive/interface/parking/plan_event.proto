@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PlanEvent_PlanEventType
+{
+    PlanEvent_PlanEventType_PLAN_EVENT_NONE = 0;
+    PlanEvent_PlanEventType_TURN_AHEAD = 1;
+    PlanEvent_PlanEventType_DETOURING = 2;
+    PlanEvent_PlanEventType_DANGEROUS_ROAD_AHEAD = 3;
+    PlanEvent_PlanEventType_IMPASSABLE_ROAD_AHEAD = 4;
+    PlanEvent_PlanEventType_OBSTACLES_DETECTED = 5;
+}
+
+enum PlanEvent_ApaEventType
+{
+    PlanEvent_ApaEventType_APA_EVENT_NONE = 0;
+    PlanEvent_ApaEventType_PARKING_IN_SCENE = 1;
+    PlanEvent_ApaEventType_PARKING_OUT_SCENE = 2;
+}
+
+message PlanEventMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PlanEvent_PlanEventType plan_event_type = 2;
+    PlanEvent_ApaEventType apa_event_type = 3;
+}
+

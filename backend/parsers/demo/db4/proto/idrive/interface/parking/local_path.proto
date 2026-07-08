@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/common_type.proto";
+import "type/control_point.proto";
+package idrive.workflow.proto;
+
+message LocalPath_LocPosWithStamp
+{
+    Vector3f location_point = 1;
+    uint64 loc_stamp = 2;
+}
+
+message LocalPath_HpaTrajectoryPoint
+{
+    TrajectoryPoint path_point = 1;
+    sint32 dir = 2;
+}
+
+message LocalPath_DiscretizedTrajectory
+{
+    repeated LocalPath_HpaTrajectoryPoint trajectory_points = 1;
+    uint32 num_trajectory_points = 2;
+}
+
+message LocalPath_LocalPath
+{
+    uint64 grid_map_timestamp = 1;
+    sint32 result = 2;
+    sint32 switch_flag = 3;
+    bool goal = 4;
+    uint32 num_points = 5;
+    uint32 num_trajectories = 6;
+    LocalPath_LocPosWithStamp loc_point = 7;
+    repeated CtrlPoint points = 8;
+    repeated LocalPath_DiscretizedTrajectory trajectories = 9;
+}
+
+message LocalPathMsg
+{
+    CommonMsgMsg common_msg = 1;
+    LocalPath_LocalPath local_path = 2;
+}
+

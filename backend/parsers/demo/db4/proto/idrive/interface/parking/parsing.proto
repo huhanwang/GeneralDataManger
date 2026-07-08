@@ -1,0 +1,189 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+package idrive.workflow.proto;
+
+enum Parsing_CameraVersion 
+{
+    Parsing_CameraVersion_kCV = 0;
+    Parsing_CameraVersion_kVCS = 1;
+}
+
+enum Parsing_ParsingCalibrationStatus 
+{
+    Parsing_ParsingCalibrationStatus_kDefault = 0;
+    Parsing_ParsingCalibrationStatus_kIntrinsicDone = 1;
+    Parsing_ParsingCalibrationStatus_kExtrinsicDone = 2;
+}
+
+enum Parsing_CalibrationType 
+{
+    Parsing_CalibrationType_kUnknown = 0;
+    Parsing_CalibrationType_kEOL = 1;
+    Parsing_CalibrationType_kAfterSale = 2;
+    Parsing_CalibrationType_kBackground = 3;
+}
+
+enum Parsing_ParsingType 
+{
+    Parsing_ParsingType_kDefault = 0;
+    Parsing_ParsingType_kLane = 1;
+    Parsing_ParsingType_kDepth = 2;
+    Parsing_ParsingType_kIpm = 3;
+    Parsing_ParsingType_kBev = 4;
+    Parsing_ParsingType_kIqa = 5;
+}
+
+message Parsing_Image
+{
+    sint32 width = 1;
+    sint32 height = 2;
+    sint32 channel = 3;
+    sint32 send_mod = 4;
+    sint64 time_stamp = 5;
+    sint32 format = 6;
+    sint32 index = 7;
+    sint32 count = 8;
+    sint32 depth = 9;
+    sint32 align = 10;
+    uint32 image_counter = 11;
+    sint32 perception_status = 12;
+    uint32 num_roi_map = 13;
+    sint64 bypass_time_diff = 14;
+    sint32 compression_format = 15;
+    sint32 status = 16;
+    repeated RoiMap roi_map = 17;
+    sint32 perception_mode = 18;
+    sint32 postprocessor_status = 19;
+    sint32 frame_id = 20;
+    sint32 step = 21;
+    sint64 time_stamp_us = 22;
+    uint64 hw_time_stamp = 23;
+    sint64 mcu_time_diff = 24;
+    sint64 mcu_board_timediff = 25;
+}
+
+message Parsing_CameraValidHeight
+{
+    sint32 left_y = 1;
+    sint32 right_y = 2;
+}
+
+message Parsing_VCSParam
+{
+    uint32 num_rotation = 1;
+    uint32 num_translation = 2;
+    repeated float rotation = 3;
+    repeated float translation = 4;
+}
+
+message Parsing_DistortParam
+{
+    uint32 num_param = 1;
+    repeated float param = 2;
+}
+
+message Parsing_CameraParam
+{
+    float focal_u = 1;
+    float focal_v = 2;
+    float center_u = 3;
+    float center_v = 4;
+    float camera_x = 5;
+    float camera_y = 6;
+    float camera_z = 7;
+    float pitch = 8;
+    float yaw = 9;
+    float roll = 10;
+    sint32 type = 11;
+    float fov = 12;
+    sint32 version = 13;
+    Parsing_ParsingCalibrationStatus cali_status = 14;
+    Parsing_CameraValidHeight valid_height = 15;
+    Parsing_DistortParam distort = 16;
+    Parsing_VCSParam vcs = 17;
+    CameraMatrix mat = 18;
+    sint64 time_stamp = 19;
+    sint32 cam_id = 20;
+    sint32 frame_id = 21;
+    sint32 image_height = 22;
+    sint32 image_width = 23;
+    sint32 base_calib_done = 24;
+    Parsing_CalibrationType calib_src = 25;
+    sint64 calib_done_ts = 26;
+}
+
+message Parsing_ParsingColor
+{
+    uint32 b = 1;
+    uint32 g = 2;
+    uint32 r = 3;
+}
+
+message Parsing_RuntimeModelInfo
+{
+    sint32 model_id = 1;
+    string model_name = 2;
+    uint32 num_model_name = 3;
+}
+
+message Parsing_ParsingSetting
+{
+    PerceptionHeader header = 1;
+    sint32 parsing_type = 2;
+    sint32 parsing_channels = 3;
+    uint32 num_channel_labels = 4;
+    uint32 num_channel_colors = 5;
+    uint32 num_freespace_channels = 6;
+    uint32 num_boundspace_channels = 7;
+    uint32 num_model_info = 8;
+    uint32 num_categories = 9;
+    repeated uint64 channel_labels = 10;
+    repeated Parsing_ParsingColor channel_colors = 11;
+    repeated sint32 freespace_channels = 12;
+    repeated sint32 boundspace_channels = 13;
+    Rect parsing_roi = 14;
+    float parsing_scale = 15;
+    repeated Parsing_RuntimeModelInfo model_info = 16;
+    repeated Category categories = 17;
+}
+
+message Parsing_DepthSetting
+{
+    float scale_number = 1;
+    float shift_scale = 2;
+    uint32 mapping_type = 3;
+    uint32 mapping_shift = 4;
+    float confidence_scale = 5;
+    float max_depth = 6;
+    float min_depth = 7;
+    float max_confidence = 8;
+    float min_confidence = 9;
+    Parsing_CameraParam camera_param = 10;
+}
+
+message Parsing_ParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message Parsing_Parsing
+{
+    Parsing_ParsingImageData free_space = 1;
+    Parsing_ParsingImageData feature_map = 2;
+    float scale = 3;
+    Rect roi_output = 4;
+    Parsing_Image image = 5;
+    Parsing_ParsingSetting parsing_setting = 6;
+    Parsing_DepthSetting depth_setting = 7;
+}
+
+message ParsingMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Parsing_Parsing parsing_data = 2;
+}
+

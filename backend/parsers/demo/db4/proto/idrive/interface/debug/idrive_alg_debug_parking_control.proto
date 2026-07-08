@@ -1,0 +1,143 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message AlgDebugParkingControl_tSOC_CtrlLog
+{
+    float f32SOCControlSteerRq = 1;
+    float f32SOCControlVelocityRq = 2;
+    float f32SOCControlDistanceRq = 3;
+    float f32SOCControlAccRq = 4;
+    uint32 eSOCControlGearRq = 5;
+    uint32 eBrakeType = 6;
+    uint32 bDecisionPlanSuccess = 7;
+}
+
+message AlgDebugParkingControl_tCanInputCtrlLog
+{
+    float ABS_VehicleSpeed = 1;
+    float ESP_LongitAccel = 2;
+    float EPB_Slope_Signal = 3;
+    float SAS_SteeringAngle = 4;
+    float EPS_MinSteerWhlAg = 5;
+    float EPS_MaxSteerWhlAg = 6;
+    uint32 ESP_VehicleStandstill = 7;
+    uint32 ESP_LongitSensorValid = 8;
+    uint32 EPB_SysSts = 9;
+    uint32 ABS_VehicleSpeedValid = 10;
+    uint32 ESP_PA_VLCAvailable = 11;
+    uint32 ESP_PA_ContrSts = 12;
+    uint32 ESP_PA_FailureSts = 13;
+    uint32 ESP_PA_CDDActiveAutoHOLD = 14;
+    uint32 SAS_CalibratedSt = 15;
+    uint32 SAS_SteeringAngleValid = 16;
+    uint32 SAS_FailureSts = 17;
+    uint32 EPS_DrvrOvrd = 18;
+    uint32 EPS_AngCmdOverRange = 19;
+    uint32 EPS_AngCmdSpdOverRange = 20;
+    uint32 EPS_PA_LatAvl = 21;
+    uint32 EPS_PA_LatCtrlActv = 22;
+    uint32 EPS_FltStsFor_APA_ADU = 23;
+    uint32 VCU_GearShiftPosition = 24;
+    uint32 VCU_GearShiftPositionValid = 25;
+}
+
+message AlgDebugParkingControl_tCtrlComLog
+{
+    float f32VehicleTurningRadius = 1;
+    float f32VehSpdDirectKph = 2;
+    float f32DistanceLeft = 3;
+    uint32 u8ConflictGearFlag = 4;
+    uint32 u8SOCControlGearAchieved = 5;
+    uint32 bWhlSpdDirectOppositeGear = 6;
+}
+
+message AlgDebugParkingControl_tCtrlLongiLog
+{
+    float f32TargetVehSpeed = 1;
+    float f32TargetStopDistance = 2;
+    float f32TargetAcce = 3;
+    float f32KiIntegralSum = 4;
+    float f32TargetDiffAcce = 5;
+    float f32TargetPAcce = 6;
+    uint32 eSpeedPhase = 7;
+}
+
+message AlgDebugParkingControl_tCtrlLatLog
+{
+    float f32TargetWheelAngle = 1;
+}
+
+message AlgDebugParkingControl_tCtrlToChasLog
+{
+    float f32CtrlReqAccel = 1;
+    float f32CtrlReqStopDistance = 2;
+    float f32CtrlReqSteer = 3;
+    uint32 eGearReq = 4;
+}
+
+message AlgDebugParkingControl_tCtrlAdapt2ChasLog
+{
+    float ADU_PATarAcc = 1;
+    float ADU_ESP_StopDis = 2;
+    float ADU_PA_StrAglReq = 3;
+    uint32 ADU_ExpectGearPos = 4;
+    uint32 ADU_PAEPBRqst = 5;
+    uint32 ADU_PA_EmgyBrkRqst = 6;
+    uint32 ADU_PAStandstillRqst = 7;
+    uint32 ADU_PADriveOffRqst = 8;
+}
+
+message AlgDebugParkingControl_tHandshakeLog
+{
+    uint32 eHandshakeFailReason = 1;
+    uint32 eHandshakeSts = 2;
+}
+
+message AlgDebugParkingControl_tSOCHandshakeLog
+{
+    uint32 eDriveInteruptType = 1;
+    uint32 eESPState = 2;
+    uint32 eEPSState = 3;
+    uint32 eACCState = 4;
+}
+
+message AlgDebugParkingControl_tCanOutputCtrlLog
+{
+    float ADU_PATarAcc = 1;
+    float ADU_ESP_StopDis = 2;
+    float ADU_PA_StrAglReq = 3;
+    uint32 ADU_ExpectGearPos = 4;
+    uint32 ADU_ExpectGearPosVld = 5;
+    uint32 ADU_PACmdValid = 6;
+    uint32 ADU_ESP_PAmode = 7;
+    uint32 ADU_PA_EmgyBrkRqst = 8;
+    uint32 ADU_PAStandstillRqst = 9;
+    uint32 ADU_PADriveOffRqst = 10;
+    uint32 ADU_PAEPBRqst = 11;
+    uint32 ADU_PAEPBRqstVld = 12;
+    uint32 ADU_PA_EPSCtrlReq = 13;
+    uint32 ADU_PA_StrAglReqValid = 14;
+    uint32 ADU_PA_EPS_FuncMode = 15;
+}
+
+message AlgDebugParkingControl_ParkingControl
+{
+    AlgDebugParkingControl_tSOC_CtrlLog sSOC_CtrlLog = 1;
+    AlgDebugParkingControl_tCanInputCtrlLog sCanInputCtrlLog = 2;
+    AlgDebugParkingControl_tCtrlComLog sCtrlComLog = 3;
+    AlgDebugParkingControl_tCtrlLongiLog sCtrlLongiLog = 4;
+    AlgDebugParkingControl_tCtrlLatLog sCtrlLatLog = 5;
+    AlgDebugParkingControl_tCtrlToChasLog sCtrlToChasLog = 6;
+    AlgDebugParkingControl_tCtrlAdapt2ChasLog sCtrlAdapt2ChasLog = 7;
+    AlgDebugParkingControl_tHandshakeLog sHandshakeLog = 8;
+    AlgDebugParkingControl_tSOCHandshakeLog sSOCHandshakeLog = 9;
+    AlgDebugParkingControl_tCanOutputCtrlLog sCanOutputCtrlLog = 10;
+}
+
+message AlgDebugParkingControlMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugParkingControl_ParkingControl parking_control = 2;
+}
+

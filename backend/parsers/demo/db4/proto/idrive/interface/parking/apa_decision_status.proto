@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ApaDecisionStatus_ApaDecisionStatusMode
+{
+    ApaDecisionStatus_ApaDecisionStatusMode_ApaDecisionStatus_NORMAL = 0;
+    ApaDecisionStatus_ApaDecisionStatusMode_EMERGENCY_BRAKE = 1;
+    ApaDecisionStatus_ApaDecisionStatusMode_COMFORT_BRAKE = 2;
+    ApaDecisionStatus_ApaDecisionStatusMode_PARKING_SUCCESS = 3;
+    ApaDecisionStatus_ApaDecisionStatusMode_ApaDecisionStatus_RESET = 4;
+}
+
+enum ApaDecisionStatus_FreespaceAvoidMode
+{
+    ApaDecisionStatus_FreespaceAvoidMode_NORMAL = 0;
+    ApaDecisionStatus_FreespaceAvoidMode_SLOWDOWN = 1;
+}
+
+message ApaDecisionStatus_ApaDecisionStatus
+{
+    ApaDecisionStatus_ApaDecisionStatusMode ApaDecisionStatus_mode = 1;
+    ApaDecisionStatus_FreespaceAvoidMode freespace_avoid_mode = 2;
+}
+
+message ApaDecisionStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ApaDecisionStatus_ApaDecisionStatus decision_status = 2;
+}
+

@@ -1,0 +1,100 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Mod_OdObjType
+{
+    Mod_OdObjType_OD_OBJ_CAR = 0;
+    Mod_OdObjType_OD_OBJ_PEDSETRAIN = 1;
+    Mod_OdObjType_OD_OBJ_RIDER = 2;
+    Mod_OdObjType_OD_OBJ_FRONT = 3;
+    Mod_OdObjType_OD_OBJ_REAR = 4;
+    Mod_OdObjType_OD_OBJ_PILLAR = 5;
+    Mod_OdObjType_OD_OBJ_LIGHT = 6;
+    Mod_OdObjType_OD_OBJ_LIMITER = 7;
+    Mod_OdObjType_OD_OBJ_LIMITER_POLE = 8;
+    Mod_OdObjType_OD_OBJ_OBSTACLE = 9;
+    Mod_OdObjType_OD_OBJ_MOTORBIKE = 10;
+    Mod_OdObjType_OD_OBJ_UNKNOWN = -1;
+}
+
+enum Mod_CameraChn
+{
+    Mod_CameraChn_CAMERA_CHN_R = 0;
+    Mod_CameraChn_CAMERA_CHN_F = 1;
+    Mod_CameraChn_CAMERA_CHN_D = 2;
+    Mod_CameraChn_CAMERA_CHN_P = 3;
+    Mod_CameraChn_CAMERA_CHN_NUM = 4;
+}
+
+message Mod_ImagePoint
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Mod_ImageSize
+{
+    float w = 1;
+    float h = 2;
+}
+
+message Mod_ImageInfo
+{
+    Mod_ImagePoint start = 1;
+    Mod_ImageSize size = 2;
+}
+
+message Mod_LocalPoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Mod_LocalSize
+{
+    float l = 1;
+    float w = 2;
+    float h = 3;
+}
+
+message Mod_LocalInfo
+{
+    Mod_LocalPoint center = 1;
+    Mod_LocalSize size = 2;
+    repeated Mod_LocalPoint polygon = 3;
+    float angle = 4;
+}
+
+message Mod_Od2DObj
+{
+    uint32 id = 1;
+    uint32 key_num = 2;
+    Mod_OdObjType type = 3;
+    bool flag_3d = 4;
+    float confidence = 5;
+    Mod_ImageInfo image_info = 6;
+    Mod_LocalInfo local_info = 7;
+}
+
+message Mod_Od2DObject
+{
+    sint64 timestamp = 1;
+    uint32 num_objects = 2;
+    Mod_CameraChn channel = 3;
+    repeated Mod_Od2DObj objects = 4;
+}
+
+message Mod_ModOutput
+{
+    uint32 warning_flag = 1;
+    Mod_Od2DObject od2d_objects = 2;
+}
+
+message ModMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Mod_ModOutput mod = 2;
+}
+

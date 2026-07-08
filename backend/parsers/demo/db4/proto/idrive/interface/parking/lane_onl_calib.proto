@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message LaneOnlCalib_LaneParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message LaneOnlCalib_SingleCamLane
+{
+    sint32 camera_id = 1;
+    uint32 num_lane_parsing_image = 2;
+    repeated LaneOnlCalib_LaneParsingImageData lane_parsing_image = 3;
+    Rect parsing_roi = 4;
+}
+
+message LaneOnlCalibMsg
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 num_camera_lane = 2;
+    repeated LaneOnlCalib_SingleCamLane camera_lane = 3;
+}
+

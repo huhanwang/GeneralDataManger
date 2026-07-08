@@ -1,0 +1,46 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum MapLocSystem_AVP_LPState
+{
+    MapLocSystem_AVP_LPState_AVPOff = 0;
+    MapLocSystem_AVP_LPState_kAbort = 1;
+    MapLocSystem_AVP_LPState_kStandby = 2;
+    MapLocSystem_AVP_LPState_kMapLearning = 3;
+    MapLocSystem_AVP_LPState_kParkinPreActive = 4;
+    MapLocSystem_AVP_LPState_kCruising = 5;
+    MapLocSystem_AVP_LPState_kParkInProcess = 6;
+    MapLocSystem_AVP_LPState_kSuspend = 7;
+    MapLocSystem_AVP_LPState_kFunctionComplete = 8;
+}
+
+enum MapLocSystem_ControlCmd
+{
+    MapLocSystem_ControlCmd_kDefault = 0;
+    MapLocSystem_ControlCmd_kGetAllMapHeader = 1;
+    MapLocSystem_ControlCmd_kGetOneMapInfo = 2;
+    MapLocSystem_ControlCmd_kDeleteOneMap = 3;
+    MapLocSystem_ControlCmd_kDeleteAllMap = 4;
+    MapLocSystem_ControlCmd_kSendTargetParkingSlot = 5;
+    MapLocSystem_ControlCmd_kStartCruising = 6;
+    MapLocSystem_ControlCmd_kStartPathLearning = 7;
+    MapLocSystem_ControlCmd_kFinishCruising = 8;
+    MapLocSystem_ControlCmd_kFinishPathLearning = 9;
+    MapLocSystem_ControlCmd_kAbortPathLearning = 10;
+}
+
+message MapLocSystem_MapLocSystem
+{
+    MapLocSystem_AVP_LPState avp_lp_state = 1;
+    MapLocSystem_ControlCmd control_cmd = 2;
+    uint32 target_parking_slot_id = 3;
+    uint32 map_id = 4;
+}
+
+message MapLocSystemMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MapLocSystem_MapLocSystem map_loc_system_data = 2;
+}
+

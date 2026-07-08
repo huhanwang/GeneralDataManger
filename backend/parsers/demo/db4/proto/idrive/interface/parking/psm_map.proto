@@ -1,0 +1,53 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/psm_unified_res.proto";
+package idrive.workflow.proto;
+
+enum PsmToMapDataBase_MapMsgType
+{
+    PsmToMapDataBase_MapMsgType_UNKNOW = 0;
+    PsmToMapDataBase_MapMsgType_CONTROL = 1;
+    PsmToMapDataBase_MapMsgType_SLOT = 2;
+}
+
+message PsmToMapDataBase_MapMsgTypeData
+{
+    PsmToMapDataBase_MapMsgType type = 1;
+}
+
+message PsmToMapDataBaseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PsmToMapDataBase_MapMsgTypeData type_data = 2;
+}
+
+enum MapControl_MapControlType
+{
+    MapControl_MapControlType_NONE = 0;
+    MapControl_MapControlType_EPS_INTERRUPT = 1;
+    MapControl_MapControlType_VPA_ABORT = 2;
+    MapControl_MapControlType_START_MAP = 3;
+    MapControl_MapControlType_OPTIMIZE_MAP = 4;
+    MapControl_MapControlType_START_VPA = 5;
+    MapControl_MapControlType_VPA_COMPLETE = 6;
+    MapControl_MapControlType_REBUILD_MAP = 7;
+    MapControl_MapControlType_MAP_ABORT = 8;
+}
+
+message MapControl_MapControlTypeData
+{
+    MapControl_MapControlType type = 1;
+}
+
+message MapControlMsg
+{
+    PsmToMapDataBaseMsg psm_to_map_data_base = 1;
+    MapControl_MapControlTypeData ctrl_type_data = 2;
+}
+
+message ParkingSlotMsg
+{
+    PsmToMapDataBaseMsg psm_to_map_data_base = 1;
+    PsmParkingSlot parking_slot = 2;
+}
+

@@ -1,0 +1,86 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VisionCtrl 
+{
+    VisionCtrl_INACTIVE = 0;
+    VisionCtrl__2D_FRONT = 0x01;
+    VisionCtrl__2D_REAR = 0x02;
+    VisionCtrl__2D_FRONT_LEFT = 0x03;
+    VisionCtrl__2D_FRONT_RIGHT = 0x04;
+    VisionCtrl__2D_REAR_LEFT = 0x05;
+    VisionCtrl__2D_REAR_RIGHT = 0x06;
+    VisionCtrl__3D_TURN_LEFT = 0x07;
+    VisionCtrl__3D_TURN_RIGHT = 0x08;
+    VisionCtrl__3D_FRONT = 0x09;
+    VisionCtrl__3D_REAR = 0x0A;
+    VisionCtrl__3D_LEFT = 0x0B;
+    VisionCtrl__3D_RIGHT = 0x0C;
+    VisionCtrl__3D_FRONT_LEFT = 0x0D;
+    VisionCtrl__3D_FRONT_RIGHT = 0x0E;
+    VisionCtrl__3D_REAR_LEFT = 0x0F;
+    VisionCtrl__3D_REAR_RIGHT = 0x10;
+    VisionCtrl__2D_WIDE_ANGLE_FRONT = 0x11;
+    VisionCtrl__2D_WIDE_ANGLE_REAR = 0x12;
+    VisionCtrl__3D_TOP = 0x14;
+    VisionCtrl__2D_R_LR = 0x19;
+    VisionCtrl__2D_APA_FRONT = 0xE0;
+    VisionCtrl__2D_APA_REAR = 0xE1;
+    VisionCtrl__3D_ROAM = 0xF0;
+    VisionCtrl__3D_ANY = 0xF1;
+    VisionCtrl__FLOAT_TOP = 0xF2;
+    VisionCtrl__2D_NPA_FRONT = 0xF6;
+    VisionCtrl__2D_NPA_REAR = 0xF7;
+    VisionCtrl__2D_TRA_FRONT = 0xFA;
+    VisionCtrl__2D_TRA_REAR = 0xFB;
+}
+
+enum AvmControl_MSG_TYPE 
+{
+    AvmControl_MSG_TYPE_AVM = 0;
+    AvmControl_MSG_TYPE_DBG = 1;
+}
+
+enum AvmControl_DBG_MODE 
+{
+    AvmControl_DBG_MODE_NONE = 0;
+    AvmControl_DBG_MODE_SYS = 1;
+    AvmControl_DBG_MODE_CAL = 2;
+}
+
+message AvmControl_Hmi3DCarModel
+{
+    uint32 valid = 1;
+    sint32 hor_angle = 2;
+    sint32 ver_percent = 3;
+}
+
+message AvmControl_HmiAvmMsg
+{
+    VisionCtrl vision = 1;
+    uint32 v_magf = 2;
+    uint32 v_came = 3;
+    uint64 t_came = 4;
+    AvmControl_Hmi3DCarModel car_model = 5;
+}
+
+message AvmControl_HmiDbgMsg
+{
+    AvmControl_DBG_MODE mode = 1;
+    uint32 cal_step = 2;
+}
+
+message AvmControl_AvmControl
+{
+    AvmControl_MSG_TYPE msg_type = 1;
+    AvmControl_HmiAvmMsg avm_msg = 2;
+    AvmControl_HmiDbgMsg dbg_msg = 3;
+}
+
+message AvmControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    AvmControl_AvmControl avm_control = 2;
+}
+

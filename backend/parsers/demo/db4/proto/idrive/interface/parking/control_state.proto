@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ControlState_ControlState
+{
+    ControlState_ControlState_CTL_RUNNING = 0;
+    ControlState_ControlState_CTL_STOP = 1;
+    ControlState_ControlState_CTL_WAITING = 2;
+    ControlState_ControlState_CTL_FINISH = 3;
+    ControlState_ControlState_ERR_NO_DATA = 4;
+    ControlState_ControlState_ERR_INDEX_OUT = 5;
+    ControlState_ControlState_ERR_TRACK_OUT = 6;
+    ControlState_ControlState_ERR_AVOID_STOP_TIMEOUT = 7;
+    ControlState_ControlState_ERR_AVOID_STOP_CLIP = 8;
+    ControlState_ControlState_ERR_BUMP_STOP = 9;
+    ControlState_ControlState_ERR_CONTROL_Mode = 10;
+    ControlState_ControlState_ERR_HANDSHAKE_INTERRUPT = 11;
+    ControlState_ControlState_ERR_DRV_EPB_INTERRUPT = 12;
+    ControlState_ControlState_DRV_GEAR_INTERRUPT = 13;
+    ControlState_ControlState_DRV_STEER_INTERRUPT = 14;
+    ControlState_ControlState_HANDSHAKE_TIMEOUT = 15;
+    ControlState_ControlState_ERR_USS_TIMESTAMP = 16;
+}
+
+enum ControlState_CtlStopReason
+{
+    ControlState_CtlStopReason_DRV_STEER_INTERRUPT_STOP = 0;
+    ControlState_CtlStopReason_DRV_GEAR_INTERRUPT_STOP = 1;
+    ControlState_CtlStopReason_DRV_BRAKE_INTERRUPT = 2;
+    ControlState_CtlStopReason_DRV_EPB_INTERRUPT = 3;
+    ControlState_CtlStopReason_AVOID_STOP_REACH_TARGET = 4;
+    ControlState_CtlStopReason_AVOID_STOP_NOT_REACH_TARGET = 5;
+    ControlState_CtlStopReason_BLOCK_DETECT = 6;
+    ControlState_CtlStopReason_BRAKE_STOP = 7;
+    ControlState_CtlStopReason_WAIT_PARK_SUCCESS = 8;
+    ControlState_CtlStopReason_WAIT_GEAR = 9;
+    ControlState_CtlStopReason_WAIT_STEER = 10;
+    ControlState_CtlStopReason_NONE_STOP = 11;
+    ControlState_CtlStopReason_AVOID_STOP_IN_BLIND_AREA = 12;
+    ControlState_CtlStopReason_AVOID_STOP_USS_SLOT = 13;
+}
+
+enum ControlState_LatControlState
+{
+    ControlState_LatControlState_LAT_WAIT_START = 0;
+    ControlState_LatControlState_LAT_WAIT_FEEDBACK = 1;
+    ControlState_LatControlState_LAT_RUNNING = 2;
+    ControlState_LatControlState_LAT_CLOSE = 3;
+    ControlState_LatControlState_LAT_ERR = 4;
+}
+
+enum ControlState_LonControlState
+{
+    ControlState_LonControlState_LON_WAIT_START = 0;
+    ControlState_LonControlState_LON_WAIT_STEERArrival = 1;
+    ControlState_LonControlState_LON_WAIT_GEARArrival = 2;
+    ControlState_LonControlState_LON_RUNNING = 3;
+    ControlState_LonControlState_LON_COMFORT_BRAKE = 4;
+    ControlState_LonControlState_LON_EMERGENCY_BRAKE = 5;
+    ControlState_LonControlState_LON_PARKING_SUCCESS = 6;
+    ControlState_LonControlState_LON_ERR = 7;
+}
+
+enum ControlState_BrakeReason
+{
+    ControlState_BrakeReason_CONTROL_NORMAL_STOP = 0;
+    ControlState_BrakeReason_CONTROL_TRACK_OUT = 1;
+    ControlState_BrakeReason_CONTROL_STOP_BY_VERTICAL_SLOT = 2;
+    ControlState_BrakeReason_CONTROL_STOP_BY_VERTICAL_SLOT_OR_WHEELBAR = 3;
+    ControlState_BrakeReason_CONTROL_STOP_BY_PARALLEL_TPM = 4;
+    ControlState_BrakeReason_CONTROL_STOP_BY_VERTICAL_NEAR_WHEELBAR = 5;
+    ControlState_BrakeReason_CONTROL_STOP_BY_PARALLEL_WHEELBAR = 6;
+    ControlState_BrakeReason_CONTROL_STOP_BY_HANDSHAKE = 7;
+    ControlState_BrakeReason_COLLISION_OOC_NORMAL = 8;
+    ControlState_BrakeReason_COLLISION_USS_DISTANCE = 9;
+    ControlState_BrakeReason_COLLISION_PARALLEL_BOUNDARY = 10;
+    ControlState_BrakeReason_COLLISION_WHEELBAR_DISTANCE = 11;
+    ControlState_BrakeReason_DECISION_CMD_PSM_PAUSE = 12;
+    ControlState_BrakeReason_DECISION_CMD_TERMINATE = 13;
+    ControlState_BrakeReason_DECISION_CMD_DYN_OBS_PEDESTRAIN = 14;
+    ControlState_BrakeReason_DECISION_CMD_DYN_OBS_VEHICLE = 15;
+    ControlState_BrakeReason_DECISION_CMD_STATIC_OBS = 16;
+    ControlState_BrakeReason_DECISION_CMD_OCCUPIED = 17;
+    ControlState_BrakeReason_DECISION_CMD_STOP_EARLY_PARALLEL_ADJUST_TO_ZERO = 18;
+    ControlState_BrakeReason_DECISION_CMD_VERTICAL_STOP_BY_USS_DISTANCE = 19;
+    ControlState_BrakeReason_DECISION_CMD_RUNNING_PLAN_FAILED = 20;
+    ControlState_BrakeReason_DECISION_CMD_VERTICAL_STOP_BY_USS_DISTANCE_SIDE_LEFT = 21;
+    ControlState_BrakeReason_DECISION_CMD_VERTICAL_STOP_BY_USS_DISTANCE_SIDE_RIGHT = 22;
+    ControlState_BrakeReason_COLLISION_OOC_OUT_RANGE = 23;
+    ControlState_BrakeReason_DECISION_CMD_STOP_EARLY_BY_OTHER_WHEELBAR = 25;
+    ControlState_BrakeReason_DECISION_CMD_PARALLEL_STOP_BY_USSDISTANCE = 26;
+    ControlState_BrakeReason_DECISION_CMD_PARALLEL_STOP_BY_BOUNDARY_LAT_DISTANCE = 27;
+    ControlState_BrakeReason_DECISION_CMD_DYN_OBS_CYCLIST = 28;
+    ControlState_BrakeReason_DECISION_CMD_DRIVER_EPB_OR_BRAKE = 29;
+    ControlState_BrakeReason_DECISION_CMD_USS_SLOT_CORRECTION_STOP = 30;
+    ControlState_BrakeReason_BRAKE_REASON_MAX = 50;
+}
+
+message ControlState_TotalControlState
+{
+    ControlState_ControlState control_state = 1;
+    ControlState_CtlStopReason stop_reason = 2;
+    ControlState_LatControlState lat_control_state = 3;
+    ControlState_LonControlState lon_control_state = 4;
+    ControlState_BrakeReason brake_reason = 6;
+    bool control_enable = 5;
+}
+
+message ControlStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ControlState_TotalControlState total_control_state = 2;
+}
+

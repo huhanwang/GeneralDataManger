@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message ResimInfo_ResimFrame
+{
+    uint32 num_topic_name = 1;
+    string topic_name = 2;
+    sint64 timestamp = 3;
+    sint64 frame_id = 4;
+}
+
+message ResimInfo_ResimInfo
+{
+    sint64 start_timestamp = 1;
+    sint64 end_timestamp = 2;
+    uint32 num_resim_frame = 3;
+    repeated ResimInfo_ResimFrame resim_frames = 4;
+}
+
+message ResimInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    ResimInfo_ResimInfo resim_info = 2;
+}
+

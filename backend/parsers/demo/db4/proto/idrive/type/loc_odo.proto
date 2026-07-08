@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message Quaternion4d
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message LocOdometry
+{
+    uint64 stamp = 1;
+    Quaternion4d quaternion = 2;
+    Vector3d position = 3;
+    uint32 seq_id = 4;
+    uint32 num_pose_cov = 5;
+    repeated double pose_cov = 6;
+    Vector3d linear_velocity = 7;
+    Vector3d angular_velocity = 8;
+    uint32 num_twist_cov = 9;
+    repeated double twist_cov = 10;
+    Vector3d map_offset = 11;
+    Vector3d velocity = 12;
+    Vector3d acceleration = 13;
+}
+

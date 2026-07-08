@@ -1,0 +1,49 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum DbgVersionInfo_ProjectInfo
+{
+    DbgVersionInfo_ProjectInfo_UNKNOWN = 0;
+    DbgVersionInfo_ProjectInfo_T68_G_RELEASE_023 = 1;
+    DbgVersionInfo_ProjectInfo_T68_G = 2;
+    DbgVersionInfo_ProjectInfo_T68_G_TDA4VEN_DV = 3;
+    DbgVersionInfo_ProjectInfo_GAC = 4;
+    DbgVersionInfo_ProjectInfo_T88_G3 = 5;
+    DbgVersionInfo_ProjectInfo_T60_G2 = 6;
+    DbgVersionInfo_ProjectInfo_total_update = 7;
+    DbgVersionInfo_ProjectInfo_WB = 8;
+}
+
+message DbgVersionInfo_ProjectConfig
+{
+    DbgVersionInfo_ProjectInfo project_id = 1;
+    bool corefile_enable = 2;
+    uint32 subversion = 3;
+    string project_info = 4;
+    string subversion_info = 5;
+}
+
+message DbgVersionInfo_ParamVersionsBak
+{
+    uint32 num_hw_version = 2;
+    uint32 num_soc_bsp_version = 4;
+    uint32 num_soc_app_version = 6;
+    uint32 num_mcu_app_version = 8;
+    uint32 num_process_versions = 9;
+    string vin_code = 11;
+    string hw_version = 1;
+    string soc_bsp_version = 3;
+    string soc_app_version = 5;
+    string mcu_app_version = 7;
+    string ecu_serial_num = 12;
+    string camera_version = 13;
+}
+
+message DbgVersionInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    DbgVersionInfo_ParamVersionsBak version_info = 2;
+    DbgVersionInfo_ProjectConfig project_config = 3;
+}
+

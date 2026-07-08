@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/freespace_point.proto";
+package idrive.workflow.proto;
+
+message FusionFreespace_FreespaceFusion
+{
+    sint64 timestamp = 1;
+    uint32 num_freespace_points = 2;
+    repeated FreespacePoint freespace_points = 3;
+}
+
+message FusionFreespaceMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FusionFreespace_FreespaceFusion fusion_freespace = 2;
+}
+

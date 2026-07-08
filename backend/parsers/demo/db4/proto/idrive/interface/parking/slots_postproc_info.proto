@@ -1,0 +1,40 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message SlotsPostprocInfo_ObserverInfo
+{
+    sint64 frame_id = 1;
+    ParkingType type = 2;
+    uint32 num_polygon_conf = 3;
+    uint32 num_polygon_world = 4;
+    repeated float polygon_conf = 5;
+    repeated Vector2f polygon_world = 6;
+}
+
+message SlotsPostprocInfo_SlotInfo
+{
+    sint32 slot_id = 1;
+    sint32 continues_obs_num = 2;
+    sint32 continues_no_obs_num = 3;
+    ParkingType type = 4;
+    uint32 num_obs_all = 5;
+    uint32 num_obs_win = 6;
+    repeated sint64 obs_win_ids = 7;
+    repeated SlotsPostprocInfo_ObserverInfo obs_all = 8;
+}
+
+message SlotsPostprocInfo_SlotsPostprocInfo
+{
+    repeated SlotsPostprocInfo_SlotInfo slots_info = 1;
+    uint32 num_slots_info = 2;
+}
+
+message SlotsPostprocInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    SlotsPostprocInfo_SlotsPostprocInfo slots_postproc_info = 2;
+}
+

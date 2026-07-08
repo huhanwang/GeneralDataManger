@@ -1,0 +1,67 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ParkingDirection_ParkingDirectionType
+{
+    ParkingDirection_ParkingDirectionType_PARKING_DIRECTION_TYPE_UNKNOWN = 0;
+    ParkingDirection_ParkingDirectionType_PARKING_IN_DIRECTION_TYPE = 1;
+    ParkingDirection_ParkingDirectionType_PARKING_OUT_DIRECTION_TYPE = 2;
+}
+
+enum ParkingDirection_ParkingInDirection
+{
+    ParkingDirection_ParkingInDirection_PARKING_IN_UNKNOWN = 0;
+    ParkingDirection_ParkingInDirection_PARKING_IN_FRONT = 1;
+    ParkingDirection_ParkingInDirection_PARKING_IN_BACK = 2;
+}
+
+enum ParkingDirection_ParkingOutDirection
+{
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_UNKNOWN = 0;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_FR_LEFT = 1;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_FR_CENTER = 2;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_FR_RIGHT = 3;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_RR_LEFT = 4;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_RR_CENTER = 5;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_V_RR_RIGHT = 6;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_H_FR_LEFT = 7;
+    ParkingDirection_ParkingOutDirection_PARKING_OUT_H_FR_RIGHT = 8;
+}
+
+enum ParkingDirection_RecommendReason
+{
+    ParkingDirection_RecommendReason_PARKING_RECOMMEND_UNKNOWN = 0;
+    ParkingDirection_RecommendReason_PARKING_RECOMMEND_BOUNDARY = 1;
+    ParkingDirection_RecommendReason_PARKING_RECOMMEND_MEMORY = 2;
+}
+
+message ParkingDirection_ParkingInInfo
+{
+    uint32 num_in_directions = 1;
+    ParkingDirection_ParkingInDirection recommend_parking_in_direction = 2;
+    repeated ParkingDirection_ParkingInDirection parking_in_directions = 3;
+}
+
+message ParkingDirection_ParkingOutInfo
+{
+    uint32 num_out_directions = 1;
+    ParkingDirection_RecommendReason recommend_reason = 2;
+    ParkingDirection_ParkingOutDirection recommend_parking_out_direction = 3;
+    repeated ParkingDirection_ParkingOutDirection parking_out_directions = 4;
+}
+
+message ParkingDirection_ParkingDirectionInfo
+{
+    sint32 slot_id = 1;
+    ParkingDirection_ParkingDirectionType parking_direction_type = 2;
+    ParkingDirection_ParkingInInfo parking_in_info = 3;
+    ParkingDirection_ParkingOutInfo parking_out_info = 4;
+}
+
+message ParkingDirectionMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ParkingDirection_ParkingDirectionInfo parking_direction_info = 2;
+}
+

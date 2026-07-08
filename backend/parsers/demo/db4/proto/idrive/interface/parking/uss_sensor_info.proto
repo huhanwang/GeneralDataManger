@@ -1,0 +1,61 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UssSensorInfo_UssPulse
+{
+    uint32 de_distance = 1;
+    uint32 ce_left_distance = 2;
+    uint32 ce_right_distance = 3;
+    uint32 de_width = 4;
+    uint32 ce_left_width = 5;
+    uint32 ce_right_width = 6;
+    uint32 de_height = 7;
+    uint32 ce_left_height = 8;
+    uint32 ce_right_height = 9;
+}
+
+message UssSensorInfo_UssPulseData
+{
+    uint32 num_uss_pulse_de = 1;
+    repeated UssSensorInfo_UssPulse uss_pulse = 2;
+}
+
+message UssSensorInfo_UssStatusInfo
+{
+    uint32 uss_ring_time = 1;
+    uint32 customer_bits = 2;
+    uint32 uss_err_st1 = 3;
+    uint32 uss_err_st2 = 4;
+    uint32 uss_noise = 5;
+}
+
+message UssSensorInfo_UssRawDataFrame
+{
+    uint64 uss_raw_data_timestamp = 1;
+    uint32 uss_polling_channel = 2;
+    uint32 num_uss_pulse_data_info = 3;
+    repeated UssSensorInfo_UssPulseData uss_pulse_data_info = 4;
+}
+
+message UssSensorInfo_UssStatusFrame
+{
+    uint64 uss_status_timestamp = 1;
+    uint32 uss_drv_version = 2;
+    uint32 uss_hw_supplier = 3;
+    uint32 num_uss_status_info = 4;
+    repeated UssSensorInfo_UssStatusInfo uss_status_info = 5;
+}
+
+message UssSensorInfo_UssSensorRawInfo
+{
+    UssSensorInfo_UssRawDataFrame uss_raw_data_frame = 1;
+    UssSensorInfo_UssStatusFrame uss_status_frame = 2;
+}
+
+message UssSensorInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssSensorInfo_UssSensorRawInfo uss_sensor_raw_info = 2;
+}
+

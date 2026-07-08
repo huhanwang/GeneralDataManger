@@ -1,0 +1,64 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraParam_CameraType 
+{
+    CameraParam_CameraType_CameraType_PinHole = 0;
+    CameraParam_CameraType_CameraType_FishEye = 1;
+}
+
+message CameraParam_CameraValidHeight
+{
+    sint32 left_y = 1;
+    sint32 right_y = 2;
+}
+
+message CameraParam_VcsParam
+{
+    uint32 num_vcs_rotation = 1;
+    uint32 num_vcs_translation = 2;
+    repeated float rotation = 3;
+    repeated float translation = 4;
+}
+
+message CameraParam_DistortParam
+{
+    uint32 num_distort = 1;
+    repeated float distort = 2;
+}
+
+message CameraParam_CameraParam
+{
+    float focal_u = 1;
+    float focal_v = 2;
+    float center_u = 3;
+    float center_v = 4;
+    float camera_x = 5;
+    float camera_y = 6;
+    float camera_z = 7;
+    float pitch = 8;
+    float yaw = 9;
+    float roll = 10;
+    float fov = 11;
+    uint32 cam_id = 12;
+    CameraParam_CameraType type = 13;
+    CameraParam_CameraValidHeight valid_height = 14;
+    CameraParam_VcsParam vcs_param = 15;
+    CameraParam_DistortParam distort_param = 16;
+    uint32 image_height = 17;
+    uint32 image_width = 18;
+}
+
+message CameraParam_CameraParams
+{
+    uint32 num_camera = 1;
+    repeated CameraParam_CameraParam camera_param_list = 2;
+}
+
+message CameraParamMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraParam_CameraParams camera_param = 2;
+}
+

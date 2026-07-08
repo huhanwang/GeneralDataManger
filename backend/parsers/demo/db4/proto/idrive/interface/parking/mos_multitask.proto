@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/parsing_base.proto";
+package idrive.workflow.proto;
+
+message MosMultiTask_ParkingPoint
+{
+    uint32 id = 1;
+    uint32 confidence = 2;
+    Vector2i point_pcs_min = 3;
+    Vector2i point_pcs_max = 4;
+}
+
+message MosMultiTask_ParkingPoints
+{
+    uint32 num_parking_ponts = 1;
+    repeated MosMultiTask_ParkingPoint parking_ponts = 2;
+}
+
+message MosMultiTask_MosMultiTask
+{
+    IpmParsingImageData feature_map = 1;
+    MosMultiTask_ParkingPoints parking_points = 2;
+}
+
+message MosMultiTaskMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MosMultiTask_MosMultiTask mos_muti_task = 2;
+}
+

@@ -1,0 +1,258 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+message AlgDebugIcc_AlgDebugICCState
+{
+    uint32 acc_version = 1;
+    uint32 acc_state = 2;
+    uint32 acc_active_substate = 3;
+    uint32 driver_set_speed = 4;
+    uint32 driver_set_hw_level = 5;
+    float driver_set_hw_time = 6;
+    uint32 acc_unavailable_reason = 7;
+    uint32 acc_quit_reason = 8;
+    uint32 acc_soft_quit_reason = 9;
+    bool esc_request_active = 10;
+    bool ems_request_active = 11;
+    bool standstill_request = 12;
+    bool driveoff_request = 13;
+    uint32 epb_request = 14;
+    uint32 epb_request_reason = 15;
+    uint32 acc_reject_reason = 16;
+    bool overtake_request = 17;
+    uint32 overtake_unavailable_reason = 18;
+    uint32 overtake_quit_reason = 19;
+    uint32 state_reserved_1 = 20;
+    float standstill_time = 21;
+    float esc_request_acc = 22;
+    float ems_request_torque = 23;
+    bool acc_min_braking = 24;
+    float plan_target_a = 25;
+    float main_tgt_sgap = 26;
+    float main_tgt_sgap_desired = 27;
+    float main_tgt_lgap = 28;
+    float main_tgt_abs_vs = 29;
+    float main_tgt_abs_vl = 30;
+    float main_tgt_rel_vs = 31;
+    float main_tgt_rel_vl = 32;
+    uint32 main_target_id = 33;
+    uint32 main_target_class = 34;
+    uint32 main_target_vehtype = 35;
+    uint32 nudge_target_id = 36;
+    uint32 func_mode = 37;
+    uint32 icc_version = 38;
+    uint32 icc_state = 39;
+    uint32 icc_substate = 40;
+    uint32 eps_request_active = 41;
+    uint32 state_reserved_2 = 42;
+    uint32 icc_unavailable_reason = 43;
+    uint32 icc_quit_reason = 44;
+    float icc_pause_time = 45;
+    float eps_request_steer_angle = 46;
+    uint32 fvsw_state = 47;
+    uint32 fvsw_substate = 48;
+    uint32 fvsw_unavailable_reason = 49;
+    uint32 fvsw_quit_reason = 50;
+    uint32 driveoff_tip = 51;
+    uint32 takeover_warning = 52;
+    uint32 takeover_reason = 53;
+}
+
+message AlgDebugIcc_AlgDebugICCEgoInfo
+{
+    float ego_speed = 1;
+    float ego_acc_lgt = 2;
+    float ego_acc_lat = 3;
+    float ego_yawrate = 4;
+    float ego_steer_offset = 5;
+    float ego_steer_angle = 6;
+    float ego_curvature = 7;
+}
+
+message AlgDebugIcc_AlgDebugICCObstacle
+{
+    uint32 id = 1;
+    uint32 decision_lgt = 2;
+    uint32 decision_lat = 3;
+    uint32 obstacle_reserved_1 = 4;
+    uint32 main_tgt_reason = 5;
+    uint32 nudge_reason = 6;
+    float time_buffer = 7;
+    float s = 8;
+    float l = 9;
+    float s_gap = 10;
+    float l_gap = 11;
+    float l_nearest = 12;
+    float v_s = 13;
+    float v_l = 14;
+    float v_s_rel = 15;
+    float v_l_rel = 16;
+    float a_filtered = 17;
+}
+
+message AlgDebugIcc_AlgDebugICCTrajPoint
+{
+    float t_offset = 1;
+    float x = 2;
+    float y = 3;
+    float s = 4;
+    float v = 5;
+    float a = 6;
+    float kappa = 7;
+    float theta = 8;
+}
+
+message AlgDebugIcc_AlgDebugICCPlan
+{
+    uint32 function = 1;
+    uint32 main_tgt_id = 2;
+    uint32 nudge_state = 3;
+    uint32 nudge_tgt_id = 4;
+    repeated float ref_line_coefs = 5;
+    float start_point_s = 6;
+    float start_point_l = 7;
+    repeated AlgDebugIcc_AlgDebugICCObstacle obstacles = 8;
+    float driver_set_speed_real = 9;
+    float desired_acc = 10;
+    float desired_acc_cruise = 11;
+    float desired_acc_follow = 12;
+    float desired_acc_stop = 13;
+    float desired_acc_curve = 14;
+    float curve_radius_pre = 15;
+    float curve_a_limit = 16;
+    float curve_v_limit = 17;
+    uint32 takeover_reason_lgt = 18;
+    uint32 takeover_reason_lat = 19;
+    float path_offset = 20;
+    float nudge_offset = 21;
+    float nudge_s_gap = 22;
+    repeated AlgDebugIcc_AlgDebugICCTrajPoint traj_points = 23;
+    uint32 lane_change_state = 24;
+    uint32 target_lane_change_dir = 25;
+    uint32 lc_left_danger_obs_id = 26;
+    uint32 lc_right_danger_obs_id = 27;
+    uint32 lc_unavailable_reason = 28;
+    uint32 lc_quit_reason = 29;
+    uint32 lc_left_unavailable_reason = 30;
+    uint32 lc_right_unavailable_reason = 31;
+    uint32 lc_cancel_reason = 32;
+    uint32 plan_reserved_1 = 33;
+    uint32 plan_reserved_2 = 34;
+    float lc_state_time = 35;
+    float lc_offset = 36;
+    float lgctrl_allowspd = 37;
+    float lgctrl_allowaccel = 38;
+    float lgctrl_finalaccel = 39;
+}
+
+message AlgDebugIcc_AlgDebugICCControl
+{
+    bool acc_ctrol_active = 1;
+    bool esc_request_active = 2;
+    bool ems_request_active = 3;
+    uint32 control_reserved_1 = 4;
+    float road_slope_filtered = 5;
+    float traction_force_ff = 6;
+    float traction_force_fb_p = 7;
+    float traction_force_fb_i = 8;
+    float ems_torque_raw = 9;
+    float ems_request_torque = 10;
+    bool icc_ctrol_active = 11;
+    bool eps_request_active = 12;
+    uint32 control_reserved_2 = 13;
+    uint32 control_reserved_3 = 14;
+    float eps_angle_request = 15;
+    float lat_ff_preview_curvature = 16;
+    float lat_ff_front_wheel_angle = 17;
+    float lat_ff_steer_wheel_angle = 18;
+    float lat_fb_preview_lat_error = 19;
+    float lat_fb_preview_heading_error = 20;
+    float lat_fb_front_wheel_p = 21;
+    float lat_fb_front_wheel_i = 22;
+    float lat_fb_front_wheel_d = 23;
+    float lat_fb_front_wheel_angle = 24;
+    float lat_fb_steer_wheel_angle = 25;
+}
+
+message AlgDebugIcc_AlgDebugICCLaneBoundary
+{
+    uint32 id = 1;
+    uint32 type = 2;
+    uint32 confidence = 3;
+    uint32 lane_boundary_reserved_1 = 4;
+    repeated float center_line_coefs = 5;
+    float start_s = 6;
+    float end_s = 7;
+    float track_time = 8;
+    float unsafe_time = 9;
+    float lowconf_time = 10;
+    uint32 quality = 11;
+    uint32 color = 12;
+    float width = 13;
+    float tlc = 14;
+}
+
+message AlgDebugIcc_AlgDebugICCLane
+{
+    uint32 id = 1;
+    uint32 type = 2;
+    uint32 left_lane_id = 3;
+    uint32 right_lane_id = 4;
+    uint32 left_boundary_id = 5;
+    uint32 right_boundary_id = 6;
+    uint32 confidence = 7;
+    uint32 model_type = 8;
+    repeated float center_line_coefs = 9;
+    float length = 10;
+    float width = 11;
+    float track_time = 12;
+    bool is_valid = 13;
+    float speed_limit = 14;
+}
+
+message AlgDebugIcc_AlgDebugRoadModel
+{
+    uint32 road_model_type = 1;
+    uint32 line_similar_type = 2;
+    uint32 lane_width_type = 3;
+    uint32 better_line_index = 4;
+    uint32 cond_vehicle2vision = 5;
+    uint32 cond_vehicle2yawrate = 6;
+    uint32 cond_vision2vehicle = 7;
+    uint32 cond_vision2yawrate = 8;
+    uint32 cond_yawrate2vision = 9;
+    uint32 cond_yawrate2tja = 10;
+}
+
+message AlgDebugIcc_AlgDebugICCRoadModel
+{
+    uint32 road_model_type = 1;
+    uint32 target_lane_id = 2;
+    uint32 vehicle_lane_is_safe = 3;
+    uint32 road_model_reserved_2 = 4;
+    repeated AlgDebugIcc_AlgDebugICCLane lanes = 5;
+    repeated AlgDebugIcc_AlgDebugICCLaneBoundary boundaries = 6;
+    AlgDebugIcc_AlgDebugICCLane lane_vision = 7;
+    AlgDebugIcc_AlgDebugICCLane lane_traffic_obs = 8;
+    AlgDebugIcc_AlgDebugICCLane lane_ego_motion = 9;
+    AlgDebugIcc_AlgDebugRoadModel road_model = 10;
+}
+
+message AlgDebugIcc_AlgDebugICC
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    AlgDebugIcc_AlgDebugICCState state = 3;
+    AlgDebugIcc_AlgDebugICCPlan icc_plan = 4;
+    AlgDebugIcc_AlgDebugICCControl icc_control = 5;
+    AlgDebugIcc_AlgDebugICCRoadModel road_model = 6;
+}
+
+message AlgDebugIccMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugIcc_AlgDebugICC debug_icc = 2;
+}
+

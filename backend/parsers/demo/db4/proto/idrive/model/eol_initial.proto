@@ -1,0 +1,45 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+import "model/camera_extrinsics.proto";
+package idrive.workflow.proto;
+
+message EolInitial_ChessboardData
+{
+    CameraID camera_id = 1;
+    float top_left_x = 2;
+    float top_left_y = 3;
+    float height_interval = 4;
+    float width_interval = 5;
+}
+
+message EolInitial_CircleGridData
+{
+    CameraID camera_id = 1;
+    float basic_pt_z = 2;
+    float height_interval = 3;
+    float width_interval = 4;
+}
+
+message EolInitial_VehicleExtrinsicData
+{
+    float wheelbase = 1;
+    uint32 num_ori_extrinsic = 2;
+    repeated CameraExtrinsics_Extrinsic ori_extrinsic = 3;
+}
+
+message EolInitial_EolInitial
+{
+    EolInitial_VehicleExtrinsicData vehicle_data = 1;
+    uint32 num_cb_data = 2;
+    uint32 num_cg_data = 3;
+    repeated EolInitial_ChessboardData cb_data = 4;
+    repeated EolInitial_CircleGridData cg_data = 5;
+}
+
+message EolInitialMsg
+{
+    CommonMsgMsg common_msg = 1;
+    EolInitial_EolInitial initial_data = 2;
+}
+

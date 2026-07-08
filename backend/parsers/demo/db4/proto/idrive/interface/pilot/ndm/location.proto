@@ -1,0 +1,74 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/odometry_type.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+message Location_Location
+{
+    Odometry odom = 1;
+    Wgs84 coordinate = 2;
+    uint32 state = 3;
+    uint32 error_code = 4;
+    uint32 type = 5;
+    uint32 num_module_state = 6;
+    repeated uint32 module_state = 7;
+    uint32 num_module_error = 8;
+    repeated uint32 module_error = 9;
+    uint64 source_ts = 10;
+    uint32 num_relative_delta = 11;
+    repeated float relative_delta = 12;
+    uint32 num_module_error_extend = 13;
+    repeated uint64 module_error_extend = 14;
+}
+
+message Location_RelativePosition
+{
+    sint64 road_id = 1;
+    uint32 offset = 2;
+    uint32 accuracy = 3;
+    sint32 deviation = 4;
+    float speed = 5;
+    float relative_heading = 6;
+    float probability = 7;
+    sint64 current_section_id = 8;
+    uint32 current_lane_idx = 9;
+    sint64 preferred_road_id = 10;
+    uint32 lateral_offset_left = 11;
+    uint32 lateral_offset_right = 12;
+    float loc_left_boundary_heading = 13;
+    float loc_right_boundary_heading = 14;
+    uint32 road_offset = 15;
+    uint32 current_section_lane_number = 16;
+    uint64 link_identifier = 17;
+    sint64 lane_group_id = 18;
+    Point lane_projection_pos = 19;
+    uint32 lane_projection_index = 20;
+}
+
+message Location_RelativePositionMessage
+{
+    uint64 timestamp = 1;
+    uint64 position_age = 2;
+    uint32 num_positions = 3;
+    repeated Location_RelativePosition positions = 4;
+}
+
+message Location_LocationMsg
+{
+    NdmHeader header = 1;
+    Location_Location location = 2;
+    uint32 num_relative_odom = 3;
+    repeated Odometry relative_odom = 4;
+    uint32 num_relative_position = 5;
+    repeated Location_RelativePosition relative_position = 6;
+    uint32 num_error_count = 7;
+    repeated uint32 error_count = 8;
+}
+
+message LocationMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Location_LocationMsg location_msg = 2;
+}
+

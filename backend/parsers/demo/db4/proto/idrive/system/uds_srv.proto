@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UdsMessage_Message
+{
+    uint32 srv_id = 1;
+    uint32 result = 2;
+    uint32 sub_id = 3;
+    uint32 size = 4;
+    bytes data = 5;
+}
+
+message UdsMessageMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    UdsMessage_Message message = 2;
+}
+

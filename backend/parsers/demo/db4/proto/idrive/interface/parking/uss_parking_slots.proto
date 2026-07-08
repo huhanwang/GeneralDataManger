@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+package idrive.workflow.proto;
+
+message UssParkingSlots_UssParkingSlots
+{
+    sint32 version = 1;
+    uint32 uss_correct_times = 2;
+    uint32 num_uss_ps = 3;
+    repeated PerFusUssPs uss_ps = 5;
+    UssStateMachine state_machine = 6;
+    sint64 sensor_stamp = 7;
+    sint64 sample_stamp = 8;
+    PerFusUssPs uss_correct_slot = 9;
+}
+
+message UssParkingSlotsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssParkingSlots_UssParkingSlots uss_parking_slots = 2;
+}
+

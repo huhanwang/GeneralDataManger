@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PowerControl_Chn 
+{
+    PowerControl_Chn_Invalid = 0;
+    PowerControl_Chn_ECU = 1;
+    PowerControl_Chn_SOC = 2;
+}
+
+enum PowerControl_Cmd 
+{
+    PowerControl_Cmd_Invalid = 0;
+    PowerControl_Cmd_Startup = 1;
+    PowerControl_Cmd_Shutdown = 2;
+    PowerControl_Cmd_Reboot = 3;
+}
+
+enum PowerControl_State 
+{
+    PowerControl_State_Idle = 0;
+    PowerControl_State_Busy = 1;
+}
+
+message PowerControl_Control
+{
+    PowerControl_Chn chn = 1;
+    PowerControl_Cmd cmd = 2;
+    PowerControl_State status = 3;
+    uint32 result = 4;
+}
+
+message PowerControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    PowerControl_Control control = 2;
+}
+

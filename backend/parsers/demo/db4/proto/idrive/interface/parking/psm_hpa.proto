@@ -1,0 +1,79 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum StateMachineToHpa_PlanControlType
+{
+    StateMachineToHpa_PlanControlType_PLAN_CONTROL_NONE = 0;
+    StateMachineToHpa_PlanControlType_WAKEUP = 1;
+    StateMachineToHpa_PlanControlType_LOAD_ROUTE = 2;
+    StateMachineToHpa_PlanControlType_START_HUMAN = 3;
+    StateMachineToHpa_PlanControlType_START_NO_HUMAN = 4;
+    StateMachineToHpa_PlanControlType_PAUSE = 5;
+    StateMachineToHpa_PlanControlType_CONTINUE = 6;
+    StateMachineToHpa_PlanControlType_ABORT_EPS = 7;
+    StateMachineToHpa_PlanControlType_ABORT = 9;
+    StateMachineToHpa_PlanControlType_RELEASE = 10;
+    StateMachineToHpa_PlanControlType_COMPLETE = 11;
+    StateMachineToHpa_PlanControlType_START_PARKING_IN = 12;
+    StateMachineToHpa_PlanControlType_START_PARKING_OUT = 13;
+    StateMachineToHpa_PlanControlType_START_REMOTE_PARKING_IN = 14;
+    StateMachineToHpa_PlanControlType_START_REMOTE_PARKING_OUT = 15;
+    StateMachineToHpa_PlanControlType_START_RECORDING = 16;
+    StateMachineToHpa_PlanControlType_STOP_RECORDING = 17;
+    StateMachineToHpa_PlanControlType_START_NARROW_LANE_ASSISTANCE = 18;
+    StateMachineToHpa_PlanControlType_START_NARROW_LANE_PASSING = 19;
+    StateMachineToHpa_PlanControlType_LOAD_ROUTE_OUT = 20;
+}
+
+enum StateMachineToHpa_PlanControlSource
+{
+    StateMachineToHpa_PlanControlSource_PLAN_CONTROL_SOURCE_NONE = 0;
+    StateMachineToHpa_PlanControlSource_PLAN_CONTROL_SOURCE_APA = 1;
+    StateMachineToHpa_PlanControlSource_PLAN_CONTROL_SOURCE_VPA = 2;
+    StateMachineToHpa_PlanControlSource_PLAN_CONTROL_SOURCE_TRA = 3;
+    StateMachineToHpa_PlanControlSource_PLAN_CONTROL_SOURCE_NPA = 4;
+}
+
+enum StateMachineToHpa_ParkingInDirection
+{
+    StateMachineToHpa_ParkingInDirection_IN_UNKNOW = 0;
+    StateMachineToHpa_ParkingInDirection_FRONT = 1;
+    StateMachineToHpa_ParkingInDirection_BACK = 2;
+}
+
+enum StateMachineToHpa_ParkingOutDirection
+{
+    StateMachineToHpa_ParkingOutDirection_OUT_UNKNOW = 0;
+    StateMachineToHpa_ParkingOutDirection_V_FR_LEFT = 1;
+    StateMachineToHpa_ParkingOutDirection_V_FR_CENTER = 2;
+    StateMachineToHpa_ParkingOutDirection_V_FR_RIGHT = 3;
+    StateMachineToHpa_ParkingOutDirection_V_RR_LEFT = 4;
+    StateMachineToHpa_ParkingOutDirection_V_RR_CENTER = 5;
+    StateMachineToHpa_ParkingOutDirection_V_RR_RIGHT = 6;
+    StateMachineToHpa_ParkingOutDirection_H_FR_LEFT = 7;
+    StateMachineToHpa_ParkingOutDirection_H_FR_RIGHT = 8;
+}
+
+message StateMachineToHpa_ParkingSlot
+{
+    uint64 timestamp = 1;
+    sint32 slotid = 2;
+    bool slotid_valid = 3;
+}
+
+message StateMachineToHpa_PlanControl
+{
+    StateMachineToHpa_ParkingSlot slot = 1;
+    StateMachineToHpa_PlanControlType type = 2;
+    StateMachineToHpa_PlanControlSource source = 3;
+    StateMachineToHpa_ParkingInDirection in_direction = 4;
+    StateMachineToHpa_ParkingOutDirection out_direction = 5;
+}
+
+message StateMachineToHpaMsg
+{
+    CommonMsgMsg common_msg = 1;
+    StateMachineToHpa_PlanControl plan_control = 2;
+}
+

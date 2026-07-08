@@ -1,0 +1,16 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message OtaCondition_Condition
+{
+    bool speed_valid = 1;
+    bool votage_valid = 2;
+}
+
+message OtaConditionMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    OtaCondition_Condition condition = 2;
+}
+

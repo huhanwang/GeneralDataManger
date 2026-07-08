@@ -1,0 +1,56 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parsing_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum SyncCylinderParsing_CylinderParsingLabel
+{
+    SyncCylinderParsing_CylinderParsingLabel_kRoad = 0;
+    SyncCylinderParsing_CylinderParsingLabel_kSidewalk = 1;
+    SyncCylinderParsing_CylinderParsingLabel_kSky = 2;
+    SyncCylinderParsing_CylinderParsingLabel_kTerrain = 3;
+    SyncCylinderParsing_CylinderParsingLabel_kCurb = 4;
+    SyncCylinderParsing_CylinderParsingLabel_kFence = 5;
+    SyncCylinderParsing_CylinderParsingLabel_kTree = 6;
+    SyncCylinderParsing_CylinderParsingLabel_kPole = 7;
+    SyncCylinderParsing_CylinderParsingLabel_kTrafficSign = 8;
+    SyncCylinderParsing_CylinderParsingLabel_kVehicle = 9;
+    SyncCylinderParsing_CylinderParsingLabel_kThreeWheel = 10;
+    SyncCylinderParsing_CylinderParsingLabel_kTwoWheel = 11;
+    SyncCylinderParsing_CylinderParsingLabel_kPerson = 12;
+    SyncCylinderParsing_CylinderParsingLabel_kRider = 13;
+    SyncCylinderParsing_CylinderParsingLabel_kTrolley = 14;
+    SyncCylinderParsing_CylinderParsingLabel_kTrafficCone = 15;
+    SyncCylinderParsing_CylinderParsingLabel_kBollard = 16;
+    SyncCylinderParsing_CylinderParsingLabel_kFoldingWarningSign = 17;
+    SyncCylinderParsing_CylinderParsingLabel_kSingleWaterBarrier = 18;
+    SyncCylinderParsing_CylinderParsingLabel_kUntraversable = 19;
+    SyncCylinderParsing_CylinderParsingLabel_kParkingRod = 20;
+    SyncCylinderParsing_CylinderParsingLabel_kParkingLock = 21;
+    SyncCylinderParsing_CylinderParsingLabel_kCementColumn = 22;
+    SyncCylinderParsing_CylinderParsingLabel_kbackground = 23;
+    SyncCylinderParsing_CylinderParsingLabel_kFireHydrant = 24;
+    SyncCylinderParsing_CylinderParsingLabel_kPaintedWallRoot = 25;
+}
+
+message SyncCylinderParsing_CylinderParsingData
+{
+    uint32 camera_idx = 1;
+    float scale = 2;
+    CylParsingImageData feature_map = 3;
+    Rect roi_output = 4;
+}
+
+message SyncCylinderParsing_SyncCylinderParsing
+{
+    uint32 num_cylinder_parsing_data = 1;
+    repeated SyncCylinderParsing_CylinderParsingData cylinder_parsing_data = 2;
+}
+
+message SyncCylinderParsingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    SyncCylinderParsing_SyncCylinderParsing sync_cylinder_parsing = 2;
+}
+

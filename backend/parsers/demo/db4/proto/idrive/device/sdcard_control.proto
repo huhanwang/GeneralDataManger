@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum SdcardControl_Command 
+{
+    SdcardControl_Command_Inactive = 0;
+    SdcardControl_Command_Remove = 1;
+    SdcardControl_Command_Format = 2;
+}
+
+enum SdcardControl_FsType 
+{
+    SdcardControl_FsType_Inactive = 0;
+    SdcardControl_FsType_FAT = 1;
+    SdcardControl_FsType_FAT32 = 2;
+    SdcardControl_FsType_EXFAT = 3;
+    SdcardControl_FsType_NTFS = 4;
+    SdcardControl_FsType_NTFS_SB = 5;
+}
+
+message SdcardControl_Control
+{
+    SdcardControl_Command command = 1;
+    SdcardControl_FsType fstype = 2;
+}
+
+message SdcardControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    SdcardControl_Control control = 2;
+}
+

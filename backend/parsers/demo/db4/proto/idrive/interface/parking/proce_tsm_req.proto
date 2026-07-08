@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ProceTsmReq_ProceFunReq
+{
+    ProceTsmReq_ProceFunReq_NO_REQUEST = 0;
+    ProceTsmReq_ProceFunReq_ENTER_ADAS_REQUEST = 1;
+    ProceTsmReq_ProceFunReq_EXIT_ADAS_REQUEST = 2;
+    ProceTsmReq_ProceFunReq_ENTER_APA_REQUEST = 3;
+    ProceTsmReq_ProceFunReq_EXIT_APA_REQUEST = 4;
+    ProceTsmReq_ProceFunReq_ENTER_HPA_REQUEST = 5;
+    ProceTsmReq_ProceFunReq_EXIT_HPA_REQUEST = 6;
+}
+
+message ProceTsmReq_ReqData
+{
+    ProceTsmReq_ProceFunReq proce_fun_req = 1;
+}
+
+message ProceTsmReqMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ProceTsmReq_ReqData req_data = 2;
+}
+

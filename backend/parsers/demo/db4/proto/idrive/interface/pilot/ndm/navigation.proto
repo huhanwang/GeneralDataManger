@@ -1,0 +1,193 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+enum Navigation_NaviAction
+{
+    Navigation_NaviAction_NAVIACTION_INVALID = 0;
+    Navigation_NaviAction_NAVIACTION_STRAIGHT = 1;
+    Navigation_NaviAction_NAVIACTION_HALFRIGHT = 2;
+    Navigation_NaviAction_NAVIACTION_RIGHT = 3;
+    Navigation_NaviAction_NAVIACTION_MUCHRIGHT = 4;
+    Navigation_NaviAction_NAVIACTION_UTURN = 5;
+    Navigation_NaviAction_NAVIACTION_LEFT = 6;
+    Navigation_NaviAction_NAVIACTION_HALFLEFT = 7;
+    Navigation_NaviAction_NAVIACTION_NONE = 8;
+    Navigation_NaviAction_NAVIACTION_KEEPRIGHT = 9;
+    Navigation_NaviAction_NAVIACTION_KEEPLEFT = 10;
+}
+
+enum Navigation_SpecialRoadType
+{
+    Navigation_SpecialRoadType_SPECIALROADTYPE_UNKNOWN = 0;
+    Navigation_SpecialRoadType_SPECIALROADTYPE_JUNCTION = 1;
+    Navigation_SpecialRoadType_SPECIALROADTYPE_MERGE = 2;
+    Navigation_SpecialRoadType_SPECIALROADTYPE_FORK = 3;
+}
+
+enum Navigation_TFLPassState
+{
+    Navigation_TFLPassState_TFLPASSSTATE_NON_TFL_LANE = 0;
+    Navigation_TFLPassState_TFLPASSSTATE_UNKNOWN = 1;
+    Navigation_TFLPassState_TFLPASSSTATE_GREEN = 2;
+    Navigation_TFLPassState_TFLPASSSTATE_YELLOW = 3;
+    Navigation_TFLPassState_TFLPASSSTATE_RED = 4;
+}
+
+enum Navigation_SegmentType
+{
+    Navigation_SegmentType_SEGMENTTYPE_UNKNOWN = 0;
+    Navigation_SegmentType_SEGMENTTYPE_PASSABLE = 1;
+    Navigation_SegmentType_SEGMENTTYPE_CONE_OCCUPIED = 2;
+    Navigation_SegmentType_SEGMENTTYPE_CONSTRUCTION_OCCUPIED = 3;
+    Navigation_SegmentType_SEGMENTTYPE_OTHER_OCCUPIED = 4;
+}
+
+message Navigation_NdmRoadRoute
+{
+    sint64 id = 1;
+    uint64 stamp = 2;
+    uint32 num_link_ids = 3;
+    repeated sint64 link_ids = 4;
+    float time_cost_in_minutes = 5;
+    float distance_cost_in_meters = 6;
+}
+
+message Navigation_LaneRoute
+{
+    sint64 id = 1;
+    uint64 stamp = 2;
+    uint32 num_lane_ids = 3;
+    repeated sint64 lane_ids = 4;
+    sint64 road_route_id = 5;
+    float time_cost_in_minutes = 6;
+    float distance_cost_in_meters = 7;
+    uint32 recommendation = 8;
+}
+
+message Navigation_LaneOrientation
+{
+    bool uturn_able = 1;
+    bool left_able = 2;
+    bool straight_able = 3;
+    bool right_able = 4;
+    bool bus_only = 5;
+    bool change_able = 6;
+    bool right_uturn = 7;
+    bool highlight = 8;
+}
+
+message Navigation_SpeedLimitGuidance
+{
+    float speed_limit_distance = 1;
+    float next_speed_limit = 2;
+}
+
+message Navigation_SpecialRoadGuidance
+{
+    Navigation_SpecialRoadType special_road_type = 1;
+    Navigation_NaviAction navi_action = 2;
+    float distance = 3;
+}
+
+message Navigation_NaviGuideInfo
+{
+    Navigation_NaviAction navi_action = 1;
+    float speed_limit = 2;
+    float remain_distance = 3;
+    uint32 num_next_road_name = 4;
+    string next_road_name = 5;
+    uint32 num_special_road_guidances = 6;
+    repeated Navigation_SpecialRoadGuidance special_road_guidances = 7;
+    uint32 num_speed_limit_guidances = 8;
+    repeated Navigation_SpeedLimitGuidance speed_limit_guidances = 9;
+}
+
+message Navigation_RecommendLane
+{
+    uint32 idx = 1;
+    Navigation_LaneOrientation lane_orientation = 2;
+}
+
+message Navigation_NaviLaneInfo
+{
+    uint32 total_lane_num = 1;
+    uint32 num_recommend_lanes = 2;
+    repeated Navigation_RecommendLane recommend_lanes = 3;
+}
+
+message Navigation_RoadNavi
+{
+    sint64 id = 1;
+    uint64 stamp = 2;
+    Navigation_NaviGuideInfo navi_guide_info = 3;
+    Navigation_NaviLaneInfo navi_lane_info = 4;
+}
+
+message Navigation_NdmLaneSegment
+{
+    float start_offset = 1;
+    float end_offset = 2;
+    Navigation_SegmentType segment_type = 3;
+}
+
+message Navigation_NaviLane
+{
+    sint64 lane_id = 1;
+    Navigation_TFLPassState tfl_pass_state = 2;
+    uint32 num_passable_segments = 3;
+    repeated Navigation_NdmLaneSegment passable_segments = 4;
+    uint32 num_occupied_segments = 5;
+    repeated Navigation_NdmLaneSegment occupied_segments = 6;
+    float end_distance = 7;
+    bool valid = 8;
+    uint32 num_stop_line_ids = 9;
+    repeated sint64 stop_line_ids = 10;
+    uint32 num_stop_line_yaws = 11;
+    repeated sint64 stop_line_yaws = 12;
+}
+
+message Navigation_NaviRoad
+{
+    sint64 road_id = 1;
+    uint32 num_navi_lanes = 2;
+    repeated Navigation_NaviLane navi_lanes = 3;
+}
+
+message Navigation_AdapLaneNav
+{
+    sint64 id = 1;
+    uint64 stamp = 2;
+    uint32 num_navi_roads = 3;
+    repeated Navigation_NaviRoad navi_roads = 4;
+}
+
+message Navigation_NdmNavigation
+{
+    sint64 id = 1;
+    uint64 stamp = 2;
+    Point start_location = 3;
+    Point destination = 4;
+    uint32 num_road_routes = 5;
+    repeated Navigation_NdmRoadRoute road_routes = 6;
+    uint32 num_lane_routes = 7;
+    repeated Navigation_LaneRoute lane_routes = 8;
+    Navigation_RoadNavi road_navi = 9;
+    uint32 status = 10;
+    uint32 diag_code = 11;
+    Navigation_AdapLaneNav adap_lane_nav = 12;
+}
+
+message Navigation_NdmNavigationMsg
+{
+    NdmHeader header = 1;
+    Navigation_NdmNavigation navigation = 2;
+}
+
+message NavigationMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Navigation_NdmNavigationMsg navi_msg = 2;
+}
+

@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+package idrive.workflow.proto;
+
+message CameraIntrinsics_Intrinsic
+{
+    float cx = 1;
+    float cy = 2;
+    float fx = 3;
+    float fy = 4;
+    CameraID cam_id = 5;
+    uint32 num_k = 6;
+    uint32 num_p = 7;
+    uint32 num_s = 8;
+    repeated float k = 9;
+    repeated float p = 10;
+    repeated float s = 11;
+}
+
+message CameraIntrinsics_Intrinsics
+{
+    uint32 num_intrinsics = 1;
+    repeated CameraIntrinsics_Intrinsic intrinsics = 2;
+}
+
+message CameraIntrinsicsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CameraIntrinsics_Intrinsics intrinsics = 2;
+}
+

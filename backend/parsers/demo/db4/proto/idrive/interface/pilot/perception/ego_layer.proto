@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+message EgoLayer
+{
+    uint64 id = 1;
+    uint64 stamp = 2;
+    NdmBaseVehicleType vehicle_type = 3;
+    Point lwh = 4;
+    float weight = 5;
+    uint32 num_licence_plate = 6;
+    string licence_plate = 7;
+    NdmTrajectory relative_traj = 8;
+    NdmTrajectory absolute_traj = 9;
+    bool fixed = 10;
+}
+

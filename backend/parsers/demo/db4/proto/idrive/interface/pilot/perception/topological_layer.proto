@@ -1,0 +1,143 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/line.proto";
+package idrive.workflow.proto;
+
+enum AreaType
+{
+    AreaType_UNKNOWN = 0;
+    AreaType_COMMUNITY = 1;
+}
+
+enum FormOfWay
+{
+    FormOfWay_FORMOFWAY_UNKNOWN = 0;
+    FormOfWay_FORMOFWAY_MULTIPLECARRIAGEWAY = 1;
+    FormOfWay_FORMOFWAY_SINGLECARRIAGEWAY = 2;
+    FormOfWay_FORMOFWAY_ROUNDABOUTCIRCLE = 3;
+    FormOfWay_FORMOFWAY_SERVICE = 4;
+    FormOfWay_FORMOFWAY_RAMPENTRY = 5;
+    FormOfWay_FORMOFWAY_RAMPEXIT = 6;
+    FormOfWay_FORMOFWAY_CROSSLINK = 7;
+    FormOfWay_FORMOFWAY_JCT = 8;
+    FormOfWay_FORMOFWAY_SLIPROAD = 9;
+    FormOfWay_FORMOFWAY_SIDEROAD = 10;
+    FormOfWay_FORMOFWAY_SLIPANDJCT = 11;
+    FormOfWay_FORMOFWAY_TURNRIGHTLINEA = 12;
+    FormOfWay_FORMOFWAY_TURNRIGHTLINEB = 13;
+    FormOfWay_FORMOFWAY_TURNLEFTLINEA = 14;
+    FormOfWay_FORMOFWAY_TURNLEFTLINEB = 15;
+    FormOfWay_FORMOFWAY_TURNLEFTRIGHTLINE = 16;
+    FormOfWay_FORMOFWAY_SERVICEANDSLIPROAD = 17;
+    FormOfWay_FORMOFWAY_SERVICEANDJCT = 18;
+    FormOfWay_FORMOFWAY_SERVICEANDSLIPROADANDJCT = 19;
+    FormOfWay_FORMOFWAY_DIVISEDLINK = 20;
+    FormOfWay_FORMOFWAY_OTHER = 21;
+}
+
+enum TileRange
+{
+    TileRange_T0 = 0;
+    TileRange_T1 = 1;
+    TileRange_T2 = 2;
+    TileRange_T3 = 3;
+}
+
+message Area
+{
+    uint32 id = 1;
+    uint32 num_areapolygon_ids = 2;
+    repeated uint32 areapolygon_ids = 3;
+    NdmPolygon bounding_polygon = 4;
+    AreaType type = 5;
+    uint32 num_name = 6;
+    string name = 7;
+    uint32 num_link_ids = 8;
+    repeated uint32 link_ids = 9;
+}
+
+message Parking
+{
+    uint32 id = 1;
+    uint32 parkingspace_id = 2;
+    uint32 num_section_ids = 3;
+    repeated uint32 section_ids = 4;
+    uint32 num_junction_ids = 5;
+    repeated uint32 junction_ids = 6;
+    NdmPolygon bounding_polygon = 7;
+    uint32 num_name = 8;
+    string name = 9;
+    uint32 num_link_ids = 10;
+    repeated uint32 link_ids = 11;
+}
+
+message RoadNode
+{
+    uint32 id = 1;
+    uint32 num_include_ids = 2;
+    repeated uint32 include_ids = 3;
+    uint32 num_in_link_ids = 4;
+    repeated uint32 in_link_ids = 5;
+    uint32 num_out_link_ids = 6;
+    repeated uint32 out_link_ids = 7;
+    float probability = 8;
+    float turn_angle = 9;
+}
+
+message RoadEdge
+{
+    uint32 id = 1;
+    uint32 num_sections = 2;
+    repeated Link sections = 3;
+}
+
+message Road
+{
+    uint32 id = 1;
+    uint32 num_name = 2;
+    string name = 3;
+    uint32 num_forward_links = 4;
+    repeated Link forward_links = 5;
+    uint32 num_backward_links = 6;
+    repeated Link backward_links = 7;
+    FormOfWay form = 8;
+    uint32 function = 9;
+    uint32 num_links = 10;
+    repeated Link links = 11;
+}
+
+message Inner_Childs {
+    string childs = 1;
+}
+message Tile
+{
+    uint32 id = 1;
+    Index index = 2;
+    Point min_point = 3;
+    TileRange range = 4;
+    uint32 num_childs = 5;
+    repeated Inner_Childs childs = 6;
+    uint32 num_utm_zone = 7;
+    string utm_zone = 8;
+    uint32 num_link_ids = 9;
+    repeated uint32 link_ids = 10;
+}
+
+message TopologicalLayer
+{
+    uint32 num_reflines = 1;
+    repeated Line reflines = 2;
+    uint32 num_areas = 3;
+    repeated Area areas = 4;
+    uint32 num_parkings = 5;
+    repeated Parking parkings = 6;
+    uint32 num_roads = 7;
+    repeated Road roads = 8;
+    uint32 num_tiles = 9;
+    repeated Tile tiles = 10;
+    uint32 num_road_nodes = 11;
+    repeated RoadNode road_nodes = 12;
+    uint32 num_road_edges = 13;
+    repeated RoadEdge road_edges = 14;
+}
+

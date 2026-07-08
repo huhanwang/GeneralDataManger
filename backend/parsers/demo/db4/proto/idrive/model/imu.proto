@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Imu_Imu
+{
+    uint64 utc_time = 1;
+    float heading = 2;
+    float pitch = 3;
+    float roll = 4;
+    float raw_acceleration_x = 5;
+    float raw_acceleration_y = 6;
+    float raw_acceleration_z = 7;
+    float raw_angular_rate_x = 8;
+    float raw_angular_rate_y = 9;
+    float raw_angular_rate_z = 10;
+}
+
+message ImuMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Imu_Imu imu = 2;
+}
+

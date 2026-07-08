@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum EngineeringModeCtrl_Mode 
+{
+    EngineeringModeCtrl_Mode_Inactive = 0;
+    EngineeringModeCtrl_Mode_Active = 1;
+    EngineeringModeCtrl_Mode_Num = 2;
+}
+
+enum EngineeringModeCtrl_TouchSt 
+{
+    EngineeringModeCtrl_TouchSt_NoCommand = 0;
+    EngineeringModeCtrl_TouchSt_Press = 1;
+    EngineeringModeCtrl_TouchSt_Release = 2;
+    EngineeringModeCtrl_TouchSt_Slither = 3;
+    EngineeringModeCtrl_TouchSt_Num = 4;
+}
+
+message EngineeringModeCtrl_Control
+{
+    EngineeringModeCtrl_Mode mode_control = 1;
+    EngineeringModeCtrl_TouchSt screen_touch_st = 2;
+    uint32 ScreenCoordX = 3;
+    uint32 ScreenCoordY = 4;
+}
+
+message EngineeringModeCtrlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EngineeringModeCtrl_Control control = 2;
+}
+

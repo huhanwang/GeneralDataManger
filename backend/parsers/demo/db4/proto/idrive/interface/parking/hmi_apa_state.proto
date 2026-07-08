@@ -1,0 +1,151 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum HmiApaState_ApaWorkState
+{
+    HmiApaState_ApaWorkState_APA_WORK_STATE_NONE = 0;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_STANDBY = 1;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_SEARCHING = 2;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_GUIDANCE = 3;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_FAILED = 4;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_COMPLETE = 5;
+    HmiApaState_ApaWorkState_APA_WORK_STATE_DISABLE = 6;
+}
+
+enum HmiApaState_ApaBtnEnabled
+{
+    HmiApaState_ApaBtnEnabled_APA_BTN_ENABLED_NO_DISPLAY = 0;
+    HmiApaState_ApaBtnEnabled_APA_BTN_ENABLED_DISPLAY = 1;
+    HmiApaState_ApaBtnEnabled_APA_BTN_ENABLED_SELECT_MENU = 2;
+    HmiApaState_ApaBtnEnabled_APA_BTN_ENABLED_CONTINUE = 3;
+}
+
+enum HmiApaState_ApaTextDisp
+{
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_NONE = 0;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_WRONG_GEAR_POS = 1;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_TURN_D_SEARCHING_SLOT = 2;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CLOSE_THE_TRUNK = 3;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CLOSE_THE_DOOR = 4;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_FASTEN_SEAT_BELT = 5;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_FOLDER_MIRROR = 6;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SPEED_TOO_HIGHT_DOWN_23 = 7;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SYSTEM_ERROR = 8;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CONTROL_UNIT_ERROR = 9;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_BRAKE_REQUEST = 10;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SELECT_PARKING_MODE = 11;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SELECT_INTERNAL_PARKING = 12;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SELECT_SLOT_AND_MODE = 13;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SELECT_SLOT_AND_INTERNAL = 14;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_KEEP_BRAKING = 15;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_HANDS_OFF_PARKING_IN = 16;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_RELEASE_BRAKE_TO_PARK = 17;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_READY_BRAKE_FOR_AUTO_PARKING = 18;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SUSPEND_CLOSE_TRUNK = 19;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SUSPEND_CLOSE_DOOR = 20;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SUSPEND_FASTEN_SEAT_BELT = 21;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_OBSTACLES_DETECTED = 22;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_BREAK_RECOVERED_FOR_CONTINUE = 23;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PARKING_QUITED = 24;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PARKING_FINISHED = 25;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_FINISHED_BY_DRIVER = 26;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_QUITED_BY_PARKING_TO_MANY_TIMES = 27;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_QUITED_BY_TOO_LONG_TIMES = 28;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_TOO_SMALL_SLOT = 29;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CLEAN_THE_CAMERA = 30;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SPEED_TOO_LARGE = 36;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_RELEASE_GAS_PEDAL_FOR_SUSPEND = 39;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PARK_SYSTEM_UNAVAILABLE = 41;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PARK_SYSTEM_EXIT = 44;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_FLODER_MIRROR_SUSPEND = 45;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_DRIVE_MODE_UNSUPPORTED = 47;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PATH_SMOOTHS = 48;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SELECT_OUT_DIRECTION = 50;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_GET_OFF_CAR_START_REMOTE_PAKRING = 51;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CAN_NOT_START_BY_SYSTEM_ERROR = 55;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CAN_NOT_START_BY_CONTROL_UNIT_ERROR = 56;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PARKING_SYS_NOT_RUNING = 57;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_SYSTEM_EXIT_FOR_SLOPE_COVER = 61;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_RELEASE_BREAK_PEDAL_FOR_SUSPEND = 141;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_CLOSE_CABIN_COVER = 150;
+    HmiApaState_ApaTextDisp_APA_TEXT_DISP_PULL_OUT_CHARGING_GUN = 151;
+}
+
+enum HmiApaState_ApaExitReason
+{
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_NONE = 0;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_PARK_TYPE = 1;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_SLOT_TYPE = 2;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_DETECT_TYPE = 3;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_SLOT_SIDE = 4;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_PARK_OUT_DIR = 5;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_USS_SIDE = 6;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_SLOT_TYPE_AND_PARK_TYPE_MATCHING = 7;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_SLOT_SIZE = 8;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_INIT_POINT = 9;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_CAL_PARKINGIN_POINT = 10;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_OBLI_SLOT_COLLISION = 11;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_SEARCH_FAIL = 12;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_EXCEED_MAX_TIMES = 13;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_PATH_NUM_CHANGE_TOOMUCH = 14;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_DRIVING_DIR_IN_PARA_SLOT = 15;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_INPUT_POS_IN_PARA_SLOT = 16;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_NEW_PLAN_IN_PARA_SLOT = 17;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_STOP_IN_FIXED_POS = 18;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_PLAN_ERROR_PARKING_OUT_POS = 19;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_NO_DATA = 104;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_INDEX_OUT = 105;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_TRACK_OUT = 106;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_AVOID_STOP_TIMEOUT = 107;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_AVOID_STOP_CLIP = 108;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_BUMP_STOP = 109;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_CONTROL_MODE = 110;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_CONTROL_ERROR_HANDSHAKE_INTERRUPT = 111;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_ODO_TIMEOUT = 201;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_ODO_OVERFLOW = 202;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_ODO_CHANGE_GREATLY = 203;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_FREESPACE_TIMEOUT = 204;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_FREESPACE_INVALID = 205;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_SLOT_YAW = 206;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_SLOT_WIDTH = 207;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_SLOT_BOUNDARY = 208;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_SLOT_TYPE = 209;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_CONTROL_FEEDBACK_INVALID = 210;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_CONTROL_TIMEOUT = 211;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_PLANNING_INVALID = 212;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_INVALID_SLOTID = 213;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_NO_SLOTID = 214;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_INPUTMSG_NOT_READY = 215;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_OUTPUTMSG_NOT_READY = 216;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_DECISION_ERROR_HANDSHAKE_INVALID = 217;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_RECV_PLAN_ACTIVE_TIMEOUT = 401;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_SENDMSG_TO_PLAN_FAILED = 402;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_USER_CLICK_CANCEL_APA = 403;
+    HmiApaState_ApaExitReason_APA_EXIT_REASON_STATE_MACHINE_NOT_MATCH_PLAN = 404;
+}
+
+message HmiApaState_ApaDisplayInfo
+{
+    HmiApaState_ApaWorkState apa_work_state = 1;
+    HmiApaState_ApaBtnEnabled apa_btn_enabled = 2;
+    bool left_out_slot_valid = 3;
+    bool right_out_slot_valid = 4;
+    HmiApaState_ApaTextDisp apa_text_disp = 5;
+    HmiApaState_ApaExitReason apa_exit_reason = 6;
+    bool front_out_slot_valid = 7;
+    bool rear_out_slot_valid = 8;
+    bool horizontal_front_left_out_slot_valid = 9;
+    bool horizontal_front_right_out_slot_valid = 10;
+    bool vertical_front_left_out_slot_valid = 11;
+    bool vertical_rear_left_out_slot_valid = 12;
+    bool vertical_front_right_out_slot_valid = 13;
+    bool vertical_rear_right_out_slot_valid = 14;
+}
+
+message HmiApaStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    HmiApaState_ApaDisplayInfo apa_info_reminder = 2;
+}
+

@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum EncodeStatus_Chn 
+{
+    EncodeStatus_Chn_Front = 0;
+    EncodeStatus_Chn_Rear = 1;
+    EncodeStatus_Chn_Left = 2;
+    EncodeStatus_Chn_Right = 3;
+    EncodeStatus_Chn_Mosaic = 4;
+    EncodeStatus_Chn_Avm = 5;
+    EncodeStatus_Chn_Ipm = 6;
+}
+
+message EncodeStatus_State
+{
+    EncodeStatus_Chn chn = 1;
+    uint32 fps = 2;
+    bool enabled = 3;
+    bool running = 4;
+    bool encode_err = 5;
+    bool stream_err = 6;
+    bool packet_err = 7;
+}
+
+message EncodeStatus_Status
+{
+    repeated EncodeStatus_State state = 1;
+}
+
+message EncodeStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EncodeStatus_Status status = 2;
+}
+

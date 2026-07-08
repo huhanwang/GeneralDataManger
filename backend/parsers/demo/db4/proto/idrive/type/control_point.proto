@@ -1,0 +1,20 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+message CtrlPoint
+{
+    sint64 timestamp = 1;
+    float x = 2;
+    float y = 3;
+    float yaw = 4;
+    float l = 5;
+    float kappa = 6;
+    float d_kappa = 7;
+    float s = 8;
+    float speed = 9;
+    float dis = 10;
+    bool flag = 11;
+    sint32 driving_direction = 12;
+    sint32 measure_status = 13;
+}
+

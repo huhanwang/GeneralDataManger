@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/ihbc_base.proto";
+package idrive.workflow.proto;
+
+message IhbcMsg
+{
+    CommonMsgMsg common_msg = 1;
+    IhbcResult ihbc_result = 2;
+}
+

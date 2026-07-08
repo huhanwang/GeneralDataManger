@@ -1,0 +1,99 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum InputParking_ParkType
+{
+    InputParking_ParkType_PARK_TYPE_VIRTUAL = 0;
+    InputParking_ParkType_PARK_TYPE_PARALLEL = 1;
+    InputParking_ParkType_PARK_TYPE_CROSS = 2;
+    InputParking_ParkType_PARK_TYPE_DIAGNOAL = 3;
+}
+
+enum InputParking_MovingDirection
+{
+    InputParking_MovingDirection_MOVING_DIRECTION_STANDSTILL = 0;
+    InputParking_MovingDirection_MOVING_DIRECTION_FORWARD = 1;
+    InputParking_MovingDirection_MOVING_DIRECTION_BACKWARD = 2;
+    InputParking_MovingDirection_MOVING_DIRECTION_UNKNOWN = 3;
+}
+
+enum InputParking_OperatingMode
+{
+    InputParking_OperatingMode_OPERATING_MODE_INACTIVE = 0;
+    InputParking_OperatingMode_OPERATING_MODE_ACTIVE = 1;
+    InputParking_OperatingMode_OPERATING_MODE_UPDATE = 2;
+}
+
+enum InputParking_SystemStatus
+{
+    InputParking_SystemStatus_SYSTEM_STATUS_OFF = 0;
+    InputParking_SystemStatus_SYSTEM_STATUS_STANDBY = 1;
+    InputParking_SystemStatus_SYSTEM_STATUS_SEARCHING = 2;
+    InputParking_SystemStatus_SYSTEM_STATUS_GUIDANCE = 3;
+    InputParking_SystemStatus_SYSTEM_STATUS_GUIDANCE_RECOVERY = 4;
+    InputParking_SystemStatus_SYSTEM_STATUS_TERMINATED = 5;
+    InputParking_SystemStatus_SYSTEM_STATUS_COMPLETED = 6;
+    InputParking_SystemStatus_SYSTEM_STATUS_FAILURE = 7;
+}
+
+message InputParking_Vector2f
+{
+    float x = 1;
+    float y = 2;
+}
+
+message InputParking_VehicleStatus
+{
+    sint64 timestamp = 1;
+    InputParking_MovingDirection moving_direction = 2;
+    float driven_distance = 3;
+    InputParking_Vector2f position = 4;
+    float heading = 5;
+    float kappa = 6;
+    float radius = 7;
+}
+
+message InputParking_ObjectInfo
+{
+    uint32 counter = 1;
+    uint32 type = 2;
+    uint32 mode = 3;
+    uint32 id = 4;
+    uint32 x = 5;
+    uint32 y = 6;
+    uint32 a = 7;
+}
+
+message InputParking_InputParkingPark
+{
+    uint32 id = 1;
+    InputParking_ParkType type = 2;
+    repeated InputParking_Vector2f points = 3;
+    uint32 num_points = 4;
+    float orientation = 5;
+    float length = 6;
+    float depth = 7;
+    float x_pos = 8;
+    float y_pos = 9;
+    float headangle = 10;
+}
+
+message InputParking_InputParking
+{
+    repeated InputParking_InputParkingPark parkings = 1;
+    InputParking_InputParkingPark selected_parking = 2;
+    InputParking_OperatingMode operating_mode = 3;
+    InputParking_SystemStatus system_status = 4;
+    InputParking_VehicleStatus vehicle_status = 5;
+    repeated InputParking_ObjectInfo objects_info = 6;
+    uint32 num_obstacles = 7;
+    uint32 num_parkings = 8;
+}
+
+message InputParkingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    InputParking_InputParking input_parking = 2;
+}
+

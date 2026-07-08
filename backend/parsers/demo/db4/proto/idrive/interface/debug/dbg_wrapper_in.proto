@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DbgWrapperIn_DbgWrapperIn
+{
+    bool VfRTEA_VcuGearIntervern = 1;
+    uint32 VfRTEA_ADASRqstSts = 2;
+    uint32 VfRTEA_ADASBrkRqstActSts = 3;
+    uint32 VfRTEA_ADAS_ModActv = 4;
+    bool VfRTEA_ADAS_ModAvail = 5;
+    bool VfRTEA_DriverIntern = 6;
+    bool VfRTEA_ESP_ActBrkPressValid = 7;
+    uint32 VfRTEA_ESP_BrakeRqstAvail = 8;
+    float VfRTEA_ActTrq = 9;
+    float VfRTEA_ESP_ActBrkPress = 10;
+    float VfRTEA_DrvStrTorqVal = 11;
+    uint32 VfRTEA_EPS_ADAS_ModAvail = 12;
+    uint32 VfRTEA_EPS_ADAS_ModActv = 13;
+    bool VfRTEA_DrvStrTorqV = 14;
+    uint32 VfRTEA_SteerFltMod = 15;
+}
+
+message DbgWrapperInMsg
+{
+    CommonMsgMsg common_msg = 1;
+    DbgWrapperIn_DbgWrapperIn wrapper_in = 2;
+}
+

@@ -1,0 +1,183 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+package idrive.workflow.proto;
+
+enum UssObstacles_PerFusEchoMode
+{
+    UssObstacles_PerFusEchoMode_kPerFusEchoModeNone = 0;
+    UssObstacles_PerFusEchoMode_kPerFusEchoModeDE = 1;
+    UssObstacles_PerFusEchoMode_kPerFusEchoModeCE = 2;
+    UssObstacles_PerFusEchoMode_kPerFusEchoModeMax = 3;
+}
+
+enum UssObstacles_LpAttributesEn
+{
+    UssObstacles_LpAttributesEn_kLpAttributesEnNone = 0;
+    UssObstacles_LpAttributesEn_kLpAttributesEnSure = 1;
+    UssObstacles_LpAttributesEn_kLpAttributesEnUnsure = 2;
+    UssObstacles_LpAttributesEn_kLpAttributesEnUnknown = 3;
+    UssObstacles_LpAttributesEn_kLpAttributesEnMax = 4;
+}
+
+enum UssObstacles_LpDirEn
+{
+    UssObstacles_LpDirEn_kLpDirEnNone = 0;
+    UssObstacles_LpDirEn_kLpDirEnFront = 1;
+    UssObstacles_LpDirEn_kLpDirEnRear = 2;
+    UssObstacles_LpDirEn_kLpDirEnLeft = 3;
+    UssObstacles_LpDirEn_kLpDirEnRight = 4;
+    UssObstacles_LpDirEn_kLpDirEnInside = 5;
+    UssObstacles_LpDirEn_kLpDirEnMax = 6;
+}
+
+enum UssObstacles_LpSnsGroupIdEn
+{
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEnNone = 0;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn1_2 = 1;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn2_3 = 2;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn3_4 = 3;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn4_5 = 4;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn5_6 = 5;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn11_12 = 6;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn10_11 = 7;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn9_10 = 8;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn8_9 = 9;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEn7_8 = 10;
+    UssObstacles_LpSnsGroupIdEn_kLpSnsGroupIdEnMax = 11;
+}
+
+enum UssObstacles_LpTypeEn
+{
+    UssObstacles_LpTypeEn_kLpTypeEnNone = 0;
+    UssObstacles_LpTypeEn_kLpTypeEnDe = 1;
+    UssObstacles_LpTypeEn_kLpTypeEnDeDe = 2;
+    UssObstacles_LpTypeEn_kLpTypeEnCe = 3;
+    UssObstacles_LpTypeEn_kLpTypeEnDeCe = 4;
+    UssObstacles_LpTypeEn_kLpTypeEnRound = 5;
+    UssObstacles_LpTypeEn_kLpTypeEnOther = 6;
+    UssObstacles_LpTypeEn_kLpTypeEnMax = 7;
+}
+
+enum UssObstacles_UssObjXTypeEn
+{
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnNone = 0;
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnPoint = 1;
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnStraight0C = 2;
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnStraight1C = 3;
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnStraight2C = 4;
+    UssObstacles_UssObjXTypeEn_kUssObjXTypeEnMax = 5;
+}
+
+enum UssObstacles_UssObjXExternTypeEn
+{
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnInitial = 0;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnVirtual = 1;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnWall = 2;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnCurb = 3;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnBush = 4;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnParallelCar = 5;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnCrossCar = 6;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnRoundPillar = 7;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnCeiling = 8;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnPedestrian = 9;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnSquarePillar = 10;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnTruck = 11;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnPoint = 12;
+    UssObstacles_UssObjXExternTypeEn_kUssObjXExternTypeEnUnknown = 13;
+}
+
+enum UssObstacles_UssObjXHeightEn
+{
+    UssObstacles_UssObjXHeightEn_kUssObjXHeightEnNone = 0;
+    UssObstacles_UssObjXHeightEn_kUssObjXHeightEnLow = 1;
+    UssObstacles_UssObjXHeightEn_kUssObjXHeightEnHigh = 2;
+    UssObstacles_UssObjXHeightEn_kUssObjXHeightEnUnknow = 3;
+    UssObstacles_UssObjXHeightEn_kUssObjXHeightEnMax = 4;
+}
+
+enum UssObstacles_UssObjXOnCourseEn
+{
+    UssObstacles_UssObjXOnCourseEn_kUssObjXOnCourseEnNone = 0;
+    UssObstacles_UssObjXOnCourseEn_kUssObjXOnCourseEnOnCourse = 1;
+    UssObstacles_UssObjXOnCourseEn_kUssObjXOnCourseEnNotOnCourse = 2;
+    UssObstacles_UssObjXOnCourseEn_kUssObjXOnCourseEnMax = 3;
+}
+
+message UssObstacles_PerFusUssObj
+{
+    uint32 uss_obj_x_id_ui8 = 1;
+    uint32 uss_obj_x_cfd_ui8 = 2;
+    UssObstacles_UssObjXTypeEn uss_obj_x_type_en = 3;
+    UssObstacles_UssObjXExternTypeEn uss_obj_x_ext_type_en = 4;
+    uint32 uss_obj_height_cfd = 16;
+    sint64 finish_timestamp_si64 = 5;
+    UssObstacles_UssObjXHeightEn uss_obj_x_height_en = 6;
+    UssObstacles_UssObjXOnCourseEn uss_obj_x_on_course_en = 7;
+    uint32 uss_obj_start_index = 8;
+    uint32 uss_obj_end_index = 9;
+    uint32 tracking_time = 17;
+    uint32 life_time = 18;
+    UssPointSi16 uss_obj_x_pos_1 = 10;
+    UssPointSi16 uss_obj_x_pos_2 = 11;
+    UssPointSi16 uss_obj_world_pos_1 = 12;
+    UssPointSi16 uss_obj_world_pos_2 = 13;
+    UssPointSi16 uss_obj_x_err_pos_1 = 14;
+    UssPointSi16 uss_obj_x_err_pos_2 = 15;
+}
+
+message UssObstacles_PerFusUSSPointCluster
+{
+    uint32 num_uss_objs_points = 1;
+    sint64 cluster_send_timestamp_si64 = 2;
+    repeated UssPointWholeSi16 uss_obj_points = 3;
+}
+
+message UssObstacles_RadarStatus
+{
+    uint32 rada_dis_xx = 1;
+    uint32 rada_dis_xy = 2;
+    uint32 rada_dis_xz = 3;
+    uint32 rada_err = 4;
+    sint64 de_first_timestamp = 5;
+    uint32 de_first_level = 6;
+    uint32 de_first_width = 7;
+    uint32 de_first_id = 8;
+    uint32 de_second_level = 9;
+    uint32 de_second_width = 10;
+    uint32 de_second_id = 11;
+    uint32 de_second_dis = 12;
+    uint64 de_second_timestamp = 13;
+    uint64 ce_right_first_timestamp = 14;
+    uint64 ce_left_first_timestamp = 15;
+    uint64 ce_right_second_timestamp = 16;
+    uint64 ce_left_second_timestamp = 17;
+    uint32 ce_right_first_id = 18;
+    uint32 ce_left_first_id = 19;
+    uint32 ce_right_second_id = 20;
+    uint32 ce_left_second_id = 21;
+    uint32 de_right_second_dis = 22;
+    uint32 de_left_second_dis = 23;
+}
+
+message UssObstacles_UssObstacles
+{
+    sint32 version = 1;
+    uint32 num_uss_header = 2;
+    uint32 num_uss_obj = 3;
+    uint32 num_radar_status = 4;
+    repeated PerFusUssHeader uss_header = 5;
+    UssObstacles_PerFusUSSPointCluster uss_objs_cluster_points = 6;
+    repeated UssObstacles_PerFusUssObj uss_obj = 7;
+    UssStateMachine state_machine = 8;
+    sint64 sensor_stamp = 9;
+    sint64 sample_stamp = 10;
+    repeated UssObstacles_RadarStatus radar_states = 11;
+}
+
+message UssObstaclesMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssObstacles_UssObstacles uss_obstacles = 2;
+}
+

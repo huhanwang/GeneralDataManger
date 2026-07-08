@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CaliRes_CaliRespondType 
+{
+    CaliRes_CaliRespondType_CALI_RES_UNKNOWN = 0;
+    CaliRes_CaliRespondType_STAIC_ENTRY_SUCCEED = 1;
+    CaliRes_CaliRespondType_STAIC_ENTRY_FAILED = 2;
+    CaliRes_CaliRespondType_DYNAMIC_ENTRY_SUCCEED = 3;
+    CaliRes_CaliRespondType_DYNAMIC_ENTRY_FAILED = 4;
+}
+
+message CaliResMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliRes_CaliRespondType type = 2;
+}
+

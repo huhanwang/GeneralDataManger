@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DaqInfo_DaqInfo
+{
+    string data_version = 1;
+    string data_type = 2;
+    string description = 3;
+}
+
+message DaqInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    DaqInfo_DaqInfo daq_info = 2;
+}
+

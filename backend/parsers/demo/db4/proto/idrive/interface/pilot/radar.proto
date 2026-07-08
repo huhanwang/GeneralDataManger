@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/radar_base.proto";
+package idrive.workflow.proto;
+
+message RadarMsg
+{
+    CommonMsgMsg common_msg = 1;
+    RadarFrames radar_frames = 2;
+}
+

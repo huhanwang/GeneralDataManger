@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DagTriggerInfo_LinkTriggerInfo
+{
+    uint32 dag_id = 1;
+    uint32 status = 2;
+    uint32 link_id = 3;
+    uint64 trigger_time = 4;
+}
+
+message DagTriggerInfo_ModuleSpinInfo
+{
+    uint32 dag_id = 1;
+    uint32 status = 2;
+    uint32 module_id = 3;
+    uint64 start_time = 4;
+    uint64 end_time = 5;
+}
+
+message DagTriggerInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    bool link_is_triggered = 2;
+    bool module_is_executed = 3;
+    DagTriggerInfo_LinkTriggerInfo link_trigger_info = 4;
+    DagTriggerInfo_ModuleSpinInfo module_spin_info = 5;
+}
+

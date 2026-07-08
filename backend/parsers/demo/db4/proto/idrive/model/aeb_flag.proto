@@ -1,0 +1,51 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum AebFlag_AebObjType
+{
+    AebFlag_AebObjType_INVALID = 0;
+    AebFlag_AebObjType_CAR = 1;
+    AebFlag_AebObjType_TRUCK = 2;
+    AebFlag_AebObjType_MOTORS = 3;
+    AebFlag_AebObjType_PED = 4;
+    AebFlag_AebObjType_CYCLIST = 5;
+}
+
+enum AebFlag_AebType
+{
+    AebFlag_AebType_LATENT_WARN = 0;
+    AebFlag_AebType_PREWARN = 1;
+    AebFlag_AebType_PREFILL = 2;
+    AebFlag_AebType_JERK = 3;
+    AebFlag_AebType_PARTIAL_BREAKE = 4;
+    AebFlag_AebType_FULL_BRAKE = 5;
+    AebFlag_AebType_EBA = 6;
+    AebFlag_AebType_HOLD = 7;
+}
+
+enum AebFlag_FlagBit
+{
+    AebFlag_FlagBit_NO_SET = 0;
+    AebFlag_FlagBit_SET = 1;
+}
+
+message AebFlag_AebFlag
+{
+    AebFlag_AebType type = 1;
+    AebFlag_FlagBit flag_bit = 2;
+    uint32 obj_id = 3;
+    AebFlag_AebObjType obj_type = 4;
+    float ttc_time = 5;
+}
+
+message AebFlagMsg
+{
+    CommonMsgMsg common_msg = 1;
+    float aeb_brake_decel_req = 2;
+    uint32 fcw_supp_reason = 3;
+    uint32 aeb_supp_reasion = 4;
+    uint32 num_flags = 5;
+    repeated AebFlag_AebFlag flags = 6;
+}
+

@@ -1,0 +1,96 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message HmiBaseInfo_Header
+{
+    sint32 frame_id = 1;
+    sint64 time_stamp = 2;
+}
+
+message HmiBaseInfo_Point
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message HmiBaseInfo_PointI
+{
+    sint32 x = 1;
+    sint32 y = 2;
+    sint32 z = 3;
+}
+
+message HmiBaseInfo_Polygon
+{
+    repeated HmiBaseInfo_Point pts = 1;
+}
+
+message HmiBaseInfo_Rect
+{
+    float left = 1;
+    float top = 2;
+    float right = 3;
+    float bottom = 4;
+}
+
+message HmiBaseInfo_Box3D
+{
+    HmiBaseInfo_Point lower_lt = 1;
+    HmiBaseInfo_Point lower_lb = 2;
+    HmiBaseInfo_Point lower_rb = 3;
+    HmiBaseInfo_Point lower_rt = 4;
+    HmiBaseInfo_Point upper_lt = 5;
+    HmiBaseInfo_Point upper_lb = 6;
+    HmiBaseInfo_Point upper_rb = 7;
+    HmiBaseInfo_Point upper_rt = 8;
+    float conf = 9;
+}
+
+message HmiBaseInfo_Box3Ds
+{
+    sint32 cam_idx = 1;
+    sint32 frame_id = 2;
+    sint64 time_stamp = 3;
+    repeated HmiBaseInfo_Box3D box3d = 4;
+}
+
+message HmiBaseInfo_Line
+{
+    repeated HmiBaseInfo_PointI pt = 1;
+}
+
+message HmiBaseInfo_Lines
+{
+    sint64 time_stamp = 1;
+    repeated HmiBaseInfo_Line lines = 2;
+}
+
+message HmiBaseInfo_Orientation
+{
+    float pitch = 1;
+    float yaw = 2;
+    float roll = 3;
+}
+
+message HmiBaseInfo_Quaternion4d
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message HmiBaseInfo_Odometry
+{
+    HmiBaseInfo_Quaternion4d quaternion4d = 1;
+    HmiBaseInfo_Point position = 2;
+    float yaw = 3;
+}
+
+message HmiBaseInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+}
+

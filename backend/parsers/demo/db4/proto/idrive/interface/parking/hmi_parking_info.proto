@@ -1,0 +1,160 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/hmi_base_info.proto";
+package idrive.workflow.proto;
+
+enum HmiParkingInfo_ObjectType
+{
+    HmiParkingInfo_ObjectType_MAIN_CAR = 0;
+    HmiParkingInfo_ObjectType_CAR = 1;
+    HmiParkingInfo_ObjectType_SUV = 2;
+    HmiParkingInfo_ObjectType_VAN = 3;
+    HmiParkingInfo_ObjectType_BUS = 4;
+    HmiParkingInfo_ObjectType_TRUCK = 5;
+    HmiParkingInfo_ObjectType_AMBULANCE = 6;
+    HmiParkingInfo_ObjectType_POLICE_CAR = 7;
+    HmiParkingInfo_ObjectType_FIRE_TRUCK = 8;
+    HmiParkingInfo_ObjectType_TRICYCLE = 9;
+    HmiParkingInfo_ObjectType_SPECIAL_CAR = 10;
+    HmiParkingInfo_ObjectType_PEDESTRIAN = 11;
+    HmiParkingInfo_ObjectType_BICYCLE = 12;
+    HmiParkingInfo_ObjectType_TRAFFIC_CONE = 13;
+}
+
+enum HmiParkingInfo_LockStatus
+{
+    HmiParkingInfo_LockStatus_LOCK_STATUS_UNKNOWN = 0;
+    HmiParkingInfo_LockStatus_LOCK_STATUS_OPEN = 1;
+    HmiParkingInfo_LockStatus_LOCK_STATUS_CLOSE = 2;
+}
+
+enum HmiParkingInfo_OccupancyStatus
+{
+    HmiParkingInfo_OccupancyStatus_OCCUPANCY_STATUS_UNKNOWN = 0;
+    HmiParkingInfo_OccupancyStatus_OCCUPANCY_STATUS_OCCUPIED = 1;
+    HmiParkingInfo_OccupancyStatus_OCCUPANCY_STATUS_NOT_OCCUPIED = 2;
+}
+
+enum HmiParkingInfo_ParkingPillarType
+{
+    HmiParkingInfo_ParkingPillarType_PARKING_PILLAR_TYPE_UNKNOWN = 0;
+    HmiParkingInfo_ParkingPillarType_PARKING_PILLAR_TYPE_CYLINDER = 1;
+    HmiParkingInfo_ParkingPillarType_PARKING_PILLAR_TYPE_CUBOID = 2;
+}
+
+enum HmiParkingInfo_VehicleState
+{
+    HmiParkingInfo_VehicleState_STATE_LOCATION = 0;
+    HmiParkingInfo_VehicleState_STATE_MAP_BUILD = 1;
+}
+
+enum HmiParkingInfo_GearTypes
+{
+    HmiParkingInfo_GearTypes_GEAR_N = 0;
+    HmiParkingInfo_GearTypes_GEAR_P = 1;
+    HmiParkingInfo_GearTypes_GEAR_R = 2;
+    HmiParkingInfo_GearTypes_GEAR_D = 3;
+    HmiParkingInfo_GearTypes_GEAR_INVALID = 4;
+    HmiParkingInfo_GearTypes_GEAR_COUNT = 5;
+}
+
+message HmiParkingInfo_Object
+{
+    sint32 id = 1;
+    HmiParkingInfo_ObjectType type = 2;
+    sint64 time_stamp = 3;
+    HmiBaseInfo_Odometry odometry = 4;
+}
+
+message HmiParkingInfo_ParkingLock
+{
+    HmiParkingInfo_LockStatus sts = 1;
+}
+
+message HmiParkingInfo_ParkingSlotInfo
+{
+    sint32 id = 1;
+    HmiParkingInfo_OccupancyStatus occupy_status = 2;
+    bool available = 3;
+    bool recommend = 4;
+    bool fixed = 5;
+    sint64 time_stamp = 6;
+    sint32 mapid = 7;
+    HmiParkingInfo_ParkingLock lock = 8;
+    HmiBaseInfo_Polygon poly = 9;
+    HmiBaseInfo_Odometry odometry = 10;
+}
+
+message HmiParkingInfo_ParkingPillarInfo
+{
+    HmiParkingInfo_ParkingPillarType type = 1;
+    float radius = 2;
+    sint64 time_stamp = 3;
+    HmiBaseInfo_Point center = 4;
+}
+
+message HmiParkingInfo_SpeedBumpInfo
+{
+    sint32 id = 1;
+    sint64 time_stamp = 2;
+    repeated HmiBaseInfo_Point pts = 3;
+}
+
+message HmiParkingInfo_StaticElemInfo
+{
+    repeated HmiParkingInfo_ParkingSlotInfo slot_info = 1;
+    repeated HmiParkingInfo_SpeedBumpInfo speed_bump_info = 2;
+    repeated HmiParkingInfo_ParkingPillarInfo pillar_info = 3;
+    repeated HmiParkingInfo_Object objects = 4;
+    uint32 num_speed_bump_info = 5;
+    uint32 num_pillar_info = 6;
+    uint32 num_slots = 7;
+}
+
+message HmiParkingInfo_DynamicElemInfo
+{
+    repeated HmiParkingInfo_Object objects = 1;
+}
+
+message HmiParkingInfo_HmiVehicleData
+{
+    HmiParkingInfo_VehicleState state = 1;
+    HmiParkingInfo_GearTypes gear = 2;
+    float left_path_dis = 3;
+    sint32 count_ped = 4;
+    sint32 count_vehicle = 5;
+    sint32 speed = 6;
+    sint32 speed_bump_num = 7;
+    sint64 time_stamp = 8;
+    HmiBaseInfo_Odometry odometry = 9;
+}
+
+message HmiParkingInfo_ParkingGlobalPath
+{
+    uint32 path_id = 1;
+    repeated HmiBaseInfo_Point points = 2;
+}
+
+message HmiParkingInfo_ParkingDisplayInfo
+{
+    HmiBaseInfo_Header header = 1;
+    HmiParkingInfo_StaticElemInfo static_elem_info = 2;
+    HmiParkingInfo_DynamicElemInfo dynamic_elem_info = 3;
+}
+
+message HmiParkingInfo_ParkingMapEnvInfo
+{
+    HmiBaseInfo_Header header = 1;
+    HmiParkingInfo_StaticElemInfo static_elem_info = 2;
+}
+
+message HmiParkingInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    HmiBaseInfo_Header header = 2;
+    HmiParkingInfo_ParkingDisplayInfo display_info = 3;
+    HmiParkingInfo_ParkingGlobalPath global_path = 4;
+    HmiParkingInfo_HmiVehicleData vehicle_info = 5;
+    HmiParkingInfo_ParkingMapEnvInfo map_env_info = 6;
+}
+

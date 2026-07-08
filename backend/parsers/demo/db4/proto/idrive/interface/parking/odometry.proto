@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/odometry_type.proto";
+package idrive.workflow.proto;
+
+message OdometryMsg
+{
+    CommonMsgMsg common_msg = 1;
+    OdometryEx odometry_ex = 2;
+}
+

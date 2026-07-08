@@ -1,0 +1,103 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/odometry_type.proto";
+import "type/base.proto";
+import "interface/parking/map_display.proto";
+package idrive.workflow.proto;
+
+enum ReferenceLines_ObjectType
+{
+    ReferenceLines_ObjectType_Unknown = 0;
+    ReferenceLines_ObjectType_TrafficSign = 1;
+    ReferenceLines_ObjectType_TrafficLight = 2;
+    ReferenceLines_ObjectType_TrafficLightBulb = 3;
+    ReferenceLines_ObjectType_LaneMarking = 4;
+    ReferenceLines_ObjectType_StopLine = 5;
+    ReferenceLines_ObjectType_SpeedBump = 6;
+    ReferenceLines_ObjectType_Pole = 7;
+    ReferenceLines_ObjectType_CrossWalk = 8;
+    ReferenceLines_ObjectType_Zone = 9;
+    ReferenceLines_ObjectType_ParkingSlot = 10;
+    ReferenceLines_ObjectType_TrafficCone = 11;
+    ReferenceLines_ObjectType_ParkingLockClose = 12;
+    ReferenceLines_ObjectType_ParkingLockOpen = 13;
+    ReferenceLines_ObjectType_ParkingColumn = 14;
+    ReferenceLines_ObjectType_ParkingAFrameSign = 15;
+    ReferenceLines_ObjectType_Junction = 16;
+    ReferenceLines_ObjectType_ParkingLock = 17;
+    ReferenceLines_ObjectType_CementColumn_Yes = 18;
+    ReferenceLines_ObjectType_CementColumn_No = 19;
+    ReferenceLines_ObjectType_Fence = 20;
+}
+
+enum ReferenceLines_WaypointDir
+{
+    ReferenceLines_WaypointDir_kForward = 0;
+    ReferenceLines_WaypointDir_kBackward = 1;
+}
+
+message ReferenceLines_RefLineWayPointGlobal
+{
+    Vector3f waypoint_position = 1;
+    float waypoint_yaw = 2;
+    float waypoint_curv = 3;
+    float waypoint_curvrate = 4;
+    float waypoint_speed = 5;
+    uint32 waypoint_num = 6;
+    float waypoint_dist = 7;
+    ReferenceLines_WaypointDir waypoint_dir = 8;
+    bool waypoint_locked = 9;
+    bool is_map_origin = 10;
+    bool is_intersection = 11;
+    TurningLightStatus left_turning_light_status = 12;
+    TurningLightStatus right_turning_light_status = 13;
+    sint32 slope_dir = 14;
+    float offset = 15;
+    float left_border = 16;
+    float right_border = 17;
+    sint32 type = 18;
+    ReferenceLines_ObjectType left_border_label = 19;
+    ReferenceLines_ObjectType right_border_label = 20;
+}
+
+message ReferenceLines_RefLineWayPointFrameGlobal
+{
+    uint32 waypoint_id = 1;
+    uint32 num_waypoints = 2;
+    repeated ReferenceLines_RefLineWayPointGlobal way_points = 3;
+}
+
+message ReferenceLines_ReferenceLinePoint
+{
+    Odometry odo = 1;
+    float pitch = 2;
+    sint32 num_sates = 3;
+    sint32 floor_num = 4;
+    VertexType vertex_type = 5;
+    bool valid_map = 6;
+    bool init_loc_region = 7;
+}
+
+message ReferenceLines_RefLine
+{
+    uint32 num_reference_points = 1;
+    sint32 map_floor_num = 2;
+    repeated ReferenceLines_ReferenceLinePoint reference_points = 3;
+}
+
+message ReferenceLines_ReferenceLines
+{
+    ReferenceLines_RefLineWayPointFrameGlobal waypoint_frame_global_raw = 1;
+    ReferenceLines_RefLineWayPointFrameGlobal waypoint_frame_global = 2;
+    MapDisplay_GlbPrkgSlot parking_slot = 3;
+    ReferenceLines_RefLine reference_line = 4;
+    NdmHeader ndm_header = 5;
+}
+
+message ReferenceLinesMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ReferenceLines_ReferenceLines reference_lines = 2;
+}
+

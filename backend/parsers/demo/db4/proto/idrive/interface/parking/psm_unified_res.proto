@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message PsmParkingSlot
+{
+    bool slotid_valid = 1;
+    uint32 num_point = 2;
+    sint32 slotid = 3;
+    uint64 timestamp = 4;
+    repeated Vector3f vcs_points = 5;
+}
+
+enum PsmUnifiedResponse_ErrorCode
+{
+    PsmUnifiedResponse_ErrorCode_DEFAULT = 0;
+    PsmUnifiedResponse_ErrorCode_OK = 1;
+    PsmUnifiedResponse_ErrorCode_NOT_OK = 2;
+    PsmUnifiedResponse_ErrorCode_ALLOW = 3;
+    PsmUnifiedResponse_ErrorCode_REFUSED = 4;
+}
+
+message PsmUnifiedResponse_UnifiedResponse
+{
+    PsmUnifiedResponse_ErrorCode code = 1;
+    uint32 num_info = 2;
+    string info = 3;
+}
+
+message PsmUnifiedResponseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PsmUnifiedResponse_UnifiedResponse unified_response = 2;
+}
+

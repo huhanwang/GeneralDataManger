@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CaliRequest_Id 
+{
+    CALIREQUEST_ID_FIRST_UNKNOWN = 0;
+    CaliRequest_Id_WriteColor = 0x2e410300;
+    CaliRequest_Id_EnterEolView = 0x31015a0c;
+    CaliRequest_Id_ReqViewResult = 0x31035a0c;
+    CaliRequest_Id_ChkPrecondition = 0x31015a01;
+    CaliRequest_Id_ReqConditionChkResult = 0x31035a01;
+    CaliRequest_Id_StartCali = 0x31015a02;
+    CaliRequest_Id_ReqCaliResult = 0x31035a02;
+    CaliRequest_Id_EnterEolChkView = 0x31015a05;
+    CaliRequest_Id_ReqErrInfo = 0x31015a0b;
+    CaliRequest_Id_PrintEolSts = 0x31035a0b;
+    CaliRequest_Id_Enter4sCaliView = 0x31015a06;
+    CaliRequest_Id_Req4sViewResult = 0x31035a06;
+    CaliRequest_Id_PointChkAndViewSwitch = 0x31015a07;
+    CaliRequest_Id_ReqPointChkResult = 0x31035a07;
+    CaliRequest_Id_MovCrossCursor = 0x31015a09;
+    CaliRequest_Id_PointOperation = 0x31015a08;
+}
+
+message CaliRequest_Info
+{
+    uint32 id = 1;
+    bytes dat = 2;
+}
+
+message CaliRequestMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliRequest_Info cali_request = 2;
+}
+

@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/obstacle_raw.proto";
+import "type/real3d_base.proto";
+package idrive.workflow.proto;
+
+message CylinderMultiTask_CameraValidFlag
+{
+    ImageId sensor_id = 1;
+    bool obstacle_raw_data_valid = 2;
+    bool real3d_data_valid = 3;
+    bool parsing_data_valid = 4;
+}
+
+message CylinderMultiTask_CylinderMultiTask
+{
+    uint32 num_camera_flag_data = 1;
+    uint32 num_obstacle_raw_data = 2;
+    uint32 num_real3d_data = 3;
+    repeated CylinderMultiTask_CameraValidFlag camera_flag_data = 4;
+    repeated ObstacleRawsData obstacle_raw_data = 5;
+    repeated Real3D real3d = 6;
+}
+
+message CylinderMultiTaskMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CylinderMultiTask_CylinderMultiTask cylinder_multi_task = 2;
+}
+

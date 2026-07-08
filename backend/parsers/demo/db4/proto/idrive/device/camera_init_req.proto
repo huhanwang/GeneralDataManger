@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraInitReq_InitReq
+{
+    bool init_req = 1;
+}
+
+message CameraInitReqMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraInitReq_InitReq statereq = 2;
+}
+

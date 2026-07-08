@@ -1,0 +1,179 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PncFsInfo_AccState
+{
+    PncFsInfo_AccState_ACC_OFF = 0;
+    PncFsInfo_AccState_ACC_PASSIVE = 1;
+    PncFsInfo_AccState_ACC_STANDBY = 2;
+    PncFsInfo_AccState_ACC_ACTIVE = 3;
+    PncFsInfo_AccState_ACC_FAULT = 4;
+}
+
+enum PncFsInfo_AccActiveSubState
+{
+    PncFsInfo_AccActiveSubState_ACC_ACTIVE_NONE = 0;
+    PncFsInfo_AccActiveSubState_ACC_ACTIVE_NORMAL = 1;
+    PncFsInfo_AccActiveSubState_ACC_ACTIVE_PAUSE = 2;
+    PncFsInfo_AccActiveSubState_ACC_ACTIVE_OVERRIDE = 3;
+}
+
+enum PncFsInfo_HeadwayLevel
+{
+    PncFsInfo_HeadwayLevel_HEADWAY_LEVEL_INVALID = 0;
+    PncFsInfo_HeadwayLevel_HEADWAY_LEVEL_NEAR = 1;
+    PncFsInfo_HeadwayLevel_HEADWAY_LEVEL_MIDDLE = 2;
+    PncFsInfo_HeadwayLevel_HEADWAY_LEVEL_FAR = 3;
+    PncFsInfo_HeadwayLevel_HEADWAY_LEVEL_FARFAR = 4;
+}
+
+enum PncFsInfo_IccState
+{
+    PncFsInfo_IccState_ICC_OFF = 0;
+    PncFsInfo_IccState_ICC_PASSIVE = 1;
+    PncFsInfo_IccState_ICC_STANDBY = 2;
+    PncFsInfo_IccState_ICC_ACTIVE = 3;
+    PncFsInfo_IccState_ICC_PAUSE = 4;
+    PncFsInfo_IccState_ICC_PROHIBITION = 5;
+    PncFsInfo_IccState_ICC_FAULT = 6;
+}
+
+enum PncFsInfo_NOAState
+{
+    PncFsInfo_NOAState_NOA_OFF = 0;
+    PncFsInfo_NOAState_NOA_PASSIVE = 1;
+    PncFsInfo_NOAState_NOA_STANDBY = 2;
+    PncFsInfo_NOAState_NOA_ACTIVE = 3;
+    PncFsInfo_NOAState_NOA_PAUSE = 4;
+    PncFsInfo_NOAState_NOA_PROHIBITION = 5;
+    PncFsInfo_NOAState_NOA_FAULT = 6;
+}
+
+enum PncFsInfo_LssMode
+{
+    PncFsInfo_LssMode_LSS_Disable = 0;
+    PncFsInfo_LssMode_LSS_LDW = 1;
+    PncFsInfo_LssMode_LSS_LKA = 2;
+    PncFsInfo_LssMode_LSS_ELK = 3;
+}
+
+enum PncFsInfo_LssState
+{
+    PncFsInfo_LssState_LSS_OFF = 0;
+    PncFsInfo_LssState_LSS_STANDBY = 1;
+    PncFsInfo_LssState_LSS_ACTIVE = 2;
+    PncFsInfo_LssState_LSS_FAULT = 3;
+}
+
+enum PncFsInfo_AebState
+{
+    PncFsInfo_AebState_AEB_STATE_INIT = 0;
+    PncFsInfo_AebState_AEB_STATE_FAULT = 1;
+    PncFsInfo_AebState_AEB_STATE_OFF = 2;
+    PncFsInfo_AebState_AEB_STATE_PASSIVE = 3;
+    PncFsInfo_AebState_AEB_STATE_STANDBY = 4;
+    PncFsInfo_AebState_AEB_STATE_ACTIVE = 5;
+}
+
+enum PncFsInfo_AebEnableStatus
+{
+    PncFsInfo_AebEnableStatus_AEB_ENABLE_NONE = 0;
+    PncFsInfo_AebEnableStatus_AEB_ENABLE_FRONT = 1;
+    PncFsInfo_AebEnableStatus_AEB_ENABLE_BACK = 2;
+    PncFsInfo_AebEnableStatus_AEB_ENABLE_FRONT_AND_BACK = 3;
+}
+
+enum PncFsInfo_FvswState
+{
+    PncFsInfo_FvswState_FVSW_OFF = 0;
+    PncFsInfo_FvswState_FVSW_STANDBY = 1;
+    PncFsInfo_FvswState_FVSW_ACTIVE = 2;
+    PncFsInfo_FvswState_FVSW_FAULT = 3;
+    PncFsInfo_FvswState_FVSW_WARNING = 4;
+}
+
+enum PncFsInfo_FvswSubState
+{
+    PncFsInfo_FvswSubState_FVSW_ACTIVE_NONE = 0;
+    PncFsInfo_FvswSubState_FVSW_ACTIVE_STANDBY = 1;
+    PncFsInfo_FvswSubState_FVSW_ACTIVE_WARNING = 2;
+}
+
+message PncFsInfo_FuncAccState
+{
+    PncFsInfo_AccState state = 1;
+    PncFsInfo_AccState last_state = 2;
+    PncFsInfo_AccActiveSubState active_sub_state = 3;
+    bool activated_before = 4;
+    bool driveoff_tip = 5;
+    PncFsInfo_HeadwayLevel headway_level = 6;
+    bool flag_acc_override = 7;
+    uint32 unavailable_reason = 8;
+    uint32 quit_reason = 9;
+    sint32 set_speed_kph = 10;
+}
+
+message PncFsInfo_FuncIccState
+{
+    PncFsInfo_IccState state = 1;
+    PncFsInfo_IccState last_state = 2;
+    bool hands_off_warn = 3;
+    bool hands_off_warn_lv1 = 4;
+    bool hands_off_warn_lv2 = 5;
+    uint32 unavailable_reason = 6;
+    uint32 quit_reason = 7;
+}
+
+message PncFsInfo_FuncNOAState
+{
+    PncFsInfo_NOAState state = 1;
+    PncFsInfo_NOAState last_state = 2;
+    uint32 unavailable_reason = 3;
+    uint32 quit_reason = 4;
+}
+
+message PncFsInfo_FuncLssState
+{
+    PncFsInfo_LssMode mode = 1;
+    PncFsInfo_LssState state = 2;
+    PncFsInfo_LssState last_state = 3;
+    uint32 sensitivity = 4;
+    uint32 unavailable_reason = 5;
+    uint32 quit_reason = 6;
+}
+
+message PncFsInfo_FuncAebState
+{
+    PncFsInfo_AebState state = 1;
+    PncFsInfo_AebState last_state = 2;
+    PncFsInfo_AebEnableStatus aeb_enable_status = 3;
+    uint32 fault_reason = 4;
+    uint32 unavailable_reason = 5;
+    uint32 quit_reason = 6;
+}
+
+message PncFsInfo_FuncFvswState
+{
+    PncFsInfo_FvswState state = 1;
+    PncFsInfo_FvswState last_state = 2;
+    uint32 unavaiable_reason = 3;
+    uint32 quit_reason = 4;
+}
+
+message PncFsInfo_FuncState
+{
+    PncFsInfo_FuncAccState acc_state = 1;
+    PncFsInfo_FuncIccState icc_state = 2;
+    PncFsInfo_FuncNOAState noa_state = 3;
+    PncFsInfo_FuncLssState lss_state = 4;
+    PncFsInfo_FuncAebState aeb_state = 5;
+    PncFsInfo_FuncFvswState fvsw_state = 6;
+}
+
+message PncFsInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PncFsInfo_FuncState func_state = 2;
+}
+

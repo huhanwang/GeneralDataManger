@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message EngineeringAvmCtrl_Control
+{
+    bool power_off = 1;
+    bool reboot_soc = 2;
+    bool reboot_ecu = 3;
+    bool cali_auto_start = 4;
+}
+
+message EngineeringAvmCtrlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EngineeringAvmCtrl_Control control = 2;
+}
+

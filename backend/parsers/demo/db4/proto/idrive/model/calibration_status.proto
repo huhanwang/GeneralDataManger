@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CalibrationStatus_Status
+{
+    CalibrationStatus_Status_UNKNOWN = 0;
+    CalibrationStatus_Status_WAIT = 1;
+    CalibrationStatus_Status_START = 2;
+    CalibrationStatus_Status_FINSHED = 3;
+}
+
+message CalibrationStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CalibrationStatus_Status status = 2;
+}
+

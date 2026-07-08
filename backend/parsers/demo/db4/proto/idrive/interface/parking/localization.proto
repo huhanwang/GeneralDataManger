@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/odometry_type.proto";
+import "type/basic.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+enum Localization_SpLocationState
+{
+    Localization_SpLocationState_kUninit = 0;
+    Localization_SpLocationState_kIniting = 1;
+    Localization_SpLocationState_kLocNormal = 2;
+    Localization_SpLocationState_kLocUnnormal = 3;
+    Localization_SpLocationState_kLocLowPrecision = 4;
+}
+
+message Localization_SpLocation
+{
+    Odometry loc_odom = 1;
+    Localization_SpLocationState state = 2;
+    Vector3f velocity = 3;
+    Vector3f angular_vel = 4;
+}
+
+message Localization_Localization
+{
+    NdmHeader ndm_header = 1;
+    Localization_SpLocation location = 2;
+}
+
+message LocalizationMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Localization_Localization localization = 2;
+}
+

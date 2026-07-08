@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message LadsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 num_playload = 2;
+    bytes playload = 3;
+}
+

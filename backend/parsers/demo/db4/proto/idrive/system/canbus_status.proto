@@ -1,0 +1,49 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CanBusStatus_Channel 
+{
+    CanBusStatus_Channel_FD3 = 0;
+    CanBusStatus_Channel_Num = 1;
+}
+
+enum CanBusStatus_NmState 
+{
+    CanBusStatus_NmState_Invalid = 0;
+    CanBusStatus_NmState_BusSleep = 1;
+    CanBusStatus_NmState_PrepareBusSleep = 2;
+    CanBusStatus_NmState_ReadySleep = 3;
+    CanBusStatus_NmState_NormalOperation = 4;
+    CanBusStatus_NmState_RepeatMessage = 5;
+    CanBusStatus_NmState_Synchronize = 6;
+    CanBusStatus_NmState_Offline = 7;
+    CanBusStatus_NmState_WaitNetworkStartup = 8;
+}
+
+enum CanBusStatus_NmMode 
+{
+    CanBusStatus_NmMode_BusSleep = 0;
+    CanBusStatus_NmMode_PrepareBusSleep = 1;
+    CanBusStatus_NmMode_Synchronize = 2;
+    CanBusStatus_NmMode_Network = 3;
+}
+
+message CanBusStatus_Status
+{
+    CanBusStatus_Channel chn = 1;
+    CanBusStatus_NmState nm_state = 2;
+    CanBusStatus_NmMode nm_mode = 3;
+    uint32 bus_off = 4;
+    uint32 bus_slept = 5;
+    uint32 bus_silence = 6;
+    uint32 bus_socdown = 7;
+}
+
+message CanBusStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_status = 2;
+    repeated CanBusStatus_Status status = 3;
+}
+

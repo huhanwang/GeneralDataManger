@@ -1,0 +1,15 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+enum ErrorCode
+{
+    ErrorCode_DEFAULT = 0;
+    ErrorCode_OK = 1;
+    ErrorCode_NOK = 2;
+}
+
+message ResponseData
+{
+    ErrorCode error_code = 1;
+}
+

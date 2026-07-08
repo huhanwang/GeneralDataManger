@@ -1,0 +1,113 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+package idrive.workflow.proto;
+
+enum SensorIhcs_IhcsRoadType 
+{
+    SensorIhcs_IhcsRoadType_UNKNOWN = 0;
+    SensorIhcs_IhcsRoadType_HIGHWAY = 1;
+    SensorIhcs_IhcsRoadType_URBAN = 2;
+    SensorIhcs_IhcsRoadType_RURAL = 3;
+}
+
+enum SensorIhcs_Weather 
+{
+    SensorIhcs_Weather_UNKNOWN = 0;
+    SensorIhcs_Weather_SUNNY = 1;
+    SensorIhcs_Weather_RAINY = 2;
+    SensorIhcs_Weather_SNOWY = 3;
+    SensorIhcs_Weather_FOGGY = 4;
+}
+
+enum SensorIhcs_HlbRunningMode 
+{
+    SensorIhcs_HlbRunningMode_UNDECIDED = 0;
+    SensorIhcs_HlbRunningMode_DAY = 1;
+    SensorIhcs_HlbRunningMode_INACTIVE = 2;
+    SensorIhcs_HlbRunningMode_FULL = 3;
+}
+
+enum SensorIhcs_HlbInactiveReason 
+{
+    SensorIhcs_HlbInactiveReason_INVALID = 0;
+    SensorIhcs_HlbInactiveReason_OBVIOUSLY_BRIGHT = 1;
+    SensorIhcs_HlbInactiveReason_LOW_DETECTION_RATE = 2;
+    SensorIhcs_HlbInactiveReason_IN_GRACE = 3;
+    SensorIhcs_HlbInactiveReason_DEACTIVATED = 4;
+}
+
+enum SensorIhcs_IhcsObjectType 
+{
+    SensorIhcs_IhcsObjectType_INVALID = 0;
+    SensorIhcs_IhcsObjectType_ONCOMING = 1;
+    SensorIhcs_IhcsObjectType_COUPLE_OF_ONCOMING = 2;
+    SensorIhcs_IhcsObjectType_PRECEDING = 3;
+    SensorIhcs_IhcsObjectType_COUPLE_OF_PRECEDING = 4;
+    SensorIhcs_IhcsObjectType_COUPLE_OF_OC_UPPER_TRUCK_LIGHTS = 5;
+    SensorIhcs_IhcsObjectType_STREET_LIGHT = 6;
+    SensorIhcs_IhcsObjectType_STRONG_REFLECTOR = 7;
+    SensorIhcs_IhcsObjectType_CLUSTER = 8;
+}
+
+message SensorIhcs_IhcsSceneCondition
+{
+    SensorIhcs_IhcsRoadType road_type = 1;
+    SensorIhcs_Weather weather = 2;
+    bool tunnel_detection = 3;
+    bool construction_area_detection = 4;
+    bool approaching_junction_detection = 5;
+    float current_environment_lux = 6;
+}
+
+message SensorIhcs_HlbDecision
+{
+    bool decision = 1;
+    SensorIhcs_HlbRunningMode running_mode = 2;
+    SensorIhcs_HlbInactiveReason inactive_reason = 3;
+}
+
+message SensorIhcs_HlbReason
+{
+    bool preceding = 1;
+    bool oncoming = 2;
+    bool street_light = 3;
+    bool load_balance = 4;
+    bool low_speed = 5;
+    bool lit_night = 6;
+    bool preceding_grace = 7;
+    bool oncoming_grace = 8;
+    bool street_light_grace = 9;
+    bool sharp_curve = 10;
+    bool bright_scene = 11;
+}
+
+message SensorIhcs_HighLowBeam
+{
+    SensorIhcs_HlbDecision decision = 1;
+    SensorIhcs_HlbReason reason = 2;
+}
+
+message SensorIhcs_IhcsObject
+{
+    bool is_valid = 1;
+    SensorIhcs_IhcsObjectType type = 2;
+    float couple_width = 3;
+    float distance = 4;
+    float angle = 5;
+    float angle_bottom = 6;
+}
+
+message SensorIhcs_IhcsData
+{
+    SensorIhcs_IhcsSceneCondition scene_condition = 1;
+    SensorIhcs_HighLowBeam high_low_beam = 2;
+    repeated SensorIhcs_IhcsObject objects = 3;
+    uint32 num_objects = 4;
+}
+
+message SensorIhcsMsg 
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    SensorIhcs_IhcsData ihcs_data = 2;
+}
+

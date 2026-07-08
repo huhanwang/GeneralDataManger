@@ -1,0 +1,55 @@
+syntax = "proto3";
+import "type/base.proto";
+import "type/odometry_type.proto";
+package idrive.workflow.proto;
+
+enum PointCloudType
+{
+    PointCloudType_POINTCLOUD_TYPE_UNKNOWN = 0;
+    PointCloudType_POINTCLOUD_TYPE_NORMAL = 1;
+    PointCloudType_POINTCLOUD_TYPE_SKELETON = 2;
+}
+
+enum SemanticPointType
+{
+    SemanticPointType_SEMANTICPOINT_TYPE_UNKNOWN = 0;
+    SemanticPointType_SEMANTICPOINT_TYPE_ROAD = 1;
+    SemanticPointType_SEMANTICPOINT_TYPE_LANE_LINE = 2;
+    SemanticPointType_SEMANTICPOINT_TYPE_PARKING_LINE = 3;
+    SemanticPointType_SEMANTICPOINT_TYPE_PARKING_SLOT = 4;
+    SemanticPointType_SEMANTICPOINT_TYPE_ARROW = 5;
+    SemanticPointType_SEMANTICPOINT_TYPE_GUIDE_LINE = 6;
+    SemanticPointType_SEMANTICPOINT_TYPE_CROSSWALK_LINE = 7;
+    SemanticPointType_SEMANTICPOINT_TYPE_NO_PARK_SIGN_LINE = 8;
+    SemanticPointType_SEMANTICPOINT_TYPE_STOP_LINE = 9;
+    SemanticPointType_SEMANTICPOINT_TYPE_SPEED_BUMP = 10;
+    SemanticPointType_SEMANTICPOINT_TYPE_OTHER = 11;
+    SemanticPointType_SEMANTICPOINT_TYPE_PARKING_LOCK_OPEN = 12;
+    SemanticPointType_SEMANTICPOINT_TYPE_PARKING_LOCK_CLOSED = 13;
+    SemanticPointType_SEMANTICPOINT_TYPE_TRAFFIC_CONE = 14;
+    SemanticPointType_SEMANTICPOINT_TYPE_PARKING_ROD = 15;
+    SemanticPointType_SEMANTICPOINT_TYPE_CURB = 16;
+    SemanticPointType_SEMANTICPOINT_TYPE_CEMENT_COLUMN = 17;
+    SemanticPointType_SEMANTICPOINT_TYPE_IMMOVABLE_OBSTACLE = 18;
+    SemanticPointType_SEMANTICPOINT_TYPE_MOVABLE_OBSTACLE = 19;
+    SemanticPointType_SEMANTICPOINT_TYPE_BACKGROUND = 20;
+    SemanticPointType_SEMANTICPOINT_TYPE_GENERALIZED_CURB = 21;
+}
+
+message SemanticPoint
+{
+    Point position = 1;
+    sint32 type = 2;
+}
+
+message PointCloud
+{
+    NdmHeader header = 1;
+    sint32 id = 2;
+    sint32 type = 3;
+    uint32 num_points = 4;
+    repeated SemanticPoint points = 5;
+    float point_size = 6;
+    Odometry reference_pose = 7;
+}
+

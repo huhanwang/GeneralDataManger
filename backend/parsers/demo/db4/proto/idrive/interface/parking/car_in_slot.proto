@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum HpaParkingType
+{
+    HpaParkingType_PARKING_TYPE_UNKNOWN = 0;
+    HpaParkingType_PARKING_TYPE_VERTICAL_PARKING = 1;
+    HpaParkingType_PARKING_TYPE_PARALLEL_PARKING = 2;
+    HpaParkingType_PARKING_TYPE_OBLIQUE_PARKING = 3;
+}
+
+message CarInParkingSlotInfo
+{
+    sint32 id = 1;
+    HpaParkingType type = 2;
+}
+
+message CarInSlot
+{
+    bool in_slot = 1;
+    CarInParkingSlotInfo vslot_info = 2;
+}
+
+message CarInSlotMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CarInSlot car_in_slot = 2;
+}
+

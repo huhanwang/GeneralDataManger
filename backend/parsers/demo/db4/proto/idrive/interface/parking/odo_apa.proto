@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message OdoApa_OdoApa
+{
+    sint64 time_stamp = 1;
+    float x = 2;
+    float y = 3;
+    float yaw = 4;
+    float speed = 5;
+    float yaw_rate = 6;
+    float longtitude_acc = 7;
+    float lateral_acc = 8;
+    bool collision_flag = 9;
+}
+
+message OdoApaMsg
+{
+    CommonMsgMsg common_msg = 1;
+    OdoApa_OdoApa odo_apa = 2;
+}
+

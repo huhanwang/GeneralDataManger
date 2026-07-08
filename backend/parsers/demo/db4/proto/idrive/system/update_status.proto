@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum UPDATE_TYPE 
+{
+    UPDATE_TYPE_NONE = 0;
+    UPDATE_TYPE_SOC = 1;
+    UPDATE_TYPE_MCU = 2;
+    UPDATE_TYPE_ECU = 3;
+    UPDATE_TYPE_NUMBER = 4;
+}
+
+enum UpdateStatus_UPDATE_STATE 
+{
+    UpdateStatus_UPDATE_STATE_STOPPED = 0;
+    UpdateStatus_UPDATE_STATE_PERPARE = 1;
+    UpdateStatus_UPDATE_STATE_RUNNING = 2;
+    UpdateStatus_UPDATE_STATE_SUCCESS = 3;
+    UpdateStatus_UPDATE_STATE_FAILURE = 4;
+    UpdateStatus_UPDATE_STATE_CLEANUP = 5;
+}
+
+message UpdateStatus_Status
+{
+    UPDATE_TYPE type = 1;
+    UpdateStatus_UPDATE_STATE stat = 2;
+    uint32 percent = 3;
+}
+
+message UpdateStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    UpdateStatus_Status status = 2;
+}
+

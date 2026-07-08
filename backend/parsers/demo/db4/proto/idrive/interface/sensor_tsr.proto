@@ -1,0 +1,69 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum SensorTsr_Relevancy 
+{
+    SensorTsr_Relevancy_UNKNOWN = 0;
+    SensorTsr_Relevancy_IN_HOSTLANE_SIGN = 1;
+    SensorTsr_Relevancy_NOT_IN_HOSTLANE = 2;
+    SensorTsr_Relevancy_HIGHWAY_EXIT_SIGN = 3;
+    SensorTsr_Relevancy_SIGN_ON_TURN = 4;
+    SensorTsr_Relevancy_FAR_IRRELEVANT_SIGN = 5;
+    SensorTsr_Relevancy_TSR_RAMP_RELEVANT = 6;
+}
+
+enum SensorTsr_FilterType 
+{
+    SensorTsr_FilterType_UNKNOWN = 0;
+    SensorTsr_FilterType_NOT_FILTERED = 1;
+    SensorTsr_FilterType_IRRELEVANT = 2;
+    SensorTsr_FilterType_TRUCK = 3;
+    SensorTsr_FilterType_EMBEDDED = 4;
+    SensorTsr_FilterType_RESERVED = 5;
+}
+
+enum SensorTsr_ApprovedFlag 
+{
+    SensorTsr_ApprovedFlag_UNKNOWN = 0;
+    SensorTsr_ApprovedFlag_NOT_APPROVED = 1;
+    SensorTsr_ApprovedFlag_APPROVED = 2;
+}
+
+enum SensorTsr_TrafficSignType 
+{
+    SensorTsr_TrafficSignType_UNKNOWN = 0;
+    SensorTsr_TrafficSignType_SPEED_LIMIT = 1;
+    SensorTsr_TrafficSignType_STOP_SIGN = 2;
+    SensorTsr_TrafficSignType_CANCEL_SPEED_LIMIT = 3;
+    SensorTsr_TrafficSignType_NO_ENTRY = 4;
+    SensorTsr_TrafficSignType_OTHERS = 5;
+}
+
+message SensorTsr_TrafficSign
+{
+    uint32 id = 1;
+    uint32 confidence = 2;
+    uint32 road_mark_type = 3;
+    SensorTsr_Relevancy relevancy = 4;
+    SensorTsr_TrafficSignType type = 5;
+    SensorTsr_FilterType filter_type = 6;
+    SensorTsr_ApprovedFlag approved_flag = 7;
+    Vector3f position_rel = 8;
+}
+
+message SensorTsr_TrafficSignData
+{
+    repeated uint32 internal_ids = 1;
+    repeated SensorTsr_TrafficSign traffic_signs = 2;
+    uint32 num_traffic_signs = 3;
+    uint32 num_internal_ids = 4;
+}
+
+message SensorTsrMsg 
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    SensorTsr_TrafficSignData traffic_sign_data = 2;
+}
+

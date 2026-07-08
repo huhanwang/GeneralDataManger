@@ -1,0 +1,160 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+enum OccupancyStatus
+{
+    OccupancyStatus_kUnknown = 0;
+    OccupancyStatus_kOccupied = 1;
+    OccupancyStatus_kNotOccupied = 2;
+}
+
+enum ParkingSource
+{
+    ParkingSource_kUnspecified = 0;
+    ParkingSource_kIpm = 1;
+    ParkingSource_kUss = 2;
+    ParkingSource_kUserSel = 3;
+}
+
+enum ParkingStage
+{
+    ParkingStage_kUninit = 0;
+    ParkingStage_kUnconverged = 1;
+    ParkingStage_kConverged = 2;
+    ParkingStage_kUpdateError = 3;
+    ParkingStage_kLost = 4;
+    ParkingStage_kFixed = 5;
+}
+
+enum ParkingReleaseMode
+{
+    ParkingReleaseMode_kNoneMode = 0;
+    ParkingReleaseMode_kRealTime = 1;
+    ParkingReleaseMode_kTracking = 2;
+}
+
+enum BoundaryStatus
+{
+    BoundaryStatus_kUnspecified = 0;
+    BoundaryStatus_kLow = 1;
+    BoundaryStatus_kHigh = 2;
+    BoundaryStatus_kMid = 3;
+}
+
+enum BoundaryFixStatus
+{
+    BoundaryFixStatus_kUnspecified = 0;
+    BoundaryFixStatus_kUnfixed = 1;
+    BoundaryFixStatus_kViceFixed = 2;
+    BoundaryFixStatus_kFixed = 3;
+}
+
+enum OccupyObjType
+{
+    OccupyObjType_kVehicle = 0;
+    OccupyObjType_kPedestrain = 1;
+    OccupyObjType_kCyclist = 2;
+    OccupyObjType_kAnimal = 3;
+    OccupyObjType_kTrafficCone = 50;
+    OccupyObjType_kCementColumn = 51;
+    OccupyObjType_kParkingLock = 52;
+    OccupyObjType_kAFrameSign = 53;
+    OccupyObjType_kCurb = 54;
+    OccupyObjType_kFence = 55;
+    OccupyObjType_kWaterBarrier = 56;
+    OccupyObjType_kTrolley = 57;
+    OccupyObjType_kWall = 58;
+    OccupyObjType_kUnknown = 100;
+}
+
+enum OccupiedVehicleOrientation
+{
+    OccupiedVehicleOrientation_kUnknown = 0;
+    OccupiedVehicleOrientation_kHeadingInside = 1;
+    OccupiedVehicleOrientation_kHeadingOutside = 2;
+    OccupiedVehicleOrientation_kHeadingLeft = 3;
+    OccupiedVehicleOrientation_kHeadingRight = 4;
+}
+
+message CornerInfo
+{
+    Vector3f point_vcs = 1;
+    Vector3f point_world = 2;
+    Vector3f point_cov = 3;
+    bool valid = 4;
+}
+
+message PoseInfo
+{
+    Vector3f position_vcs = 1;
+    Vector3f position_world = 2;
+    float length = 3;
+    float width = 4;
+    float slotline_w0 = 5;
+    float slotline_w1 = 6;
+    float yaw_vcs = 7;
+    float yaw_world = 8;
+    float alpha_vcs = 9;
+    float alpha_world = 10;
+    uint32 num_corners = 11;
+    repeated Vector3f corners_vcs = 12;
+    repeated Vector3f corners_world = 13;
+}
+
+message ParkingRodInfo
+{
+    repeated Vector3f end_points_vcs = 1;
+    repeated Vector3f end_points_world = 2;
+    uint32 num_end_points = 3;
+    bool valid = 4;
+}
+
+message ParkingLockInfo
+{
+    Vector3f point_vcs = 1;
+    Vector3f point_world = 2;
+    ParkingLockStatus parking_status = 3;
+    bool valid = 4;
+}
+
+message BoundaryInfo
+{
+    repeated Vector3f points_vcs = 1;
+    repeated Vector3f points_world = 2;
+    repeated BoundaryStatus boundaries_status = 3;
+    repeated float boundaries_height = 4;
+    uint32 num_boundary_points = 5;
+    repeated BoundaryFixStatus boundaries_fix_status = 6;
+    repeated Vector3f points_delta_ss = 7;
+    repeated Vector3f points_vcs_ss = 8;
+    Vector3f memory_back_depth = 9;
+}
+
+message ParkingSlotInfo
+{
+    sint32 id = 1;
+    sint32 valid = 2;
+    sint32 source_id = 3;
+    float conf = 4;
+    uint32 num_polygon_points = 5;
+    repeated CornerInfo polygon_points = 6;
+    PoseInfo pose = 7;
+    ParkingRodInfo parking_rod = 8;
+    ParkingLockInfo parking_lock_info = 9;
+    BoundaryInfo boundary = 10;
+    ParkingType type = 11;
+    OccupancyStatus occupancy_status = 12;
+    ParkingSource parking_source = 13;
+    ParkingStage stage = 14;
+    ParkingReleaseMode parking_release_mode = 15;
+    OccupyObjType occupancy_obs_type = 16;
+    bool is_slot_once_in_best_position = 17;
+    uint32 num_occupy_points = 18;
+    repeated Vector2f occupy_points = 19;
+    float score_occupied_by_veh = 20;
+    bool is_occupied_by_veh = 21;
+    OccupiedVehicleOrientation occupied_vehicle_orientaion = 22;
+}
+

@@ -1,0 +1,54 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum OocProcess_DistanceStatus
+{
+    OocProcess_DistanceStatus_kSafe = 0;
+    OocProcess_DistanceStatus_kDangerous = 1;
+    OocProcess_DistanceStatus_kVerydang = 2;
+    OocProcess_DistanceStatus_kStopped = 3;
+    OocProcess_DistanceStatus_kBlindArea = 4;
+}
+
+enum OocProcess_PhaseBlindState
+{
+    OocProcess_PhaseBlindState_kInit = 0;
+    OocProcess_PhaseBlindState_kShortDist = 1;
+    OocProcess_PhaseBlindState_kBlind = 2;
+}
+
+message OocProcess_USSProjectionPoint
+{
+    sint64 raw_timestamp = 1;
+    sint32 group_num = 2;
+    uint32 num_points = 3;
+    Vector2f collision_point = 4;
+    repeated Vector2f points = 5;
+}
+
+message OocProcess_OocProcess
+{
+    OocProcess_USSProjectionPoint uss_proj_point = 1;
+    sint64 blind_reset_timer = 2;
+    float remain_dist = 3;
+    uint32 fusion_id = 14;
+    uint32 uss_id = 4;
+    OocProcess_DistanceStatus avoid_status = 5;
+    OocProcess_PhaseBlindState blind_state = 6;
+    bool ooc_blind_flag = 7;
+    bool dec_short = 8;
+    bool dist_inc = 9;
+    bool gear_change = 10;
+    bool space_parall = 11;
+    float remain_dist_parallel_boundary = 12;
+    float remain_dist_wheel_bar = 13;
+}
+
+message OocProcessMsg
+{
+    CommonMsgMsg common_msg = 1;
+    OocProcess_OocProcess ooc_process = 2;
+}
+

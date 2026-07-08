@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message AppToTsmCmd_AppCmd
+{
+    uint32 cmd = 1;
+    uint32 status = 4;
+    string app_name = 3;
+}
+
+message AppToTsmCmdMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AppToTsmCmd_AppCmd app_cmd = 2;
+}
+

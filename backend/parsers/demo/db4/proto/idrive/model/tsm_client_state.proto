@@ -1,0 +1,77 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum TsmClientState_CameraState
+{
+    TsmClientState_CameraState_UNKNOWN = 0;
+    TsmClientState_CameraState_INITED = 1;
+    TsmClientState_CameraState_FAULT = 2;
+}
+
+enum TsmClientState_AdasProceState
+{
+    TsmClientState_AdasProceState_ADAS_MODE = 0;
+    TsmClientState_AdasProceState_PARK_HPA = 1;
+}
+
+enum TsmClientState_OddState
+{
+    TsmClientState_OddState_EXIT_ODD = 0;
+    TsmClientState_OddState_ENTER_ODD = 1;
+}
+
+enum TsmClientState_GeoFenceState
+{
+    TsmClientState_GeoFenceState_INVALID = 0;
+    TsmClientState_GeoFenceState_VALID = 1;
+}
+
+enum TsmClientState_ParkProceState
+{
+    TsmClientState_ParkProceState_DEFAULT = 0;
+    TsmClientState_ParkProceState_ADAS_L = 1;
+    TsmClientState_ParkProceState_ADAS_H = 2;
+    TsmClientState_ParkProceState_PARK_APA_HPA = 3;
+}
+
+enum TsmClientState_ParkFunMode
+{
+    TsmClientState_ParkFunMode_PARK_UNACTIVE = 0;
+    TsmClientState_ParkFunMode_APA_ACTIVE = 1;
+    TsmClientState_ParkFunMode_HPA_ACTIVE = 2;
+}
+
+enum TsmClientState_StateType
+{
+    TsmClientState_StateType_UNKNOWN = 0;
+    TsmClientState_StateType_CAMERA_STATE = 1;
+    TsmClientState_StateType_ODD_STATE = 2;
+    TsmClientState_StateType_ADAS_PROCE_STATE = 3;
+    TsmClientState_StateType_PARK_PROCE_STATE = 4;
+    TsmClientState_StateType_PARK_FUN_MODE = 5;
+    TsmClientState_StateType_GEO_FENCE_STATE = 6;
+}
+
+message TsmClientState_StateData
+{
+    TsmClientState_CameraState camera_state = 1;
+    TsmClientState_OddState odd_state = 2;
+    TsmClientState_AdasProceState adas_proce_state = 3;
+    TsmClientState_ParkProceState park_proce_state = 4;
+    TsmClientState_ParkFunMode park_fun_mode = 5;
+    TsmClientState_GeoFenceState geo_fence_state = 6;
+}
+
+message TsmClientState_ClientStateData
+{
+    TsmClientState_StateData datas = 1;
+    TsmClientState_StateType state_type = 2;
+}
+
+message TsmClientStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    TsmClientState_ClientStateData client_state_data = 2;
+}
+

@@ -1,0 +1,173 @@
+syntax = "proto3";
+import "type/perception_base.proto";
+import "type/basic.proto";
+import "type/base.proto";
+import "type/common_type.proto";
+package idrive.workflow.proto;
+
+enum DynamicVehicleType
+{
+    DynamicVehicleType_kUnknown = 0;
+    DynamicVehicleType_kCar = 1;
+    DynamicVehicleType_kSUV = 2;
+    DynamicVehicleType_kVan = 3;
+    DynamicVehicleType_kBus = 4;
+    DynamicVehicleType_kTruck = 5;
+    DynamicVehicleType_kAmbulance = 6;
+    DynamicVehicleType_kPoliceCar = 7;
+    DynamicVehicleType_kFireTruck = 8;
+    DynamicVehicleType_kTricycle = 9;
+    DynamicVehicleType_kSpecialCar = 10;
+    DynamicVehicleType_kTinyCar = 11;
+    DynamicVehicleType_kMotor = 12;
+}
+
+enum DynamicMotionStatus
+{
+    DynamicMotionStatus_kInvalid = 0;
+    DynamicMotionStatus_kUnknown = 1;
+    DynamicMotionStatus_kMoving = 2;
+    DynamicMotionStatus_kStationary = 3;
+    DynamicMotionStatus_kStopped = 4;
+    DynamicMotionStatus_kMovingSlowly = 5;
+    DynamicMotionStatus_kEnumSize = 6;
+}
+
+enum MotionOrientation
+{
+    MotionOrientation_kUndefined = 0;
+    MotionOrientation_kDriftingRight = 1;
+    MotionOrientation_kCrossingRight = 2;
+    MotionOrientation_kOncomingDriftRight = 3;
+    MotionOrientation_kOncoming = 4;
+    MotionOrientation_kOncomingDriftLeft = 5;
+    MotionOrientation_kCrossingLeft = 6;
+    MotionOrientation_kDriftingLeft = 7;
+    MotionOrientation_kPreceding = 8;
+}
+
+enum VisibleSide
+{
+    VisibleSide_kUnknown = 0;
+    VisibleSide_kRight = 1;
+    VisibleSide_kLeft = 2;
+}
+
+enum VisibleRect
+{
+    VisibleRect_kUnknown = 0;
+    VisibleRect_kFront = 1;
+    VisibleRect_kBack = 2;
+}
+
+enum OutputObsPositionType
+{
+    OutputObsPositionType_kUnknownPoint = 0;
+    OutputObsPositionType_kRearLeftPoint = 1;
+    OutputObsPositionType_kRearCenterPoint = 2;
+    OutputObsPositionType_kRearRightPoint = 3;
+    OutputObsPositionType_kFrontLeftPoint = 4;
+    OutputObsPositionType_kFrontCenterPoint = 5;
+    OutputObsPositionType_kFrontRightPoint = 6;
+    OutputObsPositionType_kLeftCenterPoint = 7;
+    OutputObsPositionType_kRightCenterPoint = 8;
+    OutputObsPositionType_kCenterPoint = 9;
+}
+
+message DynamicObstVelocity
+{
+    float vx = 1;
+    float vy = 2;
+    float vz = 3;
+}
+
+message DynamicObstAccelerate
+{
+    float ax = 1;
+    float ay = 2;
+    float az = 3;
+}
+
+message ObstacleAngle
+{
+    float angle_left_v = 1;
+    float angle_left = 2;
+    float angle_middle_v = 3;
+    float angle_middle = 4;
+    float angle_right_v = 5;
+    float angle_right = 6;
+    float angle_side_v = 7;
+    float angle_side = 8;
+}
+
+message DynamicObstWorldSpaceInfo
+{
+    float yaw = 1;
+    float length = 2;
+    float width = 3;
+    float height = 4;
+    Polygon poly = 5;
+    Polygon poly_vcs = 6;
+    Vector3f position = 7;
+    Vector3f rbc_position = 8;
+    float ttc = 9;
+    sint32 traversable = 10;
+    DynamicObstVelocity vel = 11;
+    DynamicObstVelocity vel_abs_world = 12;
+    DynamicObstAccelerate acc_abs_world = 13;
+    DynamicMotionStatus motion_status = 14;
+    MotionCategory motion_category = 15;
+    OutputObsPositionType position_type = 16;
+    VisibleSide visible_side = 17;
+    float yaw_rate = 18;
+    repeated float sigma_vel = 19;
+    float sigma_yaw = 20;
+    float sigma_width = 21;
+    float sigma_height = 22;
+    float sigma_length = 23;
+    repeated float sigma_position = 24;
+    repeated float sigma_rbc_position = 25;
+    float sigma_yaw_rate = 26;
+    sint32 head_rear_type = 27;
+    repeated float sigma_acc_ref = 28;
+    ObstacleAngle obj_angle = 29;
+    VisibleRect visible_rect = 30;
+    MotionOrientation motion_orientation = 31;
+    LaneAssignment lane_assignment = 32;
+    sint32 cipv = 33;
+}
+
+message DynamicObstacle
+{
+    sint32 life_time = 1;
+    uint32 cam_id = 2;
+    uint32 sensor_source = 3;
+    sint64 time_stamp = 4;
+    float conf = 5;
+    uint32 age = 6;
+    ImageSpace img_info = 7;
+    DynamicObstWorldSpaceInfo world_info = 8;
+    sint32 valid_info = 9;
+    sint32 select_level = 10;
+    uint32 id = 11;
+    ObstacleType type = 12;
+    DynamicVehicleType sub_type = 13;
+    uint32 num_categories = 14;
+    repeated Category categories = 15;
+}
+
+message BevObstacle
+{
+    uint32 id = 1;
+    uint32 num_category = 2;
+    float conf = 3;
+    float yaw = 4;
+    float length = 5;
+    float width = 6;
+    float height = 7;
+    Vector3f position = 8;
+    Polygon poly = 9;
+    Vector3f vel_abs_world = 10;
+    repeated Category category = 11;
+}
+

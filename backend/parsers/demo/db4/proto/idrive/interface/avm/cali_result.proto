@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum CaliResult_State 
+{
+    CaliResult_State_Success = 0;
+    CaliResult_State_DetectError = 1;
+    CaliResult_State_OptimizeError = 2;
+}
+
+message CaliResult_DetectPoints
+{
+    uint32 number = 1;
+    repeated Vector2i points = 2;
+}
+
+message CaliResult_RoiRectanges
+{
+    uint32 number = 1;
+    repeated Rectange4i rectanges = 2;
+}
+
+message CaliResult_CaliResult
+{
+    CaliResult_State state = 1;
+    repeated CaliResult_DetectPoints detect_points = 2;
+    repeated CaliResult_RoiRectanges roi_rectanges = 3;
+}
+
+message CaliResultMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliResult_CaliResult cali_result = 2;
+}
+

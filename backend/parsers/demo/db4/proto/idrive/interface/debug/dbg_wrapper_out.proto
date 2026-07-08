@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DbgWrapperOut_DbgWrapperOut
+{
+    uint32 VfRTE_AngReqFunction = 1;
+    bool VfRTE_AngReqState = 2;
+    bool VfRTE_AngReqAvailable = 3;
+    uint32 VfRTE_VCU_ADASCtrlMod = 4;
+    float VfRTE_AngReqValue = 5;
+    float VfRTE_StinsReq = 6;
+    float VfRTE_VCU_TgtTorqRqstValue = 7;
+    float VfRTE_DstToStop = 8;
+    float VfRTE_ADASBrakRqstPres = 9;
+    bool VfRTE_VCU_ADASCtrlModRqst = 10;
+    bool VfRTE_ADASRdyKp = 11;
+    uint32 VfRTE_ADASBrakRqstMod = 12;
+    bool VfRTE_ADASBrakRqstModValid = 13;
+    uint32 VfRTE_TgtGear = 14;
+    bool VfRTE_GearRqst = 15;
+    uint32 VfRTE_EPB_ADASPrkngRqst = 16;
+    bool VfRTE_EPB_ADASCtrlRqst = 17;
+    bool VfRTE_VCU_TgtAccRqst = 18;
+    float VfRTE_VCU_TgtAccRqstValue = 19;
+    bool VfRTE_VCU_TgtSpdRqst = 20;
+}
+
+message DbgWrapperOutMsg
+{
+    CommonMsgMsg common_msg = 1;
+    DbgWrapperOut_DbgWrapperOut wrapper_out = 2;
+}
+

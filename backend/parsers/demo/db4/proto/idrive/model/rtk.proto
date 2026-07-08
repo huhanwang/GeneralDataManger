@@ -1,0 +1,67 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Rtk_PosType
+{
+    Rtk_PosType_NO_SOLUTION = 0;
+    Rtk_PosType_AUTONOMOUS = 1;
+    Rtk_PosType_SINGLE = 2;
+    Rtk_PosType_FLOAT = 3;
+    Rtk_PosType_FIXED = 4;
+    Rtk_PosType_PPP = 5;
+    Rtk_PosType_DEAD_RECKONING_MODE = 6;
+    Rtk_PosType_SBAS_DIFFERENTIAL = 7;
+    Rtk_PosType_OTHERS = 8;
+}
+
+enum Rtk_InsStatus
+{
+    Rtk_InsStatus_NONE = 0;
+    Rtk_InsStatus_INS_INACTIVE = 1;
+    Rtk_InsStatus_INS_ALIGNING = 2;
+    Rtk_InsStatus_INS_HIGH_VARIANCE = 3;
+    Rtk_InsStatus_INS_SOLUTION_GOOD = 4;
+    Rtk_InsStatus_INS_SOLUTION_FREE = 5;
+    Rtk_InsStatus_INS_ALIGNMENT_COMPLETE = 6;
+    Rtk_InsStatus_DETERMINING_ORIENTATION = 7;
+    Rtk_InsStatus_WAITING_INITIALPOS = 8;
+    Rtk_InsStatus_WAITING_AZIMUTH = 9;
+    Rtk_InsStatus_INITIALIZING_BIASES = 10;
+    Rtk_InsStatus_MOTION_DETECT = 11;
+}
+
+message Rtk_Pose
+{
+    double latitude = 1;
+    double longitude = 2;
+    float altitude = 3;
+    float latitude_deviation = 4;
+    float longitude_deviation = 5;
+    float altitude_deviation = 6;
+    Vector3f orientation_euler = 7;
+    Vector3f orientation_deviation = 8;
+    float hdop = 9;
+    uint32 num_satellites = 10;
+    Rtk_PosType pos_type = 11;
+}
+
+message Rtk_Motion
+{
+    Vector3f velocity = 1;
+    Vector3f velocity_deviation = 2;
+    Vector3f angular_velocity = 3;
+    Vector3f angular_velocity_deviation = 4;
+    Vector3f acceleration = 5;
+    Vector3f acceleration_deviation = 6;
+}
+
+message RtkMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Rtk_InsStatus ins_status = 2;
+    Rtk_Pose pose = 3;
+    Rtk_Motion motion = 4;
+}
+

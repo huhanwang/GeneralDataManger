@@ -1,0 +1,188 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+import "type/parking_slot.proto";
+package idrive.workflow.proto;
+
+enum FusionParkingInfo_ParsingType
+{
+    FusionParkingInfo_ParsingType_ROAD = 0;
+    FusionParkingInfo_ParsingType_LANE_LINE = 1;
+    FusionParkingInfo_ParsingType_PARKING_LINE = 2;
+    FusionParkingInfo_ParsingType_PARKING_SLOT = 3;
+    FusionParkingInfo_ParsingType_ARROW = 4;
+    FusionParkingInfo_ParsingType_GUIDE_LINE = 5;
+    FusionParkingInfo_ParsingType_CROSSWALK_LINE = 6;
+    FusionParkingInfo_ParsingType_NO_PARKING_LINE = 7;
+    FusionParkingInfo_ParsingType_STOP_LINE = 8;
+    FusionParkingInfo_ParsingType_SPEED_BUMP = 9;
+    FusionParkingInfo_ParsingType_OTHERS = 10;
+    FusionParkingInfo_ParsingType_PARKING_LOCK_OPEN = 11;
+    FusionParkingInfo_ParsingType_PARKING_LOCK_CLOSED = 12;
+    FusionParkingInfo_ParsingType_TRAFFIC_CONE = 13;
+    FusionParkingInfo_ParsingType_PARKING_ROD = 14;
+    FusionParkingInfo_ParsingType_CURB = 15;
+    FusionParkingInfo_ParsingType_CEMENT_COLUMN = 16;
+    FusionParkingInfo_ParsingType_IMMOVABLE_OBSTACLE = 17;
+    FusionParkingInfo_ParsingType_MOVABLE_OBSTACLE = 18;
+    FusionParkingInfo_ParsingType_BACKGROUND = 19;
+    FusionParkingInfo_ParsingType_SIDEWALK = 20;
+    FusionParkingInfo_ParsingType_PAINTED_WALL_ROOT = 21;
+    FusionParkingInfo_ParsingType_PEDESTRIAN = 50;
+    FusionParkingInfo_ParsingType_DYNAMIC_OBSTACLE = 51;
+    FusionParkingInfo_ParsingType_OBSTACLE_PEDESTRIAN = 52;
+    FusionParkingInfo_ParsingType_OBSTACLE_CYCLIST = 53;
+    FusionParkingInfo_ParsingType_STOPPED_VEHICLE = 54;
+    FusionParkingInfo_ParsingType_MOVING_VEHICLE = 55;
+    FusionParkingInfo_ParsingType_USS_OBJ = 27;
+    FusionParkingInfo_ParsingType_USS_CROSSPOINT = 28;
+    FusionParkingInfo_ParsingType_UNKNOWN = 100;
+    FusionParkingInfo_ParsingType_MONO_ROAD = 110;
+    FusionParkingInfo_ParsingType_MONO_IMMOVABLE_OBSTACLE = 120;
+    FusionParkingInfo_ParsingType_MONO_MOVABLE_OBSTACLE = 130;
+    FusionParkingInfo_ParsingType_MONO_CONE = 140;
+    FusionParkingInfo_ParsingType_DEFORMATION = 150;
+}
+
+enum FusionParkingInfo_PtCloudSource
+{
+    FusionParkingInfo_PtCloudSource_POINT_MAP = 0;
+    FusionParkingInfo_PtCloudSource_POINT_USS = 1;
+    FusionParkingInfo_PtCloudSource_POINT_PARSING = 2;
+    FusionParkingInfo_PtCloudSource_OBJ_USS_PT = 3;
+    FusionParkingInfo_PtCloudSource_OBJ_USS_TWO_PT = 4;
+    FusionParkingInfo_PtCloudSource_POINT_REAL3D = 5;
+    FusionParkingInfo_PtCloudSource_POINT_GNDROOT = 6;
+    FusionParkingInfo_PtCloudSource_POINT_FREESPACE = 7;
+    FusionParkingInfo_PtCloudSource_POINT_NUM = 8;
+}
+
+enum FusionParkingInfo_BoundaryNeighbourType
+{
+    FusionParkingInfo_BoundaryNeighbourType_UNKNOWN = 0;
+    FusionParkingInfo_BoundaryNeighbourType_VEHICLE = 1;
+    FusionParkingInfo_BoundaryNeighbourType_PILLAR = 2;
+}
+
+enum FusionParkingInfo_FusionObstacleType
+{
+    FusionParkingInfo_FusionObstacleType_kVehicle = 0;
+    FusionParkingInfo_FusionObstacleType_kPedestrain = 1;
+    FusionParkingInfo_FusionObstacleType_kCyclist = 2;
+    FusionParkingInfo_FusionObstacleType_kAnimal = 3;
+    FusionParkingInfo_FusionObstacleType_kTrafficCone = 50;
+    FusionParkingInfo_FusionObstacleType_kCementColumn = 51;
+    FusionParkingInfo_FusionObstacleType_kParkingLock = 52;
+    FusionParkingInfo_FusionObstacleType_kAFrameSign = 53;
+    FusionParkingInfo_FusionObstacleType_kCurb = 54;
+    FusionParkingInfo_FusionObstacleType_kFence = 55;
+    FusionParkingInfo_FusionObstacleType_kWaterBarrier = 56;
+    FusionParkingInfo_FusionObstacleType_kTrolley = 57;
+    FusionParkingInfo_FusionObstacleType_kWall = 58;
+    FusionParkingInfo_FusionObstacleType_kParkLimiter = 59;
+    FusionParkingInfo_FusionObstacleType_kParkLimiterPole = 60;
+    FusionParkingInfo_FusionObstacleType_kSpeedBump = 61;
+    FusionParkingInfo_FusionObstacleType_kUnknown = 100;
+}
+
+message FusionParkingInfo_BoundPoint
+{
+    Vector2f bound_pt = 1;
+    Vector2f bound_pt_delta = 2;
+    float bound_height = 3;
+    BoundaryStatus bound_status = 4;
+    BoundaryFixStatus bound_fix_status = 5;
+    FusionParkingInfo_ParsingType bound_label_x = 6;
+    FusionParkingInfo_ParsingType bound_label_y = 7;
+    FusionParkingInfo_PtCloudSource bound_source_x = 8;
+    FusionParkingInfo_PtCloudSource bound_source_y = 9;
+    FusionParkingInfo_BoundaryNeighbourType bound_neighbour_type = 10;
+}
+
+message FusionParkingInfo_SlotAvialCntSas
+{
+    float score = 1;
+    float is_cur_veh_iou_score = 2;
+    float is_cur_cylist_iou_score = 3;
+    sint32 occupy_cnt = 4;
+    sint32 back_occupy_cnt = 5;
+    sint32 slot_veh_occupy_cnt = 6;
+    sint32 slot_ped_occupy_cnt = 7;
+    sint32 slot_cylist_occupy_cnt = 8;
+    sint32 slot_static_lock_occupy_cnt = 9;
+    sint32 slot_static_traffice_cone_occupy_cnt = 10;
+    uint32 cur_parsing_back_movable_obs_cnt = 11;
+    uint32 cur_parsing_back_immovable_obs_cnt = 12;
+    uint32 cur_parsing_back_parking_lock_cnt = 13;
+    uint32 cur_parsing_back_traffic_cone_cnt = 14;
+    uint32 cur_parsing_back_cement_column_cnt = 15;
+    bool is_cur_has_open_parking_lock = 16;
+    bool is_cur_has_traffic_cone = 17;
+    bool is_cur_has_no_parking_board = 18;
+    bool is_cur_has_other_obs = 19;
+    bool is_cur_has_veh = 20;
+    bool is_cur_has_ped = 21;
+    bool is_cur_has_cylist = 22;
+    OccupancyStatus status = 23;
+    FusionParkingInfo_FusionObstacleType occupy_obj_type = 24;
+}
+
+message FusionParkingInfo_FusionParkingSlotInfo
+{
+    sint32 id = 1;
+    sint32 valid = 2;
+    sint32 source_id = 3;
+    sint32 occupy_obs_cnt = 4;
+    sint32 occupy_psd_cnt = 5;
+    sint32 occupy_best_cnt = 6;
+    sint32 occupy_pointcloud_cnt = 7;
+    sint32 occupy_cnt = 8;
+    OccupancyStatus occupy_status = 9;
+    bool is_slot_occupy_in_ipm = 10;
+    bool is_slot_occupy_vice_best_pos = 11;
+    bool is_slot_occupy_best_pos = 12;
+    uint32 num_is_fixed_prev = 13;
+    uint32 num_bd_buffer_size = 14;
+    uint32 num_fix_stat_cur = 15;
+    uint32 num_fix_stat_prev = 16;
+    uint32 num_boundary_prev = 17;
+    uint32 num_slot_boundary = 18;
+    uint32 num_vice_boundary = 19;
+    uint32 num_match_cnt = 20;
+    uint32 num_vice_match_cnt = 21;
+    uint32 num_distance_curr_to_prev = 22;
+    uint32 num_distance_curr_to_vice = 23;
+    repeated bool is_fixed_prev = 24;
+    bytes bd_buffer_size = 25;
+    repeated sint32 fix_stat_cur = 26;
+    repeated sint32 fix_stat_prev = 27;
+    repeated FusionParkingInfo_BoundPoint boundary_prev = 28;
+    repeated FusionParkingInfo_BoundPoint slot_boundary = 29;
+    repeated FusionParkingInfo_BoundPoint vice_boundary = 30;
+    repeated sint32 match_cnt = 31;
+    repeated sint32 vice_match_cnt = 32;
+    repeated float distance_curr_to_prev = 33;
+    repeated float distance_curr_to_vice = 34;
+    FusionParkingInfo_SlotAvialCntSas slot_occupy_sas_cnt = 35;
+}
+
+message FusionParkingInfo_FusionParkingInfo
+{
+    uint32 num_parking_slots = 1;
+    repeated FusionParkingInfo_FusionParkingSlotInfo parking_slots_info = 2;
+    sint64 ipm_frame_id = 3;
+    sint64 vision_ps_frame_id = 4;
+    sint64 odo_frame_id = 5;
+    float odo_position_x = 6;
+    float odo_position_y = 7;
+    float odo_position_yaw = 8;
+    sint32 parking_out_slot_id = 9;
+    ParkingSlotInfo fusion_lock_id_slot = 10;
+}
+
+message FusionParkingInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FusionParkingInfo_FusionParkingInfo fusion_parking_info = 2;
+}
+

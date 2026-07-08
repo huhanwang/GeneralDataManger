@@ -1,0 +1,95 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message LaebInfo_DebugLaebObs
+{
+    uint32 obs_id = 1;
+    uint32 obs_age = 2;
+    uint32 obs_class = 3;
+    uint32 obs_sub_class = 4;
+    uint32 obs_source = 5;
+    uint32 obs_motion_type = 6;
+    uint32 obs_track_status = 7;
+    uint32 obs_confidence = 8;
+    uint32 obs_filter_reason = 9;
+    float obs_length = 10;
+    float obs_width = 11;
+    float obs_heigth = 12;
+    float obs_rel_heading = 13;
+    float obs_s_gap = 14;
+    float obs_l_gap = 15;
+    float obs_rel_vs = 16;
+    float obs_rel_vl = 17;
+    float obs_first_detect_distance = 18;
+    float obs_ttc = 19;
+    float obs_ttc_threhold = 20;
+    float obs_keep_time = 21;
+    float obs_keep_time_threhold = 22;
+    float obs_lateral_instrusion = 23;
+    float obs_lateral_instrusion_threhold = 24;
+}
+
+message LaebInfo_DebugLaebVehInput
+{
+    uint32 bcm_laeb_btn_sts = 1;
+    uint32 esc_laeb_available_status = 2;
+    uint32 esc_laeb_response_status = 3;
+    uint32 veh_motion_direction = 4;
+    float veh_speed = 5;
+    float veh_long_speed = 6;
+    float veh_lat_speed = 7;
+    float veh_long_acc = 8;
+    float veh_lat_acc = 9;
+    float veh_long_acc_diffv = 10;
+    float veh_slope = 11;
+    float veh_slope_rate = 12;
+    float veh_curvature = 13;
+    float veh_curvature_rate = 14;
+    float veh_brake_pedal_rate = 15;
+    float veh_acc_pedal_rate = 16;
+    float dist_from_ignition = 17;
+    float dist_from_standtill = 18;
+}
+
+message LaebInfo_DebugLaebOutput
+{
+    bool laeb_active = 1;
+    bool laeb_gear_req = 2;
+    bool laeb_gear_parkreq = 3;
+    uint32 laeb_mode = 4;
+    uint32 laeb_brake_trigger_source = 5;
+    uint32 laeb_brake_sub_state = 6;
+    uint32 laeb_inputobs_num = 7;
+    uint32 laeb_time_consume_ms = 8;
+    uint32 laeb_sys_fault_status = 9;
+    uint32 laeb_text_info_hmi = 10;
+    uint32 laeb_enable_status = 11;
+    uint32 laeb_degradation = 12;
+    uint32 laeb_sequence = 13;
+    uint32 laeb_brake_obj_unconfirm_reason = 14;
+    uint32 laeb_brake_obs_id = 15;
+    uint32 laeb_brake_mco_id = 16;
+    uint32 laeb_unavailable_reason = 17;
+    uint32 laeb_quit_reason = 18;
+    uint32 laeb_brake_suppress_reason = 19;
+    uint32 laeb_brake_interrupt_reason = 20;
+    float laeb_cal_dec_acc = 21;
+}
+
+message LaebInfo_DebugLaebData
+{
+    uint32 laeb_module_version = 1;
+    uint32 laeb_diag_info = 2;
+    LaebInfo_DebugLaebVehInput laeb_veh_input = 3;
+    LaebInfo_DebugLaebOutput laeb_output = 4;
+    uint32 num_laeb_candi_targets = 5;
+    repeated LaebInfo_DebugLaebObs laeb_candi_targets = 6;
+}
+
+message LaebInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    LaebInfo_DebugLaebData laeb_data = 2;
+}
+

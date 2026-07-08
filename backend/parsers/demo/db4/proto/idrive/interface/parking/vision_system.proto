@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message VisionSystem_VisionSystem
+{
+    sint32 lock_id = 1;
+}
+
+message VisionSystemMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VisionSystem_VisionSystem vision_system = 2;
+}
+

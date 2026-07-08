@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Parsing_ParsingLabel
+{
+    Parsing_ParsingLabel_Label_Road = 0;
+    Parsing_ParsingLabel_Label_Sidewalk = 1;
+    Parsing_ParsingLabel_Label_Building = 2;
+    Parsing_ParsingLabel_Label_LaneMarking = 3;
+    Parsing_ParsingLabel_Label_Fence = 4;
+    Parsing_ParsingLabel_Label_Pole = 5;
+    Parsing_ParsingLabel_Label_TrafficLight = 6;
+    Parsing_ParsingLabel_Label_TrafficSign = 7;
+    Parsing_ParsingLabel_Label_Vegetation = 8;
+    Parsing_ParsingLabel_Label_Terrain = 9;
+    Parsing_ParsingLabel_Label_Sky = 10;
+    Parsing_ParsingLabel_Label_Person = 11;
+    Parsing_ParsingLabel_Label_Rider = 12;
+    Parsing_ParsingLabel_Label_Car = 13;
+    Parsing_ParsingLabel_Label_Truck = 14;
+    Parsing_ParsingLabel_Label_Bus = 15;
+    Parsing_ParsingLabel_Label_Train = 16;
+    Parsing_ParsingLabel_Label_Motorcycle = 17;
+    Parsing_ParsingLabel_Label_Bicycle = 18;
+    Parsing_ParsingLabel_Label_GuidePost = 19;
+    Parsing_ParsingLabel_Label_CrosswalkLine = 20;
+    Parsing_ParsingLabel_Label_TrafficArrow = 21;
+    Parsing_ParsingLabel_Label_SignLine = 22;
+    Parsing_ParsingLabel_Label_GuideLine = 23;
+    Parsing_ParsingLabel_Label_TrafficCone = 24;
+    Parsing_ParsingLabel_Label_Barrel = 25;
+    Parsing_ParsingLabel_Label_StopLine = 26;
+    Parsing_ParsingLabel_Label_SpeedMark = 27;
+    Parsing_ParsingLabel_Label_Diamond = 28;
+    Parsing_ParsingLabel_Label_BicycleSign = 29;
+    Parsing_ParsingLabel_Label_SpeedBumps = 30;
+    Parsing_ParsingLabel_Label_Tricycle = 31;
+    Parsing_ParsingLabel_Label_SlowDownTriangle = 32;
+    Parsing_ParsingLabel_Label_Mask = 33;
+    Parsing_ParsingLabel_Label_PotHole = 34;
+    Parsing_ParsingLabel_Label_Other = 35;
+    Parsing_ParsingLabel_Label_Curb = 36;
+    Parsing_ParsingLabel_Label_ParkingLine = 37;
+    Parsing_ParsingLabel_Label_ParkingSpace = 38;
+    Parsing_ParsingLabel_Label_ParkingRod = 39;
+    Parsing_ParsingLabel_Label_ParkingLock = 40;
+    Parsing_ParsingLabel_Label_Column = 41;
+    Parsing_ParsingLabel_Label_Wide = 42;
+    Parsing_ParsingLabel_Label_SingleDash = 43;
+    Parsing_ParsingLabel_Label_SingleSolid = 44;
+    Parsing_ParsingLabel_Label_DoubleDash = 45;
+    Parsing_ParsingLabel_Label_DoubleSolid = 46;
+    Parsing_ParsingLabel_Label_Deceleration = 47;
+    Parsing_ParsingLabel_Label_NoParkingSignLine = 48;
+    Parsing_ParsingLabel_Label_ParkingLockOpen = 49;
+    Parsing_ParsingLabel_Label_ParkingLockClosed = 50;
+    Parsing_ParsingLabel_Label_ImmovableObstacle = 51;
+    Parsing_ParsingLabel_Label_MovableObstacle = 52;
+}
+
+enum Parsing_ParsingFormat
+{
+    Parsing_ParsingFormat_ParsingFormat_Raw = 0;
+    Parsing_ParsingFormat_ParsingFormat_Label = 1;
+    Parsing_ParsingFormat_ParsingFormat_Label_RLE = 2;
+    Parsing_ParsingFormat_ParsingFormat_Label_BPU_RLE = 3;
+}
+
+message Parsing_ParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message Parsing_ParsingMsg
+{
+    Parsing_ParsingImageData feature_map = 1;
+    float scale = 2;
+    Parsing_ParsingFormat format = 3;
+    Rect roi_output = 4;
+}
+
+message ParsingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Parsing_ParsingMsg parsing_msg = 2;
+}
+

@@ -1,0 +1,117 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum LaneSource
+{
+    LaneSource_LINE_SOURCE_UNSPECIFIED = 0;
+    LaneSource_LINE_SOURCE_OBSTACLE_BLOCKED = 2;
+    LaneSource_LINE_SOURCE_HISTORY_BASED = 4;
+    LaneSource_LINE_SOURCE_EXTRAPOLATION = 5;
+    LaneSource_LINE_SOURCE_UNKNOWN = 9;
+    LaneSource_LINE_SOURCE_NEW = 10;
+    LaneSource_LINE_SOURCE_MEASURED = 11;
+    LaneSource_LINE_SOURCE_PREDICTED = 12;
+    LaneSource_LINE_SOURCE_OBSTACLE_LEFT = 13;
+    LaneSource_LINE_SOURCE_OBSTACLE_RIGHT = 14;
+    LaneSource_LINE_SOURCE_SEPARATE = 15;
+    LaneSource_LINE_SOURCE_CO_SWITCHING = 19;
+    LaneSource_LINE_SOURCE_C1_SWITCHING = 20;
+    LaneSource_LINE_PERCEPTION = 21;
+    LaneSource_LINE_TRACKING = 22;
+    LaneSource_LINE_SOURCE_FENCE = 23;
+    LaneSource_LINE_SOURCE_CURB = 24;
+    LaneSource_LINE_SOURCE_STOPLINE = 25;
+    LaneSource_LINE_SOURCE_GENERAL_FENCE = 26;
+    LaneSource_LINE_SOURCE_CONE = 27;
+    LaneSource_LINE_SOURCE_PARKEDCAR = 28;
+    LaneSource_LINE_SOURCE_OTHER = 29;
+    LaneSource_LINE_SOURCE_REAR = 30;
+}
+
+message LinePt
+{
+    Vector3f start_pt = 1;
+    Vector3f end_pt = 2;
+}
+
+message PilotLaneContour
+{
+    repeated Vector3f pts = 1;
+    uint32 num_pts = 2;
+    sint32 type = 3;
+    LinePt line = 4;
+}
+
+message LaneExtraPoints
+{
+    uint32 num_extra_points = 1;
+    uint32 num_extra_points_type = 2;
+    repeated Vector3f extra_points = 3;
+    repeated sint32 extra_points_type = 4;
+}
+
+message Lane
+{
+    sint32 id = 1;
+    sint32 life_time = 2;
+    sint32 gray = 3;
+    sint32 coeffs_status = 4;
+    sint32 type = 5;
+    sint32 source = 6;
+    sint32 type_sibling = 7;
+    sint32 extra_type = 8;
+    float dist_to_front_wheel = 9;
+    float width = 10;
+    float conf = 11;
+    float parsing_conf = 12;
+    float rmse = 13;
+    float vertical_conf = 14;
+    LaneExtraPoints cross_points = 15;
+    uint32 num_coeffs = 16;
+    uint32 num_end_points = 17;
+    uint32 num_contours = 18;
+    uint32 num_sigma_coeffs = 19;
+    repeated float coeffs = 20;
+    repeated Vector3f end_points = 21;
+    repeated PilotLaneContour contours = 22;
+    repeated float sigma_coeffs = 23;
+}
+
+message PitchInfoV1
+{
+    bool host_lane_valid = 1;
+    bool left_lane_valid = 2;
+    bool right_lane_valid = 3;
+    bool fusion_pitch_valid = 4;
+    float fusion_pitch = 5;
+    uint32 num_group_pitches_cutPnt = 6;
+    uint32 num_group_pitches = 7;
+    repeated float group_pitches_cutPnt = 8;
+    repeated float group_pitches = 9;
+}
+
+message Lanes
+{
+    sint32 cam_id = 1;
+    sint32 tag = 2;
+    float dtlc = 3;
+    float ttlc = 4;
+    sint64 src_time_stamp = 5;
+    sint64 asyn_time_stamp = 6;
+    sint32 frame_id = 7;
+    sint32 line_num = 8;
+    sint32 pitch_output_source = 9;
+    sint32 mal_pos_req = 10;
+    PitchInfoV1 pitch_info = 11;
+    float main_lane_width = 12;
+    uint32 num_lines = 13;
+    uint32 num_lane_sample_points = 14;
+    uint32 num_odo_predict_path = 15;
+    uint32 num_fusion_predict_path = 16;
+    repeated Lane lines = 17;
+    repeated PilotLaneContour lane_sample_points = 18;
+    repeated float odo_predict_path = 19;
+    repeated float fusion_predict_path = 20;
+}
+

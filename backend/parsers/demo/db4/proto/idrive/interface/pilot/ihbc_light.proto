@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum IhbcLight_LightSourceType
+{
+    IhbcLight_LightSourceType_LIGHT_SOURCE_HEADLIGHT = 0;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_TAILLIGHT = 1;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_STREETLIGHT = 2;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_AMBIENTLIGHT = 3;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_UNKNOWN = 4;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_OTHER = 5;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_NOLIGHT = 6;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_REFLECTIVE = 7;
+    IhbcLight_LightSourceType_LIGHT_SOURCE_COUNT = 8;
+}
+
+message IhbcLight_LightRectProperty
+{
+    Rect rect = 1;
+    IhbcLight_LightSourceType type = 2;
+    float conf = 3;
+}
+
+message IhbcLight_IhbcLight
+{
+    uint32 num_lights = 1;
+    repeated IhbcLight_LightRectProperty lights = 2;
+}
+
+message IhbcLightMsg
+{
+    CommonMsgMsg common_msg = 1;
+    IhbcLight_IhbcLight ihbc_light = 2;
+}
+

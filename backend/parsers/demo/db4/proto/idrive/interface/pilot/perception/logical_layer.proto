@@ -1,0 +1,182 @@
+syntax = "proto3";
+import "type/base.proto";
+import "interface/pilot/perception/topological_layer.proto";
+import "interface/pilot/perception/line.proto";
+package idrive.workflow.proto;
+
+enum NdmLaneDirection
+{
+    NdmLaneDirection_LANEDIRECTION_UNKNOWN = 0;
+    NdmLaneDirection_LANEDIRECTION_FORWARD = 1;
+    NdmLaneDirection_LANEDIRECTION_BACKWARD = 2;
+    NdmLaneDirection_LANEDIRECTION_BIDIRECTION = 3;
+    NdmLaneDirection_LANEDIRECTION_TIDAL = 4;
+}
+
+enum NdmLaneTransition
+{
+    NdmLaneTransition_LANETRANSITION_UNKNOWN = 0;
+    NdmLaneTransition_LANETRANSITION_CONTINUE = 1;
+    NdmLaneTransition_LANETRANSITION_MERGING = 2;
+    NdmLaneTransition_LANETRANSITION_SPLITTING = 3;
+}
+
+message LaneAttr
+{
+    float curvature = 1;
+    float slope = 2;
+    float banking = 3;
+    float headingAngle = 4;
+    float offset = 5;
+    float width = 6;
+}
+
+message LaneRestriction
+{
+    uint32 num_vehicle_types = 1;
+    repeated NdmBaseVehicleType vehicle_types = 2;
+    uint32 num_speed_limits = 3;
+    repeated SpeedLimit speed_limits = 4;
+    uint32 num_time_limits = 5;
+    repeated TimeLimit time_limits = 6;
+    uint32 num_lanemarking_types = 7;
+    repeated sint32 lanemarking_types = 8;
+    uint32 num_trafficsign_types = 9;
+    repeated sint32 trafficsign_types = 10;
+    float weight_limit = 11;
+    float height_limit = 12;
+}
+
+message LogicalLane
+{
+    uint32 id = 1;
+    uint32 num_l_laneline_ids = 2;
+    repeated uint32 l_laneline_ids = 3;
+    uint32 num_r_laneline_ids = 4;
+    repeated uint32 r_laneline_ids = 5;
+    uint32 driveline_id = 6;
+    NdmLaneDirection direction = 7;
+    NdmLaneTransition transition = 8;
+    uint32 num_attrs = 9;
+    repeated LaneAttr attrs = 10;
+    float lane_length = 11;
+    uint64 type = 12;
+    uint32 num_objs = 13;
+    repeated Link objs = 14;
+    uint32 num_obstacles = 15;
+    repeated Link obstacles = 16;
+    uint32 num_pred_ids = 17;
+    repeated uint32 pred_ids = 18;
+    uint32 num_succ_ids = 19;
+    repeated uint32 succ_ids = 20;
+    uint32 num_left_ids = 21;
+    repeated uint32 left_ids = 22;
+    uint32 num_right_ids = 23;
+    repeated uint32 right_ids = 24;
+    uint32 num_restrictions = 25;
+    repeated LaneRestriction restrictions = 26;
+    NdmPolygon bounding_polygon = 27;
+}
+
+message Elevation
+{
+    uint32 id = 1;
+    uint32 num_elevationplane_ids = 2;
+    repeated uint32 elevationplane_ids = 3;
+    uint32 num_link_ids = 4;
+    repeated uint32 link_ids = 5;
+}
+
+message ParkingSpace
+{
+    uint32 id = 1;
+    uint32 num_parkingslot_ids = 2;
+    repeated uint32 parkingslot_ids = 3;
+    uint32 num_border_ids = 4;
+    repeated uint32 border_ids = 5;
+    NdmPolygon bounding_polygon = 6;
+    uint32 num_link_ids = 7;
+    repeated uint32 link_ids = 8;
+    ParkingSpaceRestriction restriction = 9;
+}
+
+message Inner_PointcloudFileMd5sum {
+    string pointcloud_file_md5sum = 1;
+}
+message Inner_PointcloudFiles {
+    string pointcloud_files = 1;
+}
+message Section
+{
+    uint32 id = 1;
+    uint32 num_lane_ids = 2;
+    repeated uint32 lane_ids = 3;
+    uint32 num_l_border_ids = 4;
+    repeated uint32 l_border_ids = 5;
+    uint32 num_r_border_ids = 6;
+    repeated uint32 r_border_ids = 7;
+    uint32 num_objs = 8;
+    repeated Link objs = 9;
+    double length = 10;
+    uint32 num_pred_ids = 11;
+    repeated uint32 pred_ids = 12;
+    uint32 num_succ_ids = 13;
+    repeated uint32 succ_ids = 14;
+    uint32 num_left_ids = 15;
+    repeated uint32 left_ids = 16;
+    uint32 num_right_ids = 17;
+    repeated uint32 right_ids = 18;
+    NdmPolygon bounding_polygon = 19;
+    SpecialSituationType special_situation_type = 20;
+    RoadClassType road_class_type = 21;
+    uint32 num_link_identifiers = 22;
+    repeated Link link_identifiers = 23;
+    sint64 lane_group_id = 24;
+    uint32 num_pointcloud_files = 25;
+    repeated Inner_PointcloudFiles pointcloud_files = 26;
+    uint32 num_pointcloud_file_md5sum = 27;
+    repeated Inner_PointcloudFileMd5sum pointcloud_file_md5sum = 28;
+    sint32 submap_id = 29;
+    uint32 num_speed_limits = 30;
+    repeated SpeedLimit speed_limits = 31;
+    uint32 refline_id = 32;
+    uint32 number_of_lane_opposite = 33;
+    uint64 road_type = 34;
+    FormOfWay form_of_way = 35;
+    float turn_angle = 36;
+    uint32 number_of_lanes = 37;
+}
+
+message Junction
+{
+    uint32 id = 1;
+    uint32 num_objs = 2;
+    repeated Link objs = 3;
+    uint32 num_lane_ids = 4;
+    repeated uint32 lane_ids = 5;
+    NdmPolygon bounding_polygon = 6;
+    uint32 num_in_link_ids = 7;
+    repeated uint32 in_link_ids = 8;
+    uint32 num_out_link_ids = 9;
+    repeated uint32 out_link_ids = 10;
+    uint32 num_section_ids = 11;
+    repeated uint32 section_ids = 12;
+    sint32 submap_id = 13;
+}
+
+message LogicalLayer
+{
+    uint32 num_virtuallines = 1;
+    repeated Line virtuallines = 2;
+    uint32 num_lanes = 3;
+    repeated LogicalLane lanes = 4;
+    uint32 num_parkingspaces = 5;
+    repeated ParkingSpace parkingspaces = 6;
+    uint32 num_sections = 7;
+    repeated Section sections = 8;
+    uint32 num_junctions = 9;
+    repeated Junction junctions = 10;
+    uint32 num_elevations = 11;
+    repeated Elevation elevations = 12;
+}
+

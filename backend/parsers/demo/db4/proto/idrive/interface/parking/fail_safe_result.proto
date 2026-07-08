@@ -1,0 +1,56 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+package idrive.workflow.proto;
+
+enum FailsafeResult_SeverityLevel
+{
+    FailsafeResult_SeverityLevel_kNone = 0;
+    FailsafeResult_SeverityLevel_kMild = 1;
+    FailsafeResult_SeverityLevel_kModerate = 2;
+    FailsafeResult_SeverityLevel_kSevere = 3;
+}
+
+enum FailsafeResult_OutOfCalibTsrBs
+{
+    FailsafeResult_OutOfCalibTsrBs_kTsrOuutOfCalib = 0;
+    FailsafeResult_OutOfCalibTsrBs_kTsrOutOfCalibAeb = 1;
+    FailsafeResult_OutOfCalibTsrBs_kTsrOutOfCalibYaw = 2;
+    FailsafeResult_OutOfCalibTsrBs_kTsrOutOfCalibHorizon = 3;
+}
+
+message FailsafeResult_FailSafeLevel
+{
+    FailsafeResult_SeverityLevel rain_severity_level = 1;
+    FailsafeResult_SeverityLevel full_blockage_severity_level = 2;
+    FailsafeResult_SeverityLevel blurred_image_severity_level = 3;
+    FailsafeResult_SeverityLevel splashes_severity_level = 4;
+    FailsafeResult_SeverityLevel low_sun_severity_level = 5;
+    FailsafeResult_SeverityLevel sun_ray_severity_level = 6;
+    bool out_of_focus_severity_level = 7;
+    bool out_of_calibration_severity_level = 8;
+    FailsafeResult_SeverityLevel partial_blockage_severity_level = 9;
+    FailsafeResult_SeverityLevel frozen_windshield_severity_level = 10;
+    FailsafeResult_SeverityLevel fog_severity_level = 11;
+    bool free_sight = 12;
+    FailsafeResult_OutOfCalibTsrBs out_of_calib_tsr_bs = 13;
+}
+
+message FailsafeResult_FailSafeResult
+{
+    ImageId image_id = 1;
+    FailsafeResult_FailSafeLevel fail_safe_result = 2;
+}
+
+message FailsafeResult_FailSafeResults
+{
+    uint32 num_fail_safe_result = 1;
+    repeated FailsafeResult_FailSafeResult fail_safe_result_data = 2;
+}
+
+message FailsafeResultMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FailsafeResult_FailSafeResults fail_safe_result_data = 2;
+}
+

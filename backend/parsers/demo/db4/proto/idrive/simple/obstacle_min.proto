@@ -1,0 +1,165 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ObstacleMin_ObsTrackStatus
+{
+    ObstacleMin_ObsTrackStatus_OBS_TRACK_STATUS_NONE = 0;
+    ObstacleMin_ObsTrackStatus_OBS_TRACK_STATUS_NEW = 1;
+    ObstacleMin_ObsTrackStatus_OBS_TRACK_STATUS_UPDATED = 2;
+    ObstacleMin_ObsTrackStatus_OBS_TRACK_STATUS_PRE = 3;
+}
+
+enum ObstacleMin_ObstacleClass
+{
+    ObstacleMin_ObstacleClass_CLASS_INVALID = 0;
+    ObstacleMin_ObstacleClass_CLASS_VEHICLE = 1;
+    ObstacleMin_ObstacleClass_CLASS_PEDESTRIAN = 2;
+    ObstacleMin_ObstacleClass_CLASS_CYCLIST = 3;
+    ObstacleMin_ObstacleClass_CLASS_GENERAL = 4;
+}
+
+enum ObstacleMin_VehicleType
+{
+    ObstacleMin_VehicleType_VEH_TYPE_UNKNOWN = 0;
+    ObstacleMin_VehicleType_VEH_TYPE_BUS = 1;
+    ObstacleMin_VehicleType_VEH_TYPE_CAR = 2;
+    ObstacleMin_VehicleType_VEH_TYPE_TRUCK = 3;
+    ObstacleMin_VehicleType_VEH_TYPE_MOTOR = 4;
+    ObstacleMin_VehicleType_VEH_TYPE_SPECIAL_VEHICLE = 5;
+    ObstacleMin_VehicleType_VEH_TYPE_TINY_CAR = 6;
+    ObstacleMin_VehicleType_VEH_TYPE_LORRY = 7;
+}
+
+enum ObstacleMin_PedType
+{
+    ObstacleMin_PedType_PED_TYPE_UNKNOWN = 0;
+    ObstacleMin_PedType_PED_TYPE_ADULT = 1;
+    ObstacleMin_PedType_PED_TYPE_CHILD = 2;
+}
+
+enum ObstacleMin_BicycleType
+{
+    ObstacleMin_BicycleType_BICYCLE_TYPE_UNKNOWN = 0;
+    ObstacleMin_BicycleType_BICYCLE_TYPE_BICYCLE = 1;
+    ObstacleMin_BicycleType_BICYCLE_TYPE_MOTOR = 2;
+    ObstacleMin_BicycleType_BICYCLE_TYPE_TRICYCLIST = 3;
+}
+
+enum ObstacleMin_PedOrientation
+{
+    ObstacleMin_PedOrientation_PED_ORIEN_UNKOWN = 0;
+    ObstacleMin_PedOrientation_PED_ORIEN_BACK = 1;
+    ObstacleMin_PedOrientation_PED_ORIEN_FRONT = 2;
+    ObstacleMin_PedOrientation_PED_ORIEN_LEFT = 3;
+    ObstacleMin_PedOrientation_PED_ORIEN_LEFT_FRONT = 4;
+    ObstacleMin_PedOrientation_PED_ORIEN_LEFT_BACK = 5;
+    ObstacleMin_PedOrientation_PED_ORIEN_RIGHT = 6;
+    ObstacleMin_PedOrientation_PED_ORIEN_RIGHT_FRONT = 7;
+    ObstacleMin_PedOrientation_PED_ORIEN_RIGHT_BACK = 8;
+}
+
+enum ObstacleMin_ObsMotionStatus
+{
+    ObstacleMin_ObsMotionStatus_MOTION_STATUS_UNKNOWN = 0;
+    ObstacleMin_ObsMotionStatus_MOTION_STATUS_STATIONARY = 1;
+    ObstacleMin_ObsMotionStatus_MOTION_STATUS_STOPPED = 2;
+    ObstacleMin_ObsMotionStatus_MOTION_STATUS_MOVING = 3;
+}
+
+enum ObstacleMin_ObsMotionCategory
+{
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_INVALID = 0;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_UNDEFINED = 1;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_PASSING = 2;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_PASSING_IN = 3;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_PASSING_OUT = 4;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_CLOSE_CUT_IN = 5;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_MOVING_IN = 6;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_MOVING_OUT = 7;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_CROSSING = 8;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_LTAP = 9;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_RTAP = 10;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_MOVING = 11;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_PRECEEDING = 12;
+    ObstacleMin_ObsMotionCategory_MOTION_CATEGORY_ONCOMING = 13;
+}
+
+enum ObstacleMin_LaneAssign
+{
+    ObstacleMin_LaneAssign_LANE_ASSIGN_UNKNOWN = 0;
+    ObstacleMin_LaneAssign_LANE_ASSIGN_L_L = 1;
+    ObstacleMin_LaneAssign_LANE_ASSIGN_L = 2;
+    ObstacleMin_LaneAssign_LANE_ASSIGN_HOST = 3;
+    ObstacleMin_LaneAssign_LANE_ASSIGN_R = 4;
+    ObstacleMin_LaneAssign_LANE_ASSIGN_R_R = 5;
+}
+
+enum ObstacleMin_BlinkerStatus
+{
+    ObstacleMin_BlinkerStatus_BLINKER_UNAVAILABLE = 0;
+    ObstacleMin_BlinkerStatus_BLINKER_OFF = 1;
+    ObstacleMin_BlinkerStatus_BLINKER_LEFT = 2;
+    ObstacleMin_BlinkerStatus_BLINKER_RIGHT = 3;
+    ObstacleMin_BlinkerStatus_BLINKER_BOTH = 4;
+}
+
+message ObstacleMin_Obstacle
+{
+    double time_stamp = 1;
+    uint32 frame_age = 2;
+    uint32 id = 3;
+    uint32 id_camera = 4;
+    uint32 id_radar = 5;
+    bool cipv_flag = 6;
+    uint32 confidence = 7;
+    uint32 aeb_confidence = 8;
+    uint32 fcw_Confidence = 9;
+    ObstacleMin_ObsTrackStatus track_status = 10;
+    uint32 detect_status = 11;
+    ObstacleMin_ObstacleClass obs_class = 12;
+    ObstacleMin_VehicleType veh_type = 13;
+    ObstacleMin_PedType ped_type = 14;
+    ObstacleMin_PedOrientation ped_orintation = 15;
+    ObstacleMin_BlinkerStatus blinker_status = 16;
+    ObstacleMin_ObsMotionStatus motion_status = 17;
+    ObstacleMin_ObsMotionCategory motion_category = 18;
+    ObstacleMin_LaneAssign lane_assign = 19;
+    uint32 cutin_status = 20;
+    bool brake_light = 21;
+    float cutin_distance = 22;
+    uint32 pos_type = 23;
+    float length = 24;
+    float width = 25;
+    float height = 26;
+    float rel_pos_x = 27;
+    float rel_pos_y = 28;
+    float rel_vel_x = 29;
+    float rel_vel_y = 30;
+    float rel_heading = 31;
+    float abs_vel_x = 32;
+    float abs_vel_y = 33;
+    float abs_speed = 34;
+    float abs_acc_x = 35;
+    float abs_acc_y = 36;
+    float abs_acc = 37;
+    float curvature_radius = 38;
+}
+
+message ObstacleMin_ObstacleInfo
+{
+    double time_stamp = 1;
+    uint32 obstacle_num = 2;
+    uint32 cipv_id = 3;
+    uint32 mcp_id = 4;
+    bool cipv_ettc_valid = 5;
+    float cipv_ettc = 6;
+    repeated ObstacleMin_Obstacle obstacles = 7;
+}
+
+message ObstacleMinMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ObstacleMin_ObstacleInfo fusion_obstacle_info = 2;
+}
+

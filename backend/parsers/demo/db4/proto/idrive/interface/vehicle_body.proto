@@ -1,0 +1,524 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VehicleBody_Valid 
+{
+    VehicleBody_Valid_Invalid = 0;
+    VehicleBody_Valid_Vaild = 1;
+    VehicleBody_Valid_Reserved = 2;
+}
+
+enum VehicleBody_PowerMode 
+{
+    VehicleBody_PowerMode_Invalid = 0;
+    VehicleBody_PowerMode_Off = 1;
+    VehicleBody_PowerMode_Acc = 2;
+    VehicleBody_PowerMode_On = 3;
+    VehicleBody_PowerMode_Reserved = 4;
+}
+
+enum VehicleBody_DoorStatus 
+{
+    VehicleBody_DoorStatus_Invalid = 0;
+    VehicleBody_DoorStatus_Close = 1;
+    VehicleBody_DoorStatus_Open = 2;
+    VehicleBody_DoorStatus_Reserved = 3;
+}
+
+enum VehicleBody_MirrorStatus 
+{
+    VehicleBody_MirrorStatus_Invalid = 0;
+    VehicleBody_MirrorStatus_Folded = 1;
+    VehicleBody_MirrorStatus_Expanded = 2;
+    VehicleBody_MirrorStatus_Reserved = 3;
+}
+
+enum VehicleBody_VehicleStandstillStatus 
+{
+    VehicleBody_VehicleStandstillStatus_Invalid = 0;
+    VehicleBody_VehicleStandstillStatus_NotStandstill = 1;
+    VehicleBody_VehicleStandstillStatus_Standstill = 2;
+    VehicleBody_VehicleStandstillStatus_Reserved = 3;
+}
+
+enum VehicleBody_DriverBuckleStatus 
+{
+    VehicleBody_DriverBuckleStatus_Invalid = 0;
+    VehicleBody_DriverBuckleStatus_Unlock = 1;
+    VehicleBody_DriverBuckleStatus_Buckle = 2;
+    VehicleBody_DriverBuckleStatus_Reserved = 3;
+}
+
+enum VehicleBody_EpsepbCtrActive 
+{
+    VehicleBody_EpsepbCtrActive_Releasing = 0;
+    VehicleBody_EpsepbCtrActive_Released = 1;
+    VehicleBody_EpsepbCtrActive_Applying = 2;
+    VehicleBody_EpsepbCtrActive_Applied = 3;
+    VehicleBody_EpsepbCtrActive_Reserved = 4;
+}
+
+enum VehicleBody_BleConnStatus 
+{
+    VehicleBody_BleConnStatus_Disconnect = 0;
+    VehicleBody_BleConnStatus_Connect = 1;
+    VehicleBody_BleConnStatus_Reserved = 2;
+}
+
+enum VehicleBody_EpsapStatus 
+{
+    VehicleBody_EpsapStatus_TemporaryInhibited = 0;
+    VehicleBody_EpsapStatus_AvailableForControl = 1;
+    VehicleBody_EpsapStatus_Active = 2;
+    VehicleBody_EpsapStatus_PermanentInhibited = 3;
+    VehicleBody_EpsapStatus_Reserved = 4;
+}
+
+enum VehicleBody_ApcFailCtrStatus 
+{
+    VehicleBody_ApcFailCtrStatus_AxCapblFull = 0;
+    VehicleBody_ApcFailCtrStatus_UnexpectedGear = 1;
+    VehicleBody_ApcFailCtrStatus_AxCapblVehBlocked = 2;
+    VehicleBody_ApcFailCtrStatus_EpbTimeOutOverride = 3;
+    VehicleBody_ApcFailCtrStatus_Reserved = 4;
+}
+
+enum VehicleBody_ScuStatus 
+{
+    VehicleBody_ScuStatus_Normal = 0;
+    VehicleBody_ScuStatus_Abnormal = 1;
+    VehicleBody_ScuStatus_Reserved = 2;
+}
+
+enum VehicleBody_BleFaultStatus 
+{
+    VehicleBody_BleFaultStatus_NoError = 0;
+    VehicleBody_BleFaultStatus_Error = 1;
+    VehicleBody_BleFaultStatus_Reserved = 2;
+}
+
+enum VehicleBody_AltitudeStatus 
+{
+    VehicleBody_AltitudeStatus_Normal = 0;
+    VehicleBody_AltitudeStatus_Failure = 1;
+    VehicleBody_AltitudeStatus_Reserved = 2;
+}
+
+enum VehicleBody_PadAvmStatus 
+{
+    VehicleBody_PadAvmStatus_Normal = 0;
+    VehicleBody_PadAvmStatus_CalibrationFail = 1;
+    VehicleBody_PadAvmStatus_NoImage = 2;
+    VehicleBody_PadAvmStatus_Reserved = 3;
+}
+
+enum VehicleBody_ReadyIndicatLight 
+{
+    VehicleBody_ReadyIndicatLight_DoNotDisplay = 0;
+    VehicleBody_ReadyIndicatLight_Display = 1;
+    VehicleBody_ReadyIndicatLight_Reserved = 2;
+}
+
+enum VehicleBody_BmcChargeStatus 
+{
+    VehicleBody_BmcChargeStatus_NotConnected = 0;
+    VehicleBody_BmcChargeStatus_AcChargingGunConnection = 1;
+    VehicleBody_BmcChargeStatus_DcChargingGunConnection = 2;
+    VehicleBody_BmcChargeStatus_AcChargingGunAndDcChargingGunConnectedAtTheSameTime = 3;
+    VehicleBody_BmcChargeStatus_VtolDischargeGunConnection = 4;
+    VehicleBody_BmcChargeStatus_ObcccConnection = 5;
+    VehicleBody_BmcChargeStatus_ChargingCompleted = 6;
+    VehicleBody_BmcChargeStatus_ChargingMalfunction = 7;
+    VehicleBody_BmcChargeStatus_WirelessCharging = 8;
+    VehicleBody_BmcChargeStatus_Reserved = 9;
+}
+
+enum VehicleBody_EpsInterferdetd 
+{
+    VehicleBody_EpsInterferdetd_NoInterruption = 0;
+    VehicleBody_EpsInterferdetd_DriverInterruption = 1;
+    VehicleBody_EpsInterferdetd_EpsTemporaryError = 2;
+    VehicleBody_EpsInterferdetd_EpsPermanentError = 3;
+    VehicleBody_EpsInterferdetd_ApaSingleAbsentReserved = 4;
+    VehicleBody_EpsInterferdetd_ApaTargetAngleOverLimit = 5;
+    VehicleBody_EpsInterferdetd_ApaTargetAngleVelocityOverLimit = 6;
+    VehicleBody_EpsInterferdetd_ApaSignalError = 7;
+    VehicleBody_EpsInterferdetd_VehicleSpeedOverLimit = 8;
+    VehicleBody_EpsInterferdetd_VehicleSpeedSignalError = 9;
+    VehicleBody_EpsInterferdetd_VehicleSpeedSignalAbsentReserved = 10;
+    VehicleBody_EpsInterferdetd_TasAngleError = 11;
+    VehicleBody_EpsInterferdetd_IncorrectHandshaking = 12;
+    VehicleBody_EpsInterferdetd_OverAngleMaxValue = 13;
+    VehicleBody_EpsInterferdetd_OverAngleVelocity = 14;
+    VehicleBody_EpsInterferdetd_Reserved = 15;
+}
+
+enum VehicleBody_VcuInterferdetd 
+{
+    VehicleBody_VcuInterferdetd_NoInterruption = 0;
+    VehicleBody_VcuInterferdetd_DriverInterruption = 1;
+    VehicleBody_VcuInterferdetd_Reserved = 2;
+}
+
+enum VehicleBody_EspStatus 
+{
+    VehicleBody_EspStatus_Normal = 0;
+    VehicleBody_EspStatus_Abnormal = 1;
+    VehicleBody_EspStatus_Reserved = 2;
+}
+
+enum VehicleBody_SuspHeightAdjustProc 
+{
+    VehicleBody_SuspHeightAdjustProc_Invalid = 0;
+    VehicleBody_SuspHeightAdjustProc_TheBodyIsRising = 1;
+    VehicleBody_SuspHeightAdjustProc_TheBodyIsFalling = 2;
+    VehicleBody_SuspHeightAdjustProc_AdjustmentCompleted = 3;
+    VehicleBody_SuspHeightAdjustProc_AdjustmentInterrupt = 4;
+    VehicleBody_SuspHeightAdjustProc_Reserved = 5;
+}
+
+enum VehicleBody_VcuGoalRoadMode 
+{
+    VehicleBody_VcuGoalRoadMode_Invalid = 0;
+    VehicleBody_VcuGoalRoadMode_NormalMode = 1;
+    VehicleBody_VcuGoalRoadMode_GrassGravelGroundSnow = 2;
+    VehicleBody_VcuGoalRoadMode_MuddyGroundRutGround = 3;
+    VehicleBody_VcuGoalRoadMode_Sand = 4;
+    VehicleBody_VcuGoalRoadMode_Reserved = 5;
+}
+
+enum VehicleBody_SrsCollSignal 
+{
+    VehicleBody_SrsCollSignal_TheVehicleIsNormal = 0;
+    VehicleBody_SrsCollSignal_TheVehicleCollides = 1;
+    VehicleBody_SrsCollSignal_Reserved = 2;
+}
+
+enum VehicleBody_Active 
+{
+    VehicleBody_Active_NoActive = 0;
+    VehicleBody_Active_Active = 1;
+    VehicleBody_Active_Reserved = 2;
+}
+
+enum VehicleBody_TarSuspHeightMode 
+{
+    VehicleBody_TarSuspHeightMode_Low = 0;
+    VehicleBody_TarSuspHeightMode_Normal = 1;
+    VehicleBody_TarSuspHeightMode_High = 2;
+    VehicleBody_TarSuspHeightMode_ExHigh = 3;
+    VehicleBody_TarSuspHeightMode_ExtraLow = 4;
+    VehicleBody_TarSuspHeightMode_Reserved = 5;
+}
+
+enum VehicleBody_ScuDrvrIntrvnActive 
+{
+    VehicleBody_ScuDrvrIntrvnActive_NoPperationIsNotControlled = 0;
+    VehicleBody_ScuDrvrIntrvnActive_NormalOperationNormalControl = 1;
+    VehicleBody_ScuDrvrIntrvnActive_DriverGearInterferenceDriverInterferenceGearControl = 2;
+    VehicleBody_ScuDrvrIntrvnActive_Reserved = 3;
+}
+
+enum VehicleBody_PadParkMode 
+{
+    VehicleBody_PadParkMode_Idle = 0;
+    VehicleBody_PadParkMode_ParkIn = 1;
+    VehicleBody_PadParkMode_ParkOut = 2;
+    VehicleBody_PadParkMode_Selected = 3;
+    VehicleBody_PadParkMode_Reserved = 4;
+}
+
+enum VehicleBody_PadPslSelected 
+{
+    VehicleBody_PadPslSelected_None = 0;
+    VehicleBody_PadPslSelected_Number1 = 1;
+    VehicleBody_PadPslSelected_Number2 = 2;
+    VehicleBody_PadPslSelected_Number3 = 3;
+    VehicleBody_PadPslSelected_Number4 = 4;
+    VehicleBody_PadPslSelected_Number5 = 5;
+    VehicleBody_PadPslSelected_Number6 = 6;
+    VehicleBody_PadPslSelected_Number7 = 7;
+    VehicleBody_PadPslSelected_Number8 = 8;
+}
+
+enum VehicleBody_SelectParkOutDir 
+{
+    VehicleBody_SelectParkOutDir_None = 0;
+    VehicleBody_SelectParkOutDir_FrontLeftCross = 1;
+    VehicleBody_SelectParkOutDir_FrontLeftParallel = 2;
+    VehicleBody_SelectParkOutDir_FrontOut = 3;
+    VehicleBody_SelectParkOutDir_FrontRightCross = 4;
+    VehicleBody_SelectParkOutDir_FrontRightParallel = 5;
+    VehicleBody_SelectParkOutDir_BackOut = 6;
+    VehicleBody_SelectParkOutDir_BackLeftCross = 7;
+    VehicleBody_SelectParkOutDir_BackRightCross = 8;
+    VehicleBody_SelectParkOutDir_Reserved = 9;
+}
+
+enum VehicleBody_Request 
+{
+    VehicleBody_Request_NoRequest = 0;
+    VehicleBody_Request_Request = 1;
+    VehicleBody_Request_Reserved = 2;
+}
+
+enum VehicleBody_PadAppStatus 
+{
+    VehicleBody_PadAppStatus_Normal = 0;
+    VehicleBody_PadAppStatus_PadFault = 1;
+    VehicleBody_PadAppStatus_AppFault = 2;
+    VehicleBody_PadAppStatus_AppConnectFault = 3;
+    VehicleBody_PadAppStatus_Reserved = 4;
+}
+
+enum VehicleBody_ApaMode 
+{
+    VehicleBody_ApaMode_Invalid = 0;
+    VehicleBody_ApaMode_EnterAutomaticParkingMode = 1;
+    VehicleBody_ApaMode_ExitAutomaticParkingMode = 2;
+    VehicleBody_ApaMode_Reserved = 3;
+}
+
+enum VehicleBody_RemoteModeStatus 
+{
+    VehicleBody_RemoteModeStatus_Invalid = 0;
+    VehicleBody_RemoteModeStatus_Closed = 1;
+    VehicleBody_RemoteModeStatus_Open = 2;
+    VehicleBody_RemoteModeStatus_Reserved = 3;
+}
+
+enum VehicleBody_PrkgSlidRmt 
+{
+    VehicleBody_PrkgSlidRmt_RdNotReady = 0;
+    VehicleBody_PrkgSlidRmt_RdReady = 1;
+    VehicleBody_PrkgSlidRmt_Reserved = 2;
+}
+
+enum VehicleBody_WheelHubParam 
+{
+    VehicleBody_WheelHubParam_Inch20 = 0;
+    VehicleBody_WheelHubParam_Inch19 = 1;
+    VehicleBody_WheelHubParam_Reserved = 2;
+}
+
+enum VehicleBody_GearPos 
+{
+    VehicleBody_GearPos_N = 0;
+    VehicleBody_GearPos_D1 = 1;
+    VehicleBody_GearPos_D2 = 2;
+    VehicleBody_GearPos_D3 = 3;
+    VehicleBody_GearPos_D4 = 4;
+    VehicleBody_GearPos_D5 = 5;
+    VehicleBody_GearPos_D6 = 6;
+    VehicleBody_GearPos_D7 = 7;
+    VehicleBody_GearPos_D8 = 8;
+    VehicleBody_GearPos_D9 = 9;
+    VehicleBody_GearPos_D10 = 10;
+    VehicleBody_GearPos_D11 = 11;
+    VehicleBody_GearPos_D12 = 12;
+    VehicleBody_GearPos_R = 13;
+    VehicleBody_GearPos_P = 14;
+    VehicleBody_GearPos_Reserved = 15;
+}
+
+enum VehicleBody_PadParkingStatus 
+{
+    VehicleBody_PadParkingStatus_Normal = 0;
+    VehicleBody_PadParkingStatus_CalibrationFail = 1;
+    VehicleBody_PadParkingStatus_NoImage = 2;
+    VehicleBody_PadParkingStatus_Reserved = 3;
+}
+
+enum VehicleBody_TurnLightStatus 
+{
+    VehicleBody_TurnLightStatus_Close = 0;
+    VehicleBody_TurnLightStatus_TurnLeft = 1;
+    VehicleBody_TurnLightStatus_TurnRight = 2;
+    VehicleBody_TurnLightStatus_Both = 3;
+}
+
+enum VehicleBody_VcuBpStatus 
+{
+    VehicleBody_VcuBpStatus_VcuBpNotReady = 0;
+    VehicleBody_VcuBpStatus_VcuBpReady = 1;
+    VehicleBody_VcuBpStatus_Reserved = 2;
+}
+
+enum VehicleBody_DispSpdUnitType 
+{
+    VehicleBody_DispSpdUnitType_Init = 0;
+    VehicleBody_DispSpdUnitType_Km = 1;
+    VehicleBody_DispSpdUnitType_Mile = 2;
+    VehicleBody_DispSpdUnitType_Invalid = 3;
+    VehicleBody_DispSpdUnitType_Reserved = 4;
+}
+
+message VehicleBody_VehiclePadParking
+{
+    VehicleBody_BleConnStatus ble_conn_sts = 1;
+    VehicleBody_PadParkingStatus pad_parking_sts = 2;
+    VehicleBody_PadParkMode pad_apa_park_mode_state = 3;
+    VehicleBody_PadParkMode pad_rpa_park_mode_state = 4;
+    VehicleBody_PadPslSelected pad_psl_selected = 5;
+    VehicleBody_SelectParkOutDir sel_prkg_out_dir_req = 6;
+    VehicleBody_Request pad_park_instart_req = 7;
+    VehicleBody_Request pad_parkout_start_req = 8;
+    VehicleBody_Request pad_pause_req = 9;
+    VehicleBody_Request contn_prkg_req = 10;
+    VehicleBody_Request pad_confirm_req = 11;
+    VehicleBody_PadAppStatus pad_app_sts = 12;
+    VehicleBody_ApaMode apa_mode = 13;
+    VehicleBody_RemoteModeStatus remote_mode_sts = 14;
+    VehicleBody_SelectParkOutDir prkout_mode_sel_rmt = 15;
+    VehicleBody_Request park_abort_req_rmt = 16;
+    sint32 x_cordofoptsp = 17;
+    sint32 y_cordofoptsp = 18;
+    sint32 opt_park_ang = 19;
+    VehicleBody_PrkgSlidRmt prkg_slid_req_rmt = 20;
+    VehicleBody_Request prkg_sync_strt_req_rmt = 21;
+}
+
+message VehicleBody_VehiclePadDriving
+{
+    bool BCM_AEBSMainSwitch = 1;
+    bool BCM_BackTrunkStatus = 2;
+    bool BCM_FrontHoodStatus = 3;
+    bool BCM_BrakeLightStatus = 4;
+    bool BCM_FrontFrogLight = 5;
+    bool BCM_RearFrogLight = 6;
+    bool BCM_FCWSMainSwitch = 7;
+    uint32 BCM_FCWSensiLevel = 8;
+    uint32 LDWSensiSet = 9;
+    bool BCM_LKASMainSwitch = 10;
+    bool BCM_LDWSMainSwitch = 11;
+    bool BCM_LCASMainSwitch = 12;
+    bool BCM_LCCS_MainSwitch = 13;
+    bool BCM_ELK_MainSwitch = 14;
+    bool BCM_BSDSMainSwitch = 15;
+    bool BCM_RCTAMainSwtich = 16;
+    bool BCM_FCTAMainSwitch = 17;
+    bool BCM_DOWSMainSwitch = 18;
+    bool BCM_RCW_MainSwitch = 19;
+    bool BCM_IHC_MainSwitch = 20;
+    bool TSR_MainSwitch = 21;
+    bool BCM_ALC_MainSwitch = 22;
+    bool BCM_NOP_MainSwitch = 23;
+    bool BCM_ALC_ReqDrvConfirmSWSet = 24;
+    uint32 BCM_CruiseModeSwSet = 25;
+    bool BCM_CruiseSwValid = 26;
+    bool BCM_CruiseSwCancel = 27;
+    bool BCM_CruiseSwResume = 28;
+    bool BCM_CruiseSwSet = 29;
+    bool BCM_CruiseSwTimeGapPlus = 30;
+    bool BCM_CruiseSwTimeGapMinus = 31;
+    bool BCM_CruiseSwMain = 32;
+    bool BCM_CruiseSwLimitMain = 33;
+    bool BCM_ALC_DrvConfirmButtonSt = 34;
+    uint32 BCM_DriveMode = 35;
+    bool BCM_PositionLight = 36;
+    bool esp_raeb_available = 37;
+    bool esp_raeb_active = 38;
+    uint32 bcm_raeb_switch = 39;
+    uint32 esp_vdc_fault_sts = 40;
+    uint32 bcm_usage_mode = 41;
+    bool bcm_kl15_sts = 42;
+    uint32 bcm_veh_mode_sts = 43;
+    uint32 bcm_supply_voltage_fault_sts = 44;
+}
+
+message VehicleBody_VehicleBody
+{
+    VehicleBody_PowerMode power_mode = 1;
+    VehicleBody_DoorStatus fl_door_sts = 2;
+    VehicleBody_DoorStatus fr_door_sts = 3;
+    VehicleBody_DoorStatus rl_door_sts = 4;
+    VehicleBody_DoorStatus rr_door_sts = 5;
+    VehicleBody_DoorStatus hood_ajar_sts = 6;
+    VehicleBody_DoorStatus trunk_sts = 7;
+    VehicleBody_MirrorStatus rview_mirror_sts = 8;
+    VehicleBody_VehicleStandstillStatus veh_standstill_sts = 9;
+    VehicleBody_DriverBuckleStatus driver_buckle_sts = 10;
+    VehicleBody_EpsepbCtrActive espepb_ctr_active = 11;
+    VehicleBody_EpsapStatus epsap_sts = 12;
+    VehicleBody_ApcFailCtrStatus apc_fail_ctr_sts = 13;
+    VehicleBody_ScuStatus scu_avlbly = 14;
+    VehicleBody_BleFaultStatus ble_fault_sts = 15;
+    VehicleBody_AltitudeStatus altitude_uncalibrated = 16;
+    VehicleBody_ReadyIndicatLight dyvcu_ready_indicat_light = 17;
+    VehicleBody_BmcChargeStatus bmc_charge_guncon_sts = 18;
+    VehicleBody_EpsInterferdetd epsinterferdetd = 19;
+    VehicleBody_Valid esp_system_valid = 20;
+    VehicleBody_Valid eps_system_valid = 21;
+    VehicleBody_Valid vcu_system_valid = 22;
+    VehicleBody_Valid powertrain_control_system_valid = 23;
+    VehicleBody_Valid vehicle_body_system_valid = 24;
+    float acc_pedal_position = 25;
+    VehicleBody_Valid acc_pedal_position_valid = 26;
+    VehicleBody_SuspHeightAdjustProc susp_height_adjust_proc = 27;
+    VehicleBody_VcuGoalRoadMode vcu_goal_road_mode = 28;
+    VehicleBody_SrsCollSignal srs_coll_signal = 29;
+    VehicleBody_Active abs_actv = 30;
+    VehicleBody_Active ptc_actv = 31;
+    VehicleBody_Active esp_actv = 32;
+    VehicleBody_Active ebd_actv = 33;
+    VehicleBody_Active vdc_actv = 34;
+    VehicleBody_Active suspension_config = 35;
+    VehicleBody_TarSuspHeightMode tar_susp_height_mode = 36;
+    VehicleBody_ScuDrvrIntrvnActive scu_drvr_intrvn_active = 37;
+    VehicleBody_WheelHubParam wheel_hub_para = 38;
+    bool BCM_AutoLighStatus = 39;
+    bool BCM_LowBeamSwitch = 40;
+    bool BCM_HighBeamSwitch = 41;
+    bool BCM_LeftTurningLightState = 42;
+    bool BCM_RightTurningLightState = 43;
+    bool BCM_WiperSwitch = 44;
+    uint32 BCM_WiperStatus = 45;
+    float BCM_display_speed = 46;
+    float BCM_Vf_km_ODO = 47;
+    float PCU_EngineTrqLmtMax = 48;
+    float PCU_EngineTrqLmtMin = 49;
+    float PCU_EngineSpeed = 50;
+    float PCU_DriverDemandTorque = 51;
+    float PCU_ActualEngineTorque = 52;
+    float PCU_ActualAccelPedalPosition = 53;
+    VehicleBody_Valid PCU_AccelPedalValid = 54;
+    bool PCU_AccelPedalOverride = 55;
+    uint32 PCU_StartStopStatus = 56;
+    bool PCU_PowerControlResponse = 57;
+    VehicleBody_GearPos actual_gear_position = 58;
+    VehicleBody_GearPos target_gear_position = 59;
+    bool TCU_Shift_InProgress = 60;
+    bool EPS_SteeringControlResponse = 61;
+    float steering_wheel_torque = 62;
+    float brake_mas_cyl_pressure = 63;
+    bool esp_tcs_active = 64;
+    bool pcu_acc_available = 65;
+    bool pcu_acc_active = 66;
+    bool esp_driver_override = 67;
+    bool esp_hands_off_error = 68;
+    bool esp_driver_hands_off = 69;
+    bool esp_available = 70;
+    VehicleBody_VcuInterferdetd vcu_interferdetd = 71;
+    bool parking_slope_limit = 72;
+    VehicleBody_EspStatus esp_status = 73;
+    VehicleBody_TurnLightStatus turn_light = 74;
+    VehicleBody_VcuBpStatus vcu_bp_ready_flg = 75;
+    VehicleBody_Valid BCM_display_speed_valid = 76;
+    VehicleBody_DispSpdUnitType disp_spd_unit_type = 77;
+    VehicleBody_Active avh_actv = 78;
+    VehicleBody_Active front_seat_sts = 79;
+    bool BCM_HazardFlasingStatus = 80;
+    bool BCM_CrashStatus = 81;
+    bool DayNightStatus = 82;
+    uint32 power_bat_soc = 83;
+}
+
+message VehicleBodyMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    VehicleBody_VehiclePadParking vehicle_parking = 2;
+    VehicleBody_VehiclePadDriving vehicle_driving = 3;
+    VehicleBody_VehicleBody vehicle_body = 4;
+}
+

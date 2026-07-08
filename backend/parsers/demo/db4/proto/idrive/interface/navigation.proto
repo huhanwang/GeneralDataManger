@@ -1,0 +1,91 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Navigation_LaneTurnType 
+{
+    Navigation_LaneTurnType_UNKNOWN = 0;
+    Navigation_LaneTurnType_ONLY_FORWARD = 1;
+    Navigation_LaneTurnType_ONLY_LEFT_TURN = 2;
+    Navigation_LaneTurnType_ONLY_RIGHT_TURN = 3;
+    Navigation_LaneTurnType_FORWARD_LEFT_TURN = 4;
+    Navigation_LaneTurnType_FORWARD_RIGHT_TURN = 5;
+    Navigation_LaneTurnType_LEFT_RIGHT_TURN = 6;
+    Navigation_LaneTurnType_U_TURN = 7;
+    Navigation_LaneTurnType_NO_U_TURN = 8;
+    Navigation_LaneTurnType_NO_LEFT_TURN = 9;
+    Navigation_LaneTurnType_NO_RIGHT_TURN = 10;
+    Navigation_LaneTurnType_NO_LEFT_RIGHT_TURN = 11;
+    Navigation_LaneTurnType_FORWARD_LEFT_RIGHT_TURN = 12;
+    Navigation_LaneTurnType_LEFT_U_TURN = 13;
+    Navigation_LaneTurnType_FORWARD_U_TURN = 14;
+}
+
+enum Navigation_RoutingAction 
+{
+    Navigation_RoutingAction_UNKNOWN = 0;
+    Navigation_RoutingAction_TURN_LEFT = 1;
+    Navigation_RoutingAction_TURN_RIGHT = 2;
+    Navigation_RoutingAction_LEFT_FRONT = 3;
+    Navigation_RoutingAction_RIGHT_FRONT = 4;
+    Navigation_RoutingAction_LEFT_TURN_AROUND = 5;
+    Navigation_RoutingAction_STRAIGHT = 6;
+    Navigation_RoutingAction_LEFT_BACK = 7;
+    Navigation_RoutingAction_RIGHT_BACK = 8;
+    Navigation_RoutingAction_ARRIVED_WAYPOINT = 9;
+    Navigation_RoutingAction_ENTER_ROUNDABOUT = 10;
+    Navigation_RoutingAction_EXIT_ROUNDABOUT = 11;
+    Navigation_RoutingAction_ARRIVED_SERVICE_AREA = 12;
+    Navigation_RoutingAction_ARRIVED_TOLLGATE = 13;
+    Navigation_RoutingAction_ARRIVED_DESTINATION = 14;
+    Navigation_RoutingAction_ARRIVED_TUNNEL = 15;
+    Navigation_RoutingAction_SPECIAL_CONTINUE = 16;
+    Navigation_RoutingAction_U_TURN_RIGHT = 17;
+}
+
+enum Navigation_LaneType 
+{
+    Navigation_LaneType_UNKNOWN = 0;
+    Navigation_LaneType_NORMAL = 1;
+    Navigation_LaneType_ENTRY = 2;
+    Navigation_LaneType_EXIT = 3;
+    Navigation_LaneType_AUXILIARY = 4;
+    Navigation_LaneType_EMERGENCY = 5;
+    Navigation_LaneType_RESTRICTED_FORBIDDEN = 6;
+    Navigation_LaneType_RESTRICTED_USABLE = 7;
+    Navigation_LaneType_HOV = 8;
+    Navigation_LaneType_EXPRESS = 9;
+    Navigation_LaneType_REVERSIBLE = 10;
+    Navigation_LaneType_SLOW = 11;
+    Navigation_LaneType_DRIVABLE_SHOULDER = 12;
+    Navigation_LaneType_TURN_OR_SUICIDE = 13;
+    Navigation_LaneType_CONNECT_RAMP = 14;
+}
+
+message Navigation_NavigationLane
+{
+    repeated Navigation_LaneTurnType background_lanes = 1;
+    repeated Navigation_LaneTurnType front_lanes = 2;
+    uint32 num_lanes = 3;
+}
+
+message Navigation_Routing
+{
+    Navigation_RoutingAction action = 1;
+    Navigation_LaneType target_lane_type = 2;
+    bool is_next_target_junction = 3;
+    uint32 target_speed_limit = 4;
+    uint32 current_speed_limit = 5;
+    sint32 target_lane_id = 6;
+    uint32 time_to_destination = 7;
+    float distance_to_next_target = 8;
+    float distance_to_destination = 9;
+}
+
+message NavigationMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Navigation_Routing routing = 2;
+    Navigation_NavigationLane navigation_lane = 3;
+}
+

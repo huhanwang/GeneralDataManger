@@ -1,0 +1,222 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+message AlgDebugAeb_PathEstimateSeg
+{
+    float p0_lgt = 1;
+    float p0_lat = 2;
+    float p1_lgt = 3;
+    float p1_lat = 4;
+    float p2_lgt = 5;
+    float p2_lat = 6;
+    float p3_lgt = 7;
+    float p3_lat = 8;
+}
+
+message AlgDebugAeb_AlgDebugAEBInfo
+{
+    uint32 aeb_state = 1;
+    uint32 aeb_brake_state = 2;
+    uint32 aeb_hba_level = 3;
+    uint32 aeb_fault_reason = 5;
+    uint32 EBALevel = 6;
+    uint32 aeb_debug_reserved1 = 7;
+    uint32 aeb_debug_reserved2 = 8;
+    bool aeb_brk_request_fb = 9;
+    bool aeb_brk_request_pb = 10;
+    bool aeb_eba_request = 11;
+    bool aeb_prefill_request = 12;
+    bool aeb_hold_request = 13;
+    bool aeb_epb_request = 14;
+    bool aeb_hba_request = 15;
+    bool fullbrake_threat = 16;
+    bool prebrake_threat = 17;
+    bool prefill_threat = 18;
+    bool eba_threat = 19;
+    bool hba_threat = 20;
+    bool ugly_prim_tar_aeb = 21;
+    bool steer_threat_fb = 22;
+    bool steer_threat_pb = 23;
+    bool aeb_debug_reserved5 = 24;
+    bool aeb_debug_reserved6 = 25;
+    uint32 aeb_target_id = 4;
+    uint32 aeb_unavailable_reason = 26;
+    uint32 aeb_quit_reason = 27;
+    uint32 aeb_suppression_reason = 28;
+    uint32 aeb_kickdown_reason = 29;
+    uint32 obj_conf_flag_aeb = 30;
+    uint32 obj_fcw_conf_flag_aeb = 31;
+    float aeb_requested_acc = 32;
+    float eba_requested_acc = 33;
+    float aeb_target_ttc = 34;
+    float aeb_target_ttc_thd = 35;
+    float jerk_lgt_neg_req = 36;
+    float rel_lgt_posion = 37;
+    float a_lat_req_aeb = 38;
+    float a_lgt_pos_req = 39;
+    float a_lgt_neg_req = 40;
+    float a_lgt_neg_req_fb_thd = 41;
+    float a_lgt_neg_req_pb_thd = 42;
+    float crvt_rate_left_req = 43;
+    float crvt_rate_right_req = 44;
+    float crvt_left_req = 45;
+    float crvt_right_req = 46;
+    float confirm_time_fb = 47;
+    float confirm_time_fb_thd = 48;
+    float confirm_time_pb = 49;
+    float confirm_time_pb_thd = 50;
+    float confirm_time_eba = 51;
+    float confirm_time_eba_thd = 52;
+    float aeb_debug_reserved3 = 53;
+    float aeb_debug_reserved4 = 54;
+}
+
+message AlgDebugAeb_AlgDebugFCWInfo
+{
+    uint32 fcw_state = 1;
+    uint32 fcw_warning_level = 2;
+    uint32 fcw_sensitivity = 3;
+    uint32 fcw_awb_level = 4;
+    uint32 fcw_fault_reason = 6;
+    uint32 fcw_debug_reserved1 = 7;
+    uint32 fcw_debug_reserved2 = 8;
+    bool fcw_warn_request = 9;
+    bool lw_warn_request = 10;
+    bool fcw_awb_request = 11;
+    bool prewarn_threat = 12;
+    bool latentwarn_threat = 13;
+    bool awb_threat = 14;
+    bool ugly_prim_tar_fcw = 15;
+    bool steer_threat = 16;
+    bool a_lat_threat = 17;
+    bool fcw_debug_reserved5 = 18;
+    bool fcw_debug_reserved6 = 19;
+    uint32 fcw_target_id = 5;
+    uint32 fcw_unavailable_reason = 20;
+    uint32 fcw_quit_reason = 21;
+    uint32 fcw_suppression_reason = 22;
+    uint32 fcw_kickdown_reason = 23;
+    uint32 obj_conf_flag_fcw = 24;
+    uint32 obj_fcw_conf_flag_fcw = 25;
+    float fcw_target_ttc = 26;
+    float fcw_target_ttc_thd1 = 27;
+    float fcw_target_ttc_thd2 = 28;
+    float a_lat_req_fcw = 29;
+    float a_neg_lgt_warn_fcw = 30;
+    float a_neg_lgt_intv_fcw = 31;
+    float confirm_time_fcw = 32;
+    float confirm_time_fcw_thd = 33;
+    float fcw_debug_reserved3 = 34;
+    float fcw_debug_reserved4 = 35;
+}
+
+message AlgDebugAeb_AlgDebugAEBEgoInfo
+{
+    uint32 motion_mode = 1;
+    uint32 motion_direction = 2;
+    uint32 Ego_debug_reserved1 = 3;
+    uint32 Ego_debug_reserved2 = 4;
+    bool narrow_road_edge_flag = 5;
+    bool use_road_path = 6;
+    bool Ego_debug_reserved5 = 7;
+    bool Ego_debug_reserved6 = 8;
+    uint32 driver_mode = 9;
+    uint32 driver_action_event = 10;
+    uint32 driver_trans_mode = 11;
+    repeated AlgDebugAeb_PathEstimateSeg path_estimate = 12;
+    float driver_scenarios_value = 13;
+    float driver_reation_time_aeb = 14;
+    float driver_reation_time_fcw = 15;
+    float ego_curvature = 16;
+    float ego_curvature_rate = 17;
+    float ego_CurvRadius = 18;
+    float ego_speed = 19;
+    float ego_v_lgt = 20;
+    float ego_v_lat = 21;
+    float ego_acc_x = 22;
+    float accx_by_difv = 23;
+    float ego_acc_y = 24;
+    float yawrate_filtered = 25;
+    float driver_decel_req = 26;
+    float a_lat_abs_cmft = 27;
+    float a_lat_abs_max = 28;
+    float a_lgt_neg_cmft = 29;
+    float a_lgt_neg_measd = 30;
+    float a_lgt_neg_min = 31;
+    float a_lgt_pos_cmft = 32;
+    float a_lgt_pos_max = 33;
+    float crvt_abs_cmft = 34;
+    float crvt_abs_max = 35;
+    float crvt_rate_abs_cmft = 36;
+    float crvt_rate_abs_max = 37;
+    float jerk_lat_abs_cmft = 38;
+    float jerk_lat_abs_max = 39;
+    float jerk_lgt_neg_cmft = 40;
+    float jerk_lgt_neg_measd = 41;
+    float jerk_lgt_neg_min = 42;
+    float jerk_lgt_pos_cmft = 43;
+    float jerk_lgt_pos_max = 44;
+    float Ego_debug_reserved3 = 45;
+    float Ego_debug_reserved4 = 46;
+}
+
+message AlgDebugAeb_AlgDebugAEBObstacle
+{
+    uint32 obs_scene = 2;
+    uint32 fct_scene_type = 3;
+    uint32 motion_type = 4;
+    uint32 type = 5;
+    uint32 sub_type = 6;
+    uint32 side_near = 7;
+    uint32 pos_type = 8;
+    uint32 select_in_path = 9;
+    uint32 possible_manoeuvres = 10;
+    uint32 OBJ_debug_reserved1 = 11;
+    uint32 OBJ_debug_reserved2 = 12;
+    bool use_predict_long = 13;
+    bool use_predict_short = 14;
+    bool inpath_predict_long = 15;
+    bool inpath_predict_short = 16;
+    bool inpath_current_long = 17;
+    bool inpath_current_short = 18;
+    bool use_strict_inpath_short = 19;
+    bool use_strict_inpath_long = 20;
+    bool inpath_pred_ttm_valid = 21;
+    bool inpath_pred_ttr_valid = 22;
+    bool OBJ_debug_reserved5 = 23;
+    bool OBJ_debug_reserved6 = 24;
+    uint32 id = 1;
+    float curvature = 25;
+    float curvature_radius = 26;
+    float box_length = 27;
+    float box_width = 28;
+    float nearside_pos_x = 29;
+    float nearside_pos_y = 30;
+    float s_gap = 31;
+    float l_gap = 32;
+    float overlap = 33;
+    float ttc = 34;
+    float a_lat_req = 35;
+    float a_lgt_req = 36;
+    float OBJ_debug_reserved3 = 37;
+    float OBJ_debug_reserved4 = 38;
+}
+
+message AlgDebugAeb_AlgDebugAEB
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    AlgDebugAeb_AlgDebugAEBInfo aeb_info = 3;
+    AlgDebugAeb_AlgDebugFCWInfo fcw_info = 4;
+    AlgDebugAeb_AlgDebugAEBEgoInfo ego_info = 5;
+    repeated AlgDebugAeb_AlgDebugAEBObstacle obstacles = 6;
+}
+
+message AlgDebugAebMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugAeb_AlgDebugAEB alg_debug_aeb = 2;
+}
+

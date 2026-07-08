@@ -1,0 +1,43 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message SystemInfo_CpuInfo
+{
+    float total_cpu = 1;
+    float usr_cpu = 2;
+    float sys_cpu = 3;
+    float iowait_cpu = 4;
+}
+
+message SystemInfo_MemInfo
+{
+    uint32 total_mem = 1;
+    uint32 free_mem = 2;
+    uint32 used_mem = 3;
+    uint32 cached_mem = 4;
+    float mem_used_percent = 5;
+}
+
+message SystemInfo_ProcessInfo
+{
+    string process_name = 1;
+    uint32 pid = 2;
+    float cpu_occupy = 3;
+    float mem_occupy = 4;
+    float io_read_speed = 5;
+    float total_io_read = 6;
+    float io_write_speed = 7;
+    float total_io_write = 8;
+    uint32 num_process_name = 9;
+}
+
+message SystemInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    SystemInfo_CpuInfo cpu_info = 2;
+    SystemInfo_MemInfo mem_info = 3;
+    uint32 num_process_info = 4;
+    repeated SystemInfo_ProcessInfo process_info = 5;
+}
+

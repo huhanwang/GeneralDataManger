@@ -1,0 +1,173 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Map_KeyPointType
+{
+    Map_KeyPointType_UNKNOWN = 0;
+    Map_KeyPointType_SPLIT_UNKNOWN = 1;
+    Map_KeyPointType_Y_SPLIT_TO_LEFT = 2;
+    Map_KeyPointType_Y_SPLIT_TO_RIGHT = 3;
+    Map_KeyPointType_SPLIT_CONTINUATION_ON_LEFT = 4;
+    Map_KeyPointType_SPLIT_CONTINUATION_ON_RIGHT = 5;
+    Map_KeyPointType_SPLIT_NON_CONTINUATION_ON_LEFT = 6;
+    Map_KeyPointType_SPLIT_NON_CONTINUATION_ON_RIGHT = 7;
+    Map_KeyPointType_MERGE_UNKNOWN = 8;
+    Map_KeyPointType_MERGE_FROM_LEFT = 9;
+    Map_KeyPointType_MERGE_FROM_RIGHT = 10;
+    Map_KeyPointType_MERGE_CONTINUATION_ON_LEFT = 11;
+    Map_KeyPointType_MERGE_CONTINUATION_ON_RIGHT = 12;
+    Map_KeyPointType_Y_MERGE_FROM_LEFT = 13;
+    Map_KeyPointType_Y_MERGE_FROM_RIGHT = 14;
+    Map_KeyPointType_ENTRANCE_UNKNOWN = 15;
+    Map_KeyPointType_ENTRANCE_CONTINUATION_ON_RIGHT = 16;
+    Map_KeyPointType_ENTRANCE_MERGE_FROM_LEFT = 17;
+    Map_KeyPointType_ENTRANCE_MERGE_FROM_RIGHT = 18;
+    Map_KeyPointType_ENTRANCE_CONTINUATION_ON_LEFT = 19;
+    Map_KeyPointType_ENTRANCE_NON_MERGE_TO_RIGHT = 20;
+    Map_KeyPointType_ENTRANCE_NON_MERGE_ON_RIGHT = 21;
+    Map_KeyPointType_ENTRANCE_NON_MERGE_ON_LEFT = 22;
+    Map_KeyPointType_ENTRANCE_NON_MERGE_TO_LEFT = 23;
+    Map_KeyPointType_EXIT_UNKNOWN = 24;
+    Map_KeyPointType_EXIT_TO_RIGHT = 25;
+    Map_KeyPointType_EXIT_TO_LEFT = 26;
+    Map_KeyPointType_EXIT_CONTINUATION_ON_LEFT = 27;
+    Map_KeyPointType_EXIT_CONTINUATION_ON_RIGHT = 28;
+}
+
+enum Map_MapLaneType
+{
+    Map_MapLaneType_NORMAL = 0;
+    Map_MapLaneType_EXIT = 1;
+    Map_MapLaneType_ENTRY = 2;
+    Map_MapLaneType_EMERGENCY = 3;
+    Map_MapLaneType_RAMP = 4;
+    Map_MapLaneType_LEFT_ACCELERATE = 5;
+    Map_MapLaneType_LEFT_DECELERATE = 6;
+    Map_MapLaneType_RIGHT_ACCELERATE = 7;
+    Map_MapLaneType_RIGHT_DECELERATE = 8;
+    Map_MapLaneType_EMERGENCY_PARKING_STRIP = 9;
+    Map_MapLaneType_DIVERSION = 10;
+    Map_MapLaneType_SHOULDER = 11;
+    Map_MapLaneType_UNKNOWN = 255;
+}
+
+enum Map_LaneMarkerChangeType
+{
+    Map_LaneMarkerChangeType_UNKNOWN = 0;
+    Map_LaneMarkerChangeType_NONE = 1;
+    Map_LaneMarkerChangeType_SOLID_LINE = 2;
+    Map_LaneMarkerChangeType_DASHED_LINE = 3;
+    Map_LaneMarkerChangeType_DOUBLE_SOLID_LINE = 4;
+    Map_LaneMarkerChangeType_DOUBLE_DASHED_LINE = 5;
+    Map_LaneMarkerChangeType_LEFT_SOLID_RIGHT_DASHED = 6;
+    Map_LaneMarkerChangeType_RIGHT_SOLID_LEFT_DASHED = 7;
+    Map_LaneMarkerChangeType_DASHED_BLOCKS = 8;
+    Map_LaneMarkerChangeType_SHADED_AREA = 9;
+    Map_LaneMarkerChangeType_PHYSICAL_DIVIDER = 10;
+}
+
+enum Map_LaneMarkerType
+{
+    Map_LaneMarkerType_UNKNOWN = 0;
+    Map_LaneMarkerType_NONE = 1;
+    Map_LaneMarkerType_SOLID_LINE = 2;
+    Map_LaneMarkerType_DASHED_LINE = 3;
+    Map_LaneMarkerType_DOUBLE_SOLID_LINE = 4;
+    Map_LaneMarkerType_DOUBLE_DASHED_LINE = 5;
+    Map_LaneMarkerType_LEFT_SOLID_RIGHT_DASHED = 6;
+    Map_LaneMarkerType_RIGHT_SOLID_LEFT_DASHED = 7;
+    Map_LaneMarkerType_DASHED_BLOCKS = 8;
+    Map_LaneMarkerType_SHADED_AREA = 9;
+    Map_LaneMarkerType_PHYSICAL_DIVIDER = 10;
+    Map_LaneMarkerType_CURB = 11;
+}
+
+message Map_KeyPoint
+{
+    Vector2f position = 1;
+    Map_KeyPointType type = 2;
+    uint32 offset = 3;
+}
+
+message Map_SpeedLimit
+{
+    uint32 value = 1;
+    Map_MapLaneType lane_type = 2;
+    uint32 offset = 3;
+}
+
+message Map_LaneMarkerChange
+{
+    Map_LaneMarkerChangeType type = 1;
+    uint32 offset = 2;
+}
+
+message Map_LaneWidth
+{
+    float value = 1;
+    uint32 offset = 2;
+}
+
+message Map_LaneInfo
+{
+    uint32 lane_id = 1;
+    uint32 center_line_id = 2;
+    uint32 left_line_id = 3;
+    uint32 right_line_id = 4;
+    Map_KeyPoint key_point = 5;
+    Map_MapLaneType lane_type = 6;
+    uint32 lane_no = 7;
+    uint32 num_speed_limits = 8;
+    uint32 num_left_lane_markers = 9;
+    uint32 num_right_lane_markers = 10;
+    uint32 num_lane_widths = 11;
+    repeated Map_SpeedLimit speed_limits = 12;
+    repeated Map_LaneMarkerChange left_lane_markers = 13;
+    repeated Map_LaneMarkerChange right_lane_markers = 14;
+    repeated Map_LaneWidth lane_widths = 15;
+}
+
+message Map_CenterLinePoint
+{
+    Vector2f Position = 1;
+    float heading = 2;
+    float curvature = 3;
+    uint32 offset = 4;
+}
+
+message Map_CenterLine
+{
+    repeated Map_CenterLinePoint center_line_points = 1;
+    uint32 id_line = 2;
+    uint32 num_points = 3;
+}
+
+message Map_LaneBoundary
+{
+    repeated Vector2f curves = 1;
+    uint32 id_line = 2;
+    bool is_virtual = 3;
+    Map_LaneMarkerType lane_boundary_type = 4;
+    uint32 num_curves = 5;
+}
+
+message Map_MapGeometryInfo
+{
+    uint32 map_status = 1;
+    uint32 map_index = 2;
+    uint32 num_lanes = 3;
+    uint32 num_center_lines = 4;
+    uint32 num_lane_boundaries = 5;
+    repeated Map_LaneInfo lanes = 6;
+    repeated Map_CenterLine center_lines = 7;
+    repeated Map_LaneBoundary lane_boundaries = 8;
+}
+
+message MapMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Map_MapGeometryInfo map_geometry_info = 2;
+}
+

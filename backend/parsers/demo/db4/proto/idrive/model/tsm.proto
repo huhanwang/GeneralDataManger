@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Tsm_TopProceState
+{
+    Tsm_TopProceState_DEFAULT_MODE = 0;
+    Tsm_TopProceState_ADAS_L_MODE = 1;
+    Tsm_TopProceState_ADAS_H_MODE = 2;
+    Tsm_TopProceState_PRE_HPA_MODE = 3;
+    Tsm_TopProceState_PARK_APA_MODE = 4;
+    Tsm_TopProceState_PARK_HPA_MODE = 5;
+    Tsm_TopProceState_FAULT_MODE = 6;
+    Tsm_TopProceState_INIT_MODE = 7;
+    Tsm_TopProceState_CALI_MODE = 8;
+    Tsm_TopProceState_PRE_ADAS_H_MODE = 9;
+    Tsm_TopProceState_PARKING_BACKSTAGE_SEARCH = 10;
+}
+
+message Tsm_TopMachine
+{
+    Tsm_TopProceState top_proce_sts = 1;
+}
+
+message TsmMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Tsm_TopMachine top_machine = 2;
+}
+

@@ -1,0 +1,23 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+enum OtaStatus_state 
+{
+    OtaStatus_state_NONE = 0;
+    OtaStatus_state_PRE_OTA = 1;
+    OtaStatus_state_TRANSMITTING = 2;
+    OtaStatus_state_INSTALLING = 3;
+    OtaStatus_state_SUCCSESS = 4;
+    OtaStatus_state_FAILURE = 5;
+}
+
+message OtaStatus_Status
+{
+    OtaStatus_state ota_state = 1;
+}
+
+message OtaStatusMsg 
+{
+    OtaStatus_Status status = 1;
+}
+

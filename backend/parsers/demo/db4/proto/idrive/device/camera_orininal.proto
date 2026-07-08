@@ -1,0 +1,27 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraOriginal_Param
+{
+    uint32 type = 1;
+    uint32 flag = 2;
+    uint32 direct_mapping_cnt = 3;
+    uint32 invers_mapping_cnt = 4;
+    uint32 param_valid = 5;
+    uint32 height = 6;
+    uint32 width = 7;
+    repeated double direct_mapping = 8;
+    repeated double invers_mapping = 9;
+    repeated double int_param = 10;
+    repeated double valid_range = 11;
+    double table_scale = 12;
+}
+
+message CameraOriginalMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_params = 2;
+    repeated CameraOriginal_Param params = 3;
+}
+

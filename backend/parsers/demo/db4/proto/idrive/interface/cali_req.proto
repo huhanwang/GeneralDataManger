@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CaliReq_CaliRequestType 
+{
+    CaliReq_CaliRequestType_CALI_REQ_UNKNOWN = 0;
+    CaliReq_CaliRequestType_STATIC_ENTRY = 1;
+    CaliReq_CaliRequestType_STATIC_EXIT = 2;
+    CaliReq_CaliRequestType_DYNAMIC_ENTRY = 3;
+    CaliReq_CaliRequestType_DYNAMIC_EXIT = 4;
+}
+
+message CaliReqMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliReq_CaliRequestType type = 2;
+}
+

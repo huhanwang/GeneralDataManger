@@ -1,0 +1,158 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+message Vector2f
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Vector2d
+{
+    double x = 1;
+    double y = 2;
+}
+
+message Vector2i
+{
+    sint32 x = 1;
+    sint32 y = 2;
+}
+
+message Vector2u8Nona
+{
+    uint32 x = 1;
+    uint32 y = 2;
+}
+
+message Vector2u16Nona
+{
+    uint32 x = 1;
+    uint32 y = 2;
+}
+
+message Vector2i8Nona
+{
+    sint32 x = 1;
+    sint32 y = 2;
+}
+
+message Vector2i16Nona
+{
+    sint32 x = 1;
+    sint32 y = 2;
+}
+
+message Vector3u8Nona
+{
+    uint32 x = 1;
+    uint32 y = 2;
+    uint32 z = 3;
+}
+
+message Vector3u16Nona
+{
+    uint32 x = 1;
+    uint32 y = 2;
+    uint32 z = 3;
+}
+
+message Vector3i8Nona
+{
+    sint32 x = 1;
+    sint32 y = 2;
+    sint32 z = 3;
+}
+
+message Vector3i16Nona
+{
+    sint32 x = 1;
+    sint32 y = 2;
+    sint32 z = 3;
+}
+
+message Vector3f
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Vector3d
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message Vector4f
+{
+    float w = 1;
+    float x = 2;
+    float y = 3;
+    float z = 4;
+}
+
+message Vector4d
+{
+    double w = 1;
+    double x = 2;
+    double y = 3;
+    double z = 4;
+}
+
+message Rect
+{
+    float left = 1;
+    float top = 2;
+    float right = 3;
+    float bottom = 4;
+}
+
+message RectInt
+{
+    sint32 left = 1;
+    sint32 top = 2;
+    sint32 right = 3;
+    sint32 bottom = 4;
+}
+
+message Box3DInt
+{
+    Vector2i lower_lt = 1;
+    Vector2i lower_lb = 2;
+    Vector2i lower_rb = 3;
+    Vector2i lower_rt = 4;
+    Vector2i upper_lt = 5;
+    Vector2i upper_lb = 6;
+    Vector2i upper_rb = 7;
+    Vector2i upper_rt = 8;
+}
+
+message BasePoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Box3D
+{
+    BasePoint lower_lt = 1;
+    BasePoint lower_lb = 2;
+    BasePoint lower_rb = 3;
+    BasePoint lower_rt = 4;
+    BasePoint upper_lt = 5;
+    BasePoint upper_lb = 6;
+    BasePoint upper_rb = 7;
+    BasePoint upper_rt = 8;
+    float conf = 9;
+}
+
+message Category
+{
+    sint32 property_type = 1;
+    sint32 property = 2;
+    float property_conf = 3;
+}
+

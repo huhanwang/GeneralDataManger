@@ -1,0 +1,115 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum SensorTre_Shape 
+{
+    SensorTre_Shape_UNKNOWN = 0;
+    SensorTre_Shape_RECTANGLE = 1;
+    SensorTre_Shape_TRIANGLE = 2;
+    SensorTre_Shape_ROUND = 3;
+    SensorTre_Shape_CYLINDER = 4;
+}
+
+enum SensorTre_Status 
+{
+    SensorTre_Status_UNKNOWN = 0;
+    SensorTre_Status_OFF = 1;
+    SensorTre_Status_INVALID = 2;
+    SensorTre_Status_VALID = 3;
+    SensorTre_Status_TRAFFIC_LIGHT_GREEN = 4;
+    SensorTre_Status_TRAFFIC_LIGHT_YELLOW = 5;
+    SensorTre_Status_TRAFFIC_LIGHT_RED = 6;
+    SensorTre_Status_OCCUPIED = 7;
+}
+
+enum SensorTre_TrafficLightBulbSpotMode 
+{
+    SensorTre_TrafficLightBulbSpotMode_UNKNOWN = 0;
+    SensorTre_TrafficLightBulbSpotMode_ON = 1;
+    SensorTre_TrafficLightBulbSpotMode_FLASH = 2;
+    SensorTre_TrafficLightBulbSpotMode_OFF = 3;
+}
+
+enum SensorTre_TrafficLightBulbType 
+{
+    SensorTre_TrafficLightBulbType_UNKNOWN = 0;
+    SensorTre_TrafficLightBulbType_CIRCLE = 1;
+    SensorTre_TrafficLightBulbType_LEFT_ARROW = 2;
+    SensorTre_TrafficLightBulbType_RIGHT_ARROW = 3;
+    SensorTre_TrafficLightBulbType_UP_ARROW = 4;
+    SensorTre_TrafficLightBulbType_DOWN_ARROW = 5;
+    SensorTre_TrafficLightBulbType_UTURN = 6;
+    SensorTre_TrafficLightBulbType_FORWARD_AND_LEFT = 7;
+    SensorTre_TrafficLightBulbType_FORWARD_AND_RIGHT = 8;
+    SensorTre_TrafficLightBulbType_PEDESTRAIN = 9;
+    SensorTre_TrafficLightBulbType_NON_MOTOR = 10;
+    SensorTre_TrafficLightBulbType_TIME = 11;
+    SensorTre_TrafficLightBulbType_LEFT_AND_RETURN = 12;
+    SensorTre_TrafficLightBulbType_NO_DRIVE_INTO = 13;
+    SensorTre_TrafficLightBulbType_TEXT_OF_ALLOW_PED = 14;
+    SensorTre_TrafficLightBulbType_SIGN_OF_ALLOW_PED = 15;
+    SensorTre_TrafficLightBulbType_TEXT_OF_FORBID_PED = 16;
+    SensorTre_TrafficLightBulbType_SIGN_OF_FOPBID_PED = 17;
+}
+
+enum SensorTre_ObjectType 
+{
+    SensorTre_ObjectType_UNKNOWN = 0;
+    SensorTre_ObjectType_TTRAFFIC_SIGN = 1;
+    SensorTre_ObjectType_TTRAFFIC_LIGHT = 2;
+    SensorTre_ObjectType_TTRAFFIC_LIGHT_BULB = 3;
+    SensorTre_ObjectType_LANE_MARKING = 4;
+    SensorTre_ObjectType_STOP_LINE = 5;
+    SensorTre_ObjectType_SPEED_BUMP = 6;
+    SensorTre_ObjectType_POLE = 7;
+    SensorTre_ObjectType_CROSS_WALK = 8;
+    SensorTre_ObjectType_ZONE = 9;
+    SensorTre_ObjectType_PARKING_SLOT = 10;
+    SensorTre_ObjectType_TRAFFIC_CONE = 11;
+}
+
+message SensorTre_Object
+{
+    SensorTre_Shape shape = 1;
+    bool dynamic = 2;
+    bool traversable = 3;
+    uint32 num_element = 4;
+    uint32 cycle_time = 5;
+    string element = 6;
+    float height = 7;
+    float radius = 8;
+    SensorTre_Status status = 9;
+}
+
+message SensorTre_Child
+{
+    uint32 id = 1;
+    SensorTre_TrafficLightBulbType child_light_bulb_type = 2;
+    SensorTre_Status child_light_bulb_status = 3;
+    SensorTre_TrafficLightBulbSpotMode child_light_spot_mode = 4;
+}
+
+message SensorTre_TrafficElement
+{
+    uint32 id = 1;
+    SensorTre_ObjectType type = 2;
+    uint32 sub_type = 3;
+    uint32 confidence = 4;
+    uint32 life_time = 5;
+    uint32 age = 6;
+    uint32 num_child_ids = 7;
+    uint32 drive_start_up = 8;
+    SensorTre_Object object = 9;
+    repeated SensorTre_Child childs = 10;
+    Vector3f position = 11;
+}
+
+message SensorTreMsg 
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    uint32 num_traffic_elements = 2;
+    repeated SensorTre_TrafficElement traffic_elements = 3;
+}
+

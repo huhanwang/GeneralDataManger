@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum TouchScreen_State 
+{
+    TouchScreen_State_Inactive = 0;
+    TouchScreen_State_Pressed = 1;
+    TouchScreen_State_Sliding = 2;
+    TouchScreen_State_Release = 3;
+}
+
+message TouchScreen_Position
+{
+    TouchScreen_State state = 1;
+    sint32 x = 2;
+    sint32 y = 3;
+}
+
+message TouchScreenMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    TouchScreen_Position position = 2;
+}
+

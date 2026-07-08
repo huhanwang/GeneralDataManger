@@ -1,0 +1,27 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message TrafficSignMin_TrafficSign
+{
+    uint32 id = 1;
+    bool approved_flag = 2;
+    uint32 confidence = 3;
+    uint32 sign_type = 4;
+    float pos_x = 5;
+    float pos_y = 6;
+    float pos_z = 7;
+}
+
+message TrafficSignMin_TrafficSignsInfo
+{
+    uint32 num_traffic_signs = 1;
+    repeated TrafficSignMin_TrafficSign traffic_signs = 2;
+}
+
+message TrafficSignMinMsg
+{
+    CommonMsgMsg common_msg = 1;
+    TrafficSignMin_TrafficSignsInfo traffic_signs_info = 2;
+}
+

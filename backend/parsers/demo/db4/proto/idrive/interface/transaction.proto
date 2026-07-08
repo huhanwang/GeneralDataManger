@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Transaction_Transaction
+{
+    uint32 num_topic = 1;
+    string topic = 2;
+    uint32 frame_id = 3;
+    uint32 dag_id = 4;
+    uint64 enter_time = 5;
+}
+
+message TransactionMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    repeated Transaction_Transaction transcation = 2;
+    uint32 num_transcation = 3;
+}
+

@@ -1,0 +1,135 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/system_type_base.proto";
+package idrive.workflow.proto;
+
+enum Psm_ApsWorkSts
+{
+    Psm_ApsWorkSts_Disable = 0;
+    Psm_ApsWorkSts_Standby = 1;
+    Psm_ApsWorkSts_Searching = 2;
+    Psm_ApsWorkSts_Guidance = 3;
+    Psm_ApsWorkSts_Completed = 4;
+    Psm_ApsWorkSts_Failed = 5;
+    Psm_ApsWorkSts_Pause = 6;
+    Psm_ApsWorkSts_Terminated = 7;
+    Psm_ApsWorkSts_Restart = 8;
+}
+
+enum Psm_FadsFuncSts
+{
+    Psm_FadsFuncSts_Standby = 0;
+    Psm_FadsFuncSts_Active = 1;
+    Psm_FadsFuncSts_Disable = 2;
+    Psm_FadsFuncSts_Reserved = 3;
+}
+
+enum Psm_RadsFuncSts
+{
+    Psm_RadsFuncSts_Standby = 0;
+    Psm_RadsFuncSts_Active = 1;
+    Psm_RadsFuncSts_Disable = 2;
+    Psm_RadsFuncSts_Reserved = 3;
+}
+
+enum Psm_FunctWorkSts
+{
+    Psm_FunctWorkSts_NONE = 0;
+    Psm_FunctWorkSts_APA = 1;
+    Psm_FunctWorkSts_RPA = 2;
+    Psm_FunctWorkSts_VPA = 3;
+    Psm_FunctWorkSts_TRA = 4;
+    Psm_FunctWorkSts_NPA = 5;
+}
+
+enum Psm_ApaState
+{
+    Psm_ApaState_State_none = 0;
+    Psm_ApaState_Off = 1;
+    Psm_ApaState_Stanby = 2;
+    Psm_ApaState_Failed = 3;
+    Psm_ApaState_Abort = 4;
+    Psm_ApaState_Searching_parking_in = 5;
+    Psm_ApaState_Searching_parking_out = 6;
+    Psm_ApaState_Pre_parking_in = 7;
+    Psm_ApaState_Pre_parking_out = 8;
+    Psm_ApaState_Parking_in = 9;
+    Psm_ApaState_Parking_out = 10;
+    Psm_ApaState_Suspend_not_continue = 11;
+    Psm_ApaState_Suspend_continue = 12;
+    Psm_ApaState_Complete = 13;
+    Psm_ApaState_Pre_parking_select = 14;
+    Psm_ApaState_Pre_parking_rpa = 15;
+    Psm_ApaState_Invalid = 16;
+    Psm_ApaState_Pre_parking_in_usr_selected = 17;
+    Psm_ApaState_Pre_parking_out_usr_selected = 18;
+}
+
+enum Psm_VpaState
+{
+    Psm_VpaState_State_none = 0;
+    Psm_VpaState_Request_map_weak_active = 1;
+    Psm_VpaState_Init_map = 2;
+    Psm_VpaState_Build_map_clickable = 3;
+    Psm_VpaState_Map_build_running = 4;
+    Psm_VpaState_Map_build_complete = 5;
+    Psm_VpaState_Map_build_exit = 6;
+    Psm_VpaState_Map_build_optimizing = 7;
+    Psm_VpaState_Map_build_apa = 8;
+    Psm_VpaState_Map_build_drive_park = 9;
+    Psm_VpaState_Request_vpa_weak_active = 10;
+    Psm_VpaState_Init_vpa = 11;
+    Psm_VpaState_Start_vpa_clickable = 12;
+    Psm_VpaState_Vpa_running = 13;
+    Psm_VpaState_Vpa_random_apa = 14;
+    Psm_VpaState_Vpa_fix_apa = 15;
+    Psm_VpaState_Vpa_complete = 16;
+    Psm_VpaState_Vpa_exit = 17;
+    Psm_VpaState_Vpa_pause = 18;
+    Psm_VpaState_Vpa_continue = 19;
+    Psm_VpaState_Vpa_eps_interrupt = 20;
+    Psm_VpaState_Vpa_eps_continue = 21;
+    Psm_VpaState_Diag = 22;
+    Psm_VpaState_Pure_apa = 23;
+    Psm_VpaState_Pure_rpa = 24;
+    Psm_VpaState_Map_pause = 25;
+    Psm_VpaState_Map_continue = 26;
+}
+
+enum Psm_VpaStateFunctionType
+{
+    Psm_VpaStateFunctionType_VpaState_FunctionType_FUNCTION_TYPE_NONE = 0;
+    Psm_VpaStateFunctionType_VpaState_FunctionType_FUNCTION_TYPE_MAP = 1;
+    Psm_VpaStateFunctionType_VpaState_FunctionType_FUNCTION_TYPE_VPA = 2;
+}
+
+enum Psm_VcuReadyReqType
+{
+    Psm_VcuReadyReqType_VCUREADY_REQUEST_NONE = 0;
+    Psm_VcuReadyReqType_VCUREADY_REQUEST_ON = 1;
+    Psm_VcuReadyReqType_VCUREADY_REQUEST_OFF = 2;
+    Psm_VcuReadyReqType_VCUREADY_REQUEST_HOLD = 3;
+}
+
+message Psm_StateMachine
+{
+    Psm_ApsWorkSts aps_work_sts = 1;
+    Psm_FadsFuncSts fads_func_sts = 2;
+    Psm_RadsFuncSts rads_funct_sts = 3;
+    Psm_FunctWorkSts funct_work_sts = 4;
+    Psm_ApaState apa_state = 5;
+    Psm_VpaState vpa_state = 6;
+    Psm_VpaStateFunctionType vpa_state_ft = 7;
+    TraStateDetailType tra_state = 8;
+    NpaStateDetailType npa_state = 9;
+    Psm_VcuReadyReqType vcu_ready_req = 10;
+    uint32 odo_reset = 11;
+    uint32 odo_reset_count = 12;
+}
+
+message PsmMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Psm_StateMachine state_machine = 2;
+}
+

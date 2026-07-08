@@ -1,0 +1,260 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+enum UssHeaderGroupIdEn
+{
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEnNone = 0;
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEn1 = 1;
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEn2 = 2;
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEn3 = 3;
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEn4 = 4;
+    UssHeaderGroupIdEn_kUssHeaderGroupIdEnMax = 5;
+}
+
+enum FreqModeEn
+{
+    FreqModeEn_kFreqModeEnNone = 0;
+    FreqModeEn_kFreqModeEnFixed = 1;
+    FreqModeEn_kFreqModeEnChirp = 2;
+    FreqModeEn_kFreqModeEnMax = 3;
+}
+
+enum PlvState
+{
+    PlvState_kPlvStateNone = 0;
+    PlvState_kPlvStateOff = 1;
+    PlvState_kPlvStateActive = 2;
+    PlvState_kPlvStateMax = 3;
+}
+
+enum PsuState
+{
+    PsuState_kPsuStateNone = 0;
+    PsuState_kPsuStateOff = 1;
+    PsuState_kPsuStateActive = 2;
+    PsuState_kPsuStateMax = 3;
+}
+
+enum OdoState
+{
+    OdoState_kOdoStateNone = 0;
+    OdoState_kOdoStateReset = 1;
+    OdoState_kOdoStateParkingInActive = 2;
+    OdoState_kOdoStateParkingOutActive = 3;
+    OdoState_kOdoStateResetSuccess = 4;
+    OdoState_kOdoStateMax = 5;
+}
+
+enum PocState
+{
+    PocState_kPocStateNone = 0;
+    PocState_kPocStateOff = 1;
+    PocState_kPocStateActive = 2;
+    PocState_kPocStateMax = 4;
+}
+
+enum UssPsStatusEn
+{
+    UssPsStatusEn_kUssPsStatusEnNone = 0;
+    UssPsStatusEn_kUssPsStatusEnSearch = 1;
+    UssPsStatusEn_kUssPsStatusEnCorret = 2;
+    UssPsStatusEn_kUssPsStatusEnMax = 3;
+}
+
+enum UssPsTypeEn
+{
+    UssPsTypeEn_kUssPsTypeEnNone = 0;
+    UssPsTypeEn_kUssPsTypeEnParallel = 1;
+    UssPsTypeEn_kUssPsTypeEnCross = 2;
+    UssPsTypeEn_kUssPsTypeEnDiagonal = 3;
+    UssPsTypeEn_kUssPsTypeEnMax = 4;
+}
+
+enum UssPsOrientationEn
+{
+    UssPsOrientationEn_kUssPsOrientationEnNone = 0;
+    UssPsOrientationEn_kUssPsOrientationEnLeft = 1;
+    UssPsOrientationEn_kUssPsOrientationEnRight = 2;
+    UssPsOrientationEn_kUssPsOrientationEnMax = 3;
+}
+
+enum UssPsBoundaryTypeEn
+{
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeVirtual = 0;
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeLow = 1;
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeHigh = 2;
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeWall = 3;
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeCurb = 4;
+    UssPsBoundaryTypeEn_kPerFusUssPsBoundaryTypeMax = 5;
+}
+
+enum UssPsBoundaryExternTypeEn
+{
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnInitial = 0;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnVirtual = 1;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnWall = 2;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnCurb = 3;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnBush = 4;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnParallelCar = 5;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnCrossCar = 6;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnRoundPillar = 7;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnCeiling = 8;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnPedestrian = 9;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnPillar = 10;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnTruck = 11;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnSolidLine = 12;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnDotline = 13;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnPillarCar = 14;
+    UssPsBoundaryExternTypeEn_kUssPsBoundaryExternTypeEnUnknown = 15;
+}
+
+enum LpTypeGenEn
+{
+    LpTypeGenEn_kLpTypeEnNone = 0;
+    LpTypeGenEn_kLpTypeEnDe = 1;
+    LpTypeGenEn_kLpTypeEnDeDe = 2;
+    LpTypeGenEn_kLpTypeEnCe = 3;
+    LpTypeGenEn_kLpTypeEnDeCe = 4;
+    LpTypeGenEn_kLpTypeEnRound = 5;
+    LpTypeGenEn_kLpTypeEnOther = 6;
+    LpTypeGenEn_kLpTypeEnMax = 7;
+}
+
+enum PerFusSnsID
+{
+    PerFusSnsID_kPerFusSnsIDNone = 0;
+    PerFusSnsID_kPerFusSnsID1 = 1;
+    PerFusSnsID_kPerFusSnsID2 = 2;
+    PerFusSnsID_kPerFusSnsID3 = 3;
+    PerFusSnsID_kPerFusSnsID4 = 4;
+    PerFusSnsID_kPerFusSnsID5 = 5;
+    PerFusSnsID_kPerFusSnsID6 = 6;
+    PerFusSnsID_kPerFusSnsID7 = 7;
+    PerFusSnsID_kPerFusSnsID8 = 8;
+    PerFusSnsID_kPerFusSnsID9 = 9;
+    PerFusSnsID_kPerFusSnsID10 = 10;
+    PerFusSnsID_kPerFusSnsID11 = 11;
+    PerFusSnsID_kPerFusSnsID12 = 12;
+    PerFusSnsID_kPerFusSnsIDMax = 13;
+}
+
+enum DetectStatus
+{
+    DetectStatus_kDetectStatusNotDetect = 0;
+    DetectStatus_kDetectStatusOutScope = 1;
+    DetectStatus_kDetectStatusAlarm = 2;
+    DetectStatus_kDetectStatusUnstable = 3;
+    DetectStatus_kDetectStatusStable = 4;
+    DetectStatus_kDetectStatusReject = 5;
+    DetectStatus_kDetectStatusResidual = 6;
+    DetectStatus_kPerFusSnsIDMax = 7;
+}
+
+enum CloudPointType
+{
+    CloudPointType_kCloudPointTypeDetect = 0;
+    CloudPointType_kCloudPointTypeTrack = 1;
+    CloudPointType_kCloudPointTypeAuxiliary = 2;
+    CloudPointType_kCloudPointTypeReserved = 3;
+    CloudPointType_kCloudPointTypeDeleted = 4;
+    CloudPointType_kPerFusSnsIDMax = 5;
+}
+
+enum UssHeightEn
+{
+    UssHeightEn_kUssPointHeightEnNone = 0;
+    UssHeightEn_kUssPointHeightEnLow = 1;
+    UssHeightEn_kUssPointHeightEnHigh = 2;
+    UssHeightEn_kUssPointHeightEnUnknow = 3;
+    UssHeightEn_kUssPointHeightEnMax = 4;
+}
+
+message PerFusUssHeader
+{
+    sint64 mcu_send_stamp_si64 = 1;
+    sint64 mcu_send_wave_stamp_si64 = 2;
+    uint32 mesa_group_tx_mask_ui16 = 3;
+    uint32 mesa_group_rx_mask_ui16 = 4;
+    UssHeaderGroupIdEn uss_header_group_id = 5;
+    FreqModeEn uss_header_freq_mode = 6;
+}
+
+message UssPointSi32
+{
+    sint32 x_si32 = 1;
+    sint32 y_si32 = 2;
+}
+
+message UssPointSi16
+{
+    sint32 x_si16 = 1;
+    sint32 y_si16 = 2;
+    uint32 id = 3;
+}
+
+message UssStateMachine
+{
+    PlvState plv_state = 1;
+    PsuState psu_state = 2;
+    OdoState odo_state = 3;
+}
+
+message UssRodInfo
+{
+    repeated UssPointSi32 end_points_vcs = 1;
+    uint32 num_end_points = 2;
+    bool valid = 3;
+}
+
+message PerFusUssPs
+{
+    uint32 uss_ps_id_ui8 = 1;
+    UssPsStatusEn uss_ps_status_en = 2;
+    UssPsTypeEn uss_ps_type_en = 3;
+    UssPsOrientationEn uss_ps_orientation_en = 4;
+    UssPsBoundaryTypeEn uss_ps_1st_boundary_type_en = 5;
+    UssPsBoundaryTypeEn uss_ps_2nd_boundary_type_en = 6;
+    UssPsBoundaryTypeEn uss_ps_cross_boundary_type_en = 7;
+    UssPsBoundaryTypeEn uss_ps_cross_second_boundary_type_en = 8;
+    UssPsBoundaryExternTypeEn uss_ps_1st_boundary_ext_type_en = 9;
+    UssPsBoundaryExternTypeEn uss_ps_2nd_boundary_ext_type_en = 10;
+    UssPsBoundaryExternTypeEn uss_ps_cross_boundary_ext_type_en = 11;
+    sint32 vison_ps_id = 12;
+    uint32 uss_ps_depth_ui16 = 13;
+    uint32 uss_ps_length_ui16 = 14;
+    sint32 uss_ps_angle_i16 = 15;
+    UssPointSi32 uss_ps_1st_corner = 16;
+    UssPointSi32 uss_ps_2nd_corner = 17;
+    UssPointSi32 uss_ps_3st_corner = 18;
+    UssPointSi32 uss_ps_4nd_corner = 19;
+    UssPointSi32 uss_ps_1st_corner_gcs = 20;
+    UssPointSi32 uss_ps_2nd_corner_gcs = 21;
+    UssPointSi32 uss_ps_3st_corner_gcs = 22;
+    UssPointSi32 uss_ps_4nd_corner_gcs = 23;
+    UssPointSi16 uss_ps_boundary_1st_info = 24;
+    UssPointSi16 uss_ps_boundary_2nd_info = 25;
+    UssPointSi16 uss_ps_boundary_3rd_info = 26;
+    UssPointSi16 uss_ps_boundary_4th_info = 27;
+    sint64 uss_ps_finish_timestamp = 28;
+    float uss_ps_1st_angle = 29;
+    float uss_ps_2nd_angle = 30;
+    float uss_ps_3st_depth = 31;
+    float uss_ps_4th_depth = 32;
+    UssRodInfo uss_rod_info = 33;
+}
+
+message UssPointWholeSi16
+{
+    sint32 x_si16 = 1;
+    sint32 y_si16 = 2;
+    LpTypeGenEn point_gen_type = 3;
+    PerFusSnsID point_send_sensor = 4;
+    PerFusSnsID point_recive_sensor = 5;
+    uint32 group_id = 6;
+    uint32 tracking_time = 7;
+    uint32 life_time = 8;
+    DetectStatus detect_status = 9;
+    CloudPointType type = 10;
+    UssHeightEn height = 11;
+}
+

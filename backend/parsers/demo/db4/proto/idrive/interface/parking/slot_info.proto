@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message SlotInfo_SlotInfo
+{
+    float slot_yaw = 1;
+    sint32 slot_type = 2;
+    sint32 slot_side = 3;
+    sint32 park_type = 4;
+    sint32 slot_detect_type = 5;
+    sint32 slot_boundary = 6;
+}
+
+message SlotInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    SlotInfo_SlotInfo slot_info = 2;
+}
+

@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Meb_Vector2f
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Meb_MebObstacle
+{
+    uint32 id = 1;
+    bool is_updated = 2;
+    uint32 sensor_source = 3;
+    uint32 vision_id = 4;
+    uint32 uss_id = 5;
+    uint32 mono_id = 6;
+    Meb_Vector2f pos = 7;
+    Meb_Vector2f vel = 8;
+    Meb_Vector2f acc = 9;
+    float heading = 10;
+    float obstacle_conf = 11;
+    float width = 12;
+    float length = 13;
+    float height = 14;
+    uint32 type = 15;
+    uint32 motion_state = 16;
+    uint32 u8_reserve_signal_1 = 17;
+    uint32 u8_reserve_signal_2 = 18;
+    uint32 u8_reserve_signal_3 = 19;
+    uint32 u8_reserve_signal_4 = 20;
+    float ttc = 21;
+    float f32_reserve_signal_2 = 22;
+    float f32_reserve_signal_3 = 23;
+    float f32_reserve_signal_4 = 24;
+}
+
+message MebMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Meb_MebObstacle meb_obstacle = 2;
+}
+

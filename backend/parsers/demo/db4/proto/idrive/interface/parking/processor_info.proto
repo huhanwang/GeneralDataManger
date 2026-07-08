@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ProcessorInfo_ProcessorStatus
+{
+    ProcessorInfo_ProcessorStatus_kCreated = 0;
+    ProcessorInfo_ProcessorStatus_kNormal = 1;
+    ProcessorInfo_ProcessorStatus_kException = 2;
+    ProcessorInfo_ProcessorStatus_kError = 3;
+    ProcessorInfo_ProcessorStatus_kDestroying = 4;
+    ProcessorInfo_ProcessorStatus_kDestroyed = 5;
+}
+
+message ProcessorInfo_ProcessorInfo
+{
+    ProcessorInfo_ProcessorStatus status = 1;
+    uint32 error_code = 2;
+}
+
+message ProcessorInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ProcessorInfo_ProcessorInfo processor_info_data = 2;
+}
+

@@ -1,0 +1,54 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Camera_Position
+{
+    Camera_Position_UPLEFT = 0;
+    Camera_Position_UPRIGHT = 1;
+    Camera_Position_LOWERLEFT = 2;
+    Camera_Position_LOWERRIGHT = 3;
+    Camera_Position_AROUND_LEFT = 4;
+    Camera_Position_AROUND_RIGHT = 5;
+    Camera_Position_AROUND_FRONT = 6;
+    Camera_Position_AROUND_REAR = 7;
+    Camera_Position_FRONT = 8;
+    Camera_Position_REAR = 9;
+}
+
+enum Camera_Mode
+{
+    Camera_Mode_ORIGINAL = 0;
+    Camera_Mode_STITCH = 1;
+    Camera_Mode_CYL = 2;
+}
+
+enum Camera_Type
+{
+    Camera_Type_H265 = 0;
+    Camera_Type_YUV420P = 1;
+    Camera_Type_BGR = 2;
+    Camera_Type_RGB = 3;
+    Camera_Type_JPEG = 4;
+    Camera_Type_H264 = 5;
+}
+
+message Camera_Image
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 element_size = 4;
+    uint64 data_ptr = 9;
+    uint32 size = 5;
+    Camera_Position pos = 6;
+    Camera_Mode mode = 7;
+    Camera_Type type = 8;
+}
+
+message CameraMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Camera_Image image = 2;
+}
+

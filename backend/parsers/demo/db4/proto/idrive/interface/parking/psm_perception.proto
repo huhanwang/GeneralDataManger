@@ -1,0 +1,89 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/psm_unified_res.proto";
+package idrive.workflow.proto;
+
+enum PerceptionDataBase_PerceptionMsgType
+{
+    PerceptionDataBase_PerceptionMsgType_UNKNOW = 0;
+    PerceptionDataBase_PerceptionMsgType_PARKING_OUT = 1;
+    PerceptionDataBase_PerceptionMsgType_SELECTED_SLOT = 2;
+    PerceptionDataBase_PerceptionMsgType_VPA_STATE = 3;
+}
+
+message PerceptionDataBase_PerceptionTypeData
+{
+    PerceptionDataBase_PerceptionMsgType type = 1;
+}
+
+message PerceptionDataBaseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PerceptionDataBase_PerceptionTypeData type_data = 2;
+}
+
+message SelectedParkingSlotMsg
+{
+    PerceptionDataBaseMsg perception_data_base = 1;
+    PsmParkingSlot parking_slot = 2;
+}
+
+enum PerceptionVpaState_FunctionType
+{
+    PerceptionVpaState_FunctionType_FUNCTION_TYPE_NONE = 0;
+    PerceptionVpaState_FunctionType_FUNCTION_TYPE_MAP = 1;
+    PerceptionVpaState_FunctionType_FUNCTION_TYPE_VPA = 2;
+}
+
+enum PerceptionVpaState_FunctionStage
+{
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_NONE = 0;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_PRE_MAP = 1;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_MAP_BUILDING = 2;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_MAP_COMPLETE = 3;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_MAP_EXIT = 4;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_PRE_VPA = 5;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_CURSING = 6;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_VPA_COMPLETE = 7;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_VPA_EXIT = 8;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_APA = 9;
+    PerceptionVpaState_FunctionStage_FUNCTION_STAGE_OTHER = 10;
+}
+
+message PerceptionVpaState_VpaState
+{
+    PerceptionVpaState_FunctionType ft = 1;
+    PerceptionVpaState_FunctionStage fs = 2;
+}
+
+message PerceptionVpaStateMsg
+{
+    PerceptionDataBaseMsg perception_data_base = 1;
+    PerceptionVpaState_VpaState vpa_state = 2;
+}
+
+enum ParkingOut_ParkingOutDirection
+{
+    ParkingOut_ParkingOutDirection_UNKNOW = 0;
+    ParkingOut_ParkingOutDirection_V_FR_LEFT = 1;
+    ParkingOut_ParkingOutDirection_V_FR_CENTER = 2;
+    ParkingOut_ParkingOutDirection_V_FR_RIGHT = 3;
+    ParkingOut_ParkingOutDirection_V_RR_LEFT = 4;
+    ParkingOut_ParkingOutDirection_V_RR_CENTER = 5;
+    ParkingOut_ParkingOutDirection_V_RR_RIGHT = 6;
+    ParkingOut_ParkingOutDirection_H_FR_LEFT = 7;
+    ParkingOut_ParkingOutDirection_H_FR_RIGHT = 8;
+}
+
+message ParkingOut_ParkingOutMsg
+{
+    sint32 slot_id = 1;
+    ParkingOut_ParkingOutDirection out_direction = 2;
+}
+
+message ParkingOutMsg
+{
+    PerceptionDataBaseMsg perception_data_base = 1;
+    ParkingOut_ParkingOutMsg parking_out_msg = 2;
+}
+

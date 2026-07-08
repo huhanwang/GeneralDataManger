@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+message CrosspointMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ExtraPoints extra_points = 2;
+}
+

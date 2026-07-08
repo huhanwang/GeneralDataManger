@@ -1,0 +1,128 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum CaliParams_Mode 
+{
+    CaliParams_Mode_NONE = 0;
+    CaliParams_Mode_FACT = 1;
+    CaliParams_Mode_SERV = 2;
+    CaliParams_Mode_AUTO = 3;
+    CaliParams_Mode_SERC = 4;
+    CaliParams_Mode_INIT = 5;
+    CaliParams_Mode_NUM = 6;
+}
+
+enum CaliParams_ParamMode 
+{
+    CaliParams_ParamMode_SCARA = 0;
+    CaliParams_ParamMode_KB = 1;
+    CaliParams_ParamMode_RESERVED = 2;
+}
+
+message CaliParams_Calibrated
+{
+    uint64 time = 1;
+    CaliParams_Mode mode = 2;
+    bool flag = 3;
+    CaliParams_ParamMode internal_param_mode = 4;
+}
+
+message CaliParams_ServiceCaliCorners
+{
+    repeated Vector2i fl = 1;
+    repeated Vector2i fr = 2;
+    repeated Vector2i bl = 3;
+    repeated Vector2i br = 4;
+    repeated Vector2i lf = 5;
+    repeated Vector2i lb = 6;
+    repeated Vector2i rf = 7;
+    repeated Vector2i rb = 8;
+}
+
+message CaliParams_tInvoCaliResult
+{
+    bool i_bool = 1;
+    repeated Vector2i pnt = 2;
+    repeated Vector2i roi = 3;
+    repeated float log = 4;
+}
+
+message CaliParams_InternalParamsKB
+{
+    uint32 width = 1;
+    uint32 height = 2;
+    uint32 type = 3;
+    uint32 version = 4;
+    double fov = 5;
+    double fx = 6;
+    double fy = 7;
+    double cx = 8;
+    double cy = 9;
+    double k1 = 10;
+    double k2 = 11;
+    double k3 = 12;
+    double k4 = 13;
+    double p1 = 14;
+    double p2 = 15;
+    repeated double valid_height = 16;
+}
+
+message CaliParams_InternalParams
+{
+    uint32 type = 1;
+    uint32 flag = 2;
+    uint32 direct_mapping_cnt = 3;
+    uint32 invers_mapping_cnt = 4;
+    uint32 height = 5;
+    uint32 width = 6;
+    repeated double direct_mapping = 7;
+    repeated double invers_mapping = 8;
+    repeated double int_param = 9;
+    repeated double valid_range = 10;
+    double table_scale = 11;
+}
+
+message CaliParams_CameraCylinder
+{
+    uint32 gdc_inputs_size_height = 1;
+    uint32 gdc_inputs_size_width = 2;
+    double pitch = 3;
+    double roll = 4;
+    double yaw = 5;
+    double focal_length = 6;
+    double cx = 7;
+    double cy = 8;
+    double hfov = 9;
+    double vfov = 10;
+}
+
+message CaliParams_ExternalParams
+{
+    sint32 position = 1;
+    repeated double ext_param = 2;
+    repeated double ext_mtx_v2c = 3;
+    repeated double ext_mtx_c2v = 4;
+    repeated double cam_ext_param = 5;
+    repeated double vcs_translation = 6;
+    repeated double vcs_rotation = 7;
+}
+
+message CaliParams_Params
+{
+    CaliParams_Calibrated cali_flag = 1;
+    CaliParams_ServiceCaliCorners service_corners = 2;
+    repeated CaliParams_tInvoCaliResult fact_corners = 3;
+    repeated CaliParams_InternalParamsKB internal_params_kb = 4;
+    repeated CaliParams_InternalParams internal_params = 5;
+    repeated CaliParams_ExternalParams external_params = 6;
+    CaliParams_CameraCylinder camera_cylinder = 7;
+}
+
+message CaliParamsMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliParams_Params params = 2;
+}
+

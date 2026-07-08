@@ -1,0 +1,58 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CaliStatus_Mode 
+{
+    CaliStatus_Mode_NONE = 0;
+    CaliStatus_Mode_FACT = 1;
+    CaliStatus_Mode_SERV = 2;
+    CaliStatus_Mode_AUTO = 3;
+    CaliStatus_Mode_SERC = 4;
+    CaliStatus_Mode_NUM = 5;
+}
+
+enum CaliStatus_State 
+{
+    CaliStatus_State_STOP = 0;
+    CaliStatus_State_IDLE = 1;
+    CaliStatus_State_DETECTING = 2;
+    CaliStatus_State_FAILURE = 3;
+    CaliStatus_State_SUCCESS = 4;
+    CaliStatus_State_GENERATE = 5;
+    CaliStatus_State_WRITING = 6;
+    CaliStatus_State_WRITE_ER = 7;
+    CaliStatus_State_WRITE_OK = 8;
+    CaliStatus_State_NUM = 9;
+}
+
+enum CaliStatus_ErrCode 
+{
+    CaliStatus_ErrCode_NONE = 0;
+    CaliStatus_ErrCode_FRONT_IMG_FAILED = 1;
+    CaliStatus_ErrCode_REAR_IMG_FAILED = 2;
+    CaliStatus_ErrCode_LEFT_IMG_FAILED = 3;
+    CaliStatus_ErrCode_RIGHT_IMG_FAILED = 4;
+    CaliStatus_ErrCode_VIDEO_FAILED = 5;
+    CaliStatus_ErrCode_FRONT_CORNER_ERR = 6;
+    CaliStatus_ErrCode_REAR_CORNER_ERR = 7;
+    CaliStatus_ErrCode_LEFT_CORNER_ERR = 8;
+    CaliStatus_ErrCode_RIGHT_CORNER_ERR = 9;
+}
+
+message CaliStatus_CaliStatus
+{
+    CaliStatus_Mode mode = 1;
+    CaliStatus_State state = 2;
+    uint32 over_speed = 3;
+    uint32 no_line = 4;
+    uint32 ready = 5;
+    CaliStatus_ErrCode cali_err_code = 6;
+}
+
+message CaliStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliStatus_CaliStatus cali_status = 2;
+}
+

@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message ModuleTask_ModuleTask
+{
+    uint32 dag_id = 1;
+    uint32 module_id = 2;
+    uint64 start_time = 3;
+    uint64 end_time = 4;
+}
+
+message ModuleTaskMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    repeated ModuleTask_ModuleTask module_task = 2;
+    uint32 num_module_task = 3;
+}
+

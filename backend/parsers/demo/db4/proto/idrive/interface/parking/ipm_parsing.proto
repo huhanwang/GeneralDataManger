@@ -1,0 +1,47 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parsing_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum IpmParsing_IpmParsingLabel
+{
+    IpmParsing_IpmParsingLabel_kRoad = 0;
+    IpmParsing_IpmParsingLabel_kTrafficLine = 1;
+    IpmParsing_IpmParsingLabel_kParkingLine = 2;
+    IpmParsing_IpmParsingLabel_kParkingSpace = 3;
+    IpmParsing_IpmParsingLabel_kTrafficArrow = 4;
+    IpmParsing_IpmParsingLabel_kGuideLine = 5;
+    IpmParsing_IpmParsingLabel_kCrosswalkLine = 6;
+    IpmParsing_IpmParsingLabel_kNoParkingSignLine = 7;
+    IpmParsing_IpmParsingLabel_kStopLine = 8;
+    IpmParsing_IpmParsingLabel_kSpeedBump = 9;
+    IpmParsing_IpmParsingLabel_kSignLine = 10;
+    IpmParsing_IpmParsingLabel_kParkingLockOpen = 11;
+    IpmParsing_IpmParsingLabel_kParkingLockClosed = 12;
+    IpmParsing_IpmParsingLabel_kTrafficCone = 13;
+    IpmParsing_IpmParsingLabel_kParkingRod = 14;
+    IpmParsing_IpmParsingLabel_kCurb = 15;
+    IpmParsing_IpmParsingLabel_kColumn = 16;
+    IpmParsing_IpmParsingLabel_kImmovableObstacle = 17;
+    IpmParsing_IpmParsingLabel_kMovableObstacle = 18;
+    IpmParsing_IpmParsingLabel_kMechanicalParkingSpace = 19;
+    IpmParsing_IpmParsingLabel_kSidewalk = 20;
+    IpmParsing_IpmParsingLabel_kPaintedWallRoot = 21;
+    IpmParsing_IpmParsingLabel_kPedsetrain = 22;
+    IpmParsing_IpmParsingLabel_kOther = 23;
+}
+
+message IpmParsing_IpmParsing
+{
+    IpmParsingImageData feature_map = 1;
+    float scale = 2;
+    Rect roi_output = 3;
+}
+
+message IpmParsingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    IpmParsing_IpmParsing ipm_parsing = 2;
+}
+

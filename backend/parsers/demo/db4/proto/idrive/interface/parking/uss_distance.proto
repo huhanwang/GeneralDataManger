@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UssDistance_Distance
+{
+    sint64 recv_timestamp = 1;
+    sint64 send_timestamp = 2;
+    sint64 soc_recv_timestamp = 3;
+    uint32 rrs_distance = 4;
+    uint32 rrm_distance = 5;
+    uint32 lrm_distance = 6;
+    uint32 lrs_distance = 7;
+    uint32 lfs_distance = 8;
+    uint32 lfm_distance = 9;
+    uint32 rfm_distance = 10;
+    uint32 rfs_distance = 11;
+    uint32 rfc_distance = 12;
+    uint32 lfc_distance = 13;
+    uint32 lrc_distance = 14;
+    uint32 rrc_distance = 15;
+    uint32 left_front_side_area_dist = 16;
+    uint32 right_front_side_area_dist = 17;
+    uint32 left_rear_side_area_dist = 18;
+    uint32 right_rear_side_area_dist = 19;
+}
+
+message UssDistanceMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssDistance_Distance distance = 2;
+}
+

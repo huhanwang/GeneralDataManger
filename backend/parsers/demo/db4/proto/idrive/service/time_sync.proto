@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum TimeSync_Direction 
+{
+    TimeSync_Direction_MCU_TO_SOC = 0;
+    TimeSync_Direction_SOC_TO_SOC = 1;
+}
+
+message TimeSync_TimeSync
+{
+    TimeSync_Direction direction = 1;
+    uint64 steady_time_us = 2;
+    uint64 synced_time_us = 3;
+}
+
+message TimeSyncMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    TimeSync_TimeSync time_sync = 2;
+}
+

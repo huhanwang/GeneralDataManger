@@ -1,0 +1,113 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+enum OmType
+{
+    OmType_OM_TYPE_UNSPECIFIED = 0;
+    OmType_OM_TYPE_LANE = 1;
+    OmType_OM_TYPE_ROADEDGE = 2;
+    OmType_OM_TYPE_CROSSWALK = 3;
+    OmType_OM_TYPE_NUM = 4;
+}
+
+enum OmSubType
+{
+    OmSubType_OM_SUB_TYPE_SUBTYPE_UNSPECIFIED = 0;
+    OmSubType_OM_SUB_TYPE_LANE_UNSPECIFIED = 32;
+    OmSubType_OM_SUB_TYPE_LANE_GENERAL = 33;
+    OmSubType_OM_SUB_TYPE_LANE_STAY = 34;
+    OmSubType_OM_SUB_TYPE_LANE_TIDE = 35;
+    OmSubType_OM_SUB_TYPE_LANE_THREE_COLOR = 36;
+    OmSubType_OM_SUB_TYPE_LANE_BUS = 37;
+    OmSubType_OM_SUB_TYPE_LANE_BOOTS_DOTS = 38;
+    OmSubType_OM_SUB_TYPE_LANE_DIVERSION_LEFT = 39;
+    OmSubType_OM_SUB_TYPE_LANE_DIVERSION_RIGHT = 40;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_UNSPECIFIED = 64;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_GROUND_SIDE = 65;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_ROAD_SIDE = 66;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_CONE = 67;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_WATER_HORSE = 68;
+    OmSubType_OM_SUB_TYPE_ROADEDGE_GUARDRAIL = 69;
+    OmSubType_OM_SUB_TYPE_CROSSWALK_UNSPECIFIED = 96;
+}
+
+enum OmDirection
+{
+    OmDirection_OM_DIRECTION_UNSPECIFIED = 0;
+    OmDirection_OM_DIRECTION_UP = 1;
+    OmDirection_OM_DIRECTION_DOWN = 2;
+    OmDirection_OM_DIRECTION_LEFT = 3;
+    OmDirection_OM_DIRECTION_RIGHT = 4;
+    OmDirection_OM_DIRECTION_BIDIRECTION = 5;
+    OmDirection_OM_DIRECTION_NUM = 6;
+}
+
+enum OmLaneAttribute
+{
+    OmLaneAttribute_OM_LANE_ATTR_NON = 0;
+    OmLaneAttribute_OM_LANE_ATTR_KNOWN = 1;
+    OmLaneAttribute_OM_LANE_ATTR_DOTTED = 2;
+    OmLaneAttribute_OM_LANE_ATTR_FISHBONE = 4;
+    OmLaneAttribute_OM_LANE_ATTR_DIRECTIONAL = 8;
+    OmLaneAttribute_OM_LANE_ATTR_DOUBLE = 16;
+    OmLaneAttribute_OM_LANE_ATTR_WIDE = 32;
+    OmLaneAttribute_OM_LANE_ATTR_DOUBLE_DASH = 64;
+    OmLaneAttribute_OM_LANE_ATTR_DOUBLE_SOLID = 128;
+    OmLaneAttribute_OM_LANE_ATTR_LEFT_SOLID_RIGHT_DASH = 256;
+    OmLaneAttribute_OM_LANE_ATTR_LEFT_DASH_RIGHT_SOLID = 512;
+}
+
+enum OmLaneColor
+{
+    OmLaneColor_OM_LANE_COLOR_UNSPECIFIED = 0;
+    OmLaneColor_OM_LANE_COLOR_WHITE = 1;
+    OmLaneColor_OM_LANE_COLOR_YELLOW = 2;
+    OmLaneColor_OM_LANE_COLOR_BLUE = 3;
+    OmLaneColor_OM_LANE_COLOR_ORANGE = 4;
+    OmLaneColor_OM_LANE_COLOR_RED = 5;
+    OmLaneColor_OM_LANE_COLOR_OTHER = 6;
+    OmLaneColor_OM_LANE_COLOR_NUM = 7;
+}
+
+message Instance_Point_Param
+{
+    sint32 bev_w = 1;
+    sint32 bev_h = 2;
+    float sin = 3;
+    float cos = 4;
+    OmSubType sub_type = 5;
+    OmLaneAttribute lane_attribute = 6;
+    OmDirection lane_direction = 7;
+    uint32 score = 8;
+    OmLaneColor lane_color = 9;
+    OmType type = 10;
+    uint32 reserve1 = 11;
+    sint32 reserve2 = 12;
+}
+
+message Instance_Point_I
+{
+    sint32 x = 1;
+    sint32 y = 2;
+    sint32 id = 3;
+    Instance_Point_Param params = 4;
+}
+
+message Instance
+{
+    sint32 id = 1;
+    sint32 section = 2;
+    uint32 num_embedding_vector = 3;
+    repeated float embedding_vector = 4;
+}
+
+message PointSet
+{
+    sint32 scale = 1;
+    sint32 point_bytes = 2;
+    uint32 num_instances = 3;
+    uint32 num_point = 4;
+    repeated Instance instances = 5;
+    repeated Instance_Point_I point = 6;
+}
+

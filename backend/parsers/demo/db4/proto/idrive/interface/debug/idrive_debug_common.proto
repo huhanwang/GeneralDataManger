@@ -1,0 +1,23 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+message AlgDebugHeader
+{
+    uint32 pack_id = 1;
+    uint32 size = 2;
+    uint32 sequence = 3;
+    uint64 timestamp = 4;
+}
+
+message AlgDebugSoftwareInfo
+{
+    uint32 version = 1;
+    float time_consumed = 2;
+}
+
+message AlgDebugPoint2D
+{
+    float x = 1;
+    float y = 2;
+}
+

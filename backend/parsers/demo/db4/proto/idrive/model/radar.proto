@@ -1,0 +1,49 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Radar_RadarCanDataType
+{
+    uint32 can_id = 1;
+}
+
+message Radar_RadarObjType
+{
+    float objObstacleProb = 1;
+    float objXPos_Stdev = 2;
+    float objYPos_Stdev = 3;
+    float objXVelRel_Stdev = 4;
+    float objXAccRel = 5;
+    float objExstProb = 6;
+    float objYVelRel = 7;
+    float objXVelRel = 8;
+    float objXPos = 9;
+    float objYPos = 10;
+    uint32 objID = 11;
+    uint32 objUpdateFlag = 12;
+    uint32 objValidFlag = 13;
+    uint32 objMotionPattern = 14;
+    uint32 objType = 15;
+    uint32 objMeasFlag = 16;
+}
+
+message Radar_RadarStatusType
+{
+    uint32 obj_latency = 1;
+    uint32 status_blockage = 2;
+    uint32 radar_working = 3;
+    uint32 status_msg_alive_counter = 4;
+    uint32 status_msg_check_sum = 5;
+    uint32 timestamp = 6;
+    float host_speed = 7;
+    float host_yaw = 8;
+}
+
+message RadarMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 num_obstacles = 2;
+    repeated Radar_RadarObjType obstacles = 3;
+    Radar_RadarStatusType motion_radar_status = 4;
+}
+

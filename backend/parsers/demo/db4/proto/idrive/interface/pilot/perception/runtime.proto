@@ -1,0 +1,49 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+message ExtendInfo
+{
+    uint32 num_name = 1;
+    string name = 2;
+    float data = 3;
+}
+
+message ForwardInfo
+{
+    sint32 forward_index = 1;
+    sint32 frame_id = 2;
+    uint64 beg_stamp = 3;
+    uint64 end_stamp = 4;
+    uint32 num_extends = 5;
+    repeated ExtendInfo extends = 6;
+}
+
+message RuntimeModuleInfo
+{
+    uint32 num_module_name = 1;
+    string module_name = 2;
+    uint32 num_forwards = 3;
+    repeated ForwardInfo forwards = 4;
+}
+
+message RuntimeProto
+{
+    sint32 version = 1;
+    uint32 num_modules = 2;
+    repeated RuntimeModuleInfo modules = 3;
+}
+
+message TopicFreqInfo
+{
+    uint32 num_topic = 1;
+    string topic = 2;
+    float freq = 3;
+}
+
+message TopicFreqStatistics
+{
+    uint64 time_stamp = 1;
+    uint32 num_topics_freq = 2;
+    repeated TopicFreqInfo topics_freq = 3;
+}
+

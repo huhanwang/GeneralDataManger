@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraLink_Image
+{
+    uint32 shmkey_flag = 1;
+    repeated uint32 shmkey_timestamp = 2;
+    repeated uint64 buffer_addr = 3;
+}
+
+message CameraLinkMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraLink_Image image = 2;
+}
+

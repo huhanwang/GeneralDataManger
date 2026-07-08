@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UpdateParam_Param
+{
+    string sw_ver_ecu_ext = 1;
+    string sw_ver_soc_int = 2;
+    string vin_code = 3;
+    string hw_ver_ecu_ext = 4;
+    string sw_ver_mcu_int = 5;
+    string sw_tim_soc_bud = 6;
+    string sw_tim_mcu_bud = 7;
+    string node_ver1 = 8;
+    string node_ver2 = 9;
+    string node_ver3 = 10;
+    string node_ver4 = 11;
+    string node_ver5 = 12;
+    string node_ver6 = 13;
+    string node_ver7 = 14;
+    string node_ver8 = 15;
+}
+
+message UpdateParamMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    UpdateParam_Param param = 2;
+}
+

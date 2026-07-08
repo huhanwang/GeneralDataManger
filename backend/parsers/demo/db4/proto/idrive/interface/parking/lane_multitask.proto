@@ -1,0 +1,88 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/road_info.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message LaneMultitask_LaneParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message LaneMultitask_LaneMarkParsingData
+{
+    repeated float data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message LaneMultitask_EdgePoint
+{
+    float x = 1;
+    float y = 2;
+    float prob = 3;
+    RoadInfo_RoadBorderSide side = 4;
+    RoadInfo_RoadBorderType type = 5;
+}
+
+message LaneMultitask_LaneTransitionPoint
+{
+    repeated RoadInfo_TransitionPoints transition_points = 1;
+    uint32 num_transition_point = 2;
+}
+
+message LaneMultitask_LaneEdgePoint
+{
+    repeated LaneMultitask_EdgePoint edge_points = 1;
+    uint32 num_edge_point = 2;
+}
+
+message LaneMultitask_BasicInfoPts
+{
+    Vector2f pt = 1;
+    Vector2f pt_rle = 2;
+    Vector2f pt_oriimg = 3;
+    Vector2f pt_img = 4;
+    uint64 label = 5;
+    sint32 conf = 6;
+}
+
+message LaneMultitask_ExtraInfoPts
+{
+    sint32 xstart = 1;
+    sint32 xend = 2;
+    sint32 y_parsing = 3;
+    sint32 gray = 4;
+    Vector2f pt_rle_c = 5;
+    Vector2f width_info = 6;
+    bool flag_dash_endpt = 7;
+    bool horizontal = 8;
+}
+
+message LaneMultitask_LaneContour
+{
+    uint32 num_basic_pts = 1;
+    uint32 num_extra_pts = 2;
+    repeated LaneMultitask_BasicInfoPts basic_pts = 3;
+    repeated LaneMultitask_ExtraInfoPts extra_pts = 4;
+}
+
+message LaneMultitaskMsg
+{
+    CommonMsgMsg common_msg = 1;
+    sint32 camera_id = 2;
+    LaneMultitask_LaneTransitionPoint lane_transition_point = 3;
+    LaneMultitask_LaneEdgePoint lane_edge_point = 4;
+    uint32 num_lane_parsing_image = 5;
+    uint32 num_edge_parsing_image = 6;
+    repeated LaneMultitask_LaneParsingImageData lane_parsing_image = 7;
+    repeated LaneMultitask_LaneMarkParsingData edge_parsing_image = 8;
+    uint32 num_lane_contours = 9;
+    repeated LaneMultitask_LaneContour lane_contours = 10;
+    Rect roi = 11;
+}
+

@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/uss_base.proto";
+package idrive.workflow.proto;
+
+enum UssTracking_ParkingInDir
+{
+    UssTracking_ParkingInDir_PARKING_IN_UNKNOWN = 0;
+    UssTracking_ParkingInDir_PARKING_IN_FRONT = 1;
+    UssTracking_ParkingInDir_PARKING_IN_BACK = 2;
+}
+
+message UssTracking_UssTracking
+{
+    PlvState plv_mode = 1;
+    PsuState psu_mode = 2;
+    OdoState odo_mode = 3;
+    PocState poc_mode = 4;
+    uint32 uss_ps_clear_distance = 5;
+    bool is_in_doorgarage = 7;
+    uint32 score_in_doorgarage = 8;
+    UssTracking_ParkingInDir parking_in_dir = 9;
+    PerFusUssPs ps_correct = 6;
+}
+
+message UssTrackingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssTracking_UssTracking uss_tracking = 2;
+}
+

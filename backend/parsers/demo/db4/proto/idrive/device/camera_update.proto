@@ -1,0 +1,28 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraUpdate_CamUpdateSt 
+{
+    CameraUpdate_CamUpdateSt_idle = 0;
+    CameraUpdate_CamUpdateSt_waiting = 1;
+    CameraUpdate_CamUpdateSt_reading = 2;
+    CameraUpdate_CamUpdateSt_writing = 3;
+    CameraUpdate_CamUpdateSt_success = 4;
+    CameraUpdate_CamUpdateSt_failure = 5;
+}
+
+message CameraUpdate_CameraUpdate
+{
+    bool update_request = 1;
+    bool update_running = 2;
+    repeated CameraUpdate_CamUpdateSt update = 3;
+    bytes percent = 4;
+}
+
+message CameraUpdateMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraUpdate_CameraUpdate camera_update = 2;
+}
+

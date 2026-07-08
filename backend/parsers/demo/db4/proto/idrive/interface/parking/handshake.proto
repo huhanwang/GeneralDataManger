@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Handshake_Handshake
+{
+    uint32 avoid_status = 1;
+    uint32 esp_state = 2;
+    uint32 eps_state = 3;
+    uint32 acc_state = 4;
+    float avoid_distance = 5;
+    uint32 avoid_uss_id = 6;
+}
+
+message HandshakeMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Handshake_Handshake handshake = 2;
+}
+

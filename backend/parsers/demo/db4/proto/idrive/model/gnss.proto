@@ -1,0 +1,81 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Gnss_PositionStatus
+{
+    Gnss_PositionStatus_INVALID = 0;
+    Gnss_PositionStatus_DR = 1;
+    Gnss_PositionStatus_FIXED_2D = 2;
+    Gnss_PositionStatus_FIXED_3D = 3;
+    Gnss_PositionStatus_GNSS_DR = 4;
+    Gnss_PositionStatus_ONLY_TIME_VALID = 5;
+}
+
+enum Gnss_PositingSystem
+{
+    Gnss_PositingSystem_GPS = 0;
+    Gnss_PositingSystem_BEI_DOU = 1;
+    Gnss_PositingSystem_GLONASS = 2;
+    Gnss_PositingSystem_GALILEO = 3;
+    Gnss_PositingSystem_QZSS = 4;
+    Gnss_PositingSystem_SBAS = 5;
+    Gnss_PositingSystem_UNKNOWN = 6;
+}
+
+enum Gnss_PoseType
+{
+    Gnss_PoseType_INVALID = 0;
+    Gnss_PoseType_SINGLE = 1;
+    Gnss_PoseType_DGPS = 2;
+    Gnss_PoseType_INVALID_PPS = 3;
+    Gnss_PoseType_RTK_FIXED = 4;
+    Gnss_PoseType_RTK_FLOAT = 5;
+    Gnss_PoseType_DEAD_RECKONING = 6;
+}
+
+message Gnss_SatelliteInfo
+{
+    uint32 num_in_view = 1;
+    uint32 no = 2;
+    uint32 snr = 3;
+    uint32 elevation = 4;
+    uint32 azimuth = 5;
+    Gnss_PositingSystem positing_system = 6;
+}
+
+message Gnss_Gnss
+{
+    uint64 utc_time = 1;
+    sint32 latitude = 2;
+    sint32 longitude = 3;
+    float altitude = 4;
+    float ellipsoid = 5;
+    Gnss_PoseType pose_type = 6;
+    Gnss_PositionStatus position_status = 7;
+    uint32 num_satellites = 8;
+    float gnss_vel_north = 9;
+    float gnss_vel_east = 10;
+    float gnss_vel_down = 11;
+    float heading = 12;
+    float course = 13;
+    float heading_error = 14;
+    float course_error = 15;
+    float horizon_position_error = 16;
+    float vertical_position_error = 17;
+    float horizon_velocity_error = 18;
+    float vertical_velocity_error = 19;
+    float tdop = 20;
+    float hdop = 21;
+    float vdop = 22;
+    uint32 sat_seq_no = 23;
+    uint32 num_gnss_satellite_info = 24;
+    repeated Gnss_SatelliteInfo statelline_info = 25;
+}
+
+message GnssMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Gnss_Gnss gnss = 2;
+}
+

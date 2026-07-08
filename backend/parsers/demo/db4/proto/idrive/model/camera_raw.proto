@@ -1,0 +1,55 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraRaw_Position
+{
+    CameraRaw_Position_UPLEFT = 0;
+    CameraRaw_Position_UPRIGHT = 1;
+    CameraRaw_Position_LOWERLEFT = 2;
+    CameraRaw_Position_LOWERRIGHT = 3;
+    CameraRaw_Position_AROUND_LEFT = 4;
+    CameraRaw_Position_AROUND_RIGHT = 5;
+    CameraRaw_Position_AROUND_FRONT = 6;
+    CameraRaw_Position_AROUND_REAR = 7;
+    CameraRaw_Position_FRONT = 8;
+    CameraRaw_Position_REAR = 9;
+}
+
+enum CameraRaw_Mode
+{
+    CameraRaw_Mode_ORIGINAL = 0;
+    CameraRaw_Mode_STITCH = 1;
+    CameraRaw_Mode_CYL = 2;
+}
+
+enum CameraRaw_Type
+{
+    CameraRaw_Type_H265 = 0;
+    CameraRaw_Type_YUV420P = 1;
+    CameraRaw_Type_BGR = 2;
+    CameraRaw_Type_RGB = 3;
+    CameraRaw_Type_JPEG = 4;
+    CameraRaw_Type_H264 = 5;
+    CameraRaw_Type_YUV420SP = 6;
+}
+
+message CameraRaw_Image
+{
+    bytes data = 1;
+    sint64 width = 2;
+    sint64 height = 3;
+    sint64 element_size = 4;
+    uint64 data_ptr = 9;
+    uint32 size = 5;
+    CameraRaw_Position pos = 6;
+    CameraRaw_Mode mode = 7;
+    CameraRaw_Type type = 8;
+}
+
+message CameraRawMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CameraRaw_Image image = 2;
+}
+

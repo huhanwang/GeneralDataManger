@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum SysVer_SYS_VER_TYPE 
+{
+    SysVer_SYS_VER_TYPE_MCU = 0;
+    SysVer_SYS_VER_TYPE_SOC = 1;
+    SysVer_SYS_VER_TYPE_VIN = 2;
+    SysVer_SYS_VER_TYPE_HARDWR = 3;
+    SysVer_SYS_VER_TYPE_ROUTER = 4;
+    SysVer_SYS_VER_TYPE_SYSTEM = 5;
+    SysVer_SYS_VER_TYPE_TIMSYN = 6;
+    SysVer_SYS_VER_TYPE_UPDATE = 7;
+    SysVer_SYS_VER_TYPE_DEVICE = 8;
+    SysVer_SYS_VER_TYPE_NUM = 9;
+}
+
+message SysVer_SysVer
+{
+    SysVer_SYS_VER_TYPE ver_type = 1;
+    string AppVersion = 2;
+    string BuildStamp = 3;
+}
+
+message SysVerMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    SysVer_SysVer sys_ver = 2;
+}
+

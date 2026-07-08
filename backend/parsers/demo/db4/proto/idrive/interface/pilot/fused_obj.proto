@@ -1,0 +1,77 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+import "type/common_type.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message FusedObj_Cipv
+{
+    uint32 front_ttc = 1;
+    uint32 front_left_ttc = 2;
+    uint32 front_right_ttc = 3;
+}
+
+message FusedObj_Obstacle
+{
+    bool is_valid = 1;
+    bool is_type_changed = 2;
+    bool is_velocity_valid = 3;
+    bool is_acceleration_valid = 4;
+    uint32 id = 5;
+    uint32 tracking_count = 6;
+    uint32 vision_id = 7;
+    uint32 f_radar_id = 8;
+    uint32 fr_radar_id = 9;
+    uint32 rr_radar_id = 10;
+    uint32 rl_radar_id = 11;
+    uint32 fl_radar_id = 12;
+    ObstacleType type = 13;
+    VehicleSubType vehicle_subtype = 14;
+    RiderSubtype rider_subtype = 15;
+    PedestrianSubtype pedestrian_subtype = 16;
+    PedestrianOrientation pedestrian_orientation = 17;
+    PedestrianPose pedestrian_pose = 18;
+    MotionStatus motion_status = 19;
+    PositionZone position_zone = 20;
+    CipvType cipv_type = 21;
+    CutType cut_type = 22;
+    TurnIndicator turn_indicator = 23;
+    BrakeIndicator brake_indicator = 24;
+    LaneAssignment lane_assignment = 25;
+    TrackingStatus tracking_status = 26;
+    uint32 confidence = 27;
+    uint32 feature_target_flag = 28;
+    uint32 source_flag = 29;
+    bytes sensor_sources = 30;
+    uint32 nearest_side = 31;
+    uint32 traffic_scenario = 32;
+    uint32 cmbb_primary_confidence = 33;
+    uint32 cmbb_secondary_confidence = 34;
+    uint32 fcw_confidence = 35;
+    float curvature = 36;
+    float speed_abs_scalar = 37;
+    Vector2f nearest_point_rel = 38;
+    Vector2f nearest_point_rel_sd = 39;
+    float heading_rel = 40;
+    float heading_rel_sd = 41;
+    Vector2f velocity_abs = 42;
+    Vector2f velocity_sd = 43;
+    Vector2f acceleration_abs = 44;
+    Vector2f acceleration_sd = 45;
+    float acceleration_abs_scalar = 46;
+    float height = 47;
+    float length = 48;
+    float width = 49;
+    repeated Vector2f bounding_box_points = 50;
+}
+
+message FusedObjMsg
+{
+    CommonMsgMsg common_msg = 1;
+    uint32 latency = 2;
+    FusedObj_Cipv cipv = 3;
+    repeated FusedObj_Obstacle obstacles = 4;
+    uint32 num_obstacles = 5;
+}
+

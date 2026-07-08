@@ -1,0 +1,111 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message ApaPlanningDebugInfo_Tpm
+{
+    float x = 1;
+    float y = 2;
+    float yaw = 3;
+}
+
+message ApaPlanningDebugInfo_PlanningParams
+{
+    ApaPlanningDebugInfo_Tpm tpm_point = 1;
+    sint32 park_type = 2;
+    sint32 park_out_dir = 3;
+    sint32 slot_type = 4;
+    sint32 slot_dir = 5;
+    sint32 slot_detect_type = 6;
+    sint32 uss_slot_side = 7;
+    float slot_x_in_map = 8;
+    float slot_y_in_map = 9;
+    float slot_width = 10;
+    float slot_depth = 11;
+    float slot_delta_x_rear_corner = 12;
+    float slot_delta_y_rear_corner = 13;
+    float slot_delta_x_front_corner = 14;
+    float slot_delta_y_front_corner = 15;
+    float slot_yaw = 16;
+    float veh_point_x = 17;
+    float veh_point_y = 18;
+    float veh_point_yaw = 19;
+    sint32 driving_direction = 20;
+    sint32 prev_driving_direction = 21;
+    sint32 type = 22;
+    sint32 gear_switch_count = 23;
+    float relative_coordinate_x = 24;
+    float relative_coordinate_y = 25;
+    float relative_coordinate_yaw = 26;
+    sint32 current_steps = 27;
+    sint32 total_steps = 28;
+    float opt_delta_yaw = 29;
+    float prev_planning_point_x = 30;
+    float prev_planning_point_y = 31;
+    float prev_planning_point_yaw = 32;
+    sint32 prev_hybrid_a_star_steps = 33;
+    float wheel_bar_dis = 34;
+    sint32 current_gear = 35;
+    float last_wheel_bar_dis = 36;
+    float last_tpm_move_dis = 37;
+    sint32 pre_path_size = 38;
+    sint32 prev_path_points_num = 39;
+    sint32 prev_plan_path_init_dir = 40;
+    float width_expand = 41;
+    sint32 uss_avoid_state = 42;
+    sint32 start_direction = 43;
+    sint32 gridmap_width = 44;
+    sint32 gridmap_height = 45;
+    sint32 plan_start_gridmap_time = 46;
+    bool last_driving_of_hybrid_a_star_flag = 47;
+    bool start_plan_in_para_slot_flag = 48;
+    bool start_HAplan_out_para_slot_flag = 49;
+    bool first_plan_flag = 50;
+    bool uss_detect_front_edge_flag = 51;
+    bool uss_detect_rear_edge_flag = 52;
+    bool last_driving_flag = 53;
+    bool hit_wheel_bar_flag = 54;
+    bool vpa_switch_apa_flag = 55;
+    bool isCornerslot = 56;
+    bool rod_valid = 57;
+    bool position_not_change_flag = 58;
+    bool is_yawvcs_toomuch = 59;
+}
+
+message ApaPlanningDebugInfo_DecisionParams
+{
+    sint32 mix_slot_cSlotPosition = 1;
+    sint32 mix_slot_cCheckFlag = 2;
+    sint32 mix_slot_cParkType = 3;
+    sint32 mix_slot_cSlotType = 4;
+    float mix_slot_fVehCurX = 5;
+    float mix_slot_fVehCurY = 6;
+    float mix_slot_fVehCurYaw = 7;
+    float mix_slot_fRoadRearLen = 8;
+    float mix_slot_fRoadFrontLen = 9;
+    float mix_slot_fRoadWidth = 10;
+    float mix_slot_fSlotWidth = 11;
+    float mix_slot_fSlotDepth = 12;
+    float mix_slot_fSlotYaw = 13;
+    float mix_slot_delta_x_front_corner = 14;
+    float mix_slot_delta_x_rear_corner = 15;
+    float mix_slot_delta_y_front_corner = 16;
+    float mix_slot_delta_y_rear_corner = 17;
+    float mix_slot_wheel_bar_dis = 18;
+    float mix_slot_fConf = 19;
+    bool mix_slot_bValid = 20;
+    bool mix_slot_isCornerslot = 21;
+}
+
+message ApaPlanningDebugInfo_ApaPlanningDebugInfo
+{
+    ApaPlanningDebugInfo_PlanningParams planning_params = 1;
+    ApaPlanningDebugInfo_DecisionParams decision_params = 2;
+}
+
+message ApaPlanningDebugInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ApaPlanningDebugInfo_ApaPlanningDebugInfo apa_plannging_debug_info = 2;
+}
+

@@ -1,0 +1,162 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+import "type/common_type.proto";
+package idrive.workflow.proto;
+
+enum SensorLamk_LinePosition 
+{
+    SensorLamk_LinePosition_INVALID = 0;
+    SensorLamk_LinePosition_LEFT_FIRST = 1;
+    SensorLamk_LinePosition_RIGHT_FIRST = 2;
+    SensorLamk_LinePosition_LEFT_SECOND = 3;
+    SensorLamk_LinePosition_RIGHT_SECOND = 4;
+    SensorLamk_LinePosition_LEFT_THIRD = 5;
+    SensorLamk_LinePosition_RIGHT_THIRD = 6;
+    SensorLamk_LinePosition_LEFT_FOURTH = 7;
+    SensorLamk_LinePosition_RIGHT_FOURTH = 8;
+    SensorLamk_LinePosition_LEFT_OUTSIDE = 9;
+    SensorLamk_LinePosition_RIGHT_OUTSIDE = 10;
+}
+
+enum SensorLamk_LineSourceCross 
+{
+    SensorLamk_LineSourceCross_UNKNOWN = 0;
+    SensorLamk_LineSourceCross_CROSSING = 1;
+    SensorLamk_LineSourceCross_OBSTACLE_BLOCKED = 2;
+    SensorLamk_LineSourceCross_HISTORY_BASED = 3;
+    SensorLamk_LineSourceCross_EXTRAPOLATION = 4;
+}
+
+enum SensorLamk_LineSourceTracking 
+{
+    SensorLamk_LineSourceTracking_UNKNOWN = 0;
+    SensorLamk_LineSourceTracking_NEW = 1;
+    SensorLamk_LineSourceTracking_MEASURED = 2;
+    SensorLamk_LineSourceTracking_PREDICTED = 3;
+    SensorLamk_LineSourceTracking_INVALID = 4;
+}
+
+enum SensorLamk_LineSourceCone 
+{
+    SensorLamk_LineSourceCone_UNKNOWN = 0;
+    SensorLamk_LineSourceCone_LEFT = 1;
+    SensorLamk_LineSourceCone_RIGHT = 2;
+}
+
+enum SensorLamk_LineSourceRoadEdge 
+{
+    SensorLamk_LineSourceRoadEdge_UNKNOWN = 0;
+    SensorLamk_LineSourceRoadEdge_CURB = 1;
+    SensorLamk_LineSourceRoadEdge_GUARDRAIL = 2;
+    SensorLamk_LineSourceRoadEdge_CONCRET_BARRIER = 3;
+    SensorLamk_LineSourceRoadEdge_WALL = 4;
+    SensorLamk_LineSourceRoadEdge_CANOPY = 5;
+    SensorLamk_LineSourceRoadEdge_CONE = 6;
+    SensorLamk_LineSourceRoadEdge_OTHER = 7;
+    SensorLamk_LineSourceRoadEdge_PARKEDCAR = 8;
+}
+
+enum SensorLamk_LineSourceStopLine 
+{
+    SensorLamk_LineSourceStopLine_UNKNOWN = 0;
+    SensorLamk_LineSourceStopLine_STOPLINE = 1;
+}
+
+enum SensorLamk_LineSourceSeparate 
+{
+    SensorLamk_LineSourceSeparate_UNPALLEL = 0;
+    SensorLamk_LineSourceSeparate_PALLEL = 1;
+}
+
+enum SensorLamk_ExtraPointType 
+{
+    SensorLamk_ExtraPointType_UNKNOWN = 0;
+    SensorLamk_ExtraPointType_DIVISION = 1;
+    SensorLamk_ExtraPointType_MERGE = 2;
+}
+
+enum SensorLamk_LineType 
+{
+    SensorLamk_LineType_UNKNOWN = 0;
+    SensorLamk_LineType_LANE_LINE = 1;
+    SensorLamk_LineType_CURB = 2;
+    SensorLamk_LineType_CENTER = 3;
+    SensorLamk_LineType_GUARDRAIL = 4;
+    SensorLamk_LineType_CONCRETE_BARRIER = 5;
+    SensorLamk_LineType_FENCE = 6;
+    SensorLamk_LineType_WALL = 7;
+    SensorLamk_LineType_CANOPY = 8;
+    SensorLamk_LineType_VIRTUAL = 9;
+    SensorLamk_LineType_CONE = 10;
+}
+
+enum SensorLamk_LaneMarkerColor 
+{
+    SensorLamk_LaneMarkerColor_UNKNOWN = 0;
+    SensorLamk_LaneMarkerColor_WHITE = 1;
+    SensorLamk_LaneMarkerColor_YELLOW = 2;
+    SensorLamk_LaneMarkerColor_ORANGE = 3;
+    SensorLamk_LaneMarkerColor_BLUE = 4;
+    SensorLamk_LaneMarkerColor_GREEN = 5;
+    SensorLamk_LaneMarkerColor_GRAY = 6;
+    SensorLamk_LaneMarkerColor_LETF_GRAY_RIGHT_YELLOW = 7;
+    SensorLamk_LaneMarkerColor_LETF_YELLOW_RIGHT_WHITE = 8;
+}
+
+enum SensorLamk_LaneMarkerType 
+{
+    SensorLamk_LaneMarkerType_UNKNOWN = 0;
+    SensorLamk_LaneMarkerType_SOLID = 1;
+    SensorLamk_LaneMarkerType_ROAD_EDGE = 2;
+    SensorLamk_LaneMarkerType_DASHED = 3;
+    SensorLamk_LaneMarkerType_LEFT_DASHED_RIGHT_SOLID = 4;
+    SensorLamk_LaneMarkerType_LEFT_SOLID_RIGHT_DASHED = 5;
+    SensorLamk_LaneMarkerType_DOUBLE_DASHED = 6;
+    SensorLamk_LaneMarkerType_DOUBLE_SOLID = 7;
+    SensorLamk_LaneMarkerType_BARRIER = 8;
+}
+
+message SensorLamk_LaneSegment
+{
+    SensorLamk_LaneMarkerColor color = 1;
+    SensorLamk_LaneMarkerType type = 2;
+    SensorLamk_LineSourceCross line_cross = 3;
+    SensorLamk_LineSourceTracking line_tracking = 4;
+    SensorLamk_LineSourceCone line_cone = 5;
+    SensorLamk_LineSourceRoadEdge line_road_edge = 6;
+    SensorLamk_LineSourceStopLine line_stop_line = 7;
+    SensorLamk_LineSourceSeparate line_separate = 8;
+    uint32 quality = 9;
+    float width = 10;
+    float c0_position = 11;
+    float c1_heading = 12;
+    float c2_curvature = 13;
+    float c3_curvature_derivative = 14;
+    float start_rel_x = 15;
+    float end_rel_x = 16;
+}
+
+message SensorLamk_LaneMarker
+{
+    repeated SensorLamk_LaneSegment segments = 1;
+    repeated CovariancePoint extra_points = 2;
+    repeated SensorLamk_ExtraPointType extra_point_types = 3;
+    SensorLamk_LineType type = 4;
+    SensorLamk_LinePosition position = 5;
+    uint32 num_segments = 6;
+    uint32 num_extra_points = 7;
+    uint32 track_id = 8;
+}
+
+message SensorLamk_LaneMarkerData
+{
+    repeated SensorLamk_LaneMarker lane_markers = 1;
+    uint32 num_lane_markers = 2;
+}
+
+message SensorLamkMsg 
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    SensorLamk_LaneMarkerData lane_marker_data = 2;
+}
+

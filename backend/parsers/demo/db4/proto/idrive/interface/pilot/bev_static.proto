@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/bev_road_geometry.proto";
+package idrive.workflow.proto;
+
+message BevStaticMsg
+{
+    CommonMsgMsg common_msg = 1;
+    BevRoadGeometry bev_road_geometry = 2;
+}
+

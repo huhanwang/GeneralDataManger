@@ -1,0 +1,246 @@
+syntax = "proto3";
+import "type/system_type_base.proto";
+import "type/parking_event.proto";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Source
+{
+    Source_SOURCE_UNKNOW = 0;
+    Source_SOURCE_APA = 1;
+    Source_SOURCE_VPA = 2;
+    Source_SOURCE_TRA = 3;
+    Source_SOURCE_NPA = 4;
+}
+
+enum ParkingHmiMsgType
+{
+    ParkingHmiMsgType_HMI_TYPE_UNKNOW = 0;
+    ParkingHmiMsgType_USER_MSG = 1;
+    ParkingHmiMsgType_WORK_MODE = 2;
+    ParkingHmiMsgType_VPA_STATE = 3;
+    ParkingHmiMsgType_APA_STATE = 4;
+    ParkingHmiMsgType_FUNC_SWITCH = 5;
+    ParkingHmiMsgType_RESPONSE = 6;
+    ParkingHmiMsgType_TRA_STATE = 7;
+    ParkingHmiMsgType_NPA_STATE = 8;
+}
+
+enum WorkMode
+{
+    WorkMode_MODE_NONE = 0;
+    WorkMode_VPA = 1;
+    WorkMode_APA = 2;
+    WorkMode_RPA = 3;
+    WorkMode_TRA = 4;
+    WorkMode_NPA = 5;
+}
+
+message ApaHmiState
+{
+    ApaStateInfo pre_state = 1;
+    ApaStateInfo cur_state = 2;
+    ApaFunctionExitReason exit_reason = 3;
+    DiagType diag = 4;
+    FunctionPauseReason pause_reason = 5;
+    ProcedureEventType procedure_event = 6;
+    WorkMode work_mode = 7;
+    uint32 num_pause_reasons = 8;
+    uint32 num_nok_reasons = 9;
+    uint32 num_procedure_events = 10;
+    repeated FunctionPauseReason pause_reasons = 11;
+    repeated OperaterRefusedType nok_reasons = 12;
+    repeated ProcedureEventType procedure_events = 13;
+}
+
+message VpaState
+{
+    ApaHmiState apa_state = 1;
+    VpaStateDetailType type = 2;
+    DiagType diag = 3;
+    FunctionPauseReason pause_reason = 4;
+    ProcedureEventType procedure_event = 5;
+    VpaStateDetailType sub_type = 6;
+    HandShakableType handshakable = 7;
+    VpaFunctionExitReason exit_reason = 8;
+    uint32 num_pause_reasons = 9;
+    uint32 num_nok_reasons = 10;
+    uint32 num_sub_nok_reasons = 11;
+    uint32 num_procedure_events = 12;
+    repeated FunctionPauseReason pause_reasons = 13;
+    repeated OperaterRefusedType nok_reasons = 14;
+    repeated OperaterRefusedType sub_nok_reasons = 15;
+    repeated ProcedureEventType procedure_events = 16;
+}
+
+message ParkingHmibase_HmiMsgBase
+{
+    Source source = 1;
+    ParkingHmiMsgType type = 2;
+}
+
+message ParkingHmibaseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ParkingHmibase_HmiMsgBase msg_base = 2;
+}
+
+enum UserMessageHmi_Direction
+{
+    UserMessageHmi_Direction_UNKNOW = 0;
+    UserMessageHmi_Direction_FRONT = 1;
+    UserMessageHmi_Direction_BACK = 2;
+}
+
+enum UserMessageHmi_ParkingOutDirection
+{
+    UserMessageHmi_ParkingOutDirection_UNKNOW = 0;
+    UserMessageHmi_ParkingOutDirection_V_FR_LEFT = 1;
+    UserMessageHmi_ParkingOutDirection_V_FR_CENTER = 2;
+    UserMessageHmi_ParkingOutDirection_V_FR_RIGHT = 3;
+    UserMessageHmi_ParkingOutDirection_V_RR_LEFT = 4;
+    UserMessageHmi_ParkingOutDirection_V_RR_CENTER = 5;
+    UserMessageHmi_ParkingOutDirection_V_RR_RIGHT = 6;
+    UserMessageHmi_ParkingOutDirection_H_FR_LEFT = 7;
+    UserMessageHmi_ParkingOutDirection_H_FR_RIGHT = 8;
+}
+
+enum UserMessageHmi_SlotType
+{
+    UserMessageHmi_SlotType_TYPE_UNKNOWN = 0;
+    UserMessageHmi_SlotType_VERTICAL_TYPE = 1;
+    UserMessageHmi_SlotType_PARALLEL_TYPE = 2;
+    UserMessageHmi_SlotType_OBLIQUE_TYPE = 3;
+}
+
+message UserMessageHmi_UserSelectSlot
+{
+    uint64 timestamp = 1;
+    repeated sint32 ids = 2;
+    repeated sint32 version_ids = 3;
+    sint32 size = 4;
+}
+
+message UserMessageHmi_UserSelectDirection
+{
+    UserMessageHmi_Direction direction = 1;
+    uint64 timestamp = 2;
+}
+
+message UserMessageHmi_UserParkingOut
+{
+    uint64 timestamp = 1;
+    sint32 slot_id = 2;
+    UserMessageHmi_ParkingOutDirection parking_out_direction = 3;
+}
+
+message UserMessageHmi_UserSelfSelectSlot
+{
+    bool slot_valid = 1;
+    sint32 slotid = 2;
+    UserMessageHmi_SlotType slot_type = 3;
+    uint64 timestamp = 4;
+    repeated Vector3f vcs_points = 5;
+}
+
+message UserMessageHmi_UserMessage
+{
+    sint32 user_event = 1;
+    UserMessageHmi_UserSelectSlot selected_slot = 2;
+    UserMessageHmi_UserSelectDirection selected_direction = 3;
+    UserMessageHmi_UserParkingOut parking_out = 4;
+    UserMessageHmi_UserSelfSelectSlot self_selected_slot = 5;
+}
+
+message UserMessageHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    UserMessageHmi_UserMessage user_message = 2;
+}
+
+message VpaStateHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    VpaState vpa_state = 2;
+}
+
+message ApaHmiStateHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    ApaHmiState apa_hmi_state = 2;
+}
+
+message TraStateHmi_TraState
+{
+    TraStateDetailType type = 1;
+    FunctionPauseReason pause_reason = 2;
+    ProcedureEventType procedure_event = 3;
+    TraFunctionExitReason exit_reason = 4;
+    uint32 num_pause_reasons = 5;
+    uint32 num_nok_reasons = 6;
+    uint32 num_procedure_events = 7;
+    repeated FunctionPauseReason pause_reasons = 8;
+    repeated OperaterRefusedType nok_reasons = 9;
+    repeated ProcedureEventType procedure_events = 10;
+}
+
+message TraStateHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    TraStateHmi_TraState tra_state = 2;
+}
+
+message NpaStateHmi_NpaState
+{
+    NpaStateDetailType type = 1;
+    FunctionPauseReason pause_reason = 2;
+    ProcedureEventType procedure_event = 3;
+    NpaFunctionExitReason exit_reason = 4;
+    uint32 num_pause_reasons = 5;
+    uint32 num_nok_reasons = 6;
+    uint32 num_procedure_events = 7;
+    repeated FunctionPauseReason pause_reasons = 8;
+    repeated OperaterRefusedType nok_reasons = 9;
+    repeated ProcedureEventType procedure_events = 10;
+}
+
+message NpaStateHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    NpaStateHmi_NpaState npa_state = 2;
+}
+
+message FunctionSwitchHmi_FunctionSwitch
+{
+    bool vpa_func = 1;
+    bool apa_func = 2;
+}
+
+message FunctionSwitchHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    FunctionSwitchHmi_FunctionSwitch function_switch = 2;
+}
+
+enum UnifiedResponseHmi_ErrorCode
+{
+    UnifiedResponseHmi_ErrorCode_DEFAULT = 0;
+    UnifiedResponseHmi_ErrorCode_OK = 1;
+    UnifiedResponseHmi_ErrorCode_NOK = 2;
+}
+
+message UnifiedResponseHmi_UnifiedResponse
+{
+    UnifiedResponseHmi_ErrorCode code = 1;
+    OperaterRefusedType reason = 2;
+    uint32 num_reasons = 3;
+    repeated OperaterRefusedType reasons = 4;
+}
+
+message UnifiedResponseHmiMsg
+{
+    ParkingHmibaseMsg parking_hmibase = 1;
+    UnifiedResponseHmi_UnifiedResponse unified_response = 2;
+}
+

@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ProceTsmState_ProceFunMode
+{
+    ProceTsmState_ProceFunMode_PARK_UNACTIVE = 0;
+    ProceTsmState_ProceFunMode_APA_ACTIVE = 1;
+    ProceTsmState_ProceFunMode_HPA_ACTIVE = 2;
+}
+
+message ProceTsmState_StateData
+{
+    ProceTsmState_ProceFunMode proce_fun_mode = 1;
+}
+
+message ProceTsmStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ProceTsmState_StateData state_data = 2;
+}
+

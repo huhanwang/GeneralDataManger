@@ -1,0 +1,71 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CanBusFaults_Channel 
+{
+    CanBusFaults_Channel_FD3 = 0;
+    CanBusFaults_Channel_NUM = 1;
+}
+
+enum CanBusFaults_NodeName 
+{
+    CanBusFaults_NodeName_BDCU = 0;
+    CanBusFaults_NodeName_EPS = 1;
+    CanBusFaults_NodeName_ESP = 2;
+    CanBusFaults_NodeName_EPB = 3;
+    CanBusFaults_NodeName_ICC = 4;
+    CanBusFaults_NodeName_ICM = 5;
+    CanBusFaults_NodeName_PKC = 6;
+    CanBusFaults_NodeName_SDM = 7;
+    CanBusFaults_NodeName_TBOX = 8;
+    CanBusFaults_NodeName_VCU = 9;
+    CanBusFaults_NodeName_BMS = 10;
+    CanBusFaults_NodeName_EGSM = 11;
+    CanBusFaults_NodeName_NUM = 12;
+}
+
+enum CanBusFaults_MsgErr 
+{
+    CanBusFaults_MsgErr_SteerWhlAgVld = 0;
+    CanBusFaults_MsgErr_EspSignal = 1;
+    CanBusFaults_MsgErr_E2eErr = 2;
+    CanBusFaults_MsgErr_NUM = 3;
+}
+
+enum CanBusFaults_DiagStatus 
+{
+    CanBusFaults_DiagStatus_Normal = 0;
+    CanBusFaults_DiagStatus_FAULT = 1;
+    CanBusFaults_DiagStatus_Reserved = 2;
+}
+
+message CanBusFaults_CanFault
+{
+    CanBusFaults_DiagStatus powertrain_sts = 1;
+    CanBusFaults_DiagStatus chassis_sts = 2;
+    CanBusFaults_DiagStatus steering_sts = 3;
+    CanBusFaults_DiagStatus bluetooth_sts = 4;
+    CanBusFaults_DiagStatus app_sts = 5;
+    CanBusFaults_DiagStatus bdc_sts = 6;
+    CanBusFaults_DiagStatus apa_controller_sts = 7;
+}
+
+message CanBusFaults_Faults
+{
+    CanBusFaults_Channel chn = 1;
+    uint32 nm_state = 2;
+    uint32 fault_enable = 3;
+    repeated CanBusFaults_NodeName node_lost = 4;
+    repeated CanBusFaults_MsgErr msg_err = 5;
+    uint32 can_fault_code = 6;
+    CanBusFaults_CanFault can_fault = 7;
+}
+
+message CanBusFaultsMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_faults = 2;
+    repeated CanBusFaults_Faults faults = 3;
+}
+

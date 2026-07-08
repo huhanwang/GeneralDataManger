@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/real3d_base.proto";
+package idrive.workflow.proto;
+
+message Real3DMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FullReal3D real3d = 2;
+}
+

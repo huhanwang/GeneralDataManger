@@ -1,0 +1,195 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum VehPropertyPerceptionType
+{
+    VehPropertyPerceptionType_kVehPerceptionTypeLicensePlate = 0;
+    VehPropertyPerceptionType_kVehPerceptionTypeWheel = 1;
+    VehPropertyPerceptionType_kVehPerceptionTypeRearLmks3 = 2;
+    VehPropertyPerceptionType_kVehPerceptionTypeRear = 3;
+    VehPropertyPerceptionType_kVehPerceptionTypeVehFull = 4;
+    VehPropertyPerceptionType_kVehPerceptionTypeVehFullFast = 5;
+    VehPropertyPerceptionType_kVehPerceptionTypeVehRearFast = 6;
+    VehPropertyPerceptionType_kVehPerceptionTypeCnt = 7;
+}
+
+enum PedProperyPerceptionType
+{
+    PedProperyPerceptionType_kPedPerceptionType_Head = 0;
+    PedProperyPerceptionType_kPedPerceptionType_PedFast = 1;
+    PedProperyPerceptionType_kPedPerceptionType_Ped_PedCycFast = 2;
+    PedProperyPerceptionType_kPedPerceptionType_Cyc_PedCycFast = 3;
+    PedProperyPerceptionType_kPedPerceptionType_Ped_PedCyc2PE = 4;
+    PedProperyPerceptionType_kPedPerceptionType_Cyc_PedCyc2PE = 5;
+    PedProperyPerceptionType_kPedPerceptionType_Face = 6;
+    PedProperyPerceptionType_kPedPerceptionType_Tricyclist_PedCyc2PE = 7;
+    PedProperyPerceptionType_kPedPerceptionType_Motocyclist_PedCyc2PE = 8;
+    PedProperyPerceptionType_kPedPerceptionType_Ped_PedAeb2PE = 9;
+    PedProperyPerceptionType_kPedPerceptionType_Ped_PedNormal2PE = 10;
+    PedProperyPerceptionType_kPedPerceptionType_Obj_Depth = 11;
+    PedProperyPerceptionType_kPedPerceptionType_Cnt = 12;
+}
+
+enum ObstacleRawModelType
+{
+    ObstacleRawModelType_kObstacleRawModelCar = 0;
+    ObstacleRawModelType_kObstacleRawModelFullCar = 1;
+    ObstacleRawModelType_kObstacleRawModelPed = 2;
+    ObstacleRawModelType_kObstacleRawModelHead = 3;
+    ObstacleRawModelType_kObstacleRawModelRare = 4;
+    ObstacleRawModelType_kObstacleRawModelTrafficSign = 5;
+    ObstacleRawModelType_kObstacleRawModelTrafficLight = 6;
+    ObstacleRawModelType_kObstacleRawModelLane = 7;
+    ObstacleRawModelType_kObstacleRawModelFrontWheel = 8;
+    ObstacleRawModelType_kObstacleRawModelRearWheel = 9;
+    ObstacleRawModelType_kObstacleRawModelRoadSign = 10;
+    ObstacleRawModelType_kObstacleRawModelTrafficArrow = 11;
+    ObstacleRawModelType_kObstacleRawModelYieldMark = 12;
+    ObstacleRawModelType_kObstacleRawModelTrafficCone = 13;
+    ObstacleRawModelType_kObstacleRawModelBarrel = 14;
+    ObstacleRawModelType_kObstacleRawModelSpeedMark = 15;
+    ObstacleRawModelType_kObstacleRawModelCyclist = 16;
+    ObstacleRawModelType_kObstacleRawModelParkingLock = 17;
+    ObstacleRawModelType_kObstacleRawModelSpeedCamera = 18;
+    ObstacleRawModelType_kObstacleRawModelTrafficLightLens = 19;
+    ObstacleRawModelType_kObstacleRawModelBushes = 20;
+    ObstacleRawModelType_kObstacleRawModelParkingSlot = 22;
+    ObstacleRawModelType_kObstacleRawModelFace = 34;
+    ObstacleRawModelType_kObstacleRawModelVehiclePlat = 35;
+    ObstacleRawModelType_kObstacleRawModelLaneCrossPoints = 37;
+    ObstacleRawModelType_kObstacleRawModelVerticalPolePoints = 38;
+    ObstacleRawModelType_kObstacleRawModelTollgate = 39;
+    ObstacleRawModelType_kObstacleRawModelParkingLockClose = 40;
+    ObstacleRawModelType_kObstacleRawModelParkingLockOpen = 41;
+    ObstacleRawModelType_kObstacleRawModelParkingColumn = 42;
+    ObstacleRawModelType_kObstacleRawModelParkingAFrameSign = 43;
+    ObstacleRawModelType_kObstacleRawModelTrafficBollard = 44;
+    ObstacleRawModelType_kObstacleRawModelParkingObstacles = 45;
+    ObstacleRawModelType_kObstacleRawModelParkingLimiter = 46;
+    ObstacleRawModelType_kObstacleRawModelParkingLimiterPole = 47;
+    ObstacleRawModelType_kObstacleRawModelTurnstileClose = 48;
+    ObstacleRawModelType_kObstacleRawModelTurnstileOpen = 49;
+    ObstacleRawModelType_kObstacleRawModelHydrant = 50;
+    ObstacleRawModelType_kObstacleRawModelPipeline = 51;
+    ObstacleRawModelType_kObstacleRawModelHpp = 52;
+}
+
+enum Global2peResultType
+{
+    Global2peResultType_kGlobal2PeResultTypeWeather = 0;
+    Global2peResultType_kGlobal2PeResultTypeLight = 1;
+    Global2peResultType_kGlobal2PeResultTypeScene = 2;
+    Global2peResultType_kGlobal2PeResultTypeTime = 3;
+    Global2peResultType_kGlobal2PeResultTypeVanishPoint = 4;
+    Global2peResultType_kGlobal2PeResultTypePosenet = 5;
+    Global2peResultType_kGlobal2PeResultTypeBlockcls = 6;
+    Global2peResultType_kGlobal2PeResultTypeBlurcls = 7;
+    Global2peResultType_kGlobal2PeResultTypeGlarecls = 8;
+    Global2peResultType_kGlobal2PeResultTypePrFromDepth = 9;
+}
+
+enum TrafficSignPropertyType
+{
+    TrafficSignPropertyType_kTrafficSignProperty_Type = 0;
+    TrafficSignPropertyType_kTrafficSignProperty_Bbox = 1;
+    TrafficSignPropertyType_kTrafficSignProperty_Occlude = 2;
+}
+
+enum TrafficLightPropertyType
+{
+    TrafficLightPropertyType_kTrafficLightProperty_Type = 0;
+    TrafficLightPropertyType_kTrafficLightProperty_Color = 1;
+    TrafficLightPropertyType_kTrafficLightProperty_Lens = 2;
+    TrafficLightPropertyType_kTrafficLightProperty_FP = 3;
+    TrafficLightPropertyType_kTrafficLightProperty_BBox = 4;
+    TrafficLightPropertyType_kTrafficLightLensProperty_Type = 5;
+    TrafficLightPropertyType_kTrafficLightLensProperty_Color = 6;
+    TrafficLightPropertyType_kTrafficLightProperty_Time = 7;
+    TrafficLightPropertyType_kTrafficLightProperty_Direct = 8;
+    TrafficLightPropertyType_kTrafficLightProperty_Cnt = 9;
+}
+
+message PropertyPerceptionBBox
+{
+    uint32 num_category = 1;
+    Rect rect = 2;
+    float conf = 3;
+    sint32 type = 4;
+    repeated Category category = 5;
+}
+
+message KeyPoint
+{
+    Vector3f pt = 1;
+    float type = 2;
+    float conf = 3;
+    float boundary_conf_x = 4;
+    float boundary_conf_y = 5;
+}
+
+message TrackingFeatureRaw
+{
+    sint32 model_id = 1;
+    uint32 num_data = 2;
+    bytes data = 3;
+}
+
+message PoseNetRaw
+{
+    float roll_raw = 1;
+    float roll_filter = 2;
+    float pitch_raw = 3;
+    float pitch_filter = 4;
+    float yaw_raw = 5;
+    float yaw_filter = 6;
+    sint32 type = 7;
+    float conf = 8;
+}
+
+message KeyPointsLight
+{
+    sint32 task_type = 1;
+    uint32 num_key_points = 2;
+    repeated KeyPoint key_points = 3;
+}
+
+message PRFromGround
+{
+    float roll = 1;
+    float pitch = 2;
+    Global2peResultType type = 3;
+}
+
+message ObstacleRaw
+{
+    Rect rect = 1;
+    float conf = 2;
+    sint32 model = 3;
+    sint32 source = 4;
+    uint32 num_category = 5;
+    uint32 num_property_bbox = 6;
+    uint32 num_key_points = 7;
+    uint32 num_key_points_raw = 8;
+    repeated Category category = 9;
+    repeated PropertyPerceptionBBox property_bbox = 10;
+    repeated KeyPoint key_points = 11;
+    repeated KeyPointsLight key_points_raw = 12;
+}
+
+message ObstacleRawsData
+{
+    Category category = 1;
+    float conf_scale = 2;
+    uint32 num_obstacle_raws = 3;
+    repeated ObstacleRaw obstacle_raws = 4;
+}
+
+message FullObstacleRawsData
+{
+    Category category = 1;
+    float conf_scale = 2;
+    uint32 num_obstacle_raws = 3;
+    repeated ObstacleRaw obstacle_raws = 5;
+}
+

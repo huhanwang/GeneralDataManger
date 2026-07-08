@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraInternal_Param
+{
+    uint32 width = 1;
+    uint32 height = 2;
+    uint32 type = 3;
+    uint32 version = 4;
+    double fov = 5;
+    double fx = 6;
+    double fy = 7;
+    double cx = 8;
+    double cy = 9;
+    double k1 = 10;
+    double k2 = 11;
+    double k3 = 12;
+    double k4 = 13;
+    double p1 = 14;
+    double p2 = 15;
+    repeated double valid_height = 16;
+}
+
+message CameraInternalMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_params = 2;
+    repeated CameraInternal_Param params = 3;
+}
+

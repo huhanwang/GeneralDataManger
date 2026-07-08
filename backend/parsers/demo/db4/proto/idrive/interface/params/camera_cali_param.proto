@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraCaliParam_CameraModel 
+{
+    CameraCaliParam_CameraModel_MODEL_KB = 0;
+    CameraCaliParam_CameraModel_MODEL_SCARA = 1;
+}
+
+message CameraCaliParam_ConvertRT
+{
+    uint32 num_rotation = 1;
+    uint32 num_translation = 2;
+    repeated float rotation = 3;
+    repeated float translation = 4;
+}
+
+message CameraCaliParam_IntrinsicParam
+{
+    uint32 camera_index = 1;
+    float center_u = 2;
+    float center_v = 3;
+    float focal_u = 4;
+    float focal_v = 5;
+    float xi = 6;
+    repeated float distort = 7;
+    uint32 num_distort = 8;
+}
+
+message CameraCaliParam_ExtrinsicParam
+{
+    float camera_x = 1;
+    float camera_y = 2;
+    float camera_z = 3;
+    float yaw = 4;
+    float roll = 5;
+    float pitch = 6;
+}
+
+message CameraCaliParam_KbParam
+{
+    uint32 camera_index = 1;
+    uint32 fov = 2;
+    uint32 image_height = 3;
+    uint32 image_width = 4;
+    uint32 type = 5;
+    uint32 version = 6;
+    CameraCaliParam_IntrinsicParam intri = 7;
+    CameraCaliParam_ConvertRT local2vcs = 8;
+    CameraCaliParam_ExtrinsicParam cam2local = 9;
+    CameraCaliParam_ExtrinsicParam cam2vcs = 10;
+    repeated float valid_height = 11;
+    string vendor = 12;
+    uint32 num_valid_height = 13;
+    uint32 num_vendor = 14;
+}
+
+message CameraCaliParam_ScaraCameraInt
+{
+    uint32 type = 1;
+    uint32 flag = 2;
+    uint32 width = 3;
+    uint32 height = 4;
+    uint32 direct_mapping_cnt = 5;
+    uint32 invers_mapping_cnt = 6;
+    uint32 int_param_cnt = 7;
+    repeated float direct_mapping = 8;
+    repeated float invers_mapping = 9;
+    repeated float int_param = 10;
+}
+
+message CameraCaliParam_ScaraParam
+{
+    float yaw = 1;
+    float roll = 2;
+    float pitch = 3;
+    uint32 num_camera_ext = 4;
+    repeated float camera_ext = 5;
+    CameraCaliParam_ScaraCameraInt camera_int = 6;
+}
+
+message CameraCaliParamMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraCaliParam_CameraModel camera_model = 2;
+    uint32 num_kb_param = 3;
+    uint32 num_scara_param = 4;
+    repeated CameraCaliParam_KbParam kb_param = 5;
+    repeated CameraCaliParam_ScaraParam scara_param = 6;
+}
+

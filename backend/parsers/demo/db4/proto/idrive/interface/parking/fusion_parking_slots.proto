@@ -1,0 +1,21 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parking_slot.proto";
+package idrive.workflow.proto;
+
+message FusionParkingSlots_FusionParkingSlots
+{
+    uint32 num_parking_slots = 1;
+    uint32 num_certificated_slots = 2;
+    bool is_in_doorgarage = 5;
+    uint32 score_in_doorgarage = 6;
+    repeated ParkingSlotInfo parking_slots_info = 3;
+    repeated sint32 certified_slots = 4;
+}
+
+message FusionParkingSlotsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FusionParkingSlots_FusionParkingSlots fusion_parking_slots = 2;
+}
+

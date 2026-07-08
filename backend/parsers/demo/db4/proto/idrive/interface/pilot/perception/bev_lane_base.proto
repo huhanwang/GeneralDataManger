@@ -1,0 +1,69 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum BevCoarseLaneLineType
+{
+    BevCoarseLaneLineType_kCoarseLane = 0;
+    BevCoarseLaneLineType_kCoarseCurb = 1;
+    BevCoarseLaneLineType_kCoarseStopLine = 2;
+    BevCoarseLaneLineType_kCoarseUnknown = 127;
+}
+
+enum BevLaneLineType
+{
+    BevLaneLineType_kWhiteSolidLine = 0;
+    BevLaneLineType_kWhiteDashedLine = 1;
+    BevLaneLineType_kYellowSolidLine = 2;
+    BevLaneLineType_kYellowDashedLine = 3;
+    BevLaneLineType_kLeftDashedRightSolidLine = 4;
+    BevLaneLineType_kRightDashedLeftSolidLine = 5;
+    BevLaneLineType_kYellowDoubleSolidLine = 6;
+    BevLaneLineType_kCurb = 7;
+    BevLaneLineType_kStopLine = 8;
+    BevLaneLineType_kCurbBarrier = 9;
+    BevLaneLineType_kSpeedBump = 10;
+    BevLaneLineType_kMovableCurb = 11;
+    BevLaneLineType_kWhiteDoubleSolidLine = 12;
+    BevLaneLineType_kWhiteDoubleDashedLine = 13;
+    BevLaneLineType_kYellowDoubleDashedLine = 14;
+    BevLaneLineType_kHorizontalCurb = 15;
+    BevLaneLineType_kTripleLine = 16;
+    BevLaneLineType_kQuadrupleLine = 17;
+    BevLaneLineType_kLeftTurnWaitLine = 18;
+    BevLaneLineType_kUnknown = 127;
+}
+
+enum BevLaneLineGroup
+{
+    BevLaneLineGroup_kUnknowGroup = 0;
+    BevLaneLineGroup_kSingleGroup = 1;
+    BevLaneLineGroup_kDoubleGroup = 2;
+    BevLaneLineGroup_kTripleGroup = 3;
+    BevLaneLineGroup_kQuadrupleGroup = 4;
+}
+
+enum BevLaneVisibilityType
+{
+    BevLaneVisibilityType_kUnknowVisibilityType = 0;
+    BevLaneVisibilityType_kVisibleType = 1;
+    BevLaneVisibilityType_kInferentialType = 2;
+    BevLaneVisibilityType_kInvisibleType = 3;
+}
+
+enum CurbType
+{
+    CurbType_NOT_CURB = 0;
+    CurbType_FLAT_CURB = 1;
+    CurbType_LOW_CURB = 2;
+    CurbType_HIGH_CURB = 3;
+}
+
+message PointConfidence
+{
+    BasePoint coord = 1;
+    float score = 2;
+    float type_score = 3;
+    BevLaneLineType vision_lane_type = 4;
+}
+

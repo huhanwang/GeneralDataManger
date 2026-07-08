@@ -1,0 +1,61 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/base.proto";
+import "interface/pilot/perception/physical_layer.proto";
+import "interface/pilot/perception/logical_layer.proto";
+import "interface/pilot/perception/topological_layer.proto";
+import "interface/pilot/perception/dynamic_layer.proto";
+import "interface/pilot/perception/ego_layer.proto";
+import "interface/pilot/perception/ref_line_layer.proto";
+package idrive.workflow.proto;
+
+enum MapEnv_DrivingConditionType
+{
+    MapEnv_DrivingConditionType_UNSPECIFIED = 0;
+    MapEnv_DrivingConditionType_HIGHWAY = 1;
+    MapEnv_DrivingConditionType_URBAN = 2;
+}
+
+message MapEnv_Statistics
+{
+    uint32 num_name = 1;
+    uint32 num_type = 2;
+    float value = 3;
+    string name = 4;
+    string type = 5;
+}
+
+message MapEnv_MapEnvStatistics
+{
+    uint32 id = 1;
+    uint32 duration = 2;
+    uint64 stamp = 3;
+    uint32 seq_id = 4;
+    float distance = 5;
+    uint32 num_stats = 6;
+    repeated MapEnv_Statistics stats = 7;
+}
+
+message MapEnv_MapEnvMsg
+{
+    NdmHeader header = 1;
+    PhysicalLayer physical_layer = 2;
+    LogicalLayer logical_layer = 3;
+    TopologicalLayer topological_layer = 4;
+    DynamicLayer dynamic_layer = 5;
+    EgoLayer ego_layer = 6;
+    MapEnv_MapEnvStatistics statistics = 7;
+    uint32 status = 8;
+    uint32 diag_code = 9;
+    RefLineLayer refline_layer = 10;
+    uint32 loc_main_level = 11;
+    uint32 loc_sub_level = 12;
+    MapEnv_DrivingConditionType driving_condition = 13;
+}
+
+message MapEnvMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MapEnv_MapEnvMsg map_env_msg = 2;
+}
+

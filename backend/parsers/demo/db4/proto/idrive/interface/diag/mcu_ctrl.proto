@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message McuCtrl_Control
+{
+    uint32 control = 1;
+}
+
+message McuCtrlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    McuCtrl_Control control = 2;
+}
+

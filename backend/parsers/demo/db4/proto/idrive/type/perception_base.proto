@@ -1,0 +1,101 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum ImageId
+{
+    ImageId_kCylinderRear = 0;
+    ImageId_kCylinderFront = 1;
+    ImageId_kCylinderLeft = 2;
+    ImageId_kCylinderRight = 3;
+    ImageId_kIpm = 4;
+    ImageId_kRear = 5;
+    ImageId_kFront = 6;
+    ImageId_kFrontNarrow = 7;
+    ImageId_kImageIDCount = 8;
+}
+
+enum VehRearPropertyValue
+{
+    VehRearPropertyValue_VehRearProperty_Head = 0;
+    VehRearPropertyValue_VehRearProperty_Rear = 1;
+}
+
+enum VehProperty
+{
+    VehProperty_kVehPropertyType = 0;
+    VehProperty_kVehPropertyClassification = 1;
+    VehProperty_kVehPropertyLight = 2;
+    VehProperty_kVehProperty3DBox = 3;
+    VehProperty_kVehPropertyKeyPoints = 4;
+    VehProperty_kVehPropertyVehBBox = 5;
+    VehProperty_kVehPropertyKeyPointsConf = 6;
+    VehProperty_kVehPropertyBigSmallCls = 7;
+    VehProperty_kVehPropertyPoliceLight = 8;
+    VehProperty_kVehPropertyOcclusion = 9;
+    VehProperty_kVehPropertyPose = 10;
+    VehProperty_kVehPropertyVehFull = 11;
+    VehProperty_kVehPropertyOritationCls = 12;
+    VehProperty_kVehPropertyOritationRe = 13;
+    VehProperty_kVehProperty12KeyPoints = 14;
+    VehProperty_kVehProperty12KeyPointsConf = 15;
+    VehProperty_kVehproperty12KeyPointsCls = 16;
+    VehProperty_kVehPropertyTruncation = 17;
+    VehProperty_kVehPropertyLeftDoor = 18;
+    VehProperty_kVehPropertyRightDoor = 19;
+    VehProperty_kVehPropertyTrunkDoor = 20;
+    VehProperty_kVehPropertyEmergency = 21;
+    VehProperty_kVehPropertyRearFuzzy = 22;
+    VehProperty_kVehPropertyPollution = 23;
+    VehProperty_kVehPropertyCnt = 24;
+}
+
+enum PedProperty
+{
+    PedProperty_kPedPropertyOrientation = 0;
+    PedProperty_kPedPropertyCyclist = 1;
+    PedProperty_kPedPropertyAge = 2;
+    PedProperty_kPedPropertyPose = 3;
+    PedProperty_kPedPropertyPosNeg = 4;
+    PedProperty_kPedPropertyBBox = 5;
+    PedProperty_kPedPropertyOcclusion = 6;
+    PedProperty_kPedPropertyPosNegOcc = 7;
+    PedProperty_kPedProperty2PEDet = 8;
+    PedProperty_kPedPropertyCnt = 9;
+}
+
+enum VehRearProperty
+{
+    VehRearProperty_kVehRearPropertyOcclusion = 0;
+    VehRearProperty_kVehRearPropertyPart = 1;
+    VehRearProperty_kVehRearPropertyBBox = 2;
+    VehRearProperty_kVehRearPropertyLmks3 = 3;
+    VehRearProperty_kVehRearPropertyScaleRe = 4;
+    VehRearProperty_kVehRearPropertyPlate = 5;
+    VehRearProperty_kVehRearPropertyCnt = 6;
+}
+
+message Polygon
+{
+    uint32 num_points = 1;
+    repeated Vector3f points = 2;
+}
+
+message ImageSpace
+{
+    RectInt rect = 1;
+}
+
+message RoiMap
+{
+    Rect model_roi = 1;
+    sint32 model_id = 2;
+}
+
+message PerceptionHeader
+{
+    sint32 cam_idx = 1;
+    sint64 frame_id = 2;
+    sint64 time_stamp = 3;
+}
+

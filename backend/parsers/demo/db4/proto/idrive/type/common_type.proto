@@ -1,0 +1,224 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum SensorObsType
+{
+    SENSOROBSTYPE_FIRST_UNKNOWN = 0;
+    SensorObsType_IpmParsing = 1;
+    SensorObsType_FisheyeParsing = 2;
+    SensorObsType_UssObj = 3;
+    SensorObsType_FrontObj = 4;
+    SensorObsType_FusionObj = 5;
+    SensorObsType_DynObj = 6;
+    SensorObsType_StaticObj = 7;
+}
+
+enum VehicleSubType
+{
+    VehicleSubType_kVehicleType_Unknown = 0;
+    VehicleSubType_kVehicleType_Car = 1;
+    VehicleSubType_kVehicleType_SUV = 2;
+    VehicleSubType_kVehicleType_Van = 3;
+    VehicleSubType_kVehicleType_Bus = 4;
+    VehicleSubType_kVehicleType_Truck = 5;
+    VehicleSubType_kVehicleType_Ambulance = 6;
+    VehicleSubType_kVehicleType_PoliceCar = 7;
+    VehicleSubType_kVehicleType_FireTruck = 8;
+    VehicleSubType_kVehicleType_Tricycle = 9;
+    VehicleSubType_kVehicleType_SpecialCar = 10;
+    VehicleSubType_kVehicleType_TinyCar = 11;
+    VehicleSubType_kVehicleType_Lorry = 12;
+    VehicleSubType_kVehicleType_SmallMediumCar = 13;
+    VehicleSubType_kVehicleType_Motors = 14;
+    VehicleSubType_kVehicleType_MiniVan = 15;
+    VehicleSubType_kVehicleType_Iveco = 16;
+    VehicleSubType_kVehicleType_Pickup = 17;
+    VehicleSubType_kVehicleType_PanelVan = 18;
+}
+
+enum RiderSubtype
+{
+    RiderSubtype_UNKNOWN = 0;
+    RiderSubtype_CYCLIST = 1;
+    RiderSubtype_MOTORCYCLIST = 2;
+    RiderSubtype_TRICYCLIST = 3;
+}
+
+enum PedestrianSubtype
+{
+    PedestrianSubtype_UNKNOWN = 0;
+    PedestrianSubtype_ADULT = 1;
+    PedestrianSubtype_CHILD = 2;
+}
+
+enum PedestrianOrientation
+{
+    PedestrianOrientation_UNKNOWN = 0;
+    PedestrianOrientation_BACK = 1;
+    PedestrianOrientation_FRONT = 2;
+    PedestrianOrientation_LEFT = 3;
+    PedestrianOrientation_LEFT_FRONT = 4;
+    PedestrianOrientation_LEFT_BACK = 5;
+    PedestrianOrientation_RIGHT = 6;
+    PedestrianOrientation_RIGHT_FRONT = 7;
+    PedestrianOrientation_RIGHT_BACK = 8;
+}
+
+enum PedestrianPose
+{
+    PedestrianPose_UNKNOWN = 0;
+    PedestrianPose_BENDING = 1;
+    PedestrianPose_RIDING = 2;
+    PedestrianPose_LYING = 3;
+    PedestrianPose_STANDING = 4;
+    PedestrianPose_SITTING = 5;
+}
+
+enum MotionStatus
+{
+    MotionStatus_kUnknown = 0;
+    MotionStatus_kSyntropyMoving = 1;
+    MotionStatus_kOncomingMoving = 2;
+    MotionStatus_kStationary = 3;
+    MotionStatus_kSyntropyStopped = 4;
+    MotionStatus_kOncomingStopped = 5;
+    MotionStatus_kCrossing = 6;
+    MotionStatus_kCutIn = 7;
+    MotionStatus_kCutOut = 8;
+}
+
+enum PositionZone
+{
+    PositionZone_UNKNOWN = 0;
+    PositionZone_FRONT_LEFT = 1;
+    PositionZone_FRONT = 2;
+    PositionZone_FRONT_RIGHT = 3;
+    PositionZone_LEFT = 4;
+    PositionZone_RIGHT = 5;
+    PositionZone_REAR_LEFT = 6;
+    PositionZone_REAR = 7;
+    PositionZone_REAR_RIGHT = 8;
+}
+
+enum CipvType
+{
+    CipvType_INVALID = 0;
+    CipvType_CIPV_F = 1;
+    CipvType_CIPV_FF = 2;
+    CipvType_CIPV_FR = 3;
+    CipvType_CIPV_FFR = 4;
+    CipvType_CIPV_FL = 5;
+    CipvType_CIPV_FFL = 6;
+    CipvType_CIPV_RESERVED = 7;
+    CipvType_CIPV_RRear = 8;
+    CipvType_CIPV_R = 9;
+    CipvType_CIPV_RR = 10;
+    CipvType_CIPV_RL = 11;
+    CipvType_CIPV_RRearRI = 12;
+    CipvType_CIPV_RRearLF = 13;
+    CipvType_CIPV_RI = 14;
+    CipvType_CIPV_LF = 15;
+    CipvType_CIPV_RRearRearRI = 16;
+    CipvType_CIPV_RRearRearLF = 17;
+    CipvType_CIPV_RRearRearRearRI = 18;
+    CipvType_CIPV_RRearRearRearLF = 19;
+}
+
+enum CutType
+{
+    CutType_UNKNOWN = 0;
+    CutType_NO_CUT = 1;
+    CutType_CUT_IN = 2;
+    CutType_CUT_OUT = 3;
+    CutType_CUT_IN_LLF = 4;
+    CutType_CUT_IN_LLR = 5;
+    CutType_CUT_IN_RRF = 6;
+    CutType_CUT_IN_RRR = 7;
+}
+
+enum TurnIndicator
+{
+    TurnIndicator_UNKNOWN = 0;
+    TurnIndicator_NONE = 1;
+    TurnIndicator_LEFT = 2;
+    TurnIndicator_RIGHT = 3;
+    TurnIndicator_EMERGENCY = 4;
+}
+
+enum BrakeIndicator
+{
+    BrakeIndicator_UNKNOWN = 0;
+    BrakeIndicator_OFF = 1;
+    BrakeIndicator_ON = 2;
+}
+
+enum LaneAssignment
+{
+    LaneAssignment_UNKNOWN = 0;
+    LaneAssignment_LEFT_LEFT = 1;
+    LaneAssignment_LEFT = 2;
+    LaneAssignment_HOST = 3;
+    LaneAssignment_RIGHT = 4;
+    LaneAssignment_RIGHT_RIGHT = 5;
+}
+
+enum TrackingStatus
+{
+    TrackingStatus_INVALID = 0;
+    TrackingStatus_CREATE = 1;
+    TrackingStatus_UPDATE_NEW = 2;
+    TrackingStatus_UPDATE = 3;
+    TrackingStatus_UPDATE_STABLE = 4;
+    TrackingStatus_PREDICT_NEW = 5;
+    TrackingStatus_PREDICT = 6;
+}
+
+message CovariancePoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    repeated float covariance_matrix = 4;
+    uint32 num_covariance_matrix = 5;
+}
+
+message CovarianceMatrix
+{
+    repeated float covariance_matrix = 1;
+    uint32 num_rows = 2;
+    uint32 num_columns = 3;
+}
+
+message PathPoint
+{
+    Vector3f position = 1;
+    float theta = 2;
+    float kappa = 3;
+    float s = 4;
+    float dkappa = 5;
+    float ddkappa = 6;
+    float x_derivative = 7;
+    float y_derivative = 8;
+    uint32 lane_id = 9;
+}
+
+message TrajectoryPoint
+{
+    PathPoint path_point = 1;
+    float speed = 2;
+    float acceleration = 3;
+    float derivative_acceleration = 4;
+    float steer_angle = 5;
+    sint32 relative_time = 6;
+}
+
+message PointSslidar
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    uint32 intensity = 4;
+    sint64 timestamp = 5;
+}
+

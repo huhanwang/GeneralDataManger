@@ -1,0 +1,88 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Control_FuncState
+{
+    Control_FuncState_kParking = 0;
+    Control_FuncState_kPilot = 1;
+    Control_FuncState_klaeb = 2;
+}
+
+enum Control_AccState
+{
+    Control_AccState_ACC_OFF = 0;
+    Control_AccState_ACC_PASSIVE = 1;
+    Control_AccState_ACC_STANDBY = 2;
+    Control_AccState_ACC_ACTIVE = 3;
+    Control_AccState_ACC_FAULT = 4;
+}
+
+message Control_VelocityControl
+{
+    bool enable = 1;
+    float velocity = 2;
+    float distance = 3;
+}
+
+message Control_SteerControl
+{
+    bool enable = 1;
+    sint32 method = 2;
+    float torque = 3;
+    float angle = 4;
+    float rate = 5;
+}
+
+message Control_GearControl
+{
+    bool enable = 1;
+    sint32 gear = 2;
+}
+
+message Control_ControlState
+{
+    Control_FuncState state = 1;
+}
+
+message Control_AccControl
+{
+    bool enable = 1;
+    Control_AccState acc_state = 2;
+    float acc = 3;
+    float trq = 4;
+    bool trq_req_active = 5;
+    bool dec_to_stop = 6;
+    bool drive_off = 7;
+    bool epb_request = 8;
+}
+
+message Control_BcmControl
+{
+    bool enable = 1;
+    bool turn_left_light = 2;
+    bool turn_right_light = 3;
+    bool emergency_light = 4;
+    bool brake_light = 5;
+    bool high_beam = 6;
+    bool low_beam = 7;
+    bool horn = 8;
+    sint32 wiper = 9;
+}
+
+message Control_Control
+{
+    Control_VelocityControl vel_control = 1;
+    Control_SteerControl steer_control = 2;
+    Control_GearControl gear_control = 3;
+    Control_AccControl acc_control = 4;
+    Control_BcmControl bcm_control = 5;
+    Control_ControlState func_state = 6;
+}
+
+message ControlMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Control_Control control = 2;
+}
+

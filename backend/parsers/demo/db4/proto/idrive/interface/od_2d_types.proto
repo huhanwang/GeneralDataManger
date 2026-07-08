@@ -1,0 +1,106 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum Od2DOutput_INVO_OD_2D_OBJ_TYPE 
+{
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_CAR = 0;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_UNKNOWN = -1;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_PEDSETRAIN = 1;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_RIDER = 2;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_FRONT = 3;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_REAR = 4;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_PILLAR = 5;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_LIGHT = 6;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_LIMITER = 7;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_LIMITER_POLE = 8;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_BUMPING_POST = 9;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_OBSTACLE = 10;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE_INVO_OD_OBJ_MOTORBIKE = 11;
+}
+
+enum Od2DOutput_INVO_OD_KEY_TYPE 
+{
+    Od2DOutput_INVO_OD_KEY_TYPE_INVO_OD_KEY_OUT = 0;
+    Od2DOutput_INVO_OD_KEY_TYPE_INVO_OD_KEY_COVERED = 1;
+    Od2DOutput_INVO_OD_KEY_TYPE_INVO_OD_KEY_CAR_HEAD = 2;
+    Od2DOutput_INVO_OD_KEY_TYPE_INVO_OD_KEY_CAR_TAIL = 3;
+    Od2DOutput_INVO_OD_KEY_TYPE_INVO_OD_KEY_VISIBLE = 4;
+}
+
+enum Od2DOutput_INVO_ALG_CAMERA_CHN 
+{
+    Od2DOutput_INVO_ALG_CAMERA_CHN_INVO_ALG_CAMERA_CHN_F = 0;
+    Od2DOutput_INVO_ALG_CAMERA_CHN_INVO_ALG_CAMERA_CHN_R = 1;
+    Od2DOutput_INVO_ALG_CAMERA_CHN_INVO_ALG_CAMERA_CHN_D = 2;
+    Od2DOutput_INVO_ALG_CAMERA_CHN_INVO_ALG_CAMERA_CHN_P = 3;
+    Od2DOutput_INVO_ALG_CAMERA_CHN_INVO_ALG_CAMERA_CHN_NUM = 4;
+}
+
+message Od2DOutput_tInvoOdImageInfo
+{
+    Vector2f start = 1;
+    Vector2f size = 2;
+}
+
+message Od2DOutput_tInvoOd2DLocalInfo
+{
+    Vector3f center = 1;
+    Vector3f size = 2;
+    repeated Vector3f polygon = 3;
+    float angle = 4;
+}
+
+message Od2DOutput_tInvoOd2DInputObj
+{
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE type = 1;
+    float confidence = 2;
+    Vector2f left_up_point = 3;
+    Vector2f right_down_point = 4;
+}
+
+message Od2DOutput_tInvoOd2DInputList
+{
+    uint64 timer = 1;
+    uint32 number = 2;
+    uint32 frame_id = 3;
+    repeated Od2DOutput_tInvoOd2DInputObj objects = 4;
+}
+
+message Od2DOutput_tInvoOd2DOutputObj
+{
+    uint32 id = 1;
+    bool flag_3d = 2;
+    uint32 key_num = 3;
+    float confidence = 4;
+    Od2DOutput_INVO_OD_2D_OBJ_TYPE type = 5;
+    Od2DOutput_tInvoOdImageInfo image_info = 6;
+    Od2DOutput_tInvoOd2DLocalInfo local_info = 7;
+}
+
+message Od2DOutput_tInvoOd2DOutputList
+{
+    sint64 timer = 1;
+    uint32 number = 2;
+    Od2DOutput_INVO_ALG_CAMERA_CHN channel = 3;
+    repeated Od2DOutput_tInvoOd2DOutputObj objects = 4;
+}
+
+message Od2DOutput_tinvoModOutputList
+{
+    sint32 warning_flag = 1;
+    Od2DOutput_tInvoOd2DOutputList modOutputList = 2;
+}
+
+message Od2DOutput_Od2DOutput
+{
+    repeated Od2DOutput_tinvoModOutputList modeOutputList = 1;
+}
+
+message Od2DOutputMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Od2DOutput_Od2DOutput od_2d_output = 2;
+}
+

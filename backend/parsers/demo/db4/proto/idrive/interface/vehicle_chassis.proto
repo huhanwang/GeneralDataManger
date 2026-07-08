@@ -1,0 +1,77 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VehicleChassis_Valid 
+{
+    VehicleChassis_Valid_Invalid = 0;
+    VehicleChassis_Valid_Vaild = 1;
+    VehicleChassis_Valid_Reserved = 2;
+}
+
+enum VehicleChassis_BrakePedalPosition 
+{
+    VehicleChassis_BrakePedalPosition_NotPressed = 0;
+    VehicleChassis_BrakePedalPosition_Pressed = 1;
+    VehicleChassis_BrakePedalPosition_Reserved = 2;
+}
+
+enum VehicleChassis_Gear 
+{
+    VehicleChassis_Gear_P = 0;
+    VehicleChassis_Gear_R = 1;
+    VehicleChassis_Gear_N = 2;
+    VehicleChassis_Gear_D = 3;
+    VehicleChassis_Gear_Reserved = 4;
+}
+
+enum VehicleChassis_WheelpulseDir 
+{
+    VehicleChassis_WheelpulseDir_Undefinable = 0;
+    VehicleChassis_WheelpulseDir_Forward = 1;
+    VehicleChassis_WheelpulseDir_Backward = 2;
+    VehicleChassis_WheelpulseDir_Stop = 3;
+}
+
+message VehicleChassis_VehicleChassis
+{
+    VehicleChassis_Valid brake_pedal_valid = 1;
+    VehicleChassis_BrakePedalPosition brake_pedal_position = 2;
+    VehicleChassis_Valid speed_valid = 3;
+    VehicleChassis_Valid acc_valid = 4;
+    VehicleChassis_Valid acc_lateral_valid = 5;
+    VehicleChassis_Valid yaw_rate_valid = 6;
+    VehicleChassis_Valid wheel_angle_valid = 7;
+    VehicleChassis_Gear gear = 8;
+    float speed = 9;
+    float acc = 10;
+    float acc_lateral = 11;
+    float yaw_rate = 12;
+    float wheel_angle = 13;
+    uint32 wheel_pulse_fl = 14;
+    uint32 wheel_pulse_fr = 15;
+    uint32 wheel_pulse_rl = 16;
+    uint32 wheel_pulse_rr = 17;
+    VehicleChassis_WheelpulseDir wheel_pulse_fl_dir = 18;
+    VehicleChassis_WheelpulseDir wheel_pulse_fr_dir = 19;
+    VehicleChassis_WheelpulseDir wheel_pulse_rl_dir = 20;
+    VehicleChassis_WheelpulseDir wheel_pulse_rr_dir = 21;
+    float wheel_speed_fl = 22;
+    float wheel_speed_fr = 23;
+    float wheel_speed_rl = 24;
+    float wheel_speed_rr = 25;
+    VehicleChassis_Valid wheel_speed_fl_vld = 26;
+    VehicleChassis_Valid wheel_speed_fr_vld = 27;
+    VehicleChassis_Valid wheel_speed_rl_vld = 28;
+    VehicleChassis_Valid wheel_speed_rr_vld = 29;
+    VehicleChassis_Valid wheel_speed_pulse_vld = 30;
+    float curvature = 31;
+    float steering_angle_rate = 32;
+}
+
+message VehicleChassisMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    VehicleChassis_VehicleChassis vehicle_chassis = 2;
+}
+

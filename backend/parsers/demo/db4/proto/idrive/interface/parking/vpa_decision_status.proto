@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VpaDecisionStatus_VpaControlCmdType
+{
+    VpaDecisionStatus_VpaControlCmdType_STANDBY = 0;
+    VpaDecisionStatus_VpaControlCmdType_NORMAL = 1;
+    VpaDecisionStatus_VpaControlCmdType_GOAL = 2;
+    VpaDecisionStatus_VpaControlCmdType_INTERRUPT = 3;
+    VpaDecisionStatus_VpaControlCmdType_COMFBRK = 4;
+    VpaDecisionStatus_VpaControlCmdType_EMERGBRK = 5;
+    VpaDecisionStatus_VpaControlCmdType_APAINCHARGE = 6;
+}
+
+message VpaDecisionStatus_VpaDecisionStatus
+{
+    VpaDecisionStatus_VpaControlCmdType type = 1;
+}
+
+message VpaDecisionStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaDecisionStatus_VpaDecisionStatus vpa_decision_status = 2;
+}
+

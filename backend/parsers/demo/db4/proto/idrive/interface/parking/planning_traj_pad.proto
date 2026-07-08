@@ -1,0 +1,58 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PlanningTrajPad_ParkingPlanStatus
+{
+    PlanningTrajPad_ParkingPlanStatus_INVALID = 0;
+    PlanningTrajPad_ParkingPlanStatus_PLANOVER = 1;
+    PlanningTrajPad_ParkingPlanStatus_PLANSUCCEED = 2;
+    PlanningTrajPad_ParkingPlanStatus_PLANFAIL = 3;
+    PlanningTrajPad_ParkingPlanStatus_ENUM_MAX = 4;
+}
+
+message PlanningTrajPad_PlanningPoint
+{
+    sint64 timestamp = 1;
+    float x = 2;
+    float y = 3;
+    float z = 4;
+    float yaw = 5;
+    float pitch = 6;
+    float roll = 7;
+    float s = 8;
+    float l = 9;
+    float k = 10;
+    float speed = 11;
+    float acc = 12;
+    float jerk = 13;
+    float speed_limit = 14;
+    sint32 gear = 15;
+    sint32 direction = 16;
+    sint32 detect_status = 17;
+    float dk_ds = 18;
+    float dl_ds = 19;
+    float ddl_ds2 = 20;
+    float ds_dt = 21;
+    float dds_dt2 = 22;
+}
+
+message PlanningTrajPad_PlanningTrajPad
+{
+    float remain_dist = 1;
+    float ra_total_dist = 2;
+    repeated PlanningTrajPad_PlanningPoint trajectory = 3;
+    repeated PlanningTrajPad_PlanningPoint path = 4;
+    uint32 num_trajectory = 5;
+    uint32 num_path = 6;
+    PlanningTrajPad_ParkingPlanStatus planning_status = 7;
+    uint32 predict_finish_time = 9;
+    float apa_total_dist = 8;
+}
+
+message PlanningTrajPadMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PlanningTrajPad_PlanningTrajPad planning_traj = 2;
+}
+

@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/parking/fusion_freespace.proto";
+import "interface/parking/fusion_obstacle.proto";
+import "interface/parking/fusion_parking_slots.proto";
+import "interface/parking/uss_tracking.proto";
+package idrive.workflow.proto;
+
+message FusionResult_FusionResult
+{
+    FusionFreespace_FreespaceFusion fusion_freespace = 1;
+    FusionObstacle_FusionObstacles fusion_obstacles = 2;
+    FusionParkingSlots_FusionParkingSlots fusion_parking_slots = 3;
+    UssTracking_UssTracking fusion_uss_tracking = 4;
+}
+
+message FusionResultMsg
+{
+    CommonMsgMsg common_msg = 1;
+    FusionResult_FusionResult fusion_result = 2;
+}
+

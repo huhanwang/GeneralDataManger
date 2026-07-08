@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DiagInfo_DiagInfo
+{
+    sint64 diag_info = 1;
+}
+
+message DiagInfoMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    DiagInfo_DiagInfo diag_info = 2;
+}
+

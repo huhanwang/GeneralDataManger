@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Image_ImageInfo
+{
+    uint32 width = 1;
+    uint32 height = 2;
+}
+
+message Image_MemInfo
+{
+    uint64 addr = 1;
+    uint32 size = 2;
+    uint32 pitch = 3;
+}
+
+message Image_Image
+{
+    Image_ImageInfo image_info = 1;
+    Image_MemInfo mem_info_y = 2;
+    Image_MemInfo mem_info_uv = 3;
+}
+
+message ImageMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Image_Image image_data = 2;
+}
+

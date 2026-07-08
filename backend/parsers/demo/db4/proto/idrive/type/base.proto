@@ -1,0 +1,884 @@
+syntax = "proto3";
+import "type/basic.proto";
+import "type/odometry_type.proto";
+package idrive.workflow.proto;
+
+enum DrivingSide
+{
+    DrivingSide_DRIVINGSIDE_RIGHTHANDDRIVING = 0;
+    DrivingSide_DRIVINGSIDE_LEFTHANDDRIVING = 1;
+}
+
+enum UnitOfSystem
+{
+    UnitOfSystem_UNITOFSYSTEM_IMPERIAL = 0;
+    UnitOfSystem_UNITOFSYSTEM_MMTRIC = 1;
+}
+
+enum MapProvider
+{
+    MapProvider_MAPPROVIDER_PROVIDER_UNKNOWN = 0;
+    MapProvider_MAPPROVIDER_PROVIDER_AND = 1;
+    MapProvider_MAPPROVIDER_PROVIDER_AUTONAVI = 2;
+    MapProvider_MAPPROVIDER_PROVIDER_HERE = 3;
+    MapProvider_MAPPROVIDER_PROVIDER_HYUNDAI = 4;
+    MapProvider_MAPPROVIDER_PROVIDER_NAVIINFO = 5;
+    MapProvider_MAPPROVIDER_PROVIDER_TOMTOM = 6;
+    MapProvider_MAPPROVIDER_PROVIDER_ZENRIN = 7;
+    MapProvider_MAPPROVIDER_PROVIDER_HORIZON = 8;
+    MapProvider_MAPPROVIDER_PROVIDER_JUEFX = 9;
+}
+
+enum MapStatus
+{
+    MapStatus_MAPSTATUS_MAPNOTAVAILABLE = 0;
+    MapStatus_MAPSTATUS_MAPLOADING = 1;
+    MapStatus_MAPSTATUS_MAPAVAILABLE = 2;
+}
+
+enum SpeedLimitSource
+{
+    SpeedLimitSource_SPEEDLIMITSOURCE_UNKNOWN = 0;
+    SpeedLimitSource_SPEEDLIMITSOURCE_IMPLICIT = 1;
+    SpeedLimitSource_SPEEDLIMITSOURCE_EXPLICIT = 2;
+    SpeedLimitSource_SPEEDLIMITSOURCE_TRAFFICSIGN = 3;
+    SpeedLimitSource_SPEEDLIMITSOURCE_NIGHT = 4;
+    SpeedLimitSource_SPEEDLIMITSOURCE_DAY = 5;
+    SpeedLimitSource_SPEEDLIMITSOURCE_TIMEOFDAY = 6;
+    SpeedLimitSource_SPEEDLIMITSOURCE_RAIN = 7;
+    SpeedLimitSource_SPEEDLIMITSOURCE_SNOW = 8;
+    SpeedLimitSource_SPEEDLIMITSOURCE_FROG = 9;
+}
+
+enum SpeedLimitType
+{
+    SpeedLimitType_SPEEDLIMITTYPE_UNKNOWN = 0;
+    SpeedLimitType_SPEEDLIMITTYPE_MIN = 1;
+    SpeedLimitType_SPEEDLIMITTYPE_MAX = 2;
+}
+
+enum SpecialSituationType
+{
+    SpecialSituationType_SPECIALSITUATIONTYPE_DEADEND = 0;
+    SpecialSituationType_SPECIALSITUATIONTYPE_FERRYTERIMINAL = 1;
+    SpecialSituationType_SPECIALSITUATIONTYPE_TOLLBOOTH = 2;
+    SpecialSituationType_SPECIALSITUATIONTYPE_RAILROADCROSSING = 3;
+    SpecialSituationType_SPECIALSITUATIONTYPE_PEDESTRAINCROSSING = 4;
+    SpecialSituationType_SPECIALSITUATIONTYPE_SPEEDBUMP = 5;
+    SpecialSituationType_SPECIALSITUATIONTYPE_CERTIFIEDROAD = 6;
+    SpecialSituationType_SPECIALSITUATIONTYPE_TOLLBOOTH_CERTIFIEDROAD = 7;
+}
+
+enum TrafficEventType
+{
+    TrafficEventType_TRAFFICEVENTTYPE_UNKNOWN = 0;
+    TrafficEventType_TRAFFICEVENTTYPE_GENERALTRAFFICACCIDENT = 1;
+    TrafficEventType_TRAFFICEVENTTYPE_SERIOUSTRAFFICACCIDENT = 2;
+    TrafficEventType_TRAFFICEVENTTYPE_FAULITYCAR = 3;
+    TrafficEventType_TRAFFICEVENTTYPE_SUSPECTEDACCIDENT = 4;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADCONSTRUCTION = 5;
+    TrafficEventType_TRAFFICEVENTTYPE_CONSTRUCTIONIMPACTTRAVEL = 6;
+    TrafficEventType_TRAFFICEVENTTYPE_CONSTRUCTIONANDPASSTHROUGHNOTRECOMMENDED = 7;
+    TrafficEventType_TRAFFICEVENTTYPE_TRAFFICCONTROL = 8;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADCLOSED = 9;
+    TrafficEventType_TRAFFICEVENTTYPE_EXITRAMPCLOSED = 10;
+    TrafficEventType_TRAFFICEVENTTYPE_ENTRANCERAMPCLOSED = 11;
+    TrafficEventType_TRAFFICEVENTTYPE_ONELANECLOSED = 12;
+    TrafficEventType_TRAFFICEVENTTYPE_TWOLANESCLOSED = 13;
+    TrafficEventType_TRAFFICEVENTTYPE_THREELANESCLOSED = 14;
+    TrafficEventType_TRAFFICEVENTTYPE_FOURLANESCLOSED = 15;
+    TrafficEventType_TRAFFICEVENTTYPE_PROHIBITLEFTTURN = 16;
+    TrafficEventType_TRAFFICEVENTTYPE_PROHIBITRIGHTTURN = 17;
+    TrafficEventType_TRAFFICEVENTTYPE_PROHIBITLEFTANDRIGHTTURN = 18;
+    TrafficEventType_TRAFFICEVENTTYPE_PROHIBITSTRAIGHT = 19;
+    TrafficEventType_TRAFFICEVENTTYPE_PROHIBITUTURN = 20;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADHEIGHTORWEIGHTORWIDTHLIMITED = 21;
+    TrafficEventType_TRAFFICEVENTTYPE_OTHERVEHICLERESTRICTIONS = 22;
+    TrafficEventType_TRAFFICEVENTTYPE_NOPARKING = 23;
+    TrafficEventType_TRAFFICEVENTTYPE_GALE = 24;
+    TrafficEventType_TRAFFICEVENTTYPE_HURRICANE = 25;
+    TrafficEventType_TRAFFICEVENTTYPE_FOG = 26;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYFOG = 27;
+    TrafficEventType_TRAFFICEVENTTYPE_RAIN = 28;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYRAIN = 29;
+    TrafficEventType_TRAFFICEVENTTYPE_SLEET = 30;
+    TrafficEventType_TRAFFICEVENTTYPE_SNOW = 31;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYSNOW = 32;
+    TrafficEventType_TRAFFICEVENTTYPE_HAIL = 33;
+    TrafficEventType_TRAFFICEVENTTYPE_DESTRUCTIVEHAIL = 34;
+    TrafficEventType_TRAFFICEVENTTYPE_COLDWAVE = 35;
+    TrafficEventType_TRAFFICEVENTTYPE_SANDSTORM = 36;
+    TrafficEventType_TRAFFICEVENTTYPE_HIGHTEMPERATURE = 37;
+    TrafficEventType_TRAFFICEVENTTYPE_DROUGHT = 38;
+    TrafficEventType_TRAFFICEVENTTYPE_THUNDER = 39;
+    TrafficEventType_TRAFFICEVENTTYPE_FROST = 40;
+    TrafficEventType_TRAFFICEVENTTYPE_HAZE = 41;
+    TrafficEventType_TRAFFICEVENTTYPE_TYPHOON = 42;
+    TrafficEventType_TRAFFICEVENTTYPE_THUNDERSTORM = 43;
+    TrafficEventType_TRAFFICEVENTTYPE_FORESTFIRE = 44;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEWATER = 45;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACESNOW = 46;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACETHINICE = 47;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACESUBSIDENCE = 48;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEOBSTACLE = 49;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEFIRE = 50;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACESLIP = 51;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEOIL = 52;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEGASOLINE = 53;
+    TrafficEventType_TRAFFICEVENTTYPE_POORROADCONDITIONS = 54;
+    TrafficEventType_TRAFFICEVENTTYPE_DANGEROUSDRIVINGCONDITIONS = 55;
+    TrafficEventType_TRAFFICEVENTTYPE_EXTREMELYDANGEROUSDRIVINGCONDITIONS = 56;
+    TrafficEventType_TRAFFICEVENTTYPE_EXPO = 57;
+    TrafficEventType_TRAFFICEVENTTYPE_MAJORNATIONALEVENTS = 58;
+    TrafficEventType_TRAFFICEVENTTYPE_ASSEMBLY = 59;
+    TrafficEventType_TRAFFICEVENTTYPE_LARGECONFERENCE = 60;
+    TrafficEventType_TRAFFICEVENTTYPE_SPORTSACTIVITY = 61;
+    TrafficEventType_TRAFFICEVENTTYPE_CULTURALACTIVITY = 62;
+    TrafficEventType_TRAFFICEVENTTYPE_HOLIDAY = 63;
+    TrafficEventType_TRAFFICEVENTTYPE_FLOOD = 64;
+    TrafficEventType_TRAFFICEVENTTYPE_EARTHQUAKE = 65;
+    TrafficEventType_TRAFFICEVENTTYPE_ROCKFALL = 66;
+    TrafficEventType_TRAFFICEVENTTYPE_COLLAPSE = 67;
+    TrafficEventType_TRAFFICEVENTTYPE_DEBRISFLOW = 68;
+    TrafficEventType_TRAFFICEVENTTYPE_GRASPTHEVIOLATION = 69;
+    TrafficEventType_TRAFFICEVENTTYPE_CHECKDRUNKDRIVING = 70;
+    TrafficEventType_TRAFFICEVENTTYPE_POLICEENFORCEMENT = 71;
+    TrafficEventType_TRAFFICEVENTTYPE_ANNOUNCEMENT = 72;
+    TrafficEventType_TRAFFICEVENTTYPE_OPENTOTRAFFIC = 73;
+    TrafficEventType_TRAFFICEVENTTYPE_COMPLETETHERECONSTRUCTION = 74;
+    TrafficEventType_TRAFFICEVENTTYPE_REALROADCONDITION = 75;
+    TrafficEventType_TRAFFICEVENTTYPE_EMERGENCY = 76;
+    TrafficEventType_TRAFFICEVENTTYPE_SUBWAYEVENT = 77;
+    TrafficEventType_TRAFFICEVENTTYPE_CUSTOMBROADCAST = 78;
+    TrafficEventType_TRAFFICEVENTTYPE_GENERALTRAFFICAccidentANDROADCLOSED = 79;
+    TrafficEventType_TRAFFICEVENTTYPE_SERIOUSTRAFFICAccidentANDROADCLOSED = 80;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADCONSTRUCTIONANDROADCLOSED = 81;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYFOGANDROADCLOSED = 82;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYRAINANDROADCLOSED = 83;
+    TrafficEventType_TRAFFICEVENTTYPE_HEAVYSNOWANDROADCLOSED = 84;
+    TrafficEventType_TRAFFICEVENTTYPE_HAILANDROADCLOSED = 85;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEWATERANDROADCLOSED = 86;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACESNOWANDROADCLOSED = 87;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACETHINICEANDROADCLOSED = 88;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACESUBSIDENCEANDROADCLOSED = 89;
+    TrafficEventType_TRAFFICEVENTTYPE_ROADSURFACEOBSTACLEANDROADCLOSED = 90;
+    TrafficEventType_TRAFFICEVENTTYPE_SERIOUSFIREANDROADCLOSED = 91;
+    TrafficEventType_TRAFFICEVENTTYPE_EXPOANDROADCLOSED = 92;
+    TrafficEventType_TRAFFICEVENTTYPE_MAJORNATIONALEVENTsANDROADCLOSED = 93;
+    TrafficEventType_TRAFFICEVENTTYPE_ASSEMBLYANDROADCLOSED = 94;
+    TrafficEventType_TRAFFICEVENTTYPE_LARGECONFERENCEANDROADCLOSED = 95;
+    TrafficEventType_TRAFFICEVENTTYPE_SPORTSACTIVITYANDROADCLOSED = 96;
+    TrafficEventType_TRAFFICEVENTTYPE_CULTURALACTIVITYANDROADCLOSED = 97;
+    TrafficEventType_TRAFFICEVENTTYPE_HOLIDAYANDROADCLOSED = 98;
+    TrafficEventType_TRAFFICEVENTTYPE_FLOODANDROADCLOSED = 99;
+    TrafficEventType_TRAFFICEVENTTYPE_EARTHQUAKEANDROADCLOSED = 100;
+    TrafficEventType_TRAFFICEVENTTYPE_ROCKFALLANDROADCLOSED = 101;
+    TrafficEventType_TRAFFICEVENTTYPE_COLLAPSEANDROADCLOSED = 102;
+    TrafficEventType_TRAFFICEVENTTYPE_DEBRISFLOWANDROADCLOSED = 103;
+    TrafficEventType_TRAFFICEVENTTYPE_OTHER = 104;
+}
+
+enum TrafficFlowStatus
+{
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_UNKNOWN = 0;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_SMOOTH = 1;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_AMBLE = 2;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_CONGESTION = 3;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_BLOCKAGE = 4;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_NOTRAFFICFLOW = 5;
+    TrafficFlowStatus_TRAFFICFLOWSTATUS_OTHER = 6;
+}
+
+enum RoadClassType
+{
+    RoadClassType_ROAD_CLASS_TYPE_UNSPECIFIED = 0;
+    RoadClassType_ROAD_CLASS_TYPE_HIGHWAY = 1;
+    RoadClassType_ROAD_CLASS_TYPE_CITY_EXPRESS = 2;
+    RoadClassType_ROAD_CLASS_TYPE_NATIONAL_ROAD = 3;
+    RoadClassType_ROAD_CLASS_TYPE_PROVINCE_ROAD = 4;
+    RoadClassType_ROAD_CLASS_TYPE_COUNTRY_ROAD = 5;
+    RoadClassType_ROAD_CLASS_TYPE_TOWN_ROAD = 6;
+    RoadClassType_ROAD_CLASS_TYPE_OTHERS = 7;
+}
+
+enum LaneBehavior
+{
+    LaneBehavior_LANE_BEHAVIOR_UNKNOWN = 0;
+    LaneBehavior_LANE_BEHAVIOR_KEEP = 1;
+    LaneBehavior_LANE_BEHAVIOR_LEFT = 2;
+    LaneBehavior_LANE_BEHAVIOR_RIGHT = 3;
+}
+
+enum MotionState
+{
+    MotionState_MOTION_STATE_MOVING = 0;
+    MotionState_MOTION_STATE_STATIONARY = 1;
+    MotionState_MOTION_STATE_ONCOMING = 2;
+    MotionState_MOTION_STATE_STATIONARY_CANDIDATE = 3;
+    MotionState_MOTION_STATE_UNKNOWN = 4;
+    MotionState_MOTION_STATE_CROSSING_STATIONARY = 5;
+    MotionState_MOTION_STATE_CROSSING_MOVING = 6;
+    MotionState_MOTION_STATE_STOPPED = 7;
+}
+
+enum MeasState
+{
+    MeasState_MEAS_STATE_DELETED = 0;
+    MeasState_MEAS_STATE_NEW = 1;
+    MeasState_MEAS_STATE_MEASURED = 2;
+    MeasState_MEAS_STATE_PREDICTED = 3;
+    MeasState_MEAS_STATE_DELETED_FOR = 4;
+    MeasState_MEAS_STATE_NEW_FROM_MERGE = 5;
+}
+
+enum CommonColor
+{
+    CommonColor_COMMON_COLOR_WHITE = 0;
+    CommonColor_COMMON_COLOR_RED = 1;
+    CommonColor_COMMON_COLOR_GREEN = 2;
+    CommonColor_COMMON_COLOR_YELLOW = 3;
+}
+
+enum ColorType
+{
+    ColorType_COLOR_TYPE_UNKNOWN = 0;
+    ColorType_COLOR_TYPE_WHITE = 1;
+    ColorType_COLOR_TYPE_RED = 2;
+    ColorType_COLOR_TYPE_GREEN = 3;
+    ColorType_COLOR_TYPE_YELLOW = 4;
+}
+
+enum DataSource
+{
+    DataSource_DATA_SOURCE_UNKNOWN = 0;
+    DataSource_DATA_SOURCE_SENSOR = 1;
+    DataSource_DATA_SOURCE_TRACKING = 2;
+    DataSource_DATA_SOURCE_HDMAP = 3;
+    DataSource_DATA_SOURCE_INFER = 4;
+}
+
+enum SideType
+{
+    SideType_SIDE_TYPE_UNKNOWN = 0;
+    SideType_SIDE_TYPE_ROAD = 1;
+    SideType_SIDE_TYPE_FENCE = 2;
+    SideType_SIDE_TYPE_CONE = 3;
+}
+
+enum LineModel
+{
+    LineModel_LINE_MODEL_RAW = 0;
+    LineModel_LINE_MODEL_ROAD = 1;
+    LineModel_LINE_MODEL_POAL = 2;
+    LineModel_LINE_MODEL_ROAD_UNPARALLEL = 3;
+}
+
+enum LineDiversion
+{
+    LineDiversion_UNKNOWN_LINE_DIVERSION = 0;
+    LineDiversion_INSIDE_LINE_DIVERSION = 1;
+    LineDiversion_OUTSIDE_LINE_DIVERSION = 2;
+}
+
+enum NdmBaseLineType
+{
+    NdmBaseLineType_LINE_TYPE_UNKNOWN = 0;
+    NdmBaseLineType_LINE_TYPE_DASH = 1;
+    NdmBaseLineType_LINE_TYPE_SOLID = 2;
+    NdmBaseLineType_LINE_TYPE_DOUBLE_DASH = 3;
+    NdmBaseLineType_LINE_TYPE_DOUBLE_SOLID = 4;
+    NdmBaseLineType_LINE_TYPE_DASH_SOLID = 5;
+    NdmBaseLineType_LINE_TYPE_SOLID_DASH = 6;
+    NdmBaseLineType_LINE_TYPE_DASH_FISH_BONES = 7;
+    NdmBaseLineType_LINE_TYPE_SOLID_FISH_BONES = 8;
+    NdmBaseLineType_LINE_TYPE_DIVERSION = 9;
+    NdmBaseLineType_LINE_TYPE_VIRTUAL = 10;
+    NdmBaseLineType_LINE_TYPE_SHORT_DASH = 11;
+}
+
+enum NdmLaneType
+{
+    NdmLaneType_LANE_TYPE_UNKNOWN = 0;
+    NdmLaneType_LANE_TYPE_NORMAL = 1;
+    NdmLaneType_LANE_TYPE_PASSING = 2;
+    NdmLaneType_LANE_TYPE_BUS = 3;
+    NdmLaneType_LANE_TYPE_HOV = 4;
+    NdmLaneType_LANE_TYPE_UTURN = 5;
+    NdmLaneType_LANE_TYPE_DECELERATION = 6;
+    NdmLaneType_LANE_TYPE_ACCElERATION = 7;
+    NdmLaneType_LANE_TYPE_CROSSING = 8;
+    NdmLaneType_LANE_TYPE_MIX = 9;
+    NdmLaneType_LANE_TYPE_DANGER = 10;
+    NdmLaneType_LANE_TYPE_TURN_WAITING = 11;
+    NdmLaneType_LANE_TYPE_STRAIGHT_WAITING = 12;
+    NdmLaneType_LANE_TYPE_BICYCLE = 13;
+    NdmLaneType_LANE_TYPE_SIDEWALK = 14;
+    NdmLaneType_LANE_TYPE_PARKING = 15;
+    NdmLaneType_LANE_TYPE_RAMP = 16;
+    NdmLaneType_LANE_TYPE_EMERGENCY = 17;
+}
+
+enum NOADegradeReason
+{
+    NOADegradeReason_NOA_DEGRADE_REASON_NONE = 0;
+    NOADegradeReason_NOA_DEGRADE_REASON_NOT_VEHICLE_STATUS = 1;
+    NOADegradeReason_NOA_DEGRADE_REASON_NOT_NDM_LOC = 2;
+    NOADegradeReason_NOA_DEGRADE_REASON_LOC_LOW_PRECISION = 3;
+    NOADegradeReason_NOA_DEGRADE_REASON_NOT_NDM_MAP = 4;
+    NOADegradeReason_NOA_DEGRADE_REASON_NOT_NDM_NAV = 5;
+    NOADegradeReason_NOA_DEGRADE_REASON_HAS_LOC_NOT_NDM_MAP = 6;
+    NOADegradeReason_NOA_DEGRADE_REASON_TOLLBOOTH = 7;
+    NOADegradeReason_NOA_DEGRADE_REASON_CONSTRUCTION = 8;
+}
+
+enum OutOddReason
+{
+    OutOddReason_OUT_ODD_REASON_NONE = 0;
+    OutOddReason_OUT_ODD_REASON_TOllBOOTH = 1;
+    OutOddReason_OUT_ODD_REASON_ROAD_CONSTRUCTION = 2;
+    OutOddReason_OUT_ODD_REASON_OUT_MAP = 3;
+}
+
+enum TakeOverReason
+{
+    TakeOverReason_TAKE_OVER_REASON_NONE = 0;
+    TakeOverReason_TAKE_OVER_REASON_VISION_LINE_INVALID = 1;
+    TakeOverReason_TAKE_OVER_REASON_FUSION_OBJS_INVALID = 2;
+    TakeOverReason_TAKE_OVER_REASON_EMPTY_TRAJ = 3;
+    TakeOverReason_TAKE_OVER_REASON_LON_EMERGENCY = 4;
+}
+
+enum USSDistanceWarning
+{
+    USSDistanceWarning_USS_DISTANCE_WARNINGN_SAFE = 0;
+    USSDistanceWarning_USS_DISTANCE_WARNINGN_DANGEROUS = 1;
+    USSDistanceWarning_USS_DISTANCE_WARNINGN_VERYDANG = 2;
+    USSDistanceWarning_USS_DISTANCE_WARNINGN_STOPPED = 3;
+}
+
+enum PerceptionLineType
+{
+    PerceptionLineType_LINE_LEFT = 0;
+    PerceptionLineType_LINE_RIGHT = 1;
+    PerceptionLineType_LINE_LEFT_LEFT = 2;
+    PerceptionLineType_LINE_RIGHT_RIGHT = 3;
+    PerceptionLineType_LINE_LEFT_OUTER = 4;
+    PerceptionLineType_LINE_RIGHT_OUTER = 5;
+    PerceptionLineType_LINE_RAMP = 6;
+    PerceptionLineType_LINE_DOUBLE = 7;
+    PerceptionLineType_LINE_DASH = 8;
+    PerceptionLineType_LINE_SOLID = 9;
+    PerceptionLineType_LINE_WHITE = 10;
+    PerceptionLineType_LINE_YELLOW = 11;
+    PerceptionLineType_LINE_BLUE = 12;
+    PerceptionLineType_LINE_GREEN = 13;
+    PerceptionLineType_LINE_FENCE = 14;
+    PerceptionLineType_LINE_ROAD_HEIGHT = 15;
+    PerceptionLineType_LINE_DIVERSION_INSIDE = 16;
+    PerceptionLineType_LINE_BARRIER = 17;
+    PerceptionLineType_LINE_DIVERSION_OUTSIDE = 18;
+    PerceptionLineType_LINE_RAW = 19;
+    PerceptionLineType_LINE_ROAD = 20;
+    PerceptionLineType_LINE_POLE = 21;
+    PerceptionLineType_LINE_ROAD_UNPARALLEL = 22;
+    PerceptionLineType_LINE_TYPE_PATH = 23;
+}
+
+enum ObstacleType
+{
+    ObstacleType_kVehicleRear = 0;
+    ObstacleType_kVehicleFull = 1;
+    ObstacleType_kPedestrian = 2;
+    ObstacleType_kCyclist = 3;
+    ObstacleType_kAnimal = 4;
+    ObstacleType_kRider = 5;
+    ObstacleType_kWheel = 6;
+    ObstacleType_kGeneralObject = 7;
+    ObstacleType_kTrafficArrow = 8;
+    ObstacleType_kBarrel = 9;
+    ObstacleType_kYieldMark = 10;
+    ObstacleType_kSpeedMark = 11;
+    ObstacleType_kCharacter = 12;
+    ObstacleType_kDiamond = 13;
+    ObstacleType_kBicycle = 14;
+    ObstacleType_kSpeedBumps = 15;
+    ObstacleType_kSpeedCamera = 16;
+    ObstacleType_kTrafficLightLens = 17;
+    ObstacleType_kLeakedCar = 18;
+    ObstacleType_kConstructZone = 19;
+    ObstacleType_kPedHead = 20;
+    ObstacleType_kTrafficCone = 50;
+    ObstacleType_kCementColumn = 51;
+    ObstacleType_kParkingLock = 52;
+    ObstacleType_kAFrameSign = 53;
+    ObstacleType_kCurb = 54;
+    ObstacleType_kFence = 55;
+    ObstacleType_kWaterBarrier = 56;
+    ObstacleType_kTrolley = 57;
+    ObstacleType_kWall = 58;
+    ObstacleType_kTrafficSign = 59;
+    ObstacleType_kTrafficLight = 60;
+    ObstacleType_kTrafficLightBulb = 61;
+    ObstacleType_kLaneMarking = 62;
+    ObstacleType_kStopLine = 63;
+    ObstacleType_kSpeedBump = 64;
+    ObstacleType_kPole = 65;
+    ObstacleType_kCrossWalk = 66;
+    ObstacleType_kZone = 67;
+    ObstacleType_kParkingSlot = 68;
+    ObstacleType_kJunction = 69;
+    ObstacleType_kUnknown = 100;
+}
+
+enum BaseVehicleType
+{
+    BaseVehicleType_VEHICLE_TYPE_UNKNOWN = 0;
+    BaseVehicleType_CAR = 1;
+    BaseVehicleType_MOTORCYCLE = 2;
+    BaseVehicleType_BICYCLE = 3;
+    BaseVehicleType_TRUCK = 4;
+    BaseVehicleType_TAXI = 5;
+    BaseVehicleType_BUS = 6;
+    BaseVehicleType_PEDESTRAIN = 7;
+    BaseVehicleType_CABLE_CAR = 8;
+}
+
+enum MotionCategory
+{
+    MotionCategory_kInvalid = 0;
+    MotionCategory_kUndefined = 1;
+    MotionCategory_kPassing = 2;
+    MotionCategory_kPassingIn = 3;
+    MotionCategory_kPassingOut = 4;
+    MotionCategory_kCloseCutIn = 5;
+    MotionCategory_kMovingIn = 6;
+    MotionCategory_kMovingOut = 7;
+    MotionCategory_kCrossing = 8;
+    MotionCategory_kLeftTurnAP = 9;
+    MotionCategory_kRightTurnAP = 10;
+    MotionCategory_kMoving = 11;
+    MotionCategory_kPreceding = 12;
+    MotionCategory_kOncoming = 13;
+    MotionCategory_kEnumSize = 14;
+}
+
+enum ParkingType
+{
+    ParkingType_kUnknown = 0;
+    ParkingType_kVerticalParking = 1;
+    ParkingType_kParallelParking = 2;
+    ParkingType_kObliqueParking = 3;
+    ParkingType_kMechanicalParking = 4;
+}
+
+enum ParkingLockStatus
+{
+    ParkingLockStatus_kUnknown = 0;
+    ParkingLockStatus_kOpen = 1;
+    ParkingLockStatus_kClose = 2;
+}
+
+enum ExtraPointType
+{
+    ExtraPointType_EXTRA_POINT_TYPE_UNSPECIFIED = 0;
+    ExtraPointType_EXTRA_POINT_TYPE_UNKNOWN = 1;
+    ExtraPointType_EXTRA_POINT_TYPE_DIVISION = 2;
+    ExtraPointType_EXTRA_POINT_TYPE_MERGE = 3;
+    ExtraPointType_EXTRA_POINT_TYPE_LANENUM_CHANGE_START = 4;
+    ExtraPointType_EXTRA_POINT_TYPE_LANENUM_CHANGE_END = 5;
+    ExtraPointType_EXTRA_POINT_TYPE_UTURN = 6;
+    ExtraPointType_EXTRA_POINT_TYPE_CHANGE_POINT = 7;
+    ExtraPointType_EXTRA_POINT_TYPE_S_CURVE = 8;
+    ExtraPointType_EXTRA_POINT_TYPE_HIGHTWAY_OUT = 9;
+    ExtraPointType_EXTRA_POINT_TYPE_HIGHTWAY_IN = 10;
+}
+
+enum ObjectType
+{
+    ObjectType_OBJECTTYPE_UNKNOWN = 0;
+    ObjectType_OBJECTTYPE_TRAFFICSIGN = 1;
+    ObjectType_OBJECTTYPE_TRAFFICLIGHT = 2;
+    ObjectType_OBJECTTYPE_TRAFFICLIGHTBULB = 3;
+    ObjectType_OBJECTTYPE_LANEMARKING = 4;
+    ObjectType_OBJECTTYPE_STOPLINE = 5;
+    ObjectType_OBJECTTYPE_SPEEDBUMP = 6;
+    ObjectType_OBJECTTYPE_POLE = 7;
+    ObjectType_OBJECTTYPE_CROSSWALK = 8;
+    ObjectType_OBJECTTYPE_ZONE = 9;
+    ObjectType_OBJECTTYPE_PARKINGSLOT = 10;
+    ObjectType_OBJECTTYPE_TRAFFICCONE = 11;
+    ObjectType_OBJECTTYPE_PARKINGLOCKCLOSE = 12;
+    ObjectType_OBJECTTYPE_PARKINGLOCKOPEN = 13;
+    ObjectType_OBJECTTYPE_PARKINGCOLUMN = 14;
+    ObjectType_OBJECTTYPE_PARKINGAFRAMESIGN = 15;
+    ObjectType_OBJECTTYPE_JUNCTION = 16;
+    ObjectType_OBJECTTYPE_PARKINGLOCK = 17;
+    ObjectType_OBJECTTYPE_CEMENTCOLUMN_YES = 18;
+    ObjectType_OBJECTTYPE_CEMENTCOLUMN_NO = 19;
+    ObjectType_OBJECTTYPE_PARKINGROD = 20;
+    ObjectType_OBJECTTYPE_NSOBJECT = 21;
+    ObjectType_OBJECTTYPE_BUMPPOINT = 22;
+}
+
+enum VertexType
+{
+    VertexType_VERTEX_UNKNOWN = 0;
+    VertexType_NO_VERTEX = 1;
+    VertexType_VERTEX_DIST = 2;
+    VertexType_VERTEX_YAW = 3;
+    VertexType_VERTEX_PITCH = 4;
+}
+
+message Header
+{
+    sint32 cam_idx = 1;
+    sint32 frame_id = 2;
+    sint64 time_stamp = 3;
+}
+
+message BasePolygon
+{
+    uint32 num_pts = 1;
+    repeated BasePoint pts = 2;
+}
+
+message Index
+{
+    uint64 x = 1;
+    uint64 y = 2;
+    uint64 z = 3;
+}
+
+message Link
+{
+    uint32 id = 1;
+    float offset = 2;
+    float end_offset = 3;
+}
+
+message Number
+{
+    float value = 1;
+    float cov = 2;
+}
+
+message Point
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Quaternion4d
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+    uint32 num_cov = 5;
+    repeated double cov = 6;
+}
+
+message Wgs84
+{
+    uint64 stamp = 1;
+    double lat = 2;
+    double lon = 3;
+    uint64 height = 4;
+    double yaw = 5;
+}
+
+message Cylinder
+{
+    uint32 num_points = 1;
+    uint32 num_pred_points = 2;
+    uint32 num_succ_points = 3;
+    repeated Point points = 4;
+    repeated Point pred_points = 5;
+    repeated Point succ_points = 6;
+    Number radius = 7;
+}
+
+message Circle
+{
+    Point center = 1;
+    Point normal = 2;
+    Number radius = 3;
+    float edgeline_width = 4;
+}
+
+message NdmPolygon
+{
+    uint32 num_points = 1;
+    uint32 num_visibles = 2;
+    float edgeline_width = 3;
+    repeated Point points = 4;
+    Point normal = 5;
+    Point orientation = 6;
+    repeated bool visibles = 7;
+}
+
+message SpeedLimit
+{
+    SpeedLimitType limit_type = 1;
+    SpeedLimitSource source = 2;
+    float speed_value = 3;
+    float offset = 4;
+    float end_offset = 5;
+}
+
+message TimeLimit
+{
+    float time_begin = 1;
+    float time_end = 2;
+}
+
+message NdmBaseVehicleType
+{
+    BaseVehicleType type = 1;
+    float conf = 2;
+}
+
+message ParkingSpaceRestriction
+{
+    Number number_limit = 1;
+    uint32 num_time_limits = 2;
+    uint32 num_vehicle_types = 3;
+    repeated TimeLimit time_limits = 4;
+    repeated NdmBaseVehicleType vehicle_types = 5;
+}
+
+message GlobalData
+{
+    uint32 country_code = 1;
+    uint32 region_code = 2;
+    DrivingSide driving_side = 3;
+    UnitOfSystem unit = 4;
+    MapProvider map_provider = 5;
+    MapStatus map_status = 6;
+    uint32 protocol_version = 7;
+    uint32 hardware_version = 8;
+    uint32 map_version = 9;
+    uint32 map_age = 10;
+    sint32 time_zone_offset = 11;
+    uint32 mapping_version = 12;
+    uint32 aggregation_version = 13;
+    uint32 ota_status = 14;
+}
+
+message NdmTrajectory
+{
+    uint64 stamp = 1;
+    uint32 seq_id = 2;
+    uint32 num_odoms = 3;
+    uint32 num_road_ids = 4;
+    uint32 num_lane_ids = 5;
+    repeated Odometry odoms = 6;
+    repeated uint32 road_ids = 7;
+    repeated uint32 lane_ids = 8;
+}
+
+message NdmHeader
+{
+    string version = 1;
+    string date = 2;
+    uint64 timestamp = 3;
+    uint64 seq_id = 4;
+    string projection = 5;
+    string utm_zone = 6;
+    Point base_offset = 7;
+    GlobalData global_data = 8;
+}
+
+message NdmBasePoint
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message Pose
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double roll = 4;
+    double pitch = 5;
+    double yaw = 6;
+}
+
+message PointSL
+{
+    double s = 1;
+    double l = 2;
+}
+
+message PointSV
+{
+    double s = 1;
+    double v = 2;
+}
+
+message PointTS
+{
+    double t = 1;
+    double s = 2;
+}
+
+message PointTSFloat
+{
+    float t = 1;
+    float s = 2;
+}
+
+message EulerAngle
+{
+    double roll = 1;
+    double pitch = 2;
+    double yaw = 3;
+}
+
+message FrenetPoint
+{
+    double s = 1;
+    double l = 2;
+    double k = 3;
+    double dk_ds = 4;
+    double dl_ds = 5;
+    double ddl_ds2 = 6;
+    double ds_dt = 7;
+    double dds_dt2 = 8;
+}
+
+message LinePoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float yaw = 4;
+    float pitch = 5;
+    float roll = 6;
+    float s = 7;
+    float k = 8;
+    float l = 9;
+    float dk_ds = 10;
+    float dl_ds = 11;
+    float ddl_ds = 12;
+}
+
+message PoseWithCovariance
+{
+    Pose pose = 1;
+    uint32 num_covariance = 2;
+    repeated float covariance = 3;
+}
+
+message Twist
+{
+    NdmBasePoint linear = 1;
+    NdmBasePoint angular = 2;
+}
+
+message BaseOdometry
+{
+    uint32 child_frame_id = 1;
+    PoseWithCovariance pose = 2;
+    Twist twist = 3;
+}
+
+message Color
+{
+    float r = 1;
+    float g = 2;
+    float b = 3;
+    float a = 4;
+    ColorType type = 5;
+}
+
+message BasePolygonD
+{
+    uint32 num_points = 1;
+    repeated NdmBasePoint points = 2;
+}
+
+message PairStartEndS
+{
+    float start_s = 1;
+    float end_s = 2;
+}
+
+message PairSLineType
+{
+    float s = 1;
+    NdmBaseLineType type = 2;
+}
+
+message PairSV
+{
+    float s = 1;
+    float min_v = 2;
+    float max_v = 3;
+}
+
+message PairSId
+{
+    float s = 1;
+    uint32 id = 2;
+}
+
+message PairSLaneType
+{
+    float s = 1;
+    NdmLaneType type = 2;
+}
+
+message PairSOutOdd
+{
+    float s = 1;
+    float noa_degrade_s = 2;
+    OutOddReason out_odd_reason = 3;
+}
+
+message NOAOddWarning
+{
+    bool out_odd_warning_flag = 1;
+    uint32 num_out_odd_reasons = 2;
+    repeated PairSOutOdd out_odd_reasons = 3;
+}
+
+message TakeOverEmergency
+{
+    bool take_over_flag = 1;
+    uint32 num_take_over_reasons = 2;
+    repeated TakeOverReason take_over_reasons = 3;
+}
+
+message USSWarning
+{
+    sint32 source = 1;
+    USSDistanceWarning distance_warning = 2;
+}
+
+message WarningEmergencyStatus
+{
+    NOAOddWarning noa_odd_warning = 1;
+    TakeOverEmergency take_over_emergency = 2;
+    USSWarning uss_warning = 3;
+}
+
+message ExtraPoints
+{
+    uint32 num_extra_points = 1;
+    uint32 num_extra_points_type = 2;
+    uint32 num_extra_ids = 3;
+    repeated Point extra_points = 4;
+    repeated ExtraPointType extra_points_type = 5;
+    bytes extra_ids = 6;
+}
+
+message VehiclePose
+{
+    Vector3f position = 1;
+    Vector3f orientation = 2;
+}
+

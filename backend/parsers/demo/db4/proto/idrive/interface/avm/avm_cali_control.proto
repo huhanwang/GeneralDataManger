@@ -1,0 +1,111 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum AvmCaliControl_AvapMode 
+{
+    AvmCaliControl_AvapMode_AVM = 0;
+    AvmCaliControl_AvapMode_APA = 1;
+    AvmCaliControl_AvapMode_DEBUG_SYS = 2;
+    AvmCaliControl_AvapMode_DEBUG_CAL = 3;
+    AvmCaliControl_AvapMode_RESERVED = 4;
+}
+
+enum AvmCaliControl_DebugVisionCtrl 
+{
+    AvmCaliControl_DebugVisionCtrl_Inactive = 0;
+    AvmCaliControl_DebugVisionCtrl_Front = 1;
+    AvmCaliControl_DebugVisionCtrl_Rear = 2;
+    AvmCaliControl_DebugVisionCtrl_Left = 3;
+    AvmCaliControl_DebugVisionCtrl_Right = 4;
+    AvmCaliControl_DebugVisionCtrl_Mosaic = 5;
+    AvmCaliControl_DebugVisionCtrl_Quit = 6;
+}
+
+enum AvmCaliControl_VisionCtrl 
+{
+    AvmCaliControl_VisionCtrl_INACTIVE = 0;
+    AvmCaliControl_VisionCtrl__2D_FRONT = 1;
+    AvmCaliControl_VisionCtrl__2D_FRONT_LEFT = 2;
+    AvmCaliControl_VisionCtrl__2D_FRONT_RIGHT = 3;
+    AvmCaliControl_VisionCtrl__2D_FRONT_LR_WHEEL = 4;
+    AvmCaliControl_VisionCtrl__2D_REAR = 11;
+    AvmCaliControl_VisionCtrl__2D_REAR_LEFT = 12;
+    AvmCaliControl_VisionCtrl__2D_REAR_RIGHT = 13;
+    AvmCaliControl_VisionCtrl__2D_REAR_LR_WHEEL = 14;
+    AvmCaliControl_VisionCtrl__2D_R_LR = 15;
+    AvmCaliControl_VisionCtrl__2D_WIDE_FRONT = 21;
+    AvmCaliControl_VisionCtrl__2D_WIDE_REAR = 22;
+    AvmCaliControl_VisionCtrl__2D_WIDE_FRONT_WHEEL = 23;
+    AvmCaliControl_VisionCtrl__2D_WIDE_REAR_WHEEL = 24;
+    AvmCaliControl_VisionCtrl__3D_FRONT = 31;
+    AvmCaliControl_VisionCtrl__3D_FRONT_LEFT = 32;
+    AvmCaliControl_VisionCtrl__3D_FRONT_RIGHT = 33;
+    AvmCaliControl_VisionCtrl__3D_REAR = 34;
+    AvmCaliControl_VisionCtrl__3D_REAR_LEFT = 35;
+    AvmCaliControl_VisionCtrl__3D_REAR_RIGHT = 36;
+    AvmCaliControl_VisionCtrl__3D_TOP = 37;
+    AvmCaliControl_VisionCtrl__3D_LEFT = 38;
+    AvmCaliControl_VisionCtrl__3D_RIGHT = 39;
+    AvmCaliControl_VisionCtrl__3D_TURNLEFT = 41;
+    AvmCaliControl_VisionCtrl__3D_TURNRIGHT = 42;
+    AvmCaliControl_VisionCtrl__3D_ROAM = 51;
+    AvmCaliControl_VisionCtrl__3D_ANY = 52;
+    AvmCaliControl_VisionCtrl__DVR = 53;
+    AvmCaliControl_VisionCtrl__SENTINEL = 54;
+    AvmCaliControl_VisionCtrl__QUICK_START = 55;
+}
+
+enum AvmCaliControl_TransparentChassis 
+{
+    AvmCaliControl_TransparentChassis_INACTIVE = 0;
+    AvmCaliControl_TransparentChassis_LOW = 1;
+    AvmCaliControl_TransparentChassis_MIDDLE = 2;
+    AvmCaliControl_TransparentChassis_HIGH = 3;
+}
+
+enum AvmCaliControl_CaliMode 
+{
+    AvmCaliControl_CaliMode_NONE = 0;
+    AvmCaliControl_CaliMode_FACT = 1;
+    AvmCaliControl_CaliMode_SERV = 2;
+    AvmCaliControl_CaliMode_AUTO = 3;
+}
+
+enum AvmCaliControl_CaliCmd 
+{
+    AvmCaliControl_CaliCmd_NONE = 0;
+    AvmCaliControl_CaliCmd_START = 1;
+    AvmCaliControl_CaliCmd_CHECK_POINT = 2;
+    AvmCaliControl_CaliCmd_CANCEL_POINT = 3;
+    AvmCaliControl_CaliCmd_CONFIRM_POINT = 4;
+    AvmCaliControl_CaliCmd_RUN = 5;
+}
+
+message AvmCaliControl_Hmi3DCarModel
+{
+    uint32 valid = 1;
+    sint32 hor_direct = 2;
+    sint32 hor_angle = 3;
+    sint32 ver_percent = 4;
+    sint32 rotation_speed = 5;
+}
+
+message AvmCaliControl_Command
+{
+    AvmCaliControl_AvapMode avm_mode = 1;
+    AvmCaliControl_CaliMode cali_mode = 2;
+    AvmCaliControl_CaliCmd cali_cmd = 3;
+    AvmCaliControl_DebugVisionCtrl debug = 4;
+    AvmCaliControl_VisionCtrl vision_ctrl = 5;
+    AvmCaliControl_TransparentChassis transparent_chassis = 6;
+    uint32 trajectory_swt = 7;
+    AvmCaliControl_Hmi3DCarModel car_model = 8;
+}
+
+message AvmCaliControlMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    AvmCaliControl_Command command = 2;
+}
+

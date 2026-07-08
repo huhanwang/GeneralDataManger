@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum Epitome_DataType 
+{
+    Epitome_DataType_UNKNOWN = 0;
+    Epitome_DataType_STRUCT = 1;
+    Epitome_DataType_PROTO = 2;
+    Epitome_DataType_IDL = 3;
+}
+
+message Epitome_Epitome
+{
+    string vin = 1;
+    Epitome_DataType data_type = 2;
+    string message_version = 3;
+    string protocol_version = 4;
+    string software_version = 5;
+    string software_platform = 6;
+    string position = 7;
+}
+
+message EpitomeMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Epitome_Epitome epitome = 2;
+}
+

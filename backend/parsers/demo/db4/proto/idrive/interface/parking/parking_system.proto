@@ -1,0 +1,147 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parking_event.proto";
+import "type/system_type_base.proto";
+package idrive.workflow.proto;
+
+enum ParkingSystem_ParkingOutDir
+{
+    ParkingSystem_ParkingOutDir_KOutUnknow = 0;
+    ParkingSystem_ParkingOutDir_KVerFrontLeft = 1;
+    ParkingSystem_ParkingOutDir_KVerFrontCenter = 2;
+    ParkingSystem_ParkingOutDir_KVerFrontRight = 3;
+    ParkingSystem_ParkingOutDir_KVerRearLeft = 4;
+    ParkingSystem_ParkingOutDir_KVerRearCenter = 5;
+    ParkingSystem_ParkingOutDir_KVerRearRight = 6;
+    ParkingSystem_ParkingOutDir_KHoriFrontLeft = 7;
+    ParkingSystem_ParkingOutDir_KHoriFrontRight = 8;
+}
+
+enum ParkingSystem_ParkingInDir
+{
+    ParkingSystem_ParkingInDir_PARKING_IN_UNKNOWN = 0;
+    ParkingSystem_ParkingInDir_PARKING_IN_FRONT = 1;
+    ParkingSystem_ParkingInDir_PARKING_IN_BACK = 2;
+}
+
+enum ParkingSystem_WorkModeType
+{
+    ParkingSystem_WorkModeType_KNone = 0;
+    ParkingSystem_WorkModeType_KVPA = 1;
+    ParkingSystem_WorkModeType_KAPA = 2;
+    ParkingSystem_WorkModeType_KRPA = 3;
+    ParkingSystem_WorkModeType_KTRA = 4;
+    ParkingSystem_WorkModeType_KNPA = 5;
+}
+
+enum ParkingSystem_PerceptionCtrlStatus
+{
+    ParkingSystem_PerceptionCtrlStatus_kUnknown = 0;
+    ParkingSystem_PerceptionCtrlStatus_kSwitchParking = 1;
+    ParkingSystem_PerceptionCtrlStatus_kSwitchADAS = 2;
+    ParkingSystem_PerceptionCtrlStatus_kParking = 3;
+    ParkingSystem_PerceptionCtrlStatus_kADAS = 4;
+}
+
+enum ParkingSystem_PlanStateType
+{
+    ParkingSystem_PlanStateType_PLAN_STATE_NONE = 0;
+    ParkingSystem_PlanStateType_PLAN_STANDY = 1;
+    ParkingSystem_PlanStateType_PLAN_IDLE = 2;
+    ParkingSystem_PlanStateType_PLAN_ROUTE_LOADING = 3;
+    ParkingSystem_PlanStateType_LOAD_ROUTE_DONE = 4;
+    ParkingSystem_PlanStateType_PLAN_ACTIVE = 5;
+    ParkingSystem_PlanStateType_PLAN_PAUSE = 6;
+    ParkingSystem_PlanStateType_PLAN_COMPLETE = 7;
+    ParkingSystem_PlanStateType_PLAN_TERMINATE = 8;
+    ParkingSystem_PlanStateType_PLAN_FAILED = 9;
+}
+
+enum ParkingSystem_ParkingWorkingStatus
+{
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PER_FREE_STATUS = 0;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_FREE_STATUS = 1;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_UPDATED = 2;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PERPARING = 3;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_WORKING = 4;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_ERROR = 5;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_OVER = 6;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PER_RUNNING_FREE_STATUS = 7;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_FREE_STATUS = 8;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_UPDATED = 9;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_BREAKING = 10;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_SUCCESS = 11;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_WAITTING = 12;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_WAITTING_FINISH = 13;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_TIMEOUT = 14;
+    ParkingSystem_ParkingWorkingStatus_PARK_WORK_STATUS_WORKING_ADJUST = 15;
+}
+
+enum ParkingSystem_CornerSlotType
+{
+    ParkingSystem_CornerSlotType_UNKNOWN_CORNER_SLOT_TYPE = 0;
+    ParkingSystem_CornerSlotType_CORNER_SLOT_LEFT = 1;
+    ParkingSystem_CornerSlotType_CORNER_SLOT_RIGHT = 2;
+}
+
+enum ParkingSystem_MonitorException
+{
+    ParkingSystem_MonitorException_NO_EXCEPTION = 0;
+    ParkingSystem_MonitorException_ODO_EXCEPTION = 1;
+    ParkingSystem_MonitorException_VEH_BODY_EXCEPTION = 2;
+    ParkingSystem_MonitorException_VEH_CHASSIS_EXCEPTION = 3;
+    ParkingSystem_MonitorException_HANDSHAKE_EXCEPTION = 4;
+    ParkingSystem_MonitorException_FREESPACE_EXCEPTION = 5;
+    ParkingSystem_MonitorException_CERTIFY_SLOT = 6;
+}
+
+message ParkingSystem_ExitReason
+{
+    ApaFunctionExitReason apa_exit_reason = 1;
+    VpaFunctionExitReason vpa_exit_reason = 2;
+    TraFunctionExitReason tra_exit_reason = 3;
+    NpaFunctionExitReason npa_exit_reason = 4;
+}
+
+message ParkingSystem_PauseReason
+{
+    FunctionPauseReason apa_pause_reason = 1;
+    FunctionPauseReason vpa_pause_reason = 2;
+    FunctionPauseReason tra_pause_reason = 3;
+    FunctionPauseReason npa_pause_reason = 4;
+}
+
+message ParkingSystem_ParkingSystem
+{
+    sint32 lock_id = 1;
+    LockIdType lock_id_type = 2;
+    bool enable_backstage_searching = 3;
+    bool enable_normal_searching = 4;
+    bool enable_PEB_PrkgPerception = 5;
+    ParkingSystem_ParkingOutDir parking_out_dir = 6;
+    ParkingSystem_WorkModeType work_mode_type = 7;
+    MirrFoldStsTyp mirr_fold_sts_at_driver = 8;
+    MirrFoldStsTyp mirr_fold_sts_at_pass = 9;
+    VpaStateDetailType vpa_state_detail_type = 10;
+    ParkingSystem_PerceptionCtrlStatus perception_ctrl_status = 11;
+    ParkingSystem_PlanStateType apa_plan_state = 12;
+    ParkingSystem_ParkingWorkingStatus parking_working_status = 13;
+    UserSelectedParkingSlot usr_sel_ps = 14;
+    ApaStateInfo apa_states = 15;
+    ParkingSystem_ExitReason exit_reason = 16;
+    ParkingSystem_PauseReason pause_reason = 17;
+    TraStateDetailType tra_state_type = 18;
+    NpaStateDetailType npa_state_type = 19;
+    sint32 car_in_slot_id = 20;
+    ParkingSystem_ParkingInDir usr_sel_parking_in_dir = 21;
+    ParkingSystem_CornerSlotType corner_slot = 22;
+    uint32 parking_takes_time = 23;
+    ParkingSystem_MonitorException monitor_exception = 24;
+}
+
+message ParkingSystemMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ParkingSystem_ParkingSystem parking_system = 2;
+}
+

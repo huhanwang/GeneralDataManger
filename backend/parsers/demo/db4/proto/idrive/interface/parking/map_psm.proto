@@ -1,0 +1,86 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum MapStateType
+{
+    MapStateType_MAP_STATE_NONE = 0;
+    MapStateType_PRE_MAP = 1;
+    MapStateType_MAP_READY = 2;
+    MapStateType_MAP_RUNNING = 3;
+    MapStateType_MAP_WAIT_SLOT = 4;
+    MapStateType_MAP_SAVING_OPTIMIZING = 5;
+    MapStateType_MAP_BUILD_COMPLETE = 6;
+    MapStateType_MAP_BUILD_FAILED = 7;
+    MapStateType_MAP_ABORT = 8;
+    MapStateType_PRE_LOCATION = 9;
+    MapStateType_LOCATION_READY = 10;
+    MapStateType_LOCATION_RUNNING = 11;
+    MapStateType_LOCATION_COMPLETE = 12;
+    MapStateType_LOCATION_FAILED = 13;
+    MapStateType_LOCATION_ABORT = 14;
+}
+
+message MapState
+{
+    MapStateType type = 1;
+    MapStateType sub_type = 2;
+    sint32 reason = 3;
+}
+
+enum MapToPsmDataBase_MapMsgType
+{
+    MapToPsmDataBase_MapMsgType_UNKNOW = 0;
+    MapToPsmDataBase_MapMsgType_TRIGGER = 1;
+    MapToPsmDataBase_MapMsgType_EVENT = 2;
+    MapToPsmDataBase_MapMsgType_INFO = 3;
+}
+
+message MapToPsmDataBase_MapMsgTypeData
+{
+    MapToPsmDataBase_MapMsgType type = 1;
+}
+
+message MapToPsmDataBaseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MapToPsmDataBase_MapMsgTypeData type_data = 2;
+}
+
+enum MapTrigger_MapTriggerType
+{
+    MapTrigger_MapTriggerType_TRIGGER_NONE = 0;
+    MapTrigger_MapTriggerType_MAP = 1;
+    MapTrigger_MapTriggerType_LOCATION = 2;
+}
+
+message MapTrigger_MapTriggerTypeData
+{
+    MapTrigger_MapTriggerType type = 1;
+}
+
+message MapTriggerMsg
+{
+    MapToPsmDataBaseMsg map_to_psm_data_base = 1;
+    MapTrigger_MapTriggerTypeData trigger_type = 2;
+}
+
+message MapEventMsg
+{
+    MapToPsmDataBaseMsg map_to_psm_data_base = 1;
+    MapState map_state = 2;
+}
+
+message MapKeyInfo_MapKeyInfo
+{
+    float build_dist = 1;
+    sint32 speedbump_num = 2;
+    float loc_remain_dist = 3;
+}
+
+message MapKeyInfoMsg
+{
+    MapToPsmDataBaseMsg map_to_psm_data_base = 1;
+    MapKeyInfo_MapKeyInfo key_info = 2;
+}
+

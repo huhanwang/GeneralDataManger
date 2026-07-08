@@ -1,0 +1,101 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum DrivingSide 
+{
+    DrivingSide_kRightHandDriving = 0;
+    DrivingSide_kLeftHandDriving = 1;
+}
+
+enum VehicleBaseType 
+{
+    VehicleBaseType_kUnknown = 0;
+    VehicleBaseType_kCar = 1;
+    VehicleBaseType_kMotorcycle = 2;
+    VehicleBaseType_kBicycle = 3;
+    VehicleBaseType_kTruck = 4;
+    VehicleBaseType_kTaxi = 5;
+    VehicleBaseType_kBus = 6;
+    VehicleBaseType_kPedestrian = 7;
+    VehicleBaseType_kCableCar = 8;
+}
+
+enum SpeedLimitType 
+{
+    SpeedLimitType_kUnknown = 0;
+    SpeedLimitType_kMin = 1;
+    SpeedLimitType_kMax = 2;
+}
+
+enum SpeedLimitSource 
+{
+    SpeedLimitSource_kUnknown = 0;
+    SpeedLimitSource_kImplicit = 1;
+    SpeedLimitSource_kExplicit = 2;
+}
+
+message NdmSpec
+{
+    uint64 timestamp = 1;
+    uint64 seq_id = 2;
+    Vector3d base_offset = 3;
+}
+
+message Id
+{
+    uint32 id = 1;
+    uint32 num_name = 2;
+    string name = 3;
+}
+
+message Link
+{
+    Id id = 1;
+    float offset = 2;
+    float end_offset = 3;
+}
+
+message VehicleType
+{
+    VehicleBaseType type = 1;
+    float conf = 2;
+}
+
+message SpeedLimit
+{
+    SpeedLimitType limit_type = 1;
+    SpeedLimitSource source = 2;
+    float speed_value = 3;
+    float offset = 4;
+    float end_offset = 5;
+}
+
+message Number
+{
+    float value = 1;
+    float cov = 2;
+}
+
+message TimeLimit
+{
+    float time_begin = 1;
+    float time_end = 2;
+}
+
+message ParkingSpaceRestriction
+{
+    Number number_limit = 1;
+    uint32 num_time_limits = 2;
+    uint32 num_vehicle_types = 3;
+    repeated TimeLimit time_limits = 4;
+    repeated VehicleType vehicle_types = 5;
+}
+
+message Index
+{
+    uint64 x = 1;
+    uint64 y = 2;
+    uint64 z = 3;
+}
+

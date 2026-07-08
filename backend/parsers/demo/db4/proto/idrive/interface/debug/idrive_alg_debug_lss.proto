@@ -1,0 +1,128 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+message AlgDebugLss_AlgDebugLSSDecision
+{
+    uint32 state = 1;
+    uint32 sub_state = 2;
+    uint32 left_trigger_reason = 3;
+    uint32 right_trigger_reason = 4;
+    uint32 takeover_warning = 5;
+    uint32 reserved_2 = 6;
+    bool left_intervention_flag = 7;
+    bool right_intervention_flag = 8;
+    bool reserved_1 = 9;
+    uint32 left_suppress_reason = 10;
+    uint32 left_abort_reason = 11;
+    uint32 right_suppress_reason = 12;
+    uint32 right_abort_reason = 13;
+    uint32 reserved_3 = 14;
+    uint32 unavailable_reason = 15;
+    uint32 quit_reason = 16;
+    float left_tlc = 17;
+    float left_dlc = 18;
+    float right_tlc = 19;
+    float right_dlc = 20;
+    float tlc_threshold = 21;
+    float dlc_threshold = 22;
+    float reserved_4 = 23;
+}
+
+message AlgDebugLss_LSSDebugPathPoint
+{
+    float x = 1;
+    float y = 2;
+    float theta = 3;
+    float kappa = 4;
+    float accum_s = 5;
+}
+
+message AlgDebugLss_LSSDebugTrajectoryPoint
+{
+    double t = 1;
+    float v = 2;
+    float a = 3;
+    AlgDebugLss_LSSDebugPathPoint path_point = 4;
+}
+
+message AlgDebugLss_LSSDebugELKMCOInfo
+{
+    uint32 id = 1;
+    float dis_front = 2;
+    float dis_rear = 3;
+    float ttc_lon_front = 4;
+    float ttc_lon_rear = 5;
+}
+
+message AlgDebugLss_LSSDebugELKObjDecision
+{
+    float ttc_near_side = 1;
+    float ttc_far_side = 2;
+    AlgDebugLss_LSSDebugELKMCOInfo mco_oncome = 3;
+    AlgDebugLss_LSSDebugELKMCOInfo mco_overtake = 4;
+}
+
+message AlgDebugLss_LSSDebugLaneBoundary
+{
+    uint32 type = 2;
+    uint32 quality = 3;
+    uint32 id = 1;
+    repeated float coefs = 4;
+}
+
+message AlgDebugLss_AlgDebugLSSPlan
+{
+    repeated float ref_line_coefs = 1;
+    AlgDebugLss_LSSDebugTrajectoryPoint start_point = 2;
+    AlgDebugLss_LSSDebugTrajectoryPoint end_point = 3;
+    repeated float quintic_polynomial_curve = 4;
+    repeated AlgDebugLss_LSSDebugTrajectoryPoint traj_points = 5;
+    AlgDebugLss_LSSDebugLaneBoundary left_boundary = 6;
+    AlgDebugLss_LSSDebugLaneBoundary right_boundary = 7;
+    AlgDebugLss_LSSDebugELKObjDecision elk_obj_decision = 8;
+    float reserved_1 = 9;
+    float reserved_2 = 10;
+}
+
+message AlgDebugLss_AlgDebugLSSControl
+{
+    uint32 control_mode = 1;
+    bool steer_request_active = 2;
+    bool flag_lss_control_finish = 3;
+    bool reserved_1 = 4;
+    uint32 reserved_2 = 5;
+    float ff_preview_curvature = 6;
+    float ff_front_wheel_angle = 7;
+    float ff_steer_wheel_angle = 8;
+    float ff_ff_radius_gain = 9;
+    float fb_preview_lat_error = 10;
+    float fb_preview_heading_error = 11;
+    float fb_front_wheel_p = 12;
+    float fb_front_wheel_i = 13;
+    float fb_front_wheel_d = 14;
+    float fb_front_wheel_angle = 15;
+    float fb_steer_wheel_angle = 16;
+    float steer_angle_request = 17;
+    float steer_torque_request = 18;
+    float reserved_3 = 19;
+}
+
+message AlgDebugLss_AlgDebugLSS
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    AlgDebugLss_AlgDebugLSSDecision ldw_decision = 3;
+    AlgDebugLss_AlgDebugLSSDecision lka_decision = 4;
+    AlgDebugLss_AlgDebugLSSDecision elk_decision = 5;
+    AlgDebugLss_AlgDebugLSSPlan lss_plan_debug = 6;
+    AlgDebugLss_AlgDebugLSSControl lss_ctrl_debug = 7;
+}
+
+message AlgDebugLssMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugLss_AlgDebugLSS alg_debug_lss = 2;
+}
+

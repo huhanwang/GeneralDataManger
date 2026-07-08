@@ -1,0 +1,171 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VpaState_MapDeletingStage
+{
+    VpaState_MapDeletingStage_kDefault = 0;
+    VpaState_MapDeletingStage_kDeleting = 1;
+    VpaState_MapDeletingStage_kDeleteSucessful = 2;
+    VpaState_MapDeletingStage_kDeleteFailed = 3;
+}
+
+enum VpaState_MapSavingStage
+{
+    VpaState_MapSavingStage_kDefault = 0;
+    VpaState_MapSavingStage_kSaving = 1;
+    VpaState_MapSavingStage_kSaveSucessful = 2;
+    VpaState_MapSavingStage_kSaveFailed = 3;
+}
+
+enum VpaState_MappingStage
+{
+    VpaState_MappingStage_kDefaultMappingStage = 0;
+    VpaState_MappingStage_kMapping = 1;
+    VpaState_MappingStage_kMappingSuccess = 2;
+    VpaState_MappingStage_kMappingFailed = 3;
+}
+
+enum VpaState_MapOptimizeStage
+{
+    VpaState_MapOptimizeStage_kDefaultMapOptimizeStage = 0;
+    VpaState_MapOptimizeStage_kOptimizing = 1;
+    VpaState_MapOptimizeStage_kOptimizeSuccess = 2;
+    VpaState_MapOptimizeStage_kOptimizeFailed = 3;
+}
+
+enum VpaState_MappingOddType
+{
+    VpaState_MappingOddType_kDefault = 0;
+    VpaState_MappingOddType_kMappingOddOk = 1;
+    VpaState_MappingOddType_kMappingOddNokNotIndoor = 2;
+    VpaState_MappingOddType_kMappingOddNokNotUndergroundPark = 3;
+    VpaState_MappingOddType_kMappingOddNokSpeedOutOfLimit = 4;
+    VpaState_MappingOddType_kMappingOddNokNoSemanticInfo = 5;
+    VpaState_MappingOddType_kMappingOddNokNotEnoughSemanticInfo = 6;
+    VpaState_MappingOddType_kMappingOddNokLightnessNok = 7;
+    VpaState_MappingOddType_kMappingOddNokRainFallNok = 8;
+    VpaState_MappingOddType_kMappingOddNokSlopeOutOfLimit = 9;
+    VpaState_MappingOddType_kMappingOddNokPreConditionCheck = 10;
+    VpaState_MappingOddType_kMappingOddNokReserved = 11;
+}
+
+enum VpaState_LocOddType
+{
+    VpaState_LocOddType_kDefault = 0;
+    VpaState_LocOddType_kLocOddOk = 1;
+    VpaState_LocOddType_kLocOddNokNotIndoor = 2;
+    VpaState_LocOddType_kLocOddNokNotUndergroundPark = 3;
+    VpaState_LocOddType_kLocOddNokSpeedOutOfLimit = 4;
+    VpaState_LocOddType_kLocOddNokNoSemanticInfo = 5;
+    VpaState_LocOddType_kLocOddNokNotEnoughSemanticInfo = 6;
+    VpaState_LocOddType_kLocOddNokLightnessNok = 7;
+    VpaState_LocOddType_kLocOddNokRainFallNok = 8;
+    VpaState_LocOddType_kLocOddNokSlopeOutOfLimit = 9;
+    VpaState_LocOddType_kLocOddNokPreConditionCheck = 10;
+    VpaState_LocOddType_kLocOddNokReserved = 11;
+}
+
+enum VpaState_LocalLocStage
+{
+    VpaState_LocalLocStage_kNO = 0;
+    VpaState_LocalLocStage_kOngoing = 1;
+    VpaState_LocalLocStage_kSuccess = 2;
+    VpaState_LocalLocStage_kFailed = 3;
+}
+
+enum VpaState_ErrorCode
+{
+    VpaState_ErrorCode_kNoError = 0;
+    VpaState_ErrorCode_kErrorInsufficientDiskFreespace = 1;
+    VpaState_ErrorCode_kErrorTsReset = 1000;
+    VpaState_ErrorCode_kErrorNoPerception = 1001;
+    VpaState_ErrorCode_kError3dOdoAbnormal = 1002;
+    VpaState_ErrorCode_kErrorOdomError = 1003;
+    VpaState_ErrorCode_kErrorNoSyncGnss = 1004;
+    VpaState_ErrorCode_kErrorInvalidGnss = 1005;
+    VpaState_ErrorCode_kErrorWaitForSlotTooLong = 2000;
+    VpaState_ErrorCode_kErrorOutdoorInMapping = 2001;
+    VpaState_ErrorCode_kErrorMapUnsuitableForLocalization = 2002;
+    VpaState_ErrorCode_kErrorMapOptimizationTimeOut = 2003;
+    VpaState_ErrorCode_kErrorMappingDistTooLong = 2004;
+    VpaState_ErrorCode_kErrorMappingDistTooShort = 2005;
+    VpaState_ErrorCode_kErrorMapPlanningFailed = 2006;
+    VpaState_ErrorCode_kErrorMapSaveFailed = 2007;
+    VpaState_ErrorCode_kErrorMappingCrossFloor = 2008;
+    VpaState_ErrorCode_kErrorMapLoopClosure = 2009;
+    VpaState_ErrorCode_kErrorDeleteNotExistMap = 2010;
+    VpaState_ErrorCode_kErrorOverSpeed = 2011;
+    VpaState_ErrorCode_kErrorOverSpeedTimeOut = 2012;
+    VpaState_ErrorCode_kErrorOverSlope = 2013;
+    VpaState_ErrorCode_kErrorGearRDistanceTooLong = 2014;
+    VpaState_ErrorCode_kErrorNoAvaliableMapFound = 2015;
+    VpaState_ErrorCode_kErrorNotInParkingSlot = 2016;
+    VpaState_ErrorCode_kErrorLocDeviationFromNavigation = 3000;
+    VpaState_ErrorCode_kErrorMapMatchingError = 3001;
+    VpaState_ErrorCode_kErrorOutOfMap = 3002;
+    VpaState_ErrorCode_kErrorMissMapKeyElements = 3003;
+    VpaState_ErrorCode_kErrorPoseOdomInconsistency = 3004;
+    VpaState_ErrorCode_kErrorMapError = 3005;
+    VpaState_ErrorCode_kErrorNoMap = 3006;
+    VpaState_ErrorCode_kErrorMapFileError = 3007;
+}
+
+enum VpaState_HPAState
+{
+    VpaState_HPAState_kDefault = 0;
+    VpaState_HPAState_kOff = 1;
+    VpaState_HPAState_kStandby = 2;
+    VpaState_HPAState_kPathLearning = 3;
+    VpaState_HPAState_kCruising = 4;
+    VpaState_HPAState_kPreConditionCheck = 5;
+}
+
+enum VpaState_VPAEventType
+{
+    VpaState_VPAEventType_kDefault = 0;
+    VpaState_VPAEventType_kErrorEvent = 1;
+    VpaState_VPAEventType_kRequestMappingEvent = 2;
+    VpaState_VPAEventType_kRequestLocalizationEvent = 3;
+    VpaState_VPAEventType_kLocOddEvent = 4;
+    VpaState_VPAEventType_kMappingOddEvent = 5;
+    VpaState_VPAEventType_kHpaStateEvent = 6;
+    VpaState_VPAEventType_kMapSavingStageEvent = 7;
+    VpaState_VPAEventType_kLocalLocStageEvent = 8;
+    VpaState_VPAEventType_kFirstTimeMappingEvent = 9;
+    VpaState_VPAEventType_kFirstTimeCurParkingMappingEvent = 10;
+    VpaState_VPAEventType_kFindAvailableMapEvent = 11;
+    VpaState_VPAEventType_kMapDeleteStageEvent = 12;
+    VpaState_VPAEventType_kEnterUndergroundParkingEvent = 13;
+    VpaState_VPAEventType_kInParkingSlotEvent = 14;
+    VpaState_VPAEventType_kMappingStageEvent = 15;
+    VpaState_VPAEventType_kMappingOptimizeStageEvent = 16;
+    VpaState_VPAEventType_kOutUndergroundParkingEvent = 17;
+    VpaState_VPAEventType_kFindValidGNSSEvent = 18;
+    VpaState_VPAEventType_kRequestMappingParkingOutEvent = 19;
+    VpaState_VPAEventType_kRequestLocalizationParkingOutEvent = 20;
+}
+
+message VpaState_State
+{
+    VpaState_VPAEventType vpa_event = 1;
+    VpaState_HPAState hpa_state = 2;
+    VpaState_MappingOddType mapping_odd_type = 3;
+    VpaState_LocOddType loc_odd_type = 4;
+    VpaState_MapSavingStage map_saving_stage = 5;
+    VpaState_LocalLocStage local_loc_stage = 6;
+    VpaState_MapDeletingStage map_deleted_stage = 7;
+    VpaState_MappingStage map_stage = 8;
+    VpaState_MapOptimizeStage map_optimized_stage = 9;
+    VpaState_ErrorCode error_code = 10;
+    sint32 target_parking_slot_id = 11;
+    uint32 map_saving_progress = 12;
+    uint32 avaliable_map_id = 13;
+}
+
+message VpaStateMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaState_State vpa_state = 2;
+}
+

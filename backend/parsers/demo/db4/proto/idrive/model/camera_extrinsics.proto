@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+package idrive.workflow.proto;
+
+message CameraExtrinsics_Extrinsic
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float roll = 4;
+    float pitch = 5;
+    float yaw = 6;
+    uint32 num_extrinsic = 7;
+    CameraID cam_id = 8;
+}
+
+message CameraExtrinsics_Extrinsics
+{
+    uint32 num_extrinsics = 1;
+    repeated CameraExtrinsics_Extrinsic extrinsics = 2;
+}
+
+message CameraExtrinsicsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CameraExtrinsics_Extrinsics extrinsics = 2;
+}
+

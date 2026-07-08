@@ -1,0 +1,68 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UssApaDebug_RawSlotInfo
+{
+    float P0_x = 1;
+    float P0_y = 2;
+    float P1_x = 3;
+    float P1_y = 4;
+    float min_distance1 = 5;
+    float min_distance2 = 6;
+    float P0_y_coor = 7;
+    float P1_y_coor = 8;
+    uint32 slot_type1 = 9;
+    uint32 slot_type2 = 10;
+}
+
+message UssApaDebug_LineInfo
+{
+    uint32 line_num = 1;
+    uint32 type = 2;
+    uint32 status = 3;
+    float start_point_x = 4;
+    float start_point_y = 5;
+    float end_point_x = 6;
+    float end_point_y = 7;
+    float slope = 8;
+    float intercept = 9;
+    float min_point_x = 10;
+    float min_point_y = 11;
+    float y_average = 12;
+    float amplitude = 13;
+}
+
+message UssApaDebug_PointInfo
+{
+    uint32 point_num = 1;
+    float raw_point_first = 2;
+    float raw_point_second = 3;
+    float distance = 4;
+    float filter_point_first = 5;
+    float filter_point_second = 6;
+    float amplitude = 7;
+    float width = 8;
+    float curvature = 9;
+}
+
+message UssApaDebug_StateInfo
+{
+    uint32 num = 1;
+    uint32 state = 2;
+}
+
+message UssApaDebug_UssApaDebug
+{
+    repeated UssApaDebug_RawSlotInfo raw_slot_Info = 1;
+    repeated UssApaDebug_LineInfo Line_Info = 2;
+    repeated UssApaDebug_PointInfo point_info = 3;
+    repeated UssApaDebug_StateInfo state_info = 4;
+}
+
+message UssApaDebugMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssApaDebug_UssApaDebug uss_apa_debug = 2;
+}
+

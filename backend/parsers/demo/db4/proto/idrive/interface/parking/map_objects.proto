@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum MapObjects_MapObjectType
+{
+    MapObjects_MapObjectType_kUnknown = 0;
+    MapObjects_MapObjectType_kTrafficSign = 1;
+    MapObjects_MapObjectType_kTrafficLight = 2;
+    MapObjects_MapObjectType_kTrafficLightBulb = 3;
+    MapObjects_MapObjectType_kLaneMarking = 4;
+    MapObjects_MapObjectType_kStopLine = 5;
+    MapObjects_MapObjectType_kSpeedBump = 6;
+    MapObjects_MapObjectType_kPole = 7;
+    MapObjects_MapObjectType_kCrossWalk = 8;
+    MapObjects_MapObjectType_kZone = 9;
+    MapObjects_MapObjectType_kParkingSlot = 10;
+    MapObjects_MapObjectType_kTrafficCone = 11;
+    MapObjects_MapObjectType_kParkingLockClose = 12;
+    MapObjects_MapObjectType_kParkingLockOpen = 13;
+    MapObjects_MapObjectType_kParkingColumn = 14;
+    MapObjects_MapObjectType_kParkingAFrameSign = 15;
+    MapObjects_MapObjectType_kJunction = 16;
+    MapObjects_MapObjectType_kParkingLock = 17;
+    MapObjects_MapObjectType_kCementColumn_Yes = 18;
+    MapObjects_MapObjectType_kCementColumn_No = 19;
+}
+
+enum MapObjects_MapObjectSubType
+{
+    MapObjects_MapObjectSubType_kParkLockTypeUnknown = 0;
+    MapObjects_MapObjectSubType_kParkLockTypeOpen = 1;
+    MapObjects_MapObjectSubType_kParkLockTypeClose = 2;
+    MapObjects_MapObjectSubType_kFireHydrantTypeAir = 3;
+    MapObjects_MapObjectSubType_kFireHydrantTypeGnd = 4;
+}
+
+enum MapObjects_MapObjectShape
+{
+    MapObjects_MapObjectShape_kUnknown = 0;
+    MapObjects_MapObjectShape_kRectangle = 1;
+    MapObjects_MapObjectShape_kTriangle = 2;
+    MapObjects_MapObjectShape_kRound = 3;
+    MapObjects_MapObjectShape_kCylinder = 4;
+}
+
+message MapObjects_MapObjectAttr
+{
+    sint32 shape = 1;
+    float cycle_time = 2;
+    sint32 traversable = 3;
+    float height = 4;
+    float radius = 5;
+    sint32 status = 6;
+    string value = 7;
+    uint32 num_value = 8;
+    bool dynamic = 9;
+    ImageSpace img_info = 10;
+}
+
+message MapObjects_MapObject
+{
+    sint32 id = 1;
+    sint32 cam_id = 2;
+    sint64 time_stamp = 3;
+    sint32 conf = 4;
+    MapObjects_MapObjectType type = 5;
+    MapObjects_MapObjectSubType sub_type = 6;
+    Polygon border = 7;
+    sint32 life_time = 8;
+    sint32 age = 9;
+    string str_id = 10;
+    uint32 num_str_id = 11;
+    MapObjects_MapObjectAttr attr = 12;
+    Vector3f position = 13;
+}
+
+message MapObjects_MapObjects
+{
+    float conf_scale = 1;
+    sint32 num_objects = 2;
+    repeated MapObjects_MapObject objects = 3;
+}
+
+message MapObjectsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MapObjects_MapObjects objects = 2;
+}
+

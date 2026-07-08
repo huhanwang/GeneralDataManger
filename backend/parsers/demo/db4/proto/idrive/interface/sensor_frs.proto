@@ -1,0 +1,12 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+import "type/freespace_point.proto";
+package idrive.workflow.proto;
+
+message SensorFrsMsg 
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    uint32 num_freespace_points = 2;
+    repeated FreespacePoint freespace_points = 3;
+}
+

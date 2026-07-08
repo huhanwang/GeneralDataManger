@@ -1,0 +1,41 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum McuDiag_DiagStatus 
+{
+    McuDiag_DiagStatus_Normal = 0;
+    McuDiag_DiagStatus_FAULT = 1;
+    McuDiag_DiagStatus_Reserved = 2;
+}
+
+message McuDiag_PowerFaults
+{
+    McuDiag_DiagStatus cam_pwr_sts_f = 1;
+    McuDiag_DiagStatus cam_pwr_sts_r = 2;
+    McuDiag_DiagStatus cam_pwr_sts_d = 3;
+    McuDiag_DiagStatus cam_pwr_sts_p = 4;
+    McuDiag_DiagStatus serdes_pwr_sts = 5;
+}
+
+message McuDiag_McuDiag
+{
+    McuDiag_DiagStatus powertrain_system_sts = 1;
+    McuDiag_DiagStatus chassis_system_sts = 2;
+    McuDiag_DiagStatus steering_system_sts = 3;
+    McuDiag_DiagStatus bluetooth_system_sts = 4;
+    McuDiag_DiagStatus app_sts = 5;
+    McuDiag_DiagStatus bdc_sts = 6;
+    McuDiag_DiagStatus apa_controller_sts = 7;
+    McuDiag_DiagStatus power_supply_sts = 8;
+    McuDiag_DiagStatus communication_sts = 9;
+    uint32 mcu_faut_code = 10;
+    McuDiag_PowerFaults power_detail_sts = 11;
+}
+
+message McuDiagMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    McuDiag_McuDiag mcu_diag = 2;
+}
+

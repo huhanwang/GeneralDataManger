@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+message LocalizationToControl_Quaternion4d
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message LocalizationToControl_Localization
+{
+    LocalizationToControl_Quaternion4d quaternion = 1;
+    Vector3d position = 2;
+}
+
+message LocalizationToControlMsg
+{
+    CommonMsgMsg common_msg = 1;
+    LocalizationToControl_Localization localization = 2;
+}
+

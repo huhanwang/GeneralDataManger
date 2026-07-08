@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum WallLikeObstacles_WallLikeObstacleType
+{
+    WallLikeObstacles_WallLikeObstacleType_kUnknown = 0;
+    WallLikeObstacles_WallLikeObstacleType_kWall = 1;
+    WallLikeObstacles_WallLikeObstacleType_kCurb = 2;
+}
+
+message WallLikeObstacles_LineSegment
+{
+    Vector2f start_point = 1;
+    Vector2f end_point = 2;
+}
+
+message WallLikeObstacles_WallLikeObstacle
+{
+    sint32 id = 1;
+    sint32 conf = 2;
+    WallLikeObstacles_WallLikeObstacleType type = 3;
+    uint32 num_segments = 4;
+    repeated WallLikeObstacles_LineSegment line_segments = 5;
+}
+
+message WallLikeObstacles_WallLikeObstacles
+{
+    uint32 num_obstacles = 1;
+    repeated WallLikeObstacles_WallLikeObstacle obstacles = 2;
+}
+
+message WallLikeObstaclesMsg
+{
+    CommonMsgMsg common_msg = 1;
+    WallLikeObstacles_WallLikeObstacles wall_like_obstacles = 2;
+}
+

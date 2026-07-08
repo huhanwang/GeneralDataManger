@@ -1,0 +1,154 @@
+syntax = "proto3";
+import "type/parking_slot.proto";
+package idrive.workflow.proto;
+
+enum HandShakableType
+{
+    HandShakableType_HANDSHAKABLE_ENABLE = 0;
+    HandShakableType_HANDSHAKABLE_DISABLE_SPEED = 1;
+    HandShakableType_HANDSHAKABLE_DISABLE_GEAR = 2;
+}
+
+enum ApaFunctionStage
+{
+    ApaFunctionStage_kFunctionNone = 0;
+    ApaFunctionStage_kApaSearching = 1;
+    ApaFunctionStage_kApaPreParking = 2;
+    ApaFunctionStage_kApaParking = 3;
+    ApaFunctionStage_kApaComplete = 4;
+    ApaFunctionStage_kApaAbort = 5;
+    ApaFunctionStage_kApaSuspend = 6;
+    ApaFunctionStage_kApaFailed = 7;
+    ApaFunctionStage_kApaOther = 8;
+}
+
+enum ApaStateDetailType
+{
+    ApaStateDetailType_kStateNone = 0;
+    ApaStateDetailType_kOff = 1;
+    ApaStateDetailType_kStandby = 2;
+    ApaStateDetailType_kFailed = 3;
+    ApaStateDetailType_kAbort = 4;
+    ApaStateDetailType_kSearchingParkingIn = 5;
+    ApaStateDetailType_kSearchingParkingOut = 6;
+    ApaStateDetailType_kPreParkingIn = 7;
+    ApaStateDetailType_kPreParkingOut = 8;
+    ApaStateDetailType_kParkingIn = 9;
+    ApaStateDetailType_kParkingOut = 10;
+    ApaStateDetailType_kSuspendNotContinue = 11;
+    ApaStateDetailType_kSuspendContinue = 12;
+    ApaStateDetailType_kComplete = 13;
+    ApaStateDetailType_kPreParkingSelect = 14;
+    ApaStateDetailType_kPreParkingRpa = 15;
+    ApaStateDetailType_kInvalid = 16;
+    ApaStateDetailType_kPreParkingInUsrSelected = 17;
+    ApaStateDetailType_kPreParkingOutUsrSelected = 18;
+}
+
+enum VpaStateDetailType
+{
+    VpaStateDetailType_kStateNone = 0;
+    VpaStateDetailType_kRequestMapWeakActive = 1;
+    VpaStateDetailType_kInitMap = 2;
+    VpaStateDetailType_kBuildMapClickable = 3;
+    VpaStateDetailType_kMapBuildRunning = 4;
+    VpaStateDetailType_kMapBuildComplete = 5;
+    VpaStateDetailType_kMapBuildExit = 6;
+    VpaStateDetailType_kMapBuildOptimizing = 7;
+    VpaStateDetailType_kMapBuildApa = 8;
+    VpaStateDetailType_kMapBuildDrivePark = 9;
+    VpaStateDetailType_kRequestVpaWeakActive = 10;
+    VpaStateDetailType_kInitVpa = 11;
+    VpaStateDetailType_kStartVpaClickable = 12;
+    VpaStateDetailType_kVpaRunning = 13;
+    VpaStateDetailType_kVpaRandomApa = 14;
+    VpaStateDetailType_kVpaFixApa = 15;
+    VpaStateDetailType_kVpaComplete = 16;
+    VpaStateDetailType_kVpaExit = 17;
+    VpaStateDetailType_kVpaPause = 18;
+    VpaStateDetailType_kVpaContinue = 19;
+    VpaStateDetailType_kVpaEpsInterrupt = 20;
+    VpaStateDetailType_kVpaEpsContinue = 21;
+    VpaStateDetailType_kDiag = 22;
+    VpaStateDetailType_kPureApa = 23;
+    VpaStateDetailType_kPureRpa = 24;
+    VpaStateDetailType_kMapPause = 25;
+    VpaStateDetailType_kMapContinue = 26;
+}
+
+enum TraStateDetailType
+{
+    TraStateDetailType_kStateNone = 0;
+    TraStateDetailType_kOff = 1;
+    TraStateDetailType_kStandby = 2;
+    TraStateDetailType_kAbort = 3;
+    TraStateDetailType_kFault = 4;
+    TraStateDetailType_kInvalid = 5;
+    TraStateDetailType_kTrackingRecording = 6;
+    TraStateDetailType_kTrackingReverseClickable = 7;
+    TraStateDetailType_kTrackingReverse = 8;
+    TraStateDetailType_kComplete = 9;
+    TraStateDetailType_kSuspendNotContinue = 10;
+    TraStateDetailType_kSuspendContinue = 11;
+}
+
+enum NpaStateDetailType
+{
+    NpaStateDetailType_kStateNone = 0;
+    NpaStateDetailType_kOff = 1;
+    NpaStateDetailType_kStandby = 2;
+    NpaStateDetailType_kAbort = 3;
+    NpaStateDetailType_kFault = 4;
+    NpaStateDetailType_kInvalid = 5;
+    NpaStateDetailType_kNarrowLaneAuxiliary = 6;
+    NpaStateDetailType_kNarrowLanePassingClickable = 7;
+    NpaStateDetailType_kNarrowLanePassing = 8;
+    NpaStateDetailType_kComplete = 9;
+    NpaStateDetailType_kSuspendNotContinue = 10;
+    NpaStateDetailType_kSuspendContinue = 11;
+}
+
+enum SelectedType
+{
+    SelectedType_KNone = 0;
+    SelectedType_KParkingIn = 1;
+    SelectedType_KParkingOutVision = 2;
+    SelectedType_KParkingOutUss = 3;
+    SelectedType_KParkingRspa = 4;
+    SelectedType_kParkingMemory = 5;
+    SelectedType_kParkingVirtual = 6;
+}
+
+enum MirrFoldStsTyp
+{
+    MirrFoldStsTyp_MirrFoldStsTyp_MirrFoldPosnUndefd = 0;
+    MirrFoldStsTyp_MirrFoldStsTyp_MirrNotFoldPosn = 1;
+    MirrFoldStsTyp_MirrFoldStsTyp_MirrFoldPosn = 2;
+    MirrFoldStsTyp_MirrFoldStsTyp_MirrMovgToNotFold = 3;
+    MirrFoldStsTyp_MirrFoldStsTyp_MirrMovgToFold = 4;
+}
+
+enum LockIdType
+{
+    LockIdType_KNone = 0;
+    LockIdType_KParkingIn = 1;
+    LockIdType_KParkingOutVision = 2;
+    LockIdType_KParkingOutUss = 3;
+    LockIdType_KParkingRspa = 4;
+    LockIdType_kParkingMemory = 5;
+    LockIdType_kParkingVirtual = 6;
+}
+
+message ApaStateInfo
+{
+    ApaStateDetailType state_type = 1;
+    ApaFunctionStage func_stage = 2;
+}
+
+message UserSelectedParkingSlot
+{
+    bool user_sel_parking_slot_received = 1;
+    SelectedType selected_type = 2;
+    ParkingSlotInfo usersel_parking_slot = 3;
+}
+

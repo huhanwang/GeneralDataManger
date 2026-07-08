@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum SystemStatus_State 
+{
+    SystemStatus_State_Invalid = 0;
+    SystemStatus_State_Startup = 1;
+    SystemStatus_State_Normal = 2;
+    SystemStatus_State_PreSleep = 3;
+    SystemStatus_State_LowPower = 4;
+}
+
+message SystemStatus_Status
+{
+    SystemStatus_State state = 1;
+}
+
+message SystemStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    SystemStatus_Status status = 2;
+}
+

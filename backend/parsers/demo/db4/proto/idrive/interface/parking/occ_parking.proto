@@ -1,0 +1,38 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum OccParking_OccHeightMapType
+{
+    OccParking_OccHeightMapType_kNotOccupied = 0;
+    OccParking_OccHeightMapType_kOccupiedLow = 1;
+    OccParking_OccHeightMapType_kOccupiedMiddle = 2;
+    OccParking_OccHeightMapType_kOccupiedMiddleHigh = 3;
+    OccParking_OccHeightMapType_kOccupiedHigh = 4;
+    OccParking_OccHeightMapType_kOccupiedHighMore = 5;
+    OccParking_OccHeightMapType_kNull = 255;
+}
+
+message OccParking_OccGridMapHeight
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+}
+
+message OccParking_OccHeightMap
+{
+    float high_occ_gridmap_resolution = 1;
+    float high_occ_height_resolution = 2;
+    float low_occ_gridmap_resolution = 3;
+    float low_occ_height_resolution = 4;
+    OccParking_OccGridMapHeight high_occ_height_map = 5;
+    OccParking_OccGridMapHeight low_occ_height_map = 6;
+}
+
+message OccParkingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    OccParking_OccHeightMap occ_height_map = 2;
+}
+

@@ -1,0 +1,109 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Apa_Point
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Apa_Line
+{
+    Apa_Point point_start = 1;
+    Apa_Point point_end = 2;
+}
+
+message Apa_HoughEdge
+{
+    Apa_Point corner = 1;
+    uint32 edge_size = 2;
+    repeated Apa_Point edges = 3;
+}
+
+message Apa_Mask
+{
+    uint32 size = 1;
+    repeated sint32 data = 2;
+    sint32 height = 3;
+    sint32 width = 4;
+}
+
+message Apa_Vhm
+{
+    sint32 x = 1;
+    sint32 y = 2;
+    sint32 head_angle = 3;
+}
+
+message Apa_Corner
+{
+    Apa_Point point = 1;
+    sint32 pos = 2;
+    sint32 line_valid = 3;
+    sint32 line_angle = 4;
+    sint32 line_length = 5;
+    sint32 is_entry = 6;
+}
+
+message Apa_ParkCorner
+{
+    Apa_Point entry_corner_near = 1;
+    Apa_Point entry_corner_far = 2;
+    Apa_Point end_corner_near = 3;
+    Apa_Point end_corner_far = 4;
+}
+
+message Apa_Orientation
+{
+    sint32 street = 1;
+    sint32 line1 = 2;
+    sint32 line2 = 3;
+    sint32 ps = 4;
+}
+
+message Apa_Park
+{
+    bool is_valid = 1;
+    sint32 id = 2;
+    sint32 pos = 3;
+    sint32 type = 4;
+    sint32 length = 5;
+    sint32 depth = 6;
+    Apa_ParkCorner ccs_corner = 7;
+    Apa_Orientation ccs_orientation = 8;
+    Apa_ParkCorner vcs_corner = 9;
+    Apa_Orientation vcs_orientation = 10;
+    bool gcs_valid = 11;
+    Apa_ParkCorner gcs_corner = 12;
+    Apa_Orientation gcs_orientation = 13;
+    bool pcs_valid = 14;
+    Apa_ParkCorner pcs_corner = 15;
+    Apa_Orientation pcs_orientation = 16;
+}
+
+message Apa_Apa
+{
+    Apa_Vhm vhm = 1;
+    Apa_Mask mask_point = 2;
+    Apa_Mask mask_line = 3;
+    uint32 num_corners = 4;
+    repeated Apa_Corner corners = 5;
+    uint32 num_edges = 6;
+    repeated Apa_Point edges = 7;
+    uint32 num_entries = 8;
+    repeated Apa_Line entries = 9;
+    uint32 num_hough_edges = 10;
+    repeated Apa_HoughEdge hough_edges = 11;
+    uint32 num_hough_lines = 12;
+    repeated Apa_Line hough_lines = 13;
+    uint32 num_parks = 14;
+    repeated Apa_Park parks = 15;
+}
+
+message ApaMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Apa_Apa apa = 2;
+}
+

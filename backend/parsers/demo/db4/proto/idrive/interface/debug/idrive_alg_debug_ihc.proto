@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+message AlgDebugIhc_AlgDebugIHCInfo
+{
+    uint32 ihc_state = 1;
+    uint32 ihc_debug_reserved_1 = 2;
+    uint32 ihc_unavailable_reason = 3;
+    uint32 ihc_quit_reason = 4;
+    uint32 ihc_low_beam_reason = 5;
+    uint32 ihc_debug_reserved_2 = 6;
+    uint32 ihc_debug_reserved_3 = 7;
+    uint32 ihc_debug_reserved_4 = 8;
+    uint32 ihc_debug_reserved_5 = 9;
+}
+
+message AlgDebugIhc_AlgDebugIHC
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    AlgDebugIhc_AlgDebugIHCInfo ihc_info = 3;
+}
+
+message AlgDebugIhcMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugIhc_AlgDebugIHC alg_debug_ihc = 2;
+}
+

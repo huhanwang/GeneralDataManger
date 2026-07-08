@@ -1,0 +1,65 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VpaControlStatus_CtrlStatusType
+{
+    VpaControlStatus_CtrlStatusType_VPA_CTL_IDLE = 0;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_RUNNING = 1;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_BRAKING = 2;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_STOPPED = 3;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_WAITING = 4;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_SWITCH = 5;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_TO_EXIT = 6;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_GRAY = 7;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_ERR_HANDSHAKE = 8;
+    VpaControlStatus_CtrlStatusType_VPA_CTL_ERR_TRACKING = 9;
+}
+
+enum VpaControlStatus_ToExitType
+{
+    VpaControlStatus_ToExitType_EPS = 0;
+    VpaControlStatus_ToExitType_GR = 1;
+}
+
+enum VpaControlStatus_GrayType
+{
+    VpaControlStatus_GrayType_RESET = 0;
+    VpaControlStatus_GrayType_STILL = 1;
+    VpaControlStatus_GrayType_GEAR = 2;
+}
+
+enum VpaControlStatus_HandshakeErrType
+{
+    VpaControlStatus_HandshakeErrType_WRG_GEAR = 0;
+    VpaControlStatus_HandshakeErrType_WRG_LON = 1;
+    VpaControlStatus_HandshakeErrType_WRG_LAT = 2;
+    VpaControlStatus_HandshakeErrType_GEAR_DROP = 3;
+    VpaControlStatus_HandshakeErrType_AC_DROP = 4;
+    VpaControlStatus_HandshakeErrType_EPS_DROP = 5;
+    VpaControlStatus_HandshakeErrType_ESP_DROP = 6;
+}
+
+enum VpaControlStatus_TrackingErrType
+{
+    VpaControlStatus_TrackingErrType_TRAJ_EMPTY = 0;
+    VpaControlStatus_TrackingErrType_TRAJ_LOST = 1;
+    VpaControlStatus_TrackingErrType_TRACK_OUT = 2;
+    VpaControlStatus_TrackingErrType_LEN_SHORT = 3;
+}
+
+message VpaControlStatus_VpaCtrlStatus
+{
+    VpaControlStatus_CtrlStatusType type = 1;
+    VpaControlStatus_ToExitType exit_reason = 2;
+    VpaControlStatus_GrayType gray_reason = 3;
+    VpaControlStatus_HandshakeErrType hs_err_reason = 4;
+    VpaControlStatus_TrackingErrType track_err_reason = 5;
+}
+
+message VpaControlStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaControlStatus_VpaCtrlStatus vpa_ctrl_status = 2;
+}
+

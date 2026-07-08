@@ -1,0 +1,103 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum HmiPadEvent_EventSource
+{
+    HmiPadEvent_EventSource_EVENT_SOURCE_APA = 0;
+    HmiPadEvent_EventSource_EVENT_SOURCE_VPA = 1;
+}
+
+enum HmiPadEvent_ApaFunctionCtrl
+{
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_NO_SELECT = 0;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_FUNC_ENTER = 1;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_CONTINUE = 2;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_CANCEL = 3;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_ENTER_PARKING = 4;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_ENTER_PARKINGOUT = 5;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_START_PARKING = 6;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_REMOTE_PARKING = 7;
+    HmiPadEvent_ApaFunctionCtrl_APA_FUNCTION_CTRL_SELF_SELECT_SLOT = 8;
+}
+
+enum HmiPadEvent_VpaFunctionCtrl
+{
+    HmiPadEvent_VpaFunctionCtrl_CTRL_SIGNAL_NONE = 0;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_MAP_BUILD_WEAK_ACTIVE = 1;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_VPA_ACTIVE_SIGNAL = 2;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_MAP_BUILD_CONFIRM = 3;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_CHANGE_ROUTE = 4;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_START_PARKING_CONFIRM = 5;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_PARKING_IN_WEAK_ACTIVE = 6;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_CANCEL_VPA = 7;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_CONTINUE_VPA = 8;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_MAP_BUILD_COMPLETED = 9;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_VPA_OPEN = 10;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_VPA_CLOSE = 11;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_VPA_WEAK_ALERT_OPEN = 12;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_VPA_WEAK_ALERT_CLOSE = 13;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_LEARNING_COMPLETE = 14;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_CANCEL_WEAK_ACTIVE = 15;
+    HmiPadEvent_VpaFunctionCtrl_CTRL_SCREEN_OCCUPIED = 16;
+}
+
+enum HmiPadEvent_ApaWorkState
+{
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_NONE = 0;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_STANDBY = 1;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_SEARCHING = 2;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_GUIDANCE = 3;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_FAILED = 4;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_COMPLETE = 5;
+    HmiPadEvent_ApaWorkState_APA_WORK_STATE_DISABLE = 6;
+}
+
+enum HmiPadEvent_VpaWorkType
+{
+    HmiPadEvent_VpaWorkType_TYPE_NONE = 0;
+    HmiPadEvent_VpaWorkType_TYPE_PREV_VPA = 1;
+    HmiPadEvent_VpaWorkType_TYPE_START_MAP_BUILD = 2;
+    HmiPadEvent_VpaWorkType_TYPE_START_VPA = 3;
+    HmiPadEvent_VpaWorkType_TYPE_MAP_BUILDING = 4;
+    HmiPadEvent_VpaWorkType_TYPE_MAP_BUILD_COMPLETED = 5;
+    HmiPadEvent_VpaWorkType_TYPE_VPA_COMPLETED = 6;
+    HmiPadEvent_VpaWorkType_TYPE_MAP_BUILD_FAILED = 7;
+    HmiPadEvent_VpaWorkType_TYPE_VPA_FAILED = 8;
+}
+
+enum HmiPadEvent_EventType
+{
+    HmiPadEvent_EventType_FROM_USER = 0;
+    HmiPadEvent_EventType_TO_USER = 1;
+}
+
+message HmiPadEvent_EventFromUser
+{
+    HmiPadEvent_EventSource source = 1;
+    HmiPadEvent_ApaFunctionCtrl apa_function_ctrl = 2;
+    HmiPadEvent_VpaFunctionCtrl vpa_function_ctrl = 3;
+    bool valid_slot_id = 4;
+    sint32 slot_id = 5;
+}
+
+message HmiPadEvent_EventToUser
+{
+    HmiPadEvent_EventSource source = 1;
+    HmiPadEvent_ApaWorkState apa_work_state = 2;
+    HmiPadEvent_VpaWorkType vpa_work_state = 3;
+}
+
+message HmiPadEvent_UserEvent
+{
+    HmiPadEvent_EventType type = 1;
+    HmiPadEvent_EventFromUser from_user = 2;
+    HmiPadEvent_EventToUser to_user = 3;
+}
+
+message HmiPadEventMsg
+{
+    CommonMsgMsg common_msg = 1;
+    HmiPadEvent_UserEvent event = 2;
+}
+

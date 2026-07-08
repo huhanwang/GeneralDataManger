@@ -1,0 +1,95 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum LaneMin_LineColor
+{
+    LaneMin_LineColor_LINE_COLOR_UNKNOWN = 0;
+    LaneMin_LineColor_LINE_COLOR_WHITE = 1;
+    LaneMin_LineColor_LINE_COLOR_YELLOW_ORANGE_RED = 2;
+    LaneMin_LineColor_LINE_COLOR_BLUE_GREEN = 3;
+}
+
+enum LaneMin_LineType
+{
+    LaneMin_LineType_LINE_TYPE_UNKNOWN = 0;
+    LaneMin_LineType_LINE_TYPE_SOLID = 1;
+    LaneMin_LineType_LINE_TYPE_ROAD_EDGE = 2;
+    LaneMin_LineType_LINE_TYPE_DASHED = 3;
+    LaneMin_LineType_LINE_TYPE_DASH_SOLID = 4;
+    LaneMin_LineType_LINE_TYPE_SOLID_DASH = 5;
+    LaneMin_LineType_LINE_TYPE_DASHED_DASHED = 6;
+    LaneMin_LineType_LINE_TYPE_SOLID_SOLID = 7;
+    LaneMin_LineType_LINE_TYPE_BARRIER = 8;
+    LaneMin_LineType_LINE_TYPE_LINE_RAMP = 9;
+    LaneMin_LineType_LINE_TYPE_SHADED_AREA = 10;
+    LaneMin_LineType_LINE_TYPE_DEC_SOLID = 11;
+    LaneMin_LineType_LINE_TYPE_DEC_DASHED = 12;
+    LaneMin_LineType_LINE_TYPE_CONE_LINE = 13;
+}
+
+enum LaneMin_LineQuality
+{
+    LaneMin_LineQuality_LINE_QUALITY_UNKNOWN = 0;
+    LaneMin_LineQuality_LINE_QUALITY_LOW = 1;
+    LaneMin_LineQuality_LINE_QUALITY_HIGH = 2;
+    LaneMin_LineQuality_LINE_QUALITY_VERY_HIGH = 3;
+}
+
+enum LaneMin_RoadType
+{
+    LaneMin_RoadType_ROAD_TYPE_UNKNOWN = 0;
+    LaneMin_RoadType_ROAD_TYPE_HIGHWAY = 1;
+    LaneMin_RoadType_ROAD_TYPE_URBAN = 2;
+    LaneMin_RoadType_ROAD_TYPE_RURAL = 3;
+    LaneMin_RoadType_ROAD_TYPE_TUNNEL = 4;
+}
+
+enum LaneMin_Weather
+{
+    LaneMin_Weather_WEATHER_UNKNOWN = 0;
+    LaneMin_Weather_WEATHER_SUNNY = 1;
+    LaneMin_Weather_WEATHER_CLOUDY = 2;
+    LaneMin_Weather_WEATHER_RAINY = 3;
+    LaneMin_Weather_WEATHER_SNOWY = 4;
+    LaneMin_Weather_WEATHER_HEAVY_RAINY = 5;
+    LaneMin_Weather_WEATHER_FOGGY = 6;
+}
+
+message LaneMin_Boundary
+{
+    uint32 id = 1;
+    uint32 confidence = 2;
+    LaneMin_LineQuality quality = 3;
+    LaneMin_LineType type = 4;
+    LaneMin_LineColor color = 5;
+    float line_width = 6;
+    float view_range_start = 7;
+    float view_range_end = 8;
+    repeated float cubic_poly = 9;
+    float line_tlc = 10;
+}
+
+message LaneMin_RoadInformation
+{
+    LaneMin_RoadType road_type = 1;
+    LaneMin_Weather weather = 2;
+}
+
+message LaneMin_PerceptionLane
+{
+    LaneMin_RoadInformation road_information = 1;
+    LaneMin_Boundary left_line = 2;
+    LaneMin_Boundary right_line = 3;
+    LaneMin_Boundary next_left_line = 4;
+    LaneMin_Boundary next_right_line = 5;
+    LaneMin_Boundary left_cone_road_edge = 6;
+    LaneMin_Boundary right_cone_road_edge = 7;
+}
+
+message LaneMinMsg
+{
+    CommonMsgMsg common_msg = 1;
+    LaneMin_PerceptionLane perception_lane = 2;
+}
+

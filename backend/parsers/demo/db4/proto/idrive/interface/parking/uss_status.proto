@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum UssStatus_WarnTone
+{
+    UssStatus_WarnTone_NotActive = 0;
+    UssStatus_WarnTone_ContinuousTone = 1;
+    UssStatus_WarnTone_FastIntermittentTone = 2;
+    UssStatus_WarnTone_MediumSpeedIntermittentTone = 3;
+    UssStatus_WarnTone_SlowIntermittentTone = 4;
+    UssStatus_WarnTone_Mute = 5;
+}
+
+message UssStatus_UssStatus
+{
+    UssStatus_WarnTone warn_tone = 1;
+    uint32 uss_cnt = 2;
+}
+
+message UssStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    UssStatus_UssStatus uss_status = 2;
+}
+

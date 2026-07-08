@@ -1,0 +1,64 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/debug/idrive_debug_common.proto";
+package idrive.workflow.proto;
+
+message AlgDebugTsr_AlgDebugSLASign
+{
+    uint32 speed_limit = 1;
+}
+
+message AlgDebugTsr_AlgDebugSLAInfo
+{
+    uint32 slif_state = 1;
+    uint32 slif_mode = 2;
+    uint32 slif_unavailable_reason = 3;
+    uint32 slif_quit_reason = 4;
+    uint32 slif_speed_limit = 5;
+    uint32 slif_speed_limit_hmi = 6;
+    uint32 slif_limit_clear_reason = 7;
+    bool slif_speed_limit_change = 8;
+    float slif_speed_limit_dist = 9;
+    uint32 slif_group_type = 10;
+    uint32 slif_group_state = 11;
+    uint32 slif_group_number = 12;
+    uint32 slif_group_filter_reason = 13;
+    bool slif_change_switch = 14;
+    uint32 slwf_state = 15;
+    uint32 slwf_mode = 16;
+    bool slwf_warning_request = 17;
+    uint32 slwf_offset_switch = 18;
+    uint32 slwf_offset_value = 19;
+    uint32 slwf_offset_percent = 20;
+    uint32 last_speed_limit = 21;
+    float warn_keep_time = 22;
+    float display_timer = 23;
+}
+
+message AlgDebugTsr_AlgDebugSCFInfo
+{
+    uint32 scf_state = 1;
+    uint32 scf_unavailable_reason = 2;
+    uint32 scf_quit_reason = 3;
+    uint32 scf_speed_limit = 4;
+    bool scf_control_req = 5;
+    uint32 scf_submode = 6;
+    uint32 manual_driver_no_response_count = 7;
+    bool auto_disabled = 8;
+}
+
+message AlgDebugTsr_AlgDebugSLA
+{
+    AlgDebugHeader header = 1;
+    AlgDebugSoftwareInfo software_info = 2;
+    AlgDebugTsr_AlgDebugSLAInfo sla_info = 3;
+    AlgDebugTsr_AlgDebugSCFInfo scf_info = 4;
+    repeated AlgDebugTsr_AlgDebugSLASign sla_group_sign = 5;
+}
+
+message AlgDebugTsrMsg
+{
+    CommonMsgMsg common_msg = 1;
+    AlgDebugTsr_AlgDebugSLA alg_debug_tsr = 2;
+}
+

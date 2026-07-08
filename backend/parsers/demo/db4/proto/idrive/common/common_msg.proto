@@ -1,0 +1,27 @@
+syntax = "proto3";
+package idrive.workflow.proto;
+
+enum ERROR_CODE 
+{
+    ERROR_CODE_NONE = 0;
+    ERROR_CODE_E2E_INVALID = 1;
+}
+
+enum E2E_CHECK_TYPE 
+{
+    E2E_CHECK_TYPE_NONE = 0;
+    E2E_CHECK_TYPE_CHECKSUM = 1;
+    E2E_CHECK_TYPE_CRC16 = 2;
+    E2E_CHECK_TYPE_CRC32 = 3;
+}
+
+message CommonMsgMsg 
+{
+    sint64 local_timestamp = 1;
+    sint64 raw_timestamp = 2;
+    sint64 frame_id = 3;
+    uint32 crc = 4;
+    E2E_CHECK_TYPE check_type = 5;
+    ERROR_CODE error_code = 6;
+}
+

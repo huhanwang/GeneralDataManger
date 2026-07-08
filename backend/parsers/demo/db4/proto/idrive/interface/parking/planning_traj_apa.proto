@@ -1,0 +1,67 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/control_point.proto";
+package idrive.workflow.proto;
+
+enum PlanningTrajVcs_ParkingPlanVcsStatus
+{
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_INVALID = 0;
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_PLAN_OVER = 1;
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_PLAN_SUCCEED = 2;
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_PLAN_FAILED = 3;
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_PLAN_PARA_OUT_FIRST_STEP = 4;
+    PlanningTrajVcs_ParkingPlanVcsStatus_PARK_PLAN_STATUS_MAX = 5;
+}
+
+enum PlanningTrajVcs_APAPlanningErrorCode
+{
+    PlanningTrajVcs_APAPlanningErrorCode_NO_ERROR = 0;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PARK_TYPE = 1;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_TYPE = 2;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_DETECT_TYPE = 3;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_SIDE = 4;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PARK_OUTDIR = 5;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_USS_SIDE = 6;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_TYPE_AND_PARK_TYPE_MATCHING = 7;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_LENGTH = 8;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_WIDTH = 9;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_ANGLE = 10;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SLOT_FRONT_REAR_BOUND_DIS = 11;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_GOAL_HAS_MAX_MOVING_DIS = 12;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_INIT_POINT = 13;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_CAL_PARKING_IN_POINT = 14;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_OBLI_SLOT_COLLISION = 15;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_SEARCH_FAIL = 16;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_EXCEED_MAX_TIMES = 17;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PATH_NUM_CHANGE_TOO_MUCH = 18;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_DRIVING_DIR_IN_PARA_SLOT = 19;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_INPUT_POS_IN_PARA_SLOT = 20;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_NEW_PLAN_IN_PARA_SLOT = 21;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_STOP_IN_FIXED_POS = 22;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PARKING_OUT_POS = 23;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_WHEEL_BAR_DIS = 24;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PARKING_OUT_TPM_POS = 25;
+    PlanningTrajVcs_APAPlanningErrorCode_ERROR_PARKING_OUT_FRONT_FREE = 26;
+    PlanningTrajVcs_APAPlanningErrorCode_APA_PLANNING_ERROR_MAX = 27;
+}
+
+message PlanningTrajVcs_PlanningTrajVcs
+{
+    sint32 switch_flag = 1;
+    sint32 current_steps = 2;
+    sint32 first_traj_size = 3;
+    sint32 last_driving_flag = 4;
+    uint64 frecespace_capture_ts = 5;
+    uint64 freespace_recv_ts = 6;
+    PlanningTrajVcs_ParkingPlanVcsStatus status = 7;
+    PlanningTrajVcs_APAPlanningErrorCode err_code = 8;
+    uint32 num_track = 9;
+    repeated CtrlPoint track = 10;
+}
+
+message PlanningTrajVcsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PlanningTrajVcs_PlanningTrajVcs planning_traj_vcs = 2;
+}
+

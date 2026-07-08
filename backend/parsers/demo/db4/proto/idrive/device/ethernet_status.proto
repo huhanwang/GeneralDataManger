@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message EthStatus_Status
+{
+    uint32 quality = 1;
+    uint32 connection_status = 2;
+    uint32 device_status = 3;
+}
+
+message EthStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    EthStatus_Status status = 2;
+}
+

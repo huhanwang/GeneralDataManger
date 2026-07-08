@@ -1,0 +1,38 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum FreespacePointLabel
+{
+    FreespacePointLabel_kRoad = 0;
+    FreespacePointLabel_kParkingLockOpen = 11;
+    FreespacePointLabel_kParkingLockClosed = 12;
+    FreespacePointLabel_kTrafficCone = 13;
+    FreespacePointLabel_kParkingRod = 14;
+    FreespacePointLabel_kCurb = 15;
+    FreespacePointLabel_kCementColumn = 16;
+    FreespacePointLabel_kImmovableObstacle = 17;
+    FreespacePointLabel_kMovableObstacle = 18;
+    FreespacePointLabel_kBackground = 19;
+    FreespacePointLabel_kSidewalk = 20;
+    FreespacePointLabel_kPedestrian = 21;
+    FreespacePointLabel_kDynamicObstacle = 22;
+    FreespacePointLabel_kUssObj = 27;
+    FreespacePointLabel_kUssCrossPoint = 28;
+    FreespacePointLabel_kUnknwn = 100;
+    FreespacePointLabel_kInvalid = 255;
+}
+
+message FreespacePoint
+{
+    float conf = 1;
+    float angle = 2;
+    float ray_length = 3;
+    FreespacePointLabel origin_label = 4;
+    FreespacePointLabel label = 5;
+    Vector2f pt_vcs = 6;
+    Vector2f vel_vcs = 7;
+    Vector2f pt_world = 8;
+    Vector2f vel_world = 9;
+}
+

@@ -1,0 +1,21 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum SensorDataBase_SensorType
+{
+    SensorDataBase_SensorType_UNKNOWN = 0;
+    SensorDataBase_SensorType_CAMERA = 1;
+    SensorDataBase_SensorType_LIDAR = 2;
+    SensorDataBase_SensorType_RADAR = 4;
+    SensorDataBase_SensorType_ULTRASONIC = 8;
+    SensorDataBase_SensorType_V2X = 16;
+}
+
+message SensorDataBaseMsg
+{
+    CommonMsgMsg common_msg = 1;
+    SensorDataBase_SensorType sensor_type = 2;
+    uint32 sensor_id = 3;
+}
+

@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/parking_slot.proto";
+package idrive.workflow.proto;
+
+message ParkingSlots_ParkingSlots
+{
+    uint32 num_parking_slots = 1;
+    repeated ParkingSlotInfo parking_slots = 2;
+}
+
+message ParkingSlotsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ParkingSlots_ParkingSlots parking_slots = 2;
+}
+

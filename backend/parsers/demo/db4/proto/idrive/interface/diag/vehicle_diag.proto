@@ -1,0 +1,82 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum VehicleDiag_CameraDiagStatus 
+{
+    VehicleDiag_CameraDiagStatus_Normal = 0;
+    VehicleDiag_CameraDiagStatus_FAULT = 1;
+    VehicleDiag_CameraDiagStatus_Reserved = 2;
+}
+
+enum VehicleDiag_UltrasonicDiagStatus 
+{
+    VehicleDiag_UltrasonicDiagStatus_Normal = 0;
+    VehicleDiag_UltrasonicDiagStatus_FAULT = 1;
+    VehicleDiag_UltrasonicDiagStatus_Reserved = 2;
+}
+
+enum VehicleDiag_ApaControllerDiagStatus 
+{
+    VehicleDiag_ApaControllerDiagStatus_Normal = 0;
+    VehicleDiag_ApaControllerDiagStatus_FAULT = 1;
+    VehicleDiag_ApaControllerDiagStatus_Reserved = 2;
+}
+
+enum VehicleDiag_CommunicationDiagStatus 
+{
+    VehicleDiag_CommunicationDiagStatus_Normal = 0;
+    VehicleDiag_CommunicationDiagStatus_FAULT = 1;
+    VehicleDiag_CommunicationDiagStatus_Reserved = 2;
+}
+
+enum VehicleDiag_FctSts 
+{
+    VehicleDiag_FctSts_INIT = 0;
+    VehicleDiag_FctSts_NORMAL = 1;
+    VehicleDiag_FctSts_UPDATING = 2;
+    VehicleDiag_FctSts_PARKING = 3;
+    VehicleDiag_FctSts_CAM_CALI_STATIC = 4;
+    VehicleDiag_FctSts_CAM_CALI_AUTO = 5;
+    VehicleDiag_FctSts_RESERVED = 6;
+}
+
+message VehicleDiag_CamDiag
+{
+    VehicleDiag_CameraDiagStatus front_cam_sts = 1;
+    VehicleDiag_CameraDiagStatus rear_cam_sts = 2;
+    VehicleDiag_CameraDiagStatus left_cam_sts = 3;
+    VehicleDiag_CameraDiagStatus right_cam_sts = 4;
+}
+
+message VehicleDiag_UltrasonicDiag
+{
+    VehicleDiag_UltrasonicDiagStatus rsr_error = 1;
+    VehicleDiag_UltrasonicDiagStatus rrm_error = 2;
+    VehicleDiag_UltrasonicDiagStatus rlm_error = 3;
+    VehicleDiag_UltrasonicDiagStatus rsl_error = 4;
+    VehicleDiag_UltrasonicDiagStatus fsl_error = 5;
+    VehicleDiag_UltrasonicDiagStatus flm_error = 6;
+    VehicleDiag_UltrasonicDiagStatus frm_error = 7;
+    VehicleDiag_UltrasonicDiagStatus fsr_error = 8;
+    VehicleDiag_UltrasonicDiagStatus fr_error = 9;
+    VehicleDiag_UltrasonicDiagStatus fl_error = 10;
+    VehicleDiag_UltrasonicDiagStatus rl_error = 11;
+    VehicleDiag_UltrasonicDiagStatus rr_error = 12;
+}
+
+message VehicleDiag_VehicleDiag
+{
+    VehicleDiag_CamDiag camera_sts = 1;
+    VehicleDiag_UltrasonicDiag ultrasonic_sts = 2;
+    VehicleDiag_ApaControllerDiagStatus apa_controller_sts = 9;
+    VehicleDiag_CommunicationDiagStatus external_sts = 30;
+    VehicleDiag_FctSts functional_status = 31;
+}
+
+message VehicleDiagMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    VehicleDiag_VehicleDiag vehicle_diag = 2;
+}
+

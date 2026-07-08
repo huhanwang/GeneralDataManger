@@ -1,0 +1,40 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/type.proto";
+package idrive.workflow.proto;
+
+enum CalibrationResult_CalDetail
+{
+    CALIBRATIONRESULT_CALDETAIL_FIRST_UNKNOWN = 0;
+    CalibrationResult_CalDetail_CALIB_STATE_RUN = 1;
+    CalibrationResult_CalDetail_CALIB_STATE_SUCCESS = 2;
+    CalibrationResult_CalDetail_CALIB_STATE_MODE_ERRROR = 3;
+    CalibrationResult_CalDetail_CALIB_STATE_PATTERN_ERROR = 4;
+    CalibrationResult_CalDetail_CALIB_STATE_INTERNAL_PARAM_ERROR = 5;
+    CalibrationResult_CalDetail_CALIB_STATE_IMG_ERRROR = 6;
+    CalibrationResult_CalDetail_CALIB_STATE_FIND_CORNERS_ERROR = 7;
+    CalibrationResult_CalDetail_CALIB_STATE_REPROJECTION_ERROR = 8;
+    CalibrationResult_CalDetail_CALIB_STATE_PITCH_OUTOF_RANGE = 9;
+    CalibrationResult_CalDetail_CALIB_STATE_ROLL_OUTOF_RANGE = 10;
+    CalibrationResult_CalDetail_CALIB_STATE_YAW_OUTOF_RANGE = 11;
+    CalibrationResult_CalDetail_CALIB_STATE_TIMEOUT_ERROR = 12;
+}
+
+message CalibrationResult_Result
+{
+    CameraID cam_id = 1;
+    CalibrationResult_CalDetail detail = 2;
+}
+
+message CalibrationResult_CalibrationResults
+{
+    uint32 num_results = 1;
+    repeated CalibrationResult_Result results = 2;
+}
+
+message CalibrationResultMsg
+{
+    CommonMsgMsg common_msg = 1;
+    CalibrationResult_CalibrationResults results = 2;
+}
+

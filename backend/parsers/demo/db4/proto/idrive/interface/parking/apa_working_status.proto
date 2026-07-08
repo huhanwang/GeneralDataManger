@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ApaWorkingStatus_ParkingWorkingStatus
+{
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PER_FREE_STATUS = 0;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_FREE_STATUS = 1;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_UPDATED = 2;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PERPARING = 3;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_WORKING = 4;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_ERR = 5;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_OVER = 6;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PER_RUNNING_FREE_STATUS = 7;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_FREE_STATUS = 8;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_RUNNING_UPDATED = 9;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_BREAKING = 10;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_SUCC = 11;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_WAITING = 12;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_WAITING_FINISH = 13;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_PARKING_TIMEOUT = 14;
+    ApaWorkingStatus_ParkingWorkingStatus_PARK_WORK_STATUS_WORKING_ADJUST = 15;
+}
+
+message ApaWorkingStatusMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ApaWorkingStatus_ParkingWorkingStatus parking_working_status = 2;
+}
+

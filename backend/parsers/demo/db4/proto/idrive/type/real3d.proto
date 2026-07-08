@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "type/dynamic_obstacle.proto";
+import "type/perception_base.proto";
+package idrive.workflow.proto;
+
+enum Real3DType 
+{
+    Real3DType_kPedestrian = 0;
+    Real3DType_kVehicle = 1;
+    Real3DType_kCyclist = 2;
+}
+
+enum Roi3DMapType 
+{
+    Roi3DMapType_kPtUndistortMap = 0;
+    Roi3DMapType_kPtDistortMap = 1;
+    Roi3DMapType_kEqflUMap = 2;
+    Roi3DMapType_kEqflVMap = 3;
+}
+
+enum CoordinateType 
+{
+    CoordinateType_kUnknown = 0;
+    CoordinateType_kPinhole = 1;
+    CoordinateType_kFisheye = 2;
+    CoordinateType_kCyl = 3;
+}
+
+message Real3DResult
+{
+    BevObstacle bev_obstacle = 1;
+    Box3D img_3dbox = 2;
+    Rect img_rect = 3;
+    Real3DType type = 4;
+}
+
+message Real3DData
+{
+    PerceptionHeader header = 1;
+    CoordinateType coordinate_type = 2;
+    uint32 num_real3d_result = 3;
+    repeated Real3DResult real3d_result = 4;
+}
+

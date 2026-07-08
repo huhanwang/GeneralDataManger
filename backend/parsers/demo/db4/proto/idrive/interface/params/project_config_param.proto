@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ProjectConfig_ProjectInfo 
+{
+    ProjectConfig_ProjectInfo_UNKNOWN = 0;
+    ProjectConfig_ProjectInfo_T68_G_RELEASE_023 = 1;
+    ProjectConfig_ProjectInfo_T68_G = 2;
+    ProjectConfig_ProjectInfo_T68_G_TDA4VEN_DV = 3;
+    ProjectConfig_ProjectInfo_GAC = 4;
+    ProjectConfig_ProjectInfo_T88_G3 = 5;
+    ProjectConfig_ProjectInfo_T60_G2 = 6;
+    ProjectConfig_ProjectInfo_C66TB = 7;
+    ProjectConfig_ProjectInfo_total_update = 8;
+}
+
+message ProjectConfig_ProjectConfig
+{
+    ProjectConfig_ProjectInfo project_id = 1;
+    bool corefile_enable = 2;
+    uint32 subversion = 3;
+    string project_info = 4;
+    string subversion_info = 5;
+}
+
+message ProjectConfigMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    ProjectConfig_ProjectConfig project_config = 2;
+}
+

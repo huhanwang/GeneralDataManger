@@ -1,0 +1,21 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Grid_GridMetaData
+{
+    uint64 timestamp = 1;
+    uint64 recv_ts = 2;
+    float step = 3;
+    sint32 width = 4;
+    sint32 height = 5;
+    uint32 num_data = 6;
+    string data = 7;
+}
+
+message GridMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Grid_GridMetaData grid_meta = 2;
+}
+

@@ -1,0 +1,9 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UniversalVoidMsg 
+{
+    CommonMsgMsg common_msg = 1;
+}
+

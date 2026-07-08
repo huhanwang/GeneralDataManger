@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/avm/cali_status.proto";
+import "interface/avm/cali_control.proto";
+package idrive.workflow.proto;
+
+message CaliResp_Info
+{
+    CaliStatus_Mode mode = 1;
+    CaliStatus_State state = 2;
+    CaliControl_Vision vision = 3;
+}
+
+message CaliRespMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CaliResp_Info cali_response = 2;
+}
+

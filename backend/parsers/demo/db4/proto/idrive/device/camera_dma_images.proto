@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DmaImageReq_Image
+{
+    bool dma_fd_req = 1;
+}
+
+message DmaImageReqMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    DmaImageReq_Image image = 2;
+}
+

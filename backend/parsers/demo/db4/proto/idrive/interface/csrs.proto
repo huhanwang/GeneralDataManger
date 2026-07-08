@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message Csrs_Csrs
+{
+    float vf_csrs_accel = 1;
+    repeated uint32 vt_csrs_choose_space_id = 2;
+    uint32 num_choose_space_id = 3;
+    uint32 ve_csrs_state = 4;
+}
+
+message CsrsMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    Csrs_Csrs csrs = 2;
+}
+

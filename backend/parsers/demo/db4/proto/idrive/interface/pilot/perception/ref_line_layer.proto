@@ -1,0 +1,75 @@
+syntax = "proto3";
+import "type/odometry_type.proto";
+import "type/base.proto";
+import "interface/pilot/perception/object.proto";
+package idrive.workflow.proto;
+
+message WayPointGlobal
+{
+    float waypoint_x = 1;
+    float waypoint_y = 2;
+    float waypoint_yaw = 3;
+    float waypoint_curv = 4;
+    float waypoint_curvrate = 5;
+    sint32 waypoint_dir = 6;
+    float waypoint_speed = 7;
+    uint32 waypoint_num = 8;
+    bool waypoint_locked = 9;
+    float waypoint_dist = 10;
+    sint32 submap_id = 11;
+    uint32 section_id = 12;
+    sint64 frame_ts = 13;
+    sint32 terrain_type = 14;
+    bool confirmed_map = 15;
+    float waypoint_z = 16;
+    float waypoint_lb = 17;
+    float waypoint_rb = 18;
+}
+
+message WayPointFrameGlobal
+{
+    uint32 waypoint_num = 1;
+    uint32 waypoint_id = 2;
+    uint32 num_waypoints = 3;
+    repeated WayPointGlobal waypoints = 4;
+}
+
+message ReferencePoint
+{
+    Odometry odo = 1;
+    float pitch = 2;
+    sint32 num_sates = 3;
+    sint32 floor_num = 4;
+    bool map_valid = 5;
+    VertexType vertex_type = 6;
+    uint32 num_str_obj_id = 7;
+    repeated uint64 str_obj_id = 8;
+    sint32 submap_id = 9;
+    uint32 section_id = 10;
+    bool is_rtk_point = 11;
+    bool init_loc_region = 12;
+    float rtk_score = 13;
+    sint32 utm_zone = 14;
+    float utm_pos_x = 15;
+    float utm_pos_y = 16;
+    sint32 terrain_type = 17;
+}
+
+message ReferenceLine
+{
+    uint32 num_header = 1;
+    string header = 2;
+    uint32 num_reference_points = 3;
+    repeated ReferencePoint reference_points = 4;
+    sint32 map_floor_num = 5;
+}
+
+message RefLineLayer
+{
+    WayPointFrameGlobal waypoint_frame_global_raw = 1;
+    WayPointFrameGlobal waypoint_frame_global = 2;
+    Object parking_slot = 3;
+    ReferenceLine reference_line = 4;
+    NdmHeader header = 5;
+}
+

@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraStatus_Chn 
+{
+    CameraStatus_Chn_None = 0;
+    CameraStatus_Chn_FisheyeFront = 1;
+    CameraStatus_Chn_FisheyeRear = 2;
+    CameraStatus_Chn_FisheyeLeft = 3;
+    CameraStatus_Chn_FisheyeRight = 4;
+}
+
+message CameraStatus_State
+{
+    CameraStatus_Chn chn = 1;
+    uint32 image_fps = 2;
+    bool image_valid = 3;
+    bool serdes_lock = 4;
+    bool serdes_errb = 5;
+    bool params_lost = 6;
+    bool soc_i2c0 = 7;
+    bool register_valid = 8;
+    uint32 eom_width = 9;
+    uint32 v_sense_fr = 10;
+    uint32 v_sense_dp = 11;
+    uint32 open_circuit_number = 12;
+    uint32 short_circuit_number = 13;
+    uint32 err_code_detail = 14;
+}
+
+message CameraStatus_Status
+{
+    repeated CameraStatus_State state = 1;
+}
+
+message CameraStatusMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraStatus_Status status = 2;
+}
+

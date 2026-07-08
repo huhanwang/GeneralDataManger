@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message VpaControlInfo_RefPoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float yaw = 4;
+    float pitch = 5;
+    float roll = 6;
+    float s = 7;
+    float l = 8;
+    float k = 9;
+    float speed = 10;
+    float acc = 11;
+    float jerk = 12;
+    float speed_limit = 13;
+    sint32 gear = 14;
+    sint32 time = 15;
+}
+
+message VpaControlInfo_VpaCtrlInfo
+{
+    uint64 timestamp = 1;
+    VpaControlInfo_RefPoint near_pnt = 2;
+    VpaControlInfo_RefPoint extra_pnt = 3;
+    VpaControlInfo_RefPoint lon_pnt = 4;
+    float lon_err = 5;
+    float lat_err = 6;
+    float hdg_err = 7;
+    float ds = 8;
+    float lat_errdot = 9;
+    float steer_fdf = 10;
+    float steer_fdb = 11;
+    float eta = 12;
+    float alpha = 13;
+    float eps = 14;
+    float sigma = 15;
+    float steer_raw = 16;
+    float steer_smt = 17;
+    float vmax_raw = 18;
+    float v_obsv_err = 19;
+    float v_err = 20;
+    float acc_raw = 21;
+    float yaw_err = 22;
+    VpaControlInfo_RefPoint final_pnt = 23;
+    float spd_err = 24;
+    float s_dot = 25;
+    float l_dot = 26;
+    float steer_cmd = 27;
+    float stop_dist_raw = 28;
+    float stop_dist_cmd = 29;
+    float vmax_cmd = 30;
+    float acc_cmd = 31;
+    VpaControlInfo_RefPoint lat_pnt = 32;
+    VpaControlInfo_RefPoint init_pnt = 33;
+    uint64 near_idx = 34;
+    float elapsed_t = 35;
+    bool is_succeed = 36;
+    uint32 num_prvw_pnts = 37;
+    uint32 num_ref_pnts = 38;
+    uint32 num_mpc_pnts = 39;
+    uint32 num_dt_vec = 40;
+    uint32 num_ds_vec = 41;
+    repeated VpaControlInfo_RefPoint prvw_pnts = 42;
+    repeated VpaControlInfo_RefPoint ref_pnts = 43;
+    repeated VpaControlInfo_RefPoint mpc_pnts = 44;
+    repeated float dt_vec = 45;
+    repeated float ds_vec = 46;
+    float lon_v_err = 47;
+    float lon_v_int = 48;
+    float lon_v_dif = 49;
+    float lon_v_p_term = 50;
+    float lon_v_i_term = 51;
+    float lon_v_d_term = 52;
+    float lon_a_err = 53;
+    float lon_a_int = 54;
+    float lon_a_dif = 55;
+    float lon_a_p_term = 56;
+    float lon_a_i_term = 57;
+    float lon_a_d_term = 58;
+    float acc_by_difv = 59;
+}
+
+message VpaControlInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    VpaControlInfo_VpaCtrlInfo vpa_ctrl_info = 2;
+}
+

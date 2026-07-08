@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/perception_base.proto";
+import "type/parsing_base.proto";
+package idrive.workflow.proto;
+
+message IqaParsing_IqaParsing
+{
+    ImageId image_id = 1;
+    CylParsingImageData parsing_data = 2;
+}
+
+message IqaParsing_IqaParsingResults
+{
+    uint32 num_iqa_parsing_result = 1;
+    repeated IqaParsing_IqaParsing iqa_parsing_result_data = 2;
+}
+
+message IqaParsingMsg
+{
+    CommonMsgMsg common_msg = 1;
+    IqaParsing_IqaParsingResults iqa_parsing_data = 2;
+}
+

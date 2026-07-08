@@ -1,0 +1,196 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum PncInfo_LaneChangeState
+{
+    PncInfo_LaneChangeState_LC_STATE_COMPLETED = 0;
+    PncInfo_LaneChangeState_LC_STATE_PREPARE_LEFT = 1;
+    PncInfo_LaneChangeState_LC_STATE_PREPARE_RIGHT = 2;
+    PncInfo_LaneChangeState_LC_STATE_ACTIVE_LEFT = 3;
+    PncInfo_LaneChangeState_LC_STATE_ACTIVE_RIGHT = 4;
+    PncInfo_LaneChangeState_LC_STATE_CANCEL = 5;
+}
+
+enum PncInfo_LangeChangeReason
+{
+    PncInfo_LangeChangeReason_LC_REASON_NONE = 0;
+    PncInfo_LangeChangeReason_LC_REASON_DRIVER_REQ = 1;
+    PncInfo_LangeChangeReason_LC_REASON_ROUTING_REQ = 2;
+    PncInfo_LangeChangeReason_LC_REASON_MERGE = 3;
+    PncInfo_LangeChangeReason_LC_REASON_OVERTAKE = 4;
+    PncInfo_LangeChangeReason_LC_REASON_HIGHER_SPEED_LIMIT = 5;
+    PncInfo_LangeChangeReason_LC_REASON_DRIVER_CANCEL = 6;
+    PncInfo_LangeChangeReason_LC_REASON_AUTO_CANCEL = 7;
+}
+
+enum PncInfo_LangeChangeCommand
+{
+    PncInfo_LangeChangeCommand_LC_COMMAND_NONE = 0;
+    PncInfo_LangeChangeCommand_LC_COMMAND_LEFT = 1;
+    PncInfo_LangeChangeCommand_LC_COMMAND_RIGHT = 2;
+    PncInfo_LangeChangeCommand_LC_COMMAND_CANCEL = 3;
+}
+
+enum PncInfo_LangeChangeUrgency
+{
+    PncInfo_LangeChangeUrgency_LC_URGENCY_LV0 = 0;
+    PncInfo_LangeChangeUrgency_LC_URGENCY_LV1 = 1;
+    PncInfo_LangeChangeUrgency_LC_URGENCY_LV2 = 2;
+    PncInfo_LangeChangeUrgency_LC_URGENCY_LV3 = 3;
+}
+
+message PncInfo_PathPoint
+{
+    float x = 1;
+    float y = 2;
+    float theta = 3;
+    float kappa = 4;
+    float accum_s = 5;
+}
+
+message PncInfo_TrajectoryPoint
+{
+    float t = 1;
+    float v = 2;
+    float a = 3;
+    PncInfo_PathPoint path_point = 4;
+}
+
+message PncInfo_FuncIccPlanDebug
+{
+    float ego_a_filtered = 1;
+    float ego_yawrate_filtered = 2;
+    float set_speed_real = 3;
+    sint32 lane_model_type = 4;
+    float main_tgt_s_gap = 5;
+    float main_tgt_l_gap = 6;
+    float main_tgt_time_buffer = 7;
+    float main_tgt_desired_s_gap = 8;
+    float main_tgt_vs = 9;
+    float main_tgt_abs_a = 10;
+    uint32 main_tgt_index = 11;
+    uint32 main_tgt_select_code = 12;
+    uint32 left_tgt_index = 13;
+    uint32 right_tgt_index = 14;
+    float left_tgt_s_gap = 15;
+    float left_tgt_l_gap = 16;
+    float left_tgt_time_buffer = 17;
+    float left_tgt_desired_s_gap = 18;
+    float left_tgt_vs = 19;
+    float left_tgt_abs_a = 20;
+    float right_tgt_s_gap = 21;
+    float right_tgt_l_gap = 22;
+    float right_tgt_time_buffer = 23;
+    float right_tgt_desired_s_gap = 24;
+    float right_tgt_vs = 25;
+    float right_tgt_abs_a = 26;
+    uint32 left_tgt_select_code = 27;
+    uint32 right_tgt_select_code = 28;
+    uint32 plan_curve_maxkappa_index = 29;
+    uint32 htg_trajectory_valid = 30;
+    float nudge_offset = 31;
+    float nudge_s_gap = 32;
+    float plan_desired_a = 33;
+    float plan_map_spdlmt_a = 34;
+    float plan_map_curve_a = 35;
+    float plan_map_keypoint_a = 36;
+    float plan_curve_a = 37;
+    float plan_cruise_a = 38;
+    float plan_follow_a = 39;
+    float plan_approch_a = 40;
+    float plan_lc_follow_a = 41;
+    float plan_lc_approch_a = 42;
+    float plan_curve_radius = 43;
+    float plan_curve_v = 44;
+    float plan_curve_maxkappa = 45;
+    float plan_curve_maxkappa_s = 46;
+    float decision_path_offset = 47;
+    float current_ego_l = 48;
+    float plan_target_l = 49;
+    float htg_final_cubic_poly_c0 = 50;
+    float htg_final_cubic_poly_c1 = 51;
+    float htg_final_cubic_poly_c2 = 52;
+    float htg_final_cubic_poly_c3 = 53;
+    float htg_trajectory_start_s = 54;
+    float htg_trajectory_end_s = 55;
+    uint32 plan_map_setspd_v = 56;
+    uint32 htg_final_cubic_poly_id = 57;
+    float lc_state_time = 58;
+    uint32 htg_trajectory_disable_reason_0 = 59;
+    uint32 htg_trajectory_disable_reason_1 = 60;
+    PncInfo_LaneChangeState lc_state = 61;
+    PncInfo_LangeChangeReason lc_reason = 62;
+    PncInfo_LangeChangeCommand lc_command = 63;
+    PncInfo_LangeChangeUrgency lc_urgency = 64;
+    bool lc_enable_left = 65;
+    bool lc_enable_right = 66;
+    bool cancel_ability = 67;
+    bool cur_lane_jump = 68;
+    bool target_lane_jump = 69;
+    bool lc_abort_left = 70;
+    bool lc_abort_right = 71;
+    sint32 target_lane_id = 72;
+    uint32 disable_reason_left = 73;
+    uint32 disable_reason_right = 74;
+    uint32 cancel_reason = 75;
+    float host_lane_c0 = 76;
+    float target_lane_c0 = 77;
+    float first_phase_slope = 78;
+    float second_phase_slope = 79;
+    float path_offset = 80;
+    float lane_shift_count = 81;
+    uint32 num_ref_line_cubic_poly = 82;
+    uint32 num_ref_line = 83;
+    uint32 num_ref_line_smoothed = 84;
+    uint32 num_trajectory = 85;
+    repeated float ref_line_cubic_poly = 86;
+    repeated PncInfo_PathPoint ref_line = 87;
+    repeated PncInfo_PathPoint ref_line_smoothed = 88;
+    repeated PncInfo_TrajectoryPoint trajectory = 89;
+}
+
+message PncInfo_FuncIccCtrlDebug
+{
+    float torque_req_raw = 1;
+    float ctrl_force_ff = 2;
+    float ctrl_force_fb_p = 3;
+    float ctrl_force_fb_i = 4;
+    float current_slope = 5;
+    float preview_curvature = 6;
+    float preview_lat_error = 7;
+    float preview_lat_v_error = 8;
+    float preview_heading_error = 9;
+    float preview_heading_v_error = 10;
+    float ff_angle_output = 11;
+    float fb_angle_output = 12;
+    float fb_p_angle_output = 13;
+    float fb_i_angle_output = 14;
+    float fb_d_angle_output = 15;
+    float steer_angle_lat_err = 16;
+    float steer_angle_lat_v_err = 17;
+    float steer_angle_heading_err = 18;
+    float steer_angle_heading_v_err = 19;
+    uint32 lqr_num_iter = 20;
+}
+
+message PncInfo_FuncIccDebug
+{
+    PncInfo_FuncIccPlanDebug plan_debug = 1;
+    PncInfo_FuncIccCtrlDebug ctrl_debug = 2;
+}
+
+message PncInfo_PilotPncDebugInfo
+{
+    uint32 sequence = 1;
+    uint32 time_consumption = 2;
+    uint32 build_time = 3;
+    PncInfo_FuncIccDebug icc_debug = 4;
+}
+
+message PncInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    PncInfo_PilotPncDebugInfo pilot_pnc_debug = 2;
+}
+

@@ -1,0 +1,153 @@
+syntax = "proto3";
+import "type/sensor_data_base.proto";
+import "type/common_type.proto";
+import "type/base.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum SensorObstacle_VisionType
+{
+    SensorObstacle_VisionType_UNKNOWN = 0;
+    SensorObstacle_VisionType_BEV = 1;
+    SensorObstacle_VisionType_FRONT = 2;
+}
+
+enum SensorObstacle_CipvFlag
+{
+    SensorObstacle_CipvFlag_UNKNOWN = 0;
+    SensorObstacle_CipvFlag_SELECTED = 1;
+    SensorObstacle_CipvFlag_UNSELECTED = 2;
+}
+
+enum SensorObstacle_CurrentLaneAssign
+{
+    SensorObstacle_CurrentLaneAssign_UNKNOWN = 0;
+    SensorObstacle_CurrentLaneAssign_LEFT_LEFT = 1;
+    SensorObstacle_CurrentLaneAssign_LEFT = 2;
+    SensorObstacle_CurrentLaneAssign_HOST = 3;
+    SensorObstacle_CurrentLaneAssign_RIGHT = 4;
+    SensorObstacle_CurrentLaneAssign_RIGHT_RIGHT = 5;
+}
+
+enum SensorObstacle_VehicleLightStatus
+{
+    SensorObstacle_VehicleLightStatus_LEFT_TURN_LIGHT_ON = 0;
+    SensorObstacle_VehicleLightStatus_RIGHT_TURN_LIGHT_ON = 1;
+    SensorObstacle_VehicleLightStatus_BRAKE_LIGHT_ON = 2;
+    SensorObstacle_VehicleLightStatus_ALL_OFF = 3;
+    SensorObstacle_VehicleLightStatus_LEFT_TURN_AND_BRAKE_LIGHT_ON = 4;
+    SensorObstacle_VehicleLightStatus_RIGHT_TURN_AND_BRAKE_LIGHT_ON = 5;
+    SensorObstacle_VehicleLightStatus_CLEARANCE_LAMP_ON = 6;
+}
+
+enum SensorObstacle_WorldSpaceInfoPositionType
+{
+    SensorObstacle_WorldSpaceInfoPositionType_kUnknown = 0;
+    SensorObstacle_WorldSpaceInfoPositionType_kRearLeft = 1;
+    SensorObstacle_WorldSpaceInfoPositionType_kRearCenter = 2;
+    SensorObstacle_WorldSpaceInfoPositionType_kRearRight = 3;
+    SensorObstacle_WorldSpaceInfoPositionType_kFrontLeft = 4;
+    SensorObstacle_WorldSpaceInfoPositionType_kFrontCenter = 5;
+    SensorObstacle_WorldSpaceInfoPositionType_kFrontRight = 6;
+    SensorObstacle_WorldSpaceInfoPositionType_kLeftCenter = 7;
+    SensorObstacle_WorldSpaceInfoPositionType_kRightCenter = 8;
+    SensorObstacle_WorldSpaceInfoPositionType_kCenter = 9;
+}
+
+enum SensorObstacle_CutInFlagType
+{
+    SensorObstacle_CutInFlagType_DEFAULT = 0;
+    SensorObstacle_CutInFlagType_CUT_IN_HOST_LANE = 1;
+    SensorObstacle_CutInFlagType_CUT_IN_FOV = 2;
+}
+
+enum SensorObstacle_CutInLaneType
+{
+    SensorObstacle_CutInLaneType_DEFAULT = 0;
+    SensorObstacle_CutInLaneType_MEASURED = 1;
+    SensorObstacle_CutInLaneType_PREDICTED = 2;
+}
+
+enum SensorObstacle_CoordinateSystemType
+{
+    SensorObstacle_CoordinateSystemType_UNKNOWN = 0;
+    SensorObstacle_CoordinateSystemType_SENSOR = 1;
+    SensorObstacle_CoordinateSystemType_EGO_FLU = 2;
+    SensorObstacle_CoordinateSystemType_PARTIAL_EGO_FLU = 3;
+    SensorObstacle_CoordinateSystemType_GROUND = 4;
+    SensorObstacle_CoordinateSystemType_UTM = 5;
+}
+
+enum SensorObstacle_ObstacleSubType
+{
+    SensorObstacle_ObstacleSubType_UNKNOWN = 0;
+    SensorObstacle_ObstacleSubType_UNKNOWN_MOVABLE = 1;
+    SensorObstacle_ObstacleSubType_UNKNOWN_UNMOVABLE = 2;
+    SensorObstacle_ObstacleSubType_VEHICLE_CAR = 3;
+    SensorObstacle_ObstacleSubType_VEHICLE_TRUCK = 4;
+    SensorObstacle_ObstacleSubType_VEHICLE_BUS = 5;
+    SensorObstacle_ObstacleSubType_VEHICLE_VAN = 6;
+    SensorObstacle_ObstacleSubType_VEHICLE_SPECIAL = 7;
+    SensorObstacle_ObstacleSubType_TWOWHEELER_BICYCLE = 8;
+    SensorObstacle_ObstacleSubType_TWOWHEELER_MOTOCYCLE = 9;
+    SensorObstacle_ObstacleSubType_TRICYCLE = 10;
+    SensorObstacle_ObstacleSubType_PEDESTRIAN_CHILD = 11;
+    SensorObstacle_ObstacleSubType_PEDESTRIAN_ADULT = 12;
+    SensorObstacle_ObstacleSubType_ANIMAL = 13;
+    SensorObstacle_ObstacleSubType_TRAFFICCONE = 14;
+    SensorObstacle_ObstacleSubType_VEHICLE_SUV = 15;
+}
+
+message SensorObstacle_CutInStatus
+{
+    SensorObstacle_CutInFlagType cut_in_flag = 1;
+    SensorObstacle_CutInLaneType cut_in_lane = 2;
+    float cut_in_dist = 3;
+}
+
+message SensorObstacle_Obstacle
+{
+    uint32 id = 1;
+    uint32 age = 2;
+    TrackingStatus tracking_status = 3;
+    bool is_velocity_valid = 4;
+    bool is_acceleration_valid = 5;
+    SensorObstacle_CoordinateSystemType cs_type = 6;
+    SensorObstacle_WorldSpaceInfoPositionType prp_type = 7;
+    ObstacleType type = 8;
+    SensorObstacle_ObstacleSubType sub_type = 9;
+    MotionStatus motion_status = 10;
+    uint32 probability = 11;
+    uint32 existence_quality = 12;
+    uint32 source_bitmap = 13;
+    SensorObstacle_CipvFlag cipv_flag = 14;
+    SensorObstacle_CurrentLaneAssign current_lane_assign = 15;
+    SensorObstacle_VehicleLightStatus vehicle_light_status = 16;
+    uint32 head_rear_type = 17;
+    Vector2f position = 18;
+    Vector2f position_var = 19;
+    float yaw_rate = 20;
+    float yaw_rate_var = 21;
+    float heading = 22;
+    float heading_var = 23;
+    Vector2f velocity = 24;
+    Vector2f velocity_abs = 25;
+    Vector2f velocity_var = 26;
+    Vector2f acceleration = 27;
+    Vector2f acceleration_abs = 28;
+    float heading_yawrate_covariance = 29;
+    float length = 30;
+    float width = 31;
+    float height = 32;
+    repeated Vector2f bounding_box_points = 33;
+    SensorObstacle_CutInStatus cut_in_status = 34;
+}
+
+message SensorObstacleMsg
+{
+    SensorDataBaseMsg sensor_data_base = 1;
+    uint32 num_obstacles = 2;
+    SensorObstacle_VisionType vision_type = 3;
+    repeated SensorObstacle_Obstacle obstacles = 4;
+}
+

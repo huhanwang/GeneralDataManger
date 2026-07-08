@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum ApaFusionLocInfo_VisionStatus
+{
+    ApaFusionLocInfo_VisionStatus_kNone = 0;
+    ApaFusionLocInfo_VisionStatus_kUsed = 1;
+    ApaFusionLocInfo_VisionStatus_kUnused = 2;
+}
+
+message ApaFusionLocInfo_ApaFusLocInfo
+{
+    float frame_diff_yaw = 1;
+    float mapslot_diff_yaw = 2;
+    float vision_slot_width = 3;
+    float last_slot_entrance_err = 4;
+    float last_slot_tail_err = 5;
+    float position_coefficient = 6;
+    ApaFusionLocInfo_VisionStatus vision_status = 7;
+    bool deep_in_slot = 8;
+}
+
+message ApaFusionLocInfoMsg
+{
+    CommonMsgMsg common_msg = 1;
+    ApaFusionLocInfo_ApaFusLocInfo apa_fus_loc_info = 2;
+}
+

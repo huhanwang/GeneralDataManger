@@ -1,0 +1,182 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum MapDisplay_SlotType
+{
+    MapDisplay_SlotType_kReserve = 0;
+    MapDisplay_SlotType_kVertical = 1;
+    MapDisplay_SlotType_kHorizontal = 2;
+    MapDisplay_SlotType_kOblique = 3;
+}
+
+enum MapDisplay_SlotStatus
+{
+    MapDisplay_SlotStatus_kEmpy = 0;
+    MapDisplay_SlotStatus_kUnknown = 1;
+    MapDisplay_SlotStatus_kPedestrianOcupy = 2;
+    MapDisplay_SlotStatus_kTwowheelscartOcupy = 3;
+    MapDisplay_SlotStatus_kConebarrelOcupy = 4;
+    MapDisplay_SlotStatus_kFloorlockOcupy = 5;
+    MapDisplay_SlotStatus_kNoparksignOcupy = 6;
+    MapDisplay_SlotStatus_kOtherObstaclesOcupy = 7;
+}
+
+enum MapDisplay_MapDataType
+{
+    MapDisplay_MapDataType_kRealTimeMap = 0;
+    MapDisplay_MapDataType_kStoredMap = 1;
+}
+
+enum MapDisplay_DangerLevel
+{
+    MapDisplay_DangerLevel_kNoDanger = 0;
+    MapDisplay_DangerLevel_kLevel1 = 1;
+    MapDisplay_DangerLevel_kLevel2 = 2;
+    MapDisplay_DangerLevel_kLevel3 = 3;
+}
+
+enum MapDisplay_Map2HmiObstacleType
+{
+    MAPDISPLAY_MAP2HMIOBSTACLETYPE_FIRST_UNKNOWN = 0;
+    MapDisplay_Map2HmiObstacleType_kWheelStopper = 1;
+    MapDisplay_Map2HmiObstacleType_kParkingLock = 2;
+    MapDisplay_Map2HmiObstacleType_kPillars = 3;
+    MapDisplay_Map2HmiObstacleType_kSpeedBump = 4;
+    MapDisplay_Map2HmiObstacleType_kFireBox = 5;
+    MapDisplay_Map2HmiObstacleType_kAnticollisionBall = 6;
+    MapDisplay_Map2HmiObstacleType_kReflector = 7;
+    MapDisplay_Map2HmiObstacleType_kCurbStone = 8;
+    MapDisplay_Map2HmiObstacleType_kTrafficCone = 9;
+    MapDisplay_Map2HmiObstacleType_kParkingAFrameSign = 10;
+}
+
+enum MapDisplay_RoadMarkType
+{
+    MAPDISPLAY_ROADMARKTYPE_FIRST_UNKNOWN = 0;
+    MapDisplay_RoadMarkType_kStraight = 2;
+    MapDisplay_RoadMarkType_kStrOrTurnL = 3;
+    MapDisplay_RoadMarkType_kStrOrTurnR = 4;
+    MapDisplay_RoadMarkType_kStrOrTurnA = 5;
+    MapDisplay_RoadMarkType_kTurinLeft = 6;
+    MapDisplay_RoadMarkType_kTurnLOrTurnA = 7;
+    MapDisplay_RoadMarkType_kTurnLOrLConf = 8;
+    MapDisplay_RoadMarkType_kTurnR = 9;
+    MapDisplay_RoadMarkType_kTurnROrRConf = 10;
+    MapDisplay_RoadMarkType_kTurnLR = 11;
+    MapDisplay_RoadMarkType_kTurnA = 12;
+    MapDisplay_RoadMarkType_kTurnLForb = 13;
+    MapDisplay_RoadMarkType_kTurnRForb = 14;
+    MapDisplay_RoadMarkType_kTurnAForb = 15;
+    MapDisplay_RoadMarkType_kStrOrTurnLOrTrunR = 16;
+    MapDisplay_RoadMarkType_kStrOrTurnLOrTrunA = 17;
+    MapDisplay_RoadMarkType_kTurnROrTurnA = 18;
+    MapDisplay_RoadMarkType_kDistConfLine = 22;
+    MapDisplay_RoadMarkType_kStopyieldLine = 23;
+    MapDisplay_RoadMarkType_kDecelyieldLine = 24;
+    MapDisplay_RoadMarkType_kStopline = 25;
+    MapDisplay_RoadMarkType_kNoParkArea = 26;
+    MapDisplay_RoadMarkType_kCrossWalk = 27;
+    MapDisplay_RoadMarkType_kSolidLaneLine = 28;
+    MapDisplay_RoadMarkType_kDashedLaneLine = 29;
+    MapDisplay_RoadMarkType_kZebraCrossing = 30;
+    MapDisplay_RoadMarkType_kGridLine = 31;
+    MapDisplay_RoadMarkType_kLeadingLine = 32;
+    MapDisplay_RoadMarkType_kOthers = 99;
+}
+
+message MapDisplay_GlbTrajectory
+{
+    uint32 num_glb_trajectory_point = 1;
+    repeated Vector3f glb_trajectory_point = 2;
+    Vector3f start_point = 3;
+    Vector3f end_point = 4;
+}
+
+message MapDisplay_GlbPrkgSlot
+{
+    uint64 slot_id = 1;
+    MapDisplay_SlotStatus slot_status = 2;
+    MapDisplay_SlotType slot_type = 3;
+    bool is_target_slot = 4;
+    uint32 num_slot_points = 5;
+    repeated Vector3f slot_points = 6;
+}
+
+message MapDisplay_GlbPrcpPrkgSlots
+{
+    uint32 num_glb_prkg_slots = 1;
+    repeated MapDisplay_GlbPrkgSlot glb_prkg_slots = 2;
+}
+
+message MapDisplay_GlbRoadMark
+{
+    uint32 num_border_points = 1;
+    repeated Vector2f border = 2;
+    Vector3f position = 3;
+    float odom_heading = 4;
+    MapDisplay_RoadMarkType roadmark_type = 6;
+    uint64 roadmark_id = 5;
+}
+
+message MapDisplay_GlbRoadMakMap
+{
+    uint32 num_glb_road_mak_map = 1;
+    repeated MapDisplay_GlbRoadMark glb_road_mak_map = 2;
+}
+
+message MapDisplay_GlbObstacle
+{
+    float odom_heading = 4;
+    MapDisplay_Map2HmiObstacleType obstacle_type = 5;
+    MapDisplay_DangerLevel danger_level = 6;
+    uint32 num_border_points = 1;
+    repeated Vector2f border = 2;
+    Vector3f center_position = 3;
+    uint64 target_id = 7;
+}
+
+message MapDisplay_GlbPrcpObstacle
+{
+    uint32 num_glb_prcp_obstacle = 1;
+    repeated MapDisplay_GlbObstacle glb_prcp_obstacle = 2;
+}
+
+message MapDisplay_MapCommonHeader
+{
+    sint32 map_id = 1;
+    MapDisplay_MapDataType map_type = 2;
+    uint64 utc_time = 3;
+    sint32 latitude = 4;
+    sint32 longitude = 5;
+    uint32 num_glb_trajectory_point = 6;
+    repeated Vector2f glb_trajectory_point = 7;
+}
+
+message MapDisplay_MapInfo
+{
+    MapDisplay_MapCommonHeader header = 1;
+    MapDisplay_GlbTrajectory global_trajectory = 2;
+    MapDisplay_GlbPrcpPrkgSlots global_percep_parking_slots = 3;
+    MapDisplay_GlbRoadMakMap global_road_mark_map = 4;
+    MapDisplay_GlbPrcpObstacle global_perception_obstacle = 5;
+    float map_distance = 6;
+    float rest_map_distance = 7;
+    uint32 num_speed_bumps = 8;
+}
+
+message MapDisplay_MapDisplay
+{
+    MapDisplay_MapInfo map_info = 1;
+    bool update_map_info = 2;
+    sint32 num_maps = 3;
+    repeated MapDisplay_MapCommonHeader all_map_headers = 4;
+}
+
+message MapDisplayMsg
+{
+    CommonMsgMsg common_msg = 1;
+    MapDisplay_MapDisplay map_display = 2;
+}
+

@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message CameraExternal_Param
+{
+    sint32 position = 1;
+    repeated double ext_param = 2;
+    repeated double ext_mtx_v2c = 3;
+    repeated double ext_mtx_c2v = 4;
+    repeated double cam_ext_param = 5;
+    repeated double vcs_translation = 6;
+    repeated double vcs_rotation = 7;
+}
+
+message CameraExternalMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    uint64 num_params = 2;
+    repeated CameraExternal_Param params = 3;
+}
+

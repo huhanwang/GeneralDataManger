@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "interface/pilot/perception/object.proto";
+package idrive.workflow.proto;
+
+message ObjectsMsg
+{
+    CommonMsgMsg common_msg = 1;
+    Objects objects = 2;
+}
+

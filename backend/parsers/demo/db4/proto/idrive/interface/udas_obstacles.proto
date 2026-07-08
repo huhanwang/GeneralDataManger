@@ -1,0 +1,45 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message UdasObstacle_AnchorInfo
+{
+    uint32 status = 1;
+    uint32 type = 2;
+    uint32 group = 3;
+    uint32 z = 4;
+    sint32 x = 5;
+    sint32 y = 6;
+}
+
+message UdasObstacle_UdasObject
+{
+    sint32 time_stamp = 1;
+    uint32 group_number = 2;
+    uint32 anchor_number = 3;
+    repeated UdasObstacle_AnchorInfo anchor_info = 4;
+}
+
+message UdasObstacle_UdasState
+{
+    uint32 rada_dis_xx = 1;
+    uint32 rada_dis_xy = 2;
+    uint32 rada_dis_xz = 3;
+    uint32 rada_err = 4;
+}
+
+message UdasObstacle_UdasObstacle
+{
+    uint32 obj_num = 1;
+    bytes group_porint_num = 2;
+    bytes detected = 3;
+    repeated UdasObstacle_UdasObject object = 4;
+    repeated UdasObstacle_UdasState udas_state = 5;
+}
+
+message UdasObstacleMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    UdasObstacle_UdasObstacle udas_obstacle = 2;
+}
+

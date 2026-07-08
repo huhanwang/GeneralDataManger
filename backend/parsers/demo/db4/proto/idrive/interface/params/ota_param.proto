@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message OtaParam_OtaParam
+{
+    uint32 ota_update = 1;
+}
+
+message OtaParamMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    OtaParam_OtaParam ota_param = 2;
+}
+

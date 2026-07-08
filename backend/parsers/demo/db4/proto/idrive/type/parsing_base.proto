@@ -1,0 +1,70 @@
+syntax = "proto3";
+import "type/basic.proto";
+package idrive.workflow.proto;
+
+enum RleContourMode
+{
+    RleContourMode_kRetrExternal = 0;
+    RleContourMode_kRetrList = 1;
+}
+
+message IpmParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message CylParsingImageData
+{
+    bytes data = 1;
+    uint32 width = 2;
+    uint32 height = 3;
+    uint32 channel = 4;
+}
+
+message Rle
+{
+    sint32 y = 1;
+    sint32 xstart = 2;
+    sint32 xend = 3;
+    sint32 length = 4;
+    sint32 value = 5;
+}
+
+message RleContourPointer
+{
+    sint32 x = 1;
+    sint32 y = 2;
+}
+
+message ConnectRegion
+{
+    Rect boundbox = 1;
+    sint32 nArea = 2;
+    sint32 num_rle_list = 3;
+    repeated Rle rle_list_region = 4;
+    uint32 num_contour_points = 5;
+    repeated RleContourPointer contour_points = 6;
+}
+
+message RleCompressedData
+{
+    sint32 valid_height = 1;
+    sint32 width = 2;
+    sint32 height = 3;
+    uint32 free_label = 4;
+    bool inited = 5;
+    sint32 num_rle_list_buf = 6;
+    repeated Rle rle_list_buf = 7;
+    repeated ConnectRegion connect_regions = 8;
+    uint32 num_connect_regions = 9;
+    sint32 begin_y = 10;
+    sint32 end_y = 11;
+    sint32 begin_x = 12;
+    sint32 end_x = 13;
+    sint32 step = 14;
+    bool valid_build_connect_region = 15;
+}
+

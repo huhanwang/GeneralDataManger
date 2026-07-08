@@ -1,0 +1,225 @@
+syntax = "proto3";
+import "interface/pilot/perception/bev_lane_base.proto";
+import "type/basic.proto";
+import "type/base.proto";
+package idrive.workflow.proto;
+
+enum PositionIndex
+{
+    PositionIndex_HOST_LEFT = 0;
+    PositionIndex_HOST_RIGHT = 1;
+    PositionIndex_LEFT_NEIGHBOR_LANE_LEFT = 2;
+    PositionIndex_LEFT_NEIGHBOR_LANE_RIGHT = 3;
+    PositionIndex_RIGHT_NEIGHBOR_LANE_LEFT = 4;
+    PositionIndex_RIGHT_NEIGHBOR_LANE_RIGHT = 5;
+    PositionIndex_REAR_RIGHT = 6;
+    PositionIndex_REAR_LEFT = 7;
+    PositionIndex_ROAD_EDGE_LEFT = 8;
+    PositionIndex_ROAD_EDGE_RIGHT = 9;
+    PositionIndex_POSITION_INDEX_DEFAULT = 255;
+}
+
+enum YShapeSemanticType
+{
+    YShapeSemanticType_YSHAPE_NORMAL = 0;
+    YShapeSemanticType_FORK_LEFT_BRANCH = 1;
+    YShapeSemanticType_FORK_RIGHT_BRANCH = 2;
+    YShapeSemanticType_MERGE_LEFT_BRANCH = 3;
+    YShapeSemanticType_MERGE_RIGHT_BRANCH = 4;
+    YShapeSemanticType_YSHAPE_COMMON_BRANCH = 5;
+    YShapeSemanticType_FORK_LEFT_WITH_COMMON_BRANCH = 6;
+    YShapeSemanticType_FORK_RIGHT_WITH_COMMON_BRANCH = 7;
+    YShapeSemanticType_MERGE_LEFT_WITH_COMMON_BRANCH = 8;
+    YShapeSemanticType_MERGE_RIGHT_WITH_COMMON_BRANCH = 9;
+}
+
+enum BevGroundMarkingType
+{
+    BevGroundMarkingType_STRAIGHT = 0;
+    BevGroundMarkingType_STRAIGHT_LEFT = 1;
+    BevGroundMarkingType_STRAIGHT_RIGHT = 2;
+    BevGroundMarkingType_STRAIGHT_U_TURN = 3;
+    BevGroundMarkingType_LEFT = 4;
+    BevGroundMarkingType_LEFT_U_TURN = 5;
+    BevGroundMarkingType_MERGE_TO_LEFT = 6;
+    BevGroundMarkingType_RIGHT = 7;
+    BevGroundMarkingType_MERGE_TO_RIGHT = 8;
+    BevGroundMarkingType_LEFT_RIGHT = 9;
+    BevGroundMarkingType_U_TURN = 10;
+    BevGroundMarkingType_FORBID_LEFT = 11;
+    BevGroundMarkingType_FORBID_RIGHT = 12;
+    BevGroundMarkingType_FORBID_U_TURN = 13;
+    BevGroundMarkingType_STRAIGHT_LEFT_RIGHT = 14;
+    BevGroundMarkingType_STRAIGHT_U_TURN_LEFT = 15;
+    BevGroundMarkingType_RIGHT_U_TURN = 16;
+    BevGroundMarkingType_FORBID_STRAIGHT = 17;
+    BevGroundMarkingType_INDICATING_ARROW = 18;
+    BevGroundMarkingType_INDICATING_STRAIGHT = 19;
+    BevGroundMarkingType_TEXT = 20;
+    BevGroundMarkingType_BUS_LANE = 21;
+    BevGroundMarkingType_VARIABLE_ORIENTATION_LANE = 22;
+    BevGroundMarkingType_ARROW_OTHER = 23;
+    BevGroundMarkingType_NUMBER = 24;
+    BevGroundMarkingType_OTHER = 25;
+    BevGroundMarkingType_MAX_SPEED_LIMIT = 26;
+    BevGroundMarkingType_MIN_SPEED_LIMIT = 27;
+    BevGroundMarkingType_TIME = 28;
+    BevGroundMarkingType_YIELD_AHEAD_TRIANGLE = 29;
+    BevGroundMarkingType_YIELD_AHEAD_HOV = 30;
+    BevGroundMarkingType_NON_MOTORIZED = 31;
+}
+
+enum CrosswalkType
+{
+    CrosswalkType_UNCONTROLLED = 0;
+    CrosswalkType_TRAFFIC_LIGHT_CONTROLLED = 1;
+    CrosswalkType_MUST_YEILD = 2;
+}
+
+enum BevKeypointType
+{
+    BevKeypointType_ARROW_VERTEX = 0;
+    BevKeypointType_DASHED_LINE_ENDPOINT = 1;
+    BevKeypointType_POLE = 2;
+    BevKeypointType_Y_CROSS_POINT = 3;
+}
+
+enum BevCenterLineDirection
+{
+    BevCenterLineDirection_kStraight = 0;
+    BevCenterLineDirection_kLeft = 1;
+    BevCenterLineDirection_kRight = 2;
+    BevCenterLineDirection_kUTurn = 3;
+    BevCenterLineDirection_kUnknown = 127;
+}
+
+enum BevCenterLineType
+{
+    BevCenterLineType_kMotorVehicle = 0;
+    BevCenterLineType_kNonMotorVehicle = 1;
+    BevCenterLineType_kBus = 2;
+    BevCenterLineType_kUnknown = 127;
+}
+
+enum RoadIntersectionType
+{
+    RoadIntersectionType_ROAD_INTERSECTION = 0;
+}
+
+message LaneSection
+{
+    uint32 num_bev_points = 1;
+    BevLaneLineType bev_lane_type = 2;
+    repeated BasePoint bev_points = 3;
+    CurbType bev_curb_type = 4;
+}
+
+message ParameterizedLaneInfo
+{
+    PositionIndex lane_position_index = 1;
+    uint32 num_coeffs = 2;
+    uint32 num_lanes = 3;
+    uint32 num_y_shape_intersection_x = 4;
+    float confidence = 5;
+    sint32 lane_id = 6;
+    float life_time = 7;
+    YShapeSemanticType y_shape_semantic_type = 8;
+    repeated float coeffs = 9;
+    repeated LaneSection lanes = 10;
+    Vector3f start_point = 11;
+    Vector3f end_point = 12;
+    repeated float y_shape_intersection_x = 13;
+    float lateral_error = 14;
+    float length = 15;
+}
+
+message Box2d
+{
+    float x = 1;
+    float y = 2;
+    float heading = 3;
+    float width = 4;
+    float length = 5;
+}
+
+message BevGroundMarking
+{
+    Box2d bbox = 1;
+    BevGroundMarkingType ground_marking_type = 2;
+    float score = 3;
+    sint32 id = 4;
+}
+
+message Crosswalk
+{
+    Box2d bbox = 1;
+    CrosswalkType crosswalk_type = 2;
+    float score = 3;
+    sint32 id = 4;
+}
+
+message BevPoint
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float score = 4;
+}
+
+message BevKeypoint
+{
+    BevKeypointType bev_keypoint_type = 1;
+    uint32 num_bev_points = 2;
+    repeated BevPoint bev_points = 3;
+}
+
+message BevCenterLine
+{
+    sint32 id = 1;
+    BevCenterLineType center_line_type = 2;
+    bool is_virtual = 3;
+    bool is_merging = 4;
+    bool is_in_intersection = 5;
+    uint32 num_directions = 6;
+    uint32 num_center_line_points = 7;
+    uint32 num_incoming_lane_ids = 8;
+    uint32 num_outgoing_lane_ids = 9;
+    repeated BevCenterLineDirection directions = 10;
+    repeated PointConfidence center_line_points = 11;
+    repeated sint32 incoming_lane_ids = 12;
+    repeated sint32 outgoing_lane_ids = 13;
+    sint32 left_lane_id = 14;
+    sint32 right_lane_id = 15;
+    sint32 left_boundary_id = 16;
+    sint32 right_boundary_id = 17;
+}
+
+message RoadIntersection
+{
+    sint32 id = 1;
+    float score = 2;
+    RoadIntersectionType road_intersection_type = 3;
+    Box2d bbox = 4;
+}
+
+message FusedRoadGeometry
+{
+    uint32 num_smooth_bev_lanes = 1;
+    uint32 num_vehicle_bev_lanes = 2;
+    uint32 num_ground_markings = 3;
+    uint32 num_crosswalks = 4;
+    uint32 num_bev_keypoints = 5;
+    uint32 num_center_lines = 6;
+    uint32 num_center_lines_smooth = 7;
+    uint32 num_road_intersections = 8;
+    VehiclePose vehicle_pose = 9;
+    repeated ParameterizedLaneInfo smooth_bev_lanes = 10;
+    repeated ParameterizedLaneInfo vehicle_bev_lanes = 11;
+    repeated BevGroundMarking ground_markings = 12;
+    repeated Crosswalk crosswalks = 13;
+    repeated BevKeypoint bev_keypoints = 14;
+    repeated BevCenterLine center_lines = 15;
+    repeated BevCenterLine center_lines_smooth = 16;
+    repeated RoadIntersection road_intersections = 17;
+}
+

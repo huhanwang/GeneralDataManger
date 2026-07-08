@@ -1,0 +1,14 @@
+syntax = "proto3";
+import "interface/pilot/perception/object.proto";
+import "interface/pilot/perception/line.proto";
+import "interface/pilot/perception/pointcloud.proto";
+package idrive.workflow.proto;
+
+message PhysicalLayer
+{
+    Objects objects = 1;
+    Lines lines = 2;
+    uint32 num_point_cloud = 3;
+    repeated PointCloud point_cloud = 4;
+}
+

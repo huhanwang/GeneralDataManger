@@ -1,0 +1,16 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+message DbgUss_Ussinfo
+{
+    bytes payload = 1;
+    uint32 payload_num = 2;
+}
+
+message DbgUssMsg
+{
+    CommonMsgMsg common_msg = 1;
+    DbgUss_Ussinfo uss_info = 2;
+}
+

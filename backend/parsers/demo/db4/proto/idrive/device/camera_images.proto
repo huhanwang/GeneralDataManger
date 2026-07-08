@@ -1,0 +1,50 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+package idrive.workflow.proto;
+
+enum CameraImage_Chn 
+{
+    CameraImage_Chn_None = 0;
+    CameraImage_Chn_Front = 1;
+    CameraImage_Chn_Rear = 2;
+    CameraImage_Chn_Left = 3;
+    CameraImage_Chn_Right = 4;
+    CameraImage_Chn_Mosaic = 8;
+    CameraImage_Chn_BirdView = 5;
+    CameraImage_Chn_SingleView = 6;
+    CameraImage_Chn_SmallView = 7;
+}
+
+enum CameraImage_Mode 
+{
+    CameraImage_Mode_ORIGINAL = 0;
+    CameraImage_Mode_STITCH = 1;
+    CameraImage_Mode_CYL = 2;
+}
+
+enum CameraImage_Type 
+{
+    CameraImage_Type_BGR = 0;
+    CameraImage_Type_RGB = 1;
+    CameraImage_Type_UYVY = 10;
+    CameraImage_Type_NV12 = 11;
+}
+
+message CameraImage_Image
+{
+    bytes data = 1;
+    uint32 size = 2;
+    uint32 width = 3;
+    uint32 height = 4;
+    uint32 pitch = 5;
+    CameraImage_Chn chn = 6;
+    CameraImage_Mode mode = 7;
+    CameraImage_Type type = 8;
+}
+
+message CameraImageMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    CameraImage_Image image = 2;
+}
+

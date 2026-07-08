@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "common/common_msg.proto";
+import "system/update_status.proto";
+package idrive.workflow.proto;
+
+enum UpdateRequest_UPDATE_PRE 
+{
+    UpdateRequest_UPDATE_PRE_NONE = 0;
+    UpdateRequest_UPDATE_PRE_PARSE_VERSION = 1;
+    UpdateRequest_UPDATE_PRE_PARSE_VERSION_DONE = 2;
+}
+
+message UpdateRequest_Request
+{
+    UPDATE_TYPE type = 1;
+    UpdateRequest_UPDATE_PRE prepare = 2;
+    string path = 3;
+    string CurAppVersion = 4;
+    string CurBuildStamp = 5;
+    string NewAppVersion = 6;
+    string NewBuildStamp = 7;
+}
+
+message UpdateRequestMsg 
+{
+    CommonMsgMsg common_msg = 1;
+    UpdateRequest_Request request = 2;
+}
+
